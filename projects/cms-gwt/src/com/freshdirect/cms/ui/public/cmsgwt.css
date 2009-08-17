@@ -24,10 +24,19 @@
 	float : left;	
 }
 
+.appHeader .userLabel {
+	float : left;
+	padding : 0px 10px;
+	font-style : italic;
+	font-weight : bold;
+}
+
+
 #buttonPanel {
-	background-color : red;	
+	/* background-color : red; */	
 	float : right;
 	height : 22px;
+	width : 120px;
 }
 
 

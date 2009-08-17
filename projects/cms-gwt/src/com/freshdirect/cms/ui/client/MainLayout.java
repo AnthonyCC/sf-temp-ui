@@ -40,6 +40,7 @@ import com.freshdirect.cms.ui.model.GwtNodeContext;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.GwtPublishData;
 import com.freshdirect.cms.ui.model.GwtSaveResponse;
+import com.freshdirect.cms.ui.model.GwtUser;
 import com.freshdirect.cms.ui.model.GwtValidationError;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
@@ -346,25 +347,6 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                 });
                 contentToolBar.add(viewHistoryButton);
                 
-                if (CmsGwt.getCurrentUser() != null && CmsGwt.getCurrentUser().isAdmin()) {
-                    final Button adminButton = new Button("Administration");
-                    adminButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                       @Override
-                        public void componentSelected(ButtonEvent ce) {
-                           AdminWindow aw = new AdminWindow(adminButton);
-                           aw.show();
-                        } 
-                    });
-                    contentToolBar.add(adminButton);
-                    Button showPublish = new Button("Publish", new SelectionListener<ButtonEvent>() {
-                        @Override
-                        public void componentSelected(ButtonEvent ce) {
-                            showPublishPanel();
-                        }
-                    });
-                    contentToolBar.add(showPublish);
-                }
-                
                 if (!currentNodeData.isReadonly()) {
                     Button saveButton = new Button("Save", new SelectionListener<ButtonEvent>() {
                         @Override
@@ -587,7 +569,8 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
      * Add the necessary buttons, and widgets to the header panel.
      */
     public void userChanged() {
-        if (CmsGwt.getCurrentUser() != null && CmsGwt.getCurrentUser().isAdmin()) {
+        GwtUser currentUser = CmsGwt.getCurrentUser();
+        if (currentUser != null && currentUser.isAdmin()) {
             final Button adminButton = new Button("Administration");
             adminButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                @Override
@@ -605,6 +588,9 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             });
             this.header.addToButtonPanel(showPublish);
         }
+        header.setUserInfo(currentUser.getName() + '(' + (currentUser.isAllowedToWrite() ? "editor " : "")
+                + (currentUser.isAdmin() ? " admin" : "") + ')');
+        
     }
 
     
