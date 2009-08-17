@@ -1,4 +1,35 @@
 /** Add css rules here for your application. */
+.appHeader {
+	background-color: black;
+	color: #CCCCCC;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 5px;
+	height : 22px;	
+}
+
+.appHeader .freshLabel {
+	color: rgb(255, 153, 51);
+	font-weight: bold;
+	float : left;	
+}
+
+.appHeader .directLabel {
+	color: rgb(102, 153, 51);
+	float : left;	
+	font-weight: bold;
+}
+
+.appHeader .normalLabel {
+	float : left;	
+}
+
+#buttonPanel {
+	background-color : red;	
+	float : right;
+	height : 22px;
+}
+
 
 
 /* ====== button icons ====== */
@@ -200,7 +231,9 @@
 #pageTitle h1 span {
 	margin-left: 10px;
 }
+
 #pageHeader {
+	
 }
 .pageHeader {
 	color:#999999;
@@ -210,6 +243,32 @@
 }
 .pageHeader .rigthPanel {
 	text-align : right;
+}
+
+/* TableField */
+
+.cms-table-field-MOD-even {
+	background-color: #ffffff;
+}
+
+.cms-table-field-MOD-odd {
+	background-color: #f6f6f6;
+}
+
+.cms-table-field-CRE-even {
+	background-color: #eeffee;
+}
+
+.cms-table-field-CRE-odd {
+	background-color: #e6ffe6;
+}
+
+.cms-table-field-DEL-even {
+	background-color: #ffeeee;
+}
+
+.cms-table-field-DEL-odd {
+	background-color: #ffe6e6;
 }
 
 

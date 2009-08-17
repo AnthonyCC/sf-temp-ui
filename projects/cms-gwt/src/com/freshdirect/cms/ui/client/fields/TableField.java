@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.form.MultiField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
@@ -60,6 +61,14 @@ public class TableField extends MultiField {
     }
     
     
+    private static final class RowStyler extends GridViewConfig {
+        @Override
+        public String getRowStyle(ModelData model, int rowIndex, ListStore<ModelData> ds) {
+            String rowClass = model.get("class");
+            return rowClass != null ? "cms-table-field-" + rowClass + (rowIndex % 2 == 0 ? "-even" : "-odd") : "";
+        }
+    }
+    
 
     TableAttribute attribute;
 
@@ -81,9 +90,13 @@ public class TableField extends MultiField {
                 groupingColumn = i;
             }
             ColumnConfig cc = new ColumnConfig("col_" + i, col.getLabel(), 150);
+            
             if (ColumnType.KEY == types[i]) {
                 cc.setRenderer(Utils.GRID_LINK_FROM_PROPERTY_RENDERER);
+            } else if (ColumnType.CLASS == types[i]) {
+                cc.setHidden(true);
             }
+            
             columns.add(cc);
         }
 
@@ -115,6 +128,7 @@ public class TableField extends MultiField {
         if (view != null) {
             grid.setView(view);
         }
+        grid.getView().setViewConfig(new RowStyler());
 
         grid.setAutoHeight(true);
         grid.setStripeRows(true);
