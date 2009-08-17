@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 /**
  *	Event type to signal attribute changes. Used primarily by special components like variaton matrix.
  */
+@SuppressWarnings("unchecked")
 class AttributeChangeEvent extends BaseEvent {
 
     public static final EventType TYPE = new EventType();
