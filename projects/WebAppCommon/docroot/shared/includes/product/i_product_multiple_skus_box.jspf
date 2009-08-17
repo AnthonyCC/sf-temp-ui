@@ -101,8 +101,7 @@
 						    <% } else { %>
 						      <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
 						      <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
-						    <% } %> 
-						    <%@ include file="/shared/includes/product/i_product_display_about.jspf" %>
+						    <% } %>
 						    </fd:FDProduct>
                           </fd:FDProductInfo>
                       <% } %>
@@ -196,8 +195,7 @@
 			%>
 			
 			<input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br/>
-			<%@ include file="/shared/includes/product/i_product_display_about.jspf" %>
-     		
+			
 <%-- ============================================================================================================================================= --%>
 		<% } else { // for !hasSecondaryDomain 
                                       
@@ -250,7 +248,7 @@
 				<input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br/>
 			</td>
        	</tr>
-        <%@ include file="/shared/includes/product/i_product_display_about.jspf" %>                    
+                           
 		<% } // for !hasSecondaryDomain %>
 
 
@@ -261,9 +259,12 @@
 
 <%-- ========================================================= Rating ============================================================================ --%>
 		<%@include file="/shared/includes/product/i_product_skus_rating.jspf" %>
-		
+
 <%-- ========================================================= Scaled pricing ============================================================================ --%>
 		<%@ include file="/shared/includes/product/i_scaled_prices_fixed.jspf" %>
+
+<%-- ========================================================= About pricing ============================================================================ --%>
+		<%@ include file="/shared/includes/product/i_product_display_about.jspf" %> 
 
 <%-- =========================================================  ============================================================================ --%>
 
