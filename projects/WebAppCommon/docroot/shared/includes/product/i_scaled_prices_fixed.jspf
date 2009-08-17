@@ -16,6 +16,11 @@
 		<font class="specialPrice">Save!
 		<%
 		for ( int sci = 0; sci < scales.length; sci++ ) {
+			//out.print( scales[sci] );
+			//out.println("<br/>");
+			if(scales[sci].indexOf(" or ") >= -1){
+				scales[sci]=scales[sci].replaceFirst(" or ","<br>or ");
+			}
 			out.print( scales[sci] );
 			out.println("<br/>");
 		}

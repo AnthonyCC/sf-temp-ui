@@ -27,12 +27,13 @@ public class ProductPriceTag extends BodyTagSupport {
 	private static final String styleRegularWithBoth = " style=\"font-weight: normal; color: #C94747;\"";	// normal, red
 	
 	private static final String styleWas = " style=\"font-weight: normal; color: gray;\"";			// normal, light grey
-	private static final String styleScale = " style=\"font-weight: bold; color: #C94747;\"";		// bold, red
+	private static final String styleScale = " style=\"line-height:12px; font-weight: bold; color: #C94747;\"";		// bold, red
 
 	
 	private ProductImpression impression;
 	double savingsPercentage = 0 ; // savings % off
 	boolean showDescription = true; // show configuration/size description
+	boolean showAboutPrice = true; //show about price
 	
 	
 	public void setImpression(ProductImpression impression) {
@@ -47,6 +48,9 @@ public class ProductPriceTag extends BodyTagSupport {
 		this.showDescription = showDescription;
 	}
 
+	public void setShowAboutPrice( boolean showAboutPrice ) {
+		this.showAboutPrice = showAboutPrice;
+	}
 	
 	public int doStartTag() {
 		JspWriter out = pageContext.getOut();
@@ -123,11 +127,16 @@ public class ProductPriceTag extends BodyTagSupport {
 			);
 			
 			// scaled price
-			if ( scaleString != null ) buf.append(
-					"<div" + styleScale + ">" +
-					scaleString + 
-					"</div>"
-			);
+			if ( scaleString != null ){
+				if(scaleString.indexOf(" or ") >= -1){
+					scaleString = scaleString.replaceFirst(" or ", "<br>or ");
+				}
+				buf.append(
+						"<div" + styleScale + ">" +
+						scaleString + 
+						"</div>"
+				);
+			}	
 				
 			// was price
 			if ( wasPrice > 0 ) buf.append(
@@ -137,12 +146,14 @@ public class ProductPriceTag extends BodyTagSupport {
 			);
 			
 			//about price
-			if(null != displayPriceString && !"".equals(displayPriceString)){
-				buf.append(
-						"<div class=\"aboutDisplaySalesUnitCat\">about<br>" + 
-						displayPriceString +
-						"</div>"
-				);
+			if(showAboutPrice){
+				if(null != displayPriceString && !"".equals(displayPriceString)){
+					buf.append(
+							"<div class=\"aboutDisplaySalesUnitCat\">about<br>" + 
+							displayPriceString +
+							"</div>"
+					);
+				}
 			}
 		}
 

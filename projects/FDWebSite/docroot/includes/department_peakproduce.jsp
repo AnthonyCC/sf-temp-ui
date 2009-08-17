@@ -5,6 +5,7 @@
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <fd:ProduceRatingCheck>
 <% 
@@ -82,9 +83,12 @@
 				  String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
 				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(),peakProduce.getProductModel(),prodNameAttribute,true);
 				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+				  String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), "dept" );
 				 %>
 				 <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
-					<a href="<%=displayObj.getItemURL()%>&trk=dept"><img src="<%= displayObj.getImagePath()%>"  <%=displayObj.getImageDimensions() %> ALT="<%=displayObj.getAltText()%>" vspace="0" hspace="0" border="0"></a>
+					<!-- APPDEV-401 Update product display(deals & burst) -->
+					<display:ProductImage product="<%= peakProduce.getProductModel() %>" showRolloverImage="false" action="<%= actionUrl %>"/>
+					<!--<a href="<%=displayObj.getItemURL()%>&trk=dept"><img src="<%= displayObj.getImagePath()%>"  <%=displayObj.getImageDimensions() %> ALT="<%=displayObj.getAltText()%>" vspace="0" hspace="0" border="0"></a>-->
 				 </td>
 			</logic:iterate>
 		</tr>
@@ -95,10 +99,21 @@
 				  String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
 				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(),peakProduce.getProductModel(),prodNameAttribute,true);
 				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+				  String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), "dept" );
 				 %>
 				 <td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
-					<%  if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>          
-						<img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif" name="rating" width="59" height="11" border="0" vspace="3"><% } %><br><a href="<%=displayObj.getItemURL()%>&trk=dept" class="text11"><%=displayObj.getItemName()%></a><%  if (displayObj.getPrice()!=null) { %><br><span class="price"><%=displayObj.getPrice()%></span><%  } %></td>
+					<!-- APPDEV-401 Update product display(deals & burst) -->
+					<display:ProductRating product="<%= peakProduce.getProductModel() %>" action="<%= actionUrl %>"/>
+					<display:ProductName product="<%= peakProduce.getProductModel() %>" action="<%= actionUrl %>"/>								
+					<display:ProductPrice impression="<%= new ProductImpression( peakProduce.getProductModel() ) %>" showAboutPrice="false" showDescription="false"/>
+					<%  //if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>          
+						<!--<img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif" name="rating" width="59" height="11" border="0" vspace="3">-->
+					<% //} %>
+					<!--<br><a href="<%=displayObj.getItemURL()%>&trk=dept" class="text11"><%=displayObj.getItemName()%></a>-->
+					<%  //if (displayObj.getPrice()!=null) { %>
+						<!--<br><span class="price"><%=displayObj.getPrice()%></span>-->
+					<%  //} %>
+				</td>
 				</logic:iterate>
 			</tr>
 		</table>
