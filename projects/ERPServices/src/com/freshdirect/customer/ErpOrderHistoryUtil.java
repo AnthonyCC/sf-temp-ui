@@ -225,9 +225,9 @@ public class ErpOrderHistoryUtil {
 	
 		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
 			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next(); 			
-			Date createDate = saleInfo.getCreateDate();
+			Date deliveryDate = saleInfo.getRequestedDate();
 
-			if (!saleInfo.isMakeGood()&&createDate.after(beginDate) && createDate.before(endDate) && 
+			if (!saleInfo.isMakeGood()&&deliveryDate.after(beginDate) && deliveryDate.before(endDate) && 
 					!saleInfo.getDeliveryType().equals(EnumDeliveryType.CORPORATE) &&
 					!saleInfo.getStatus().equals(EnumSaleStatus.CANCELED) &&
 					!saleInfo.getSaleType().equals(EnumSaleType.SUBSCRIPTION)) {
@@ -250,8 +250,8 @@ public class ErpOrderHistoryUtil {
 		Date endDate = endCal.getTime();
 		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
 			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next(); 			
-			Date createDate = saleInfo.getCreateDate();
-			if (!saleInfo.isMakeGood()&& createDate.after(beginDate) && createDate.before(endDate) && 
+			Date deliveryDate = saleInfo.getRequestedDate();
+			if (!saleInfo.isMakeGood()&& deliveryDate.after(beginDate) && deliveryDate.before(endDate) && 
 					!saleInfo.getDeliveryType().equals(EnumDeliveryType.CORPORATE) &&
 					!saleInfo.getStatus().equals(EnumSaleStatus.CANCELED) &&
 					//!saleInfo.getPaymentType().equals(EnumPaymentType.MAKE_GOOD) &&
