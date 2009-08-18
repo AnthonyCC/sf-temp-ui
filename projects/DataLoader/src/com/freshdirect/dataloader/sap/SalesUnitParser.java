@@ -77,7 +77,7 @@ public class SalesUnitParser extends SAPParser {
             salesUnit.setDescription(getString(tokens, MEASUREMENT_UNIT_TEXT));
             salesUnit.setNumerator(getInt(tokens, NUMERATOR));
             salesUnit.setBaseUnit(getString(tokens, BASE_UNIT));
-            salesUnit.setDisplayInd(("w1".equalsIgnoreCase(getString(tokens,DISPLAY_IND))));
+            salesUnit.setDisplayInd(isForDisplay(tokens));
             //
             // which material does this sales unit belong to?
             //
@@ -113,6 +113,15 @@ public class SalesUnitParser extends SAPParser {
         
         
     }
+
+	/**
+	 * @param tokens
+	 * @return
+	 * @throws BadDataException
+	 */
+	private boolean isForDisplay(HashMap tokens) throws BadDataException {
+		return ("EA".equalsIgnoreCase(getString(tokens, BASE_UNIT)))&&("LB".equalsIgnoreCase(getString(tokens, ALTERNATIVE_UOM)))&&("w1".equalsIgnoreCase(getString(tokens,DISPLAY_IND)));
+	}
     
     protected int tokenize(String line, HashMap retval, int startPosition,
 			String name, int length) throws BadDataException{
