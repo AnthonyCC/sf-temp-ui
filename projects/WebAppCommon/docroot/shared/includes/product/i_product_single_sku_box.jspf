@@ -76,11 +76,11 @@
             }
 		%>
             
-		<%@include file="/shared/includes/product/i_product_skus_rating.jspf" %>
-                 
 		<%@ include file="/shared/includes/product/i_scaled_prices_fixed.jspf" %>
 
 	    <%@ include file="/shared/includes/product/i_product_display_about.jspf" %>
+		
+		<%@include file="/shared/includes/product/i_product_skus_rating.jspf" %>
 			
 		<input type="hidden" name="skuCode" value="<%= defaultSku.getSkuCode() %>">
 		
