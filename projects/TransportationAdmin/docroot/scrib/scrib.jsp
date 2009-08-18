@@ -72,13 +72,14 @@
               <ec:column cell="date" format="hh:mm aaa"  property="startTime" title="Start Time"/>
               <ec:column cell="date" format="hh:mm aaa"  property="firstDlvTime" title="First Dlv Time"/>
               <ec:column cell="date" format="hh:mm aaa"  property="endDlvTime" title="Last Dlv Time"/>
-              <ec:column cell="date" format="HH:mm"      property="stemTime" title="To Zone Time"/>
+              <ec:column cell="date" format="HH:mm"      property="stemToTime" title="To Zone Time"/>
+              <ec:column cell="date" format="HH:mm"      property="stemFromTime" title="From Zone Time"/>
 			  <ec:column cell="date" format="hh:mm aaa"  property="prefRuturn" title="Pref Return"/>  
 			  <ec:column cell="date" format="hh:mm aaa"  property="maxReturnTimeDisplay" title="Max Return"/>  
               <ec:column property="count" sortable="true" title="No of Trucks"/> 
               <ec:column cell="date" format="hh:mm aaa"  property="waveStart" title="Wave Start"/>     
-			  <ec:column cell="date" format="hh:mm"  property="prefTime" title="Pref Time"/>  
-			  <ec:column cell="date" format="hh:mm"  property="maxTime" title="Max Time"/>  
+			  <ec:column cell="date" format="HH:mm"  property="prefTime" title="Pref Time"/>  
+			  <ec:column cell="date" format="HH:mm"  property="maxTime" title="Max Time"/>  
             </ec:row>
           </ec:table>
        </form>
