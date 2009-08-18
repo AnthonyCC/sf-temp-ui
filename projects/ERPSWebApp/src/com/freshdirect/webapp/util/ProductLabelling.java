@@ -55,7 +55,7 @@ public class ProductLabelling {
 		boolean isYourFave = !hideBursts && !hideYourFave && DYFUtil.isFavorite(product, customer);
 
 		// determine what to display
-		if (deal > 0) {
+		if (deal >= 10 && deal < 75) {
 			displayDeal = true;
 		} else if (isYourFave) {
 			displayFave = true;
