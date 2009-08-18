@@ -98,6 +98,8 @@ int k = 0;
 		</td>
 		<td style="text-align: right; padding-left: 1em; padding-right: 1em; white-space: nowrap;vertical-align: center;"><%
 			if (defaultPrice != null) {
+				String scaledPrices[] = pi.getScaledPrices();
+				int scaledPercents[] = pi.getScaledPercentages(realBase);
 				if (hasWas) {
 				%><div>
 					<span class="save-label">SAVE <%= wasDeal %>%</span>
@@ -109,14 +111,12 @@ int k = 0;
 				<%
 				} else {
 				%><div>
-					<span class="normal-price"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+					<span class="<%= scaledPrices.length > 0 ? "normal-price-save" : "normal-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 				  </div>
 				<%
 				}
 				// Scaled prices
 				//
-				String scaledPrices[] = pi.getScaledPrices();
-				int scaledPercents[] = pi.getScaledPercentages(realBase);
 				if (scaledPrices != null && scaledPrices.length > 0) {
 					for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
 				%>

@@ -519,6 +519,7 @@ a.usq_left_nav_menu_on:hover {color: #FBF1D3; cursor: pointer; text-decoration: 
 .save-label{color:#FF9933;font-weight:bold;}
 .save-price{color:rgb(204,0,0);font-weight:bold;}
 .normal-price{color:#333333;font-weight:bold;}
+.normal-price-save{color:#333333;font-weight:normal;}
 .save-base-price{color:rgb(136,136,136);font-weight:normal;}
 .fav-label{color:#996699;font-weight:bold;}
 

@@ -127,6 +127,9 @@ ContentNodeModel lastSubCategory = null;
 			<% if (pi.getConfigurationDescription() != null && pi.getConfigurationDescription() != "") {%>
 				(<%= pi.getConfigurationDescription() %>)
 			<% }
+			String scaledPrices[] = pi.getScaledPrices();
+			int scaledPercents[] = pi.getScaledPercentages(realBase);
+
 			if (defaultPrice != null) {%>
 				-
 				<% if (hasWas) { %>
@@ -134,7 +137,7 @@ ContentNodeModel lastSubCategory = null;
 				<span class="save-label">SAVE <%= wasDeal %>%</span>
 				<span class="save-base-price">was <%= CURRENCY_FORMATTER.format(basePrice) %></span> 
 				<% } else { %>
-				<span class="normal-price"><%= CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+					<span class="<%= scaledPrices.length > 0 ? "normal-price-save" : "normal-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 				<% } %> 
 		<%
 			}			
@@ -150,8 +153,6 @@ ContentNodeModel lastSubCategory = null;
 		// Scaled prices
 		//
 		if (defaultPrice != null) {
-			String scaledPrices[] = pi.getScaledPrices();
-			int scaledPercents[] = pi.getScaledPercentages(realBase);
 			if (scaledPrices != null && scaledPrices.length > 0) {
 				for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
 			%>
