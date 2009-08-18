@@ -89,6 +89,7 @@ public class ScribController extends AbstractMultiActionController
 			String daterange = request.getParameter("daterange");
 			if(daterange==null)daterange=TransStringUtil.getCurrentDate();
 			String day=request.getParameter("scribDay");
+			if(day==null)day="All";
 			String[] dates=getDates(daterange,day);
 			List allScribs=new ArrayList();
 			if(dates!=null)
