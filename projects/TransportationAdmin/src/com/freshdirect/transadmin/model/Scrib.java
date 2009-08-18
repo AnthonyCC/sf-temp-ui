@@ -139,8 +139,7 @@ public class Scrib
 	public Date getStemFromTime()
 	{
 		long time=0;
-		if(zone.getStemFromTime()!=null)time=zone.getStemFromTime().intValue()*60*1000;
-		else if(zone.getStemToTime()!=null)time=zone.getStemToTime().intValue()*60*1000;
+		if(zone.getStemFromTime()!=null)time=zone.getStemFromTime().intValue()*60*1000;		
 		return new Date(time-TimeZone.getDefault().getRawOffset());
 	}
 	
