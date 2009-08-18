@@ -169,6 +169,17 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		return null;
 	}
 
+	public Collection getScheduleInfo(String date) {
+		try {
+			if(!TransportationAdminProperties.isKronosBlackhole()) {
+				return punchInfoDAO.getScheduleInfo(date);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	public Collection getScheduleEmployees()
 	{
 		List result=new ArrayList();
@@ -244,7 +255,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 	public Collection getUnAvailableEmployeesScheduleTime(Collection plans,String date)
 	{
 		List result=new ArrayList();		
-		Collection off=getPunchInfo(date);
+		Collection off=getScheduleInfo(date);
 		for(Iterator i=plans.iterator();i.hasNext();)
 		{
 			Plan p=(Plan)i.next();
