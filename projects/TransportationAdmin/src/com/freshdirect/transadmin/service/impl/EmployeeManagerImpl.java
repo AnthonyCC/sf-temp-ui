@@ -358,7 +358,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 			for(Iterator j=unique.iterator();j.hasNext();)
 			{
 				WebPlanResource wpr1=(WebPlanResource)j.next();
-				if(wpr1.getEmployeeId().equalsIgnoreCase(wpr.getEmployeeId()))
+				if(wpr1.getEmployeeId()!=null&&wpr1.getEmployeeId().equalsIgnoreCase(wpr.getEmployeeId()))
 				{
 					isUnique=false;
 				}				
