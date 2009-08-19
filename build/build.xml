@@ -1635,6 +1635,7 @@
                     <fileset dir="${cms-gwt.path}/war">
                         <include name="*.html"/>
                         <include name="*.jsp"/>
+                        <include name="**/*.css"/>
                     </fileset>
                 </war>	
         </target>
