@@ -101,6 +101,11 @@ public class Scrib
 		if(d==null)d=getPrefRuturn();
 		return d;
 	}
+	public Date getMaxReturnTimeDisplay1() 
+	{
+		Date d=maxReturnTime;		
+		return d;
+	}
 	public void setMaxReturnTime(Date maxReturnTime) 
 	{
 		this.maxReturnTime = maxReturnTime;
@@ -124,6 +129,11 @@ public class Scrib
 	{
 		long time=getMaxReturnTimeDisplay().getTime()-getWaveStart().getTime();
 		return new Date(time-TimeZone.getDefault().getRawOffset());
+	}
+	public Date getMaxTime1()
+	{
+		if(maxReturnTime==null) return null;
+		else return getMaxTime();
 	}
 	public Date getMaxTimeOrig()
 	{

@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
-<hibernate-mapping schema="transp">
+<hibernate-mapping schema="transp" >
     <class name="com.freshdirect.transadmin.model.Plan" table="PLAN">
         <id name="planId" type="string">
             <column name="PLAN_ID" length="10" />
