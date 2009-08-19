@@ -63,10 +63,10 @@
           <tr><td>
           <table class="appusertitle">
           <% WebDispatchStatistics ws=(WebDispatchStatistics)request.getAttribute("statistics"); %>
-          <tr><td>Planned Route:</td><td><%=ws.getDispatchRoute()%></td>          
+          <tr><td>Planned Route:</td><td><%=ws.getPlannedRoute()%></td>          
           </tr>
           
-          <td>Dispatch Route:</td><td><%=ws.getPlannedRoute()%></td>
+          <td>Dispatch Route:</td><td><%=ws.getDispatchRoute()%></td>
           </tr>  
           <tr>
           <td> Pay Code Exception:</td><td><%=ws.getPaycodeEx()%></td>          
