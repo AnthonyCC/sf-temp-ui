@@ -71,39 +71,41 @@ public class SalesUnitParser extends SAPParser {
             //
             // create the sales unit
             //
-            ErpSalesUnitModel salesUnit = new ErpSalesUnitModel();
-            salesUnit.setDenominator(getInt(tokens, DENOMINATOR));
-            salesUnit.setAlternativeUnit(getString(tokens, ALTERNATIVE_UOM));
-            salesUnit.setDescription(getString(tokens, MEASUREMENT_UNIT_TEXT));
-            salesUnit.setNumerator(getInt(tokens, NUMERATOR));
-            salesUnit.setBaseUnit(getString(tokens, BASE_UNIT));
-            salesUnit.setDisplayInd(isForDisplay(tokens));
-            //
-            // which material does this sales unit belong to?
-            //
-            String matlNumber = getString(tokens, MATERIAL_NUMBER);
-            //
-            // since there are multiple sales units for each material
-            // we need to make the sales units we collect a hash of sets
-            //
-            HashSet units = null;
-            if (!salesUnits.containsKey(matlNumber)) {
-                //
-                // no sales units yet for this material
-                // create a new set and add it to the collection
-                //
-                units = new HashSet();
-                salesUnits.put(matlNumber, units);
-            } else {
-                //
-                // find the sales unit set for this material
-                //
-                units = (HashSet) salesUnits.get(matlNumber);
-            }
-            //
-            // add the new sales unit to the set
-            //
-            units.add(salesUnit);
+        	if(!"w1".equalsIgnoreCase(getString(tokens,DISPLAY_IND)) || isForDisplay(tokens)){ //Ignore the row for which the display indicator 'W1' is not correct.
+	            ErpSalesUnitModel salesUnit = new ErpSalesUnitModel();
+	            salesUnit.setDenominator(getInt(tokens, DENOMINATOR));
+	            salesUnit.setAlternativeUnit(getString(tokens, ALTERNATIVE_UOM));
+	            salesUnit.setDescription(getString(tokens, MEASUREMENT_UNIT_TEXT));
+	            salesUnit.setNumerator(getInt(tokens, NUMERATOR));
+	            salesUnit.setBaseUnit(getString(tokens, BASE_UNIT));
+	            salesUnit.setDisplayInd(isForDisplay(tokens));
+	            //
+	            // which material does this sales unit belong to?
+	            //
+	            String matlNumber = getString(tokens, MATERIAL_NUMBER);
+	            //
+	            // since there are multiple sales units for each material
+	            // we need to make the sales units we collect a hash of sets
+	            //
+	            HashSet units = null;
+	            if (!salesUnits.containsKey(matlNumber)) {
+	                //
+	                // no sales units yet for this material
+	                // create a new set and add it to the collection
+	                //
+	                units = new HashSet();
+	                salesUnits.put(matlNumber, units);
+	            } else {
+	                //
+	                // find the sales unit set for this material
+	                //
+	                units = (HashSet) salesUnits.get(matlNumber);
+	            }
+	            //
+	            // add the new sales unit to the set
+	            //
+	            units.add(salesUnit);
+        	}
             
         } catch (Exception e) {
             throw new BadDataException(e, "An exception was thrown while trying to parse a SalesUnit");
