@@ -119,9 +119,12 @@ public class Zone implements java.io.Serializable {
 	}
 
 	public BigInteger getStemFromTime() {
-		return stemFromTime==null?stemToTime:stemFromTime;
+		return stemFromTime;
 	}
 
+	public BigInteger getStemNotNullFromTime() {
+		return stemFromTime==null?stemToTime:stemFromTime;
+	}
 	public void setStemFromTime(BigInteger stemFromTime) {
 		this.stemFromTime = stemFromTime;
 	}

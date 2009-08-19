@@ -86,7 +86,7 @@ public class Scrib
 		Calendar c=Calendar.getInstance();
 		c.setTime(endDlvTime);
 		int stemTime=0;
-		if(zone.getStemFromTime()!=null)stemTime=zone.getStemFromTime().intValue();
+		if(zone.getStemNotNullFromTime()!=null)stemTime=zone.getStemNotNullFromTime().intValue();
 		c.add(Calendar.MINUTE, stemTime);
 		return c.getTime();
 	}
@@ -139,7 +139,7 @@ public class Scrib
 	public Date getStemFromTime()
 	{
 		long time=0;
-		if(zone.getStemFromTime()!=null)time=zone.getStemFromTime().intValue()*60*1000;		
+		if(zone.getStemNotNullFromTime()!=null)time=zone.getStemNotNullFromTime().intValue()*60*1000;		
 		return new Date(time-TimeZone.getDefault().getRawOffset());
 	}
 	
