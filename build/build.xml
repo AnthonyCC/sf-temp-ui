@@ -1632,6 +1632,10 @@
                     <lib file="${thirdparty.home}/gxt.jar"/>
                     <lib file="${thirdparty.home}/gwt/gwt-servlet.jar"/>
                     <fileset dir="${work.dir}/cms-gwt.js/com.freshdirect.cms.ui.cmsgwt"/>
+                    <fileset dir="${cms-gwt.path}/war">
+                        <include name="*.html"/>
+                        <include name="*.jsp"/>
+                    </fileset>
                 </war>	
         </target>
 
