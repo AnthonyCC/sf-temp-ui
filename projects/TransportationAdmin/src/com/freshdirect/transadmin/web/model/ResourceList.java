@@ -65,8 +65,11 @@ public class ResourceList extends java.util.ArrayList implements Comparable {
     		if(obj instanceof ResourceInfoI) {
     			resourceInfo=(ResourceInfoI)obj;  
     		}
-    		if(resourceInfo!=null && (resourceInfo.getLastName()!=null || resourceInfo.getFirstName()!=null)) {
-    			buf.append(resourceInfo.getLastName()+" "+resourceInfo.getFirstName()+" "+resourceInfo.getNextelNo());    			    		
+    		if(resourceInfo!=null && (resourceInfo.getLastName()!=null || resourceInfo.getFirstName()!=null)) 
+    		{
+    			String star="";
+    			if(resourceInfo.getAdjustmentTime()!=null) star="+";
+    			buf.append(star+resourceInfo.getLastName()+" "+resourceInfo.getFirstName()+" "+resourceInfo.getNextelNo());    			    		
     		}
     	}	    	
     	return buf.toString();
