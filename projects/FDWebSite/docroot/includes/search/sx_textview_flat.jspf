@@ -103,7 +103,7 @@ int k = 0;
 				if (hasWas) {
 				%><div>
 					<span class="save-label">SAVE <%= wasDeal %>%</span>
-					<span class="save-price"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+					<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 				  </div>
 				  <div>
 					<span class="save-base-price">(was <%= CURRENCY_FORMATTER.format(basePrice) %>)</span>
@@ -111,7 +111,7 @@ int k = 0;
 				<%
 				} else {
 				%><div>
-					<span class="<%= scaledPrices.length > 0 ? "normal-price-save" : "normal-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+					<span class="<%= scaledPrices.length > 0 ? "normal-price-tiered" : "normal-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 				  </div>
 				<%
 				}

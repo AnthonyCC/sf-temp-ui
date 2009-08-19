@@ -119,9 +119,7 @@ int colCount = 0;
 		<%
 			if (hasWas) {
 		%>
-				<span class="save-price">
-					<%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %>
-				</span>
+			<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 		</div>
 		<div style="white-space: nowrap;">
 				<span class="save-base-price">
@@ -130,7 +128,7 @@ int colCount = 0;
 		<%				
 			} else {
 		%>
-				<span class="<%= scaledPrices.length > 0 ? "normal-price-save" : "normal-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+				<span class="<%= scaledPrices.length > 0 ? "normal-price-tiered" : "normal-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 		<%
 			}
 		%>

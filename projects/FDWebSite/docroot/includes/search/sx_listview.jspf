@@ -115,9 +115,7 @@ int rank = nav.getPageOffset()+1;
 			if (defaultPrice != null) {
 				if (hasWas) {
 		%>
-					<span class="save-price">
-						<%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %>
-					</span>
+			<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 		</div>
 		<div style="white-space: nowrap" class="text13">
 					<span class="save-base-price">
@@ -126,7 +124,7 @@ int rank = nav.getPageOffset()+1;
 		<%				
 				} else {
 		%>
-				<span class="<%= scaledPrices.length > 0 ? "normal-price-save" : "normal-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+				<span class="<%= scaledPrices.length > 0 ? "normal-price-tiered" : "normal-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 		<%
 				}
 			}
