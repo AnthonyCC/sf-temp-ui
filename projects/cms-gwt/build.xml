@@ -174,7 +174,7 @@
   		<fileset dir="${war.dir}">
   			<include name="*.html"/>
   			<include name="*.jsp"/>
-  			<include name="*.css"/>
+  			<include name="**/*.css"/>
   		</fileset>
   	</copy>
 	<copy todir="${weblogic.deploy.dir}/WEB-INF" overwrite="true">
