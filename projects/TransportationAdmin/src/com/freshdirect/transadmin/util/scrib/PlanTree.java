@@ -303,6 +303,7 @@ class TimeNode
 	}
 	public void assemble()
 	{
+		int rank=1;
 		for(Iterator i=trucks.iterator();i.hasNext();)
 		{
 			Scrib s=((TruckNode)i.next()).s;
@@ -316,6 +317,7 @@ class TimeNode
 			p.setFirstDeliveryTime(s.getFirstDlvTime());
 			p.setSupervisorId(s.getSupervisorCode());
 			p.setMaxTime(s.getMaxTime());
+			p.setSequence(rank++);
 			if(s.getZone().getTrnZoneType()==null)continue;
 			Set resources=s.getZone().getTrnZoneType().getZonetypeResources();
 			
@@ -486,6 +488,7 @@ class DepotTimeNode
 	}
 	public void assemble()
 	{
+		int rank=1;
 		for(Iterator i=trucks.iterator();i.hasNext();)
 		{
 			Scrib s=((TruckNode)i.next()).s;
@@ -499,6 +502,7 @@ class DepotTimeNode
 			p.setFirstDeliveryTime(s.getFirstDlvTime());
 			p.setSupervisorId(s.getSupervisorCode());
 			p.setMaxTime(s.getMaxTime());
+			p.setSequence(rank++);
 			if(s.getZone().getTrnZoneType()==null)continue;
 			Set resources=s.getZone().getTrnZoneType().getZonetypeResources();
 			

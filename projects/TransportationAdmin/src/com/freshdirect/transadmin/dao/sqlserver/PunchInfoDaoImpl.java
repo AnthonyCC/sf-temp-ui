@@ -68,13 +68,13 @@ public class PunchInfoDaoImpl implements PunchInfoDaoI {
 	
 	public Collection getScheduleInfo(final String date) throws DataAccessException {
 		
-		 final List list = new ArrayList();
+		 final List list = new ArrayList(); 
 	        PreparedStatementCreator creator=new PreparedStatementCreator() {
 	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 	                PreparedStatement ps =
 	                   // connection.prepareStatement("SELECT PERSONNUM,EVENTDATE,STARTDTM,ENDDTM,INPUNCHDTM,OUTPUNCHDTM FROM dbo.VP_TIMESHTPUNCHV42 where eventdate=( ?) ");
 	                	// connection.prepareStatement("SELECT PERSONNUM,EVENTDATE,STARTDTM,ENDDTM,INPUNCHDTM,OUTPUNCHDTM FROM dbo.FDDW_TIMESHTPUNCHV42 where eventdate=( ?) "); 
-	                	 connection.prepareStatement("SELECT PERSONNUM,trunc(shiftstartdate) ,shiftstarttime,shiftendtime FROM TRANSP.SCHEDULEINFO where trunc(shiftstartdate)=to_date(?,'dd-mm-yyyy') and PAYCODENAME in ('PTO','advPTO','PERSONAL','SICK','VACATION','WORKCOMP')" +
+	                	 connection.prepareStatement("SELECT PERSONNUM,trunc(shiftstartdate) shiftstartdate ,shiftstarttime,shiftendtime FROM TRANSP.SCHEDULEINFO where trunc(shiftstartdate)=to_date(?,'dd-mm-yyyy') " +
 	                	 		" and homelaborlevelname5 in ('10004','10005','10006','10007','10008','10009')");
 	                ps.setString(1, date);
 	                return ps;
