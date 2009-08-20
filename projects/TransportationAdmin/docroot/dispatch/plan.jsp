@@ -75,6 +75,7 @@
               <ec:column  filterable="true" property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Helper" alias="helpers"/>
               <ec:column  filterable="true" property="runners"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Runner" alias="runners"/>
               <ec:column property="sequence"  title="Rank"/>
+              <ec:column property="open"  title="Open"/>
             </ec:row>
           </ec:table>
        </form>
