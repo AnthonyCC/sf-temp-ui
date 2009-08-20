@@ -40,7 +40,7 @@ public class PunchInfoDaoImpl implements PunchInfoDaoI {
 	                PreparedStatement ps =
 	                   // connection.prepareStatement("SELECT PERSONNUM,EVENTDATE,STARTDTM,ENDDTM,INPUNCHDTM,OUTPUNCHDTM FROM dbo.VP_TIMESHTPUNCHV42 where eventdate=( ?) ");
 	                	// connection.prepareStatement("SELECT PERSONNUM,EVENTDATE,STARTDTM,ENDDTM,INPUNCHDTM,OUTPUNCHDTM FROM dbo.FDDW_TIMESHTPUNCHV42 where eventdate=( ?) "); 
-	                	 connection.prepareStatement("SELECT PERSONNUM,EVENTDATE,STARTDTM,ENDDTM,INPUNCHDTM,OUTPUNCHDTM FROM TRANSP.PUNCHINFO where eventdate=( ?) ");
+	                	 connection.prepareStatement("SELECT PERSONNUM,EVENTDATE,STARTDTM,ENDDTM,INPUNCHDTM,OUTPUNCHDTM FROM TRANSP.PUNCHINFO where eventdate=( ?) and PAYCODENAME is  null");
 	                ps.setString(1, date);
 	                return ps;
 	            }

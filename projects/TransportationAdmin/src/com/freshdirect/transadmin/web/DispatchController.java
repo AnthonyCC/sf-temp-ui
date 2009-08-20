@@ -688,11 +688,14 @@ public class DispatchController extends AbstractMultiActionController {
 				    	saveMessage(request, getMessage("app.actionmessage.142", null));
 				    	return planHandler(request,response);
 				    }
-				   Collection unavailable=employeeManagerService.getUnAvailableEmployees(planList, dispatchDate);
-				   if(unavailable!=null&&unavailable.size()>0)
+				   if( TransWebUtil.isAutodispatchValidation(request, dispatchManagerService))
 				   {
-					   saveMessage(request, getMessage("app.actionmessage.147", null));
-				    	return planHandler(request,response);
+					   Collection unavailable=employeeManagerService.getUnAvailableEmployees(planList, dispatchDate);
+					   if(unavailable!=null&&unavailable.size()>0)
+					   {
+						   saveMessage(request, getMessage("app.actionmessage.147", null));
+					    	return planHandler(request,response);
+					   }
 				   }
 					Collection dispList = dispatchManagerService.getDispatchList(dispatchDate,null,null);
 					//System.out.println("dispList >>"+dispList);

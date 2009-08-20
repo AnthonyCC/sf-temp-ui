@@ -67,8 +67,8 @@
                     property="scribId" />              
               <ec:column cell="date" property="scribDate" sortable="true" title="Date"/>
               <ec:column property="zoneS" sortable="true" title="Zone"/>
-              <ec:column property="regionS" sortable="true" title="Region" width="150px"/> 
-              <ec:column property="supervisorName" sortable="true" title="Supervisor" width="150"/>                              
+              <ec:column property="regionS" sortable="true" title="Region" /> 
+              <ec:column property="supervisorName" sortable="true" title="Supervisor" />                              
               <ec:column cell="date" format="hh:mm aaa"  property="startTime" title="Emp Start Time"/>
               <ec:column cell="date" format="hh:mm aaa"  property="firstDlvTime" title="First Dlv Time"/>
               <ec:column cell="date" format="hh:mm aaa"  property="endDlvTime" title="Last Dlv Time"/>

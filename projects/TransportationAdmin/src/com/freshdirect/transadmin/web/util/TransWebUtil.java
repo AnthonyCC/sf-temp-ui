@@ -28,6 +28,10 @@ public class TransWebUtil
 	{
 		return isTrue(getUserPref(request,"airclick",service));
 	}
+	public static boolean isAutodispatchValidation(HttpServletRequest request,DispatchManagerI service)
+	{
+		return isTrue(getUserPref(request,"autodispatchvalidation",service));
+	}
 	public static boolean isTrue(String key)
 	{
 		if("true".equalsIgnoreCase(key)||"yes".equalsIgnoreCase(key)||"1".equalsIgnoreCase(key)||"on".equalsIgnoreCase(key))
