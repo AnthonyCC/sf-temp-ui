@@ -430,7 +430,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 								Set r=disp.getDispatchResources();
 								for(Iterator j=r.iterator();j.hasNext();)
 								{
-									ResourceI resource=(ResourceI)it.next();
+									ResourceI resource=(ResourceI)j.next();
 									if(_punchInfo.getEmployeeId().equals(resource.getId().getResourceId()))
 									{
 										if(disp.getBullPen()!=null&&disp.getBullPen().booleanValue()==true)

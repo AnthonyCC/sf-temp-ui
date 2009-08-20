@@ -44,7 +44,7 @@ public class WebDispatchStatistics
 		for(Iterator i=c.iterator();i.hasNext();)
 		{
 			DispatchCommand command =(DispatchCommand )i.next();
-			if("N".equalsIgnoreCase(command.getIsBullpen()))
+			if("N".equalsIgnoreCase(command.getIsBullpen())||"false".equalsIgnoreCase(command.getIsBullpen()))
 			{
 				result++;
 			}
