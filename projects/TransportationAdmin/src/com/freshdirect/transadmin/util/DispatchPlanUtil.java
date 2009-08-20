@@ -156,7 +156,7 @@ public class DispatchPlanUtil {
 			command.setConfirmed(dispatch.getConfirmed().booleanValue());
 		command.setPlanId(dispatch.getPlanId());
 		command.setComments(dispatch.getComments());
-
+		setResourceReq(command,dispatch.getZone());
 		Map resourceReqs=getResourceRequirements(zone);
 		Set resources=dispatch.getDispatchResources();
 		command.setResourceRequirements(resourceReqs);
@@ -592,6 +592,12 @@ public class DispatchPlanUtil {
 		//for all non bullpen dispatches
 		if(!TransStringUtil.isEmpty(command.getZoneName()))	
 	    {		
+			//do not do any status if no employees assigned
+			if("Y".equalsIgnoreCase(command.getOpen())) 
+			{
+				command.setDispatchStatus(EnumStatus.NoStatus);
+				return ;
+			}
 			//decide the dispatch status after dispatch;
 			if(!TransStringUtil.isEmpty(command.getDispatchTime()))
 			{
@@ -689,6 +695,31 @@ public class DispatchPlanUtil {
 			}
 		}
 				
+	}
+	
+	public static boolean checknonNullEmployees(DispatchCommand command)
+	{
+		boolean result=false;
+		if(checknonNullEmployees(command.getDrivers())) result=true;
+		if(checknonNullEmployees(command.getHelpers())) result=true;
+		return result;
+	}
+	public static boolean checknonNullEmployees(List employees)
+	{
+		boolean result=false;
+		if(employees!=null&&employees.size()>0)
+		{
+			for(int i=0,n=employees.size();i<n;i++)
+			{
+				DispatchResourceInfo employee=(DispatchResourceInfo)employees.get(i);
+				if(employee!=null&&employee.getEmployeeId()!=null)
+				{
+					result=true;
+				}
+				
+			}
+		}
+		return result;
 	}
 	public static boolean checkReady(String startTime)
 	{

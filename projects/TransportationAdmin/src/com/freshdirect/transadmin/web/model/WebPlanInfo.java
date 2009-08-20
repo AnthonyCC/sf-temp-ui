@@ -73,7 +73,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	public int getResourceSize(List resources)
 	{
 		int result=0;
-		if(resources!=null)
+			if(resources!=null)
 		for(int i=0,n=resources.size();i<n;i++)
 		{
 			EmployeeInfo e=(EmployeeInfo)resources.get(i);

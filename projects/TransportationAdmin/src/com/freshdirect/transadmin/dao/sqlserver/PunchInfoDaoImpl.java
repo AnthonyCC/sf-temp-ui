@@ -29,6 +29,8 @@ public class PunchInfoDaoImpl implements PunchInfoDaoI {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(EmployeeManagerDaoOracleImpl.class);
 
+	private final static String startTime=" 12:00:00 AM";
+	private final static String endTime=" 11:59:59 PM";
 	public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
@@ -74,9 +76,10 @@ public class PunchInfoDaoImpl implements PunchInfoDaoI {
 	                PreparedStatement ps =
 	                   // connection.prepareStatement("SELECT PERSONNUM,EVENTDATE,STARTDTM,ENDDTM,INPUNCHDTM,OUTPUNCHDTM FROM dbo.VP_TIMESHTPUNCHV42 where eventdate=( ?) ");
 	                	// connection.prepareStatement("SELECT PERSONNUM,EVENTDATE,STARTDTM,ENDDTM,INPUNCHDTM,OUTPUNCHDTM FROM dbo.FDDW_TIMESHTPUNCHV42 where eventdate=( ?) "); 
-	                	 connection.prepareStatement("SELECT PERSONNUM,trunc(shiftstartdate) shiftstartdate ,shiftstarttime,shiftendtime FROM TRANSP.SCHEDULEINFO where trunc(shiftstartdate)=to_date(?,'dd-mm-yyyy') " +
+	                	 connection.prepareStatement("SELECT PERSONNUM,trunc(shiftstartdate) shiftstartdate ,shiftstarttime,shiftendtime FROM TRANSP.SCHEDULEINFO where shiftstartdate between to_date('"+date+startTime+"','DD-MM-YYYY HH:mi:ss AM') and to_date('"+date+startTime+"','DD-MM-YYYY HH:mi:ss AM')  " +
 	                	 		" and homelaborlevelname5 in ('10004','10005','10006','10007','10008','10009')");
-	                ps.setString(1, date);
+	               // ps.setString(1, date+startTime);
+	              // ps.setString(2, date+endTime);
 	                return ps;
 	            }
 	        };
@@ -101,15 +104,16 @@ public class PunchInfoDaoImpl implements PunchInfoDaoI {
 	
 	public Collection getPunchInfoPayCode(final String date) throws DataAccessException {
 		
-		 final List list = new ArrayList();
+		 final List list = new ArrayList(); 
 	        PreparedStatementCreator creator=new PreparedStatementCreator() {
 	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 	                PreparedStatement ps =
 	                   // connection.prepareStatement("SELECT PERSONNUM,EVENTDATE,STARTDTM,ENDDTM,INPUNCHDTM,OUTPUNCHDTM FROM dbo.VP_TIMESHTPUNCHV42 where eventdate=( ?) ");
 	                	// connection.prepareStatement("SELECT PERSONNUM,EVENTDATE,STARTDTM,ENDDTM,INPUNCHDTM,OUTPUNCHDTM FROM dbo.FDDW_TIMESHTPUNCHV42 where eventdate=( ?) "); 
-	                	 connection.prepareStatement("SELECT personnum,trunc(shiftstartdate) ,paycodename FROM TRANSP.SCHEDULEINFO where trunc(shiftstartdate)=to_date(?,'dd-mm-yyyy') and PAYCODENAME in ('PTO','advPTO','PERSONAL','SICK','VACATION','WORKCOMP')" +
+	                	 connection.prepareStatement("SELECT personnum,trunc(shiftstartdate) shiftstartdate ,paycodename FROM TRANSP.SCHEDULEINFO where shiftstartdate between to_date('"+date+startTime+"','DD-MM-YYYY HH:mi:ss AM') and to_date('"+date+startTime+"','DD-MM-YYYY HH:mi:ss AM')    and PAYCODENAME in ('PTO','advPTO','PERSONAL','SICK','VACATION','WORKCOMP')" +
 	                	 		" and homelaborlevelname5 in ('10004','10005','10006','10007','10008','10009')");
-	                ps.setString(1, date);
+	               // ps.setString(1, date+startTime);
+	               // ps.setString(2, date+endTime);
 	                return ps;
 	            }
 	        };

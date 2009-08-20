@@ -55,7 +55,17 @@ public class DispatchCommand extends WebPlanInfo {
     private Date htinDate;
     private Date htoutDate;
     
-    
+    public int getResourceSize(List resources)
+	{
+		int result=0;
+		if(resources!=null)
+		for(int i=0,n=resources.size();i<n;i++)
+		{
+			DispatchResourceInfo e=(DispatchResourceInfo)resources.get(i);
+			if(e!=null&&e.getEmployeeId()!=null)result++;
+		}
+		return result;
+	}
 	public String getStatusName() {
 		return statusName;
 	}
