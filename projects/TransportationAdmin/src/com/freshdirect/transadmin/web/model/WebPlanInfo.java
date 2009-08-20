@@ -61,6 +61,27 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 
 	private List termintedEmployees = null;
 	
+	public String getOpen()
+	{		
+		if(getResourceSize(drivers)<driverReq||getResourceSize(helpers)<helperReq||getResourceSize(runners)<runnerReq)
+		{
+			return "Y";
+		}
+		return null;
+	}
+	
+	public int getResourceSize(List resources)
+	{
+		int result=0;
+		if(resources!=null)
+		for(int i=0,n=resources.size();i<n;i++)
+		{
+			EmployeeInfo e=(EmployeeInfo)resources.get(i);
+			if(e!=null&&e.getEmployeeId()!=null)result++;
+		}
+		return result;
+	}
+	
 	public List getTermintedEmployees() {
 		return termintedEmployees;
 	}

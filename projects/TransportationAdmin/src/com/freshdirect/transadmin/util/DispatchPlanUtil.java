@@ -91,6 +91,7 @@ public class DispatchPlanUtil {
 		Set resources=plan.getPlanResources();
 		planInfo.setResourceRequirements(resourceReqs);
 		planInfo.setResources(employeeManagerService,resources,resourceReqs);
+		setResourceReq(planInfo,plan.getZone());
 		return planInfo;
 	}
 
@@ -207,7 +208,7 @@ public class DispatchPlanUtil {
 		plan.setIsBullpen(planInfo.getIsBullpen());
 		plan.setSupervisorId(planInfo.getSupervisorCode());
 		plan.setPlanResources(planInfo.getResources());
-		plan.setUserId(planInfo.getUserId());
+		plan.setUserId(planInfo.getUserId());		
 		return plan;
 
 	}
