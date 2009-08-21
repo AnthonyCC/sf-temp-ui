@@ -149,8 +149,11 @@ public class Scrib
 	public Date getStemFromTime()
 	{
 		long time=0;
-		if(zone.getStemNotNullFromTime()!=null)time=zone.getStemNotNullFromTime().intValue()*60*1000;		
-		return new Date(time-TimeZone.getDefault().getRawOffset());
+		if(zone.getStemFromTime()!=null)
+		{	time=zone.getStemFromTime().intValue()*60*1000;		
+			return new Date(time-TimeZone.getDefault().getRawOffset());
+		}
+		return null;
 	}
 	
 	public String getEndDlvTimeS() 
