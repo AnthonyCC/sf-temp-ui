@@ -195,6 +195,8 @@ request.setAttribute("listPos", "CategoryNote");
 				</tr>
 			</table>
 		</div>
+		
+		<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>
 		</fd:SiteAccessController>
 	</body>
 </html>

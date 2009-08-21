@@ -62,8 +62,8 @@ double cartTotal = ((FDUserI)session.getAttribute(SessionName.USER)).getShopping
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
 	<TR VALIGN="TOP">
 <%	if (proceedThruCheckout) { %>
-		<TD WIDTH="25"><a href="/view_cart.jsp?trk=chkplc"><img src="/media_stat/images/buttons/x_green.gif" WIDTH="20" HEIGHT="19" border="0" alt="CONTINUE SHOPPING"></a></TD>
-		<TD WIDTH="350"><FONT CLASS="space2pix"><BR></FONT><a href="/view_cart.jsp?trk=chkplc"><img src="/media_stat/images/buttons/cancel_checkout.gif" WIDTH="92" HEIGHT="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
+		<TD WIDTH="25"><a href="/view_cart.jsp?trk=chkplc"><img src="/media_stat/images/buttons/x_green.gif" WIDTH="20" HEIGHT="19" border="0" alt="CONTINUE SHOPPING" onclick="var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);ntptEventTag('ev=button_event&ni_btn=cancel_checkout');" id="cancelX"></a></TD>
+		<TD WIDTH="350"><FONT CLASS="space2pix"><BR></FONT><a href="/view_cart.jsp?trk=chkplc" onclick="var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);ntptEventTag('ev=button_event&ni_btn=cancel_checkout');" id="cancelText"><img src="/media_stat/images/buttons/cancel_checkout.gif" WIDTH="92" HEIGHT="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
 		<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE"><INPUT type="image" src="/media_stat/images/buttons/continue_checkout.gif" alt="CONTINUE CHECKOUT" VSPACE="2" border="0"></a><BR>Go to Step 4: Submit.</TD>
 		<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT><INPUT type="image" src="/media_stat/images/buttons/checkout_arrow.gif" WIDTH="29" HEIGHT="29" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"></a></TD>
 <%	} else { %>

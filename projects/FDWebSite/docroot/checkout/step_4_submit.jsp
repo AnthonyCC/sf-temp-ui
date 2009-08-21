@@ -71,22 +71,22 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 <%@ include file="/includes/i_modifyorder.jspf" %>
 
 <table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="693">
- <form method="post">
+ <form method="post" name="order_submit" id="order_submit">
 	<tr VALIGN="TOP">
 	<td CLASS="text11" width="415" VALIGN="bottom">
 		<FONT CLASS="title18">Review &amp; Submit Order (Final Step)</FONT><BR>
 		<FONT CLASS="text12">Please confirm all of your order details. After submitting your order you will immediately receive an e-mail confirmation.</font></td>
 	<td width="245" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold">
-		<FONT CLASS="space2pix"><BR></FONT><% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0"><% } %><BR>
+		<FONT CLASS="space2pix"><BR></FONT><% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Top');" id="checkout_submit_order_topText"><% } %><BR>
 </td>
 <td width="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
 <% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif"
-BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2"><% } %></td>
+BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Top');" id="checkout_submit_order_topArrow"><% } %></td>
 	</tr>
 	</table>
 
 	<IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
-	<% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/template/checkout/order_not_placed.gif" width="693" height="39" border="0" alt="Continue Checkout"><br><IMG src="/media_stat/images/layout/clear.gif" width="1" height="14" BORDER="0"><br><% } %>
+	<% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/template/checkout/order_not_placed.gif" width="693" height="39" border="0" alt="Continue Checkout" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Banner');" id="checkout_submit_order_banner"><br><IMG src="/media_stat/images/layout/clear.gif" width="1" height="14" BORDER="0"><br><% } %>
     <%-- error system messages happen here --%>
    <% StringBuffer sbErrorMsg= new StringBuffer(); %>
     
@@ -176,11 +176,11 @@ StringBuffer buffer = new StringBuffer(
 <table width="693" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 <tr VALIGN="TOP">
 <td width="658" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold"><FONT CLASS="space2pix"><BR></FONT>
-<% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0"><% } %><BR>
+<% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Middle');" id="checkout_submit_order_middleText"><% } %><BR>
 </td>
 <td width="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
 <% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif"
-BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2"><% } %></td>
+BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Middle');" id="checkout_submit_order_middleArrow"><% } %></td>
 </tr>
 </table><BR>
 
@@ -205,13 +205,13 @@ BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2"><% } %></td>
 	<IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
 	<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="693">
 	<tr VALIGN="TOP">
-	<td width="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>"><img src="/media_stat/images/buttons/x_green.gif" width="20" height="19" border="0" alt="CONTINUE SHOPPING"></a></td>
-	<td width="375"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>"><img src="/media_stat/images/buttons/cancel_checkout.gif" width="92" height="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR><IMG src="/media_stat/images/layout/clear.gif" width="340" height="1" BORDER="0"></td>
-	<td width="265" ALIGN="RIGHT" VALIGN="MIDDLE"><% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0"><% } %><BR>
+	<td width="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=cancel_checkout');" id="cancelX"><img src="/media_stat/images/buttons/x_green.gif" width="20" height="19" border="0" alt="CONTINUE SHOPPING"></a></td>
+	<td width="375"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=cancel_checkout');" id="cancelText"><img src="/media_stat/images/buttons/cancel_checkout.gif" width="92" height="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR><IMG src="/media_stat/images/layout/clear.gif" width="340" height="1" BORDER="0"></td>
+	<td width="265" ALIGN="RIGHT" VALIGN="MIDDLE"><% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><BR>
 </td>
 <td width="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
 <% if (!orderAmountFraud && !doubleSubmit ) { %><input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif"
-BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2"><% } %></td>
+BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomArrow"><% } %></td>
 	</tr>
 	</table>
 	<%@ include file="/checkout/includes/i_footer_text.jspf" %>

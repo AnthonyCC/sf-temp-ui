@@ -299,6 +299,8 @@ if (errorMsg!=null) {%>
 	<tr valign="top">
 		<td colspan="2" class="text12">
 		<fd:IncludeMedia name='/media/editorial/holiday/advance_order/eastermeals/delivbar_adv_msg.html'/>
+
+
 		</td>
 	</tr>
 	<%}%>
@@ -455,8 +457,8 @@ if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) {
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="TOP">
-	<TD WIDTH="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>"><img src="/media_stat/images/buttons/x_green.gif" WIDTH="20" HEIGHT="19" border="0" alt="CONTINUE SHOPPING"></a></TD>
-	<TD WIDTH="350"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>"><img src="/media_stat/images/buttons/cancel_checkout.gif" WIDTH="92" HEIGHT="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
+	<TD WIDTH="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>" onclick="var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);ntptEventTag('ev=button_event&ni_btn=cancel_checkout');" id="cancelX"><img src="/media_stat/images/buttons/x_green.gif" WIDTH="20" HEIGHT="19" border="0" alt="CONTINUE SHOPPING"></a></TD>
+	<TD WIDTH="350"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>" onclick="var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);ntptEventTag('ev=button_event&ni_btn=cancel_checkout');" id="cancelText"><img src="/media_stat/images/buttons/cancel_checkout.gif" WIDTH="92" HEIGHT="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
 	<%if(hasCapacity){%>
 		<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE"><input type="image" name="checkout_delivery_address_select"  src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="117" HEIGHT="9" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"><BR>Go to Step 3: Payment Info<BR></TD>
 		<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT><input type="image" name="checkout_delivery_address_select" src="/media_stat/images/buttons/checkout_arrow.gif" WIDTH="29" HEIGHT="29" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"></TD>

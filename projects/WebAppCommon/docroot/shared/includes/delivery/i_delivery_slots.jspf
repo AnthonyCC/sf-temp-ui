@@ -13,7 +13,13 @@ private final static String TIMESLOT_BG_EVEN = "e8e8e8";
 private final static String TIMESLOT_BG_ODD = "f7f7f7";
 %>
 <% if (timeslots.size() > 0) { 
-	DlvZoneModel zoneModel = null; %>	
+	DlvZoneModel zoneModel = null;
+	Calendar today=Calendar.getInstance();
+	today.add(Calendar.DATE,1);
+	Date tomorrow_NI=today.getTime();
+	
+    request.setAttribute("AddressType",address.getServiceType().getName());
+	%>	
 <table border="0" cellspacing="2" cellpadding="0" summary="timeslots">
 	<tr>
 	<logic:iterate id="day" collection="<%=timeslots.getDays()%>" type="java.util.Date">
@@ -51,11 +57,17 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 					<td width="95" colspan="3" bgcolor="#<%= bgcolor %>"><nobr>
 						<%
 						Date cutoffTime = null;
-						boolean firstSlot = true;						
+						boolean firstSlot = true;
+						boolean needsTagging=false;
 						%>
 						<logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDate(day) %>" type="com.freshdirect.fdstore.FDTimeslot">
 							<%
-							boolean selectedSlot = slot.getTimeslotId().equals(timeSlotId);
+                            
+							if(DateUtil.isSameDay(tomorrow_NI, day)) {
+								needsTagging=true;
+							}
+
+                            boolean selectedSlot = slot.getTimeslotId().equals(timeSlotId);
 							boolean preReservedSlot = slot.getTimeslotId().equals(preReserveSlotId);
 							int startdlvHour = (DateUtil.toCalendar(slot.getBegDateTime())).get(Calendar.HOUR_OF_DAY);
 							int enddlvHour = (DateUtil.toCalendar(slot.getEndDateTime())).get(Calendar.HOUR_OF_DAY);
@@ -71,12 +83,21 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 								}
 								cutoffTime = slot.getCutoffDateTime();
 								int cutoffTimeHour = (DateUtil.toCalendar(cutoffTime)).get(Calendar.HOUR_OF_DAY);
+								
+
 								String cutoffDisp = TimeslotPageUtil.formatCutoffTime(cutoffTime) + (
 									(cutoffTimeHour >= DateUtil.MORNING_END && startdlvHour <= TimeslotPageUtil.EVENING_END)  ? "pm" : "am"
 								);
 								%>
 								<div class="cutoffTime" style="background: #<%= bgcolor %>;padding:3px;padding-top:4px;"><b>Order by <%= cutoffDisp %></b></div>
 								<%
+							}
+								
+							String am_pm=(startdlvHour >= DateUtil.MORNING_END && startdlvHour <= TimeslotPageUtil.EVENING_END)  ? "pm" : "am";
+							if(needsTagging && "am".equals(am_pm)) {
+								request.setAttribute("amTS", "TRUE");
+							} else if(needsTagging && "pm".equals(am_pm)) {
+								request.setAttribute("pmTS", "TRUE");
 							}
 							
 							boolean highlightPreReserved = preReservedSlot && hasPreReserved;
@@ -91,6 +112,9 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 								normalAvailCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_NORMAL, zoneModel.getCtReleaseTime());
 							}
 
+							if (normalAvailCapacity < 1 && availCapacity > 0) {
+								request.setAttribute("shownCTSlot", "TRUE");
+							}
 
 							%>
 							<div class="slotRow" style="background:#<%= highlightPreReserved ? "f93" : normalAvailCapacity < 1 && availCapacity > 0 ? "996699" : bgcolor %>;padding:1px;padding-top:2px;padding-bottom:2px;">

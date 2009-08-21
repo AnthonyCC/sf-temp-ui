@@ -20,3 +20,4 @@
 </table>
 <br>
 <br>
+<%@ include file="/includes/net_insight/i_tag_checkout.jspf" %>

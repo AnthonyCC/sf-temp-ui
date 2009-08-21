@@ -1,0 +1,89 @@
+<%	
+	/* START netInsight tagging */
+	
+		String NTPT_PGEXTRA = "";
+
+		/* Next Day Timeslot Shown? */
+		/*
+			ni_nddt=[Residential/Corporate]
+			ni_ndam=[True/False]
+			ni_ndpm=[True/False]
+		*/
+			String ni_nddt = "";
+			String ni_ndam = "FALSE";
+			String ni_ndpm = "FALSE";
+			if ( request.getAttribute("amTS") != null && "TRUE".equals(request.getAttribute("amTS")) ) {
+				ni_ndam = "TRUE";
+			}
+			if ( request.getAttribute("pmTS") != null && "TRUE".equals(request.getAttribute("pmTS")) ) {
+				ni_ndpm = "TRUE";
+			}
+			if ( request.getAttribute("AddressType") != null && !"".equals(request.getAttribute("AddressType")) ) {
+				ni_nddt = request.getAttribute("AddressType").toString();
+			}
+			
+			if ( !"".equals(ni_nddt) ) {
+				//only add if we have an address type (so we're on the timeslot page)
+				NTPT_PGEXTRA += "ni_nddt="+ni_nddt+"&ni_ndam="+ni_ndam+"&ni_ndpm="+ni_ndpm+"&";
+			}
+
+		/* Chef's Table Timeslot Shown? */
+			String ni_ctts = "FALSE";
+			if ( request.getAttribute("pmTS") != null && "TRUE".equals(request.getAttribute("pmTS")) ) {
+				ni_ndpm = "TRUE";
+			}
+
+			NTPT_PGEXTRA += "ni_ctts="+ni_ctts+"&";
+
+		/* modify order? */
+			FDUserI mUser_NI = (FDUserI) session.getAttribute( SessionName.USER );
+			FDCartModel mCart_NI = (FDCartModel) mUser_NI.getShoppingCart();
+
+			String ni_ordmod = "FALSE";
+
+			if (mCart_NI instanceof FDModifyCartModel) { ni_ordmod = "TRUE"; }
+
+			NTPT_PGEXTRA += "ni_ordmod="+ni_ordmod+"&";
+
+		/* check promo */
+			boolean checkForPromo = request.getRequestURI().indexOf("/view_cart.jsp") > -1;
+			String ni_pcode = "";
+			String ni_pcode_valid = "FALSE";
+			if (checkForPromo) { 
+				if ( request.getParameter("redemptionCode") != null && !"".equals(request.getParameter("redemptionCode")) ) {
+					ni_pcode = request.getParameter("redemptionCode");
+
+					if ( !"".equals(request.getParameter("redemptionCode")) ) {
+						boolean isRedemptionApplied_NI = user.getPromotionEligibility().isApplied(request.getParameter("redemptionCode"));
+						if (isRedemptionApplied_NI) { ni_pcode_valid = "TRUE"; }
+					}
+
+					NTPT_PGEXTRA += "ni_pcode="+(ni_pcode).trim()+"&ni_pcode_valid="+ni_pcode_valid+"&";
+				}
+			}
+
+		/* SubTotal */
+			String ni_subtotal = "0.00";
+			double checkCartSubtotal = 0;
+			checkCartSubtotal = user.getShoppingCart().getSubTotal();
+
+			if (checkCartSubtotal >= 200) {
+				ni_subtotal = "$200+";
+			}else if (checkCartSubtotal >= 120) {
+				ni_subtotal = "$120-$199.99";
+			}else if (checkCartSubtotal >= 80) {
+				ni_subtotal = "$80-$119.99";
+			}else if (checkCartSubtotal >= 50) {
+				ni_subtotal = "$50-$79.99";
+			}else if (checkCartSubtotal >= 0) {
+				ni_subtotal = "0-$49.99";
+			}
+
+			NTPT_PGEXTRA += "ni_subtotal="+ni_subtotal;	//last of params, no "&"
+
+%>
+<script type="text/javascript">var NTPT_PGEXTRA = "<%= NTPT_PGEXTRA %>";</script>
+<%
+	/* END netInsight tagging */
+%>
+

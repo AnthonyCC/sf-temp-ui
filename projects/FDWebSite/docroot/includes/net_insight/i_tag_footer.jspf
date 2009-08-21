@@ -1,0 +1,135 @@
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%
+	/*
+	 *	NetInsight Tag Include
+	 */
+%>
+	<!-- BEGIN: Unica Page Tag -->
+	<!-- Copyright 2004-2008 Unica Corporation. All rights reserved. -->
+	<script language="JavaScript" src="/assets/javascript/ntpagetag.js"></script>
+	<noscript>
+		<img src="/media_stat/images/tag/ntpagetag.gif?js=0" height="1" width="1" border="0" hspace="0"	vspace="0" alt="">
+	</noscript>
+	<!-- END: Unica Page Tag -->
+<%
+	/* Get customer info, but only if we're on a page where we want to do so */
+
+	/*
+		Home (/index.jsp)
+		My Account (/your_account/manage_account.jsp)
+		View Cart - Checkout - View Cart (/view_cart.jsp)
+		Checkout – Receipt ()
+			
+		marketing landing pages 
+		
+		/newsletter.jsp
+		/whatsgood.jsp
+	*/
+
+	String ni_ci = "";
+	FDUserI user_NI = (FDUserI)session.getAttribute(SessionName.USER);
+	if (	
+		user_NI != null &&
+			(
+			request.getRequestURI().indexOf("/index.jsp") > -1 ||
+			request.getRequestURI().indexOf("/your_account/manage_account.jsp") > -1 ||
+			request.getRequestURI().indexOf("/view_cart.jsp") > -1 ||
+			request.getRequestURI().indexOf("/step_4_receipt.jsp") > -1 ||
+			request.getRequestURI().indexOf("/newsletter.jsp") > -1 ||
+			request.getRequestURI().indexOf("/whatsgood.jsp") > -1
+			)
+		){
+
+		//setup data
+
+		/*
+				ni_ci_cid=[CUSTOMER ID] 
+				ni_ci_cco=[COUNTY]
+				ni_ci_ssc=[SMART STORE COHORT]
+				ni_ci_ct=[Yes/No]
+				ni_ci_dp=[Active/Expired/Pending/None]
+				ni_ci_lot=[Home/Corporate/Pick-up]   Exception: don't pass on  the Receipt page.
+			!	ni_ci_loz=[ZONE]
+				ni_ci_mp=[MARKETING PROMOTION PROFILE]
+			!	ni_ci_pend=[Yes/No] Exception: only pass on the home page
+				ni_ci_cot=[Home/Corporate/Pick-up]
+				ni_ci_mt=[METAL SEGMENTS]
+				ni_ci_zip=[ZIP CODE]
+				ni_ci_ords=[ORDER COUNT]
+				pv=0    //This parameter is necessary to make sure that this call does not increment pageview count.
+		*/
+
+		// which
+			//ni_ci += "="+user_NI.+"&";
+
+
+		// CUSTOMER ID
+			if(user_NI.getIdentity().getErpCustomerPK() == null || "".equals(user_NI.getIdentity().getErpCustomerPK()) ) {
+				ni_ci += "ni_ci_cid=&";
+			}else{
+				/*
+				 *	changed to ERP Id
+				 *	to get customer Id use:
+				 *		user_NI.getIdentity().getFDCustomerPK()
+				 */
+				ni_ci += "ni_ci_cid="+user_NI.getIdentity().getErpCustomerPK()+"&";
+			}
+		// COUNTY
+			ni_ci += "ni_ci_cco="+user_NI.getDefaultCounty()+"&";
+		// SMART STORE COHORT
+			if(user_NI.getCohortName() == null) {
+				ni_ci += "ni_ci_ssc=NONE&";
+			}else{
+				ni_ci += "ni_ci_ssc="+user_NI.getCohortName()+"&";
+			}
+		// Chef's Table
+			String isChefsTable_NI = ""+user_NI.isChefsTable();
+			ni_ci += "ni_ci_ct="+isChefsTable_NI.toUpperCase()+"&";
+		// Delivery Pass Status
+			ni_ci += "ni_ci_dp="+user_NI.getDeliveryPassStatus().getName()+"&";
+			
+		// Last order Type
+			if (request.getRequestURI().indexOf("/step_4_receipt.jsp") == -1) {
+				// if we're not on receipt
+					ni_ci += "ni_ci_lot="+user_NI.getSelectedServiceType().getName()+"&";
+			}
+		// ZONE : NOT IMPLEMENTED
+			//ni_ci += "ni_ci_loz="+user_NI.+"&";
+			
+		// pending order : NOT IMPLEMENTED
+			//ni_ci += "ni_ci_pend="+user_NI.+"&";
+
+		// MARKETING PROMOTION PROFILE
+			if(user_NI.getFDCustomer().getProfile().getAttribute("MarketingPromo") == null) {
+				ni_ci += "ni_ci_mp=NONE&";
+			}else{
+				ni_ci += "ni_ci_mp="+user_NI.getFDCustomer().getProfile().getAttribute("MarketingPromo")+"&";
+			}
+
+
+		// SERVICE TYPE
+			ni_ci += "ni_ci_cot="+user_NI.getUserServiceType().getName()+"&";
+		// METAL SEGMENTS
+			ni_ci += "ni_ci_mt="+user_NI.getLevel()+"&";
+		// ZIP CODE
+			ni_ci += "ni_ci_zip="+user_NI.getZipCode()+"&";
+		// ORDER COUNT
+			ni_ci += "ni_ci_ords="+user_NI.getAdjustedValidOrderCount()+"&";
+
+		/*
+		 *	we're always including this to stop page view increment
+		 *	set it last so we also exclude the last "&"
+		 */
+		ni_ci += "pv=0";
+
+		//fire event
+		%>
+		<script type="text/javascript">
+			var NTPT_PGEXTRA="";
+			ntptEventTag('<%= ni_ci %>');
+		</script>
+		<%
+	}
+	
+%>

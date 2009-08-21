@@ -9,7 +9,7 @@ if (isSmall) width="630";
 		<b>Having problems checking out?</b><br> 
 		Please call us at <%=user.getCustomerServiceContact()%>, 
                 Monday through Thursday 6:30 a.m. to 12 a.m., Friday from 6:30 a.m. to 11 p.m., Saturday from 7:30 a.m. to 8 p.m., and Sunday from 7:30 a.m. to 12 a.m.<br>
-                If you need to disconnect from the Internet, please <a href="/login/logout.jsp">Log Out</a> first.</font>
+                If you need to disconnect from the Internet, please <a href="/login/logout.jsp" onclick="ntptEventTag('ev=button_event&ni_btn=LogOutLink');" id="LogOutLink">Log Out</a> first.</font>
 	</td>
 	<td width="<%=user.getShoppingCart().isEstimatedPrice()?"230":"200"%>" align="right"><font class="space4pix"><br></font>
 	<% if (user.getShoppingCart().isEstimatedPrice()) {
@@ -24,3 +24,4 @@ if (isSmall) width="630";
 	</td>
 </tr>
 </table>
+<%@ include file="/includes/net_insight/i_tag_checkout.jspf" %>
