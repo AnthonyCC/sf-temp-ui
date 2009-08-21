@@ -122,6 +122,9 @@ public class TransportationAdminProperties {
 	private final static String KRONOS_UPLOAD_ALL="transportation.filename.kronosuploadall";
 	private final static String KRONOS_UPLOAD_ALL_EMPTY="transportation.filename.kronosuploadallempty";
 	
+	private final static String PROP_TRANSPORTATION_AUTODISPATCH_VALIDATION		= "transportation.autodispatch.validation";	
+	private final static String PROP_TRANSPORTATION_PLAN_VALIDATION		= "transportation.plan.validation";
+	
 	static {
 				
 		
@@ -208,6 +211,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_FILENAME_CUMMUNITYRPT, "trn_communityreport_");
 		defaults.put(KRONOS_UPLOAD_ALL, "Upload_All.csv");
 		defaults.put(KRONOS_UPLOAD_ALL_EMPTY, "Upload_All_Empty.csv");
+		defaults.put(PROP_TRANSPORTATION_AUTODISPATCH_VALIDATION, "false");
+		defaults.put(PROP_TRANSPORTATION_PLAN_VALIDATION, "false");
 		
 		refresh();		
 	}
@@ -458,4 +463,11 @@ public class TransportationAdminProperties {
 	public static String getKronosUploadAllEmptyFileName() {
 		return get(KRONOS_UPLOAD_ALL_EMPTY);
 	}
+	
+	public static boolean isPlanValidation() {
+        return (new Boolean(get(PROP_TRANSPORTATION_PLAN_VALIDATION))).booleanValue();
+    }
+	public static boolean isAutoDispatchValidation() {
+        return (new Boolean(get(PROP_TRANSPORTATION_AUTODISPATCH_VALIDATION))).booleanValue();
+    }
 }

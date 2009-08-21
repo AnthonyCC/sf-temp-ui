@@ -688,7 +688,7 @@ public class DispatchController extends AbstractMultiActionController {
 				    	saveMessage(request, getMessage("app.actionmessage.142", null));
 				    	return planHandler(request,response);
 				    }
-				   if( TransWebUtil.isAutodispatchValidation(request, dispatchManagerService))
+				   if( TransportationAdminProperties.isAutoDispatchValidation())
 				   {
 					   Collection unavailable=employeeManagerService.getUnAvailableEmployees(planList, dispatchDate);
 					   if(unavailable!=null&&unavailable.size()>0)

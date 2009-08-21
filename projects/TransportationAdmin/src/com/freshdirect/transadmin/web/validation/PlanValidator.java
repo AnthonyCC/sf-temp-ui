@@ -13,6 +13,7 @@ import com.freshdirect.framework.util.DateComparator;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class PlanValidator extends AbstractValidator {
@@ -40,9 +41,12 @@ public class PlanValidator extends AbstractValidator {
 		}
 		ValidationUtils.rejectIfEmpty(errors, "sequence", "app.error.112", new Object[]{"Sequence"},"required field");
 		validateIntegerMinMax("sequence",new Integer(model.getSequence()),0,99,errors);
-		//validateResources(model.getDriverReq(),model.getDriverMax(),"drivers",model.getDrivers(),errors);
-		//validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);
-		//validateResources(model.getRunnerReq(),model.getRunnerMax(),"runners",model.getRunners(),errors);
+		if( TransportationAdminProperties.isPlanValidation())
+		{
+			validateResources(model.getDriverReq(),model.getDriverMax(),"drivers",model.getDrivers(),errors);
+			validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);
+			validateResources(model.getRunnerReq(),model.getRunnerMax(),"runners",model.getRunners(),errors);
+		}
 		checkForDuplicateResourceAllocation(model,errors);
 	}	
 	

@@ -66,8 +66,7 @@
 				<select id="userPref_key" name="key" onchange="javascript:fetchValue()">
 					<option value="">Select</option>
 					<option value="punch">Display Punch Info</option>
-					<option value="airclick">Display Air Click Info</option>
-					<option value="autodispatchvalidation">Auto Dispatch Validation</option>						
+					<option value="airclick">Display Air Click Info</option>										
 				</select>
 				
 				</td></tr>
