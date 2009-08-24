@@ -44,10 +44,13 @@ import com.freshdirect.cms.ui.model.GwtUser;
 import com.freshdirect.cms.ui.model.GwtValidationError;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Hyperlink;
 
 public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 	private PageHeader header;
@@ -571,22 +574,30 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
     public void userChanged() {
         GwtUser currentUser = CmsGwt.getCurrentUser();
         if (currentUser != null && currentUser.isAdmin()) {
-            final Button adminButton = new Button("Administration");
-            adminButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-               @Override
-                public void componentSelected(ButtonEvent ce) {
-                   AdminWindow aw = new AdminWindow(adminButton);
-                   aw.show();
-                } 
-            });
-            this.header.addToButtonPanel(adminButton);
-            Button showPublish = new Button("Publish", new SelectionListener<ButtonEvent>() {
+            Hyperlink hp = new Hyperlink("Administration", "");
+            hp.addClickHandler(new ClickHandler() {
                 @Override
-                public void componentSelected(ButtonEvent ce) {
+                public void onClick(ClickEvent click) {
+                    click.stopPropagation();
+                    AdminWindow aw = new AdminWindow(null);
+                    aw.show();
+                }
+            });
+            hp.addStyleName("commandLink");
+            this.header.addToButtonPanel(hp);
+        }
+        
+        if (currentUser != null && currentUser.isAllowedToWrite()) {
+            Hyperlink hp = new Hyperlink("Publish", "");
+            hp.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent click) {
+                    click.stopPropagation();
                     showPublishPanel();
                 }
             });
-            this.header.addToButtonPanel(showPublish);
+            hp.addStyleName("commandLink");
+            this.header.addToButtonPanel(hp);
         }
         header.setUserInfo(currentUser.getName() + '(' + (currentUser.isAllowedToWrite() ? "editor " : "")
                 + (currentUser.isAdmin() ? " admin" : "") + ')');
