@@ -231,7 +231,7 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
 			var sum2 = sum-(Number(this.value)||0);
 			var final_amt = Math.round( (max-sum2)*100 )/100;
 
-			alert('Total amount $'+max+' is exceeded for this order line! Setting credit to $'+final_amt);
+			alert('Total available amount $'+max+' is exceeded for this order line! Setting credit to $'+final_amt);
 			
 			this.value = final_amt;
 		}
