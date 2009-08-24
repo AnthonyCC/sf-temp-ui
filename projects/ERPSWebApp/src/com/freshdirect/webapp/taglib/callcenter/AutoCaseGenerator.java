@@ -67,17 +67,17 @@ public class AutoCaseGenerator {
 		// FIXME: subject will be automatically assigned from reason to subject reference
 		caseInfo.setSubject(subject);
 		caseInfo.setPriority(CrmCasePriority.getEnum(CrmCasePriority.CODE_LOW));
-		//caseInfo.setSummary("credit issue (" + ciMethod + ")");
-		
+		// caseInfo.setSummary(complaint.getDescription());
+
 		// collect departments from credited items
-		Set depts = new HashSet();
-		for (Iterator it=complaint.getComplaintLines().iterator(); it.hasNext();) {
-			ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
+		Set<String> depts = new HashSet<String>();
+		for (Iterator<ErpComplaintLineModel> it=complaint.getComplaintLines().iterator(); it.hasNext();) {
+			ErpComplaintLineModel line = it.next();
 			depts.add(line.getDepartmentName());
 		}
 		StringBuffer deptsString = new StringBuffer();
-		for (Iterator it=depts.iterator(); it.hasNext();) {
-			String deptName = (String ) it.next();
+		for (Iterator<String> it=depts.iterator(); it.hasNext();) {
+			String deptName = it.next();
 			deptsString.append(deptName);
 			if (it.hasNext())
 				deptsString.append("; ");
@@ -142,6 +142,17 @@ public class AutoCaseGenerator {
 		
 		
 		// Add note action about details
+		{
+			CrmCaseAction caseAction = new CrmCaseAction();
+			caseAction.setType(CrmCaseActionType.getEnum( CrmCaseActionType.CODE_NOTE ) );
+			caseAction.setTimestamp(new Date());
+			caseAction.setAgentPK(agent.getPK());
+
+			caseAction.setNote( complaint.getDescription() );
+			newCase.addAction(caseAction);																		
+		}
+		
+		
 		{
 			CrmCaseAction caseAction = new CrmCaseAction();
 			caseAction.setType(CrmCaseActionType.getEnum( CrmCaseActionType.CODE_CLOSE ) );
