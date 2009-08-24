@@ -22,12 +22,36 @@
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.FDSessionUser"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
-
-<%@page import="com.freshdirect.customer.ErpComplaintModel"%>
-<%@page import="com.freshdirect.customer.ErpComplaintReason"%><crm:GetFDUser id="user">
+<%@ page import="com.freshdirect.customer.ErpComplaintModel"%>
+<%@ page import="com.freshdirect.customer.ErpComplaintReason"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDIdentity"%>
 <%
-/// ?
-CrmSession.getSessionStatus(session).setSaleId(null);
+String orderId = request.getParameter("orderId");
+FDSessionUser user = null;
+
+if (orderId != null) {
+	// clear any lingering search terms
+	session.removeAttribute(SessionName.LIST_SEARCH_RAW);
+	CrmSession.getSessionStatus(session).setSaleId(orderId);
+	
+	FDOrderI order = CrmSession.getOrder(session, orderId);
+	// Remove and replace any existing RECENT_ , RECENT_ORDER_NUMBER in session
+	session.removeAttribute(SessionName.RECENT_ORDER);
+	session.removeAttribute(SessionName.RECENT_ORDER_NUMBER);
+	session.setAttribute(SessionName.RECENT_ORDER_NUMBER, orderId);
+	
+	// Get customer info from the order
+    String custId = order.getCustomerId();
+	user = (FDSessionUser) session.getAttribute(SessionName.USER);
+    if (user == null || user.getIdentity() == null || !custId.equals(user.getIdentity().getErpCustomerPK())) {
+    	%><fd:LoadUser newIdentity="<%= new FDIdentity(custId) %>" /><%
+    	user = (FDSessionUser) session.getAttribute(SessionName.USER);
+	}
+} else {
+	//CrmSession.getSessionStatus(session).setSaleId(null);
+	%><crm:GetFDUser id="otherUser"><% user = (FDSessionUser) otherUser; %></crm:GetFDUser><%
+}
 
 // helper class
 CustomerSummaryUtil util = new CustomerSummaryUtil(request, user);
@@ -39,9 +63,6 @@ final String PAGE_TEMPLATE = "print".equalsIgnoreCase(request.getParameter("for"
 
 final List recentOrders = util.getRecentOrders(5);
 %>
-<crm:GetErpCustomer id="customer" user="<%=user%>">
-<crm:GetFdCustomer id="fdCustomer" user="<%=user%>">
-
 <crm:GetLockedCase id="cm">
 </crm:GetLockedCase>
 
@@ -372,7 +393,3 @@ for (Iterator it=recentOrders.iterator(); it.hasNext(); ){
 <%-- CONTENT ENDS HERE --%>
     </tmpl:put>
 </tmpl:insert>
-
-</crm:GetFdCustomer>
-</crm:GetErpCustomer>
-</crm:GetFDUser>

@@ -270,6 +270,7 @@ session.setAttribute(SessionName.USER,null);
 		<% String addtlMonitorParam = quickSearch ? "" : "search=advanced"; %>
 		
 		<div id="monitor" class="home_module" style="width: 99%; border-bottom: 2px solid; height: auto;">
+            <crm:CrmCaseDownloadController actionName="downloadCases" agentPK="<%=currentAgent.getPK()%>" result="result">
 			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; <%=worklist?"padding: 0px;":""%>">
 			<tr>
 				<td>
@@ -281,7 +282,6 @@ session.setAttribute(SessionName.USER,null);
                             "<span class=\"module_header_text\">Agent Monitor</span>" : 
                             "<a href=\""+ pageLink +"?show=agent"+ "&" + addtlMonitorParam + "\" class=\"module_header_text\">Agent Monitor</a>" %>|
                     <% } %>
-                    <crm:CrmCaseDownloadController actionName="downloadCases" agentPK="<%=currentAgent.getPK()%>" result="result">
                     <%= worklist ? 
                             "<span class=\"module_header_text\">Worklist (<span class='result'>"+ cases.size() +"</span>)</span>" : 
                             "<a href=\""+ pageLink +"?show=worklist"+ "&" + addtlMonitorParam +"\" class=\"module_header_text\">Worklist</a>" %>

@@ -57,7 +57,7 @@ boolean isGuest = false;
         // if only one results returned, redirect to customer details page
 		if (searchResults.size() == 1 && !isGuest) {
 			FDCustomerOrderInfo loneCustomer = (FDCustomerOrderInfo) searchResults.iterator().next();
-			response.sendRedirect( response.encodeRedirectURL("/main/account_details.jsp?erpCustId=" + loneCustomer.getIdentity().getErpCustomerPK()));
+			response.sendRedirect( response.encodeRedirectURL("/main/summary.jsp?erpCustId=" + loneCustomer.getIdentity().getErpCustomerPK()));
 		}
 
 %>

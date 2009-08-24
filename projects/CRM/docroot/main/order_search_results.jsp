@@ -156,7 +156,7 @@ String guestView = "&for=print";
         // if only one results returned, redirect to order details page
         if (searchResults.size() == 1) {
             FDCustomerOrderInfo info = (FDCustomerOrderInfo) searchResults.iterator().next();
-            response.sendRedirect( response.encodeRedirectURL("/main/order_details.jsp?orderId="+ info.getSaleId() + (isGuest ? guestView : "")) );
+            response.sendRedirect( response.encodeRedirectURL("/main/summary.jsp?orderId="+ info.getSaleId() + (isGuest ? guestView : "")) );
         }
 %>      
 <%  Comparator comparator = null;
