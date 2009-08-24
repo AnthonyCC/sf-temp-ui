@@ -9,8 +9,9 @@
 Dear <xsl:value-of select="customer/firstName"/>,
 
 <xsl:if test="string-length(complaint/customerEmail/customMessage) &gt; 0">
-<xsl:value-of select='complaint/customerEmail/customMessage'/>
- 
+<xsl:value-of select='complaint/customerEmail/customMessage'/><xsl:text>
+
+</xsl:text> 
 </xsl:if>
 We have issued you the following credits for order #<xsl:value-of select="saleId"/>: 
 
