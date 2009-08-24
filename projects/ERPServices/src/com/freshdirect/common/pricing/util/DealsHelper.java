@@ -115,4 +115,9 @@ public class DealsHelper {
 		}
 		return highest > 0 ? highest : -1;
 	}
+	
+	public static boolean isDealOutOfBounds(double price) {
+		return price < FDStoreProperties.getDealsLowerLimit()
+				|| price > FDStoreProperties.getDealsUpperLimit();
+	}
 }

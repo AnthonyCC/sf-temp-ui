@@ -162,6 +162,8 @@ class FDProductHelper {
 		int tieredDeal = DealsHelper.determineTieredDeal(erpProductInfo.getBasePrice(), erpProductInfo.getBasePriceUnit(),
 				erpProductInfo.getDefaultPrice(), erpProductInfo.getDefaultPriceUnit(),
 				erpProductInfo.getMaterialPrices());
+		if (DealsHelper.isDealOutOfBounds(tieredDeal))
+			tieredDeal = 0;
 		
 		return new FDProductInfo(
 			erpProductInfo.getSkuCode(),
