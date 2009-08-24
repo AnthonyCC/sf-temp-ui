@@ -79,6 +79,8 @@
 							  <ec:column alias="region" property="region.name" title="Region"/>
 							  <ec:column alias="unattended" property="unattended" title="Unattended"/>
                               <ec:column alias="priority" property="priority" title="Priority"/>
+                              <ec:column alias="stemfrom" property="stemToTime" title="Stem To Time(Mins)"/>
+							  <ec:column alias="stemto" property="stemFromTime" title="Stem From Time(Mins)"/>
 							</ec:row>
 						  </ec:table>
 		<% }else{ %>
@@ -97,6 +99,8 @@
 							  <ec:column alias="region" property="region.name" title="Region"/>
                               <ec:column alias="priority" property="priority" title="Priority"/>
 							  <ec:column alias="unattended" property="unattended" title="Unattended"/>
+							  <ec:column alias="stemfrom" property="stemToTime" title="Stem To Time(Mins)"/>
+							  <ec:column alias="stemto" property="stemFromTime" title="Stem From Time(Mins)"/>
 							</ec:row>
 						  </ec:table>
 		<% } %>
