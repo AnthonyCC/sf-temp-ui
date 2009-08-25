@@ -34,6 +34,7 @@
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
 <%@page import="com.freshdirect.smartstore.fdstore.FactorUtil"%>
+<%@page import="com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
 <%@page import="com.freshdirect.smartstore.fdstore.StoreLookup"%>
@@ -230,6 +231,21 @@ if (defaultCartAlgorithm.equals(cartAlgorithm) || !useLoggedIn)
 String userVariant = null;
 if (assignment.containsKey(cohortId)) {
 	userVariant = (String) assignment.get(cohortId);
+}
+if (user != null) {
+	try {
+		OverriddenVariantsHelper ovHelper = new OverriddenVariantsHelper(user);
+	
+		List ovariants = ovHelper.getOverriddenVariants();
+		OverriddenVariantsHelper.VariantInfoList vInfoList = ovHelper.consolidateVariantsList(ovariants);
+	
+		OverriddenVariantsHelper.VariantInfo vi = vInfoList.get(siteFeature);
+
+		if (vi != null) {
+			userVariant = vi.variant;
+		}	
+	} catch (Exception e) {
+	}
 }
 
 /* category Id */

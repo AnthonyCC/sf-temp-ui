@@ -157,13 +157,17 @@ class FDProductHelper {
 		int dealsPercentage=-1;
 		if(hasWasPrice) {
 			dealsPercentage=DealsHelper.getVariancePercentage(erpProductInfo.getBasePrice(), erpProductInfo.getDefaultPrice());
+		} else {
+			LOGGER.debug("no was price for SKU " + erpProductInfo.getSkuCode());			
 		}
 		
 		int tieredDeal = DealsHelper.determineTieredDeal(erpProductInfo.getBasePrice(), erpProductInfo.getBasePriceUnit(),
 				erpProductInfo.getDefaultPrice(), erpProductInfo.getDefaultPriceUnit(),
 				erpProductInfo.getMaterialPrices());
-		if (DealsHelper.isDealOutOfBounds(tieredDeal))
+		if (DealsHelper.isDealOutOfBounds(tieredDeal)) {
+			LOGGER.debug("tiered deal is out of bounds for SKU " + erpProductInfo.getSkuCode());
 			tieredDeal = 0;
+		}
 		
 		return new FDProductInfo(
 			erpProductInfo.getSkuCode(),
