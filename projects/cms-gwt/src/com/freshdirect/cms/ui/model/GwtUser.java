@@ -46,6 +46,10 @@ public class GwtUser implements Serializable, Cloneable {
     public boolean isAdmin() {
         return admin;
     }
+    
+    public boolean isPublishAllowed() {
+        return isAllowedToWrite();
+    }
 
     @Override
     public boolean equals(Object obj) {

@@ -321,7 +321,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     public ChangeSetQueryResponse getChangeSets(ChangeSetQuery query) {
         try {
             GwtUser user = getUser();
-            if (!user.isAdmin()) {
+            if (!user.isPublishAllowed()) {
                 throw new GwtSecurityException("User "+user.getName()+" is not allowed see publish history!");
             }
             ChangeLogServiceI chgService = getChangeLogService();
@@ -374,7 +374,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
      */
     public String startPublish(String comment) {
         GwtUser user = getUser();
-        if (!user.isAdmin()) {
+        if (!user.isPublishAllowed()) {
             throw new GwtSecurityException("User "+user.getName()+" is not allowed to publish!");
         }
         Date date = new Date();
