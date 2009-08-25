@@ -27,6 +27,9 @@ public class Scrib
 	public int getCount() {
 		return count;
 	}
+	public String getCount1() {
+		return resources==0?null:""+resources;
+	}
 	public void setCount(int count) {
 		this.count = count;
 	}
