@@ -234,7 +234,7 @@ String guestView = "&for=print";
                 rowClass = "class='list_duplicate_row'";
         }
     %>
-        <tr valign="top" <%=rowClass%> style="cursor: pointer;" onClick="document.location='<%= response.encodeURL("/main/order_details.jsp?orderId=" + info.getSaleId() + (isGuest ? guestView : "") ) %>'">
+        <tr valign="top" <%=rowClass%> style="cursor: pointer;" onClick="document.location='<%= response.encodeURL("/main/summary.jsp?orderId=" + info.getSaleId() + (isGuest ? guestView : "") ) %>'">
 			<td width="7%" class="border_bottom"><a><b><%= info.getSaleId() %></b></a>&nbsp;</td>
             <td width="10%" class="border_bottom"><%= info.getDeliveryDate() %>&nbsp;</td>
 			<td width="10%" class="border_bottom"><%= EnumDeliveryType.getDeliveryType(info.getDeliveryType()).getName() %>&nbsp;</td>
