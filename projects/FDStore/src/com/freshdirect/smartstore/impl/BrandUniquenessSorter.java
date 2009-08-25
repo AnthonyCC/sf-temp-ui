@@ -13,6 +13,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.WrapperRecommendationService;
+import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 
 public class BrandUniquenessSorter extends WrapperRecommendationService {
 	private static final Logger LOGGER = LoggerFactory
@@ -23,7 +24,9 @@ public class BrandUniquenessSorter extends WrapperRecommendationService {
 	}
 
 	public List recommendNodes(SessionInput input) {
-		List nodes = new ArrayList(internal.recommendNodes(input));
+		List nodes = FDStoreRecommender.getInstance().filterProducts(
+				internal.recommendNodes(input), input.getCartContents(),
+				internal.isIncludeCartItems());
 		LOGGER.debug("Items before brand uniqueness sorting: " + nodes);
 		List newNodes = new ArrayList(nodes.size());
 		Set brands = new HashSet(15);
