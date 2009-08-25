@@ -118,7 +118,7 @@
 							<td><form:errors path="count" />&nbsp;</td>                 
 						</tr>  
 						<tr>
-							<td>Depot Resources</td>
+							<td>No of HandTrucks</td>
 							<td>         
 								<form:input maxlength="50" size="24" path="resources"  /> 
 							</td>
