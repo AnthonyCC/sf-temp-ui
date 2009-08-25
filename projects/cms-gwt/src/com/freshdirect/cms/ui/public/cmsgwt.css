@@ -1,0 +1,322 @@
+/** Add css rules here for your application. */
+.appHeader {
+	background-color: black;
+	color: #CCCCCC;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 5px;
+	height : 22px;	
+}
+
+.appHeader .freshLabel {
+	color: rgb(255, 153, 51);
+	font-weight: bold;
+	float : left;	
+}
+
+.appHeader .directLabel {
+	color: rgb(102, 153, 51);
+	float : left;	
+	font-weight: bold;
+}
+
+.appHeader .normalLabel {
+	float : left;	
+}
+
+.appHeader .userLabel {
+	float : left;
+	padding : 0px 10px;
+	font-style : italic;
+	font-weight : bold;
+}
+
+
+#buttonPanel {
+	/* background-color : red; */	
+	float : right;
+	height : 22px;
+	width : 120px;
+}
+
+
+
+/* ====== button icons ====== */
+.rel-button {
+	background-image: url(img/rel_link.gif) ! important;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.show-button {
+	background-image: url(img/image_zoom.gif) ! important;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.add-relation {
+	background-image: url(img/rel_add.gif) ! important;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.create-relation {
+	background-image: url(img/rel_create.gif) ! important;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.bulk-edit {
+	background-image: url(img/tools/CmsEditor.gif) ! important;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.home-button {
+	background-image: url(img/home.gif) ! important;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.synchronize-button {
+	background-image: url(img/sync.gif) ! important;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.copy-button {
+	background-image: url(img/rel_copy.gif) ! important;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.move-button {
+	background-image: url(img/rel_move.gif) ! important;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.delete-button {
+	background-image: url(img/rel_delete_thin.gif) ! important;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.sort-button {
+	background-image: url(img/rel_sort.gif) ! important;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.save-button-text button {
+	color: green;
+}
+.discard-button-text button {
+	color: red;
+}
+.del-icon {
+	cursor: pointer;	
+}
+/* ====== button icons ====== */
+
+
+
+/* ====== node tree ====== */
+.node-tree .disabled {
+	color: #C0C0C0;
+}
+.node-tree .dimmed {
+	color: #B8B8B8;
+}
+/* ====== node tree ====== */
+
+
+
+/* ====== form ====== */
+.x-form-checkbox {
+	position: static ! important;
+}
+.x-form-field {
+	width: 100% ! important;
+}
+.x-form-group {
+	width: auto ! important;
+}
+.x-panel {
+	width: auto ! important;
+}
+
+.cms-gwt-file-upload .x-form-field {
+	width : 144px ! important;
+}
+
+
+
+.inheritable > table {
+	width: 105% ! important;
+}
+.inheritance-checkbox * {
+	text-align: right;
+}
+.inheritance-checkbox {
+	margin-left : 5px;
+	text-align: right;
+}
+.x-form-item {
+	padding: 5px;
+}
+.x-form-item.gray {
+	background-color: #f2f2f2;
+}
+.x-form-item.gray.first {
+	background-color: #f2f2f2;
+	padding-top: 0px;
+}
+.x-form-field-wrap {
+	width: auto ! important;
+}
+
+/* hack for context dropdown */
+.x-combo-list-item {
+	width: 400px ! important;		
+}
+.x-combo-list-inner {
+	width: 400px ! important;		
+}
+.x-combo-list {
+	width: 400px ! important;		
+}
+/* ====== form ====== */
+
+
+.notab-form .x-panel {
+	margin-left: 10px;
+}
+.notab-form .x-panel-body form {
+	padding-top: 0px ! important;
+}
+
+.x-panel-body form {
+	padding-left: 0px ! important;
+}
+.x-panel.one-to-many  {
+	margin-left: 0px ! important;
+}
+.one-to-many .x-panel {
+    border-style: solid;
+    border-color: #d0d0d0;
+}
+.one-to-many .x-panel-body {
+    border-color:#d0d0d0;
+}
+.one-to-many .x-panel-header {
+	width: 455px ! important;
+	color:#333;
+	border:1px solid #d0d0d0;
+    background-image:url(gxt/images/gray/panel/white-top-bottom.gif);
+}
+.one-to-many .x-grid-empty {
+	width: 445px ! important;
+}
+.one-to-many .x-panel-toolbar {
+	float: left;
+}
+
+
+.content-label {
+	border-spacing: 0px;
+	border-collapse: collapse;;
+}
+.content-label td {
+	vertical-align: middle;
+	font-size: 12px;
+}
+
+
+#pageTitle {
+	border-bottom: 1px solid #CCCCCC;
+}
+#pageTitle h1 {
+	color:#999999;
+	font-family:impact,verdana,sans-serif;
+	font-size:23pt;
+	font-weight:normal;
+	line-height:normal;
+	margin-left:0;
+	padding:0;
+	position:relative;
+	top:8px;
+	vertical-align:bottom;
+}
+#pageTitle h1 span {
+	margin-left: 10px;
+}
+
+#pageHeader {
+	
+}
+.pageHeader {
+	color:#999999;
+	font-size:8pt;
+	background-color: #EAF2FF;
+	padding: 10px;
+}
+.pageHeader .rigthPanel {
+	text-align : right;
+}
+
+/* TableField */
+
+.cms-table-field-MOD-even {
+	background-color: #ffffff;
+}
+
+.cms-table-field-MOD-odd {
+	background-color: #f6f6f6;
+}
+
+.cms-table-field-CRE-even {
+	background-color: #eeffee;
+}
+
+.cms-table-field-CRE-odd {
+	background-color: #e6ffe6;
+}
+
+.cms-table-field-DEL-even {
+	background-color: #ffeeee;
+}
+
+.cms-table-field-DEL-odd {
+	background-color: #ffe6e6;
+}
+
+/* command links in the header  */
+
+.commandLink a {
+	font-family: verdana, sans-serif;
+	font-size: 9pt;
+	font-weight: bold;
+	text-decoration: none;
+	color: white;
+} 
+
+.commandLink a:hover {
+	color:#fb0;
+}
+
+
+
+/* ============ i think styles below this line are not used anymore anywhere ... ============*/
+
+.my-tree-icon div {
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.my-treetbl-cell, .my-tbl-col-label, .my-tbl-item-cell-widget, .x-grid3-dirty-cell {
+	padding-left: 1px;
+	padding-right: 1px;
+}
+.my-treetbl-item {
+	border-top: none;
+}
+
+/** Example rules used by the template application (remove for your app) */
+.pc-template-btn {
+	display: block;
+	font-size: 16pt
+}
+
+#pc-template-img {
+	margin-top: 20px;
+}
+
