@@ -58,7 +58,7 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 			strBuf.append("p.zone.zoneCode ").append(zoneLst);
 		}
 		
-		strBuf.append(" order by p.planDate, p.zone.zoneCode, p.startTime, p.sequence");
+		strBuf.append(" order by p.planDate, p.firstDeliveryTime ,p.region, p.sequence");
 		return getDataList(strBuf.toString());
 	}
 
