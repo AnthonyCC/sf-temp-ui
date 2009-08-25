@@ -200,7 +200,7 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 	public Collection getScribList(String date) {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from Scrib s");
-		strBuf.append(" where s.scribDate='").append(date).append("' order by s.scribDate");
+		strBuf.append(" where s.scribDate='").append(date).append("' order by s.scribDate,s.region,s.firstDlvTime,s.zone,s.startTime");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 }
