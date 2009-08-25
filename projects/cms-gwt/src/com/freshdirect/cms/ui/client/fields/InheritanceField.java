@@ -79,10 +79,14 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     }
 
     
+    @SuppressWarnings("unchecked")
     @Override
     public TYPE getValue() {
         if ( checkbox.getValue() ) {
             return innerField.getValue();
+        }
+        if (innerField instanceof HasCustomDefaultValue) {
+            return (TYPE) ((HasCustomDefaultValue) innerField).getDefaultValue();
         }
         return null;
     }

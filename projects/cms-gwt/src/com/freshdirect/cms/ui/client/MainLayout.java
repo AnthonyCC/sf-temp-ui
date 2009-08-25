@@ -87,29 +87,25 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 		
 		treePanel = new NodeTree();
 
-		treePanel.addNodeSelectListener( new NodeTree.NodeSelectListener() {
-			@Override
-			public void nodeSelected( final ContentNodeModel node ) {
-				final ContentNodeModel parent = treePanel.getSelectedParent();
-				if ( node != null ) {
-					// System.out.println("SELECT => " + (parent != null ? parent.getLabel() + "/" : "") + node.getLabel());
-					if (isFormChanged()) {
-        					MessageBox.confirm("Save changes?", "Do you want to save your changes?", new Listener<MessageBoxEvent>() {
-                                                    public void handleEvent(MessageBoxEvent be) {
-                                                        if (be.getButtonClicked().getText().toLowerCase().trim().equals("yes")) {
-                                                            saveAction();
-                                                        }
-                                                        openNode(node, parent);
-                                                    };
-                                                });
-					} else {
-					    openNode(node, parent);
-					}
-					
-				}
-			};
-		} );
-		
+                treePanel.addNodeSelectListener(new NodeTree.NodeSelectListener() {
+                    @Override
+                    public void nodeSelected(final ContentNodeModel node) {
+                        final ContentNodeModel parent = treePanel.getSelectedParent();
+                        if (node != null) {
+                            if (isFormChanged()) {
+                                MessageBox.confirm("Discard changes", "You have unsaved changes. Do you want to discard them?", new Listener<MessageBoxEvent>() {
+                                    public void handleEvent(MessageBoxEvent be) {
+                                        if (be.getButtonClicked().getText().toLowerCase().trim().equals("yes")) {
+                                            openNode(node, parent);
+                                        }
+                                    };
+                                });
+                            } else {
+                                openNode(node, parent);
+                            }
+                        }
+                    };
+                });		
 		
 		// ============ extra buttons in node tree header ============
 		

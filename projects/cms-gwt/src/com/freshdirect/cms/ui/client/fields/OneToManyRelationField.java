@@ -46,7 +46,7 @@ import com.freshdirect.cms.ui.service.ContentServiceAsync;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class OneToManyRelationField extends MultiField<List<OneToManyModel>> {
+public class OneToManyRelationField extends MultiField<List<OneToManyModel>> implements HasCustomDefaultValue<List<OneToManyModel>> {
     
     public static class LabelRenderer implements GridCellRenderer<OneToManyModel> {
         String modelProperty;
@@ -536,5 +536,10 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> {
     		deleteButton.enable();
     	if ( sortButton != null )
     		sortButton.enable();
+    }
+    
+    @Override
+    public List<OneToManyModel> getDefaultValue() {
+        return new ArrayList<OneToManyModel>(0);
     }
 }
