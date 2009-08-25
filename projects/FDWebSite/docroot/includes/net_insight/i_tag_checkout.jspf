@@ -20,6 +20,9 @@
 			}
 			if ( request.getAttribute("AddressType") != null && !"".equals(request.getAttribute("AddressType")) ) {
 				ni_nddt = request.getAttribute("AddressType").toString();
+				if ( "HOME".equals(ni_nddt) ) {
+					ni_nddt = "RESIDENTIAL";
+				}
 			}
 			
 			if ( !"".equals(ni_nddt) ) {
@@ -29,8 +32,8 @@
 
 		/* Chef's Table Timeslot Shown? */
 			String ni_ctts = "FALSE";
-			if ( request.getAttribute("pmTS") != null && "TRUE".equals(request.getAttribute("pmTS")) ) {
-				ni_ndpm = "TRUE";
+			if ( request.getAttribute("shownCTSlot") != null && "TRUE".equals(request.getAttribute("shownCTSlot")) ) {
+				ni_ctts = "TRUE";
 			}
 
 			NTPT_PGEXTRA += "ni_ctts="+ni_ctts+"&";
