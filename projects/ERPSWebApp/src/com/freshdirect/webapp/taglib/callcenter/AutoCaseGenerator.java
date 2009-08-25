@@ -159,7 +159,7 @@ public class AutoCaseGenerator {
 			caseAction.setTimestamp(new Date());
 			caseAction.setAgentPK(agent.getPK());
 
-			caseAction.setNote( "Case Closed" );
+			caseAction.setNote( "Auto-generated case" );
 			newCase.addAction(caseAction);																		
 		}
 
