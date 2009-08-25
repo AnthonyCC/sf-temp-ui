@@ -157,5 +157,6 @@ if (brandId!=null) {
 </tr>
 </table>
 </center>
+<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>
 </body>
 </html>
