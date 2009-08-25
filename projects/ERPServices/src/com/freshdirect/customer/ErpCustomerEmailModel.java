@@ -36,6 +36,14 @@ public class ErpCustomerEmailModel extends ModelSupport {
 		return this.customMessage;
 	}
 
+	/**
+	 * Convert new lines to '<br>'-s
+	 * @return
+	 */
+	public String getCustomMessageHTML() {
+		return this.customMessage.replaceAll("\\n", "<br>");
+	}
+
 	public boolean isMailSent() {
 		return mailSent;
 	}

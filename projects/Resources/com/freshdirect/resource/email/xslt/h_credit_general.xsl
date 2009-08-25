@@ -35,10 +35,10 @@
 						<p><b>Dear <xsl:value-of select="customer/firstName"/></b>,</p>
 
                         <xsl:if test="string-length(complaint/customerEmail/customMessage) &gt; 0">
-                        <p style="white-space: pre;">
-                           <xsl:value-of select='complaint/customerEmail/customMessage'/>
-                        </p>
-                        </xsl:if>
+                        <div>
+                           <xsl:value-of disable-output-escaping="yes" select='complaint/customerEmail/customMessageHTML'/>
+                        </div>
+                        </xsl:if><br/>
 						We have issued you the following credits for <b>order #<xsl:value-of select="saleId"/></b>:
 						<br/><br/>
 
