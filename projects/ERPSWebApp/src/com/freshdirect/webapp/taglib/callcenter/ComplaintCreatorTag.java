@@ -36,6 +36,7 @@ import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -240,8 +241,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             //
             // Check that item is within appropriate return window (depends on Method and department)
             //
-            /* NOTE: disabled for test purposes! */
-            if ( false && !isWithinReturnWindow(line.getMethod() ) ) {
+            if ( !FDStoreProperties.getDisableTimeWindowCheck() && !isWithinReturnWindow(line.getMethod() ) ) {
                 result.addError(new ActionError("ol_error_"+i,"It is too late to return this item for the designated credit type."));
                 addGeneralError(result);
                 return;

@@ -49,6 +49,7 @@ public class FDStoreProperties {
 	private final static String PROP_CRM_GEOCODELINK 	= "fdstore.crm.geocodeLink";
 	private final static String PROP_CRM_CASE_LIST_LENGTH = "fdstore.crm.caseListLength";
 	private final static String PROP_CRM_CASE_HISTORY_LIST_LENGTH = "fdstore.crm.caseHistoryListLength";
+	private final static String PROP_CRM_DISABLE_TIME_WINDOW_CHECK = "fdstore.crm.debugIssueCreditsPage";
 	private final static String PROP_FDSTORE_WEB_CAREERLINK = "fdstore.web.careerLink";
 	private final static String PROP_FDFACTORY_HOME		= "fdstore.fdFactory.home";
 	private final static String PROP_SAPGATEWAY_HOME	= "fdstore.sapGateway.home";
@@ -313,6 +314,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_CRM_GEOCODELINK, "http://www.geocode.com/EZLI/LoginServlet?uname=ECM0001468&pword=Lzxjb&servID=USA_Geo_002&formAction=GetInputFormServlet&submit=Login&cmd=li");
 		defaults.put(PROP_CRM_CASE_LIST_LENGTH, "100");
 		defaults.put(PROP_CRM_CASE_HISTORY_LIST_LENGTH, "25");
+		defaults.put(PROP_CRM_DISABLE_TIME_WINDOW_CHECK, "false");
 		defaults.put(PROP_FDSTORE_WEB_CAREERLINK, "http://jobs-freshdirect.icims.com");
 		defaults.put(PROP_FDFACTORY_HOME,	"freshdirect.fdstore.Factory");
 		defaults.put(PROP_SAPGATEWAY_HOME,	"freshdirect.sap.Gateway");
@@ -581,6 +583,17 @@ public class FDStoreProperties {
 		return (isCaseHistory)?get(PROP_CRM_CASE_HISTORY_LIST_LENGTH):get(PROP_CRM_CASE_LIST_LENGTH);
 	}
 
+	/**
+	 * This property disables time window check on CRM issue credits page.
+	 * 
+	 * For debug purposes.
+	 * 
+	 * @return
+	 */
+	public static boolean getDisableTimeWindowCheck() {
+		return (new Boolean(get(PROP_CRM_DISABLE_TIME_WINDOW_CHECK)).booleanValue());
+	}
+	
 	public static String getFDFactoryHome() {
 		return get(PROP_FDFACTORY_HOME);
 	}
