@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.util;
 
 
+import com.freshdirect.common.pricing.util.DealsHelper;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -120,7 +121,15 @@ public class ProductImpression {
 	 */
 	public int[] getScaledPercentages(double basePrice) {
         FDProduct fdProduct = getFDProduct();
-		return fdProduct != null ? fdProduct.getPricing().getScalePercentage(basePrice) : new int[0];
+        if (fdProduct != null) {
+        	int[] scalePercentage = fdProduct.getPricing().getScalePercentage(basePrice);
+        	for (int i = 0; i < scalePercentage.length; i++)
+        		if (DealsHelper.isDealOutOfBounds(scalePercentage[i]))
+        			scalePercentage[i] = 0;
+			return scalePercentage;
+        } else {
+        	return new int[0];
+        }
 	}
 	
 

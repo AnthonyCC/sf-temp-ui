@@ -157,7 +157,8 @@ ContentNodeModel lastSubCategory = null;
 				for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
 			%>
 				<div style="margin-left:20px;">
-					<span class="save-label">SAVE <%= "" + scaledPercents[ymalSci] %>%</span>&nbsp;<span class="save-price"><%= scaledPrices[ymalSci] %></span>
+					<% if (scaledPercents[ymalSci] > 0) { %><span class="save-label">SAVE <%= "" + scaledPercents[ymalSci] %>%</span>&nbsp;<% } %>
+					<span class="save-price"><%= scaledPrices[ymalSci] %></span>
 				</div>
 			<%
 				}

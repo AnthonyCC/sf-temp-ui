@@ -121,7 +121,8 @@ int k = 0;
 					for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
 				%>
 					<div>
-						<span class="save-label">SAVE <%= "" + scaledPercents[ymalSci] %>%</span>&nbsp;<span class="save-price"><%= scaledPrices[ymalSci] %></span>
+						<% if (scaledPercents[ymalSci] > 0) { %><span class="save-label">SAVE <%= "" + scaledPercents[ymalSci] %>%</span>&nbsp;<% } %>
+						<span class="save-price"><%= scaledPrices[ymalSci] %></span>
 					</div>
 				<%
 					}
