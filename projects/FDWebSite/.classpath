@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMS"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/cms-slide"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/cms-tap"/>
@@ -19,11 +18,10 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/RulesAdmin"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Tests"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Oracle WebLogic Server v10.3 JRE"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/DevEAR"/>
-    <classpathentry kind="var" path="FD_LIBS/thirdparty/struts.jar" sourcepath="/STRUTS_SRC"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/struts.jar" sourcepath="/STRUTS_SRC"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

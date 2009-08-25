@@ -17,7 +17,7 @@
      <module>
         <web>
             <web-uri>../FDWebSite/docroot</web-uri>
-            <context-root></context-root>
+            <context-root>crm</context-root>
         </web>
     </module>
      <module>
@@ -43,7 +43,7 @@
      <module>
         <web>
             <web-uri>../CRM/docroot</web-uri>
-            <context-root>crm</context-root>
+            <context-root></context-root>
         </web>
      </module>
      <module>
