@@ -221,8 +221,10 @@
 							 </tr>	
 							 <tr>
 							    <td colspan="3" align="center">
-								   <input type = "submit" value="&nbsp;Save&nbsp;"  />
-								</td>			
+								   <input type = "submit" value="&nbsp;Save&nbsp;"  />										
+								
+							   <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" /> 
+							   </td>   
 							</tr>
 							 </table>
 							 </td>
@@ -265,4 +267,17 @@ disableTimeZone("thu");
 disableTimeZone("fri");
 disableTimeZone("sat");
 disableTimeZone("sun");
+function back()
+{
+  	var filters=unescape(getParameter("filter"));      	
+  	var params=filters.split("&");
+  	var planForm=document.forms["employee"];
+  	for(var i=0;i<params.length;i++)
+  	{
+  		var param=params[i].split("=");         				
+  		add_input(planForm,"hidden",param[0],param[1]);
+  	}     	      	
+  	planForm.submit();
+}
 </script>
+<form name="employee" action="employee.do?empstatus=S" method="post">  </form>

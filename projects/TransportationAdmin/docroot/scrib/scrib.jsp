@@ -120,8 +120,15 @@
 	          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2;
           }
         } 
-      addRowHandlers('ec_table', 'rowMouseOver', 'editscrib.do','scribId',0, 0);
-      document.getElementById("scribDay").value=<%=request.getParameter("scribDay")==null?"All":request.getParameter("scribDay")%>;
+      addRowHandlersFilterTest('ec_table', 'rowMouseOver', 'editscrib.do','scribId',0, 0);
+      document.getElementById("scribDay").value='<%=request.getParameter("scribDay")==null?"All":request.getParameter("scribDay")%>';
+      function getFilterTestValue()
+      {
+      	var filters=getFilterValue(document.getElementById("scribListForm"),false);
+      	filters+="&daterange="+document.getElementById("daterange").value;
+      	filters+="&scribDay="+document.getElementById("scribDay").value;
+      	return escape(filters)
+      }
     </script>   
   </tmpl:put>
 </tmpl:insert>

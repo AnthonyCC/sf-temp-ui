@@ -216,7 +216,15 @@ public class ScribController extends AbstractMultiActionController
 			{
 				try {
 					int k=Integer.parseInt(day);
+					if(k<8)
+					{
 					c.set(Calendar.DAY_OF_WEEK , k);
+					}
+					else
+					{
+						c.set(Calendar.DAY_OF_WEEK , 7);
+						c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR)+1);
+					}
 					String ds=TransStringUtil.getServerDate(c.getTime());
 					return new String[]{ds};
 				} catch (Exception e) {

@@ -139,7 +139,9 @@
 							<td>         
 								<input type = "button" value="&nbsp;Cancel&nbsp;" onclick="javascript:location.href ='scrib.do'" />
 							</td>
-							              
+							<td>
+							   <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" /> 
+							   </td>          
 						</tr>  
 						
 						   
@@ -185,6 +187,19 @@
 			document.getElementById("ignoreErrors").value = "true";
 			document.getElementById("planForm").submit();
 		}
+		function back()
+	    {
+	      	var filters=unescape(getParameter("filter"));      	
+	      	var params=filters.split("&");
+	      	var planForm=document.forms["scrib"];
+	      	for(var i=0;i<params.length;i++)
+	      	{
+	      		var param=params[i].split("=");         				
+	      		add_input(planForm,"hidden",param[0],param[1]);
+	      	}     	      	
+	      	planForm.submit();
+	    }
 	</script>
   </tmpl:put>
 </tmpl:insert>
+<form name="scrib" action="scrib.do" method="post">  </form>
