@@ -238,8 +238,8 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 	}
 	
 	
-	public void loadNode( final String parentKey, final String nodeKey ) {
-		
+	
+    public void loadNode( final String parentKey, final String nodeKey ) {
         setStatus( "Loading " + nodeKey + " ... " );
         startProgress( "Load", "Loading " + nodeKey,  "loading..." );
 
@@ -290,8 +290,9 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                     @Override
                     public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se) {
                         int selectedIndex = contextDropdown.getSelectedIndex();
-                        if (selectedIndex == -1)
+                        if (selectedIndex == -1) {
                             return;
+                        }
                         String path = contextsList.get(selectedIndex);
                         contextChangeAction(path);
                     }
@@ -302,41 +303,39 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                 
                 ToolButton synchronizeButton = new ToolButton("x-tool-refresh");                
                 synchronizeButton.setToolTip( new ToolTipConfig("Synchronize", "Synchronize the node tree with the selected path.") );  
-                synchronizeButton.addListener( Events.OnClick, new Listener<BaseEvent>() { 
-                	@Override public void handleEvent( BaseEvent be ) { 
-                		int index = contextDropdown.getSelectedIndex();
-                		if ( index == -1 ) {
-                	    	MessageBox.alert("Info", "First select a context, then push the synchronize button to navigate in the tree.", null);
-                		} else {
-							String path = contextsList.get( index );						
-	                		treePanel.synchronize( path );
-                		}
-                	}; 
-                } );
-        		contentToolBar.add( synchronizeButton );
-        		
-        		
-        		// context ...
-        		int index = -1;
-        		String contextPath = treePanel.getSelectedPath();        		
-        		
-        		if ( contextPath != null )
-		    		index = contextsList.indexOf( contextPath );
+                synchronizeButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+                    @Override
+                    public void handleEvent(BaseEvent be) {
+                        int index = contextDropdown.getSelectedIndex();
+                        if (index == -1) {
+                            MessageBox.alert("Info", "First select a context, then push the synchronize button to navigate in the tree.", null);
+                        } else {
+                            String path = contextsList.get(index);
+                            treePanel.synchronize(path);
+                        }
+                    };
+                });
+                contentToolBar.add(synchronizeButton);
 
-        		if ( index == -1 ) {
-        			contextPath = currentNodeData.getDefaultContextPath();
-        		}
-        		
-	            if ( contextPath != null )
-	            	index = contextsList.indexOf( contextPath );
-            
-	    		if ( index != -1 ) {
-		    		contextDropdown.setFireChangeEventOnSetValue( false );
-		    		contextDropdown.setValue( contextDropdown.getStore().getAt( index ) );
-//		        	contextDropdown.setFireChangeEventOnSetValue( true );
-	    		}
+                // context ...
+                int index = -1;
+                String contextPath = treePanel.getSelectedPath();
 
-	    		
+                if (contextPath != null)
+                    index = contextsList.indexOf(contextPath);
+
+                if (index == -1) {
+                    contextPath = currentNodeData.getDefaultContextPath();
+                }
+
+                if (contextPath != null) {
+                    index = contextsList.indexOf(contextPath);
+                }
+                if (index != -1) {
+                    contextDropdown.setFireChangeEventOnSetValue(false);
+                    contextDropdown.setValue(contextDropdown.getStore().getAt(index));
+                    // contextDropdown.setFireChangeEventOnSetValue( true );
+                }
         		
                 // ============ save & discard buttons ============ 
                 contentToolBar.add( new FillToolItem() );
@@ -358,7 +357,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                         }
                     });
                     saveButton.setToolTip( new ToolTipConfig( "Save", "Saves the workset." ) );
-            		saveButton.addStyleName( "save-button-text" );
+                    saveButton.addStyleName( "save-button-text" );
                     contentToolBar.add( saveButton ); 
                     
                     Button discardButton = new Button("Discard", new SelectionListener<ButtonEvent>() {
@@ -389,6 +388,23 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
         String historyToken = event.getValue();
 
         if (historyToken == null || historyToken.length() == 0) {
+            return;
+        }
+        if ("administration".equals(historyToken)) {
+            GwtUser currentUser = CmsGwt.getCurrentUser();
+            if (currentUser!=null && currentUser.isAdmin()) {
+                AdminWindow aw = new AdminWindow(null);
+                aw.show();
+            }
+            // this is needed, to allow opening up the admin window multiple times
+            History.newItem(null);
+            return;
+        }
+        if ("publish".equals(historyToken)) {
+            GwtUser currentUser = CmsGwt.getCurrentUser();
+            if (currentUser!=null && currentUser.isAllowedToWrite()) {
+                showPublishPanel();
+            }
             return;
         }
 
@@ -556,12 +572,12 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 
     void openNode(final ContentNodeModel node, final ContentNodeModel parent) {
         StringBuilder command = new StringBuilder(64);
-        if ( parent != null ) {
-        	command.append ( parent.getKey() );
-        	command.append( '$' );
+        if (parent != null) {
+            command.append(parent.getKey());
+            command.append('$');
         }
-        command.append( node.getKey() );
-        History.newItem( command.toString() );
+        command.append(node.getKey());
+        History.newItem(command.toString());
     }
     
     protected boolean isFormChanged() {
@@ -574,28 +590,13 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
     public void userChanged() {
         GwtUser currentUser = CmsGwt.getCurrentUser();
         if (currentUser != null && currentUser.isAdmin()) {
-            Hyperlink hp = new Hyperlink("Administration", "");
-            hp.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent click) {
-                    click.stopPropagation();
-                    AdminWindow aw = new AdminWindow(null);
-                    aw.show();
-                }
-            });
+            Hyperlink hp = new Hyperlink("Administration", "administration");
             hp.addStyleName("commandLink");
             this.header.addToButtonPanel(hp);
         }
         
         if (currentUser != null && currentUser.isAllowedToWrite()) {
-            Hyperlink hp = new Hyperlink("Publish", "");
-            hp.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent click) {
-                    click.stopPropagation();
-                    showPublishPanel();
-                }
-            });
+            Hyperlink hp = new Hyperlink("Publish", "publish");
             hp.addStyleName("commandLink");
             this.header.addToButtonPanel(hp);
         }
