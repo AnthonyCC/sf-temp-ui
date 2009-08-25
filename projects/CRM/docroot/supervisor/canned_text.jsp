@@ -7,6 +7,8 @@
 <%@ page import="com.freshdirect.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.crm.CrmManager"%>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -55,8 +57,7 @@
 		}
 	}
 %>
-<%@page import="com.freshdirect.framework.util.NVL"%>
-<%@page import="org.apache.commons.lang.StringEscapeUtils"%><link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
 <style type="text/css">
 body {
 	background-color: #FFFFFF;
@@ -147,18 +148,16 @@ body {
 	<td class="border_bold" style="text-align: right;" nowrap="nowrap">&nbsp;</td>
 	<td valign="bottom" class="border_bold" style="text-align: right;" nowrap="nowrap"><span class="detail_text"><b>Commands</b></span></td>	
 	</tr>
-	
-	<%
-		Collection allCt = CrmManager.getInstance().getAllCannedText();
+<%
+		Collection<ErpCannedText> allCt = CrmManager.getInstance().getAllCannedText();
 		if(allCt ==  null || allCt.size() == 0) {
-	%>
+%>
 	<tr><td><span class="error">No canned text.</span></td></tr>
-
-	<%
+<%
 		} else {
-	%>	
-
-	<logic:iterate id="cannedText" collection="<%= allCt %>" type="com.freshdirect.customer.ErpCannedText">
+			for (ErpCannedText cannedText : allCt) {
+		
+%>
 	<tr>
 	<td class="border_bottom" nowrap="nowrap"><span class="detail_text"><%= cannedText.getId() %></span></td>	
 	<td class="border_bottom" nowrap="nowrap">&nbsp;</td>
@@ -174,7 +173,10 @@ body {
 		<input type="button" name="delete" value="DELETE" class="submit" onclick="javascript:doAction('delete', '<%= StringEscapeUtils.escapeJavaScript(cannedText.getId()) %>');">
 	</td>
 	</tr>
-	</logic:iterate>
+<%
+			}
+		}
+%>
 	<tr>
 		<td colspan="9" align="center">
 			<img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
@@ -230,9 +232,6 @@ body {
 		<fd:ErrorHandler result='<%=result%>' name='ct_general' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 	</tr>
-	<%
-		}
-	%>
 </table>
 </form>
 
