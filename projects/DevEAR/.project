@@ -33,7 +33,7 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>oracle.eclipse.tools.weblogic.sharedLibraryFrameworkValidator</name>
+			<name>com.bea.workshop.wls.core.j2eeLibraryFrameworkValidator</name>
 			<arguments>
 			</arguments>
 		</buildCommand>

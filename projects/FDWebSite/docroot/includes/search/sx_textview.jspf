@@ -132,7 +132,7 @@ ContentNodeModel lastSubCategory = null;
 
 			if (defaultPrice != null) {%>
 				-
-				<% if (hasWas && wasDeal > 10 && wasDeal <= 75) { %>
+				<% if (hasWas) { %>
 				<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%= CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 				<span class="save-label">SAVE <%= wasDeal %>%</span>
 				<span class="save-base-price">was <%= CURRENCY_FORMATTER.format(basePrice) %></span> 

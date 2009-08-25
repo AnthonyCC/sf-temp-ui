@@ -100,7 +100,7 @@ int k = 0;
 			if (defaultPrice != null) {
 				String scaledPrices[] = pi.getScaledPrices();
 				int scaledPercents[] = pi.getScaledPercentages(realBase);
-				if (hasWas && wasDeal > 10 && wasDeal <= 75) {
+				if (hasWas) {
 				%><div>
 					<span class="save-label">SAVE <%= wasDeal %>%</span>
 					<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>

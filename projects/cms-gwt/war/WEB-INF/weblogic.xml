@@ -14,4 +14,11 @@
         <wls:externally-defined></wls:externally-defined>
     </wls:security-role-assignment>
     <wls:context-root>cms-gwt</wls:context-root>
+<!--
+    <wls:library-ref>
+        <wls:library-name>wls-commonslogging-bridge-war</wls:library-name>
+        <wls:specification-version>1.0</wls:specification-version>
+        <wls:exact-match>true</wls:exact-match>
+    </wls:library-ref>
+-->
 </wls:weblogic-web-app>
