@@ -596,8 +596,17 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             hp.addStyleName("commandLink");
             this.header.addToButtonPanel(hp);
         }
-        header.setUserInfo(currentUser.getName() + " (" + (currentUser.isAllowedToWrite() ? "editor " : "")
-                + (currentUser.isAdmin() ? " admin" : "") + ')');
+        StringBuilder s = new StringBuilder().append(currentUser.getName()).append(" (");
+        if (currentUser.isAllowedToWrite()) {
+            s.append("editor");
+        }
+        if (currentUser.isAllowedToWrite() && currentUser.isAdmin()) {
+            s.append(' ');
+        }
+        if (currentUser.isAdmin()) {
+            s.append("admin");
+        }
+        header.setUserInfo(s.append(')').toString());
         
     }
 

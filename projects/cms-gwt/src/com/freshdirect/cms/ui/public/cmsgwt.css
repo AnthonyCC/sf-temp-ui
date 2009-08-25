@@ -283,6 +283,10 @@
 
 /* command links in the header  */
 
+.commandLink {
+	text-align: center;	
+}
+
 .commandLink a {
 	font-family: verdana, sans-serif;
 	font-size: 9pt;
