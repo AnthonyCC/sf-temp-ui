@@ -21,12 +21,17 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>com.bea.workshop.wls.core.j2eeLibraryFrameworkValidator</name>
+			<name>com.m7.nitrox.nitroxbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>com.m7.nitrox.nitroxbuilder</name>
+			<name>com.google.gdt.eclipse.core.webAppProjectValidator</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>com.google.gwt.eclipse.core.gwtProjectValidator</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -37,5 +42,7 @@
 		<nature>org.eclipse.wst.common.modulecore.ModuleCoreNature</nature>
 		<nature>org.eclipse.jem.workbench.JavaEMFNature</nature>
 		<nature>com.m7.nitrox.webProjectNature</nature>
+		<nature>com.google.gdt.eclipse.core.webAppNature</nature>
+		<nature>com.google.gwt.eclipse.core.gwtNature</nature>
 	</natures>
 </projectDescription>
