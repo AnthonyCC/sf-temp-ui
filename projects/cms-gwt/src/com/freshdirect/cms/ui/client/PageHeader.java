@@ -3,7 +3,7 @@ package com.freshdirect.cms.ui.client;
 import com.extjs.gxt.ui.client.widget.HtmlContainer;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class PageHeader extends LayoutContainer {
 
     private HtmlContainer headerMarkup;
-    Panel buttonPanel;
+    HorizontalPanel buttonPanel;
 
     PageHeader() {
         super(new FillLayout());
@@ -22,8 +22,9 @@ public class PageHeader extends LayoutContainer {
                 + "<div class=\"userLabel\" id=\"userInfo\">unknown</div>"
                 + "<div id=\"buttonPanel\">BUTTONS</div></div>");
 
-        buttonPanel = new FlowPanel();
-
+        buttonPanel = new HorizontalPanel();
+        buttonPanel.setSpacing(4);
+        
         headerMarkup.add(buttonPanel, "#buttonPanel");
 
         add(headerMarkup);

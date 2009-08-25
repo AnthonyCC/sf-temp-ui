@@ -36,7 +36,11 @@
 	/* background-color : red; */	
 	float : right;
 	height : 22px;
-	width : 120px;
+	width : 180px;
+}
+
+#buttonPanel div, #buttonPanel table {
+	width : 100%;	
 }
 
 
@@ -241,9 +245,6 @@
 	margin-left: 10px;
 }
 
-#pageHeader {
-	
-}
 .pageHeader {
 	color:#999999;
 	font-size:8pt;
