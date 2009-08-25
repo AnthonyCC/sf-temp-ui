@@ -73,8 +73,8 @@ if (sameDayPendingOrderCount == 1) {
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
 		<table border="0" cellspacing="0" cellpadding="0">
 		    <tr valign="top">
-			<td width="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);ntptEventTag('ev=button_event&ni_btn=cancel_checkout');" id="cancelX"><img src="/media_stat/images/buttons/x_green.gif" width="20" height="19" border="0" alt="CONTINUE SHOPPING"></a></td>
-			<td width="350"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);ntptEventTag('ev=button_event&ni_btn=cancel_checkout');" id="cancelText"><img src="/media_stat/images/buttons/cancel_checkout.gif" width="92" height="7" border="0" alt="CANCEL CHECKOUT"></a><br>and return to your cart.<br><img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0"></td>
+			<td width="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelX"><img src="/media_stat/images/buttons/x_green.gif" width="20" height="19" border="0" alt="CONTINUE SHOPPING"></a></td>
+			<td width="350"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText"><img src="/media_stat/images/buttons/cancel_checkout.gif" width="92" height="7" border="0" alt="CANCEL CHECKOUT"></a><br>and return to your cart.<br><img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0"></td>
 		    </tr>
 		</table>
 	</td></tr>
