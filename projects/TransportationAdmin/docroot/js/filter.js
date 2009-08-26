@@ -16,7 +16,7 @@ function setFilter(ecForm,newForm)
 
 function add_input(form,type,name,value)
 {
-	var newInput=document.createElement("<input>");
+	var newInput=document.createElement("input");
 	newInput.setAttribute("type", type);
 	newInput.setAttribute("name", name);
 	newInput.setAttribute("value", value);							
