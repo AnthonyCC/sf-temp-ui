@@ -465,18 +465,20 @@ public class TranslatorToGwt {
     
     private static ContentNodeModel toContentNodeModel(ContentKey key) {
         ContentNodeI node = key.getContentNode();
-        ContentNodeModel  result = new ContentNodeModel (key.getType().getName(), node.getLabel(), key.getEncoded());
-        if (result.isHtmlType()) {
-            Object path = node.getAttribute("path").getValue();
-            result.set("path", FDStoreProperties.getCmsMediaBaseURL() + path);
-        }
-        if (result.isImageType()) {
-            Object path = node.getAttribute("path").getValue();
-            result.set("path", FDStoreProperties.getCmsMediaBaseURL() + path);
-            Object width = node.getAttribute("width").getValue();
-            result.set("width", width);
-            Object height = node.getAttribute("height").getValue();
-            result.set("height", height);
+        ContentNodeModel  result = new ContentNodeModel (key.getType().getName(), node != null ? node.getLabel() : key.getId(), key.getEncoded());
+        if (node!=null) {
+            if (result.isHtmlType()) {
+                Object path = node.getAttribute("path").getValue();
+                result.set("path", FDStoreProperties.getCmsMediaBaseURL() + path);
+            }
+            if (result.isImageType()) {
+                Object path = node.getAttribute("path").getValue();
+                result.set("path", FDStoreProperties.getCmsMediaBaseURL() + path);
+                Object width = node.getAttribute("width").getValue();
+                result.set("width", width);
+                Object height = node.getAttribute("height").getValue();
+                result.set("height", height);
+            }
         }
         return result;
     }
