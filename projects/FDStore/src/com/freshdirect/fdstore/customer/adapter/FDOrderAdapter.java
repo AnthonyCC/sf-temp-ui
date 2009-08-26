@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
@@ -82,6 +81,7 @@ import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDOrderAdapter implements FDOrderI {
+	private static final long serialVersionUID = -7702575123652018830L;
 
 	private static Category LOGGER = LoggerFactory.getInstance(FDOrderAdapter.class);
 
@@ -91,8 +91,8 @@ public class FDOrderAdapter implements FDOrderI {
 	private FDInvoiceAdapter lastInvoice;
 	private ErpAbstractInvoiceModel returnOrder;
 	private ErpRedeliveryModel redeliveryModel;
-	private List orderLines;
-	private List sampleLines;
+	private List<FDCartLineI> orderLines;
+	private List<FDCartLineI> sampleLines;
 	private FDReservation deliveryReservation;
 	// List<FDCartonInfo>
 	protected List cartonInfo;
@@ -165,8 +165,8 @@ public class FDOrderAdapter implements FDOrderI {
 			}
 		}
 
-		this.orderLines = new ArrayList();
-		this.sampleLines = new ArrayList();
+		this.orderLines = new ArrayList<FDCartLineI>();
+		this.sampleLines = new ArrayList<FDCartLineI>();
 		List erpLines = erpOrder.getOrderLines();
 		for (int i = 0; i < erpLines.size(); i++) {
 			ErpOrderLineModel ol = (ErpOrderLineModel) erpLines.get(i);
@@ -425,10 +425,9 @@ public class FDOrderAdapter implements FDOrderI {
 		int PENDING = 2;
 
 		int hasCredits = 0;
-		Collection complaints = this.getComplaints();
+		Collection<ErpComplaintModel> complaints = this.getComplaints();
 		hasCredits = (complaints.size() > 0) ? YES : NO;
-		for (Iterator it = complaints.iterator(); it.hasNext();) {
-			ErpComplaintModel complaint = (ErpComplaintModel) it.next();
+		for (ErpComplaintModel complaint : complaints) {
 			if (EnumComplaintStatus.PENDING.equals(complaint.getStatus())) {
 				hasCredits = PENDING;
 				break;
@@ -442,14 +441,12 @@ public class FDOrderAdapter implements FDOrderI {
 	public static final int IC_GROUP_BY_DEPTS = 1;
 	public static final int IC_GROUP_BY_CARTONS = 2;
 	public int getComplaintGroupingFashion() {
-		Collection comps = getComplaints();
+		Collection<ErpComplaintModel> comps = getComplaints();
 
 		if (comps == null || comps.size() == 0)
 			return IC_FREE2GROUP;
 		
-		for (Iterator it=comps.iterator(); it.hasNext();) {
-			ErpComplaintModel compl = (ErpComplaintModel)it.next();
-			
+		for (ErpComplaintModel compl : comps) {
 			// skip rejected complaints
 			if (!EnumComplaintStatus.REJECTED.equals(compl.getStatus()))
 				return compl.isCartonized() ? IC_GROUP_BY_CARTONS : IC_GROUP_BY_DEPTS;
@@ -467,7 +464,7 @@ public class FDOrderAdapter implements FDOrderI {
 	 * Retrieves the list of complaints recorded for a given order.
 	 * @return read-only Collection of ErpComplaintModel objects.
 	 */
-	public Collection getComplaints() {
+	public Collection<ErpComplaintModel> getComplaints() {
 		return sale.getComplaints();
 	}
 

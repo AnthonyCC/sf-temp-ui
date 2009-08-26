@@ -82,8 +82,9 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
         for (Iterator it = _is_lineComplaints.iterator(); it.hasNext(); ) {
             ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
             if (_is_index == Integer.parseInt( line.getComplaintLineNumber() ) ) {
-                retQty += line.getQuantity();
-                retAmount += line.getAmount();
+                retQty = line.getQuantity();
+                retAmount = line.getAmount();
+                break;
             }
         }
 
@@ -205,6 +206,7 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
 	<input type="hidden" name="orderlineId" value="<%=_is_orderline.getOrderLineId() %>">
 
 	<input type="hidden" name="ol_cartnum" value="<%= _is_cartonNumber %>">
+	<input type="hidden" name="ol_ret_amount" value="<%= retAmount %>">
 <%
 
 	// mark form dirty
