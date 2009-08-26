@@ -360,9 +360,11 @@ public class NodeTree extends ContentPanel {
             if (isMainTree()) {
                 // this is for the main tree :
                 String newValue = "search/" + searchField.getValue().trim();
+                MainLayout.startProgress("Search", "Searching for " + searchField.getValue().trim(), "searching...");
                 if (!newValue.equals(History.getToken())) {
-                    MainLayout.startProgress("Search", "Searching for " + searchField.getValue().trim(), "searching...");
-                    History.newItem("search/" + searchField.getValue().trim());
+                    History.newItem(newValue);
+                } else {
+                    History.fireCurrentHistoryState();
                 }
             } else {
                 // search in popups is not using history
