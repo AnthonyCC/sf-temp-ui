@@ -9,10 +9,11 @@
 
 package com.freshdirect.erp.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.freshdirect.erp.EnumATPRule;
-import com.freshdirect.framework.core.*;
+import com.freshdirect.framework.core.ModelSupport;
 
 /**
  * ErpProductInfo model class.
@@ -23,7 +24,7 @@ import com.freshdirect.framework.core.*;
  */
 public class ErpProductInfoModel extends ModelSupport {
 	
-	public static class ErpMaterialPrice {
+	public static class ErpMaterialPrice implements Serializable{
 		private final double price;
 		
 		private final String unit;
