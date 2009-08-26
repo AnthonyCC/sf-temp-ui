@@ -44,17 +44,30 @@
     <servlet-name>adminService</servlet-name>
     <url-pattern>/adminService</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>adminService</servlet-name>
+    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/adminService</url-pattern>
+  </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>recipeUpload</servlet-name>
     <url-pattern>/RecipeUpload</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>recipeUpload</servlet-name>
+    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/RecipeUpload</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>xlsUpload</servlet-name>
     <url-pattern>/XlsUpload</url-pattern>
   </servlet-mapping>
-  
+  <servlet-mapping>
+    <servlet-name>xlsUpload</servlet-name>
+    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/XlsUpload</url-pattern>
+  </servlet-mapping>
+
+<!--  -->
   <security-constraint>
 		<display-name>CMS Security Constraint</display-name>
 		<web-resource-collection>
@@ -100,6 +113,7 @@
 		<description>CMS Administrator</description>
 		<role-name>cms_admin</role-name>
 	</security-role>
-
+<!--
+-->
 
 </web-app>
