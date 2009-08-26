@@ -356,20 +356,22 @@ public class NodeTree extends ContentPanel {
 	}
 	
     private void searchAction() {
-        if ( searchField.getValue() != null && searchField.getValue().trim().length() > 0 ) {
-        	
-        	if ( isMainTree() ) {
-            	// this is for the main tree :
-        		MainLayout.startProgress( "Search", "Searching for " + searchField.getValue().trim(), "searching..." );
-    			History.newItem( "search/" + searchField.getValue().trim() );        		
-        	} else {
-        		// search in popups is not using history
-        		search( searchField.getValue().trim() );
-        	}
-        	
+        if (searchField.getValue() != null && searchField.getValue().trim().length() > 0) {
+            if (isMainTree()) {
+                // this is for the main tree :
+                String newValue = "search/" + searchField.getValue().trim();
+                if (!newValue.equals(History.getToken())) {
+                    MainLayout.startProgress("Search", "Searching for " + searchField.getValue().trim(), "searching...");
+                    History.newItem("search/" + searchField.getValue().trim());
+                }
+            } else {
+                // search in popups is not using history
+                search(searchField.getValue().trim());
+            }
+
         } else {
             loadRootNodes();
-        }    	
+        }
     }
 	
 	private void clearSearchAction() {
