@@ -60,9 +60,9 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 		relationButton.setEnabled( !readOnly );		
 
 		// TODO only works good if setReadOnly is called at most once!
-		if( readOnly ) {
-			setFieldLabel( "[R/O]" + getFieldLabel() );
-		}
+//		if( readOnly ) {
+//			setFieldLabel( "[R/O]" + getFieldLabel() );
+//		}
 	}
 	
 	private void initialize() {

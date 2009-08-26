@@ -62,6 +62,17 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
         }
     }
     
+    /**
+     * Renders a link to the row content node model. This can be used, when
+     * content nodes are displayed with their properties, so the
+     * ContentNodeModel contains "key", "label", and "id" values.
+     */
+    public final static GridCellRenderer<ContentNodeModel> GRID_LINK_RENDERER = new GridCellRenderer<ContentNodeModel>() {
+        public Object render(ContentNodeModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ContentNodeModel> store, Grid<ContentNodeModel> grid) {
+            return model.renderLink();
+        }
+    };
+
 	protected Grid<OneToManyModel> grid;
 	protected ListStore<OneToManyModel> store;
 	protected Set<String> allowedTypes;
@@ -119,9 +130,9 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			createButton.setEnabled( !readOnly );
 		
 		//FIXME multiple calls will add R/O multiple times, not good
-		if ( readOnly ) {
-			setFieldLabel( "[R/O]" + getFieldLabel() );
-		}
+//		if ( readOnly ) {
+//			setFieldLabel( "[R/O]" + getFieldLabel() );
+//		}
 	}
 	
 	@Override
@@ -441,7 +452,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		    column.setId("label");
             column.setMenuDisabled(true);
             column.setWidth(MAIN_LABEL_WIDTH);
-            column.setRenderer(Utils.GRID_LINK_RENDERER);
+            column.setRenderer(GRID_LINK_RENDERER);
             config.add(column);
 		} else {
             int idx = 0;

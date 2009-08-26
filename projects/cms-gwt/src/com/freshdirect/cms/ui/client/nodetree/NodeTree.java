@@ -111,15 +111,26 @@ public class NodeTree extends ContentPanel {
 				
 				StringBuilder sb = new StringBuilder(256);
 				
-				if ( model.isMediaType() ) {
-					//TODO we need an image url here, only have contentmodel ...
-					sb.append( "<a target=\"_blank\" href=\"" + "image url goes here" + "\"><img src=\"img/image_zoom.gif\"></a>" );
+				if ( model.isMediaType() && model.getPreviewUrl() != null ) {  
+					sb.append( "<a target=\"preview\" href=\"javascript: void(0)\" onclick=\"window.open('" );
+					sb.append( model.getPreviewUrl() );
+					sb.append( "','preview','directories=no,location=no,menubar=no,status=no,titlebar=no,toolbar=no" );
+					if ( model.isImageType() ) {
+						sb.append( ",width=" );
+						sb.append( model.getWidth() );
+						sb.append( ",height=" );
+						sb.append( model.getHeight() );
+					} else if ( model.isHtmlType() ) {
+						sb.append( ",width=300" );
+						sb.append( ",height=200" );
+					}
+					sb.append( "'); return false;\"><img src=\"img/image_zoom.gif\"></a>" );
 				}
-								
+				
 				if ( allowedTypes == null || allowedTypes.contains( model.getType() ) ) {
 					sb.append( model.getLabel() );
 					sb.append( " <span class=\"dimmed\">[" );
-					sb.append( model.getKey() );
+					sb.append( model.getId() );
 					sb.append( "]</span>" );
 				} else {	
 					sb.append( "<span class=\"disabled\">" );

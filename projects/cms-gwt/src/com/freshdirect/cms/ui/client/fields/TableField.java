@@ -18,11 +18,14 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute.ColumnType;
@@ -69,7 +72,22 @@ public class TableField extends MultiField {
         }
     }
     
+    /**
+     * Renders a link to a content node model, which stored as the property of
+     * the model.
+     */
+    public final static GridCellRenderer<BaseModelData> GRID_LINK_FROM_PROPERTY_RENDERER = new GridCellRenderer<BaseModelData>() {
+        public Object render(BaseModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<BaseModelData> store,Grid<BaseModelData> grid) {
+            Object rmodel = model.get(property);
+            if (rmodel instanceof ContentNodeModel) {
+                return ((ContentNodeModel) rmodel).renderLink();
+            } else {
+                return rmodel != null ? rmodel.toString() : "<i>null</i>";
+            }
+        }
+    };
 
+    
     TableAttribute attribute;
 
     protected Grid<BaseModelData> grid;
@@ -92,7 +110,7 @@ public class TableField extends MultiField {
             ColumnConfig cc = new ColumnConfig("col_" + i, col.getLabel(), 150);
             
             if (ColumnType.KEY == types[i]) {
-                cc.setRenderer(Utils.GRID_LINK_FROM_PROPERTY_RENDERER);
+                cc.setRenderer(GRID_LINK_FROM_PROPERTY_RENDERER);
             } else if (ColumnType.CLASS == types[i]) {
                 cc.setHidden(true);
             }

@@ -159,7 +159,7 @@ public class ContentForm extends FormPanel {
         attribute.setFieldObject(field);
 
         if (attribute.isReadonly() || node.isReadonly()) {
-            field.setFieldLabel(attribute.getLabel() + "[R/O]");
+            field.setFieldLabel( "<span class=\"readonly\">" + attribute.getLabel() + "</span>");
         } else {
             field.setFieldLabel(attribute.getLabel());
         }

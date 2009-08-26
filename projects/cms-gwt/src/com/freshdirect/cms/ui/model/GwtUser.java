@@ -2,13 +2,15 @@ package com.freshdirect.cms.ui.model;
 
 import java.io.Serializable;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * This is a duplicate of CmsUser, but needed separately because of the GWT serialization requirements.
  * 
  * @author zsombor
  *
  */
-public class GwtUser implements Serializable, Cloneable {
+public class GwtUser implements Serializable, Cloneable, IsSerializable {
 
     
     /**

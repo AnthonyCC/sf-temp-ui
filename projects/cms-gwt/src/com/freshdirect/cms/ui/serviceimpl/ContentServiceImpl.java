@@ -126,8 +126,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         return ContentKey.decode(nodeKey).getContentNode().getLabel();
     }
 
-    @SuppressWarnings("unchecked")
-	public List<ContentNodeModel> search(String searchTerm) {
+    public List<ContentNodeModel> search(String searchTerm) {
         List<SearchHit> hits = (List<SearchHit>)CmsManager.getInstance().search(searchTerm, MAX_HITS);
         List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(hits.size());
         for (SearchHit hit : hits) {
@@ -142,8 +141,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         return result;
     }
 
-    @SuppressWarnings("unchecked")
-	public List<ContentNodeModel> getChildren(ContentNodeModel loadConfig) {
+    public List<ContentNodeModel> getChildren(ContentNodeModel loadConfig) {
         try {
             ArrayList<ContentNodeModel> children = new ArrayList<ContentNodeModel>();
 
@@ -169,41 +167,8 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                     children.add(child);
                 }
             }
-
-            
-            // old method with paging hack
-            
-//            KeyInfo keyInfo = new KeyInfo(loadConfig.getKey());
-//            ContentNodeI root = CmsManager.getInstance().getContentNode(keyInfo.getContentKey());
-//            if (root != null) {
-//                List<ContentKey> childKeys = new ArrayList<ContentKey>((Collection<ContentKey>)root.getChildKeys());
-//                if (childKeys.size() >= MAX_CHILD_KEYS) {
-//                    // paging ...
-//                    if (!keyInfo.isPaging()) {
-//                        // return 'virtual' nodes ...
-//                        for (int i = 0; i < childKeys.size(); i += MAX_CHILD_KEYS) {
-//                            int endPos = Math.min(i + MAX_CHILD_KEYS, childKeys.size());
-//                            ContentNodeModel child = new ContentNodeModel(keyInfo.getType(), root.getLabel() + "[" + i + ',' + endPos + ']', keyInfo.getPageKey(i, endPos));
-//                            children.add(child);
-//                        }
-//                    } else {
-//                        // return paged result, without sorting ...
-//                        for (int i = keyInfo.getStart(); i < keyInfo.getEnd(); i++) {
-//                            ContentKey key = childKeys.get(i);
-//                            ContentNodeModel child = TranslatorToGwt.getContentNodeModel(key.getContentNode());
-//                            children.add(child);
-//                        }
-//                    }
-//                } else {
-//                    TreeSet<ContentNodeI> nodes = getOrderedNodes(childKeys);
-//                    for (ContentNodeI childNode : nodes) {
-//                        ContentNodeModel child = TranslatorToGwt.getContentNodeModel(childNode);
-//                        children.add(child);
-//                    }
-//                }
-//            }
-
             return children;
+            
         } catch (RuntimeException e) {
             LOG.error("runtime exception for "+loadConfig, e);
             return new ArrayList<ContentNodeModel>();
@@ -247,8 +212,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     	return TranslatorToGwt.gwtNodeDataSkeleton( type, id );
     }
 
-    @SuppressWarnings("unchecked")
-	public List<BulkEditModel> getEditChildren(BulkEditModel loadConfig) {
+    public List<BulkEditModel> getEditChildren(BulkEditModel loadConfig) {
         
         ArrayList<BulkEditModel> children = new ArrayList<BulkEditModel>();
 
@@ -297,12 +261,14 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 request.addNode(node);
             }
             CmsResponseI responseI = CmsManager.getInstance().handle(request);
-            String id = responseI != null && responseI.getChangeSetId() != null ? responseI.getChangeSetId().getId() : null;
+            String id = null;
             GwtChangeSet gsc = null;
-            if (id != null) {
-                gsc = TranslatorToGwt.getGwtChangeSet( getChangeLogService().getChangeSet(responseI.getChangeSetId()));
+            if ( responseI != null && responseI.getChangeSetId() != null ) {
+				id = responseI.getChangeSetId().getId();
+				gsc = TranslatorToGwt.getGwtChangeSet( getChangeLogService().getChangeSet( responseI.getChangeSetId() ) );
             }
             return new GwtSaveResponse(id, gsc);
+            
         } catch (ContentValidationException v) {
             List<ContentValidationMessage> messages = (List<ContentValidationMessage>)v.getDelegate().getValidationMessages();
             List<GwtValidationError> errors = new ArrayList<GwtValidationError>();

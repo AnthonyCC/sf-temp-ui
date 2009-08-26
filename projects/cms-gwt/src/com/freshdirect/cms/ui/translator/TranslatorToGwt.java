@@ -67,7 +67,13 @@ public class TranslatorToGwt {
     
     
 	public static ContentNodeModel getContentNodeModel( ContentNodeI node ) {
-		return new ContentNodeModel(node.getDefinition().getType().getName(), node.getLabel(), node.getKey().getEncoded(), node.getChildKeys().size() > 0 );
+		return toContentNodeModel( node.getKey() );
+//		return new ContentNodeModel( 
+//				node.getDefinition().getType().getName(), 
+//				node.getLabel(), 
+//				node.getKey().getEncoded(), 
+//				node.getChildKeys().size() > 0 
+//		);
 	}
 
 	public static BulkEditModel getBulkModel( ContentNodeI node ) {
@@ -90,7 +96,6 @@ public class TranslatorToGwt {
 		return model;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static GwtContentNode getGwtNode( ContentNodeI node, TabDefinition tabDefs ) {
 		GwtContentNode gwtNode = new GwtContentNode( node.getKey().getType().getName(), node.getKey().getId() );
 		gwtNode.setLabel( node.getLabel() );
@@ -266,7 +271,6 @@ public class TranslatorToGwt {
 	 * @param customFieldDefinition 
 	 * @return
 	 */
-    @SuppressWarnings("unchecked")
     public static ModifiableAttributeI translateAttribute(AttributeI attribute, CustomFieldDefinition customFieldDefinition) {
         AttributeDefI definition = attribute.getDefinition();
         Object value = attribute.getValue();
@@ -277,7 +281,8 @@ public class TranslatorToGwt {
         return attr;
     }
 
-    private static ModifiableAttributeI translateAttribute(AttributeDefI definition, CustomFieldDefinition customFieldDefinition, Object value) {
+    @SuppressWarnings( "unchecked" )
+	private static ModifiableAttributeI translateAttribute(AttributeDefI definition, CustomFieldDefinition customFieldDefinition, Object value) {
         String name = definition.getLabel();
         EnumAttributeType type = definition.getAttributeType();
         ModifiableAttributeI attr = null;
@@ -467,18 +472,18 @@ public class TranslatorToGwt {
         ContentNodeI node = key.getContentNode();
         ContentNodeModel  result = new ContentNodeModel (key.getType().getName(), node != null ? node.getLabel() : key.getId(), key.getEncoded());
         if (node!=null) {
-            if (result.isHtmlType()) {
-                Object path = node.getAttribute("path").getValue();
-                result.set("path", FDStoreProperties.getCmsMediaBaseURL() + path);
-            }
-            if (result.isImageType()) {
-                Object path = node.getAttribute("path").getValue();
-                result.set("path", FDStoreProperties.getCmsMediaBaseURL() + path);
-                Object width = node.getAttribute("width").getValue();
-                result.set("width", width);
-                Object height = node.getAttribute("height").getValue();
-                result.set("height", height);
-            }
+	        if (result.isHtmlType()) {
+	            Object path = node.getAttribute("path").getValue();
+	            result.setPreviewUrl( FDStoreProperties.getCmsMediaBaseURL() + path );
+	        }
+	        if (result.isImageType()) {
+	            Object path = node.getAttribute("path").getValue();
+	            result.setPreviewUrl( FDStoreProperties.getCmsMediaBaseURL() + path );
+	            Object width = node.getAttribute("width").getValue();
+	            result.setWidth( (Integer)width );
+	            Object height = node.getAttribute("height").getValue();
+	            result.setHeight( (Integer)height );
+	        }
         }
         return result;
     }
@@ -526,7 +531,6 @@ public class TranslatorToGwt {
 	
 	// =========================== private methods  ===========================
 	
-    @SuppressWarnings("unchecked")
     private static ContentNodeI findEditor(ContentType type) {
         String typeName = type.getName();
         Set<ContentKey> editorKeys = CmsManager.getInstance().getContentKeysByType(ContentType.get("CmsEditor"));

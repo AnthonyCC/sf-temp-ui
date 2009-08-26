@@ -123,6 +123,10 @@
 }
 /* ====== node tree ====== */
 
+/* read only field labels */
+.readonly {
+	color: #C0C0C0;
+}
 
 
 /* ====== form ====== */
