@@ -44,12 +44,11 @@ import com.freshdirect.cms.ui.model.GwtUser;
 import com.freshdirect.cms.ui.model.GwtValidationError;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Hyperlink;
 
 public class MainLayout extends Viewport implements ValueChangeHandler<String> {
@@ -563,7 +562,6 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
         		}
         	}     
         }
-        
     }
 
     void openNode(final ContentNodeModel node, final ContentNodeModel parent) {
@@ -596,6 +594,12 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             hp.addStyleName("commandLink");
             this.header.addToButtonPanel(hp);
         }
+        if (currentUser != null) {
+            Anchor hp = new Anchor("Logout", "logout.jsp");
+            hp.addStyleName("commandLink");
+            this.header.addToButtonPanel(hp);
+        }
+        
         StringBuilder s = new StringBuilder().append(currentUser.getName()).append(" (");
         if (currentUser.isAllowedToWrite()) {
             s.append("editor");
@@ -607,8 +611,6 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             s.append("admin");
         }
         header.setUserInfo(s.append(')').toString());
-        
     }
-
     
 }
