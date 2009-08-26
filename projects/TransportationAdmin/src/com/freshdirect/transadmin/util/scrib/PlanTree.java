@@ -104,16 +104,29 @@ class DateNode
 	
 	public void prepare(SchdeuleEmployeeDetails s)
 	{
-		String key=s.getSchedule().getRegion().getCode();		
+		String key=s.getSchedule().getRegion().getCode();				
 		if(ScheduleEmployeeInfo.DEPOT.equalsIgnoreCase(key))
 		{
-			DepotNode value=(DepotNode)depot.get(key);
-			if(value==null)
+			if(s.getSchedule().getDepotZone()!=null)
 			{
-				value=new DepotNode();
-				depot.put(key, value);
+				DepotNode value=(DepotNode)depot.get(key);
+				if(value==null)
+				{
+					value=new DepotNode();
+					depot.put(key, value);
+				}
+				value.prepare(s);
 			}
-			value.prepare(s);
+			else
+			{
+				RegionNode value=(RegionNode)regions.get(key);
+				if(value==null)
+				{
+					value=new RegionNode();
+					regions.put(key, value);
+				}
+				value.prepare(s);
+			}
 		}else
 		{
 			RegionNode value=(RegionNode)regions.get(key);
