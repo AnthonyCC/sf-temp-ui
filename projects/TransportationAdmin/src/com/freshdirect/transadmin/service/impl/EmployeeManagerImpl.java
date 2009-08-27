@@ -280,13 +280,13 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 							{
 								String day=TransStringUtil.getServerDay(TransStringUtil.getServerDateString(date)).toUpperCase();
 								ScheduleEmployee se=getSchedule(r.getId().getResourceId(),day);
-								planTime=TransStringUtil.getServerTime(se.getTime());
+								if(se!=null&&se.getTime()!=null)planTime=TransStringUtil.getServerTime(se.getTime());
 							}
 							if(r.getId().getAdjustmentTime()!=null)
 							{
 								planTime=TransStringUtil.getServerTime(r.getId().getAdjustmentTime());
 							}
-							if(!planTime.equalsIgnoreCase(punchTime))
+							if(planTime!=null&&!planTime.equalsIgnoreCase(punchTime))
 							{
 								WebPlanResource wpr=new WebPlanResource();
 								wpr.setEmp(getEmployee(punch.getEmployeeId()));
