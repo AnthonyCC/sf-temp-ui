@@ -138,7 +138,9 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 	}
 	
     public Component renderLink() {
-        
+        if (getType()==null) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder(512);
         sb.append("<table class=\"content-label\"><tr><td><img src=\"img/icons/");
         sb.append(getType());

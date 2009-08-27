@@ -20,6 +20,8 @@ public class PublishStatusPopup extends Window {
     TextField<String> statusField = new TextField<String>();
     TextField<String> startedField = new TextField<String>();
     TextField<String> elapsedTimeField = new TextField<String>();
+    
+    TextField<String> lastInfoField = new TextField<String> ();
 
     Timer timer;
 
@@ -44,6 +46,11 @@ public class PublishStatusPopup extends Window {
         elapsedTimeField.setFieldLabel("Elapsed Time");
         elapsedTimeField.setValue("---");
         add(elapsedTimeField);
+        
+        lastInfoField.setReadOnly(true);
+        lastInfoField.setFieldLabel("Step");
+        lastInfoField.setValue("running");
+        add(lastInfoField);
         
         timer = new Timer() {
             @Override
@@ -81,6 +88,8 @@ public class PublishStatusPopup extends Window {
 
         startedField.setValue(DateTimeFormat.getMediumTimeFormat().format(resp.getPublishStart()));
         elapsedTimeField.setValue("" + (resp.getElapsedTime() / 1000) + " seconds");
+        lastInfoField.setValue(resp.getLastInfo());
+        
         if (!"PROGRESS".equals(resp.getPublishStatus())) {
             timer.cancel();
         }

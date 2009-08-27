@@ -1,7 +1,9 @@
 package com.freshdirect.cms.ui.client;
 
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
 
 public class ChangeHistoryPopUp extends Window {
@@ -9,7 +11,7 @@ public class ChangeHistoryPopUp extends Window {
     public ChangeHistoryPopUp(ChangeSetQueryResponse changeHistory, String label) {
         super();
         setHeading("Change History for : " + label);
-        setLayout(new FitLayout());
+        setLayout(new BorderLayout());
         setModal(true);
         setMaximizable(true);
         setMinimizable(false);
@@ -18,6 +20,11 @@ public class ChangeHistoryPopUp extends Window {
         setResizable(true);
         setSize(900, 600);
 
-        add(new ChangeSetPanel(changeHistory));
+        BorderLayoutData bd = new BorderLayoutData(LayoutRegion.CENTER);
+        add(new ChangeSetPanel(changeHistory), bd);
+        
+        BorderLayoutData south = new BorderLayoutData(LayoutRegion.SOUTH);
+        add(new PublishMessagesPanel(changeHistory), south);
+        
     }
 }

@@ -31,6 +31,7 @@ import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.cms.meta.EnumDef;
 import com.freshdirect.cms.meta.RelationshipDef;
 import com.freshdirect.cms.publish.Publish;
+import com.freshdirect.cms.publish.PublishMessage;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.BulkEditModel;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
@@ -38,6 +39,7 @@ import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeContext;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.GwtPublishData;
+import com.freshdirect.cms.ui.model.GwtPublishMessage;
 import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.freshdirect.cms.ui.model.TabDefinition;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
@@ -553,5 +555,27 @@ public class TranslatorToGwt {
         d.setStatus(p.getStatus().getDescription());
         return d;
     }
-	
+
+    public static GwtPublishMessage getPublishMessage(PublishMessage pm) {
+        GwtPublishMessage g = new GwtPublishMessage ();
+        g.setContentId(pm.getContentId());
+        g.setContentType(pm.getContentType());
+        g.setMessage(pm.getMessage());
+        g.setTimestamp(pm.getTimestamp());
+        g.setSeverity(pm.getSeverity());
+        return g;
+    }
+    
+    public static List<GwtPublishMessage> getPublishMessages(Collection<PublishMessage> list) {
+        List<GwtPublishMessage> result = new ArrayList<GwtPublishMessage>(list.size());
+        for (PublishMessage pm : list) {
+            result.add(getPublishMessage(pm));
+        }
+        return result;
+    }
+
+    public static List<GwtPublishMessage> getPublishMessages(Publish publish) {
+        return getPublishMessages(publish.getMessages());
+    }
+    
 }

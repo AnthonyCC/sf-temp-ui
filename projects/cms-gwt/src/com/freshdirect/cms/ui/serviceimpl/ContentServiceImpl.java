@@ -30,6 +30,7 @@ import com.freshdirect.cms.changecontrol.ChangeLogServiceI;
 import com.freshdirect.cms.changecontrol.ChangeSet;
 import com.freshdirect.cms.publish.EnumPublishStatus;
 import com.freshdirect.cms.publish.Publish;
+import com.freshdirect.cms.publish.PublishMessage;
 import com.freshdirect.cms.publish.PublishServiceI;
 import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
@@ -38,6 +39,7 @@ import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.GwtPublishData;
+import com.freshdirect.cms.ui.model.GwtPublishMessage;
 import com.freshdirect.cms.ui.model.GwtSaveResponse;
 import com.freshdirect.cms.ui.model.GwtUser;
 import com.freshdirect.cms.ui.model.GwtValidationError;
@@ -292,10 +294,10 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             }
             ChangeLogServiceI chgService = getChangeLogService();
             if (query.getById() != null) {
-                return createResponse(TranslatorToGwt.getGwtChangeSets(chgService.getChangeSet(new PrimaryKey(query.getById()))), query);
+                return createResponse(TranslatorToGwt.getGwtChangeSets(chgService.getChangeSet(new PrimaryKey(query.getById()))), query, null);
             }
             if (query.getByKey() != null) {
-                return createResponse(TranslatorToGwt.getGwtChangeSets((List<ChangeSet>) chgService.getChangeHistory(ContentKey.decode(query.getByKey()))), query);
+                return createResponse(TranslatorToGwt.getGwtChangeSets((List<ChangeSet>) chgService.getChangeHistory(ContentKey.decode(query.getByKey()))), query, null);
             }
             if (query.getPublishId() != null) {
                 PublishServiceI service = getPublishService();
@@ -316,7 +318,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 if (query.isPublishInfoQuery()) {
                     return new ChangeSetQueryResponse(publish.getStatus().getName(),
                             publish.getTimestamp(), 
-                            System.currentTimeMillis() - publish.getTimestamp().getTime());
+                            System.currentTimeMillis() - publish.getTimestamp().getTime(), TranslatorToGwt.getPublishMessages(publish), getLastInfo(publish));
                 }
                 
                 LOG.info("collecting changes from " + prevTimestamp + " to " + timestamp + ", query:" + query);
@@ -324,13 +326,26 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 LOG.info("returning " + result.size() + " changeset" + ", query:" + query);
                 
                 // hack, to not fail with thousands of changesets ...
-                return createResponse(TranslatorToGwt.getGwtChangeSets(result), query);
+                return createResponse(TranslatorToGwt.getGwtChangeSets(result), query, TranslatorToGwt.getPublishMessages(publish));
             }
             return null;
         } catch (RuntimeException e) {
             LOG.error("RuntimeException saving  "+query, e);
             throw e;
         }
+    }
+
+    private String getLastInfo(Publish publish) {
+        String lastMessage = null;
+        Date lastDate = null;
+        for (PublishMessage m : publish.getMessages()) {
+            if (m.getSeverity() == PublishMessage.INFO) {
+                if (lastDate==null || lastDate.before(m.getTimestamp())) {
+                    lastMessage = m.getMessage();
+                }
+            }
+        }
+        return lastMessage;
     }
 
     /**
@@ -343,6 +358,11 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         if (!user.isPublishAllowed()) {
             throw new GwtSecurityException("User "+user.getName()+" is not allowed to publish!");
         }
+        Publish recentPublish = getPublishService().getMostRecentNotCompletedPublish();
+        if (recentPublish!=null && EnumPublishStatus.PROGRESS.equals(recentPublish.getStatus())) {
+            return recentPublish.getId();
+        }
+        
         Date date = new Date();
         
         Publish publish = new Publish();
@@ -356,7 +376,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     }
     
 
-    private ChangeSetQueryResponse createResponse(List<GwtChangeSet> changeHistory, ChangeSetQuery query) {
+    private ChangeSetQueryResponse createResponse(List<GwtChangeSet> changeHistory, ChangeSetQuery query, List<GwtPublishMessage> pMessages) {
         int changeCount = 0;
         for (GwtChangeSet gcs : changeHistory) {
             changeCount += gcs.length();
@@ -365,9 +385,9 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         int limit = query.getLimit() <= 0 ? 1000 : Math.min(query.getLimit(), 1000);
         int end = Math.min(query.getStart() + limit, changeHistory.size());
         if (end == changeHistory.size() && query.getStart() == 0) {
-            return new ChangeSetQueryResponse(changeHistory, changeHistory.size(), changeCount, query);
+            return new ChangeSetQueryResponse(changeHistory, changeHistory.size(), changeCount, query, pMessages);
         }
-        return new ChangeSetQueryResponse(new ArrayList<GwtChangeSet>(changeHistory.subList(query.getStart(), end)), changeHistory.size(), changeCount, query);
+        return new ChangeSetQueryResponse(new ArrayList<GwtChangeSet>(changeHistory.subList(query.getStart(), end)), changeHistory.size(), changeCount, query, pMessages);
     }
 
 
