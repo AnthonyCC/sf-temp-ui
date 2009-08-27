@@ -5,6 +5,7 @@
  */
 package com.freshdirect.webapp.util;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -943,7 +944,7 @@ public class JspMethods {
 			FDProduct fdProduct = FDCachedFactory.getProduct(prodInfo);
 			if(null != fdProduct.getDisplaySalesUnits() && fdProduct.getDisplaySalesUnits().length > 0){
 				FDSalesUnit fdSalesUnit = fdProduct.getDisplaySalesUnits()[0];
-				double salesUnitRatio = (double)fdSalesUnit.getNumerator()/(double)fdSalesUnit.getDenominator();
+				double salesUnitRatio = (double)fdSalesUnit.getDenominator()/(double)fdSalesUnit.getNumerator();
 				String alternateUnit = fdSalesUnit.getName();
 //				double displayPrice = prodInfo.getDefaultPrice()/salesUnitRatio;
 				String[] scales =fdProduct.getPricing().getScaleDisplay();
@@ -1003,7 +1004,7 @@ public class JspMethods {
 			FDProduct fdProduct = FDCachedFactory.getProduct(prodInfo);
 			if(null != fdProduct.getDisplaySalesUnits() && fdProduct.getDisplaySalesUnits().length > 0){
 				FDSalesUnit fdSalesUnit = fdProduct.getDisplaySalesUnits()[0];
-				double salesUnitRatio = (double)fdSalesUnit.getNumerator()/(double)fdSalesUnit.getDenominator();
+				double salesUnitRatio = (double)fdSalesUnit.getDenominator()/(double)fdSalesUnit.getNumerator();
 				String alternateUnit = fdSalesUnit.getName();
 				double displayPrice = prodInfo.getDefaultPrice()/salesUnitRatio;
 				if(displayPrice>0){
@@ -1018,5 +1019,17 @@ public class JspMethods {
 		return displayPriceString;
 	}
 	
-
+	/**
+	 * For truncating the decimal number to 2 digits.
+	 * @param number
+	 * @return
+	 */
+	public static double formatDecimal(double number){
+		DecimalFormat decimalFormat = new DecimalFormat("0.##");
+		String strNumber = decimalFormat.format(number);
+		strNumber = strNumber.replaceAll(",", ".");
+		Double numberDouble = new Double(strNumber);
+		return numberDouble.doubleValue();
+		
+	}
 }
