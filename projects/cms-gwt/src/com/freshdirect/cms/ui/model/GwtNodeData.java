@@ -168,6 +168,12 @@ public class GwtNodeData implements Serializable {
     
     private boolean equal(Serializable value, Serializable oldValue) {
         if (value != null) {
+            if (value instanceof String) {
+                value = ((String) value).replace('\n', ' ');
+            }
+            if (oldValue instanceof String) {
+                oldValue = ((String) oldValue).replace('\n', ' ');
+            }
             return value.equals(oldValue);
         } else {
             return oldValue==null;

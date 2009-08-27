@@ -158,6 +158,11 @@ public class TableField extends MultiField {
         add(new AdapterField(cp));
     }
     
+    @Override
+    public Object getValue() {
+        // return the original value, because no editing is possible with this field.
+        return attribute.getValue();
+    }
     
 
 }
