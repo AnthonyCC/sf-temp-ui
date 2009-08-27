@@ -28,6 +28,7 @@
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
 <%@page import="com.freshdirect.smartstore.impl.ClassicYMALRecommendationService"%>
 <%@page import="com.freshdirect.smartstore.impl.SmartYMALRecommendationService"%>
+<%@page import="com.freshdirect.smartstore.ymal.YmalUtil"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.framework.util.CSVUtils"%>
 <%@page import="org.apache.commons.fileupload.servlet.ServletFileUpload"%>
@@ -174,9 +175,7 @@ if (ServletFileUpload.isMultipartContent(request)) {
 // debug
 System.err.println("# of cycles to simulate: " + noOfCycles);
 
-%>
-
-<html>
+%><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>YMAL PERFORMANCE TEST PAGE</title>
@@ -337,6 +336,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 	    			SessionInput input = new SessionInput(tp.getUser());
 	    			input.setCurrentNode(tp.getProduct());
 	    			input.setYmalSource(tp.getProduct());
+	    		    YmalUtil.resetActiveYmalSetSession(input.getYmalSource(), request);
 	    			input.setMaxRecommendations(6);
 	    			classic.recommendNodes(input);
 	    		}
@@ -356,6 +356,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 	    			SessionInput input = new SessionInput(tp.getUser());
 	    			input.setCurrentNode(tp.getProduct());
 	    			input.setYmalSource(tp.getProduct());
+	    		    YmalUtil.resetActiveYmalSetSession(input.getYmalSource(), request);
 	    			input.setMaxRecommendations(6);
 	    			smart.recommendNodes(input);
 	    		}

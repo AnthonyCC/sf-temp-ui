@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletRequest;
+
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -113,10 +115,10 @@ public class PromoVariantHelper {
 		user.setSavingsVariantId(savVariant);
 	}
 	
-	public static void updateSavingsVariantFound(FDUserI user,  int maxRecommendations){
+	public static void updateSavingsVariantFound(FDUserI user,  int maxRecommendations, ServletRequest request) {
 		SessionInput input = new SessionInput(user);
 		TabRecommendation tabs = null;
-		FDStoreRecommender.initYmalSource(input, user);
+		FDStoreRecommender.initYmalSource(input, user, request);
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(maxRecommendations);
 		tabs = CartTabRecommender.recommendTabs( user, input, null);	

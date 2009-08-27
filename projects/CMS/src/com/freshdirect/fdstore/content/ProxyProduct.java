@@ -344,6 +344,10 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public YmalSet getActiveYmalSet() {
 		return getProduct().getActiveYmalSet();
 	}
+	
+	public void resetActiveYmalSetSession() {
+		getProduct().resetActiveYmalSetSession();
+	}
 
 	/**
 	 *  Return a list of YMAL products.

@@ -95,7 +95,7 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		SessionInput input = new SessionInput(user);
 		initFromSession(input);
-		FDStoreRecommender.initYmalSource(input, user);
+		FDStoreRecommender.initYmalSource(input, user, request);
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(itemCount);
 

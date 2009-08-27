@@ -34,6 +34,7 @@
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
 <%@page import="com.freshdirect.smartstore.impl.ClassicYMALRecommendationService"%>
 <%@page import="com.freshdirect.smartstore.impl.SmartYMALRecommendationService"%>
+<%@page import="com.freshdirect.smartstore.ymal.YmalUtil"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.framework.util.CSVUtils"%>
 <%@page import="org.apache.commons.fileupload.servlet.ServletFileUpload"%>
@@ -114,8 +115,7 @@ if (!origURL.equals(newURL)) {
 	response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));	
 }
 
-%>
-<html>
+%><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>YMAL PERFORMANCE TEST PAGE</title>
@@ -280,6 +280,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 			while (it.hasNext()) {
 				YmalSet set = (YmalSet) it.next();
 				ProductModel product = (ProductModel) sets.get(set);
+			    YmalUtil.resetActiveYmalSetSession(set, request);
 				
 			
 		    	long runtime = Long.MIN_VALUE;

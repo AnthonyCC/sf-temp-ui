@@ -50,7 +50,7 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
     PromoVariantHelper.updateSavingsVariant(user, savingsLookupTable);
     String usrVariant = user.getSavingsVariantId();
     if(usrVariant != null && usrVariant.length() > 0) {
-        PromoVariantHelper.updateSavingsVariantFound(user, 5);
+        PromoVariantHelper.updateSavingsVariantFound(user, 5, request);
     } else {
         user.setSavingsVariantFound(false);
     }

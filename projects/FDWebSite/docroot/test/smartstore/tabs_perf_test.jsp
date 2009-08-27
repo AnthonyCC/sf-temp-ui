@@ -104,7 +104,7 @@
 	ProductModel source = null;
 	if (useLoggedIn) {
 		if (user != null) {
-		    FDStoreRecommender.initYmalSource(input, user);
+		    FDStoreRecommender.initYmalSource(input, user, request);
 		}
 	} else {
 		String triggeringProduct = urlG.get("triggeringProduct");

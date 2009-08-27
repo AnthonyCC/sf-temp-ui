@@ -422,6 +422,9 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	public YmalSet getActiveYmalSet() {
 		return isActive() ? this : null;
 	}
+	
+	public void resetActiveYmalSetSession() {
+	}
 
 	public List getYmalProducts(Set removeSkus) {
 		if (removeSkus == null || removeSkus.isEmpty())

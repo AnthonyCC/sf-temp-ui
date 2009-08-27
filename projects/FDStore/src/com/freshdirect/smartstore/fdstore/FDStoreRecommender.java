@@ -8,13 +8,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -25,6 +26,7 @@ import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.filter.FilterFactory;
 import com.freshdirect.smartstore.filter.ProductFilter;
+import com.freshdirect.smartstore.ymal.YmalUtil;
 
 public class FDStoreRecommender {
     private final static Logger LOGGER = Logger.getLogger(FDStoreRecommender.class);
@@ -92,11 +94,13 @@ public class FDStoreRecommender {
          * 
          * @return The most expensive product as YmalSource
          */
-        public static YmalSource resolveYmalSource(Collection products) {
+        public static YmalSource resolveYmalSource(Collection products, ServletRequest request) {
             if (products == null || products.isEmpty()) {
                 return null;
             } else  {
-                return (YmalSource) Collections.max(products, ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE);
+                YmalSource source = (YmalSource) Collections.max(products, ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE);
+                YmalUtil.resetActiveYmalSetSession(source, request);
+                return source;
             }
         }
 
@@ -107,10 +111,10 @@ public class FDStoreRecommender {
          * @param input sessionInput
          * @param products List<ProductModel>
          */
-        public static void initYmalSource(SessionInput input, FDUserI user) {
+        public static void initYmalSource(SessionInput input, FDUserI user, ServletRequest request) {
             Set cartContents = FDStoreRecommender.getShoppingCartContents( user ) ;
             input.setCartContents(SmartStoreUtil.toContentKeySetFromModels(cartContents));
-            YmalSource ymal = resolveYmalSource(cartContents);
+            YmalSource ymal = resolveYmalSource(cartContents, request);
             if (ymal!=null) {
                 input.setYmalSource(ymal);
                 if (ymal instanceof ProductModel) {

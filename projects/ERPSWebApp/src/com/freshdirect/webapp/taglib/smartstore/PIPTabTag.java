@@ -92,7 +92,7 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 		SessionInput input = new SessionInput(user);
 		input.setPreviousRecommendations((Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
 
-		FDStoreRecommender.initYmalSource(input, user);
+		FDStoreRecommender.initYmalSource(input, user, pageContext.getRequest());
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(maxRecommendations);
 		

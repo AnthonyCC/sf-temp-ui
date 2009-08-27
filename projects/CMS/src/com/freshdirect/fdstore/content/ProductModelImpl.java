@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -48,7 +50,31 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	private static final long serialVersionUID = 2103318183933323914L;
 
 	private static final Logger LOG = LoggerFactory.getInstance( ProductModelImpl.class ); 
+	
+	private static final Random rnd = new Random();
+	
+	private synchronized static final int nextInt(int n) {
+		return rnd.nextInt(n);
+	}
 
+	private static ThreadLocal activeYmalSets = new ThreadLocal() {
+		protected Object initialValue() {
+			return new HashMap();
+		}
+	};
+	
+	private static YmalSet getCurrentActiveYmalSet(String productId) {
+		return (YmalSet) ((Map) activeYmalSets.get()).get(productId);
+	}
+	
+	private static void setCurrentActiveYmalSet(String productId, YmalSet set) {
+		((Map) activeYmalSets.get()).put(productId, set);
+	}
+
+	private static void resetActiveYmalSets() {
+		((Map) activeYmalSets.get()).clear();
+	}
+	
 	private List skuModels = new ArrayList();
 	
 	private final List brandModels = new ArrayList();
@@ -848,16 +874,31 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *  @see YmalSet
 	 */
 	public YmalSet getActiveYmalSet() {
-		List ymalSets = getYmalSets();
-		for (Iterator it = ymalSets.iterator(); it.hasNext(); ) {
-			YmalSet     ymalSet = (YmalSet) it.next();
-			
-			if (ymalSet.isActive()) {
-				return ymalSet;
+		YmalSet current = getCurrentActiveYmalSet(this.getContentKey().getId());
+		if (current == null) {
+			List ymalSets = getYmalSets();
+			List activeSets = new ArrayList(ymalSets.size());
+			for (Iterator it = ymalSets.iterator(); it.hasNext(); ) {
+				YmalSet     ymalSet = (YmalSet) it.next();
+				
+				if (ymalSet.isActive()) {
+					activeSets.add(ymalSet);
+				}
 			}
-		}
+		
+			if (activeSets.size() == 0)
+				return null;
+			else {
+				YmalSet newSet = (YmalSet) activeSets.get(nextInt(activeSets.size()));
+				setCurrentActiveYmalSet(this.getContentKey().getId(), newSet);
+				return newSet;
+			}
+		} else
+			return current;
+	}
 	
-		return null;
+	public void resetActiveYmalSetSession() {
+		resetActiveYmalSets();
 	}
 
 	/**

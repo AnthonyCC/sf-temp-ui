@@ -503,6 +503,8 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 	 */
 	public void testYmalSourceMethodsOnConfiguredProduct() {
 		YmalSource cf = (YmalSource) findNode("configured_product_mea0004561");
+		cf.resetActiveYmalSetSession();
+		
 		assertNotNull(cf);
 		// assertFalse(cf.isUnavailable());
 		assertTrue(cf instanceof ConfiguredProduct);
@@ -533,6 +535,7 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 	 */
 	public void testYmalSourceMethodsOnRecipe() {
 		YmalSource cf = (YmalSource) findNode("recipe_mea0004567");
+		cf.resetActiveYmalSetSession();
 		assertNotNull(cf);
 		// assertFalse(cf.isUnavailable());
 		assertTrue(cf instanceof Recipe);

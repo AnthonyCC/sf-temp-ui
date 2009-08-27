@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import com.freshdirect.cms.AttributeI;
@@ -18,11 +21,31 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateRange;
 
 public class Recipe extends ContentNodeModelImpl implements ContentStatusI, YmalSource {
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1726859705342564086L;
+
+	private static final Random rnd = new Random();
+	
+	private synchronized static final int nextInt(int n) {
+		return rnd.nextInt(n);
+	}
+
+	private static ThreadLocal activeYmalSets = new ThreadLocal() {
+		protected Object initialValue() {
+			return new HashMap();
+		}
+	};
+	
+	private static YmalSet getCurrentActiveYmalSet(String productId) {
+		return (YmalSet) ((Map) activeYmalSets.get()).get(productId);
+	}
+	
+	private static void setCurrentActiveYmalSet(String productId, YmalSet set) {
+		((Map) activeYmalSets.get()).put(productId, set);
+	}
+
+	private static void resetActiveYmalSets() {
+		((Map) activeYmalSets.get()).clear();
+	}
 
 	private final List authors = new ArrayList();
 
@@ -218,18 +241,33 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  @see YmalSet
 	 */
 	public YmalSet getActiveYmalSet() {
-		List ymalSets = getYmalSets();
-		for (Iterator it = ymalSets.iterator(); it.hasNext(); ) {
-			YmalSet     ymalSet = (YmalSet) it.next();
-			
-			if (ymalSet.isActive()) {
-				return ymalSet;
+		YmalSet current = getCurrentActiveYmalSet(this.getContentKey().getId());
+		if (current == null) {
+			List ymalSets = getYmalSets();
+			List activeSets = new ArrayList(ymalSets.size());
+			for (Iterator it = ymalSets.iterator(); it.hasNext(); ) {
+				YmalSet     ymalSet = (YmalSet) it.next();
+				
+				if (ymalSet.isActive()) {
+					activeSets.add(ymalSet);
+				}
 			}
-		}
-	
-		return null;
+		
+			if (activeSets.size() == 0)
+				return null;
+			else {
+				YmalSet newSet = (YmalSet) activeSets.get(nextInt(activeSets.size()));
+				setCurrentActiveYmalSet(this.getContentKey().getId(), newSet);
+				return newSet;
+			}
+		} else
+			return current;
 	}
 
+	public void resetActiveYmalSetSession() {
+		resetActiveYmalSets();
+	}
+	
 	/**
 	 *  Remove discontinued and unavailable products from a product set.
 	 *

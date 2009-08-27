@@ -286,9 +286,9 @@ String recentOrderlines = urlG.get("orderlines");
 YmalSource source = null;
 if (useLoggedIn && user != null) {
 	if (("allItems").equals(cartAlgorithm)) {
-	    FDStoreRecommender.initYmalSource(si, user);
+	    FDStoreRecommender.initYmalSource(si, user, request);
 	} else {
-		source = YmalUtil.resolveYmalSource(user, null);
+		source = YmalUtil.resolveYmalSource(user, null, request);
 		if (YmalUtil.getSelectedCartLine(user) != null)
 			si.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
 	}
@@ -313,7 +313,7 @@ if (useLoggedIn && user != null) {
 			ymalError += (ymalError.length() == 0 ? "" : "<br>") + "Unknown CMS node: " + node;
 		}
 	}
-	source = FDStoreRecommender.resolveYmalSource(prods);
+	source = FDStoreRecommender.resolveYmalSource(prods, request);
 	si.setCurrentNode(source);
 }
 si.setYmalSource(source);

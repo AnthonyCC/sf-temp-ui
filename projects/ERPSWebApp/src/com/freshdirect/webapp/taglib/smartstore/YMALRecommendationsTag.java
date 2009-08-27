@@ -85,7 +85,7 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
 				if (source instanceof ProductModel)
 					inp.setCurrentNode(source);
 			} else
-				inp.setYmalSource(YmalUtil.resolveYmalSource(user, null));
+				inp.setYmalSource(YmalUtil.resolveYmalSource(user, null, request));
 			
 			if (inp.getCurrentNode() == null)
 				inp.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());

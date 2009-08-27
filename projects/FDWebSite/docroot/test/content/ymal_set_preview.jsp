@@ -35,6 +35,7 @@
     String activeYmalSetId   = request.getParameter("ymalSetId");
     ContentFactory cf        = ContentFactory.getInstance();
     YmalSource activeYmalSet = (YmalSource) cf.getContentNode(activeYmalSetId);
+    YmalUtil.resetActiveYmalSetSession(activeYmalSet, request);
     ProductModel productNode = null;
     try {
     	productNode = (ProductModel) ContentFactory.getInstance().getContentNode(request.getParameter("productId"));
