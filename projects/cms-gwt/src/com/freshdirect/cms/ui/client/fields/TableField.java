@@ -80,7 +80,7 @@ public class TableField extends MultiField {
         public Object render(BaseModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<BaseModelData> store,Grid<BaseModelData> grid) {
             Object rmodel = model.get(property);
             if (rmodel instanceof ContentNodeModel) {
-                return ((ContentNodeModel) rmodel).renderLink();
+                return ((ContentNodeModel) rmodel).renderLinkComponent();
             } else {
                 return rmodel != null ? rmodel.toString() : "<i>null</i>";
             }

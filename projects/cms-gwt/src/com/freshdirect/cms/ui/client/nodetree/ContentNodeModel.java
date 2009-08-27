@@ -137,12 +137,31 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 	    return false;
 	}
 	
-    public Component renderLink() {
-        if (getType()==null) {
+    public Component renderLinkComponent() {
+        if ( getType() == null ) {
             return null;
         }
-        StringBuilder sb = new StringBuilder(512);
-        sb.append("<table class=\"content-label\"><tr><td><img src=\"img/icons/");
+        HtmlContainer container = new HtmlContainer( renderLink( true ) );
+        String tooltip = getPreviewToolTip();
+        if ( tooltip != null && tooltip.trim().length() > 0 ) {
+        	container.setToolTip( tooltip );
+        }
+        return container;
+    }
+
+    public String renderLink() {
+    	return renderLink( false );
+    }
+    
+    public String renderLink( boolean javascript ) {
+        StringBuilder sb = new StringBuilder( 1024 );
+        sb.append("<table class=\"content-label\"><tr>");
+        if ( javascript ) {
+	        sb.append( "<td>" );
+	        sb.append( getJavascriptPreviewLink() );
+	        sb.append( "</td>" );
+        }
+        sb.append( "<td><img src=\"img/icons/" );
         sb.append(getType());
         sb.append(".gif\"></td>");
         sb.append("<td><a href=\"#");
@@ -155,20 +174,38 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
             sb.append(getKey());
         }
         sb.append("</a></td></tr></table>");
-
-        HtmlContainer container = new HtmlContainer(sb.toString());
-        if ( previewUrl != null ) {
-            if (isImageType()) {
-                container.setToolTip("<img src=\"" + previewUrl + "\" width=\"" + width + "\" height=\"" + height + "\">");
-            }
-            if (isHtmlType()) {
-                container.setToolTip("<iframe src=\"" + previewUrl + "\"></iframe>");
-                //container.setToolTip("<a target=\"_blank\" href=\"#\"><img src=\"img/image_zoom.gif\"></a>");
-                //sb.append("<td><a target=\"_blank\" href=\"#\"><img src=\"img/image_zoom.gif\"></a></td>");
-            }
-        }
-        
-        return container;
+        return sb.toString();
     }
+    
+	public String getPreviewToolTip() {
+		if ( previewUrl != null ) {
+			if ( isImageType() ) {
+				return "<img src=\"" + previewUrl + "\" width=\"" + width + "\" height=\"" + height + "\">";
+			} else if ( isHtmlType() ) {
+				return "<iframe src=\"" + previewUrl + "\"></iframe>";
+			}			
+		}
+		return "";
+	}
+	
+	public String getJavascriptPreviewLink() {
+		StringBuffer sb = new StringBuffer( 1024 );
+		if ( isMediaType() && getPreviewUrl() != null ) {  
+			sb.append( "<a target=\"preview\" href=\"javascript: void(0)\" onclick=\"window.open('" );
+			sb.append( getPreviewUrl() );
+			sb.append( "','preview','directories=no,location=no,menubar=no,status=no,titlebar=no,toolbar=no" );
+			if ( isImageType() ) {
+				sb.append( ",width=" );
+				sb.append( getWidth() );
+				sb.append( ",height=" );
+				sb.append( getHeight() );
+			} else if ( isHtmlType() ) {
+				sb.append( ",width=500" );
+				sb.append( ",height=300" );
+			}
+			sb.append( "'); return false;\"><img src=\"img/image_zoom.gif\"></a>" );
+		}		
+		return sb.toString();
+	}
 
 }

@@ -36,11 +36,9 @@ public class OneToOneAttribute extends BaseAttribute implements ModifiableAttrib
 		return allowedTypes;
 	}
 
-	    @Override
-            public String toString() {
-                return "OneToOneAttribute[" + label + ',' + value +',' + allowedTypes + ']';
-            }
-	        
-	    
+	@Override
+	public String toString() {
+		return "OneToOneAttribute[" + label + ',' + value + ',' + allowedTypes + ']';
+	}
 
 }

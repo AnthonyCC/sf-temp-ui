@@ -69,7 +69,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
      */
     public final static GridCellRenderer<ContentNodeModel> GRID_LINK_RENDERER = new GridCellRenderer<ContentNodeModel>() {
         public Object render(ContentNodeModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ContentNodeModel> store, Grid<ContentNodeModel> grid) {
-            return model.renderLink();
+            return model.renderLinkComponent();
         }
     };
 
@@ -128,11 +128,6 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			addButton.setEnabled( !readOnly );	
 		if ( createButton != null )
 			createButton.setEnabled( !readOnly );
-		
-		//FIXME multiple calls will add R/O multiple times, not good
-//		if ( readOnly ) {
-//			setFieldLabel( "[R/O]" + getFieldLabel() );
-//		}
 	}
 	
 	@Override

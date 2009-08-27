@@ -5,7 +5,6 @@ import java.util.HashSet;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
@@ -16,7 +15,6 @@ import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
 public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 
 	private IconButton relationButton;
-	private IconButton showButton;
 	private LabelField valueField;
 	
 	private ContentNodeModel value;
@@ -34,23 +32,12 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 	}
 	
 	@Override
-	public void setValue(ContentNodeModel v) {
-		this.value = v;
+	public void setValue( ContentNodeModel model ) {
+		this.value = model;
 		
-		if ( showButton != null ) {
-			if ( value != null && value.isMediaType() ) {
-				showButton.enable();
-				showButton.show();
-	//			showButton.changeStyle( "normal" );
-			} else {
-				showButton.disable();
-				showButton.hide();
-	//			showButton.changeStyle( "disabled" );
-			}
-		}
-			
 		if ( value != null ) {
-			valueField.setValue("<table class=\"content-label\"><tr><td><img src=\"img/icons/" + value.getType() + ".gif\"></td><td><a href=\"#" + value.getKey() + "\">" + value.getLabel() + "</a></td></tr></table>");			
+			valueField.setValue( model.renderLink( true ) );
+			valueField.setToolTip( model.getPreviewToolTip() );
 		}
 	}
 	
@@ -58,14 +45,9 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 	public void setReadOnly( boolean readOnly ) {
 		super.setReadOnly( readOnly );
 		relationButton.setEnabled( !readOnly );		
-
-		// TODO only works good if setReadOnly is called at most once!
-//		if( readOnly ) {
-//			setFieldLabel( "[R/O]" + getFieldLabel() );
-//		}
 	}
 	
-	private void initialize() {
+	private void initialize() { 
 		
 		relationButton = new IconButton("rel-button");
 		relationButton.setToolTip( "Change relationship" );
@@ -84,22 +66,6 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 		});
 		add(new AdapterField(relationButton));
 		
-		// if this is some "media" type
-		if ( allowedTypes.contains( "Image" ) || allowedTypes.contains( "Html" ) ) {
-			showButton = new IconButton("show-button");
-			showButton.setToolTip( "Show media" );
-			showButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-	
-				public void handleEvent(BaseEvent be) {
-					//TODO implement
-					MessageBox.info( "Show media", "Showing media content here.", null );
-				}
-				
-			});
-			showButton.disable();
-			add(new AdapterField(showButton));
-		}
-				
 		valueField = new LabelField();		
 		add(valueField);		
 	}

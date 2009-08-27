@@ -327,7 +327,7 @@ public class TranslatorToGwt {
                 OneToOneAttribute ooAttr = new OneToOneAttribute();
                 ooAttr.setLabel(name);
                 if (v != null) {
-                    ContentNodeModel model = new ContentNodeModel(v.getType().getName(), v.getContentNode().getLabel(), v.getEncoded());
+                    ContentNodeModel model = toContentNodeModel( v );
                     ooAttr.setValue(model);
                 }
                 ooAttr.setAllowedTypes(cTypes);
@@ -341,7 +341,8 @@ public class TranslatorToGwt {
                     int idx = 0;
                     for (ContentKey k : values) {
                         ContentNodeI contentNode = k.getContentNode();
-                        OneToManyModel model = new OneToManyModel(k.getType().getName(), k.getEncoded(), contentNode.getLabel(), idx);
+                        OneToManyModel model = toOneToManyModel( k, idx );
+                        
                         if (customFieldDefinition != null) {
                             if (customFieldDefinition.getGridColumns() != null) {
                                 for (String col : customFieldDefinition.getGridColumns()) {
@@ -470,10 +471,33 @@ public class TranslatorToGwt {
     }
 
     
-    private static ContentNodeModel toContentNodeModel(ContentKey key) {
+    private static ContentNodeModel toContentNodeModel( ContentKey key ) {
         ContentNodeI node = key.getContentNode();
-        ContentNodeModel  result = new ContentNodeModel (key.getType().getName(), node != null ? node.getLabel() : key.getId(), key.getEncoded());
-        if (node!=null) {
+        ContentNodeModel result = new ContentNodeModel (
+        		key.getType().getName(), 
+        		node != null ? node.getLabel() : key.getId(), 
+        		key.getEncoded(),
+        		false
+        );
+        prepareModel( node, result );
+        return result;
+    }
+    
+    private static OneToManyModel toOneToManyModel( ContentKey key, int idx ) {
+        ContentNodeI node = key.getContentNode();
+        OneToManyModel result = new OneToManyModel (
+        		key.getType().getName(),
+        		key.getEncoded(),
+        		node.getLabel(),
+        		idx        		
+        );
+        prepareModel( node, result );
+        return result;
+    }
+
+    private static void prepareModel( ContentNodeI node, ContentNodeModel result ) {
+        if ( node != null ) {
+        	result.setHasChildren( node.getChildKeys().size() > 0 );
 	        if (result.isHtmlType()) {
 	            Object path = node.getAttribute("path").getValue();
 	            result.setPreviewUrl( FDStoreProperties.getCmsMediaBaseURL() + path );
@@ -486,11 +510,8 @@ public class TranslatorToGwt {
 	            Object height = node.getAttribute("height").getValue();
 	            result.setHeight( (Integer)height );
 	        }
-        }
-        return result;
+        }    	
     }
-    
-
     // =========================== CHANGE SETS ===========================  
 	
     public static List<GwtChangeSet> getGwtChangeSets(List<ChangeSet> changeSet) {
