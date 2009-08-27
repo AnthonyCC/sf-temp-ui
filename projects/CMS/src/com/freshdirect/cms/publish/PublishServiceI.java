@@ -37,11 +37,20 @@ public interface PublishServiceI {
 	public Publish getPublish(String id);
 
 	/**
-	 * Get information about the last publish.
+	 * Get information about the last publish, which is finished.
 	 * 
 	 * @return Publish, or null if there was no publish yet
 	 */
 	public Publish getMostRecentPublish();
+	
+	
+        /**
+         *  Return the most recent Publish object, probably this is work in progress.
+         * 
+         *  @return the most recent Publish object.
+         */
+        public Publish getMostRecentNotCompletedPublish();
+	
 
 	/**
 	 * Get a publish made before a specified publish.

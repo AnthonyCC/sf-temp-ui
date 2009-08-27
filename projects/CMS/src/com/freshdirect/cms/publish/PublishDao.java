@@ -147,6 +147,26 @@ public class PublishDao extends HibernateDaoSupport {
 			return null;
 		}
 	}
+
+	
+        /**
+         *  Return the most recent Publish object.
+         * 
+         *  @return the most recent Publish object.
+         */
+        public Publish getMostRecentNotCompletedPublish() {
+            try {
+                    List            list = query("from Publish "
+                                   + " where timestamp = (select max(publish.timestamp) from Publish publish) ");
+    
+                    return list.size() > 0 ? (Publish) list.get(0) : null;
+            } catch (ConstraintViolationException e) {
+                    // this happens if there are no complete publishes in the database
+                    // this the above nested query fails
+                    return null;
+            }
+    }
+	
 	
 	public void deletePublish(Publish publish) {
 		delete(publish);

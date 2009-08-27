@@ -73,9 +73,24 @@ public class DbPublishService extends DbService implements PublishServiceI {
 		publishDao.savePublish(publish);
 	}
 
-	public Publish getMostRecentPublish() {
-		return publishDao.getMostRecentPublish();
-	}
+        /**
+         *  Return the most recent Publish object, with state COMPLETE.
+         * 
+         *  @return the most recent Publish object.
+         */
+        public Publish getMostRecentPublish() {
+            return publishDao.getMostRecentPublish();
+        }
+        
+        /**
+         *  Return the most recent Publish object.
+         * 
+         *  @return the most recent Publish object.
+         */
+        public Publish getMostRecentNotCompletedPublish() {
+            return publishDao.getMostRecentNotCompletedPublish();
+        }
+        
 	
 	public Publish getPreviousPublish(Publish publish) {
 		return publishDao.getPreviousPublish(publish);

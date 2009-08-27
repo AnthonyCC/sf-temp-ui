@@ -22,7 +22,7 @@ public class Publish implements Serializable, Cloneable {
 	private String             description;
 	private Date               lastModified;
 	private EnumPublishStatus  status;
-	private ArrayList          messages = new ArrayList();
+	private ArrayList<PublishMessage>          messages = new ArrayList<PublishMessage>();
 	
 	// this field is not persistent
 	private String path;
@@ -72,7 +72,7 @@ public class Publish implements Serializable, Cloneable {
 	 * 
 	 * @return Returns a set of PublishMessage objects.
 	 */
-	public List getMessages() {
+	public List<PublishMessage> getMessages() {
 		return messages;
 	}
 	
@@ -81,8 +81,8 @@ public class Publish implements Serializable, Cloneable {
 	 * 
 	 * @param messages a set of PublishMessage objects, the new messages for the publish.
 	 */
-	public void setMessages(List messages) {
-		this.messages = new ArrayList(messages);
+	public void setMessages(List<PublishMessage> messages) {
+		this.messages = new ArrayList<PublishMessage>(messages);
 	}
 	
 	/**
@@ -118,19 +118,21 @@ public class Publish implements Serializable, Cloneable {
 	 * 
 	 *  @return a new Publish object, with the same properties.
 	 */
-	public Object clone() {
-		Publish clone = new Publish();
-		
-		clone.id           = id;
-		clone.timestamp    = (Date) timestamp.clone();
-		clone.userId       = userId;
-		clone.description  = description;
-		clone.lastModified = (Date) lastModified.clone();
-		clone.status       = status;
-		clone.messages     = (ArrayList) messages.clone();
-		
-		return clone;
-	}
+	
+    @SuppressWarnings("unchecked")
+    public Object clone() {
+        Publish clone = new Publish();
+
+        clone.id = id;
+        clone.timestamp = (Date) timestamp.clone();
+        clone.userId = userId;
+        clone.description = description;
+        clone.lastModified = (Date) lastModified.clone();
+        clone.status = status;
+        clone.messages = (ArrayList) messages.clone();
+
+        return clone;
+    }
 	
 	/**
 	 *  Compare the Publish object to another one.
