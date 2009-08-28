@@ -3,7 +3,7 @@ alter table cust.complaintline add carton_number varchar2(20);
 
 -- add subject code and priority to reason table
 --
-alter table complaint_code
+alter table cust.complaint_code
   add subject_code varchar2(8)
   add priority integer;
 
@@ -14,7 +14,7 @@ alter table complaint_code
 
 -- assign random case subjects
 --
-update complaint_code set subject_code = (
+update cust.complaint_code set subject_code = (
   select b.code as subject_code from
   (
     select code, name, rownum as priority
@@ -37,5 +37,5 @@ update complaint_code set subject_code = (
 
 -- assign mock priorities
 --
-update complaint_code set priority=rownum;
+update cust.complaint_code set priority=rownum;
 
