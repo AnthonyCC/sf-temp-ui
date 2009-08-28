@@ -196,7 +196,8 @@
 			//
 			ProductModel product = pi.getProductModel();
 			ProductLabelling pl = new ProductLabelling(fd_user, product);
-			String actionURI = FDURLUtil.getProductURI(product, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), pl.getTrackingCode(), rank, recmnd!=null ? recmnd.getImpressionId(product) : null);
+			String actionURI = FDURLUtil.getProductURI(product, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), pl.getTrackingCode(), rank, recmnd!=null ? recmnd.getImpressionId(product) : null,
+					ym_aset.getContentKey().getId(), ym_product.getContentName());
 %>							<td class="ymal_product" style="width: <%= Math.round(100.0/rsize) %>%; text-align: center; vertical-align: top;">
 
 								<!-- start of ymal products internal table -->								

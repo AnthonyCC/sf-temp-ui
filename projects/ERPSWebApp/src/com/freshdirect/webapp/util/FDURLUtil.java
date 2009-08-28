@@ -171,8 +171,8 @@ public class FDURLUtil {
         public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, String trackingCodeEx, int rank) {
             return getProductURI(productNode, variantId, trackingCode,trackingCodeEx,rank, null);
         }
-
-	/**
+        
+    /**
 	 * Generate product page URL
 	 * (called from Featured Items pages)
 	 * 
@@ -182,7 +182,25 @@ public class FDURLUtil {
 	 * @param trackingCodeEx {@link String} Tracking code (fave, ...)
 	 * @return URI that points to the page of product
 	 */
-	public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, String trackingCodeEx, int rank, String impressionId) {
+	public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, 
+			String trackingCodeEx, int rank, String impressionId) {
+		return getProductURI(productNode, variantId, trackingCode, trackingCodeEx, rank, impressionId, null, null);
+	}
+    
+	/**
+	 * Generate product page URL
+	 * (called from Featured Items pages)
+	 * 
+	 * @param productNode {@link ProductModel} product instance
+	 * @param variantId {@link String} variant identifier
+	 * @param trackingCode {@link String} Tracking code (dyf, cpage, ...)
+	 * @param trackingCodeEx {@link String} Tracking code (fave, ...)
+	 * @param ymalSetId {@link String} YMAL set ID
+	 * @param originatingProductId {@link String} originating product id or YMAL product ID
+	 * @return URI that points to the page of product
+	 */
+	public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, 
+			String trackingCodeEx, int rank, String impressionId, String ymalSetId, String originatingProductId) {
 		
 		StringBuffer uri = new StringBuffer();
 		
@@ -197,6 +215,18 @@ public class FDURLUtil {
 			// variant ID may contain SPACE or other non-ASCII characters ...
 			uri.append(URL_PARAM_SEP + "variant=" + safeURLEncode(variantId));
 			// uri.append(URL_PARAM_SEP + "fdsc.source=SS");
+		}
+
+		// append YMAL set ID (optional)
+		if (ymalSetId != null) {
+			// YMAL set ID may contain SPACE or other non-ASCII characters ...
+			uri.append(URL_PARAM_SEP + "ymalSetId=" + safeURLEncode(ymalSetId));
+		}
+
+		// append originatig product ID (optional)
+		if (originatingProductId != null) {
+			// originating product ID may contain SPACE or other non-ASCII characters ...
+			uri.append(URL_PARAM_SEP + "originatingProductId=" + safeURLEncode(originatingProductId));
 		}
 
 		// tracking code 
@@ -356,6 +386,14 @@ public class FDURLUtil {
 	    	// additional DYF parameter
 	    	if (params.get("variant") != null) {
 	    		collectedParams.put("variant"+suffix, ((String[])params.get("variant"))[0]);
+	    	}
+
+	    	if (params.get("ymalSetId") != null) {
+	    		collectedParams.put("ymalSetId"+suffix, ((String[])params.get("ymalSetId"))[0]);
+	    	}
+
+	    	if (params.get("originatingProductId") != null) {
+	    		collectedParams.put("originatingProductId"+suffix, ((String[])params.get("originatingProductId"))[0]);
 	    	}
 
 	    	// Smart Search parameters
