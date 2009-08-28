@@ -196,7 +196,11 @@
     <input type="hidden" name="skuCode_<%= itemShownIndex %>" value="<%= sku.getSkuCode() %>">
     <input type="hidden" name="catId_<%= itemShownIndex %>" value="<%= displayProduct.getParentNode() %>">
     <input type="hidden" name="productId_<%= itemShownIndex %>" value="<%= displayProduct %>">
+    <% if (sku.getSkuCode().equals(syncProdSkuCode)) { %>
+	<%= FDURLUtil.getHiddenCommonParameters(request.getParameterMap(), "_" + itemShownIndex) %>
+    <% } else { %>
     <input type="hidden" name="trk_<%= itemShownIndex %>" value="<%= request.getParameter("trk") %>">
+    <% } %>
 <%  if(skuAvailable) {  %>
     <input type="image" name="addSingleToCart_<%= itemShownIndex %>" src="/media_stat/images/buttons/grocery_addtocart.gif" border="0" alt="Add this item to your cart">
 <%  }   %>
