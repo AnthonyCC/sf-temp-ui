@@ -50,7 +50,6 @@ insert into cust.complaint_dept_code(id,comp_dept,comp_code,priority) values(sys
 insert into cust.complaint_dept_code(id,comp_dept,comp_code,priority) values(system_seq.nextval,'WGD','WORMS',10);
 insert into cust.complaint_dept_code(id,comp_dept,comp_code,priority) values(system_seq.nextval,'WGD','NTCUBSLC',10);
 insert into cust.complaint_dept_code(id,comp_dept,comp_code,priority) values(system_seq.nextval,'WGD','PITTS',10);
-insert into cust.complaint_dept_code(id,comp_dept,comp_code,priority) values(system_seq.nextval,'WGD','LATEDEL',10);
 insert into cust.complaint_dept_code(id,comp_dept,comp_code,priority) values(system_seq.nextval,'WGD','TOOGRIS',10);
 insert into cust.complaint_dept_code(id,comp_dept,comp_code,priority) values(system_seq.nextval,'WGD','NTCLND',10);
 insert into cust.complaint_dept_code(id,comp_dept,comp_code,priority) values(system_seq.nextval,'WGD','CRACKED',10);
