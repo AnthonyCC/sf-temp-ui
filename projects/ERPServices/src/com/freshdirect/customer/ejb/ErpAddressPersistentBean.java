@@ -60,6 +60,7 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 	
 	private EnumUnattendedDeliveryFlag unattendedDeliveryFlag;
 	private String unattendedDeliveryInstructions;
+	private String customerId;
 	
 	
 
@@ -92,6 +93,7 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		
 		this.unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.NOT_SEEN;
 		this.unattendedDeliveryInstructions = "";
+		this.customerId="";
 	}
 
 	/**
@@ -143,6 +145,7 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		model.setAltPhone(this.altPhone);		
 		model.setUnattendedDeliveryFlag(this.unattendedDeliveryFlag);
 		model.setUnattendedDeliveryInstructions(this.unattendedDeliveryInstructions);
+		model.setCustomerId(this.customerId);
 		return model;
 	}
 
@@ -294,7 +297,7 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		"ALT_LAST_NAME, ALT_APARTMENT, '('||substr(ALT_PHONE,1,3)||') '||substr(ALT_PHONE,4,3)||'-'||substr(ALT_PHONE,7,4) AS ALT_PHONE," +
 		"ALT_PHONE_EXT, LONGITUDE, LATITUDE, SERVICE_TYPE, COMPANY_NAME," +
 		"'('||substr(ALT_CONTACT_PHONE,1,3)||') '||substr(ALT_CONTACT_PHONE,4,3)||'-'||substr(ALT_CONTACT_PHONE,7,4) AS ALT_CONTACT_PHONE," +
-		"ALT_CONTACT_EXT, UNATTENDED_FLAG, UNATTENDED_INSTR FROM CUST.ADDRESS WHERE ID=?";
+		"ALT_CONTACT_EXT, UNATTENDED_FLAG, UNATTENDED_INSTR, CUSTOMER_ID FROM CUST.ADDRESS WHERE ID=?";
 		
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_ADDRESS_QUERY);
@@ -326,6 +329,7 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 			this.altContactPhone = this.convertPhoneNumber(rs.getString("ALT_CONTACT_PHONE"), rs.getString("ALT_CONTACT_EXT"));
 			this.unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG"));
 			this.unattendedDeliveryInstructions = rs.getString("UNATTENDED_INSTR");
+			this.customerId=rs.getString("CUSTOMER_ID");
 		} else {
 			throw new SQLException("No such ErpAddress PK: " + this.getPK());
 		}

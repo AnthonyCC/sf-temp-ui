@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE weblogic-ejb-jar PUBLIC '-//BEA Systems, Inc.//DTD WebLogic 5.1.0 EJB//EN' 'http://www.bea.com/servers/wls510/dtd/weblogic-ejb-jar.dtd'>
+<!DOCTYPE weblogic-ejb-jar PUBLIC '-//BEA Systems, Inc.//DTD WebLogic 6.0.0 EJB//EN' 'http://www.bea.com/servers/wls600/dtd/weblogic-ejb-jar.dtd'>
 
 <!-- Created by knadeem on August 1, 2001, 8:54 PM -->
 
@@ -7,14 +7,9 @@
 
 	<weblogic-enterprise-bean>
         <ejb-name>SessionAuditor</ejb-name>
-        <caching-descriptor>
-	        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-	        <max-beans-in-cache>10</max-beans-in-cache>
-	        <idle-timeout-seconds>60</idle-timeout-seconds>
-        </caching-descriptor>
-        <persistence-descriptor>
-	        <delay-updates-until-end-of-tx>false</delay-updates-until-end-of-tx>
-        </persistence-descriptor>
+        <stateless-session-descriptor>
+	        <pool><max-beans-in-free-pool>50</max-beans-in-free-pool>
+	        </pool></stateless-session-descriptor>
 		<reference-descriptor>
             <resource-description>
                 <res-ref-name>jdbc/dbpool</res-ref-name>
@@ -26,14 +21,10 @@
 
 	<weblogic-enterprise-bean>
         <ejb-name>DlvManager</ejb-name>
-        <caching-descriptor>
-	        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-	        <max-beans-in-cache>10</max-beans-in-cache>
-	        <idle-timeout-seconds>60</idle-timeout-seconds>
-        </caching-descriptor>
-        <persistence-descriptor>
-	        <delay-updates-until-end-of-tx>true</delay-updates-until-end-of-tx>
-        </persistence-descriptor>
+        <stateless-session-descriptor>
+	        <pool><max-beans-in-free-pool>50</max-beans-in-free-pool>
+	        </pool></stateless-session-descriptor>
+        
 		<reference-descriptor>
             <resource-description>
                 <res-ref-name>jdbc/dbpool</res-ref-name>
@@ -46,14 +37,9 @@
 	
 	<weblogic-enterprise-bean>
         <ejb-name>DlvRestrictionManager</ejb-name>
-        <caching-descriptor>
-	        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-	        <max-beans-in-cache>10</max-beans-in-cache>
-	        <idle-timeout-seconds>60</idle-timeout-seconds>
-        </caching-descriptor>
-        <persistence-descriptor>
-	        <delay-updates-until-end-of-tx>true</delay-updates-until-end-of-tx>
-        </persistence-descriptor>
+        <stateless-session-descriptor>
+	        <pool><max-beans-in-free-pool>50</max-beans-in-free-pool>
+	        </pool></stateless-session-descriptor>
 		<reference-descriptor>
             <resource-description>
                 <res-ref-name>jdbc/dbpool</res-ref-name>
@@ -65,14 +51,11 @@
 	
 	<weblogic-enterprise-bean>
         <ejb-name>DlvAdminManager</ejb-name>
-        <caching-descriptor>
-	        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-	        <max-beans-in-cache>10</max-beans-in-cache>
-	        <idle-timeout-seconds>60</idle-timeout-seconds>
-        </caching-descriptor>
-        <persistence-descriptor>
-	        <delay-updates-until-end-of-tx>true</delay-updates-until-end-of-tx>
-        </persistence-descriptor>
+        <stateless-session-descriptor>
+	        <pool><max-beans-in-free-pool>50</max-beans-in-free-pool>
+	        
+        </pool></stateless-session-descriptor>
+       
 		<reference-descriptor>
             <resource-description>
                 <res-ref-name>jdbc/dbpool</res-ref-name>
@@ -84,15 +67,11 @@
     
     <weblogic-enterprise-bean>
         <ejb-name>DlvMapper</ejb-name>
-        <caching-descriptor>
-	        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-	        <max-beans-in-cache>10</max-beans-in-cache>
-	        <idle-timeout-seconds>60</idle-timeout-seconds>
-        </caching-descriptor>
-        <persistence-descriptor>
-	        <delay-updates-until-end-of-tx>true</delay-updates-until-end-of-tx>
-        </persistence-descriptor>
-		<reference-descriptor>
+        <stateless-session-descriptor>
+	        <pool><max-beans-in-free-pool>50</max-beans-in-free-pool>
+	        
+        </pool></stateless-session-descriptor>
+        <reference-descriptor>
             <resource-description>
                 <res-ref-name>jdbc/dbpool</res-ref-name>
                 <jndi-name>fddatasource</jndi-name>
@@ -103,14 +82,11 @@
     
 	<weblogic-enterprise-bean>
         <ejb-name>DlvTemplateManager</ejb-name>
-        <caching-descriptor>
-	        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-	        <max-beans-in-cache>10</max-beans-in-cache>
-	        <idle-timeout-seconds>60</idle-timeout-seconds>
-        </caching-descriptor>
-        <persistence-descriptor>
-	        <delay-updates-until-end-of-tx>true</delay-updates-until-end-of-tx>
-        </persistence-descriptor>
+        <stateless-session-descriptor>
+	        <pool><max-beans-in-free-pool>50</max-beans-in-free-pool>
+	        
+        </pool></stateless-session-descriptor>
+        
 		<reference-descriptor>
             <resource-description>
                 <res-ref-name>jdbc/dbpool</res-ref-name>
@@ -122,14 +98,11 @@
     
     <weblogic-enterprise-bean>
         <ejb-name>DlvDepotManager</ejb-name>
-        <caching-descriptor>
-	        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-	        <max-beans-in-cache>10</max-beans-in-cache>
-	        <idle-timeout-seconds>60</idle-timeout-seconds>
-        </caching-descriptor>
-        <persistence-descriptor>
-	        <delay-updates-until-end-of-tx>true</delay-updates-until-end-of-tx>
-        </persistence-descriptor>
+        <stateless-session-descriptor>
+	        <pool>
+            <max-beans-in-free-pool>50</max-beans-in-free-pool>
+	        </pool></stateless-session-descriptor>
+        
 		<reference-descriptor>
             <resource-description>
                 <res-ref-name>jdbc/dbpool</res-ref-name>
@@ -141,14 +114,10 @@
 	
     <weblogic-enterprise-bean>
         <ejb-name>DlvDepot</ejb-name>
-        <caching-descriptor>
-	        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-	        <max-beans-in-cache>500</max-beans-in-cache>
-	        <idle-timeout-seconds>10</idle-timeout-seconds>
-        </caching-descriptor>
-        <persistence-descriptor>
-	        <delay-updates-until-end-of-tx>true</delay-updates-until-end-of-tx>
-        </persistence-descriptor>
+        <entity-descriptor>
+	        <pool><max-beans-in-free-pool>50</max-beans-in-free-pool>
+	        </pool></entity-descriptor>
+        
         <reference-descriptor>
             <resource-description>
                 <res-ref-name>jdbc/dbpool</res-ref-name>
@@ -156,14 +125,52 @@
             </resource-description>
         </reference-descriptor>
         <jndi-name>freshdirect.delivery.Depot</jndi-name>
-        <transaction-isolation>
-	        <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
-	        <method>
+        
+    </weblogic-enterprise-bean>
+	<weblogic-enterprise-bean>
+        <ejb-name>RoutingGateway</ejb-name>
+        <stateless-session-descriptor>
+            
+                <pool>
+                <max-beans-in-free-pool>50</max-beans-in-free-pool>
+                </pool></stateless-session-descriptor>
+        
+        <reference-descriptor>
+            <resource-description>
+                <res-ref-name>jms/QueueFactory</res-ref-name>
+                <jndi-name>queueFactory</jndi-name>
+            </resource-description>
+            <resource-env-description>
+                <res-env-ref-name>jms/Queue</res-env-ref-name>
+                <jndi-name>./routingQueue</jndi-name>
+            </resource-env-description>
+        </reference-descriptor>
+        <jndi-name>freshdirect.routing.Gateway</jndi-name>
+    </weblogic-enterprise-bean>
+    
+    <weblogic-enterprise-bean>
+        <ejb-name>RoutingLoadListener</ejb-name>
+
+        <message-driven-descriptor>
+           
+                <pool><max-beans-in-free-pool>5</max-beans-in-free-pool>
+                </pool>
+            <destination-jndi-name>routingQueue</destination-jndi-name>
+        </message-driven-descriptor>
+
+        <jndi-name>freshdirect.routing.RoutingLoadListener</jndi-name>
+    </weblogic-enterprise-bean>
+    <transaction-isolation>
+        <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+        <method>
+            <ejb-name>RoutingGateway</ejb-name>
+            <method-intf>Remote</method-intf>
+            <method-name>*</method-name>
+        </method>
+        <method>
 	            <ejb-name>DlvDepot</ejb-name>
 	            <method-name>*</method-name>
 	        </method>
-        </transaction-isolation>
-    </weblogic-enterprise-bean>
-
-	
+    </transaction-isolation>
+    
 </weblogic-ejb-jar>

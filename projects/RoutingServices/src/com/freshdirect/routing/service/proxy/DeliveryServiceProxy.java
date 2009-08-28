@@ -5,13 +5,23 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.model.IDeliveryModel;
+import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IDrivingDirection;
+import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.service.IDeliveryService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class DeliveryServiceProxy extends BaseServiceProxy {
 	
+	public double estimateOrderServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario)  throws RoutingServiceException {
+		return getService().estimateOrderServiceTime(orderModel, scenario);
+	}
+
 	public double getServiceTime(IDeliveryModel model, String serviceTimeFactorExpression
 			, String serviceTimeExpression) throws RoutingServiceException {
 	
@@ -54,5 +64,21 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 	
 	public IDrivingDirection buildDriverDirections(List destinations)  throws RoutingServiceException {
 		return getService().buildDriverDirections(destinations);
+	}
+	
+	public IZoneModel getDeliveryZone(String zoneCode)  throws RoutingServiceException {
+		return getService().getDeliveryZone(zoneCode);
+	}
+	
+	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException {
+		return getService().getTimeslotsByDate(deliveryDate, cutOffTime, zoneCode);
+	}
+	
+	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException { 
+		return getService().getTimeslotsByDateEx(deliveryDate, cutOffTime, zoneCode);
+	}
+	
+	public List<IOrderModel> getUnassigned(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException {
+		return getService().getUnassigned(deliveryDate, cutOffTime, zoneCode);
 	}
 }

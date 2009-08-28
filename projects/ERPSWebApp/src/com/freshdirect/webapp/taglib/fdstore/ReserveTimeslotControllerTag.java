@@ -1,10 +1,13 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
+import java.util.Collection;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -13,6 +16,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -29,7 +33,9 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+		
 		FDReservation reservation = user.getReservation();
+		
 
 		try {
 			String action = this.getActionName();
@@ -40,6 +46,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 					return true;
 				}
 				FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId);
+				
 				if(reservation != null && !reservation.isAnonymous()){
 					this.changeReservation(user, reservation, timeslot);
 				}else{
@@ -65,7 +72,9 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 					return true;
 				}
 				if(reservation != null){
-					FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId());
+					
+					ErpAddressModel address=getAddress(user.getIdentity(),reservation.getAddressId());
+					FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address);
 				}
 				FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId);
 				this.reserveTimeslot(user, timeslot, AccountActivityUtil.getActionInfo(session));
@@ -123,7 +132,18 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 		FDReservation rsv = FDCustomerManager.makeReservation(user.getIdentity(), timeslot, this.rsvType, this.addressId, aInfo, chefstable);
 		user.setReservation(rsv);
 	}
-
+	
+	
+	private ErpAddressModel getAddress(FDIdentity identity,String id) throws FDResourceException {
+		
+		Collection<ErpAddressModel> addressList= FDCustomerManager.getShipToAddresses(identity);
+		for (ErpAddressModel address : addressList) {
+			if(address.getId().equals(id))
+				return address;
+		}
+		return null;
+	}
+	
 	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		if ("extendReservation".equals(this.getActionName())) {
 			HttpSession session = request.getSession();

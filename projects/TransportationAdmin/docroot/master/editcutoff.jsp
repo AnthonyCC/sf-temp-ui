@@ -53,6 +53,16 @@
                 </td>
                </tr>
                
+               <tr>
+                  <td>Cut Off Time</td>
+                  <td>                  
+                    <form:input maxlength="50" size="30" path="cutOffTime" onblur="this.value=time(this.value);"/>
+                </td>
+                <td>
+                  &nbsp;<form:errors path="cutOffTime" />
+                </td>
+               </tr>
+               
                
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>

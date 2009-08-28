@@ -37,15 +37,15 @@ import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 import com.freshdirect.transadmin.web.util.TransWebUtil;
 
-public class DispatchProviderController extends JsonRpcController  implements IDispatchProvider {
-	
+public class DispatchProviderController extends JsonRpcController implements
+		IDispatchProvider {
+
 	private DispatchManagerI dispatchManagerService;
-	
+
 	private DomainManagerI domainManagerService;
-	
+
 	private LogManagerI logManager;
-	
-	
+
 	public void setLogManager(LogManagerI logManager) {
 		this.logManager = logManager;
 	}
@@ -54,67 +54,61 @@ public class DispatchProviderController extends JsonRpcController  implements ID
 		return dispatchManagerService;
 	}
 
-	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
+	public void setDispatchManagerService(
+			DispatchManagerI dispatchManagerService) {
 		this.dispatchManagerService = dispatchManagerService;
 	}
-	
-	
 
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
 	}
 
-	public int updateRouteMapping(String routeDate, String cutOffId, String sessionId, boolean isDepot) {
+	public int updateRouteMapping(String routeDate, String cutOffId,
+			String sessionId, boolean isDepot) {
 		int result = 0;
 		
 		try {
-			result =  getDispatchManagerService().updateRouteMapping(TransStringUtil.getDate(routeDate) ,
-																cutOffId, sessionId, isDepot);
+			result = getDispatchManagerService().updateRouteMapping(
+					TransStringUtil.getDate(routeDate), cutOffId, sessionId,
+					isDepot);
 		} catch (ParseException parseExp) {
 			parseExp.printStackTrace();
 			// Do Nothing Return 0;
 		}
 		return result;
 	}
-	
-	public Collection getActiveRoute(String date,String zoneCode)
-	{
-		Collection results=null;		
-		
+
+	public Collection getActiveRoute(String date, String zoneCode) {
+		Collection results = null;
+
 		try {
-			if(zoneCode==null||zoneCode.trim().length()==0)
-			{
-				Collection c=domainManagerService.getAdHocRoutes();
-				if(c!=null)
-				{			
-					results=new ArrayList();
-					Iterator iterator=c.iterator();
-					while(iterator.hasNext())
-					{
-						TrnAdHocRoute info=(TrnAdHocRoute)iterator.next();					
+			if (zoneCode == null || zoneCode.trim().length() == 0) {
+				Collection c = domainManagerService.getAdHocRoutes();
+				if (c != null) {
+					results = new ArrayList();
+					Iterator iterator = c.iterator();
+					while (iterator.hasNext()) {
+						TrnAdHocRoute info = (TrnAdHocRoute) iterator.next();
 						results.add(info.getRouteNumber());
-						
-					}				
+
+					}
 				}
-			}
-			else
-			{
-				Collection c=domainManagerService.getRoutes(TransStringUtil.getServerDate(date));
-				if(c!=null)
-				{			
-					results=new ArrayList();
-					Iterator iterator=c.iterator();
-					while(iterator.hasNext())
-					{
-						ErpRouteMasterInfo info=(ErpRouteMasterInfo)iterator.next();					
-						if(zoneCode.equals(info.getZoneNumber()))
-						{
+			} else {
+				Collection c = domainManagerService.getRoutes(TransStringUtil
+						.getServerDate(date));
+				if (c != null) {
+					results = new ArrayList();
+					Iterator iterator = c.iterator();
+					while (iterator.hasNext()) {
+						ErpRouteMasterInfo info = (ErpRouteMasterInfo) iterator
+								.next();
+						if (zoneCode.equals(info.getZoneNumber())) {
 							results.add(info.getRouteNumber());
 						}
-					}				
+					}
 				}
 			}
-			
+
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -122,20 +116,20 @@ public class DispatchProviderController extends JsonRpcController  implements ID
 		return results;
 	}
 
-	public Collection getActivityLog(String date) 
-	{
+	public Collection getActivityLog(String date) {
 		try {
-			Date fromDate=TransStringUtil.getDate(date);
-			Date toDate=TransStringUtil.getDate(date);
-			Calendar c=Calendar.getInstance();
+			Date fromDate = TransStringUtil.getDate(date);
+			Date toDate = TransStringUtil.getDate(date);
+			Calendar c = Calendar.getInstance();
 			c.setTime(toDate);
 			c.add(Calendar.DATE, 1);
 			c.add(Calendar.SECOND, -1);
-			toDate=c.getTime();
+			toDate = c.getTime();
+
+			fromDate = new Timestamp(fromDate.getTime());
+			toDate = new Timestamp(toDate.getTime());
+			Collection list = logManager.getLogs(fromDate, toDate);
 			
-			fromDate=new Timestamp(fromDate.getTime());
-			toDate=new Timestamp(toDate.getTime());
-			Collection list= logManager.getLogs(fromDate, toDate);
 			return list;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -241,6 +235,27 @@ public class DispatchProviderController extends JsonRpcController  implements ID
 		return resultFile;
 	}
 	
+
+	public Collection getTimeSlotLogs(String date, String startTime, String endTime) {
+		try {
+			Date fromDate = TransStringUtil.getDatewithTime(date+" "+startTime);
+			Date toDate = TransStringUtil.getDatewithTime(date+" "+endTime);
+			
+			fromDate = new Timestamp(fromDate.getTime());
+			toDate = new Timestamp(toDate.getTime());
+			Collection list = logManager.getTimeSlotLogs(fromDate, toDate);
+			
+			if (list == null) {
+				list = new ArrayList();
+			}
+			return list;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	protected Map getAreaMapping(Collection areaLst) {
 		Map areaMapping = new HashMap();
 		if(areaLst != null) {

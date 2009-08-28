@@ -514,6 +514,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			info = new AddressInfo();
 		}
 		info.setZoneId(dlvResponse.getZoneId());
+		info.setZoneCode(dlvResponse.getZoneCode());
 		address.setAddressInfo(info);
 		
 		//

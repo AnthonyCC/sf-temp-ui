@@ -21,8 +21,8 @@ public class CustomerAdapter implements SapCustomerI {
 	public CustomerAdapter(boolean phonePrivate, ErpCustomerModel erpCustomer, BasicContactAddressI shipToAddress, BasicContactAddressI billToAddress) {
 		this.sapCustomerNumber = erpCustomer.getSapId();
 		ErpCustomerInfoModel customerInfo = erpCustomer.getCustomerInfo();
-		this.shipToAddress = shipToAddress==null ? null : new ContactAddressAdapter(shipToAddress, customerInfo.getFirstName(), customerInfo.getLastName(), filterPhone(phonePrivate, shipToAddress.getPhone()));
-		this.billToAddress = billToAddress==null ? null : new ContactAddressAdapter(billToAddress, customerInfo.getFirstName(), customerInfo.getLastName(), filterPhone(phonePrivate, billToAddress.getPhone()));
+		this.shipToAddress = shipToAddress==null ? null : new ContactAddressAdapter(shipToAddress, customerInfo.getFirstName(), customerInfo.getLastName(),customerInfo.getId(), filterPhone(phonePrivate, shipToAddress.getPhone()));
+		this.billToAddress = billToAddress==null ? null : new ContactAddressAdapter(billToAddress, customerInfo.getFirstName(), customerInfo.getLastName(),customerInfo.getId(), filterPhone(phonePrivate, billToAddress.getPhone()));
 		this.paymentMethod = null;
 		this.alternateAddress = null;
 	}
@@ -33,15 +33,15 @@ public class CustomerAdapter implements SapCustomerI {
 		this.alternateAddress = alternateAddress;
 	
 		ErpCustomerInfoModel customerInfo = erpCustomer.getCustomerInfo();
-		this.shipToAddress = new ContactAddressAdapter(shipToAddress, shipToAddress.getFirstName(), shipToAddress.getLastName(), filterPhone(phonePrivate, shipToAddress.getPhone()));
+		this.shipToAddress = new ContactAddressAdapter(shipToAddress, shipToAddress.getFirstName(), shipToAddress.getLastName(),customerInfo.getId(), filterPhone(phonePrivate, shipToAddress.getPhone()));
 
 		String name = erpPaymentMethod.getName();
 		int pos = name.indexOf(' ');
 		if (pos==-1) {
-			this.billToAddress = new ContactAddressAdapter(erpPaymentMethod, "", name);
+			this.billToAddress = new ContactAddressAdapter(erpPaymentMethod, "", name,customerInfo.getId());
 		} else {
 			// cut up name on credit card to first/lastname
-			this.billToAddress = new ContactAddressAdapter(erpPaymentMethod, name.substring(0,pos), name.substring(pos+1));
+			this.billToAddress = new ContactAddressAdapter(erpPaymentMethod, name.substring(0,pos), name.substring(pos+1),customerInfo.getId());
 		}
 	
 		// JCN --  MUST DEFINE AN ECHECK ADAPTER AND CHANGE THIS

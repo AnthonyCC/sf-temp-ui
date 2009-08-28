@@ -5,6 +5,8 @@ public class ContactAddressModel extends AddressModel implements BasicContactAdd
 	private String firstName = "";
 	private String lastName = "";
 	private PhoneNumber phone = new PhoneNumber("");
+	
+	private String customerId="";
 
 	public ContactAddressModel() {
 		
@@ -44,6 +46,15 @@ public class ContactAddressModel extends AddressModel implements BasicContactAdd
 		this.setFirstName(address.getFirstName());
 		this.setLastName(address.getLastName());
 		this.setPhone(address.getPhone());
+		this.setCustomerId(address.getCustomerId());
+	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 
 }

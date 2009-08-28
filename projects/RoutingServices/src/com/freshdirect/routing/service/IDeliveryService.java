@@ -5,7 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.model.IDeliveryModel;
+import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IDrivingDirection;
+import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public interface IDeliveryService {
@@ -30,4 +35,13 @@ public interface IDeliveryService {
 	
 	IDrivingDirection buildDriverDirections(List destinations)  throws RoutingServiceException;
 	
+	double estimateOrderServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario)  throws RoutingServiceException;
+	
+	IZoneModel getDeliveryZone(String zoneCode)  throws RoutingServiceException ;
+	
+	Map<String, List<IDeliverySlot>> getTimeslotsByDate(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException;
+	
+	Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException;
+	
+	List<IOrderModel> getUnassigned(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException;
 }

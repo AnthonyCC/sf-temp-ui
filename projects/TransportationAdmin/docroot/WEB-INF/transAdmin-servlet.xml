@@ -114,6 +114,8 @@
                 <prop key="/deletescrib.do">scribController</prop>
                 <prop key="/editscrib.do">scribFormController</prop>
                 <prop key="/editschedule.do">scheduleFormController</prop>
+                <prop key="/earlywarning.do">capacityController</prop>
+                <prop key="/unassigned.do">capacityController</prop>
 			</props>
 		</property>
 	</bean>
@@ -131,6 +133,11 @@
 	</bean>
 	
 	<bean id="downloadController" class="com.freshdirect.transadmin.web.DownloadController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>        
+	</bean>
+	
+	<bean id="capacityController" class="com.freshdirect.transadmin.web.CapacityController">
+		<property name="domainManagerService" ref="domainManager"/>
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>        
 	</bean>
 	
@@ -218,6 +225,8 @@
             <prop key="/scrib.do">scribHandler</prop>
             <prop key="/copyscrib.do">copyScribHandler</prop>
             <prop key="/deletescrib.do">deleteScribHandler</prop>	
+            <prop key="/earlywarning.do">earlyWarningHandler</prop>
+            <prop key="/unassigned.do">unassignedHandler</prop>
 		</props>
 		</property>
 	</bean>

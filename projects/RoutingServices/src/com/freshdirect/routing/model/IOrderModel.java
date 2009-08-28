@@ -1,5 +1,7 @@
 package com.freshdirect.routing.model;
 
+import java.util.Date;
+
 public interface IOrderModel {
 	
 	String getOrderNumber();
@@ -12,5 +14,10 @@ public interface IOrderModel {
 	
 	IDeliveryModel getDeliveryInfo();
 	void setDeliveryInfo(IDeliveryModel deliveryInfo);
-
+	
+	Date getCreateModifyTime();
+	void setCreateModifyTime(Date createModifyTime);
+	
+	Date getUnassignedTime();
+	void setUnassignedTime(Date unassignedTime);
 }

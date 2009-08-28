@@ -82,6 +82,16 @@
 	     	<access-uris>scrib.do,editscrib.do,copyscrib.do,deletescrib.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>
+     	 
+     	 <menu id="RUT009" title="Early Warning" orientation="LEFT" link="earlywarning.do">
+	     	<access-uris>earlywarning.do</access-uris>
+     	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+     	 </menu>
+     	 
+     	 <menu id="RUT010" title="Unassigned" orientation="LEFT" link="unassigned.do">
+	     	<access-uris>unassigned.do</access-uris>
+     	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+     	 </menu>
 </menu>
 
 	<menu id="MNM003" title="GEOGRAPHY" orientation="LEFT" link="">

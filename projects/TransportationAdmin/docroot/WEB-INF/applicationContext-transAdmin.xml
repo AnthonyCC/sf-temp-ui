@@ -49,6 +49,8 @@
 				<value>com/freshdirect/transadmin/model/Scrib.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/UserPref.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/ScheduleEmployee.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TimeslotLog.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TimeslotLogDtl.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

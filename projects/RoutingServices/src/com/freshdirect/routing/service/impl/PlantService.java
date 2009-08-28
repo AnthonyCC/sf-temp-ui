@@ -7,15 +7,45 @@ import java.util.Map;
 
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.service.IPlantService;
+import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.util.ServiceTimeUtil;
 import com.freshdirect.sap.command.SapCartonInfo;
 import com.freshdirect.sap.ejb.SapException;
 
-public class PlantService implements IPlantService {
+public class PlantService extends BaseService implements IPlantService {
 	
+	public IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
+		
+		return getPackageModel(new HashMap(), scenario.getOrderSizeFormula(),
+												(int)scenario.getDefaultCartonCount(),
+													(int)scenario.getDefaultFreezerCount(),
+														(int)scenario.getDefaultCaseCount());
+	}
+	
+	public Map getOrderSize(IOrderModel model) throws RoutingServiceException {
+		
+		List orderIdLst = new ArrayList();
+		orderIdLst.add(model.getOrderNumber());
+		
+		Map resultMap = new HashMap();
+		
+		try {
+			
+			Map result = loadPackingInfo(orderIdLst);
+			if(result != null) {
+				resultMap = (Map)resultMap.get(model.getOrderNumber());				
+			}
+		} catch(SapException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_DELIVERYINFO_NOTFOUND);
+		}
+		
+		return resultMap;
+	}
+
 	public IPackagingModel getPackagingInfo(IOrderModel model, String orderSizeExpression, int defaultCartonCount
 			, int defaultFreezerCount, int defaultCaseCount) throws RoutingServiceException {
 		

@@ -21,6 +21,7 @@ import javax.ejb.EJBObject;
 import javax.ejb.FinderException;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
@@ -37,18 +38,24 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
+import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
+import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.StateCounty;
+import com.freshdirect.routing.model.IDeliveryReservation;
+import com.freshdirect.routing.model.IDeliverySlot;
 
 public interface DlvManagerSB extends EJBObject {
 	
-    public List getTimeslotForDateRangeAndZone(Date begDate, Date endDate, AddressModel address) throws InvalidAddressException, RemoteException;
+    public List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(Date begDate, Date endDate, AddressModel address) throws InvalidAddressException, RemoteException;
 	public List getTimeslotsForDepot(java.util.Date startDate, java.util.Date endDate, String regionId, String zoneCode) throws DlvResourceException , RemoteException;
 	public List getAllTimeslotsForDateRange(java.util.Date startDate, java.util.Date endDate, AddressModel address) throws InvalidAddressException, RemoteException;
 
 	/** @return List of DlvTimeslotCapacityInfo */
 	public List getTimeslotCapacityInfo(java.util.Date date) throws RemoteException;
 
-	public DlvReservationModel reserveTimeslot(String timeslotId, String customerId, long holdTime, EnumReservationType type, String addressId, boolean chefsTable) throws ReservationException, RemoteException;
+	public DlvReservationModel reserveTimeslot(DlvTimeslotModel dlvTimeslot, String customerId, long holdTime, EnumReservationType type, String addressId, boolean chefsTable) throws ReservationException, RemoteException;
     public void commitReservation(String rsvId, String customerId, String orderId) throws ReservationException, RemoteException;
     public DlvAddressVerificationResponse scrubAddress(AddressModel address) throws RemoteException;
     public DlvAddressVerificationResponse scrubAddress(AddressModel address, boolean useApartment) throws RemoteException;
@@ -118,4 +125,19 @@ public interface DlvManagerSB extends EJBObject {
 	public StateCounty lookupStateCountyByZip(String zipcode) throws RemoteException;
 
 	public List getCutoffTimesByDate(Date day) throws RemoteException;
+	
+	public List<java.util.List<IDeliverySlot>> getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) throws RemoteException;
+	
+	public IDeliveryReservation reserveTimeslotEx(FDReservation reservation,ContactAddressModel address ) throws RemoteException;
+	
+	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address) throws  RemoteException;
+	
+	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) throws  RemoteException;
+	
+	public List<DlvReservationModel> getUnassignedReservations() throws DlvResourceException, RemoteException;
+	
+	public void setUnassignedInfo(String reservationId,RoutingActivityType activity )throws  RemoteException;
+	
+	public void clearUnassignedInfo(String reservationId )throws  RemoteException;
+	
 }   

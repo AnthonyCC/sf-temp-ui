@@ -14,6 +14,7 @@ package com.freshdirect.delivery.model;
 import java.util.Date;
 
 import com.freshdirect.delivery.EnumReservationType;
+import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.*;
 
 public class DlvReservationModel extends ModelSupport {
@@ -27,6 +28,47 @@ public class DlvReservationModel extends ModelSupport {
 	private EnumReservationType type;
 	private String addressId;
 	private boolean chefsTable;
+	private Date deliveryDate;
+	private String zoneCode;
+	private RoutingActivityType unassignedActivityType;
+	/*private Date unassignedDateTime;
+	
+
+	public Date getUnassignedDateTime() {
+		return unassignedDateTime;
+	}
+
+	public void setUnassignedDateTime(Date _date) {
+		this.unassignedDateTime = _date;
+	}*/
+	
+	public RoutingActivityType getUnassignedActivityType() {
+		return unassignedActivityType;
+	}
+
+	public void setUnassignedActivityType(RoutingActivityType unassignedActivityType) {
+		this.unassignedActivityType = unassignedActivityType;
+	}
+	
+	public boolean isUnassigned() {
+		return unassignedActivityType==null;
+	}
+
+	public Date getDeliveryDate() {
+		return deliveryDate;
+	}
+
+	public void setDeliveryDate(Date deliveryDate) {
+		this.deliveryDate = deliveryDate;
+	}
+
+	public String getZoneCode() {
+		return zoneCode;
+	}
+
+	public void setZoneCode(String zoneCode) {
+		this.zoneCode = zoneCode;
+	}
 
 	public DlvReservationModel(
 		String orderId,
@@ -35,7 +77,7 @@ public class DlvReservationModel extends ModelSupport {
 		Date expirationDateTime,
 		String timeslotId,
 		String zoneId,
-		EnumReservationType type, String addressId) {
+		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType) {
 			
 		this.orderId = orderId;
 		this.customerId = customerId;
@@ -45,6 +87,10 @@ public class DlvReservationModel extends ModelSupport {
 		this.zoneId = zoneId;
 		this.type = type;
 		this.addressId = addressId;
+		this.deliveryDate=deliveryDate;
+		this.zoneCode=zoneCode;
+		//this.unassignedDateTime=unassignedDateTime;
+		this.unassignedActivityType=unassignedActivityType;
 	}
 
 	public DlvReservationModel(
@@ -55,9 +101,9 @@ public class DlvReservationModel extends ModelSupport {
 		Date expirationDateTime,
 		String timeslotId,
 		String zoneId,
-		EnumReservationType type, String addressId) {
+		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType) {
 			
-		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type, addressId);
+		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type, addressId,deliveryDate,zoneCode/*,unassignedDateTime*/,unassignedActivityType);
 		this.setPK(pk);
 
 	}

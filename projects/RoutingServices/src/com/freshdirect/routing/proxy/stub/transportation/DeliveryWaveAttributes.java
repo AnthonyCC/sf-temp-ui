@@ -1,455 +1,1512 @@
+
 /**
  * DeliveryWaveAttributes.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
  */
+            
+                package com.freshdirect.routing.proxy.stub.transportation;
+            
 
-package com.freshdirect.routing.proxy.stub.transportation;
+            /**
+            *  DeliveryWaveAttributes bean class
+            */
+        
+        public  class DeliveryWaveAttributes
+        implements org.apache.axis2.databinding.ADBBean{
+        /* This type was generated from the piece of schema that had
+                name = DeliveryWaveAttributes
+                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
+                Namespace Prefix = ns1
+                */
+            
 
-public class DeliveryWaveAttributes  implements java.io.Serializable {
-    private org.apache.axis.types.Time startTime;
-
-    private com.freshdirect.routing.proxy.stub.transportation.LocationIdentity depot;
-
-    private com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity equipmentType;
-
-    private int numberOfVehicles;
-
-    private int preferredRuntime;
-
-    private int maximumRuntime;
-
-    private java.lang.String rushHourModel;
-
-    private boolean advancedRushHour;
-
-    private int hourlyWageDuration;
-
-    private int hourlyWage;
-
-    private int overtimeWage;
-
-    public DeliveryWaveAttributes() {
-    }
-
-    public DeliveryWaveAttributes(
-           org.apache.axis.types.Time startTime,
-           com.freshdirect.routing.proxy.stub.transportation.LocationIdentity depot,
-           com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity equipmentType,
-           int numberOfVehicles,
-           int preferredRuntime,
-           int maximumRuntime,
-           java.lang.String rushHourModel,
-           boolean advancedRushHour,
-           int hourlyWageDuration,
-           int hourlyWage,
-           int overtimeWage) {
-           this.startTime = startTime;
-           this.depot = depot;
-           this.equipmentType = equipmentType;
-           this.numberOfVehicles = numberOfVehicles;
-           this.preferredRuntime = preferredRuntime;
-           this.maximumRuntime = maximumRuntime;
-           this.rushHourModel = rushHourModel;
-           this.advancedRushHour = advancedRushHour;
-           this.hourlyWageDuration = hourlyWageDuration;
-           this.hourlyWage = hourlyWage;
-           this.overtimeWage = overtimeWage;
-    }
-
-
-    /**
-     * Gets the startTime value for this DeliveryWaveAttributes.
-     * 
-     * @return startTime
-     */
-    public org.apache.axis.types.Time getStartTime() {
-        return startTime;
-    }
-
-
-    /**
-     * Sets the startTime value for this DeliveryWaveAttributes.
-     * 
-     * @param startTime
-     */
-    public void setStartTime(org.apache.axis.types.Time startTime) {
-        this.startTime = startTime;
-    }
-
-
-    /**
-     * Gets the depot value for this DeliveryWaveAttributes.
-     * 
-     * @return depot
-     */
-    public com.freshdirect.routing.proxy.stub.transportation.LocationIdentity getDepot() {
-        return depot;
-    }
-
-
-    /**
-     * Sets the depot value for this DeliveryWaveAttributes.
-     * 
-     * @param depot
-     */
-    public void setDepot(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity depot) {
-        this.depot = depot;
-    }
-
-
-    /**
-     * Gets the equipmentType value for this DeliveryWaveAttributes.
-     * 
-     * @return equipmentType
-     */
-    public com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity getEquipmentType() {
-        return equipmentType;
-    }
-
-
-    /**
-     * Sets the equipmentType value for this DeliveryWaveAttributes.
-     * 
-     * @param equipmentType
-     */
-    public void setEquipmentType(com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity equipmentType) {
-        this.equipmentType = equipmentType;
-    }
-
-
-    /**
-     * Gets the numberOfVehicles value for this DeliveryWaveAttributes.
-     * 
-     * @return numberOfVehicles
-     */
-    public int getNumberOfVehicles() {
-        return numberOfVehicles;
-    }
-
-
-    /**
-     * Sets the numberOfVehicles value for this DeliveryWaveAttributes.
-     * 
-     * @param numberOfVehicles
-     */
-    public void setNumberOfVehicles(int numberOfVehicles) {
-        this.numberOfVehicles = numberOfVehicles;
-    }
-
-
-    /**
-     * Gets the preferredRuntime value for this DeliveryWaveAttributes.
-     * 
-     * @return preferredRuntime
-     */
-    public int getPreferredRuntime() {
-        return preferredRuntime;
-    }
-
-
-    /**
-     * Sets the preferredRuntime value for this DeliveryWaveAttributes.
-     * 
-     * @param preferredRuntime
-     */
-    public void setPreferredRuntime(int preferredRuntime) {
-        this.preferredRuntime = preferredRuntime;
-    }
-
-
-    /**
-     * Gets the maximumRuntime value for this DeliveryWaveAttributes.
-     * 
-     * @return maximumRuntime
-     */
-    public int getMaximumRuntime() {
-        return maximumRuntime;
-    }
-
-
-    /**
-     * Sets the maximumRuntime value for this DeliveryWaveAttributes.
-     * 
-     * @param maximumRuntime
-     */
-    public void setMaximumRuntime(int maximumRuntime) {
-        this.maximumRuntime = maximumRuntime;
-    }
-
-
-    /**
-     * Gets the rushHourModel value for this DeliveryWaveAttributes.
-     * 
-     * @return rushHourModel
-     */
-    public java.lang.String getRushHourModel() {
-        return rushHourModel;
-    }
-
-
-    /**
-     * Sets the rushHourModel value for this DeliveryWaveAttributes.
-     * 
-     * @param rushHourModel
-     */
-    public void setRushHourModel(java.lang.String rushHourModel) {
-        this.rushHourModel = rushHourModel;
-    }
-
-
-    /**
-     * Gets the advancedRushHour value for this DeliveryWaveAttributes.
-     * 
-     * @return advancedRushHour
-     */
-    public boolean isAdvancedRushHour() {
-        return advancedRushHour;
-    }
-
-
-    /**
-     * Sets the advancedRushHour value for this DeliveryWaveAttributes.
-     * 
-     * @param advancedRushHour
-     */
-    public void setAdvancedRushHour(boolean advancedRushHour) {
-        this.advancedRushHour = advancedRushHour;
-    }
-
-
-    /**
-     * Gets the hourlyWageDuration value for this DeliveryWaveAttributes.
-     * 
-     * @return hourlyWageDuration
-     */
-    public int getHourlyWageDuration() {
-        return hourlyWageDuration;
-    }
-
-
-    /**
-     * Sets the hourlyWageDuration value for this DeliveryWaveAttributes.
-     * 
-     * @param hourlyWageDuration
-     */
-    public void setHourlyWageDuration(int hourlyWageDuration) {
-        this.hourlyWageDuration = hourlyWageDuration;
-    }
-
-
-    /**
-     * Gets the hourlyWage value for this DeliveryWaveAttributes.
-     * 
-     * @return hourlyWage
-     */
-    public int getHourlyWage() {
-        return hourlyWage;
-    }
-
-
-    /**
-     * Sets the hourlyWage value for this DeliveryWaveAttributes.
-     * 
-     * @param hourlyWage
-     */
-    public void setHourlyWage(int hourlyWage) {
-        this.hourlyWage = hourlyWage;
-    }
-
-
-    /**
-     * Gets the overtimeWage value for this DeliveryWaveAttributes.
-     * 
-     * @return overtimeWage
-     */
-    public int getOvertimeWage() {
-        return overtimeWage;
-    }
-
-
-    /**
-     * Sets the overtimeWage value for this DeliveryWaveAttributes.
-     * 
-     * @param overtimeWage
-     */
-    public void setOvertimeWage(int overtimeWage) {
-        this.overtimeWage = overtimeWage;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof DeliveryWaveAttributes)) return false;
-        DeliveryWaveAttributes other = (DeliveryWaveAttributes) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
+        private static java.lang.String generatePrefix(java.lang.String namespace) {
+            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
+                return "ns1";
+            }
+            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
         }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.startTime==null && other.getStartTime()==null) || 
-             (this.startTime!=null &&
-              this.startTime.equals(other.getStartTime()))) &&
-            ((this.depot==null && other.getDepot()==null) || 
-             (this.depot!=null &&
-              this.depot.equals(other.getDepot()))) &&
-            ((this.equipmentType==null && other.getEquipmentType()==null) || 
-             (this.equipmentType!=null &&
-              this.equipmentType.equals(other.getEquipmentType()))) &&
-            this.numberOfVehicles == other.getNumberOfVehicles() &&
-            this.preferredRuntime == other.getPreferredRuntime() &&
-            this.maximumRuntime == other.getMaximumRuntime() &&
-            ((this.rushHourModel==null && other.getRushHourModel()==null) || 
-             (this.rushHourModel!=null &&
-              this.rushHourModel.equals(other.getRushHourModel()))) &&
-            this.advancedRushHour == other.isAdvancedRushHour() &&
-            this.hourlyWageDuration == other.getHourlyWageDuration() &&
-            this.hourlyWage == other.getHourlyWage() &&
-            this.overtimeWage == other.getOvertimeWage();
-        __equalsCalc = null;
-        return _equals;
-    }
 
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getStartTime() != null) {
-            _hashCode += getStartTime().hashCode();
-        }
-        if (getDepot() != null) {
-            _hashCode += getDepot().hashCode();
-        }
-        if (getEquipmentType() != null) {
-            _hashCode += getEquipmentType().hashCode();
-        }
-        _hashCode += getNumberOfVehicles();
-        _hashCode += getPreferredRuntime();
-        _hashCode += getMaximumRuntime();
-        if (getRushHourModel() != null) {
-            _hashCode += getRushHourModel().hashCode();
-        }
-        _hashCode += (isAdvancedRushHour() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += getHourlyWageDuration();
-        _hashCode += getHourlyWage();
-        _hashCode += getOvertimeWage();
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
+        
 
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(DeliveryWaveAttributes.class, true);
+                        /**
+                        * field for StartTime
+                        */
 
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "DeliveryWaveAttributes"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("startTime");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "startTime"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "time"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("depot");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "depot"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "LocationIdentity"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("equipmentType");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "equipmentType"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "EquipmentTypeIdentity"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("numberOfVehicles");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "numberOfVehicles"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("preferredRuntime");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "preferredRuntime"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("maximumRuntime");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "maximumRuntime"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("rushHourModel");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "rushHourModel"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("advancedRushHour");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "advancedRushHour"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("hourlyWageDuration");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "hourlyWageDuration"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("hourlyWage");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "hourlyWage"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("overtimeWage");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "overtimeWage"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
+                        
+                                    protected org.apache.axis2.databinding.types.Time localStartTime ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localStartTimeTracker = false ;
+                           
 
-    /**
-     * Return type metadata object
+                           /**
+                           * Auto generated getter method
+                           * @return org.apache.axis2.databinding.types.Time
+                           */
+                           public  org.apache.axis2.databinding.types.Time getStartTime(){
+                               return localStartTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param StartTime
+                               */
+                               public void setStartTime(org.apache.axis2.databinding.types.Time param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localStartTimeTracker = true;
+                                       } else {
+                                          localStartTimeTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localStartTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for Depot
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.LocationIdentity localDepot ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localDepotTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.LocationIdentity
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.LocationIdentity getDepot(){
+                               return localDepot;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Depot
+                               */
+                               public void setDepot(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localDepotTracker = true;
+                                       } else {
+                                          localDepotTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localDepot=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for EquipmentType
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity localEquipmentType ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localEquipmentTypeTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity getEquipmentType(){
+                               return localEquipmentType;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param EquipmentType
+                               */
+                               public void setEquipmentType(com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localEquipmentTypeTracker = true;
+                                       } else {
+                                          localEquipmentTypeTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localEquipmentType=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for NumberOfVehicles
+                        */
+
+                        
+                                    protected int localNumberOfVehicles ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getNumberOfVehicles(){
+                               return localNumberOfVehicles;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param NumberOfVehicles
+                               */
+                               public void setNumberOfVehicles(int param){
+                            
+                                            this.localNumberOfVehicles=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for PreferredRuntime
+                        */
+
+                        
+                                    protected int localPreferredRuntime ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getPreferredRuntime(){
+                               return localPreferredRuntime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param PreferredRuntime
+                               */
+                               public void setPreferredRuntime(int param){
+                            
+                                            this.localPreferredRuntime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for MaximumRuntime
+                        */
+
+                        
+                                    protected int localMaximumRuntime ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getMaximumRuntime(){
+                               return localMaximumRuntime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param MaximumRuntime
+                               */
+                               public void setMaximumRuntime(int param){
+                            
+                                            this.localMaximumRuntime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for RushHourModel
+                        */
+
+                        
+                                    protected java.lang.String localRushHourModel ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localRushHourModelTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getRushHourModel(){
+                               return localRushHourModel;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param RushHourModel
+                               */
+                               public void setRushHourModel(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localRushHourModelTracker = true;
+                                       } else {
+                                          localRushHourModelTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localRushHourModel=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for AdvancedRushHour
+                        */
+
+                        
+                                    protected boolean localAdvancedRushHour ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getAdvancedRushHour(){
+                               return localAdvancedRushHour;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param AdvancedRushHour
+                               */
+                               public void setAdvancedRushHour(boolean param){
+                            
+                                            this.localAdvancedRushHour=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for HourlyWageDuration
+                        */
+
+                        
+                                    protected int localHourlyWageDuration ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getHourlyWageDuration(){
+                               return localHourlyWageDuration;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param HourlyWageDuration
+                               */
+                               public void setHourlyWageDuration(int param){
+                            
+                                            this.localHourlyWageDuration=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for HourlyWage
+                        */
+
+                        
+                                    protected int localHourlyWage ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getHourlyWage(){
+                               return localHourlyWage;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param HourlyWage
+                               */
+                               public void setHourlyWage(int param){
+                            
+                                            this.localHourlyWage=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for OvertimeWage
+                        */
+
+                        
+                                    protected int localOvertimeWage ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getOvertimeWage(){
+                               return localOvertimeWage;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param OvertimeWage
+                               */
+                               public void setOvertimeWage(int param){
+                            
+                                            this.localOvertimeWage=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for WaveCode
+                        */
+
+                        
+                                    protected java.lang.String localWaveCode ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localWaveCodeTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getWaveCode(){
+                               return localWaveCode;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param WaveCode
+                               */
+                               public void setWaveCode(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localWaveCodeTracker = true;
+                                       } else {
+                                          localWaveCodeTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localWaveCode=param;
+                                    
+
+                               }
+                            
+
+     /**
+     * isReaderMTOMAware
+     * @return true if the reader supports MTOM
      */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
+   public static boolean isReaderMTOMAware(javax.xml.stream.XMLStreamReader reader) {
+        boolean isReaderMTOMAware = false;
+        
+        try{
+          isReaderMTOMAware = java.lang.Boolean.TRUE.equals(reader.getProperty(org.apache.axiom.om.OMConstants.IS_DATA_HANDLERS_AWARE));
+        }catch(java.lang.IllegalArgumentException e){
+          isReaderMTOMAware = false;
+        }
+        return isReaderMTOMAware;
+   }
+     
+     
+        /**
+        *
+        * @param parentQName
+        * @param factory
+        * @return org.apache.axiom.om.OMElement
+        */
+       public org.apache.axiom.om.OMElement getOMElement (
+               final javax.xml.namespace.QName parentQName,
+               final org.apache.axiom.om.OMFactory factory) throws org.apache.axis2.databinding.ADBException{
 
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
 
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
-    }
+        
+               org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
 
-}
+                 public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+                       DeliveryWaveAttributes.this.serialize(parentQName,factory,xmlWriter);
+                 }
+               };
+               return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
+               parentQName,factory,dataSource);
+            
+       }
+
+         public void serialize(final javax.xml.namespace.QName parentQName,
+                                       final org.apache.axiom.om.OMFactory factory,
+                                       org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter)
+                                throws javax.xml.stream.XMLStreamException, org.apache.axis2.databinding.ADBException{
+                           serialize(parentQName,factory,xmlWriter,false);
+         }
+
+         public void serialize(final javax.xml.namespace.QName parentQName,
+                               final org.apache.axiom.om.OMFactory factory,
+                               org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter,
+                               boolean serializeType)
+            throws javax.xml.stream.XMLStreamException, org.apache.axis2.databinding.ADBException{
+            
+                
+
+
+                java.lang.String prefix = null;
+                java.lang.String namespace = null;
+                
+
+                    prefix = parentQName.getPrefix();
+                    namespace = parentQName.getNamespaceURI();
+
+                    if ((namespace != null) && (namespace.trim().length() > 0)) {
+                        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+                        if (writerPrefix != null) {
+                            xmlWriter.writeStartElement(namespace, parentQName.getLocalPart());
+                        } else {
+                            if (prefix == null) {
+                                prefix = generatePrefix(namespace);
+                            }
+
+                            xmlWriter.writeStartElement(prefix, parentQName.getLocalPart(), namespace);
+                            xmlWriter.writeNamespace(prefix, namespace);
+                            xmlWriter.setPrefix(prefix, namespace);
+                        }
+                    } else {
+                        xmlWriter.writeStartElement(parentQName.getLocalPart());
+                    }
+                
+                  if (serializeType){
+               
+
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
+                   if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
+                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                           namespacePrefix+":DeliveryWaveAttributes",
+                           xmlWriter);
+                   } else {
+                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                           "DeliveryWaveAttributes",
+                           xmlWriter);
+                   }
+
+               
+                   }
+                if (localStartTimeTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"startTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"startTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("startTime");
+                                    }
+                                
+
+                                          if (localStartTime==null){
+                                              // write the nil attribute
+                                              
+                                                     writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStartTime));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localDepotTracker){
+                                    if (localDepot==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"depot", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"depot");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("depot");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localDepot.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","depot"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localEquipmentTypeTracker){
+                                    if (localEquipmentType==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"equipmentType", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"equipmentType");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("equipmentType");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localEquipmentType.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","equipmentType"),
+                                        factory,xmlWriter);
+                                    }
+                                }
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"numberOfVehicles", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"numberOfVehicles");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("numberOfVehicles");
+                                    }
+                                
+                                               if (localNumberOfVehicles==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("numberOfVehicles cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNumberOfVehicles));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"preferredRuntime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"preferredRuntime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("preferredRuntime");
+                                    }
+                                
+                                               if (localPreferredRuntime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("preferredRuntime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPreferredRuntime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"maximumRuntime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"maximumRuntime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("maximumRuntime");
+                                    }
+                                
+                                               if (localMaximumRuntime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("maximumRuntime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMaximumRuntime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                              if (localRushHourModelTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"rushHourModel", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"rushHourModel");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("rushHourModel");
+                                    }
+                                
+
+                                          if (localRushHourModel==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("rushHourModel cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localRushHourModel);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"advancedRushHour", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"advancedRushHour");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("advancedRushHour");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("advancedRushHour cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAdvancedRushHour));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"hourlyWageDuration", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"hourlyWageDuration");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("hourlyWageDuration");
+                                    }
+                                
+                                               if (localHourlyWageDuration==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("hourlyWageDuration cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localHourlyWageDuration));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"hourlyWage", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"hourlyWage");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("hourlyWage");
+                                    }
+                                
+                                               if (localHourlyWage==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("hourlyWage cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localHourlyWage));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"overtimeWage", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"overtimeWage");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("overtimeWage");
+                                    }
+                                
+                                               if (localOvertimeWage==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("overtimeWage cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOvertimeWage));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                              if (localWaveCodeTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"waveCode", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"waveCode");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("waveCode");
+                                    }
+                                
+
+                                          if (localWaveCode==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("waveCode cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localWaveCode);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
+                    xmlWriter.writeEndElement();
+               
+
+        }
+
+         /**
+          * Util method to write an attribute with the ns prefix
+          */
+          private void writeAttribute(java.lang.String prefix,java.lang.String namespace,java.lang.String attName,
+                                      java.lang.String attValue,javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException{
+              if (xmlWriter.getPrefix(namespace) == null) {
+                       xmlWriter.writeNamespace(prefix, namespace);
+                       xmlWriter.setPrefix(prefix, namespace);
+
+              }
+
+              xmlWriter.writeAttribute(namespace,attName,attValue);
+
+         }
+
+        /**
+          * Util method to write an attribute without the ns prefix
+          */
+          private void writeAttribute(java.lang.String namespace,java.lang.String attName,
+                                      java.lang.String attValue,javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException{
+                if (namespace.equals(""))
+              {
+                  xmlWriter.writeAttribute(attName,attValue);
+              }
+              else
+              {
+                  registerPrefix(xmlWriter, namespace);
+                  xmlWriter.writeAttribute(namespace,attName,attValue);
+              }
+          }
+
+
+           /**
+             * Util method to write an attribute without the ns prefix
+             */
+            private void writeQNameAttribute(java.lang.String namespace, java.lang.String attName,
+                                             javax.xml.namespace.QName qname, javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+
+                java.lang.String attributeNamespace = qname.getNamespaceURI();
+                java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+                if (attributePrefix == null) {
+                    attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
+                }
+                java.lang.String attributeValue;
+                if (attributePrefix.trim().length() > 0) {
+                    attributeValue = attributePrefix + ":" + qname.getLocalPart();
+                } else {
+                    attributeValue = qname.getLocalPart();
+                }
+
+                if (namespace.equals("")) {
+                    xmlWriter.writeAttribute(attName, attributeValue);
+                } else {
+                    registerPrefix(xmlWriter, namespace);
+                    xmlWriter.writeAttribute(namespace, attName, attributeValue);
+                }
+            }
+        /**
+         *  method to handle Qnames
+         */
+
+        private void writeQName(javax.xml.namespace.QName qname,
+                                javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+            java.lang.String namespaceURI = qname.getNamespaceURI();
+            if (namespaceURI != null) {
+                java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+                if (prefix == null) {
+                    prefix = generatePrefix(namespaceURI);
+                    xmlWriter.writeNamespace(prefix, namespaceURI);
+                    xmlWriter.setPrefix(prefix,namespaceURI);
+                }
+
+                if (prefix.trim().length() > 0){
+                    xmlWriter.writeCharacters(prefix + ":" + org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qname));
+                } else {
+                    // i.e this is the default namespace
+                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qname));
+                }
+
+            } else {
+                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qname));
+            }
+        }
+
+        private void writeQNames(javax.xml.namespace.QName[] qnames,
+                                 javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+
+            if (qnames != null) {
+                // we have to store this data until last moment since it is not possible to write any
+                // namespace data after writing the charactor data
+                java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
+                java.lang.String namespaceURI = null;
+                java.lang.String prefix = null;
+
+                for (int i = 0; i < qnames.length; i++) {
+                    if (i > 0) {
+                        stringToWrite.append(" ");
+                    }
+                    namespaceURI = qnames[i].getNamespaceURI();
+                    if (namespaceURI != null) {
+                        prefix = xmlWriter.getPrefix(namespaceURI);
+                        if ((prefix == null) || (prefix.length() == 0)) {
+                            prefix = generatePrefix(namespaceURI);
+                            xmlWriter.writeNamespace(prefix, namespaceURI);
+                            xmlWriter.setPrefix(prefix,namespaceURI);
+                        }
+
+                        if (prefix.trim().length() > 0){
+                            stringToWrite.append(prefix).append(":").append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qnames[i]));
+                        } else {
+                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qnames[i]));
+                        }
+                    } else {
+                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qnames[i]));
+                    }
+                }
+                xmlWriter.writeCharacters(stringToWrite.toString());
+            }
+
+        }
+
+
+         /**
+         * Register a namespace prefix
+         */
+         private java.lang.String registerPrefix(javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace) throws javax.xml.stream.XMLStreamException {
+                java.lang.String prefix = xmlWriter.getPrefix(namespace);
+
+                if (prefix == null) {
+                    prefix = generatePrefix(namespace);
+
+                    while (xmlWriter.getNamespaceContext().getNamespaceURI(prefix) != null) {
+                        prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    }
+
+                    xmlWriter.writeNamespace(prefix, namespace);
+                    xmlWriter.setPrefix(prefix, namespace);
+                }
+
+                return prefix;
+            }
+
+
+  
+        /**
+        * databinding method to get an XML representation of this object
+        *
+        */
+        public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
+                    throws org.apache.axis2.databinding.ADBException{
+
+
+        
+                 java.util.ArrayList elementList = new java.util.ArrayList();
+                 java.util.ArrayList attribList = new java.util.ArrayList();
+
+                 if (localStartTimeTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "startTime"));
+                                 
+                                         elementList.add(localStartTime==null?null:
+                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStartTime));
+                                    } if (localDepotTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "depot"));
+                            
+                            
+                                    elementList.add(localDepot==null?null:
+                                    localDepot);
+                                } if (localEquipmentTypeTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "equipmentType"));
+                            
+                            
+                                    elementList.add(localEquipmentType==null?null:
+                                    localEquipmentType);
+                                }
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "numberOfVehicles"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNumberOfVehicles));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "preferredRuntime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPreferredRuntime));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "maximumRuntime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMaximumRuntime));
+                             if (localRushHourModelTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "rushHourModel"));
+                                 
+                                        if (localRushHourModel != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRushHourModel));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("rushHourModel cannot be null!!");
+                                        }
+                                    }
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "advancedRushHour"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAdvancedRushHour));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "hourlyWageDuration"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localHourlyWageDuration));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "hourlyWage"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localHourlyWage));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "overtimeWage"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOvertimeWage));
+                             if (localWaveCodeTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "waveCode"));
+                                 
+                                        if (localWaveCode != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localWaveCode));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("waveCode cannot be null!!");
+                                        }
+                                    }
+
+                return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
+            
+            
+
+        }
+
+  
+
+     /**
+      *  Factory class that keeps the parse method
+      */
+    public static class Factory{
+
+        
+        
+
+        /**
+        * static method to create the object
+        * Precondition:  If this object is an element, the current or next start element starts this object and any intervening reader events are ignorable
+        *                If this object is not an element, it is a complex type and the reader is at the event just after the outer start element
+        * Postcondition: If this object is an element, the reader is positioned at its end element
+        *                If this object is a complex type, the reader is positioned at the end element of its outer element
+        */
+        public static DeliveryWaveAttributes parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            DeliveryWaveAttributes object =
+                new DeliveryWaveAttributes();
+
+            int event;
+            java.lang.String nillableValue = null;
+            java.lang.String prefix ="";
+            java.lang.String namespaceuri ="";
+            try {
+                
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                
+                if (reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","type")!=null){
+                  java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                        "type");
+                  if (fullTypeName!=null){
+                    java.lang.String nsPrefix = null;
+                    if (fullTypeName.indexOf(":") > -1){
+                        nsPrefix = fullTypeName.substring(0,fullTypeName.indexOf(":"));
+                    }
+                    nsPrefix = nsPrefix==null?"":nsPrefix;
+
+                    java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
+                    
+                            if (!"DeliveryWaveAttributes".equals(type)){
+                                //find namespace for the prefix
+                                java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
+                                return (DeliveryWaveAttributes)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                     nsUri,type,reader);
+                              }
+                        
+
+                  }
+                
+
+                }
+
+                
+
+                
+                // Note all attributes that were handled. Used to differ normal attributes
+                // from anyAttributes.
+                java.util.Vector handledAttributes = new java.util.Vector();
+                
+
+                 
+                    
+                    reader.next();
+                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","startTime").equals(reader.getName())){
+                                
+                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                       if (!"true".equals(nillableValue) && !"1".equals(nillableValue)){
+                                    
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setStartTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToTime(content));
+                                            
+                                       } else {
+                                           
+                                           
+                                           reader.getElementText(); // throw away text nodes if any.
+                                       }
+                                      
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","depot").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setDepot(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setDepot(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","equipmentType").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setEquipmentType(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setEquipmentType(com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","numberOfVehicles").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setNumberOfVehicles(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","preferredRuntime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPreferredRuntime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","maximumRuntime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setMaximumRuntime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","rushHourModel").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setRushHourModel(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","advancedRushHour").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setAdvancedRushHour(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","hourlyWageDuration").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setHourlyWageDuration(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","hourlyWage").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setHourlyWage(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","overtimeWage").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setOvertimeWage(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","waveCode").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setWaveCode(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                  
+                            while (!reader.isStartElement() && !reader.isEndElement())
+                                reader.next();
+                            
+                                if (reader.isStartElement())
+                                // A start element we are not expecting indicates a trailing invalid property
+                                throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                            
+
+
+
+            } catch (javax.xml.stream.XMLStreamException e) {
+                throw new java.lang.Exception(e);
+            }
+
+            return object;
+        }
+
+        }//end of factory class
+
+        
+
+        }
+           
+          

@@ -90,7 +90,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 			if (advRsv != null && deliveryTimeSlotId.equals(advRsv.getTimeslotId()) && advRsv.getAddressId().equals(addressId)) {
 				if (dlvRsv != null && !dlvRsv.getPK().equals(advRsv.getPK())) {
 					try {
-						FDDeliveryManager.getInstance().releaseReservation(dlvRsv.getPK().getId());
+						FDDeliveryManager.getInstance().releaseReservation(dlvRsv.getPK().getId(),erpAddress);
 					} catch (FDResourceException fdre) {
 						LOGGER.warn("Error releasing reservation", fdre);
 					}
@@ -113,7 +113,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 
 					try {
 						LOGGER.debug("releasing previous reservation of id=" + prevResrvId);
-						FDDeliveryManager.getInstance().releaseReservation(prevResrvId);
+						FDDeliveryManager.getInstance().releaseReservation(prevResrvId,erpAddress);
 					} catch (FDResourceException fdre) {
 						LOGGER.warn("Error releasing reservation", fdre);
 					}
@@ -128,7 +128,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						custId,
 						RESERVATION_MILLISECONDS,
 						EnumReservationType.STANDARD_RESERVATION,
-						addressId,
+						erpAddress,
 						chefsTable);
 
 				// save reservation id in cart

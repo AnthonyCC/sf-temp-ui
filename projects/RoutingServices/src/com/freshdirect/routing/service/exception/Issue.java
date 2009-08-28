@@ -34,6 +34,18 @@ public class Issue implements IIssue {
 		messages.put(PROCESS_RETRIEVESESSION_UNSUCCESSFUL,"Retrieve Session Failed");
 		messages.put(PROCESS_REMOVEFROMSERVER_UNSUCCESSFUL,"Retrieve Session Failed");
 		messages.put(PROCESS_LOADLATEDELIVERYORDERS_UNSUCCESSFUL,"Retrieve Late Delivery Orders Failed");
+		
+		messages.put(PROCESS_ANALYZE_UNSUCCESSFUL,"Analyze Order Failed");
+		messages.put(PROCESS_TIMESLOTSELECT_UNSUCCESSFUL,"Timeslot Selection Failed");
+		messages.put(PROCESS_RESERVE_UNSUCCESSFUL,"Reserve Order Failed");
+		messages.put(PROCESS_CONFIRM_UNSUCCESSFUL,"Confirm Order Failed");
+		
+		messages.put(PROCESS_UPDATE_UNSUCCESSFUL,"Update Order Failed");
+		messages.put(PROCESS_CANCEL_UNSUCCESSFUL,"Cancel Order Failed");
+		
+		messages.put(PROCESS_RETRIEVEMETRICS_UNSUCCESSFUL,"Retrieve Delivery Window metrics Failed");
+		
+		messages.put(PROCESS_UNASSIGNED_UNSUCCESSFUL,"Retrieve Unassigned Failed");
 	}
 	
 	public static String getMessage(String id) {

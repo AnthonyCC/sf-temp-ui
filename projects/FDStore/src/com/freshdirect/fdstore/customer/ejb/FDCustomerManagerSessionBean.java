@@ -113,6 +113,7 @@ import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.erp.ejb.ATPFailureDAO;
 import com.freshdirect.erp.model.ATPFailureInfo;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -168,6 +169,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
 import com.freshdirect.payment.ejb.PaymentManagerSB;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
+
 
 
 /**
@@ -1126,7 +1128,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
-	public Collection getShipToAddresses(FDIdentity identity) throws FDResourceException {
+	public Collection<ErpAddressModel> getShipToAddresses(FDIdentity identity) throws FDResourceException {
 		try {
 			ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getErpCustomerPK()));
 			return erpCustomerEB.getShipToAddresses();
@@ -1393,7 +1395,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 			//commit reservation in DLV
 			//DlvManagerSB dlvSB = this.getDlvManagerHome().create();
-			dlvSB.commitReservation(reservationId, identity.getErpCustomerPK(), pk.getId());
+			//dlvSB.commitReservation(reservationId, identity.getErpCustomerPK(), pk.getId());
+			System.out.println("Order #"+pk.getId()+" Reservation #"+reservationId);
+			FDDeliveryManager.getInstance().commitReservation(reservationId,identity.getErpCustomerPK(), pk.getId(),createOrder.getDeliveryInfo().getDeliveryAddress());
 
 			//AUTH sale in CYBER SOURCE
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
@@ -1601,8 +1605,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			//End Handle Delivery Pass.
 			boolean isRestored =false;
 			if(EnumSaleType.REGULAR.equals(order.getOrderType())) {
-				DlvManagerSB dlvSB = this.getDlvManagerHome().create();
-				isRestored = dlvSB.releaseReservation(reservationId);
+				//DlvManagerSB dlvSB = this.getDlvManagerHome().create();
+				
+				isRestored = FDDeliveryManager.getInstance().releaseReservation(reservationId,order.getDeliveryAddress());
 			}
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.CANCEL_ORDER);
 			this.logActivity(rec);
@@ -1622,9 +1627,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(ex);
 		} catch (RemoteException ex) {
 			throw new FDResourceException(ex);
-		} catch (FinderException e) {
+		} /*catch (FinderException e) {
 			throw new FDResourceException(e);
-		}
+		}*/
 	}
 
 	private void cancelPassExtension(DlvPassManagerSB dlvPassSB, DeliveryPassModel dlvPass, FDOrderI order) throws RemoteException {
@@ -1791,12 +1796,13 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			//Deal with Reservation in DLV
 			String newReservationId = order.getDeliveryInfo().getDeliveryReservationId();
 			if (!newReservationId.equals(oldReservationId)) {
-				DlvManagerSB dlvSB = this.getDlvManagerHome().create();
+				//DlvManagerSB dlvSB = this.getDlvManagerHome().create();
 
 				//reservation has changed so release old reservation
-				dlvSB.releaseReservation(oldReservationId);
+				FDDeliveryManager.getInstance().releaseReservation(oldReservationId,fdOrder.getDeliveryAddress());
 				//now commit the new Reservation
-				dlvSB.commitReservation(newReservationId, identity.getErpCustomerPK(), saleId);
+				//dlvSB.commitReservation(newReservationId, identity.getErpCustomerPK(), saleId);
+				FDDeliveryManager.getInstance().commitReservation(newReservationId, identity.getErpCustomerPK(), saleId,order.getDeliveryInfo().getDeliveryAddress());
 			}
 
 			//authorize the sale
@@ -1821,9 +1827,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re);
 		} catch (ReservationException re) {
 			throw new FDResourceException(re);
-		} catch (FinderException e) {
+		} /*catch (FinderException e) {
 			throw new FDResourceException(e);
-		}
+		}*/
 
 	}
 
@@ -2884,28 +2890,37 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			duration = Math.min(timeslot.getCutoffDateTime().getTime() - System.currentTimeMillis(), DateUtil.HOUR);
 		}
 
-		try {
-			DlvManagerSB sb = this.getDlvManagerHome().create();
+		ErpAddressModel address=getAddress(identity,addressId);
+		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslot, identity.getErpCustomerPK(), duration, rsvType, address, chefsTable);
+			
+			/*DlvManagerSB sb = this.getDlvManagerHome().create();
 			DlvReservationModel rsv = sb.reserveTimeslot(
 				timeslot.getTimeslotId(),
 				identity.getErpCustomerPK(),
 				duration,
 				rsvType,
-				addressId, chefsTable);
+				addressId, chefsTable);*/
 
-			if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
-				this.updateRecurringReservation(identity, timeslot.getBegDateTime(), timeslot.getEndDateTime(), addressId);
-			}						
-			this.logActivity(getReservationActivityLog(timeslot, aInfo, EnumAccountActivityType.MAKE_PRE_RESERVATION, rsvType));
-			return new FDReservation(rsv.getPK(), timeslot, rsv.getExpirationDateTime(), rsv.getReservationType(), rsv
+		if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
+			this.updateRecurringReservation(identity, timeslot.getBegDateTime(), timeslot.getEndDateTime(), addressId);
+		}						
+		this.logActivity(getReservationActivityLog(timeslot, aInfo, EnumAccountActivityType.MAKE_PRE_RESERVATION, rsvType));
+		return new FDReservation(rsv.getPK(), timeslot, rsv.getExpirationDateTime(), rsv.getReservationType(), rsv
 				.getCustomerId(), addressId, rsv.isChefsTable());
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
-		} catch (CreateException e) {
-			throw new FDResourceException(e);
-		} 
+		
 	}
 
+	public ErpAddressModel getAddress(FDIdentity identity,String id) throws FDResourceException {
+		
+		Collection<ErpAddressModel> addressList= getShipToAddresses(identity);
+		for (ErpAddressModel address : addressList) {
+			if(address.getId().equals(id))
+				return address;
+		}
+		return null;
+		
+	}
+	
 	public void updateWeeklyReservation(FDIdentity identity, FDTimeslot timeslot, String addressId, FDActionInfo aInfo)
 		throws FDResourceException {
 		this.updateRecurringReservation(identity, timeslot.getBegDateTime(), timeslot.getEndDateTime(), addressId);
@@ -2937,10 +2952,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		FDReservation reservation,
 		EnumReservationType rsvType,
 		FDActionInfo actionInfo) throws FDResourceException {
-		try {
+		
 			if (reservation != null) {
-				DlvManagerSB dlvSB = this.getDlvManagerHome().create();
-				dlvSB.removeReservation(reservation.getPK().getId());
+				/*DlvManagerSB dlvSB = this.getDlvManagerHome().create();
+				dlvSB.removeReservation(reservation.getPK().getId());*/
+				ErpAddressModel address=getAddress(identity,reservation.getAddressId());
+				FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(), address);
 			}
 			if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
 				this.updateRecurringReservation(identity, null, null, null);
@@ -2951,11 +2968,11 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				this.logActivity(getReservationActivityLog(reservation.getTimeslot(), actionInfo
 									, EnumAccountActivityType.CANCEL_PRE_RESERVATION, reservation.getReservationType()));
 			}
-		} catch (RemoteException e) {
+		/* catch (RemoteException e) {
 			throw new FDResourceException(e);
 		} catch (CreateException e) {
 			throw new FDResourceException(e);
-		}
+		}*/
 	}
 
 	private static final String RECURRING_RSV_QUERY = "SELECT CI.CUSTOMER_ID, CI.EMAIL, CI.RSV_DAY_OF_WEEK, CI.RSV_START_TIME, CI.RSV_END_TIME, "

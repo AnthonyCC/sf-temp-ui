@@ -10,9 +10,18 @@ import com.freshdirect.framework.util.DateUtil;
 
 public class RoutingDateUtil {
 	
+	public final static long SECOND = 1000;
+	public final static long MINUTE = 60 * SECOND;
+	public final static long HOUR = 60 * MINUTE;
+	public final static long DAY = 24 * HOUR;
+
+	public final static int MORNING_END = 12;
+	
 	private static final DateFormat MIN_HOUR_SEC_FORMATTER = new SimpleDateFormat("HH:mm:ss");
 	
 	private static final DateFormat MIN_HOUR_SEC_PLAINFORMATTER = new SimpleDateFormat("HHmmss");
+	
+	private static final DateFormat MIN_HOUR_FORMATTER = new SimpleDateFormat("HH:mm");
 	
 	private static final DateFormat DATE_PLAIN = new SimpleDateFormat("yyyyMMdd");
 	
@@ -58,5 +67,44 @@ public class RoutingDateUtil {
         return (Date)dateFormat.parse(dateString);
 	}
 	
+	private static Calendar cal = Calendar.getInstance();
+	
+	public static Calendar toCalendar(Date date) {
+		
+		cal.setTime(date);
+		return cal;
+	}
+	
+	public static int getHourOfDay(Date date) {		
+		return toCalendar(date).get(Calendar.HOUR_OF_DAY);
+	}
+	
+	public static int getDayOfWeek(Date date) {		
+		return toCalendar(date).get(Calendar.DAY_OF_WEEK);
+	}
+	
+	public static int getMinute(Date date) {		
+		return toCalendar(date).get(Calendar.MINUTE);
+	}
+	
+	public static int getHourOfDay() {		
+		return Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+	}
+	
+	public static int getMinute() {		
+		return Calendar.getInstance().get(Calendar.MINUTE);
+	}
+	
+	public static int getDiffInMinutes(Date d1, Date d2) {
+		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) MINUTE)));
+	}
+	
+	public static int getDiffInSeconds(Date d1, Date d2) {
+		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) SECOND)));
+	}
+	
+	public static String formatDateTime(Date dateValue1, Date dateValue2) throws ParseException{
+		return MIN_HOUR_FORMATTER.format(dateValue1)+"-"+MIN_HOUR_FORMATTER.format(dateValue2);
+	}
 	
 }

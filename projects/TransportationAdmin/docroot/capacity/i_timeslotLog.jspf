@@ -1,0 +1,35 @@
+ <script type="text/javascript" src="js/dataTable.js"></script> 
+ <script>
+      
+      function getData(date, starttime, endtime) {
+       	var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+       	return jsonrpcClient.AsyncDispatchProvider.getTimeSlotLogs(date, starttime, endtime);
+      }
+      
+      function showForm(date, starttime, endtime)  {   
+          var table = new Table();
+          table.panelId = "panel-1";
+		  table.containerId = "myContainer";
+		  table.title = "TimeSlot Log";
+		  table.result = getData(date, starttime, endtime);		  
+		  table.columns=
+		    [ 
+			    {key:"id", label:"Log Id",sortable:true,className:"forms1"}, 
+			    {key:"orderId", label:"Order Id",sortable:true,className:"forms1"}, 
+		    	{key:"customerId", label:"Customer Id",sortable:true,className:"forms1"}, 
+		    	{key:"eventtype", label:"Event Type",sortable:true,className:"forms1"} ,
+		    	{key:"eventDateDisplay", label:"Event Time",sortable:false,className:"forms1"},
+		    	{key:"detailDisplay", label:"Detail",sortable:false,className:"forms1"} 		    	
+			];
+		  table.render(); 
+      }              
+  
+    </script>
+  
+    <div id="panel-1">
+      
+      <div class="bd">      	   
+           <div id="myContainer" style="background-color:#D7C8FF" >
+           </div> 
+      </div>    
+    </div>

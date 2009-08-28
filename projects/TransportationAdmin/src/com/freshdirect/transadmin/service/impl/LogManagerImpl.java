@@ -7,8 +7,7 @@ import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.LogManagerDaoI;
 import com.freshdirect.transadmin.service.LogManagerI;
 
-public class LogManagerImpl extends BaseManagerImpl implements LogManagerI
-{
+public class LogManagerImpl extends BaseManagerImpl implements LogManagerI {
 	private LogManagerDaoI logManagerDao;
 	
 	
@@ -17,23 +16,24 @@ public class LogManagerImpl extends BaseManagerImpl implements LogManagerI
 	}
 
 
-	public void log(String userId, int type,Object obj) 
-	{
+	public void log(String userId, int type,Object obj) {
 		logManagerDao.log(userId, type,obj);
 		
 	}
 
 
-	protected BaseManagerDaoI getBaseManageDao() 
-	{
+	protected BaseManagerDaoI getBaseManageDao() 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
-	public Collection getLogs(Date fromDate, Date toDate) 
-	{
+	public Collection getLogs(Date fromDate, Date toDate) 	{
 		return logManagerDao.getLogs(fromDate, toDate);
+	}
+	
+	public Collection getTimeSlotLogs(Date fromDate, Date toDate) 	{
+		return logManagerDao.getTimeSlotLogs(fromDate, toDate);
 	}
 
 }

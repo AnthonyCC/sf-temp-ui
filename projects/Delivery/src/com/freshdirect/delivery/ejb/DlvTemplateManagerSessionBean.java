@@ -137,8 +137,9 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 				int ctReleaseTime = rs.getInt("CT_RELEASE_TIME");
 				boolean ctActive = "X".equals(rs.getString("CT_ACTIVE"));
 				String zoneId = rs.getString("ZONE_ID");
+				
 				 
-				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, chefsTableCapacity, baseAllocation, ctAllocation, ctReleaseTime, ctActive);
+				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, chefsTableCapacity, baseAllocation, ctAllocation, ctReleaseTime, ctActive,zoneCode);
 				timeslots.add(model);
 			}
             rs.close();
@@ -216,7 +217,7 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 				String zoneId = rs.getString("ZONE_ID");
 		 		
 		 		String zoneCode = rs.getString("ZONE_CODE");
-				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, chefsTableCapacity, baseAllocation, ctAllocation, ctReleaseTime, ctActive);
+				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, chefsTableCapacity, baseAllocation, ctAllocation, ctReleaseTime, ctActive,zoneCode);
 				model.setTrafficFactor(trafficFactor);
 				data.addTimeslot(zoneCode, model);
 			}

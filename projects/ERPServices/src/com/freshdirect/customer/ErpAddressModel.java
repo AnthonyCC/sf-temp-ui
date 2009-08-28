@@ -39,6 +39,8 @@ public class ErpAddressModel extends ContactAddressModel {
 	private EnumUnattendedDeliveryFlag unattendedDeliveryFlag;
 
 	private String unattendedDeliveryInstructions;
+	
+	
 
 	/**
 	 * Default constructor.
@@ -54,6 +56,7 @@ public class ErpAddressModel extends ContactAddressModel {
 
 		this.unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.NOT_SEEN;
 		this.unattendedDeliveryInstructions = "";
+		
 	}
 
 	public ErpAddressModel(BasicAddressI address) {
@@ -163,7 +166,7 @@ public class ErpAddressModel extends ContactAddressModel {
 		}
 
 		if (EnumDeliverySetting.DOORMAN.equals(this.altDeliverySetting)) {
-			return new ContactAddressAdapter(this, "", "DOORMAN", this
+			return new ContactAddressAdapter(this, "", "DOORMAN",this.getCustomerId(), this
 					.getPhone());
 		}
 
@@ -213,6 +216,11 @@ public class ErpAddressModel extends ContactAddressModel {
 			public AddressInfo getAddressInfo() {
 				// TODO Auto-generated method stub
 				return ErpAddressModel.this.getAddressInfo();
+			}
+
+			@Override
+			public String getCustomerId() {
+				return ErpAddressModel.this.getCustomerId();
 			}
 		};
 

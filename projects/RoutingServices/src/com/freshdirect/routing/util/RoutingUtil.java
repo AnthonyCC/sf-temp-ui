@@ -4,12 +4,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import com.freshdirect.delivery.AddressScrubber;
-import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
 import com.freshdirect.routing.model.IZoneModel;
+import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public class RoutingUtil {
 	
@@ -20,10 +19,10 @@ public class RoutingUtil {
 		try {
 			streetAddressResult = AddressScrubber.standardizeForGeocode(s1);
 			//streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress1());
-		} catch (InvalidAddressException iae1) {
+		} catch (RoutingServiceException iae1) {
 			try {
 				streetAddressResult = AddressScrubber.standardizeForGeocode(s2);
-			} catch (InvalidAddressException iae2) {
+			} catch (RoutingServiceException iae2) {
 				iae2.printStackTrace();
 			}
 		}

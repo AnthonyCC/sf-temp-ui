@@ -18,6 +18,10 @@
         </property>   
         <property name="sequenceNo" type="big_decimal">
             <column name="SEQUENCENO" precision="10" />
-        </property>         
+        </property>   
+        
+        <component name="cutOffTime" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="CUTOFF_TIME" type="timestamp" not-null="true"/>
+        </component>       
     </class>
 </hibernate-mapping>

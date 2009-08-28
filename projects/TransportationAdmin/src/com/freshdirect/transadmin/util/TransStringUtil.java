@@ -279,6 +279,32 @@ public class TransStringUtil {
 		return formatter.format(input);
 	}
 	
+	public static String formatIntoHHMMSS(double inMinutes) {
+		
+		double secsIn = inMinutes * 60;
+		int hours = (int)(secsIn / 3600);
+		double remainder = secsIn % 3600;
+		int minutes = (int)(remainder / 60);
+		int seconds = (int)(remainder % 60);
+
+		return ( (hours < 10 ? "0" : "") + hours
+					+ ":" + (minutes < 10 ? "0" : "") + minutes
+					+ ":" + (seconds< 10 ? "0" : "") + seconds );
+
+	}
+	
+	public static String formatIntoHHMM(double inMinutes) {
+		
+		double secsIn = inMinutes * 60;
+		int hours = (int)(secsIn / 3600);
+		double remainder = secsIn % 3600;
+		int minutes = (int)(remainder / 60);
+		
+		return ( (hours < 10 ? "0" : "") + hours
+					+ ":" + (minutes < 10 ? "0" : "") + minutes);
+
+	}
+	
 	public static String formatDateSearch(String search) throws DateFilterException {  
 		
         try {		

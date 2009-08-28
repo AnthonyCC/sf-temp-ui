@@ -6,16 +6,18 @@ public class ContactAddressAdapter implements BasicContactAddressI {
 	private String lastName;
 	private PhoneNumber phone;
 	private BasicAddressI address;
+	private String customerId;
 
-	public ContactAddressAdapter(BasicAddressI address, String firstName, String lastName) {
-		this(address, firstName, lastName, null);
+	public ContactAddressAdapter(BasicAddressI address, String firstName, String lastName, String customerId) {
+		this(address, firstName, lastName,customerId, null);
 	}
 
-	public ContactAddressAdapter(BasicAddressI address, String firstName, String lastName, PhoneNumber phone) {
+	public ContactAddressAdapter(BasicAddressI address, String firstName, String lastName, String customerId, PhoneNumber phone) {
 		this.address = address;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phone = phone;
+		this.customerId=customerId;
 	}
 
 	public String getFirstName() {
@@ -62,6 +64,11 @@ public class ContactAddressAdapter implements BasicContactAddressI {
 	public AddressInfo getAddressInfo() {
 		// TODO Auto-generated method stub
 		return address.getAddressInfo();
+	}
+
+	@Override
+	public String getCustomerId() {
+		return customerId;
 	}
 }
 

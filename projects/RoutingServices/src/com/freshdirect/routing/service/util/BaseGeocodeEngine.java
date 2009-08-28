@@ -1,11 +1,8 @@
 package com.freshdirect.routing.service.util;
 
-import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.rpc.ServiceException;
 
 import com.freshdirect.routing.model.GeocodeResult;
 import com.freshdirect.routing.model.GeographicLocation;
@@ -13,7 +10,7 @@ import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.proxy.stub.roadnet.GeocodeData;
 import com.freshdirect.routing.proxy.stub.roadnet.MapArc;
-import com.freshdirect.routing.proxy.stub.roadnet.RouteNetPortType;
+import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -28,7 +25,7 @@ public class BaseGeocodeEngine implements IGeocodeEngine {
 		geocodeResult.setGeographicLocation(result);
 		try {
 
-			RouteNetPortType port = RoutingServiceLocator.getInstance().getRouteNetService();
+			RouteNetWebService port = RoutingServiceLocator.getInstance().getRouteNetService();
 			com.freshdirect.routing.proxy.stub.roadnet.Address address = new com.freshdirect.routing.proxy.stub.roadnet.Address();
 			address.setLine1(street);
 			address.setPostalCode(zipCode);
@@ -80,10 +77,6 @@ public class BaseGeocodeEngine implements IGeocodeEngine {
 			result.setConfidence(geographicData.getConfidence().getValue());
 			result.setQuality(geographicData.getQuality().getValue());*/
 
-		} catch (ServiceException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_GEOCODE_UNSUCCESSFUL);
-		} catch (MalformedURLException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_GEOCODE_UNSUCCESSFUL);
 		} catch (RemoteException exp) {
 			exp.printStackTrace();
 			throw new RoutingServiceException(exp, IIssue.PROCESS_GEOCODE_UNSUCCESSFUL);

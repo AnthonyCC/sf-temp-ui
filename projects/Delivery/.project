@@ -5,6 +5,7 @@
 	<projects>
 		<project>ERPServices</project>
 		<project>Framework</project>
+		<project>RoutingServices</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

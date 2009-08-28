@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public interface IPlantService {
@@ -14,6 +15,11 @@ public interface IPlantService {
 	
 	Map getPackagingInfoList(List orderIdLst) throws RoutingServiceException;
 	
-	public IPackagingModel getPackageModel(Map rowMap, String orderSizeExpression, int defaultCartonCount
+	IPackagingModel getPackageModel(Map rowMap, String orderSizeExpression, int defaultCartonCount
 			, int defaultFreezerCount, int defaultCaseCount) throws RoutingServiceException;
+	
+	IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario) throws RoutingServiceException;
+	
+	Map getOrderSize(IOrderModel model) throws RoutingServiceException;
+		
 }

@@ -54,6 +54,10 @@ public class FDTimeslot implements Serializable {
 		return dlvTimeslot.getZoneId();
 	}
 
+	public String getZoneCode() {
+		
+		return dlvTimeslot.getZoneCode();
+	}
 	public int getTotalAvailable() {
 		return dlvTimeslot.getTotalAvailable();
 	}

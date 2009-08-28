@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="dlv">
+    <class name="com.freshdirect.transadmin.model.TimeslotLogDtl" table="TIMESLOT_LOG_DTL">
+        <composite-id name="id" class="com.freshdirect.transadmin.model.TimeslotLogDtlId">
+            <key-property name="timeslotLogId" type="string">
+                <column name="TIMESLOT_LOG_ID" length="16" />
+            </key-property>
+            <key-property name="baseDate" type="date">
+                <column name="BASE_DATE" length="7" />
+            </key-property>
+            <key-property name="startTime" type="timestamp">
+                <column name="START_TIME" length="7" />
+            </key-property>
+            <key-property name="endTime" type="timestamp">
+                <column name="END_TIME" length="7" />
+            </key-property>
+        </composite-id>
+        
+    </class>
+</hibernate-mapping>

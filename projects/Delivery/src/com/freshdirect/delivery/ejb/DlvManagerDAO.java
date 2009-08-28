@@ -42,6 +42,7 @@ import com.freshdirect.delivery.announcement.EnumUserLevel;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
+import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -119,7 +120,7 @@ public class DlvManagerDAO {
 		+ "and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE "
 		+ "order by t.base_date, z.zone_code, t.start_time";
 
-	public static List getTimeslotForDateRangeAndZone(
+	public static List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(
 		Connection conn,
 		AddressModel address,
 		java.util.Date startDate,
@@ -146,7 +147,7 @@ public class DlvManagerDAO {
 		
 
 		ResultSet rs = ps.executeQuery();
-		List timeslots = processTimeslotResultSet(rs);
+		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs);
 		rs.close();
 		ps.close();
 		return timeslots;
@@ -215,8 +216,8 @@ public class DlvManagerDAO {
 		}
 	}
 
-	private static List processTimeslotResultSet(ResultSet rs) throws SQLException {
-		List lst = new ArrayList();
+	private static List<DlvTimeslotModel> processTimeslotResultSet(ResultSet rs) throws SQLException {
+		List<DlvTimeslotModel> lst = new ArrayList<DlvTimeslotModel>();
 		java.util.Date baseDate = null;
 		String zoneCode = null;
 		while (rs.next()) {
@@ -251,7 +252,8 @@ public class DlvManagerDAO {
 		int ctCapacity = rs.getInt("CT_CAPACITY");
 		int ctReleaseTime = rs.getInt("CT_RELEASE_TIME");
 		boolean ctActive = "X".equals(rs.getString("CT_ACTIVE"));
-		return new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, ctCapacity, baseAllocation, ctAllocation, ctReleaseTime, ctActive);
+		String zoneCode=rs.getString("ZONE_CODE");
+		return new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, ctCapacity, baseAllocation, ctAllocation, ctReleaseTime, ctActive,zoneCode);
 	}
 
 	private static final String DEPOT_TIMESLOTS =
@@ -303,8 +305,9 @@ public class DlvManagerDAO {
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
 			+ "where zone_id = timeslot.zone_id AND timeslot.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = timeslot.zone_id) as ct_release_time, "
-			+ "(select z.ct_active from dlv.zone z where z.id = timeslot.zone_id) as ct_active "
-			+ "from dlv.timeslot, dlv.reservation "
+			+ "(select z.ct_active from dlv.zone z where z.id = timeslot.zone_id) as ct_active, "
+			+ "(select z.zone_code from dlv.zone z where z.id=timeslot.zone_id ) as zone_code "
+			+ " from dlv.timeslot, dlv.reservation "
 			+ "where timeslot.id = ? AND timeslot.id=reservation.TIMESLOT_ID(+)";
 
 	public static DlvTimeslotModel getTimeslotById(Connection conn, String timeslotId) throws SQLException, FinderException {
@@ -324,10 +327,10 @@ public class DlvManagerDAO {
 		}
 	}
 
+	private static final String RESERVATION_FOR_CUSTOMER="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z WHERE  R.CUSTOMER_ID = ? AND R.STATUS_CODE = ? AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
 	public static List getReservationForCustomer(Connection conn, String customerId) throws SQLException {
 		PreparedStatement ps =
-			conn.prepareStatement(
-				"SELECT ID, ORDER_ID, CUSTOMER_ID, STATUS_CODE, TIMESLOT_ID, ZONE_ID, EXPIRATION_DATETIME, TYPE, ADDRESS_ID FROM DLV.RESERVATION WHERE CUSTOMER_ID = ? AND STATUS_CODE = ?");
+			conn.prepareStatement(RESERVATION_FOR_CUSTOMER);
 		ps.setString(1, customerId);
 		ps.setInt(2, EnumReservationStatus.RESERVED.getCode());
 		ResultSet rs = ps.executeQuery();
@@ -343,10 +346,13 @@ public class DlvManagerDAO {
 		return reservations;
 	}
 
+	private static final String RESERVATION_BY_CUSTOMER_AND_TIMESLOT="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME,R.UNASSIGNED_ACTION FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z WHERE R.CUSTOMER_ID = ? AND R.TIMESLOT_ID=? AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
 	public static List getAllReservationsByCustomerAndTimeslot(Connection conn, String customerId, String timeslotId) throws SQLException {
 		PreparedStatement ps =
-			conn.prepareStatement(
-				"SELECT ID, ORDER_ID, CUSTOMER_ID, STATUS_CODE, TIMESLOT_ID, ZONE_ID, EXPIRATION_DATETIME, TYPE, ADDRESS_ID FROM DLV.RESERVATION WHERE CUSTOMER_ID = ? AND TIMESLOT_ID=?");
+			conn.prepareStatement(RESERVATION_BY_CUSTOMER_AND_TIMESLOT);
+				//"SELECT ID, ORDER_ID, CUSTOMER_ID, STATUS_CODE, TIMESLOT_ID, ZONE_ID, EXPIRATION_DATETIME, TYPE, ADDRESS_ID FROM DLV.RESERVATION WHERE CUSTOMER_ID = ? AND TIMESLOT_ID=?";
+					/*" SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, Z.ZONE_CODE FROM DLV.RESERVATION R, "+
+					" DLV.TIMESLOT T, DLV.ZONE Z WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID "*/
 		ps.setString(1, customerId);
 		ps.setString(2, timeslotId);
 		ResultSet rs = ps.executeQuery();
@@ -372,12 +378,16 @@ public class DlvManagerDAO {
 			rs.getString("TIMESLOT_ID"),
 			rs.getString("ZONE_ID"),
 			EnumReservationType.getEnum(rs.getString("TYPE")),
-			rs.getString("ADDRESS_ID"));
+			rs.getString("ADDRESS_ID"),
+			rs.getDate("BASE_DATE"),
+			rs.getString("ZONE_CODE"),
+			RoutingActivityType.valueOf( rs.getString("UNASSIGNED_ACTION")))   
+			;
 	}
 
 	
 	public static void extendReservation(Connection conn, String rsvId, Date newExpTime) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("UPDATE DLV.RESERVATION SET EXPIRATION_DATETIME = ? WHERE ID = ?");
+		PreparedStatement ps = conn.prepareStatement("UPDATE DLV.RESERVATION SET EXPIRATION_DATETIME = ?, MODIFIED_DTTM=SYSDATE WHERE ID = ?");
 		ps.setTimestamp(1, new Timestamp(newExpTime.getTime()));
 		ps.setString(2, rsvId);
 		if (ps.executeUpdate() != 1) {
@@ -388,7 +398,7 @@ public class DlvManagerDAO {
 	}
 	
 	public static void restoreReservation(Connection conn, String rsvId) throws SQLException {
-	    PreparedStatement ps = conn.prepareStatement("UPDATE DLV.RESERVATION SET STATUS_CODE = ? WHERE ID = ? ");
+	    PreparedStatement ps = conn.prepareStatement("UPDATE DLV.RESERVATION SET STATUS_CODE = ?, MODIFIED_DTTM=SYSDATE WHERE ID = ? ");
 	    ps.setInt(1, EnumReservationStatus.RESERVED.getCode());
 	    ps.setString(2, rsvId);
 	    if(ps.executeUpdate() != 1){
@@ -489,7 +499,7 @@ public class DlvManagerDAO {
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
-			+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active "
+			+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active, p.zone_code "
 			+ "from dlv.planning_resource p, dlv.timeslot t " 
 			+ "where p.id = t.resource_id and p.zone_code = ? " 
 			+ "and p.day >= ? and p.day < ? "
@@ -749,7 +759,7 @@ public class DlvManagerDAO {
 		return lst;
 	}
 
-	private static final String CANCEL_RESERVATIONS_QUERY = "UPDATE DLV.RESERVATION SET STATUS_CODE = ? WHERE ID IN ("
+	private static final String CANCEL_RESERVATIONS_QUERY = "UPDATE DLV.RESERVATION SET STATUS_CODE = ?, MODIFIED_DTTM=SYSDATE WHERE ID IN ("
 															+ "SELECT "
 															+ "rs.id  "
 															+ "from dlv.reservation rs, dlv.timeslot ts, dlv.zone ze, cust.customerinfo ci, cust.customer c "
@@ -823,4 +833,51 @@ public class DlvManagerDAO {
 		return cutOffTimes;
 	}
 	
+	private static final String UNASSIGN_RESERVATION_QUERY="UPDATE DLV.RESERVATION SET UNASSIGNED_DATETIME=SYSDATE, MODIFIED_DTTM=SYSDATE, UNASSIGNED_ACTION=? WHERE ID=?";
+	public static void setUnassignedInfo(Connection conn,String reservationId, String action)  throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(UNASSIGN_RESERVATION_QUERY);
+		ps.setString(1, action);
+	    ps.setString(2, reservationId);
+	    if(ps.executeUpdate() != 1){
+	        ps.close();
+	        throw new SQLException("Cannot find reservation to UNASSIGN for id: " + reservationId);
+	    }
+	    ps.close();
+	}
+	private static final String MARK_RESERVATION_ASSIGNED_QUERY="UPDATE DLV.RESERVATION SET UNASSIGNED_DATETIME=null, UNASSIGNED_ACTION=null, MODIFIED_DTTM=SYSDATE WHERE ID=?";
+	public static void clearUnassignedInfo(Connection conn,String reservationId)  throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(MARK_RESERVATION_ASSIGNED_QUERY);
+		
+	    ps.setString(1, reservationId);
+	    if(ps.executeUpdate() != 1){
+	        ps.close();
+	        throw new SQLException("Cannot find reservation to clear unasssignedInfo for id: " + reservationId);
+	    }
+	    ps.close();
+	}
+	//List<DlvReservationModel> getUnassignedReservations()
+	
+	private static final String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
+	" T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z "+
+	" WHERE unassigned_datetime IS NOT NULL AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
+	public static List<DlvReservationModel> getUnassignedReservations(Connection conn)  throws SQLException {
+		PreparedStatement ps =
+			conn.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
+		
+		ResultSet rs = ps.executeQuery();
+		List<DlvReservationModel>  reservations = new ArrayList<DlvReservationModel>();
+		while (rs.next()) {
+			DlvReservationModel rsv = loadReservationFromResultSet(rs);
+			reservations.add(rsv);
+		}
+
+		rs.close();
+		ps.close();
+
+		return reservations;
+	}
+	
+	 
 }

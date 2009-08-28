@@ -1,10 +1,16 @@
 package com.freshdirect.routing.model;
 
+import java.util.Date;
+
 public class OrderModel extends BaseModel implements IOrderModel {
 	
 	private String orderNumber;	
 	private String customerNumber;
 	private String customerName;
+	
+	private Date createModifyTime;
+	
+	private Date unassignedTime;
 	
 	private IDeliveryModel deliveryInfo;
 
@@ -43,5 +49,23 @@ public class OrderModel extends BaseModel implements IOrderModel {
 	public String toString() {
 		return orderNumber+"="+deliveryInfo.toString();
 	}
+
+	public Date getCreateModifyTime() {
+		return createModifyTime;
+	}
+
+	public void setCreateModifyTime(Date createModifyTime) {
+		this.createModifyTime = createModifyTime;
+	}
+
+	public Date getUnassignedTime() {
+		return unassignedTime;
+	}
+
+	public void setUnassignedTime(Date unassignedTime) {
+		this.unassignedTime = unassignedTime;
+	}
+
+	
 
 }

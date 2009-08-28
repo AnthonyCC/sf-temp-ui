@@ -1,8 +1,14 @@
 package com.freshdirect.routing.service.proxy;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
+import com.freshdirect.routing.model.DeliverySlot;
+import com.freshdirect.routing.model.IDeliveryReservation;
+import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.routing.model.IDeliveryWindowMetrics;
+import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.service.IRoutingEngineService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
@@ -42,6 +48,33 @@ public class RoutingEngineServiceProxy extends BaseServiceProxy {
 	
 	public void schedulerRemoveFromServer(IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException {
 		getService().schedulerRemoveFromServer(schedulerId);
+	}
+	
+	public IDeliveryReservation schedulerReserveOrder(IOrderModel orderModel,IDeliverySlot deliverySlot,
+			 String locationType
+			, String orderType) throws RoutingServiceException {
+		return getService().schedulerReserveOrder(orderModel, deliverySlot, locationType, orderType);
+	}
+	
+	public List<IDeliverySlot> schedulerAnalyzeOrder(IOrderModel orderModel, String locationType
+			, String orderType, Date startDate, int noOfDays, List<IDeliverySlot> slots) throws RoutingServiceException {
+		return getService().schedulerAnalyzeOrder(orderModel, locationType, orderType, startDate, noOfDays, slots);
+	}
+	
+	public void schedulerConfirmOrder(IOrderModel orderModel) throws RoutingServiceException {
+		getService().schedulerConfirmOrder(orderModel);
+	}
+	
+	public void schedulerUpdateOrder(IOrderModel orderModel, String previousOrderNumber) throws RoutingServiceException {
+		getService().schedulerUpdateOrder(orderModel, previousOrderNumber);
+	}
+	
+	public void schedulerCancelOrder(IOrderModel orderModel) throws RoutingServiceException {
+		getService().schedulerCancelOrder(orderModel);
+	}
+	
+	public List<IDeliveryWindowMetrics> retrieveCapacityMetrics(IRoutingSchedulerIdentity schedulerId, List<IDeliverySlot> slots) throws RoutingServiceException {
+		return getService().retrieveCapacityMetrics(schedulerId, slots);
 	}
 	
 	public IRoutingEngineService getService() {

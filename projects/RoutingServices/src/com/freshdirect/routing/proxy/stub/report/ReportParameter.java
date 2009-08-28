@@ -1,351 +1,929 @@
+
 /**
  * ReportParameter.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
  */
+            
+                package com.freshdirect.routing.proxy.stub.report;
+            
 
-package com.freshdirect.routing.proxy.stub.report;
+            /**
+            *  ReportParameter bean class
+            */
+        
+        public  class ReportParameter
+        implements org.apache.axis2.databinding.ADBBean{
+        /* This type was generated from the piece of schema that had
+                name = ReportParameter
+                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService
+                Namespace Prefix = ns1
+                */
+            
 
-public class ReportParameter  implements java.io.Serializable {
-    private java.lang.String name;
-
-    private java.lang.String prompt;
-
-    private com.freshdirect.routing.proxy.stub.report.ReportParameterDataType dataType;
-
-    private com.freshdirect.routing.proxy.stub.report.ReportParameterKind discreteOrRangeKind;
-
-    private boolean allowMultipleValues;
-
-    private java.lang.String[] defaultValue;
-
-    private java.lang.String[] value;
-
-    public ReportParameter() {
-    }
-
-    public ReportParameter(
-           java.lang.String name,
-           java.lang.String prompt,
-           com.freshdirect.routing.proxy.stub.report.ReportParameterDataType dataType,
-           com.freshdirect.routing.proxy.stub.report.ReportParameterKind discreteOrRangeKind,
-           boolean allowMultipleValues,
-           java.lang.String[] defaultValue,
-           java.lang.String[] value) {
-           this.name = name;
-           this.prompt = prompt;
-           this.dataType = dataType;
-           this.discreteOrRangeKind = discreteOrRangeKind;
-           this.allowMultipleValues = allowMultipleValues;
-           this.defaultValue = defaultValue;
-           this.value = value;
-    }
-
-
-    /**
-     * Gets the name value for this ReportParameter.
-     * 
-     * @return name
-     */
-    public java.lang.String getName() {
-        return name;
-    }
-
-
-    /**
-     * Sets the name value for this ReportParameter.
-     * 
-     * @param name
-     */
-    public void setName(java.lang.String name) {
-        this.name = name;
-    }
-
-
-    /**
-     * Gets the prompt value for this ReportParameter.
-     * 
-     * @return prompt
-     */
-    public java.lang.String getPrompt() {
-        return prompt;
-    }
-
-
-    /**
-     * Sets the prompt value for this ReportParameter.
-     * 
-     * @param prompt
-     */
-    public void setPrompt(java.lang.String prompt) {
-        this.prompt = prompt;
-    }
-
-
-    /**
-     * Gets the dataType value for this ReportParameter.
-     * 
-     * @return dataType
-     */
-    public com.freshdirect.routing.proxy.stub.report.ReportParameterDataType getDataType() {
-        return dataType;
-    }
-
-
-    /**
-     * Sets the dataType value for this ReportParameter.
-     * 
-     * @param dataType
-     */
-    public void setDataType(com.freshdirect.routing.proxy.stub.report.ReportParameterDataType dataType) {
-        this.dataType = dataType;
-    }
-
-
-    /**
-     * Gets the discreteOrRangeKind value for this ReportParameter.
-     * 
-     * @return discreteOrRangeKind
-     */
-    public com.freshdirect.routing.proxy.stub.report.ReportParameterKind getDiscreteOrRangeKind() {
-        return discreteOrRangeKind;
-    }
-
-
-    /**
-     * Sets the discreteOrRangeKind value for this ReportParameter.
-     * 
-     * @param discreteOrRangeKind
-     */
-    public void setDiscreteOrRangeKind(com.freshdirect.routing.proxy.stub.report.ReportParameterKind discreteOrRangeKind) {
-        this.discreteOrRangeKind = discreteOrRangeKind;
-    }
-
-
-    /**
-     * Gets the allowMultipleValues value for this ReportParameter.
-     * 
-     * @return allowMultipleValues
-     */
-    public boolean isAllowMultipleValues() {
-        return allowMultipleValues;
-    }
-
-
-    /**
-     * Sets the allowMultipleValues value for this ReportParameter.
-     * 
-     * @param allowMultipleValues
-     */
-    public void setAllowMultipleValues(boolean allowMultipleValues) {
-        this.allowMultipleValues = allowMultipleValues;
-    }
-
-
-    /**
-     * Gets the defaultValue value for this ReportParameter.
-     * 
-     * @return defaultValue
-     */
-    public java.lang.String[] getDefaultValue() {
-        return defaultValue;
-    }
-
-
-    /**
-     * Sets the defaultValue value for this ReportParameter.
-     * 
-     * @param defaultValue
-     */
-    public void setDefaultValue(java.lang.String[] defaultValue) {
-        this.defaultValue = defaultValue;
-    }
-
-
-    /**
-     * Gets the value value for this ReportParameter.
-     * 
-     * @return value
-     */
-    public java.lang.String[] getValue() {
-        return value;
-    }
-
-
-    /**
-     * Sets the value value for this ReportParameter.
-     * 
-     * @param value
-     */
-    public void setValue(java.lang.String[] value) {
-        this.value = value;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof ReportParameter)) return false;
-        ReportParameter other = (ReportParameter) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
+        private static java.lang.String generatePrefix(java.lang.String namespace) {
+            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService")){
+                return "ns1";
+            }
+            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
         }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.name==null && other.getName()==null) || 
-             (this.name!=null &&
-              this.name.equals(other.getName()))) &&
-            ((this.prompt==null && other.getPrompt()==null) || 
-             (this.prompt!=null &&
-              this.prompt.equals(other.getPrompt()))) &&
-            ((this.dataType==null && other.getDataType()==null) || 
-             (this.dataType!=null &&
-              this.dataType.equals(other.getDataType()))) &&
-            ((this.discreteOrRangeKind==null && other.getDiscreteOrRangeKind()==null) || 
-             (this.discreteOrRangeKind!=null &&
-              this.discreteOrRangeKind.equals(other.getDiscreteOrRangeKind()))) &&
-            this.allowMultipleValues == other.isAllowMultipleValues() &&
-            ((this.defaultValue==null && other.getDefaultValue()==null) || 
-             (this.defaultValue!=null &&
-              java.util.Arrays.equals(this.defaultValue, other.getDefaultValue()))) &&
-            ((this.value==null && other.getValue()==null) || 
-             (this.value!=null &&
-              java.util.Arrays.equals(this.value, other.getValue())));
-        __equalsCalc = null;
-        return _equals;
-    }
 
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
+        
+
+                        /**
+                        * field for Name
+                        */
+
+                        
+                                    protected java.lang.String localName ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localNameTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getName(){
+                               return localName;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Name
+                               */
+                               public void setName(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localNameTracker = true;
+                                       } else {
+                                          localNameTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localName=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for Prompt
+                        */
+
+                        
+                                    protected java.lang.String localPrompt ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localPromptTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getPrompt(){
+                               return localPrompt;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Prompt
+                               */
+                               public void setPrompt(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localPromptTracker = true;
+                                       } else {
+                                          localPromptTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localPrompt=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for DataType
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.report.ReportParameterDataType localDataType ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.report.ReportParameterDataType
+                           */
+                           public  com.freshdirect.routing.proxy.stub.report.ReportParameterDataType getDataType(){
+                               return localDataType;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DataType
+                               */
+                               public void setDataType(com.freshdirect.routing.proxy.stub.report.ReportParameterDataType param){
+                            
+                                            this.localDataType=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for DiscreteOrRangeKind
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.report.ReportParameterKind localDiscreteOrRangeKind ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.report.ReportParameterKind
+                           */
+                           public  com.freshdirect.routing.proxy.stub.report.ReportParameterKind getDiscreteOrRangeKind(){
+                               return localDiscreteOrRangeKind;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DiscreteOrRangeKind
+                               */
+                               public void setDiscreteOrRangeKind(com.freshdirect.routing.proxy.stub.report.ReportParameterKind param){
+                            
+                                            this.localDiscreteOrRangeKind=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for AllowMultipleValues
+                        */
+
+                        
+                                    protected boolean localAllowMultipleValues ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getAllowMultipleValues(){
+                               return localAllowMultipleValues;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param AllowMultipleValues
+                               */
+                               public void setAllowMultipleValues(boolean param){
+                            
+                                            this.localAllowMultipleValues=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for DefaultValue
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.report.ReportParameterValue localDefaultValue ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.report.ReportParameterValue
+                           */
+                           public  com.freshdirect.routing.proxy.stub.report.ReportParameterValue getDefaultValue(){
+                               return localDefaultValue;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DefaultValue
+                               */
+                               public void setDefaultValue(com.freshdirect.routing.proxy.stub.report.ReportParameterValue param){
+                            
+                                            this.localDefaultValue=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for Value
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.report.ReportParameterValue localValue ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.report.ReportParameterValue
+                           */
+                           public  com.freshdirect.routing.proxy.stub.report.ReportParameterValue getValue(){
+                               return localValue;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Value
+                               */
+                               public void setValue(com.freshdirect.routing.proxy.stub.report.ReportParameterValue param){
+                            
+                                            this.localValue=param;
+                                    
+
+                               }
+                            
+
+     /**
+     * isReaderMTOMAware
+     * @return true if the reader supports MTOM
+     */
+   public static boolean isReaderMTOMAware(javax.xml.stream.XMLStreamReader reader) {
+        boolean isReaderMTOMAware = false;
+        
+        try{
+          isReaderMTOMAware = java.lang.Boolean.TRUE.equals(reader.getProperty(org.apache.axiom.om.OMConstants.IS_DATA_HANDLERS_AWARE));
+        }catch(java.lang.IllegalArgumentException e){
+          isReaderMTOMAware = false;
         }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getName() != null) {
-            _hashCode += getName().hashCode();
+        return isReaderMTOMAware;
+   }
+     
+     
+        /**
+        *
+        * @param parentQName
+        * @param factory
+        * @return org.apache.axiom.om.OMElement
+        */
+       public org.apache.axiom.om.OMElement getOMElement (
+               final javax.xml.namespace.QName parentQName,
+               final org.apache.axiom.om.OMFactory factory) throws org.apache.axis2.databinding.ADBException{
+
+
+        
+               org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
+
+                 public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+                       ReportParameter.this.serialize(parentQName,factory,xmlWriter);
+                 }
+               };
+               return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
+               parentQName,factory,dataSource);
+            
+       }
+
+         public void serialize(final javax.xml.namespace.QName parentQName,
+                                       final org.apache.axiom.om.OMFactory factory,
+                                       org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter)
+                                throws javax.xml.stream.XMLStreamException, org.apache.axis2.databinding.ADBException{
+                           serialize(parentQName,factory,xmlWriter,false);
+         }
+
+         public void serialize(final javax.xml.namespace.QName parentQName,
+                               final org.apache.axiom.om.OMFactory factory,
+                               org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter,
+                               boolean serializeType)
+            throws javax.xml.stream.XMLStreamException, org.apache.axis2.databinding.ADBException{
+            
+                
+
+
+                java.lang.String prefix = null;
+                java.lang.String namespace = null;
+                
+
+                    prefix = parentQName.getPrefix();
+                    namespace = parentQName.getNamespaceURI();
+
+                    if ((namespace != null) && (namespace.trim().length() > 0)) {
+                        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+                        if (writerPrefix != null) {
+                            xmlWriter.writeStartElement(namespace, parentQName.getLocalPart());
+                        } else {
+                            if (prefix == null) {
+                                prefix = generatePrefix(namespace);
+                            }
+
+                            xmlWriter.writeStartElement(prefix, parentQName.getLocalPart(), namespace);
+                            xmlWriter.writeNamespace(prefix, namespace);
+                            xmlWriter.setPrefix(prefix, namespace);
+                        }
+                    } else {
+                        xmlWriter.writeStartElement(parentQName.getLocalPart());
+                    }
+                
+                  if (serializeType){
+               
+
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService");
+                   if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
+                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                           namespacePrefix+":ReportParameter",
+                           xmlWriter);
+                   } else {
+                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                           "ReportParameter",
+                           xmlWriter);
+                   }
+
+               
+                   }
+                if (localNameTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"name", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"name");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("name");
+                                    }
+                                
+
+                                          if (localName==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("name cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localName);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localPromptTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"prompt", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"prompt");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("prompt");
+                                    }
+                                
+
+                                          if (localPrompt==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("prompt cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localPrompt);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
+                                            if (localDataType==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("dataType cannot be null!!");
+                                            }
+                                           localDataType.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService","dataType"),
+                                               factory,xmlWriter);
+                                        
+                                            if (localDiscreteOrRangeKind==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("discreteOrRangeKind cannot be null!!");
+                                            }
+                                           localDiscreteOrRangeKind.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService","discreteOrRangeKind"),
+                                               factory,xmlWriter);
+                                        
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"allowMultipleValues", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"allowMultipleValues");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("allowMultipleValues");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("allowMultipleValues cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAllowMultipleValues));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                            if (localDefaultValue==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("defaultValue cannot be null!!");
+                                            }
+                                           localDefaultValue.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService","defaultValue"),
+                                               factory,xmlWriter);
+                                        
+                                            if (localValue==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("value cannot be null!!");
+                                            }
+                                           localValue.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService","value"),
+                                               factory,xmlWriter);
+                                        
+                    xmlWriter.writeEndElement();
+               
+
         }
-        if (getPrompt() != null) {
-            _hashCode += getPrompt().hashCode();
-        }
-        if (getDataType() != null) {
-            _hashCode += getDataType().hashCode();
-        }
-        if (getDiscreteOrRangeKind() != null) {
-            _hashCode += getDiscreteOrRangeKind().hashCode();
-        }
-        _hashCode += (isAllowMultipleValues() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        if (getDefaultValue() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getDefaultValue());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getDefaultValue(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
+
+         /**
+          * Util method to write an attribute with the ns prefix
+          */
+          private void writeAttribute(java.lang.String prefix,java.lang.String namespace,java.lang.String attName,
+                                      java.lang.String attValue,javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException{
+              if (xmlWriter.getPrefix(namespace) == null) {
+                       xmlWriter.writeNamespace(prefix, namespace);
+                       xmlWriter.setPrefix(prefix, namespace);
+
+              }
+
+              xmlWriter.writeAttribute(namespace,attName,attValue);
+
+         }
+
+        /**
+          * Util method to write an attribute without the ns prefix
+          */
+          private void writeAttribute(java.lang.String namespace,java.lang.String attName,
+                                      java.lang.String attValue,javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException{
+                if (namespace.equals(""))
+              {
+                  xmlWriter.writeAttribute(attName,attValue);
+              }
+              else
+              {
+                  registerPrefix(xmlWriter, namespace);
+                  xmlWriter.writeAttribute(namespace,attName,attValue);
+              }
+          }
+
+
+           /**
+             * Util method to write an attribute without the ns prefix
+             */
+            private void writeQNameAttribute(java.lang.String namespace, java.lang.String attName,
+                                             javax.xml.namespace.QName qname, javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+
+                java.lang.String attributeNamespace = qname.getNamespaceURI();
+                java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+                if (attributePrefix == null) {
+                    attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
+                }
+                java.lang.String attributeValue;
+                if (attributePrefix.trim().length() > 0) {
+                    attributeValue = attributePrefix + ":" + qname.getLocalPart();
+                } else {
+                    attributeValue = qname.getLocalPart();
+                }
+
+                if (namespace.equals("")) {
+                    xmlWriter.writeAttribute(attName, attributeValue);
+                } else {
+                    registerPrefix(xmlWriter, namespace);
+                    xmlWriter.writeAttribute(namespace, attName, attributeValue);
                 }
             }
-        }
-        if (getValue() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getValue());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getValue(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
+        /**
+         *  method to handle Qnames
+         */
+
+        private void writeQName(javax.xml.namespace.QName qname,
+                                javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+            java.lang.String namespaceURI = qname.getNamespaceURI();
+            if (namespaceURI != null) {
+                java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+                if (prefix == null) {
+                    prefix = generatePrefix(namespaceURI);
+                    xmlWriter.writeNamespace(prefix, namespaceURI);
+                    xmlWriter.setPrefix(prefix,namespaceURI);
                 }
+
+                if (prefix.trim().length() > 0){
+                    xmlWriter.writeCharacters(prefix + ":" + org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qname));
+                } else {
+                    // i.e this is the default namespace
+                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qname));
+                }
+
+            } else {
+                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qname));
             }
         }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
 
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(ReportParameter.class, true);
+        private void writeQNames(javax.xml.namespace.QName[] qnames,
+                                 javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
 
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService", "ReportParameter"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("name");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService", "name"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("prompt");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService", "prompt"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("dataType");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService", "dataType"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService", "ReportParameterDataType"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("discreteOrRangeKind");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService", "discreteOrRangeKind"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService", "ReportParameterKind"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("allowMultipleValues");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService", "allowMultipleValues"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("defaultValue");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService", "defaultValue"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(false);
-        elemField.setItemQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService", "values"));
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("value");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService", "value"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setNillable(false);
-        elemField.setItemQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService", "values"));
-        typeDesc.addFieldDesc(elemField);
-    }
+            if (qnames != null) {
+                // we have to store this data until last moment since it is not possible to write any
+                // namespace data after writing the charactor data
+                java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
+                java.lang.String namespaceURI = null;
+                java.lang.String prefix = null;
 
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
+                for (int i = 0; i < qnames.length; i++) {
+                    if (i > 0) {
+                        stringToWrite.append(" ");
+                    }
+                    namespaceURI = qnames[i].getNamespaceURI();
+                    if (namespaceURI != null) {
+                        prefix = xmlWriter.getPrefix(namespaceURI);
+                        if ((prefix == null) || (prefix.length() == 0)) {
+                            prefix = generatePrefix(namespaceURI);
+                            xmlWriter.writeNamespace(prefix, namespaceURI);
+                            xmlWriter.setPrefix(prefix,namespaceURI);
+                        }
 
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
+                        if (prefix.trim().length() > 0){
+                            stringToWrite.append(prefix).append(":").append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qnames[i]));
+                        } else {
+                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qnames[i]));
+                        }
+                    } else {
+                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qnames[i]));
+                    }
+                }
+                xmlWriter.writeCharacters(stringToWrite.toString());
+            }
 
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
-    }
+        }
 
-}
+
+         /**
+         * Register a namespace prefix
+         */
+         private java.lang.String registerPrefix(javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace) throws javax.xml.stream.XMLStreamException {
+                java.lang.String prefix = xmlWriter.getPrefix(namespace);
+
+                if (prefix == null) {
+                    prefix = generatePrefix(namespace);
+
+                    while (xmlWriter.getNamespaceContext().getNamespaceURI(prefix) != null) {
+                        prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    }
+
+                    xmlWriter.writeNamespace(prefix, namespace);
+                    xmlWriter.setPrefix(prefix, namespace);
+                }
+
+                return prefix;
+            }
+
+
+  
+        /**
+        * databinding method to get an XML representation of this object
+        *
+        */
+        public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
+                    throws org.apache.axis2.databinding.ADBException{
+
+
+        
+                 java.util.ArrayList elementList = new java.util.ArrayList();
+                 java.util.ArrayList attribList = new java.util.ArrayList();
+
+                 if (localNameTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService",
+                                                                      "name"));
+                                 
+                                        if (localName != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localName));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("name cannot be null!!");
+                                        }
+                                    } if (localPromptTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService",
+                                                                      "prompt"));
+                                 
+                                        if (localPrompt != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPrompt));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("prompt cannot be null!!");
+                                        }
+                                    }
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService",
+                                                                      "dataType"));
+                            
+                            
+                                    if (localDataType==null){
+                                         throw new org.apache.axis2.databinding.ADBException("dataType cannot be null!!");
+                                    }
+                                    elementList.add(localDataType);
+                                
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService",
+                                                                      "discreteOrRangeKind"));
+                            
+                            
+                                    if (localDiscreteOrRangeKind==null){
+                                         throw new org.apache.axis2.databinding.ADBException("discreteOrRangeKind cannot be null!!");
+                                    }
+                                    elementList.add(localDiscreteOrRangeKind);
+                                
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService",
+                                                                      "allowMultipleValues"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAllowMultipleValues));
+                            
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService",
+                                                                      "defaultValue"));
+                            
+                            
+                                    if (localDefaultValue==null){
+                                         throw new org.apache.axis2.databinding.ADBException("defaultValue cannot be null!!");
+                                    }
+                                    elementList.add(localDefaultValue);
+                                
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService",
+                                                                      "value"));
+                            
+                            
+                                    if (localValue==null){
+                                         throw new org.apache.axis2.databinding.ADBException("value cannot be null!!");
+                                    }
+                                    elementList.add(localValue);
+                                
+
+                return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
+            
+            
+
+        }
+
+  
+
+     /**
+      *  Factory class that keeps the parse method
+      */
+    public static class Factory{
+
+        
+        
+
+        /**
+        * static method to create the object
+        * Precondition:  If this object is an element, the current or next start element starts this object and any intervening reader events are ignorable
+        *                If this object is not an element, it is a complex type and the reader is at the event just after the outer start element
+        * Postcondition: If this object is an element, the reader is positioned at its end element
+        *                If this object is a complex type, the reader is positioned at the end element of its outer element
+        */
+        public static ReportParameter parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            ReportParameter object =
+                new ReportParameter();
+
+            int event;
+            java.lang.String nillableValue = null;
+            java.lang.String prefix ="";
+            java.lang.String namespaceuri ="";
+            try {
+                
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                
+                if (reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","type")!=null){
+                  java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                        "type");
+                  if (fullTypeName!=null){
+                    java.lang.String nsPrefix = null;
+                    if (fullTypeName.indexOf(":") > -1){
+                        nsPrefix = fullTypeName.substring(0,fullTypeName.indexOf(":"));
+                    }
+                    nsPrefix = nsPrefix==null?"":nsPrefix;
+
+                    java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
+                    
+                            if (!"ReportParameter".equals(type)){
+                                //find namespace for the prefix
+                                java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
+                                return (ReportParameter)com.freshdirect.routing.proxy.stub.report.ExtensionMapper.getTypeObject(
+                                     nsUri,type,reader);
+                              }
+                        
+
+                  }
+                
+
+                }
+
+                
+
+                
+                // Note all attributes that were handled. Used to differ normal attributes
+                // from anyAttributes.
+                java.util.Vector handledAttributes = new java.util.Vector();
+                
+
+                 
+                    
+                    reader.next();
+                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService","name").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setName(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService","prompt").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPrompt(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService","dataType").equals(reader.getName())){
+                                
+                                                object.setDataType(com.freshdirect.routing.proxy.stub.report.ReportParameterDataType.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService","discreteOrRangeKind").equals(reader.getName())){
+                                
+                                                object.setDiscreteOrRangeKind(com.freshdirect.routing.proxy.stub.report.ReportParameterKind.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService","allowMultipleValues").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setAllowMultipleValues(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService","defaultValue").equals(reader.getName())){
+                                
+                                                object.setDefaultValue(com.freshdirect.routing.proxy.stub.report.ReportParameterValue.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/ReportsWebService","value").equals(reader.getName())){
+                                
+                                                object.setValue(com.freshdirect.routing.proxy.stub.report.ReportParameterValue.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                              
+                            while (!reader.isStartElement() && !reader.isEndElement())
+                                reader.next();
+                            
+                                if (reader.isStartElement())
+                                // A start element we are not expecting indicates a trailing invalid property
+                                throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                            
+
+
+
+            } catch (javax.xml.stream.XMLStreamException e) {
+                throw new java.lang.Exception(e);
+            }
+
+            return object;
+        }
+
+        }//end of factory class
+
+        
+
+        }
+           
+          

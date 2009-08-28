@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class AddressInfo implements Serializable {
 
 	private String zoneId;
+	private String zoneCode;
 	private double longitude;
 	private double latitude;
 	private String scrubbedStreet;
@@ -29,6 +30,13 @@ public class AddressInfo implements Serializable {
 		this.zoneId = zoneId;
 	}
 	
+	public String getZoneCode(){
+		return this.zoneCode;
+	}
+	
+	public void setZoneCode(String zoneCode){
+		this.zoneCode = zoneCode;
+	}
 	public double getLongitude(){
 		return this.longitude; 
 	}

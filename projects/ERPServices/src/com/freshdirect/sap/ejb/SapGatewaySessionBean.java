@@ -108,6 +108,7 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 			sapMsg.setObject(sapCommand);
 
 			this.qsender.send(sapMsg);
+			System.out.println("this.qsender.getQueue().getQueueName() :"+this.qsender.getQueue().getQueueName());
 		} catch (JMSException ex) {
 			LOGGER.warn("Error enqueueing command", ex);
 			throw new EJBException(ex);

@@ -584,6 +584,8 @@ public interface FDCustomerManagerSB extends EJBObject {
     public ErpAddressModel getLastOrderAddress(String lastOrderId) throws FDResourceException, RemoteException, SQLException;
     
     public void storeProductRequest(List productRequest,FDSurveyResponse survey) throws RemoteException, FDResourceException;
+    
+    public ErpAddressModel getAddress(FDIdentity identity,String id) throws FDResourceException, RemoteException;
 
 
 	public void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) throws RemoteException, FDResourceException;

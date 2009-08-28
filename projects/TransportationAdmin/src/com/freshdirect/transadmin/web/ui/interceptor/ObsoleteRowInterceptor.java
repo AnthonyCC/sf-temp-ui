@@ -8,7 +8,7 @@ import org.extremecomponents.table.view.html.BuilderConstants;
 
 import com.freshdirect.transadmin.model.TrnBaseEntityI;
 
-public class ObsoleteRowInterceptor implements RowInterceptor {
+public class ObsoleteRowInterceptor extends FDRowInterceptor {
 	
 	public void addRowAttributes(TableModel tableModel, Row row) {
     } 
@@ -22,11 +22,7 @@ public class ObsoleteRowInterceptor implements RowInterceptor {
 	            return;
 	        } 	        
     	}
-    	if(model.getRowHandler().isRowEven()) {
-    		row.setStyleClass(BuilderConstants.ROW_EVEN_CSS);
-    	} else {
-    		row.setStyleClass(BuilderConstants.ROW_ODD_CSS);
-    	}
+    	super.modifyRowAttributes(model, row);
     }
 
 }

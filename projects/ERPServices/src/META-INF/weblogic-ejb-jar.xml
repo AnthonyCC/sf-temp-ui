@@ -167,28 +167,7 @@
         <jndi-name>freshdirect.sap.Gateway</jndi-name>
     </weblogic-enterprise-bean>
     
-    <weblogic-enterprise-bean>
-        <ejb-name>RoutingGateway</ejb-name>
-        <stateless-session-descriptor>
-            <pool>
-                <max-beans-in-free-pool>50</max-beans-in-free-pool>
-                <initial-beans-in-free-pool>10</initial-beans-in-free-pool>
-            </pool>
-            <stateless-clustering></stateless-clustering>
-        </stateless-session-descriptor>
-        <transaction-descriptor></transaction-descriptor>
-        <reference-descriptor>
-            <resource-description>
-                <res-ref-name>jms/QueueFactory</res-ref-name>
-                <jndi-name>queueFactory</jndi-name>
-            </resource-description>
-            <resource-env-description>
-                <res-env-ref-name>jms/Queue</res-env-ref-name>
-                <jndi-name>./routingQueue</jndi-name>
-            </resource-env-description>
-        </reference-descriptor>
-        <jndi-name>freshdirect.routing.Gateway</jndi-name>
-    </weblogic-enterprise-bean>
+    
     
     <weblogic-enterprise-bean>
         <ejb-name>PaymentGateway</ejb-name>
@@ -1031,14 +1010,7 @@
             <method-name>*</method-name>
         </method>
     </transaction-isolation>
-    <transaction-isolation>
-        <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
-        <method>
-            <ejb-name>RoutingGateway</ejb-name>
-            <method-intf>Remote</method-intf>
-            <method-name>*</method-name>
-        </method>
-    </transaction-isolation>
+    
     <transaction-isolation>
         <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
         <method>

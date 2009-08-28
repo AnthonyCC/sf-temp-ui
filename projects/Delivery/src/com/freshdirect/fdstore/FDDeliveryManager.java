@@ -22,13 +22,18 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
+import javax.naming.Context;
 import javax.naming.NamingException;
 
+import com.freshdirect.common.address.AddressI;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
+import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
 import com.freshdirect.delivery.DlvResourceException;
@@ -47,8 +52,14 @@ import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
+import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimedLruCache;
+import com.freshdirect.routing.ejb.RoutingGatewayHome;
+import com.freshdirect.routing.ejb.RoutingGatewaySB;
+import com.freshdirect.routing.model.IDeliveryReservation;
+import com.freshdirect.routing.model.IDeliverySlot;
 
 /**
  *
@@ -359,16 +370,18 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public ArrayList getTimeslotsForDateRangeAndZone(Date begDate, Date endDate, AddressModel address) throws FDResourceException {
+	public ArrayList<FDTimeslot> getTimeslotsForDateRangeAndZone(Date begDate, Date endDate, ContactAddressModel address) throws FDResourceException {
 		try {
-			ArrayList retLst = new ArrayList();
+			ArrayList<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
-			List timeslots = sb.getTimeslotForDateRangeAndZone(begDate, endDate, address);
-			for (Iterator i = timeslots.iterator(); i.hasNext();) {
-				DlvTimeslotModel timeslot = (DlvTimeslotModel) i.next();
+			List<DlvTimeslotModel> timeslots = sb.getTimeslotForDateRangeAndZone(begDate, endDate, address);
+			for (Iterator<DlvTimeslotModel> i = timeslots.iterator(); i.hasNext();) {
+				DlvTimeslotModel timeslot =  i.next();
 				retLst.add(new FDTimeslot(timeslot));
 			}
-
+			
+			if(FDStoreProperties.isDynamicRoutingEnabled()) 
+				RoutingUtil.getInstance().sendDateRangeAndZoneForTimeslots(retLst, address);
 			return retLst;
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -378,6 +391,8 @@ public class FDDeliveryManager {
 			throw new FDResourceException(iae);
 		}
 	}
+	
+	
 
 	public ArrayList getAllTimeslotsForDateRange(Date startDate, Date endDate, AddressModel address) throws FDResourceException {
 		try {
@@ -449,13 +464,13 @@ public class FDDeliveryManager {
 		String customerId,
 		long holdTime,
 		EnumReservationType type,
-		String addressId,
+		ContactAddressModel address,
 		boolean chefsTable) throws FDResourceException, ReservationException {
 
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			DlvReservationModel dlvReservation = sb
-				.reserveTimeslot(timeslot.getTimeslotId(), customerId, holdTime, type, addressId, chefsTable);
+				.reserveTimeslot(timeslot.getDlvTimeslot(), customerId, holdTime, type, address.getPK().getId(), chefsTable);
 
 			FDReservation reservation = new FDReservation(
 				dlvReservation.getPK(),
@@ -463,9 +478,10 @@ public class FDDeliveryManager {
 				dlvReservation.getExpirationDateTime(),
 				dlvReservation.getReservationType(),
 				dlvReservation.getCustomerId(),
-				addressId,
+				address.getPK().getId(),
 				dlvReservation.isChefsTable());
-
+			if(FDStoreProperties.isDynamicRoutingEnabled()) 
+				RoutingUtil.getInstance().sendTimeslotReservationRequest(reservation,address);
 			return reservation;
 
 		} catch (RemoteException re) {
@@ -495,15 +511,21 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public void removeReservation(String reservationId) throws FDResourceException {
+	public void removeReservation(String reservationId,ContactAddressModel address) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			sb.removeReservation(reservationId);
+			if(FDStoreProperties.isDynamicRoutingEnabled()) {
+				DlvReservationModel reservation=sb.getReservation(reservationId);
+				RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
+			}
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
+		} catch (FinderException e) {
+			throw new FDResourceException(e);
 		}
 	}
 
@@ -538,22 +560,34 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public void commitReservation(String rsvId, String customerId, String orderId) throws ReservationException, FDResourceException {
+	public void commitReservation(String rsvId, String customerId, String orderId, ContactAddressModel address) throws ReservationException, FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			sb.commitReservation(rsvId, customerId, orderId);
+			if(FDStoreProperties.isDynamicRoutingEnabled()) {
+				DlvReservationModel reservation=sb.getReservation(rsvId);
+				RoutingUtil.getInstance().sendCommitReservationRequest(reservation,address);
+			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
+		}catch (FinderException e) {
+			throw new FDResourceException(e);
 		}
 
 	}
 
-	public void releaseReservation(String rsvId) throws FDResourceException {
+	public boolean releaseReservation(String rsvId, ContactAddressModel address) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			sb.releaseReservation(rsvId);
+			 boolean status=sb.releaseReservation(rsvId);
+			 if(FDStoreProperties.isDynamicRoutingEnabled()) {
+					DlvReservationModel reservation=sb.getReservation(rsvId);
+
+					RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
+			 }
+			 return status;
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -698,6 +732,7 @@ public class FDDeliveryManager {
 		}
 	}
 
+	
 	public List searchGeocodeException(ExceptionAddress ex) throws FDResourceException {
 
 		DlvManagerSB sb;
@@ -810,4 +845,203 @@ public class FDDeliveryManager {
 			throw new FDResourceException(e);
 		}
 	}
+	
+	public List<java.util.List<IDeliverySlot>> getTimeslotsForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) throws FDResourceException {
+		try {
+			
+			DlvManagerSB sb = getDlvManagerHome().create();
+			return sb.getTimeslotForDateRangeAndZoneEx(timeSlots, address);
+		
+		} catch (RemoteException re) {
+			re.printStackTrace();
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			ce.printStackTrace();
+			throw new FDResourceException(ce);
+		} 
+	}
+
+	public IDeliveryReservation reserveTimeslotEx(FDReservation reservation,ContactAddressModel address) throws FDResourceException {
+
+			try {
+				
+				
+				DlvManagerSB sb = getDlvManagerHome().create();
+				return sb.reserveTimeslotEx(reservation, address);
+
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			} 
+		}	
+
+	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address) throws FDResourceException{
+		try {
+			
+			
+			DlvManagerSB sb = getDlvManagerHome().create();
+			sb.commitReservationEx(reservation,address);
+
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} 
+	}
+	
+	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) throws FDResourceException{
+		try {
+			
+			
+			DlvManagerSB sb = getDlvManagerHome().create();
+			sb.releaseReservationEx(reservation,address);
+
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} 
+	}
+	
+	
+	public List<DlvReservationModel> getUnassignedReservations() throws FDResourceException {
+		
+		try {
+			
+			
+			DlvManagerSB sb = getDlvManagerHome().create();
+			return sb.getUnassignedReservations();
+			
+
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (DlvResourceException e) {
+			throw new FDResourceException(e);
+		} 
+	}
+	
+	public void setUnassignedInfo(String reservationId,RoutingActivityType activity )throws FDResourceException {
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			sb.setUnassignedInfo(reservationId, activity);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+	public void clearUnassignedInfo(String reservationId ) throws FDResourceException {
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			sb.clearUnassignedInfo(reservationId);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+	/*public List<DlvReservationModel> getUnassignedReservations() throws FDResourceException {
+		
+		try {
+			
+			
+			DlvManagerSB sb = getDlvManagerHome().create();
+			return sb.getUnassignedReservations();
+			
+
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (DlvResourceException e) {
+			throw new FDResourceException(e);
+		} 
+	}*/
+	
+	
+	
+	/*public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, AddressModel address) {
+		try {
+			Date startDate = getDateByNextDayOfWeek(dayOfWeek);
+			Date endDate = DateUtil.addDays(startDate, 1);
+
+			List lst = this.getTimeslotForDateRangeAndZone(startDate, endDate, address);
+			List messages = new ArrayList();
+			
+			try {
+				if(lst != null) {
+					List geographicRestrictions = this.getGeographicDlvRestrictions( address);
+					
+					if(geographicRestrictions != null && geographicRestrictions.size() > 0) {
+						for(Iterator i = lst.iterator(); i.hasNext();) {						
+							FDTimeslot ts = new FDTimeslot((DlvTimeslotModel)i.next());
+							if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, messages, null)) {
+								// filter off empty timeslots (unless they must be retained)
+								i.remove();
+							}
+						}
+					}
+				}
+			} catch (DlvResourceException dlvResException) {
+				LOGGER.info("Failed to load Geography Restriction "+messages);
+			}
+			
+			DlvTimeslotModel foundTimeslot = null;
+			for (Iterator i = lst.iterator(); i.hasNext();) {
+				DlvTimeslotModel t = (DlvTimeslotModel) i.next();
+				if (t.isMatching(startDate, startTime, endTime)) {
+					foundTimeslot = t;
+					break;
+				}
+			}
+
+			if (foundTimeslot == null) {
+				logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
+								"Failed to make recurring reservation for customer - no timeslot found");
+				LOGGER.info("Failed to make recurring reservation for customer " + customerId + " - no timeslot found");
+				return false;
+			}
+			
+			List reservations = getAllReservationsByCustomerAndTimeslot(customerId, foundTimeslot.getPK().getId());
+			for (Iterator i = reservations.iterator(); i.hasNext(); ) {
+				DlvReservationModel rsv = (DlvReservationModel) i.next();
+				if (!EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType())) {
+					logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
+									"Failed to make recurring reservation for customer - already reserved");
+					LOGGER.info("Failed to make recurring reservation for customer " + customerId + " - already reserved");
+					return false;
+				}
+			}
+
+			long duration = foundTimeslot.getCutoffTimeAsDate().getTime()
+				- System.currentTimeMillis()
+				- (FDStoreProperties.getPreReserveHours() * DateUtil.HOUR);
+			if (duration < 0) {
+				duration = Math.min(foundTimeslot.getCutoffTimeAsDate().getTime() - System.currentTimeMillis(), DateUtil.HOUR);
+			}
+			//recurring timeslot should not go to chefs table capacity
+			this.reserveTimeslot(
+				foundTimeslot.getPK().getId(),
+				customerId,
+				duration,
+				EnumReservationType.RECURRING_RESERVATION,
+				address.getPK().getId(), false);
+			
+			logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
+								"Made recurring reservation");
+			
+			LOGGER.info("Made recurring reservation for " + customerId);
+
+			return true;
+			
+		} catch (Exception e) {
+			
+			LOGGER.warn("Could not Reserve a Weekly recurring timeslot for customer id: "+customerId, e);
+			return false;
+		} 
+	}*/
+	
 }

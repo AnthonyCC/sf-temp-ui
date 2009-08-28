@@ -22,8 +22,13 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressI;
 import com.freshdirect.dataloader.routing.ejb.stub.RouteNetPortType_Stub;
 import com.freshdirect.dataloader.routing.ejb.stub.RouteNetWebService_Impl;
+import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.ejb.IRoutingMessageType;
+import com.freshdirect.routing.ejb.ReservationCommand;
+import com.freshdirect.routing.ejb.TimeslotCommand;
 import com.freshdirect.routing.model.GeocodeResult;
 import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.IBuildingModel;
@@ -63,27 +68,37 @@ public class RoutingAddressLoadListener extends MessageDrivenBeanSupport {
 			}
 
 			ObjectMessage addressMsg = (ObjectMessage) msg;
-
-			Object ox = addressMsg.getObject();
-			if ((ox == null) || (!(ox instanceof AddressI))) {
-				LOGGER.error("Message is not an AddressI: " + msg);
-				// discard msg, no point in throwing it back to the queue
-				return;
+			if(IRoutingMessageType.PROCESS_ADDRESS.equals(addressMsg.getStringProperty("MessageType"))) {
+				Object ox = addressMsg.getObject();
+				if ((ox == null) || (!(ox instanceof AddressI))) {
+					LOGGER.error("Message is not an AddressI: " + msg);
+					// discard msg, no point in throwing it back to the queue
+					return;
+				}
+	
+				address = (AddressI) ox;
+				
+				processAddress(address);
+				
+				LOGGER.debug("Message is an AddressI: " + address.getAddress1()+" - >"+address.getZipCode());
+			}/* else if (IRoutingMessageType.GET_TIMESLOT.equals(addressMsg.getStringProperty("MessageType"))) {
+				Object ox = addressMsg.getObject();
+				process((TimeslotCommand)ox);
 			}
-
-			address = (AddressI) ox;
-			
-			processAddress(address);
-			
-			LOGGER.debug("Message is an AddressI: " + address.getAddress1()+" - >"+address.getZipCode());
+			else if (IRoutingMessageType.RESERVE_TIMESLOT.equals(addressMsg.getStringProperty("MessageType"))) {
+				Object ox = addressMsg.getObject();
+				process((ReservationCommand)ox);
+			}*/
 
 		} catch (JMSException ex) {
 			LOGGER.error("JMSException occured while reading command, throwing RuntimeException", ex);
 			throw new RuntimeException("JMSException occured while reading command: " + ex.getMessage());
 		} catch (RoutingServiceException rx) {
 			LOGGER.error("JMSException occured while executing address load command, holding RuntimeException", rx);	
-			throw new RuntimeException("JMSException occured while reading command: " + rx.getMessage());
-		}
+			//throw new RuntimeException("JMSException occured while reading command: " + rx.getMessage());
+		} /*catch (FDResourceException e) {
+			//throw new RuntimeException("JMSException occured while reading command: " + e.getMessage());
+		}*/
 		
 	}
 	
@@ -131,6 +146,16 @@ public class RoutingAddressLoadListener extends MessageDrivenBeanSupport {
 			proxy.insertLocations(saveLocationLst);
 		}
 	}
+	
+	private void process(TimeslotCommand command) throws FDResourceException {
+		
+		//FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZoneEx(command.getTimeSlots(), command.getAddress());
+	}
+	
+  /*  private void process(ReservationCommand command) throws FDResourceException {
+		
+		FDDeliveryManager.getInstance().reserveTimeslotEx(command.getReservation(), command.getAddress());
+	}*/
 	
 	class CustomGeocodeEngine extends BaseGeocodeEngine {
 		

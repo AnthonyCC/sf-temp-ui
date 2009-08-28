@@ -188,23 +188,7 @@
             </resource-env-ref>
         </session>
         
-        <session>
-            <ejb-name>RoutingGateway</ejb-name>
-            <home>com.freshdirect.routing.ejb.RoutingGatewayHome</home>
-            <remote>com.freshdirect.routing.ejb.RoutingGatewaySB</remote>
-            <ejb-class>com.freshdirect.routing.ejb.RoutingGatewaySessionBean</ejb-class>
-            <session-type>Stateless</session-type>
-            <transaction-type>Container</transaction-type>
-            <resource-ref>
-                <res-ref-name>jms/QueueFactory</res-ref-name>
-                <res-type>javax.jms.QueueConnectionFactory</res-type>
-                <res-auth>Container</res-auth>
-            </resource-ref>
-            <resource-env-ref>
-                <resource-env-ref-name>jms/Queue</resource-env-ref-name>
-                <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
-            </resource-env-ref>
-        </session>
+       
         
         <session>
             <ejb-name>PaymentGateway</ejb-name>
@@ -976,11 +960,7 @@
                 <method-intf>Remote</method-intf>
                 <method-name>*</method-name>
             </method>
-            <method>
-                <ejb-name>RoutingGateway</ejb-name>
-                <method-intf>Remote</method-intf>
-                <method-name>*</method-name>
-            </method>
+            
             <method>
                 <ejb-name>EnumManager</ejb-name>
                 <method-intf>Remote</method-intf>

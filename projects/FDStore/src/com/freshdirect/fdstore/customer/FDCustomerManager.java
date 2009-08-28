@@ -32,6 +32,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressI;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
@@ -117,8 +118,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.xml.XSLTransformer;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
-import com.freshdirect.routing.ejb.RoutingGatewayHome;
-import com.freshdirect.routing.ejb.RoutingGatewaySB;
+import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
+import com.freshdirect.delivery.routing.ejb.RoutingGatewaySB;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
@@ -804,7 +805,7 @@ public class FDCustomerManager {
 		//TODO have to implement this method correctly with Depot and COS handling
 		ErpAddressModel address = getShipToAddress(user.getIdentity(), reservation.getAddressId());
 		if (address == null) {
-			FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId());
+			FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address);
 			if (EnumReservationType.RECURRING_RESERVATION.equals(reservation.getReservationType())) {
 				updateRecurringReservation(user.getIdentity(), null, null, null, "CUSTOMER");
 			}
@@ -834,7 +835,7 @@ public class FDCustomerManager {
 							break;
 						}
 					}
-					FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId());
+					FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address);
 					if (EnumReservationType.RECURRING_RESERVATION.equals(reservation.getReservationType())) {
 						updateRecurringReservation(user.getIdentity(), null, null, null, "CUSTOMER");
 					}
@@ -845,7 +846,7 @@ public class FDCustomerManager {
 							user.getIdentity().getErpCustomerPK(),
 							duration,
 							reservation.getReservationType(),
-							address.getPK().getId(),
+							address,
 							reservation.isChefsTable());
 					} else {
 						return null;
@@ -2775,5 +2776,20 @@ public class FDCustomerManager {
 				}
 			}
 		}
+	    
+	    public static ContactAddressModel getAddress(FDIdentity identity,String id) throws FDResourceException {
+	    	
+	    	lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getAddress(identity, id);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}	
+	    }
 
 }

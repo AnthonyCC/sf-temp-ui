@@ -6,14 +6,27 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.web.bind.ServletRequestDataBinder;
+
+import com.freshdirect.framework.util.EnumLogicalOperator;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.web.editor.TimeOfDayPropertyEditor;
 
 public class CutOffFormController extends AbstractDomainFormController {
 		
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		Map refData = new HashMap();						
 		return refData;
+	}
+	
+	protected void initBinder(HttpServletRequest request,
+			ServletRequestDataBinder dataBinder) throws Exception {
+
+		super.initBinder(request, dataBinder);
+		
+		dataBinder.registerCustomEditor(TimeOfDay.class,	new TimeOfDayPropertyEditor());
 	}
 	
 	public Object getBackingObject(String id) {

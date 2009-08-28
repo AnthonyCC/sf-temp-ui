@@ -132,12 +132,21 @@ public class RoutingServicesProperties {
 	
 	public static String getTransportationSuiteProviderURL() {
 		return get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL);
-	}
-	
-	public static String getTransportationSuiteProviderURL(String serviceType) {
-		return get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL+"."+serviceType);
-	}
-	
+
+    }
+    
+
+    public static String getTransportationSuiteProviderURL(String serviceType) {
+    	String _refKey = get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL+"."+serviceType);
+    	
+    	if(_refKey != null) {
+    		return get(_refKey);
+    	} else {
+    		return getTransportationSuiteProviderURL();
+    	}
+    }
+
+
 	public static String getRoadNetProviderURL() {
 		return get(PROP_ROADNET_PROVIDER_URL);
 	}

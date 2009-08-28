@@ -53,6 +53,8 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	/** CT capacity activated indicator */
 	private boolean ctActive;
 	
+	private String zoneCode;
+	
 	public DlvTimeslotModel() {
 		super();
 	}
@@ -68,7 +70,7 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	public DlvTimeslotModel(PrimaryKey pk, String zoneId, Date baseDate,
 			TimeOfDay startTime, TimeOfDay endTime, TimeOfDay cutoffTime,
 			EnumTimeslotStatus status, int capacity, int ctCapacity,
-			int baseAllocation, int ctAllocation, int ctReleaseTime, boolean ctActive) {
+			int baseAllocation, int ctAllocation, int ctReleaseTime, boolean ctActive,String zoneCode) {
 		super();
 		this.setPK(pk);
 		this.setBaseDate(baseDate);
@@ -83,6 +85,7 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		this.setChefsTableAllocation(ctAllocation);
 		this.setCtReleaseTime(ctReleaseTime);
 		this.setCtActive(ctActive);
+		this.setZoneCode(zoneCode);
 	}
 	
 	
@@ -90,6 +93,15 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	// basic properties
 	//
 
+	
+	public String getZoneCode() {
+		return this.zoneCode;
+	}
+
+	public void setZoneCode(String zoneCode) {
+		this.zoneCode = zoneCode;
+	}
+	
 	public String getZoneId() {
 		return this.zoneId;
 	}

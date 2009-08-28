@@ -26,6 +26,7 @@ public class FDReservation extends ModelSupport {
 	private final String customerId;
 	private final String addressId;
 	private final boolean chefsTable;
+	 
 
 	public FDReservation(
 		PrimaryKey pk,

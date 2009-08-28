@@ -27,4 +27,17 @@ public interface IIssue {
 	public final static String PROCESS_RETRIEVESESSION_UNSUCCESSFUL = "ISSUE021";
 	public final static String PROCESS_REMOVEFROMSERVER_UNSUCCESSFUL = "ISSUE022";
 	public final static String PROCESS_LOADLATEDELIVERYORDERS_UNSUCCESSFUL = "ISSUE023";
+	
+	public final static String PROCESS_ANALYZE_UNSUCCESSFUL = "ISSUE024";
+	public final static String PROCESS_TIMESLOTSELECT_UNSUCCESSFUL = "ISSUE025";
+	public final static String PROCESS_RESERVE_UNSUCCESSFUL = "ISSUE026";
+	public final static String PROCESS_CONFIRM_UNSUCCESSFUL = "ISSUE027";
+	
+	public final static String PROCESS_RETRIEVEMETRICS_UNSUCCESSFUL = "ISSUE028";
+	
+	public final static String PROCESS_UPDATE_UNSUCCESSFUL = "ISSUE029";
+	
+	public final static String PROCESS_CANCEL_UNSUCCESSFUL = "ISSUE030";
+	
+	public final static String PROCESS_UNASSIGNED_UNSUCCESSFUL = "ISSUE031";
 }

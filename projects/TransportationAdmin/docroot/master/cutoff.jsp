@@ -50,7 +50,8 @@
 									property="cutOffId" />             
 							  <ec:column property="name" title="Name"/>
 							  <ec:column property="description" title="Description"/>
-							  <ec:column property="sequenceNo" title="Sequence No"/>              
+							  <ec:column property="sequenceNo" title="Sequence No"/>  
+							  <ec:column property="cutOffTime" title="Cut Off Time"/>            
 							</ec:row>
 						  </ec:table>
 					 </form>

@@ -474,7 +474,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,delivery,cms,fdstore,listadmin-lib,ocf,routing,dataloader,erpswebapp,tools,resources,cms-slide" description="Build everything">
+	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,resources,cms-slide" description="Build everything">
 	</target>
 
 	<target name="jsmin" description="Minimizing javascript files">
@@ -1330,6 +1330,7 @@
 		<path id="delivery.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
+            <pathelement location="${work.dir}/RoutingServices.jar"/>
 		</path>
 
 		<makeEjbProject
@@ -1337,22 +1338,29 @@
 			classpathref="delivery.classpath"/>
 	</target>
 	
+    
 	<target name="routing" description="Build Routing">
 			<path id="routing.classpath">
 				<pathelement location="${work.dir}/Framework.jar"/>							
 				<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
-				<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 				<pathelement location="${thirdparty.home}/lucene-core-2.2.0.jar"/>
-				<pathelement location="${thirdparty.home}/saaj.jar"/>
-				<pathelement location="${thirdparty.home}/wsdl4j-1.5.1.jar"/>
-				<pathelement location="${thirdparty.home}/axis.jar"/>
-				<pathelement location="${thirdparty.home}/axis-ant.jar"/>
 				<pathelement location="${thirdparty.home}/commons-discovery-0.2.jar"/>
 				<pathelement location="${thirdparty.home}/commons-logging-1.0.4.jar"/>
 				<pathelement location="${thirdparty.home}/jaxrpc.jar"/>
 				<pathelement location="${thirdparty.home}/${log4j.jar}"/>				
 				<pathelement location="${thirdparty.home}/spring.jar"/>
 				<pathelement location="${thirdparty.home}/JFEP-0.1.0.jar"/>
+                <pathelement location="${thirdparty.home}/XmlSchema-1.4.3.jar"/>  
+                <pathelement location="${thirdparty.home}/axis2-transport-http-1.5.jar"/>  
+                <pathelement location="${thirdparty.home}/axiom-dom-1.2.8.jar"/>  
+                <pathelement location="${thirdparty.home}/axis2-kernel-1.5.jar"/>  
+                <pathelement location="${thirdparty.home}/axis2-transport-local-1.5.jar"/>  
+                <pathelement location="${thirdparty.home}/axiom-impl-1.2.8.jar"/>  
+                <pathelement location="${thirdparty.home}/commons-httpclient-3.1.jar"/>  
+                <pathelement location="${thirdparty.home}/activation-1.1.jar"/>  
+                <pathelement location="${thirdparty.home}/axis2-adb-1.5.jar"/>  
+                <pathelement location="${thirdparty.home}/neethi-2.0.4.jar"/>  
+                <pathelement location="${thirdparty.home}/wstx-asl-3.2.4.jar"/>
 			</path>
 	
 			<makeProject

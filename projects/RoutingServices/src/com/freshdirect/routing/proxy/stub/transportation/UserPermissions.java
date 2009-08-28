@@ -1,1427 +1,3919 @@
+
 /**
  * UserPermissions.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
  */
-
-package com.freshdirect.routing.proxy.stub.transportation;
-
-public class UserPermissions  implements java.io.Serializable {
-    private boolean isFullAccess;
-
-    private boolean canMaint;
-
-    private boolean canReports;
-
-    private boolean canRN;
-
-    private boolean canImport;
-
-    private boolean canTP;
-
-    private boolean canFL;
-
-    private boolean canDP;
-
-    private boolean canDPAccounting;
-
-    private boolean canDPStaticTrips;
-
-    private boolean canDPIsLoadUser;
-
-    private boolean canDPIsLoadAdmin;
-
-    private boolean canMaintOptions;
-
-    private boolean canRNPushRouteToMC;
-
-    private boolean canTPPushRouteToMC;
-
-    private boolean canLayouts;
-
-    private boolean canDPMakeChanges;
-
-    private boolean canDPInsertAccountItems;
-
-    private boolean canPrintMaps;
-
-    private boolean canEditMaps;
-
-    private boolean canRNOptions;
-
-    private boolean canTPMTOptions;
-
-    private boolean canTPADOptions;
-
-    private boolean canViewEmpConfInfo;
-
-    private boolean canFLOptions;
-
-    private boolean canRIC;
-
-    private boolean canRICChangeLocale;
-
-    private boolean canRICRouteBrowser;
-
-    private boolean canRICStopLocator;
-
-    private boolean canRICDailyScoreboard;
-
-    private boolean canRICChartStats;
-
-    private boolean canRICSalesServiceHistory;
-
-    private boolean canRICLiveStopLocator;
-
-    private boolean canRICLiveDailyScoreboard;
-
-    private boolean canRICVehicleLocator;
-
-    private boolean canRICDriverMessaging;
-
-    private boolean canRICDriverDirections;
-
-    private boolean canRICDeliveryConfirmation;
-
-    private boolean canRICRouteViewer;
-
-    private boolean canRICRouteViewerViewActive;
-
-    private boolean canRICRouteViewerViewBuilt;
-
-    private boolean canViewOtherDispatcherRoutes;
-
-    public UserPermissions() {
-    }
-
-    public UserPermissions(
-           boolean isFullAccess,
-           boolean canMaint,
-           boolean canReports,
-           boolean canRN,
-           boolean canImport,
-           boolean canTP,
-           boolean canFL,
-           boolean canDP,
-           boolean canDPAccounting,
-           boolean canDPStaticTrips,
-           boolean canDPIsLoadUser,
-           boolean canDPIsLoadAdmin,
-           boolean canMaintOptions,
-           boolean canRNPushRouteToMC,
-           boolean canTPPushRouteToMC,
-           boolean canLayouts,
-           boolean canDPMakeChanges,
-           boolean canDPInsertAccountItems,
-           boolean canPrintMaps,
-           boolean canEditMaps,
-           boolean canRNOptions,
-           boolean canTPMTOptions,
-           boolean canTPADOptions,
-           boolean canViewEmpConfInfo,
-           boolean canFLOptions,
-           boolean canRIC,
-           boolean canRICChangeLocale,
-           boolean canRICRouteBrowser,
-           boolean canRICStopLocator,
-           boolean canRICDailyScoreboard,
-           boolean canRICChartStats,
-           boolean canRICSalesServiceHistory,
-           boolean canRICLiveStopLocator,
-           boolean canRICLiveDailyScoreboard,
-           boolean canRICVehicleLocator,
-           boolean canRICDriverMessaging,
-           boolean canRICDriverDirections,
-           boolean canRICDeliveryConfirmation,
-           boolean canRICRouteViewer,
-           boolean canRICRouteViewerViewActive,
-           boolean canRICRouteViewerViewBuilt,
-           boolean canViewOtherDispatcherRoutes) {
-           this.isFullAccess = isFullAccess;
-           this.canMaint = canMaint;
-           this.canReports = canReports;
-           this.canRN = canRN;
-           this.canImport = canImport;
-           this.canTP = canTP;
-           this.canFL = canFL;
-           this.canDP = canDP;
-           this.canDPAccounting = canDPAccounting;
-           this.canDPStaticTrips = canDPStaticTrips;
-           this.canDPIsLoadUser = canDPIsLoadUser;
-           this.canDPIsLoadAdmin = canDPIsLoadAdmin;
-           this.canMaintOptions = canMaintOptions;
-           this.canRNPushRouteToMC = canRNPushRouteToMC;
-           this.canTPPushRouteToMC = canTPPushRouteToMC;
-           this.canLayouts = canLayouts;
-           this.canDPMakeChanges = canDPMakeChanges;
-           this.canDPInsertAccountItems = canDPInsertAccountItems;
-           this.canPrintMaps = canPrintMaps;
-           this.canEditMaps = canEditMaps;
-           this.canRNOptions = canRNOptions;
-           this.canTPMTOptions = canTPMTOptions;
-           this.canTPADOptions = canTPADOptions;
-           this.canViewEmpConfInfo = canViewEmpConfInfo;
-           this.canFLOptions = canFLOptions;
-           this.canRIC = canRIC;
-           this.canRICChangeLocale = canRICChangeLocale;
-           this.canRICRouteBrowser = canRICRouteBrowser;
-           this.canRICStopLocator = canRICStopLocator;
-           this.canRICDailyScoreboard = canRICDailyScoreboard;
-           this.canRICChartStats = canRICChartStats;
-           this.canRICSalesServiceHistory = canRICSalesServiceHistory;
-           this.canRICLiveStopLocator = canRICLiveStopLocator;
-           this.canRICLiveDailyScoreboard = canRICLiveDailyScoreboard;
-           this.canRICVehicleLocator = canRICVehicleLocator;
-           this.canRICDriverMessaging = canRICDriverMessaging;
-           this.canRICDriverDirections = canRICDriverDirections;
-           this.canRICDeliveryConfirmation = canRICDeliveryConfirmation;
-           this.canRICRouteViewer = canRICRouteViewer;
-           this.canRICRouteViewerViewActive = canRICRouteViewerViewActive;
-           this.canRICRouteViewerViewBuilt = canRICRouteViewerViewBuilt;
-           this.canViewOtherDispatcherRoutes = canViewOtherDispatcherRoutes;
-    }
-
-
-    /**
-     * Gets the isFullAccess value for this UserPermissions.
-     * 
-     * @return isFullAccess
-     */
-    public boolean isIsFullAccess() {
-        return isFullAccess;
-    }
-
-
-    /**
-     * Sets the isFullAccess value for this UserPermissions.
-     * 
-     * @param isFullAccess
-     */
-    public void setIsFullAccess(boolean isFullAccess) {
-        this.isFullAccess = isFullAccess;
-    }
-
-
-    /**
-     * Gets the canMaint value for this UserPermissions.
-     * 
-     * @return canMaint
-     */
-    public boolean isCanMaint() {
-        return canMaint;
-    }
-
-
-    /**
-     * Sets the canMaint value for this UserPermissions.
-     * 
-     * @param canMaint
-     */
-    public void setCanMaint(boolean canMaint) {
-        this.canMaint = canMaint;
-    }
-
-
-    /**
-     * Gets the canReports value for this UserPermissions.
-     * 
-     * @return canReports
-     */
-    public boolean isCanReports() {
-        return canReports;
-    }
-
-
-    /**
-     * Sets the canReports value for this UserPermissions.
-     * 
-     * @param canReports
-     */
-    public void setCanReports(boolean canReports) {
-        this.canReports = canReports;
-    }
-
-
-    /**
-     * Gets the canRN value for this UserPermissions.
-     * 
-     * @return canRN
-     */
-    public boolean isCanRN() {
-        return canRN;
-    }
-
-
-    /**
-     * Sets the canRN value for this UserPermissions.
-     * 
-     * @param canRN
-     */
-    public void setCanRN(boolean canRN) {
-        this.canRN = canRN;
-    }
-
-
-    /**
-     * Gets the canImport value for this UserPermissions.
-     * 
-     * @return canImport
-     */
-    public boolean isCanImport() {
-        return canImport;
-    }
-
-
-    /**
-     * Sets the canImport value for this UserPermissions.
-     * 
-     * @param canImport
-     */
-    public void setCanImport(boolean canImport) {
-        this.canImport = canImport;
-    }
-
-
-    /**
-     * Gets the canTP value for this UserPermissions.
-     * 
-     * @return canTP
-     */
-    public boolean isCanTP() {
-        return canTP;
-    }
-
-
-    /**
-     * Sets the canTP value for this UserPermissions.
-     * 
-     * @param canTP
-     */
-    public void setCanTP(boolean canTP) {
-        this.canTP = canTP;
-    }
-
-
-    /**
-     * Gets the canFL value for this UserPermissions.
-     * 
-     * @return canFL
-     */
-    public boolean isCanFL() {
-        return canFL;
-    }
-
-
-    /**
-     * Sets the canFL value for this UserPermissions.
-     * 
-     * @param canFL
-     */
-    public void setCanFL(boolean canFL) {
-        this.canFL = canFL;
-    }
-
-
-    /**
-     * Gets the canDP value for this UserPermissions.
-     * 
-     * @return canDP
-     */
-    public boolean isCanDP() {
-        return canDP;
-    }
-
-
-    /**
-     * Sets the canDP value for this UserPermissions.
-     * 
-     * @param canDP
-     */
-    public void setCanDP(boolean canDP) {
-        this.canDP = canDP;
-    }
-
-
-    /**
-     * Gets the canDPAccounting value for this UserPermissions.
-     * 
-     * @return canDPAccounting
-     */
-    public boolean isCanDPAccounting() {
-        return canDPAccounting;
-    }
-
-
-    /**
-     * Sets the canDPAccounting value for this UserPermissions.
-     * 
-     * @param canDPAccounting
-     */
-    public void setCanDPAccounting(boolean canDPAccounting) {
-        this.canDPAccounting = canDPAccounting;
-    }
-
-
-    /**
-     * Gets the canDPStaticTrips value for this UserPermissions.
-     * 
-     * @return canDPStaticTrips
-     */
-    public boolean isCanDPStaticTrips() {
-        return canDPStaticTrips;
-    }
-
-
-    /**
-     * Sets the canDPStaticTrips value for this UserPermissions.
-     * 
-     * @param canDPStaticTrips
-     */
-    public void setCanDPStaticTrips(boolean canDPStaticTrips) {
-        this.canDPStaticTrips = canDPStaticTrips;
-    }
-
-
-    /**
-     * Gets the canDPIsLoadUser value for this UserPermissions.
-     * 
-     * @return canDPIsLoadUser
-     */
-    public boolean isCanDPIsLoadUser() {
-        return canDPIsLoadUser;
-    }
-
-
-    /**
-     * Sets the canDPIsLoadUser value for this UserPermissions.
-     * 
-     * @param canDPIsLoadUser
-     */
-    public void setCanDPIsLoadUser(boolean canDPIsLoadUser) {
-        this.canDPIsLoadUser = canDPIsLoadUser;
-    }
-
-
-    /**
-     * Gets the canDPIsLoadAdmin value for this UserPermissions.
-     * 
-     * @return canDPIsLoadAdmin
-     */
-    public boolean isCanDPIsLoadAdmin() {
-        return canDPIsLoadAdmin;
-    }
-
-
-    /**
-     * Sets the canDPIsLoadAdmin value for this UserPermissions.
-     * 
-     * @param canDPIsLoadAdmin
-     */
-    public void setCanDPIsLoadAdmin(boolean canDPIsLoadAdmin) {
-        this.canDPIsLoadAdmin = canDPIsLoadAdmin;
-    }
-
-
-    /**
-     * Gets the canMaintOptions value for this UserPermissions.
-     * 
-     * @return canMaintOptions
-     */
-    public boolean isCanMaintOptions() {
-        return canMaintOptions;
-    }
-
-
-    /**
-     * Sets the canMaintOptions value for this UserPermissions.
-     * 
-     * @param canMaintOptions
-     */
-    public void setCanMaintOptions(boolean canMaintOptions) {
-        this.canMaintOptions = canMaintOptions;
-    }
-
-
-    /**
-     * Gets the canRNPushRouteToMC value for this UserPermissions.
-     * 
-     * @return canRNPushRouteToMC
-     */
-    public boolean isCanRNPushRouteToMC() {
-        return canRNPushRouteToMC;
-    }
-
-
-    /**
-     * Sets the canRNPushRouteToMC value for this UserPermissions.
-     * 
-     * @param canRNPushRouteToMC
-     */
-    public void setCanRNPushRouteToMC(boolean canRNPushRouteToMC) {
-        this.canRNPushRouteToMC = canRNPushRouteToMC;
-    }
-
-
-    /**
-     * Gets the canTPPushRouteToMC value for this UserPermissions.
-     * 
-     * @return canTPPushRouteToMC
-     */
-    public boolean isCanTPPushRouteToMC() {
-        return canTPPushRouteToMC;
-    }
-
-
-    /**
-     * Sets the canTPPushRouteToMC value for this UserPermissions.
-     * 
-     * @param canTPPushRouteToMC
-     */
-    public void setCanTPPushRouteToMC(boolean canTPPushRouteToMC) {
-        this.canTPPushRouteToMC = canTPPushRouteToMC;
-    }
-
-
-    /**
-     * Gets the canLayouts value for this UserPermissions.
-     * 
-     * @return canLayouts
-     */
-    public boolean isCanLayouts() {
-        return canLayouts;
-    }
-
-
-    /**
-     * Sets the canLayouts value for this UserPermissions.
-     * 
-     * @param canLayouts
-     */
-    public void setCanLayouts(boolean canLayouts) {
-        this.canLayouts = canLayouts;
-    }
-
-
-    /**
-     * Gets the canDPMakeChanges value for this UserPermissions.
-     * 
-     * @return canDPMakeChanges
-     */
-    public boolean isCanDPMakeChanges() {
-        return canDPMakeChanges;
-    }
-
-
-    /**
-     * Sets the canDPMakeChanges value for this UserPermissions.
-     * 
-     * @param canDPMakeChanges
-     */
-    public void setCanDPMakeChanges(boolean canDPMakeChanges) {
-        this.canDPMakeChanges = canDPMakeChanges;
-    }
-
-
-    /**
-     * Gets the canDPInsertAccountItems value for this UserPermissions.
-     * 
-     * @return canDPInsertAccountItems
-     */
-    public boolean isCanDPInsertAccountItems() {
-        return canDPInsertAccountItems;
-    }
-
-
-    /**
-     * Sets the canDPInsertAccountItems value for this UserPermissions.
-     * 
-     * @param canDPInsertAccountItems
-     */
-    public void setCanDPInsertAccountItems(boolean canDPInsertAccountItems) {
-        this.canDPInsertAccountItems = canDPInsertAccountItems;
-    }
-
-
-    /**
-     * Gets the canPrintMaps value for this UserPermissions.
-     * 
-     * @return canPrintMaps
-     */
-    public boolean isCanPrintMaps() {
-        return canPrintMaps;
-    }
-
-
-    /**
-     * Sets the canPrintMaps value for this UserPermissions.
-     * 
-     * @param canPrintMaps
-     */
-    public void setCanPrintMaps(boolean canPrintMaps) {
-        this.canPrintMaps = canPrintMaps;
-    }
-
-
-    /**
-     * Gets the canEditMaps value for this UserPermissions.
-     * 
-     * @return canEditMaps
-     */
-    public boolean isCanEditMaps() {
-        return canEditMaps;
-    }
-
-
-    /**
-     * Sets the canEditMaps value for this UserPermissions.
-     * 
-     * @param canEditMaps
-     */
-    public void setCanEditMaps(boolean canEditMaps) {
-        this.canEditMaps = canEditMaps;
-    }
-
-
-    /**
-     * Gets the canRNOptions value for this UserPermissions.
-     * 
-     * @return canRNOptions
-     */
-    public boolean isCanRNOptions() {
-        return canRNOptions;
-    }
-
-
-    /**
-     * Sets the canRNOptions value for this UserPermissions.
-     * 
-     * @param canRNOptions
-     */
-    public void setCanRNOptions(boolean canRNOptions) {
-        this.canRNOptions = canRNOptions;
-    }
-
-
-    /**
-     * Gets the canTPMTOptions value for this UserPermissions.
-     * 
-     * @return canTPMTOptions
-     */
-    public boolean isCanTPMTOptions() {
-        return canTPMTOptions;
-    }
-
-
-    /**
-     * Sets the canTPMTOptions value for this UserPermissions.
-     * 
-     * @param canTPMTOptions
-     */
-    public void setCanTPMTOptions(boolean canTPMTOptions) {
-        this.canTPMTOptions = canTPMTOptions;
-    }
-
-
-    /**
-     * Gets the canTPADOptions value for this UserPermissions.
-     * 
-     * @return canTPADOptions
-     */
-    public boolean isCanTPADOptions() {
-        return canTPADOptions;
-    }
-
-
-    /**
-     * Sets the canTPADOptions value for this UserPermissions.
-     * 
-     * @param canTPADOptions
-     */
-    public void setCanTPADOptions(boolean canTPADOptions) {
-        this.canTPADOptions = canTPADOptions;
-    }
-
-
-    /**
-     * Gets the canViewEmpConfInfo value for this UserPermissions.
-     * 
-     * @return canViewEmpConfInfo
-     */
-    public boolean isCanViewEmpConfInfo() {
-        return canViewEmpConfInfo;
-    }
-
-
-    /**
-     * Sets the canViewEmpConfInfo value for this UserPermissions.
-     * 
-     * @param canViewEmpConfInfo
-     */
-    public void setCanViewEmpConfInfo(boolean canViewEmpConfInfo) {
-        this.canViewEmpConfInfo = canViewEmpConfInfo;
-    }
-
-
-    /**
-     * Gets the canFLOptions value for this UserPermissions.
-     * 
-     * @return canFLOptions
-     */
-    public boolean isCanFLOptions() {
-        return canFLOptions;
-    }
-
-
-    /**
-     * Sets the canFLOptions value for this UserPermissions.
-     * 
-     * @param canFLOptions
-     */
-    public void setCanFLOptions(boolean canFLOptions) {
-        this.canFLOptions = canFLOptions;
-    }
-
-
-    /**
-     * Gets the canRIC value for this UserPermissions.
-     * 
-     * @return canRIC
-     */
-    public boolean isCanRIC() {
-        return canRIC;
-    }
-
-
-    /**
-     * Sets the canRIC value for this UserPermissions.
-     * 
-     * @param canRIC
-     */
-    public void setCanRIC(boolean canRIC) {
-        this.canRIC = canRIC;
-    }
-
-
-    /**
-     * Gets the canRICChangeLocale value for this UserPermissions.
-     * 
-     * @return canRICChangeLocale
-     */
-    public boolean isCanRICChangeLocale() {
-        return canRICChangeLocale;
-    }
-
-
-    /**
-     * Sets the canRICChangeLocale value for this UserPermissions.
-     * 
-     * @param canRICChangeLocale
-     */
-    public void setCanRICChangeLocale(boolean canRICChangeLocale) {
-        this.canRICChangeLocale = canRICChangeLocale;
-    }
-
-
-    /**
-     * Gets the canRICRouteBrowser value for this UserPermissions.
-     * 
-     * @return canRICRouteBrowser
-     */
-    public boolean isCanRICRouteBrowser() {
-        return canRICRouteBrowser;
-    }
-
-
-    /**
-     * Sets the canRICRouteBrowser value for this UserPermissions.
-     * 
-     * @param canRICRouteBrowser
-     */
-    public void setCanRICRouteBrowser(boolean canRICRouteBrowser) {
-        this.canRICRouteBrowser = canRICRouteBrowser;
-    }
-
-
-    /**
-     * Gets the canRICStopLocator value for this UserPermissions.
-     * 
-     * @return canRICStopLocator
-     */
-    public boolean isCanRICStopLocator() {
-        return canRICStopLocator;
-    }
-
-
-    /**
-     * Sets the canRICStopLocator value for this UserPermissions.
-     * 
-     * @param canRICStopLocator
-     */
-    public void setCanRICStopLocator(boolean canRICStopLocator) {
-        this.canRICStopLocator = canRICStopLocator;
-    }
-
-
-    /**
-     * Gets the canRICDailyScoreboard value for this UserPermissions.
-     * 
-     * @return canRICDailyScoreboard
-     */
-    public boolean isCanRICDailyScoreboard() {
-        return canRICDailyScoreboard;
-    }
-
-
-    /**
-     * Sets the canRICDailyScoreboard value for this UserPermissions.
-     * 
-     * @param canRICDailyScoreboard
-     */
-    public void setCanRICDailyScoreboard(boolean canRICDailyScoreboard) {
-        this.canRICDailyScoreboard = canRICDailyScoreboard;
-    }
-
-
-    /**
-     * Gets the canRICChartStats value for this UserPermissions.
-     * 
-     * @return canRICChartStats
-     */
-    public boolean isCanRICChartStats() {
-        return canRICChartStats;
-    }
-
-
-    /**
-     * Sets the canRICChartStats value for this UserPermissions.
-     * 
-     * @param canRICChartStats
-     */
-    public void setCanRICChartStats(boolean canRICChartStats) {
-        this.canRICChartStats = canRICChartStats;
-    }
-
-
-    /**
-     * Gets the canRICSalesServiceHistory value for this UserPermissions.
-     * 
-     * @return canRICSalesServiceHistory
-     */
-    public boolean isCanRICSalesServiceHistory() {
-        return canRICSalesServiceHistory;
-    }
-
-
-    /**
-     * Sets the canRICSalesServiceHistory value for this UserPermissions.
-     * 
-     * @param canRICSalesServiceHistory
-     */
-    public void setCanRICSalesServiceHistory(boolean canRICSalesServiceHistory) {
-        this.canRICSalesServiceHistory = canRICSalesServiceHistory;
-    }
-
-
-    /**
-     * Gets the canRICLiveStopLocator value for this UserPermissions.
-     * 
-     * @return canRICLiveStopLocator
-     */
-    public boolean isCanRICLiveStopLocator() {
-        return canRICLiveStopLocator;
-    }
-
-
-    /**
-     * Sets the canRICLiveStopLocator value for this UserPermissions.
-     * 
-     * @param canRICLiveStopLocator
-     */
-    public void setCanRICLiveStopLocator(boolean canRICLiveStopLocator) {
-        this.canRICLiveStopLocator = canRICLiveStopLocator;
-    }
-
-
-    /**
-     * Gets the canRICLiveDailyScoreboard value for this UserPermissions.
-     * 
-     * @return canRICLiveDailyScoreboard
-     */
-    public boolean isCanRICLiveDailyScoreboard() {
-        return canRICLiveDailyScoreboard;
-    }
-
-
-    /**
-     * Sets the canRICLiveDailyScoreboard value for this UserPermissions.
-     * 
-     * @param canRICLiveDailyScoreboard
-     */
-    public void setCanRICLiveDailyScoreboard(boolean canRICLiveDailyScoreboard) {
-        this.canRICLiveDailyScoreboard = canRICLiveDailyScoreboard;
-    }
-
-
-    /**
-     * Gets the canRICVehicleLocator value for this UserPermissions.
-     * 
-     * @return canRICVehicleLocator
-     */
-    public boolean isCanRICVehicleLocator() {
-        return canRICVehicleLocator;
-    }
-
-
-    /**
-     * Sets the canRICVehicleLocator value for this UserPermissions.
-     * 
-     * @param canRICVehicleLocator
-     */
-    public void setCanRICVehicleLocator(boolean canRICVehicleLocator) {
-        this.canRICVehicleLocator = canRICVehicleLocator;
-    }
-
-
-    /**
-     * Gets the canRICDriverMessaging value for this UserPermissions.
-     * 
-     * @return canRICDriverMessaging
-     */
-    public boolean isCanRICDriverMessaging() {
-        return canRICDriverMessaging;
-    }
-
-
-    /**
-     * Sets the canRICDriverMessaging value for this UserPermissions.
-     * 
-     * @param canRICDriverMessaging
-     */
-    public void setCanRICDriverMessaging(boolean canRICDriverMessaging) {
-        this.canRICDriverMessaging = canRICDriverMessaging;
-    }
-
-
-    /**
-     * Gets the canRICDriverDirections value for this UserPermissions.
-     * 
-     * @return canRICDriverDirections
-     */
-    public boolean isCanRICDriverDirections() {
-        return canRICDriverDirections;
-    }
-
-
-    /**
-     * Sets the canRICDriverDirections value for this UserPermissions.
-     * 
-     * @param canRICDriverDirections
-     */
-    public void setCanRICDriverDirections(boolean canRICDriverDirections) {
-        this.canRICDriverDirections = canRICDriverDirections;
-    }
-
-
-    /**
-     * Gets the canRICDeliveryConfirmation value for this UserPermissions.
-     * 
-     * @return canRICDeliveryConfirmation
-     */
-    public boolean isCanRICDeliveryConfirmation() {
-        return canRICDeliveryConfirmation;
-    }
-
-
-    /**
-     * Sets the canRICDeliveryConfirmation value for this UserPermissions.
-     * 
-     * @param canRICDeliveryConfirmation
-     */
-    public void setCanRICDeliveryConfirmation(boolean canRICDeliveryConfirmation) {
-        this.canRICDeliveryConfirmation = canRICDeliveryConfirmation;
-    }
-
-
-    /**
-     * Gets the canRICRouteViewer value for this UserPermissions.
-     * 
-     * @return canRICRouteViewer
-     */
-    public boolean isCanRICRouteViewer() {
-        return canRICRouteViewer;
-    }
-
-
-    /**
-     * Sets the canRICRouteViewer value for this UserPermissions.
-     * 
-     * @param canRICRouteViewer
-     */
-    public void setCanRICRouteViewer(boolean canRICRouteViewer) {
-        this.canRICRouteViewer = canRICRouteViewer;
-    }
-
-
-    /**
-     * Gets the canRICRouteViewerViewActive value for this UserPermissions.
-     * 
-     * @return canRICRouteViewerViewActive
-     */
-    public boolean isCanRICRouteViewerViewActive() {
-        return canRICRouteViewerViewActive;
-    }
-
-
-    /**
-     * Sets the canRICRouteViewerViewActive value for this UserPermissions.
-     * 
-     * @param canRICRouteViewerViewActive
-     */
-    public void setCanRICRouteViewerViewActive(boolean canRICRouteViewerViewActive) {
-        this.canRICRouteViewerViewActive = canRICRouteViewerViewActive;
-    }
-
-
-    /**
-     * Gets the canRICRouteViewerViewBuilt value for this UserPermissions.
-     * 
-     * @return canRICRouteViewerViewBuilt
-     */
-    public boolean isCanRICRouteViewerViewBuilt() {
-        return canRICRouteViewerViewBuilt;
-    }
-
-
-    /**
-     * Sets the canRICRouteViewerViewBuilt value for this UserPermissions.
-     * 
-     * @param canRICRouteViewerViewBuilt
-     */
-    public void setCanRICRouteViewerViewBuilt(boolean canRICRouteViewerViewBuilt) {
-        this.canRICRouteViewerViewBuilt = canRICRouteViewerViewBuilt;
-    }
-
-
-    /**
-     * Gets the canViewOtherDispatcherRoutes value for this UserPermissions.
-     * 
-     * @return canViewOtherDispatcherRoutes
-     */
-    public boolean isCanViewOtherDispatcherRoutes() {
-        return canViewOtherDispatcherRoutes;
-    }
-
-
-    /**
-     * Sets the canViewOtherDispatcherRoutes value for this UserPermissions.
-     * 
-     * @param canViewOtherDispatcherRoutes
-     */
-    public void setCanViewOtherDispatcherRoutes(boolean canViewOtherDispatcherRoutes) {
-        this.canViewOtherDispatcherRoutes = canViewOtherDispatcherRoutes;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof UserPermissions)) return false;
-        UserPermissions other = (UserPermissions) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
+            
+                package com.freshdirect.routing.proxy.stub.transportation;
+            
+
+            /**
+            *  UserPermissions bean class
+            */
+        
+        public  class UserPermissions
+        implements org.apache.axis2.databinding.ADBBean{
+        /* This type was generated from the piece of schema that had
+                name = UserPermissions
+                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
+                Namespace Prefix = ns1
+                */
+            
+
+        private static java.lang.String generatePrefix(java.lang.String namespace) {
+            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
+                return "ns1";
+            }
+            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
         }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            this.isFullAccess == other.isIsFullAccess() &&
-            this.canMaint == other.isCanMaint() &&
-            this.canReports == other.isCanReports() &&
-            this.canRN == other.isCanRN() &&
-            this.canImport == other.isCanImport() &&
-            this.canTP == other.isCanTP() &&
-            this.canFL == other.isCanFL() &&
-            this.canDP == other.isCanDP() &&
-            this.canDPAccounting == other.isCanDPAccounting() &&
-            this.canDPStaticTrips == other.isCanDPStaticTrips() &&
-            this.canDPIsLoadUser == other.isCanDPIsLoadUser() &&
-            this.canDPIsLoadAdmin == other.isCanDPIsLoadAdmin() &&
-            this.canMaintOptions == other.isCanMaintOptions() &&
-            this.canRNPushRouteToMC == other.isCanRNPushRouteToMC() &&
-            this.canTPPushRouteToMC == other.isCanTPPushRouteToMC() &&
-            this.canLayouts == other.isCanLayouts() &&
-            this.canDPMakeChanges == other.isCanDPMakeChanges() &&
-            this.canDPInsertAccountItems == other.isCanDPInsertAccountItems() &&
-            this.canPrintMaps == other.isCanPrintMaps() &&
-            this.canEditMaps == other.isCanEditMaps() &&
-            this.canRNOptions == other.isCanRNOptions() &&
-            this.canTPMTOptions == other.isCanTPMTOptions() &&
-            this.canTPADOptions == other.isCanTPADOptions() &&
-            this.canViewEmpConfInfo == other.isCanViewEmpConfInfo() &&
-            this.canFLOptions == other.isCanFLOptions() &&
-            this.canRIC == other.isCanRIC() &&
-            this.canRICChangeLocale == other.isCanRICChangeLocale() &&
-            this.canRICRouteBrowser == other.isCanRICRouteBrowser() &&
-            this.canRICStopLocator == other.isCanRICStopLocator() &&
-            this.canRICDailyScoreboard == other.isCanRICDailyScoreboard() &&
-            this.canRICChartStats == other.isCanRICChartStats() &&
-            this.canRICSalesServiceHistory == other.isCanRICSalesServiceHistory() &&
-            this.canRICLiveStopLocator == other.isCanRICLiveStopLocator() &&
-            this.canRICLiveDailyScoreboard == other.isCanRICLiveDailyScoreboard() &&
-            this.canRICVehicleLocator == other.isCanRICVehicleLocator() &&
-            this.canRICDriverMessaging == other.isCanRICDriverMessaging() &&
-            this.canRICDriverDirections == other.isCanRICDriverDirections() &&
-            this.canRICDeliveryConfirmation == other.isCanRICDeliveryConfirmation() &&
-            this.canRICRouteViewer == other.isCanRICRouteViewer() &&
-            this.canRICRouteViewerViewActive == other.isCanRICRouteViewerViewActive() &&
-            this.canRICRouteViewerViewBuilt == other.isCanRICRouteViewerViewBuilt() &&
-            this.canViewOtherDispatcherRoutes == other.isCanViewOtherDispatcherRoutes();
-        __equalsCalc = null;
-        return _equals;
-    }
 
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
+        
+
+                        /**
+                        * field for IsFullAccess
+                        */
+
+                        
+                                    protected boolean localIsFullAccess ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getIsFullAccess(){
+                               return localIsFullAccess;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param IsFullAccess
+                               */
+                               public void setIsFullAccess(boolean param){
+                            
+                                            this.localIsFullAccess=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanMaint
+                        */
+
+                        
+                                    protected boolean localCanMaint ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanMaint(){
+                               return localCanMaint;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanMaint
+                               */
+                               public void setCanMaint(boolean param){
+                            
+                                            this.localCanMaint=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanReports
+                        */
+
+                        
+                                    protected boolean localCanReports ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanReports(){
+                               return localCanReports;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanReports
+                               */
+                               public void setCanReports(boolean param){
+                            
+                                            this.localCanReports=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRN
+                        */
+
+                        
+                                    protected boolean localCanRN ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRN(){
+                               return localCanRN;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRN
+                               */
+                               public void setCanRN(boolean param){
+                            
+                                            this.localCanRN=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanImport
+                        */
+
+                        
+                                    protected boolean localCanImport ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanImport(){
+                               return localCanImport;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanImport
+                               */
+                               public void setCanImport(boolean param){
+                            
+                                            this.localCanImport=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanTP
+                        */
+
+                        
+                                    protected boolean localCanTP ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanTP(){
+                               return localCanTP;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanTP
+                               */
+                               public void setCanTP(boolean param){
+                            
+                                            this.localCanTP=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanFL
+                        */
+
+                        
+                                    protected boolean localCanFL ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanFL(){
+                               return localCanFL;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanFL
+                               */
+                               public void setCanFL(boolean param){
+                            
+                                            this.localCanFL=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanDP
+                        */
+
+                        
+                                    protected boolean localCanDP ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanDP(){
+                               return localCanDP;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanDP
+                               */
+                               public void setCanDP(boolean param){
+                            
+                                            this.localCanDP=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanDPAccounting
+                        */
+
+                        
+                                    protected boolean localCanDPAccounting ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanDPAccounting(){
+                               return localCanDPAccounting;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanDPAccounting
+                               */
+                               public void setCanDPAccounting(boolean param){
+                            
+                                            this.localCanDPAccounting=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanDPStaticTrips
+                        */
+
+                        
+                                    protected boolean localCanDPStaticTrips ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanDPStaticTrips(){
+                               return localCanDPStaticTrips;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanDPStaticTrips
+                               */
+                               public void setCanDPStaticTrips(boolean param){
+                            
+                                            this.localCanDPStaticTrips=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanDPIsLoadUser
+                        */
+
+                        
+                                    protected boolean localCanDPIsLoadUser ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanDPIsLoadUser(){
+                               return localCanDPIsLoadUser;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanDPIsLoadUser
+                               */
+                               public void setCanDPIsLoadUser(boolean param){
+                            
+                                            this.localCanDPIsLoadUser=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanDPIsLoadAdmin
+                        */
+
+                        
+                                    protected boolean localCanDPIsLoadAdmin ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanDPIsLoadAdmin(){
+                               return localCanDPIsLoadAdmin;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanDPIsLoadAdmin
+                               */
+                               public void setCanDPIsLoadAdmin(boolean param){
+                            
+                                            this.localCanDPIsLoadAdmin=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanMaintOptions
+                        */
+
+                        
+                                    protected boolean localCanMaintOptions ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanMaintOptions(){
+                               return localCanMaintOptions;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanMaintOptions
+                               */
+                               public void setCanMaintOptions(boolean param){
+                            
+                                            this.localCanMaintOptions=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRNPushRouteToMC
+                        */
+
+                        
+                                    protected boolean localCanRNPushRouteToMC ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRNPushRouteToMC(){
+                               return localCanRNPushRouteToMC;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRNPushRouteToMC
+                               */
+                               public void setCanRNPushRouteToMC(boolean param){
+                            
+                                            this.localCanRNPushRouteToMC=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanTPPushRouteToMC
+                        */
+
+                        
+                                    protected boolean localCanTPPushRouteToMC ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanTPPushRouteToMC(){
+                               return localCanTPPushRouteToMC;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanTPPushRouteToMC
+                               */
+                               public void setCanTPPushRouteToMC(boolean param){
+                            
+                                            this.localCanTPPushRouteToMC=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanLayouts
+                        */
+
+                        
+                                    protected boolean localCanLayouts ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanLayouts(){
+                               return localCanLayouts;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanLayouts
+                               */
+                               public void setCanLayouts(boolean param){
+                            
+                                            this.localCanLayouts=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanDPMakeChanges
+                        */
+
+                        
+                                    protected boolean localCanDPMakeChanges ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanDPMakeChanges(){
+                               return localCanDPMakeChanges;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanDPMakeChanges
+                               */
+                               public void setCanDPMakeChanges(boolean param){
+                            
+                                            this.localCanDPMakeChanges=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanDPInsertAccountItems
+                        */
+
+                        
+                                    protected boolean localCanDPInsertAccountItems ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanDPInsertAccountItems(){
+                               return localCanDPInsertAccountItems;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanDPInsertAccountItems
+                               */
+                               public void setCanDPInsertAccountItems(boolean param){
+                            
+                                            this.localCanDPInsertAccountItems=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanPrintMaps
+                        */
+
+                        
+                                    protected boolean localCanPrintMaps ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanPrintMaps(){
+                               return localCanPrintMaps;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanPrintMaps
+                               */
+                               public void setCanPrintMaps(boolean param){
+                            
+                                            this.localCanPrintMaps=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanEditMaps
+                        */
+
+                        
+                                    protected boolean localCanEditMaps ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanEditMaps(){
+                               return localCanEditMaps;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanEditMaps
+                               */
+                               public void setCanEditMaps(boolean param){
+                            
+                                            this.localCanEditMaps=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRNOptions
+                        */
+
+                        
+                                    protected boolean localCanRNOptions ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRNOptions(){
+                               return localCanRNOptions;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRNOptions
+                               */
+                               public void setCanRNOptions(boolean param){
+                            
+                                            this.localCanRNOptions=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanTPMTOptions
+                        */
+
+                        
+                                    protected boolean localCanTPMTOptions ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanTPMTOptions(){
+                               return localCanTPMTOptions;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanTPMTOptions
+                               */
+                               public void setCanTPMTOptions(boolean param){
+                            
+                                            this.localCanTPMTOptions=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanTPADOptions
+                        */
+
+                        
+                                    protected boolean localCanTPADOptions ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanTPADOptions(){
+                               return localCanTPADOptions;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanTPADOptions
+                               */
+                               public void setCanTPADOptions(boolean param){
+                            
+                                            this.localCanTPADOptions=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanViewEmpConfInfo
+                        */
+
+                        
+                                    protected boolean localCanViewEmpConfInfo ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanViewEmpConfInfo(){
+                               return localCanViewEmpConfInfo;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanViewEmpConfInfo
+                               */
+                               public void setCanViewEmpConfInfo(boolean param){
+                            
+                                            this.localCanViewEmpConfInfo=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanFLOptions
+                        */
+
+                        
+                                    protected boolean localCanFLOptions ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanFLOptions(){
+                               return localCanFLOptions;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanFLOptions
+                               */
+                               public void setCanFLOptions(boolean param){
+                            
+                                            this.localCanFLOptions=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRIC
+                        */
+
+                        
+                                    protected boolean localCanRIC ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRIC(){
+                               return localCanRIC;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRIC
+                               */
+                               public void setCanRIC(boolean param){
+                            
+                                            this.localCanRIC=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICChangeLocale
+                        */
+
+                        
+                                    protected boolean localCanRICChangeLocale ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICChangeLocale(){
+                               return localCanRICChangeLocale;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICChangeLocale
+                               */
+                               public void setCanRICChangeLocale(boolean param){
+                            
+                                            this.localCanRICChangeLocale=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICRouteBrowser
+                        */
+
+                        
+                                    protected boolean localCanRICRouteBrowser ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICRouteBrowser(){
+                               return localCanRICRouteBrowser;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICRouteBrowser
+                               */
+                               public void setCanRICRouteBrowser(boolean param){
+                            
+                                            this.localCanRICRouteBrowser=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICStopLocator
+                        */
+
+                        
+                                    protected boolean localCanRICStopLocator ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICStopLocator(){
+                               return localCanRICStopLocator;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICStopLocator
+                               */
+                               public void setCanRICStopLocator(boolean param){
+                            
+                                            this.localCanRICStopLocator=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICDailyScoreboard
+                        */
+
+                        
+                                    protected boolean localCanRICDailyScoreboard ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICDailyScoreboard(){
+                               return localCanRICDailyScoreboard;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICDailyScoreboard
+                               */
+                               public void setCanRICDailyScoreboard(boolean param){
+                            
+                                            this.localCanRICDailyScoreboard=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICChartStats
+                        */
+
+                        
+                                    protected boolean localCanRICChartStats ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICChartStats(){
+                               return localCanRICChartStats;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICChartStats
+                               */
+                               public void setCanRICChartStats(boolean param){
+                            
+                                            this.localCanRICChartStats=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICSalesServiceHistory
+                        */
+
+                        
+                                    protected boolean localCanRICSalesServiceHistory ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICSalesServiceHistory(){
+                               return localCanRICSalesServiceHistory;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICSalesServiceHistory
+                               */
+                               public void setCanRICSalesServiceHistory(boolean param){
+                            
+                                            this.localCanRICSalesServiceHistory=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICLiveStopLocator
+                        */
+
+                        
+                                    protected boolean localCanRICLiveStopLocator ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICLiveStopLocator(){
+                               return localCanRICLiveStopLocator;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICLiveStopLocator
+                               */
+                               public void setCanRICLiveStopLocator(boolean param){
+                            
+                                            this.localCanRICLiveStopLocator=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICLiveDailyScoreboard
+                        */
+
+                        
+                                    protected boolean localCanRICLiveDailyScoreboard ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICLiveDailyScoreboard(){
+                               return localCanRICLiveDailyScoreboard;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICLiveDailyScoreboard
+                               */
+                               public void setCanRICLiveDailyScoreboard(boolean param){
+                            
+                                            this.localCanRICLiveDailyScoreboard=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICVehicleLocator
+                        */
+
+                        
+                                    protected boolean localCanRICVehicleLocator ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICVehicleLocator(){
+                               return localCanRICVehicleLocator;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICVehicleLocator
+                               */
+                               public void setCanRICVehicleLocator(boolean param){
+                            
+                                            this.localCanRICVehicleLocator=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICDriverMessaging
+                        */
+
+                        
+                                    protected boolean localCanRICDriverMessaging ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICDriverMessaging(){
+                               return localCanRICDriverMessaging;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICDriverMessaging
+                               */
+                               public void setCanRICDriverMessaging(boolean param){
+                            
+                                            this.localCanRICDriverMessaging=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICDriverDirections
+                        */
+
+                        
+                                    protected boolean localCanRICDriverDirections ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICDriverDirections(){
+                               return localCanRICDriverDirections;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICDriverDirections
+                               */
+                               public void setCanRICDriverDirections(boolean param){
+                            
+                                            this.localCanRICDriverDirections=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICDeliveryConfirmation
+                        */
+
+                        
+                                    protected boolean localCanRICDeliveryConfirmation ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICDeliveryConfirmation(){
+                               return localCanRICDeliveryConfirmation;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICDeliveryConfirmation
+                               */
+                               public void setCanRICDeliveryConfirmation(boolean param){
+                            
+                                            this.localCanRICDeliveryConfirmation=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICRouteViewer
+                        */
+
+                        
+                                    protected boolean localCanRICRouteViewer ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICRouteViewer(){
+                               return localCanRICRouteViewer;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICRouteViewer
+                               */
+                               public void setCanRICRouteViewer(boolean param){
+                            
+                                            this.localCanRICRouteViewer=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICRouteViewerViewActive
+                        */
+
+                        
+                                    protected boolean localCanRICRouteViewerViewActive ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICRouteViewerViewActive(){
+                               return localCanRICRouteViewerViewActive;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICRouteViewerViewActive
+                               */
+                               public void setCanRICRouteViewerViewActive(boolean param){
+                            
+                                            this.localCanRICRouteViewerViewActive=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanRICRouteViewerViewBuilt
+                        */
+
+                        
+                                    protected boolean localCanRICRouteViewerViewBuilt ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanRICRouteViewerViewBuilt(){
+                               return localCanRICRouteViewerViewBuilt;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanRICRouteViewerViewBuilt
+                               */
+                               public void setCanRICRouteViewerViewBuilt(boolean param){
+                            
+                                            this.localCanRICRouteViewerViewBuilt=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CanViewOtherDispatcherRoutes
+                        */
+
+                        
+                                    protected boolean localCanViewOtherDispatcherRoutes ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getCanViewOtherDispatcherRoutes(){
+                               return localCanViewOtherDispatcherRoutes;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CanViewOtherDispatcherRoutes
+                               */
+                               public void setCanViewOtherDispatcherRoutes(boolean param){
+                            
+                                            this.localCanViewOtherDispatcherRoutes=param;
+                                    
+
+                               }
+                            
+
+     /**
+     * isReaderMTOMAware
+     * @return true if the reader supports MTOM
+     */
+   public static boolean isReaderMTOMAware(javax.xml.stream.XMLStreamReader reader) {
+        boolean isReaderMTOMAware = false;
+        
+        try{
+          isReaderMTOMAware = java.lang.Boolean.TRUE.equals(reader.getProperty(org.apache.axiom.om.OMConstants.IS_DATA_HANDLERS_AWARE));
+        }catch(java.lang.IllegalArgumentException e){
+          isReaderMTOMAware = false;
         }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        _hashCode += (isIsFullAccess() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanMaint() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanReports() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRN() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanImport() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanTP() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanFL() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanDP() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanDPAccounting() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanDPStaticTrips() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanDPIsLoadUser() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanDPIsLoadAdmin() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanMaintOptions() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRNPushRouteToMC() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanTPPushRouteToMC() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanLayouts() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanDPMakeChanges() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanDPInsertAccountItems() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanPrintMaps() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanEditMaps() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRNOptions() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanTPMTOptions() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanTPADOptions() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanViewEmpConfInfo() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanFLOptions() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRIC() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICChangeLocale() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICRouteBrowser() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICStopLocator() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICDailyScoreboard() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICChartStats() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICSalesServiceHistory() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICLiveStopLocator() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICLiveDailyScoreboard() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICVehicleLocator() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICDriverMessaging() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICDriverDirections() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICDeliveryConfirmation() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICRouteViewer() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICRouteViewerViewActive() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanRICRouteViewerViewBuilt() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        _hashCode += (isCanViewOtherDispatcherRoutes() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
+        return isReaderMTOMAware;
+   }
+     
+     
+        /**
+        *
+        * @param parentQName
+        * @param factory
+        * @return org.apache.axiom.om.OMElement
+        */
+       public org.apache.axiom.om.OMElement getOMElement (
+               final javax.xml.namespace.QName parentQName,
+               final org.apache.axiom.om.OMFactory factory) throws org.apache.axis2.databinding.ADBException{
 
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(UserPermissions.class, true);
 
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "UserPermissions"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("isFullAccess");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "isFullAccess"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canMaint");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canMaint"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canReports");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canReports"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRN");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRN"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canImport");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canImport"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canTP");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canTP"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canFL");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canFL"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canDP");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canDP"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canDPAccounting");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canDPAccounting"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canDPStaticTrips");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canDPStaticTrips"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canDPIsLoadUser");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canDPIsLoadUser"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canDPIsLoadAdmin");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canDPIsLoadAdmin"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canMaintOptions");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canMaintOptions"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRNPushRouteToMC");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRNPushRouteToMC"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canTPPushRouteToMC");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canTPPushRouteToMC"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canLayouts");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canLayouts"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canDPMakeChanges");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canDPMakeChanges"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canDPInsertAccountItems");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canDPInsertAccountItems"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canPrintMaps");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canPrintMaps"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canEditMaps");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canEditMaps"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRNOptions");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRNOptions"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canTPMTOptions");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canTPMTOptions"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canTPADOptions");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canTPADOptions"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canViewEmpConfInfo");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canViewEmpConfInfo"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canFLOptions");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canFLOptions"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRIC");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRIC"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICChangeLocale");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICChangeLocale"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICRouteBrowser");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICRouteBrowser"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICStopLocator");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICStopLocator"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICDailyScoreboard");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICDailyScoreboard"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICChartStats");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICChartStats"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICSalesServiceHistory");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICSalesServiceHistory"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICLiveStopLocator");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICLiveStopLocator"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICLiveDailyScoreboard");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICLiveDailyScoreboard"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICVehicleLocator");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICVehicleLocator"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICDriverMessaging");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICDriverMessaging"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICDriverDirections");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICDriverDirections"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICDeliveryConfirmation");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICDeliveryConfirmation"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICRouteViewer");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICRouteViewer"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICRouteViewerViewActive");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICRouteViewerViewActive"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canRICRouteViewerViewBuilt");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canRICRouteViewerViewBuilt"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("canViewOtherDispatcherRoutes");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "canViewOtherDispatcherRoutes"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
+        
+               org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
 
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
+                 public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+                       UserPermissions.this.serialize(parentQName,factory,xmlWriter);
+                 }
+               };
+               return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
+               parentQName,factory,dataSource);
+            
+       }
 
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
+         public void serialize(final javax.xml.namespace.QName parentQName,
+                                       final org.apache.axiom.om.OMFactory factory,
+                                       org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter)
+                                throws javax.xml.stream.XMLStreamException, org.apache.axis2.databinding.ADBException{
+                           serialize(parentQName,factory,xmlWriter,false);
+         }
 
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
-    }
+         public void serialize(final javax.xml.namespace.QName parentQName,
+                               final org.apache.axiom.om.OMFactory factory,
+                               org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter,
+                               boolean serializeType)
+            throws javax.xml.stream.XMLStreamException, org.apache.axis2.databinding.ADBException{
+            
+                
 
-}
+
+                java.lang.String prefix = null;
+                java.lang.String namespace = null;
+                
+
+                    prefix = parentQName.getPrefix();
+                    namespace = parentQName.getNamespaceURI();
+
+                    if ((namespace != null) && (namespace.trim().length() > 0)) {
+                        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+                        if (writerPrefix != null) {
+                            xmlWriter.writeStartElement(namespace, parentQName.getLocalPart());
+                        } else {
+                            if (prefix == null) {
+                                prefix = generatePrefix(namespace);
+                            }
+
+                            xmlWriter.writeStartElement(prefix, parentQName.getLocalPart(), namespace);
+                            xmlWriter.writeNamespace(prefix, namespace);
+                            xmlWriter.setPrefix(prefix, namespace);
+                        }
+                    } else {
+                        xmlWriter.writeStartElement(parentQName.getLocalPart());
+                    }
+                
+                  if (serializeType){
+               
+
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
+                   if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
+                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                           namespacePrefix+":UserPermissions",
+                           xmlWriter);
+                   } else {
+                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                           "UserPermissions",
+                           xmlWriter);
+                   }
+
+               
+                   }
+               
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"isFullAccess", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"isFullAccess");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("isFullAccess");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("isFullAccess cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIsFullAccess));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canMaint", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canMaint");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canMaint");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canMaint cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanMaint));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canReports", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canReports");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canReports");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canReports cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanReports));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRN", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRN");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRN");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRN cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRN));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canImport", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canImport");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canImport");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canImport cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanImport));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canTP", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canTP");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canTP");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canTP cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTP));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canFL", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canFL");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canFL");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canFL cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanFL));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canDP", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canDP");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canDP");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canDP cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDP));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canDPAccounting", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canDPAccounting");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canDPAccounting");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canDPAccounting cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPAccounting));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canDPStaticTrips", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canDPStaticTrips");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canDPStaticTrips");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canDPStaticTrips cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPStaticTrips));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canDPIsLoadUser", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canDPIsLoadUser");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canDPIsLoadUser");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canDPIsLoadUser cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPIsLoadUser));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canDPIsLoadAdmin", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canDPIsLoadAdmin");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canDPIsLoadAdmin");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canDPIsLoadAdmin cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPIsLoadAdmin));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canMaintOptions", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canMaintOptions");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canMaintOptions");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canMaintOptions cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanMaintOptions));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRNPushRouteToMC", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRNPushRouteToMC");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRNPushRouteToMC");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRNPushRouteToMC cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRNPushRouteToMC));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canTPPushRouteToMC", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canTPPushRouteToMC");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canTPPushRouteToMC");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canTPPushRouteToMC cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTPPushRouteToMC));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canLayouts", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canLayouts");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canLayouts");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canLayouts cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanLayouts));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canDPMakeChanges", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canDPMakeChanges");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canDPMakeChanges");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canDPMakeChanges cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPMakeChanges));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canDPInsertAccountItems", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canDPInsertAccountItems");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canDPInsertAccountItems");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canDPInsertAccountItems cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPInsertAccountItems));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canPrintMaps", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canPrintMaps");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canPrintMaps");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canPrintMaps cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanPrintMaps));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canEditMaps", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canEditMaps");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canEditMaps");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canEditMaps cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanEditMaps));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRNOptions", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRNOptions");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRNOptions");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRNOptions cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRNOptions));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canTPMTOptions", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canTPMTOptions");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canTPMTOptions");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canTPMTOptions cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTPMTOptions));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canTPADOptions", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canTPADOptions");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canTPADOptions");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canTPADOptions cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTPADOptions));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canViewEmpConfInfo", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canViewEmpConfInfo");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canViewEmpConfInfo");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canViewEmpConfInfo cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanViewEmpConfInfo));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canFLOptions", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canFLOptions");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canFLOptions");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canFLOptions cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanFLOptions));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRIC", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRIC");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRIC");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRIC cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRIC));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICChangeLocale", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICChangeLocale");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICChangeLocale");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICChangeLocale cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICChangeLocale));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICRouteBrowser", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICRouteBrowser");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICRouteBrowser");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICRouteBrowser cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICRouteBrowser));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICStopLocator", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICStopLocator");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICStopLocator");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICStopLocator cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICStopLocator));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICDailyScoreboard", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICDailyScoreboard");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICDailyScoreboard");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICDailyScoreboard cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICDailyScoreboard));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICChartStats", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICChartStats");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICChartStats");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICChartStats cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICChartStats));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICSalesServiceHistory", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICSalesServiceHistory");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICSalesServiceHistory");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICSalesServiceHistory cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICSalesServiceHistory));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICLiveStopLocator", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICLiveStopLocator");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICLiveStopLocator");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICLiveStopLocator cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICLiveStopLocator));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICLiveDailyScoreboard", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICLiveDailyScoreboard");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICLiveDailyScoreboard");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICLiveDailyScoreboard cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICLiveDailyScoreboard));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICVehicleLocator", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICVehicleLocator");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICVehicleLocator");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICVehicleLocator cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICVehicleLocator));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICDriverMessaging", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICDriverMessaging");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICDriverMessaging");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICDriverMessaging cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICDriverMessaging));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICDriverDirections", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICDriverDirections");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICDriverDirections");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICDriverDirections cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICDriverDirections));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICDeliveryConfirmation", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICDeliveryConfirmation");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICDeliveryConfirmation");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICDeliveryConfirmation cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICDeliveryConfirmation));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICRouteViewer", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICRouteViewer");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICRouteViewer");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICRouteViewer cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICRouteViewer));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICRouteViewerViewActive", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICRouteViewerViewActive");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICRouteViewerViewActive");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICRouteViewerViewActive cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICRouteViewerViewActive));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canRICRouteViewerViewBuilt", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canRICRouteViewerViewBuilt");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canRICRouteViewerViewBuilt");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canRICRouteViewerViewBuilt cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICRouteViewerViewBuilt));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"canViewOtherDispatcherRoutes", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"canViewOtherDispatcherRoutes");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("canViewOtherDispatcherRoutes");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("canViewOtherDispatcherRoutes cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanViewOtherDispatcherRoutes));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                    xmlWriter.writeEndElement();
+               
+
+        }
+
+         /**
+          * Util method to write an attribute with the ns prefix
+          */
+          private void writeAttribute(java.lang.String prefix,java.lang.String namespace,java.lang.String attName,
+                                      java.lang.String attValue,javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException{
+              if (xmlWriter.getPrefix(namespace) == null) {
+                       xmlWriter.writeNamespace(prefix, namespace);
+                       xmlWriter.setPrefix(prefix, namespace);
+
+              }
+
+              xmlWriter.writeAttribute(namespace,attName,attValue);
+
+         }
+
+        /**
+          * Util method to write an attribute without the ns prefix
+          */
+          private void writeAttribute(java.lang.String namespace,java.lang.String attName,
+                                      java.lang.String attValue,javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException{
+                if (namespace.equals(""))
+              {
+                  xmlWriter.writeAttribute(attName,attValue);
+              }
+              else
+              {
+                  registerPrefix(xmlWriter, namespace);
+                  xmlWriter.writeAttribute(namespace,attName,attValue);
+              }
+          }
+
+
+           /**
+             * Util method to write an attribute without the ns prefix
+             */
+            private void writeQNameAttribute(java.lang.String namespace, java.lang.String attName,
+                                             javax.xml.namespace.QName qname, javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+
+                java.lang.String attributeNamespace = qname.getNamespaceURI();
+                java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+                if (attributePrefix == null) {
+                    attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
+                }
+                java.lang.String attributeValue;
+                if (attributePrefix.trim().length() > 0) {
+                    attributeValue = attributePrefix + ":" + qname.getLocalPart();
+                } else {
+                    attributeValue = qname.getLocalPart();
+                }
+
+                if (namespace.equals("")) {
+                    xmlWriter.writeAttribute(attName, attributeValue);
+                } else {
+                    registerPrefix(xmlWriter, namespace);
+                    xmlWriter.writeAttribute(namespace, attName, attributeValue);
+                }
+            }
+        /**
+         *  method to handle Qnames
+         */
+
+        private void writeQName(javax.xml.namespace.QName qname,
+                                javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+            java.lang.String namespaceURI = qname.getNamespaceURI();
+            if (namespaceURI != null) {
+                java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+                if (prefix == null) {
+                    prefix = generatePrefix(namespaceURI);
+                    xmlWriter.writeNamespace(prefix, namespaceURI);
+                    xmlWriter.setPrefix(prefix,namespaceURI);
+                }
+
+                if (prefix.trim().length() > 0){
+                    xmlWriter.writeCharacters(prefix + ":" + org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qname));
+                } else {
+                    // i.e this is the default namespace
+                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qname));
+                }
+
+            } else {
+                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qname));
+            }
+        }
+
+        private void writeQNames(javax.xml.namespace.QName[] qnames,
+                                 javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+
+            if (qnames != null) {
+                // we have to store this data until last moment since it is not possible to write any
+                // namespace data after writing the charactor data
+                java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
+                java.lang.String namespaceURI = null;
+                java.lang.String prefix = null;
+
+                for (int i = 0; i < qnames.length; i++) {
+                    if (i > 0) {
+                        stringToWrite.append(" ");
+                    }
+                    namespaceURI = qnames[i].getNamespaceURI();
+                    if (namespaceURI != null) {
+                        prefix = xmlWriter.getPrefix(namespaceURI);
+                        if ((prefix == null) || (prefix.length() == 0)) {
+                            prefix = generatePrefix(namespaceURI);
+                            xmlWriter.writeNamespace(prefix, namespaceURI);
+                            xmlWriter.setPrefix(prefix,namespaceURI);
+                        }
+
+                        if (prefix.trim().length() > 0){
+                            stringToWrite.append(prefix).append(":").append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qnames[i]));
+                        } else {
+                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qnames[i]));
+                        }
+                    } else {
+                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qnames[i]));
+                    }
+                }
+                xmlWriter.writeCharacters(stringToWrite.toString());
+            }
+
+        }
+
+
+         /**
+         * Register a namespace prefix
+         */
+         private java.lang.String registerPrefix(javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace) throws javax.xml.stream.XMLStreamException {
+                java.lang.String prefix = xmlWriter.getPrefix(namespace);
+
+                if (prefix == null) {
+                    prefix = generatePrefix(namespace);
+
+                    while (xmlWriter.getNamespaceContext().getNamespaceURI(prefix) != null) {
+                        prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    }
+
+                    xmlWriter.writeNamespace(prefix, namespace);
+                    xmlWriter.setPrefix(prefix, namespace);
+                }
+
+                return prefix;
+            }
+
+
+  
+        /**
+        * databinding method to get an XML representation of this object
+        *
+        */
+        public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
+                    throws org.apache.axis2.databinding.ADBException{
+
+
+        
+                 java.util.ArrayList elementList = new java.util.ArrayList();
+                 java.util.ArrayList attribList = new java.util.ArrayList();
+
+                
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "isFullAccess"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIsFullAccess));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canMaint"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanMaint));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canReports"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanReports));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRN"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRN));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canImport"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanImport));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canTP"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTP));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canFL"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanFL));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canDP"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDP));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canDPAccounting"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPAccounting));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canDPStaticTrips"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPStaticTrips));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canDPIsLoadUser"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPIsLoadUser));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canDPIsLoadAdmin"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPIsLoadAdmin));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canMaintOptions"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanMaintOptions));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRNPushRouteToMC"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRNPushRouteToMC));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canTPPushRouteToMC"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTPPushRouteToMC));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canLayouts"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanLayouts));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canDPMakeChanges"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPMakeChanges));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canDPInsertAccountItems"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanDPInsertAccountItems));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canPrintMaps"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanPrintMaps));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canEditMaps"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanEditMaps));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRNOptions"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRNOptions));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canTPMTOptions"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTPMTOptions));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canTPADOptions"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanTPADOptions));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canViewEmpConfInfo"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanViewEmpConfInfo));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canFLOptions"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanFLOptions));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRIC"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRIC));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICChangeLocale"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICChangeLocale));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICRouteBrowser"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICRouteBrowser));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICStopLocator"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICStopLocator));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICDailyScoreboard"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICDailyScoreboard));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICChartStats"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICChartStats));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICSalesServiceHistory"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICSalesServiceHistory));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICLiveStopLocator"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICLiveStopLocator));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICLiveDailyScoreboard"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICLiveDailyScoreboard));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICVehicleLocator"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICVehicleLocator));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICDriverMessaging"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICDriverMessaging));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICDriverDirections"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICDriverDirections));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICDeliveryConfirmation"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICDeliveryConfirmation));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICRouteViewer"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICRouteViewer));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICRouteViewerViewActive"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICRouteViewerViewActive));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canRICRouteViewerViewBuilt"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanRICRouteViewerViewBuilt));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "canViewOtherDispatcherRoutes"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCanViewOtherDispatcherRoutes));
+                            
+
+                return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
+            
+            
+
+        }
+
+  
+
+     /**
+      *  Factory class that keeps the parse method
+      */
+    public static class Factory{
+
+        
+        
+
+        /**
+        * static method to create the object
+        * Precondition:  If this object is an element, the current or next start element starts this object and any intervening reader events are ignorable
+        *                If this object is not an element, it is a complex type and the reader is at the event just after the outer start element
+        * Postcondition: If this object is an element, the reader is positioned at its end element
+        *                If this object is a complex type, the reader is positioned at the end element of its outer element
+        */
+        public static UserPermissions parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            UserPermissions object =
+                new UserPermissions();
+
+            int event;
+            java.lang.String nillableValue = null;
+            java.lang.String prefix ="";
+            java.lang.String namespaceuri ="";
+            try {
+                
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                
+                if (reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","type")!=null){
+                  java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                        "type");
+                  if (fullTypeName!=null){
+                    java.lang.String nsPrefix = null;
+                    if (fullTypeName.indexOf(":") > -1){
+                        nsPrefix = fullTypeName.substring(0,fullTypeName.indexOf(":"));
+                    }
+                    nsPrefix = nsPrefix==null?"":nsPrefix;
+
+                    java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
+                    
+                            if (!"UserPermissions".equals(type)){
+                                //find namespace for the prefix
+                                java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
+                                return (UserPermissions)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                     nsUri,type,reader);
+                              }
+                        
+
+                  }
+                
+
+                }
+
+                
+
+                
+                // Note all attributes that were handled. Used to differ normal attributes
+                // from anyAttributes.
+                java.util.Vector handledAttributes = new java.util.Vector();
+                
+
+                 
+                    
+                    reader.next();
+                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","isFullAccess").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setIsFullAccess(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canMaint").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanMaint(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canReports").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanReports(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRN").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRN(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canImport").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanImport(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canTP").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanTP(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canFL").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanFL(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canDP").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanDP(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canDPAccounting").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanDPAccounting(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canDPStaticTrips").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanDPStaticTrips(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canDPIsLoadUser").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanDPIsLoadUser(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canDPIsLoadAdmin").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanDPIsLoadAdmin(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canMaintOptions").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanMaintOptions(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRNPushRouteToMC").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRNPushRouteToMC(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canTPPushRouteToMC").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanTPPushRouteToMC(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canLayouts").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanLayouts(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canDPMakeChanges").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanDPMakeChanges(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canDPInsertAccountItems").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanDPInsertAccountItems(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canPrintMaps").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanPrintMaps(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canEditMaps").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanEditMaps(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRNOptions").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRNOptions(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canTPMTOptions").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanTPMTOptions(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canTPADOptions").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanTPADOptions(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canViewEmpConfInfo").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanViewEmpConfInfo(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canFLOptions").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanFLOptions(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRIC").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRIC(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICChangeLocale").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICChangeLocale(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICRouteBrowser").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICRouteBrowser(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICStopLocator").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICStopLocator(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICDailyScoreboard").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICDailyScoreboard(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICChartStats").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICChartStats(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICSalesServiceHistory").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICSalesServiceHistory(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICLiveStopLocator").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICLiveStopLocator(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICLiveDailyScoreboard").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICLiveDailyScoreboard(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICVehicleLocator").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICVehicleLocator(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICDriverMessaging").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICDriverMessaging(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICDriverDirections").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICDriverDirections(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICDeliveryConfirmation").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICDeliveryConfirmation(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICRouteViewer").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICRouteViewer(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICRouteViewerViewActive").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICRouteViewerViewActive(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canRICRouteViewerViewBuilt").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanRICRouteViewerViewBuilt(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","canViewOtherDispatcherRoutes").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCanViewOtherDispatcherRoutes(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                              
+                            while (!reader.isStartElement() && !reader.isEndElement())
+                                reader.next();
+                            
+                                if (reader.isStartElement())
+                                // A start element we are not expecting indicates a trailing invalid property
+                                throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                            
+
+
+
+            } catch (javax.xml.stream.XMLStreamException e) {
+                throw new java.lang.Exception(e);
+            }
+
+            return object;
+        }
+
+        }//end of factory class
+
+        
+
+        }
+           
+          

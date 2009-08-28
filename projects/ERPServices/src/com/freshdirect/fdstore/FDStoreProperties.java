@@ -65,6 +65,7 @@ public class FDStoreProperties {
 	private final static String PROP_ERPCUSTOMER_HOME   = "fdstore.erpcustomer.home";
 	private final static String PROP_CONTFACTORY_HOME   = "fdstore.contentFactory.home";
 	private final static String PROP_FDORDER_HOME		= "fdstore.fdorder.home";
+	private final static String PROP_ROUTINGGATEWAY_HOME	= "fdstore.routingGateway.home";//freshdirect.routing.Gateway
 
 	private final static String PROP_DLV_INSTRUCTION_SPECIAL_CHAR  = "fdstore.address.validation";
 
@@ -307,6 +308,8 @@ public class FDStoreProperties {
 	//Smart Savings
 	
 	private static final String SMART_SAVINGS_FEATURE_ENABLED  = "fdstore.smartsavings.enabled";
+	
+	private static final String DYNAMIC_ROUTING_ENABLED = "fdstore.dynamicrouting.enabled";
 	static {
 
 		defaults.put(PROP_PROVIDER_URL, 	"t3://appp1.nyc1.freshdirect.com:7001");
@@ -330,7 +333,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_ERPCUSTOMER_HOME, "freshdirect.erp.Customer");
 		defaults.put(PROP_CONTFACTORY_HOME, "freshdirect.content.ContentFactory");
 		defaults.put(PROP_FDORDER_HOME,     "freshdirect.fdstore.Order");
-
+		defaults.put(PROP_ROUTINGGATEWAY_HOME,	"freshdirect.routing.Gateway");
 		//checks for all special characters
 		defaults.put(PROP_DLV_INSTRUCTION_SPECIAL_CHAR, "[~ | \\` | \" | \\! | \\@ | \\# | \\ $ | \\% | \\^ | \\& | \\* | \\( | \\) | \\- | _ | + | \\= | \\n | \\r]");
 
@@ -521,6 +524,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED, "true");
 		defaults.put(PROP_FDWHATSGOOD_BBLOCK_ENABLED, "false");
 		defaults.put(PROP_FDWHATSGOOD_ROWS, "");
+		
+		defaults.put(DYNAMIC_ROUTING_ENABLED, "true");
 		
 		refresh();
 	}
@@ -1194,4 +1199,11 @@ public class FDStoreProperties {
  		}
  		return bccs;
  	}	
+
+	public static String getRoutingGatewayHome() {
+		return get(PROP_ROUTINGGATEWAY_HOME);
+	}
+	public static boolean isDynamicRoutingEnabled() {
+        return (new Boolean(get(DYNAMIC_ROUTING_ENABLED))).booleanValue();
+    }
 }

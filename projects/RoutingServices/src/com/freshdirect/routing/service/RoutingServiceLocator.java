@@ -1,19 +1,13 @@
 package com.freshdirect.routing.service;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.xml.rpc.ServiceException;
-
+import org.apache.axis2.AxisFault;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.freshdirect.routing.proxy.stub.roadnet.RouteNetPortType;
-import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService_Service;
-import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService_ServiceLocator;
-import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService_PortType;
-import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService_Service;
-import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService_ServiceLocator;
+import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
+import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceStub;
+import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
+import com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceStub;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class RoutingServiceLocator {
@@ -21,12 +15,18 @@ public class RoutingServiceLocator {
 	private static RoutingServiceLocator instance = null;
 
 	private BeanFactory factory = null;
+	
+	private long SERVICE_TIMEOUT = 10 * 60 * 1000;
 
 	private RoutingServiceLocator() {
+		try {
 		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(
 		        new String[] {"com/freshdirect/routing/service/applicationContext-RoutingServices.xml"});
 		//	of course, an ApplicationContext is just a BeanFactory
 		factory = (BeanFactory) appContext;
+		} catch (Error r) {
+			r.printStackTrace();
+		}
 	}
 
 	public static RoutingServiceLocator getInstance() {
@@ -64,22 +64,29 @@ public class RoutingServiceLocator {
 		return (IRoutingEngineService)factory.getBean("routingEngineService");
 	}
 	
-	public RouteNetPortType getRouteNetService() throws ServiceException, MalformedURLException{
-		RouteNetWebService_Service service = new RouteNetWebService_ServiceLocator();
-		return service.getRouteNetWebService
-							(new URL(RoutingServicesProperties.getRoadNetProviderURL()));
+	public RouteNetWebService getRouteNetService() throws AxisFault {
+		RouteNetWebServiceStub stub = new RouteNetWebServiceStub(RoutingServicesProperties.getRoadNetProviderURL());
+		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(SERVICE_TIMEOUT);
+		return stub;
 	}
 	
-	public TransportationWebService_PortType getTransportationSuiteService() throws ServiceException, MalformedURLException{
-		TransportationWebService_Service service = new TransportationWebService_ServiceLocator();
-		return service.getTransportationWebService(
-							(new URL(RoutingServicesProperties.getTransportationSuiteProviderURL())));
+	public TransportationWebService getTransportationSuiteService() throws AxisFault {
+				
+		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteProviderURL());
+		//stub._getServiceClient().getOptions().setProperty(org.apache.axis2.transport.java.JavaTransportSender., property)
+		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(SERVICE_TIMEOUT);
+		return stub;
 	}
 	
-	public TransportationWebService_PortType getTransportationSuiteService(String deliveryType) throws ServiceException, MalformedURLException{
-		TransportationWebService_Service service = new TransportationWebService_ServiceLocator();
-		return service.getTransportationWebService(
-							(new URL(RoutingServicesProperties.getTransportationSuiteProviderURL(deliveryType))));
+	public TransportationWebService getTransportationSuiteService(String deliveryType) throws AxisFault {
+		String url = RoutingServicesProperties.getTransportationSuiteProviderURL(deliveryType);
+		if(url == null) {
+			url = RoutingServicesProperties.getTransportationSuiteProviderURL();
+		}
+		
+		TransportationWebServiceStub stub = new TransportationWebServiceStub(url);
+		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(SERVICE_TIMEOUT);
+		return stub;
 	}
 
 }

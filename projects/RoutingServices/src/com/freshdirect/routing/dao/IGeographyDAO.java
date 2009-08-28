@@ -31,4 +31,8 @@ public interface IGeographyDAO {
 
 	List getZoneMapping(final double latitude, final double longitude)  throws SQLException;
 	
+	void insertLocation(ILocationModel model) throws SQLException;
+	
+	void insertBuilding(IBuildingModel model) throws SQLException;
+	
 }

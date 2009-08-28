@@ -1,664 +1,2100 @@
+
 /**
  * Order.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
  */
-
-package com.freshdirect.routing.proxy.stub.transportation;
-
-public class Order  implements java.io.Serializable {
-    private com.freshdirect.routing.proxy.stub.transportation.OrderIdentity orderIdentity;
-
-    private com.freshdirect.routing.proxy.stub.transportation.ItemQuantities quantities;
-
-    private com.freshdirect.routing.proxy.stub.transportation.ReasonCodes reasonCodes;
-
-    private java.lang.String userDefinedField1;
-
-    private java.lang.String userDefinedField2;
-
-    private java.lang.String userDefinedField3;
-
-    private java.lang.String specialInstructions;
-
-    private java.lang.String referenceNumber;
-
-    private java.lang.String orderStatusCode;
-
-    private boolean removeFlag;
-
-    private com.freshdirect.routing.proxy.stub.transportation.LineItem[] lineItems;
-
-    private com.freshdirect.routing.proxy.stub.transportation.OrderContainer[] containers;
-
-    private com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[] financialDetails;
-
-    private com.freshdirect.routing.proxy.stub.transportation.OrderActivity[] activities;
-
-    public Order() {
-    }
-
-    public Order(
-           com.freshdirect.routing.proxy.stub.transportation.OrderIdentity orderIdentity,
-           com.freshdirect.routing.proxy.stub.transportation.ItemQuantities quantities,
-           com.freshdirect.routing.proxy.stub.transportation.ReasonCodes reasonCodes,
-           java.lang.String userDefinedField1,
-           java.lang.String userDefinedField2,
-           java.lang.String userDefinedField3,
-           java.lang.String specialInstructions,
-           java.lang.String referenceNumber,
-           java.lang.String orderStatusCode,
-           boolean removeFlag,
-           com.freshdirect.routing.proxy.stub.transportation.LineItem[] lineItems,
-           com.freshdirect.routing.proxy.stub.transportation.OrderContainer[] containers,
-           com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[] financialDetails,
-           com.freshdirect.routing.proxy.stub.transportation.OrderActivity[] activities) {
-           this.orderIdentity = orderIdentity;
-           this.quantities = quantities;
-           this.reasonCodes = reasonCodes;
-           this.userDefinedField1 = userDefinedField1;
-           this.userDefinedField2 = userDefinedField2;
-           this.userDefinedField3 = userDefinedField3;
-           this.specialInstructions = specialInstructions;
-           this.referenceNumber = referenceNumber;
-           this.orderStatusCode = orderStatusCode;
-           this.removeFlag = removeFlag;
-           this.lineItems = lineItems;
-           this.containers = containers;
-           this.financialDetails = financialDetails;
-           this.activities = activities;
-    }
-
-
-    /**
-     * Gets the orderIdentity value for this Order.
-     * 
-     * @return orderIdentity
-     */
-    public com.freshdirect.routing.proxy.stub.transportation.OrderIdentity getOrderIdentity() {
-        return orderIdentity;
-    }
-
-
-    /**
-     * Sets the orderIdentity value for this Order.
-     * 
-     * @param orderIdentity
-     */
-    public void setOrderIdentity(com.freshdirect.routing.proxy.stub.transportation.OrderIdentity orderIdentity) {
-        this.orderIdentity = orderIdentity;
-    }
-
-
-    /**
-     * Gets the quantities value for this Order.
-     * 
-     * @return quantities
-     */
-    public com.freshdirect.routing.proxy.stub.transportation.ItemQuantities getQuantities() {
-        return quantities;
-    }
-
-
-    /**
-     * Sets the quantities value for this Order.
-     * 
-     * @param quantities
-     */
-    public void setQuantities(com.freshdirect.routing.proxy.stub.transportation.ItemQuantities quantities) {
-        this.quantities = quantities;
-    }
-
-
-    /**
-     * Gets the reasonCodes value for this Order.
-     * 
-     * @return reasonCodes
-     */
-    public com.freshdirect.routing.proxy.stub.transportation.ReasonCodes getReasonCodes() {
-        return reasonCodes;
-    }
-
-
-    /**
-     * Sets the reasonCodes value for this Order.
-     * 
-     * @param reasonCodes
-     */
-    public void setReasonCodes(com.freshdirect.routing.proxy.stub.transportation.ReasonCodes reasonCodes) {
-        this.reasonCodes = reasonCodes;
-    }
-
-
-    /**
-     * Gets the userDefinedField1 value for this Order.
-     * 
-     * @return userDefinedField1
-     */
-    public java.lang.String getUserDefinedField1() {
-        return userDefinedField1;
-    }
-
-
-    /**
-     * Sets the userDefinedField1 value for this Order.
-     * 
-     * @param userDefinedField1
-     */
-    public void setUserDefinedField1(java.lang.String userDefinedField1) {
-        this.userDefinedField1 = userDefinedField1;
-    }
-
-
-    /**
-     * Gets the userDefinedField2 value for this Order.
-     * 
-     * @return userDefinedField2
-     */
-    public java.lang.String getUserDefinedField2() {
-        return userDefinedField2;
-    }
-
-
-    /**
-     * Sets the userDefinedField2 value for this Order.
-     * 
-     * @param userDefinedField2
-     */
-    public void setUserDefinedField2(java.lang.String userDefinedField2) {
-        this.userDefinedField2 = userDefinedField2;
-    }
-
-
-    /**
-     * Gets the userDefinedField3 value for this Order.
-     * 
-     * @return userDefinedField3
-     */
-    public java.lang.String getUserDefinedField3() {
-        return userDefinedField3;
-    }
-
-
-    /**
-     * Sets the userDefinedField3 value for this Order.
-     * 
-     * @param userDefinedField3
-     */
-    public void setUserDefinedField3(java.lang.String userDefinedField3) {
-        this.userDefinedField3 = userDefinedField3;
-    }
-
-
-    /**
-     * Gets the specialInstructions value for this Order.
-     * 
-     * @return specialInstructions
-     */
-    public java.lang.String getSpecialInstructions() {
-        return specialInstructions;
-    }
-
-
-    /**
-     * Sets the specialInstructions value for this Order.
-     * 
-     * @param specialInstructions
-     */
-    public void setSpecialInstructions(java.lang.String specialInstructions) {
-        this.specialInstructions = specialInstructions;
-    }
-
-
-    /**
-     * Gets the referenceNumber value for this Order.
-     * 
-     * @return referenceNumber
-     */
-    public java.lang.String getReferenceNumber() {
-        return referenceNumber;
-    }
-
-
-    /**
-     * Sets the referenceNumber value for this Order.
-     * 
-     * @param referenceNumber
-     */
-    public void setReferenceNumber(java.lang.String referenceNumber) {
-        this.referenceNumber = referenceNumber;
-    }
-
-
-    /**
-     * Gets the orderStatusCode value for this Order.
-     * 
-     * @return orderStatusCode
-     */
-    public java.lang.String getOrderStatusCode() {
-        return orderStatusCode;
-    }
-
-
-    /**
-     * Sets the orderStatusCode value for this Order.
-     * 
-     * @param orderStatusCode
-     */
-    public void setOrderStatusCode(java.lang.String orderStatusCode) {
-        this.orderStatusCode = orderStatusCode;
-    }
-
-
-    /**
-     * Gets the removeFlag value for this Order.
-     * 
-     * @return removeFlag
-     */
-    public boolean isRemoveFlag() {
-        return removeFlag;
-    }
-
-
-    /**
-     * Sets the removeFlag value for this Order.
-     * 
-     * @param removeFlag
-     */
-    public void setRemoveFlag(boolean removeFlag) {
-        this.removeFlag = removeFlag;
-    }
-
-
-    /**
-     * Gets the lineItems value for this Order.
-     * 
-     * @return lineItems
-     */
-    public com.freshdirect.routing.proxy.stub.transportation.LineItem[] getLineItems() {
-        return lineItems;
-    }
-
-
-    /**
-     * Sets the lineItems value for this Order.
-     * 
-     * @param lineItems
-     */
-    public void setLineItems(com.freshdirect.routing.proxy.stub.transportation.LineItem[] lineItems) {
-        this.lineItems = lineItems;
-    }
-
-    public com.freshdirect.routing.proxy.stub.transportation.LineItem getLineItems(int i) {
-        return this.lineItems[i];
-    }
-
-    public void setLineItems(int i, com.freshdirect.routing.proxy.stub.transportation.LineItem _value) {
-        this.lineItems[i] = _value;
-    }
-
-
-    /**
-     * Gets the containers value for this Order.
-     * 
-     * @return containers
-     */
-    public com.freshdirect.routing.proxy.stub.transportation.OrderContainer[] getContainers() {
-        return containers;
-    }
-
-
-    /**
-     * Sets the containers value for this Order.
-     * 
-     * @param containers
-     */
-    public void setContainers(com.freshdirect.routing.proxy.stub.transportation.OrderContainer[] containers) {
-        this.containers = containers;
-    }
-
-    public com.freshdirect.routing.proxy.stub.transportation.OrderContainer getContainers(int i) {
-        return this.containers[i];
-    }
-
-    public void setContainers(int i, com.freshdirect.routing.proxy.stub.transportation.OrderContainer _value) {
-        this.containers[i] = _value;
-    }
-
-
-    /**
-     * Gets the financialDetails value for this Order.
-     * 
-     * @return financialDetails
-     */
-    public com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[] getFinancialDetails() {
-        return financialDetails;
-    }
-
-
-    /**
-     * Sets the financialDetails value for this Order.
-     * 
-     * @param financialDetails
-     */
-    public void setFinancialDetails(com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[] financialDetails) {
-        this.financialDetails = financialDetails;
-    }
-
-    public com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail getFinancialDetails(int i) {
-        return this.financialDetails[i];
-    }
-
-    public void setFinancialDetails(int i, com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail _value) {
-        this.financialDetails[i] = _value;
-    }
-
-
-    /**
-     * Gets the activities value for this Order.
-     * 
-     * @return activities
-     */
-    public com.freshdirect.routing.proxy.stub.transportation.OrderActivity[] getActivities() {
-        return activities;
-    }
-
-
-    /**
-     * Sets the activities value for this Order.
-     * 
-     * @param activities
-     */
-    public void setActivities(com.freshdirect.routing.proxy.stub.transportation.OrderActivity[] activities) {
-        this.activities = activities;
-    }
-
-    public com.freshdirect.routing.proxy.stub.transportation.OrderActivity getActivities(int i) {
-        return this.activities[i];
-    }
-
-    public void setActivities(int i, com.freshdirect.routing.proxy.stub.transportation.OrderActivity _value) {
-        this.activities[i] = _value;
-    }
-
-    private java.lang.Object __equalsCalc = null;
-    public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof Order)) return false;
-        Order other = (Order) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
+            
+                package com.freshdirect.routing.proxy.stub.transportation;
+            
+
+            /**
+            *  Order bean class
+            */
+        
+        public  class Order
+        implements org.apache.axis2.databinding.ADBBean{
+        /* This type was generated from the piece of schema that had
+                name = Order
+                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
+                Namespace Prefix = ns1
+                */
+            
+
+        private static java.lang.String generatePrefix(java.lang.String namespace) {
+            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
+                return "ns1";
+            }
+            return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
         }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true && 
-            ((this.orderIdentity==null && other.getOrderIdentity()==null) || 
-             (this.orderIdentity!=null &&
-              this.orderIdentity.equals(other.getOrderIdentity()))) &&
-            ((this.quantities==null && other.getQuantities()==null) || 
-             (this.quantities!=null &&
-              this.quantities.equals(other.getQuantities()))) &&
-            ((this.reasonCodes==null && other.getReasonCodes()==null) || 
-             (this.reasonCodes!=null &&
-              this.reasonCodes.equals(other.getReasonCodes()))) &&
-            ((this.userDefinedField1==null && other.getUserDefinedField1()==null) || 
-             (this.userDefinedField1!=null &&
-              this.userDefinedField1.equals(other.getUserDefinedField1()))) &&
-            ((this.userDefinedField2==null && other.getUserDefinedField2()==null) || 
-             (this.userDefinedField2!=null &&
-              this.userDefinedField2.equals(other.getUserDefinedField2()))) &&
-            ((this.userDefinedField3==null && other.getUserDefinedField3()==null) || 
-             (this.userDefinedField3!=null &&
-              this.userDefinedField3.equals(other.getUserDefinedField3()))) &&
-            ((this.specialInstructions==null && other.getSpecialInstructions()==null) || 
-             (this.specialInstructions!=null &&
-              this.specialInstructions.equals(other.getSpecialInstructions()))) &&
-            ((this.referenceNumber==null && other.getReferenceNumber()==null) || 
-             (this.referenceNumber!=null &&
-              this.referenceNumber.equals(other.getReferenceNumber()))) &&
-            ((this.orderStatusCode==null && other.getOrderStatusCode()==null) || 
-             (this.orderStatusCode!=null &&
-              this.orderStatusCode.equals(other.getOrderStatusCode()))) &&
-            this.removeFlag == other.isRemoveFlag() &&
-            ((this.lineItems==null && other.getLineItems()==null) || 
-             (this.lineItems!=null &&
-              java.util.Arrays.equals(this.lineItems, other.getLineItems()))) &&
-            ((this.containers==null && other.getContainers()==null) || 
-             (this.containers!=null &&
-              java.util.Arrays.equals(this.containers, other.getContainers()))) &&
-            ((this.financialDetails==null && other.getFinancialDetails()==null) || 
-             (this.financialDetails!=null &&
-              java.util.Arrays.equals(this.financialDetails, other.getFinancialDetails()))) &&
-            ((this.activities==null && other.getActivities()==null) || 
-             (this.activities!=null &&
-              java.util.Arrays.equals(this.activities, other.getActivities())));
-        __equalsCalc = null;
-        return _equals;
-    }
 
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
+        
+
+                        /**
+                        * field for OrderIdentity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.OrderIdentity localOrderIdentity ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localOrderIdentityTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.OrderIdentity
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.OrderIdentity getOrderIdentity(){
+                               return localOrderIdentity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param OrderIdentity
+                               */
+                               public void setOrderIdentity(com.freshdirect.routing.proxy.stub.transportation.OrderIdentity param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localOrderIdentityTracker = true;
+                                       } else {
+                                          localOrderIdentityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localOrderIdentity=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for Quantities
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.ItemQuantities localQuantities ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localQuantitiesTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.ItemQuantities
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.ItemQuantities getQuantities(){
+                               return localQuantities;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Quantities
+                               */
+                               public void setQuantities(com.freshdirect.routing.proxy.stub.transportation.ItemQuantities param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localQuantitiesTracker = true;
+                                       } else {
+                                          localQuantitiesTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localQuantities=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for ReasonCodes
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.ReasonCodes localReasonCodes ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localReasonCodesTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.ReasonCodes
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.ReasonCodes getReasonCodes(){
+                               return localReasonCodes;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ReasonCodes
+                               */
+                               public void setReasonCodes(com.freshdirect.routing.proxy.stub.transportation.ReasonCodes param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localReasonCodesTracker = true;
+                                       } else {
+                                          localReasonCodesTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localReasonCodes=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for UserDefinedField1
+                        */
+
+                        
+                                    protected java.lang.String localUserDefinedField1 ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localUserDefinedField1Tracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getUserDefinedField1(){
+                               return localUserDefinedField1;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param UserDefinedField1
+                               */
+                               public void setUserDefinedField1(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localUserDefinedField1Tracker = true;
+                                       } else {
+                                          localUserDefinedField1Tracker = false;
+                                              
+                                       }
+                                   
+                                            this.localUserDefinedField1=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for UserDefinedField2
+                        */
+
+                        
+                                    protected java.lang.String localUserDefinedField2 ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localUserDefinedField2Tracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getUserDefinedField2(){
+                               return localUserDefinedField2;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param UserDefinedField2
+                               */
+                               public void setUserDefinedField2(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localUserDefinedField2Tracker = true;
+                                       } else {
+                                          localUserDefinedField2Tracker = false;
+                                              
+                                       }
+                                   
+                                            this.localUserDefinedField2=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for UserDefinedField3
+                        */
+
+                        
+                                    protected java.lang.String localUserDefinedField3 ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localUserDefinedField3Tracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getUserDefinedField3(){
+                               return localUserDefinedField3;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param UserDefinedField3
+                               */
+                               public void setUserDefinedField3(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localUserDefinedField3Tracker = true;
+                                       } else {
+                                          localUserDefinedField3Tracker = false;
+                                              
+                                       }
+                                   
+                                            this.localUserDefinedField3=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for SpecialInstructions
+                        */
+
+                        
+                                    protected java.lang.String localSpecialInstructions ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localSpecialInstructionsTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getSpecialInstructions(){
+                               return localSpecialInstructions;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param SpecialInstructions
+                               */
+                               public void setSpecialInstructions(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localSpecialInstructionsTracker = true;
+                                       } else {
+                                          localSpecialInstructionsTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localSpecialInstructions=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for ReferenceNumber
+                        */
+
+                        
+                                    protected java.lang.String localReferenceNumber ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localReferenceNumberTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getReferenceNumber(){
+                               return localReferenceNumber;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ReferenceNumber
+                               */
+                               public void setReferenceNumber(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localReferenceNumberTracker = true;
+                                       } else {
+                                          localReferenceNumberTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localReferenceNumber=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for OrderStatusCode
+                        */
+
+                        
+                                    protected java.lang.String localOrderStatusCode ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localOrderStatusCodeTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getOrderStatusCode(){
+                               return localOrderStatusCode;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param OrderStatusCode
+                               */
+                               public void setOrderStatusCode(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localOrderStatusCodeTracker = true;
+                                       } else {
+                                          localOrderStatusCodeTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localOrderStatusCode=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for RemoveFlag
+                        */
+
+                        
+                                    protected boolean localRemoveFlag =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean("false");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getRemoveFlag(){
+                               return localRemoveFlag;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param RemoveFlag
+                               */
+                               public void setRemoveFlag(boolean param){
+                            
+                                            this.localRemoveFlag=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LineItems
+                        * This was an Array!
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.LineItem[] localLineItems ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLineItemsTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.LineItem[]
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.LineItem[] getLineItems(){
+                               return localLineItems;
+                           }
+
+                           
+                        
+
+
+                               
+                              /**
+                               * validate the array for LineItems
+                               */
+                              protected void validateLineItems(com.freshdirect.routing.proxy.stub.transportation.LineItem[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param LineItems
+                              */
+                              public void setLineItems(com.freshdirect.routing.proxy.stub.transportation.LineItem[] param){
+                              
+                                   validateLineItems(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localLineItemsTracker = true;
+                                          } else {
+                                             localLineItemsTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localLineItems=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.LineItem
+                             */
+                             public void addLineItems(com.freshdirect.routing.proxy.stub.transportation.LineItem param){
+                                   if (localLineItems == null){
+                                   localLineItems = new com.freshdirect.routing.proxy.stub.transportation.LineItem[]{};
+                                   }
+
+                            
+                                 //update the setting tracker
+                                localLineItemsTracker = true;
+                            
+
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localLineItems);
+                               list.add(param);
+                               this.localLineItems =
+                             (com.freshdirect.routing.proxy.stub.transportation.LineItem[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.LineItem[list.size()]);
+
+                             }
+                             
+
+                        /**
+                        * field for Containers
+                        * This was an Array!
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.OrderContainer[] localContainers ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localContainersTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.OrderContainer[]
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.OrderContainer[] getContainers(){
+                               return localContainers;
+                           }
+
+                           
+                        
+
+
+                               
+                              /**
+                               * validate the array for Containers
+                               */
+                              protected void validateContainers(com.freshdirect.routing.proxy.stub.transportation.OrderContainer[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param Containers
+                              */
+                              public void setContainers(com.freshdirect.routing.proxy.stub.transportation.OrderContainer[] param){
+                              
+                                   validateContainers(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localContainersTracker = true;
+                                          } else {
+                                             localContainersTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localContainers=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.OrderContainer
+                             */
+                             public void addContainers(com.freshdirect.routing.proxy.stub.transportation.OrderContainer param){
+                                   if (localContainers == null){
+                                   localContainers = new com.freshdirect.routing.proxy.stub.transportation.OrderContainer[]{};
+                                   }
+
+                            
+                                 //update the setting tracker
+                                localContainersTracker = true;
+                            
+
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localContainers);
+                               list.add(param);
+                               this.localContainers =
+                             (com.freshdirect.routing.proxy.stub.transportation.OrderContainer[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.OrderContainer[list.size()]);
+
+                             }
+                             
+
+                        /**
+                        * field for FinancialDetails
+                        * This was an Array!
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[] localFinancialDetails ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localFinancialDetailsTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[]
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[] getFinancialDetails(){
+                               return localFinancialDetails;
+                           }
+
+                           
+                        
+
+
+                               
+                              /**
+                               * validate the array for FinancialDetails
+                               */
+                              protected void validateFinancialDetails(com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param FinancialDetails
+                              */
+                              public void setFinancialDetails(com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[] param){
+                              
+                                   validateFinancialDetails(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localFinancialDetailsTracker = true;
+                                          } else {
+                                             localFinancialDetailsTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localFinancialDetails=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail
+                             */
+                             public void addFinancialDetails(com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail param){
+                                   if (localFinancialDetails == null){
+                                   localFinancialDetails = new com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[]{};
+                                   }
+
+                            
+                                 //update the setting tracker
+                                localFinancialDetailsTracker = true;
+                            
+
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localFinancialDetails);
+                               list.add(param);
+                               this.localFinancialDetails =
+                             (com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[list.size()]);
+
+                             }
+                             
+
+                        /**
+                        * field for Activities
+                        * This was an Array!
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.OrderActivity[] localActivities ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localActivitiesTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.OrderActivity[]
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.OrderActivity[] getActivities(){
+                               return localActivities;
+                           }
+
+                           
+                        
+
+
+                               
+                              /**
+                               * validate the array for Activities
+                               */
+                              protected void validateActivities(com.freshdirect.routing.proxy.stub.transportation.OrderActivity[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param Activities
+                              */
+                              public void setActivities(com.freshdirect.routing.proxy.stub.transportation.OrderActivity[] param){
+                              
+                                   validateActivities(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localActivitiesTracker = true;
+                                          } else {
+                                             localActivitiesTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localActivities=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.OrderActivity
+                             */
+                             public void addActivities(com.freshdirect.routing.proxy.stub.transportation.OrderActivity param){
+                                   if (localActivities == null){
+                                   localActivities = new com.freshdirect.routing.proxy.stub.transportation.OrderActivity[]{};
+                                   }
+
+                            
+                                 //update the setting tracker
+                                localActivitiesTracker = true;
+                            
+
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localActivities);
+                               list.add(param);
+                               this.localActivities =
+                             (com.freshdirect.routing.proxy.stub.transportation.OrderActivity[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.OrderActivity[list.size()]);
+
+                             }
+                             
+
+     /**
+     * isReaderMTOMAware
+     * @return true if the reader supports MTOM
+     */
+   public static boolean isReaderMTOMAware(javax.xml.stream.XMLStreamReader reader) {
+        boolean isReaderMTOMAware = false;
+        
+        try{
+          isReaderMTOMAware = java.lang.Boolean.TRUE.equals(reader.getProperty(org.apache.axiom.om.OMConstants.IS_DATA_HANDLERS_AWARE));
+        }catch(java.lang.IllegalArgumentException e){
+          isReaderMTOMAware = false;
         }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getOrderIdentity() != null) {
-            _hashCode += getOrderIdentity().hashCode();
+        return isReaderMTOMAware;
+   }
+     
+     
+        /**
+        *
+        * @param parentQName
+        * @param factory
+        * @return org.apache.axiom.om.OMElement
+        */
+       public org.apache.axiom.om.OMElement getOMElement (
+               final javax.xml.namespace.QName parentQName,
+               final org.apache.axiom.om.OMFactory factory) throws org.apache.axis2.databinding.ADBException{
+
+
+        
+               org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
+
+                 public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+                       Order.this.serialize(parentQName,factory,xmlWriter);
+                 }
+               };
+               return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
+               parentQName,factory,dataSource);
+            
+       }
+
+         public void serialize(final javax.xml.namespace.QName parentQName,
+                                       final org.apache.axiom.om.OMFactory factory,
+                                       org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter)
+                                throws javax.xml.stream.XMLStreamException, org.apache.axis2.databinding.ADBException{
+                           serialize(parentQName,factory,xmlWriter,false);
+         }
+
+         public void serialize(final javax.xml.namespace.QName parentQName,
+                               final org.apache.axiom.om.OMFactory factory,
+                               org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter,
+                               boolean serializeType)
+            throws javax.xml.stream.XMLStreamException, org.apache.axis2.databinding.ADBException{
+            
+                
+
+
+                java.lang.String prefix = null;
+                java.lang.String namespace = null;
+                
+
+                    prefix = parentQName.getPrefix();
+                    namespace = parentQName.getNamespaceURI();
+
+                    if ((namespace != null) && (namespace.trim().length() > 0)) {
+                        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+                        if (writerPrefix != null) {
+                            xmlWriter.writeStartElement(namespace, parentQName.getLocalPart());
+                        } else {
+                            if (prefix == null) {
+                                prefix = generatePrefix(namespace);
+                            }
+
+                            xmlWriter.writeStartElement(prefix, parentQName.getLocalPart(), namespace);
+                            xmlWriter.writeNamespace(prefix, namespace);
+                            xmlWriter.setPrefix(prefix, namespace);
+                        }
+                    } else {
+                        xmlWriter.writeStartElement(parentQName.getLocalPart());
+                    }
+                
+                  if (serializeType){
+               
+
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
+                   if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
+                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                           namespacePrefix+":Order",
+                           xmlWriter);
+                   } else {
+                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                           "Order",
+                           xmlWriter);
+                   }
+
+               
+                   }
+                if (localOrderIdentityTracker){
+                                    if (localOrderIdentity==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"orderIdentity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"orderIdentity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("orderIdentity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localOrderIdentity.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orderIdentity"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localQuantitiesTracker){
+                                    if (localQuantities==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"quantities", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"quantities");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("quantities");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localQuantities.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","quantities"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localReasonCodesTracker){
+                                    if (localReasonCodes==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"reasonCodes", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"reasonCodes");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("reasonCodes");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localReasonCodes.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","reasonCodes"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localUserDefinedField1Tracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"userDefinedField1", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"userDefinedField1");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("userDefinedField1");
+                                    }
+                                
+
+                                          if (localUserDefinedField1==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("userDefinedField1 cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localUserDefinedField1);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localUserDefinedField2Tracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"userDefinedField2", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"userDefinedField2");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("userDefinedField2");
+                                    }
+                                
+
+                                          if (localUserDefinedField2==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("userDefinedField2 cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localUserDefinedField2);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localUserDefinedField3Tracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"userDefinedField3", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"userDefinedField3");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("userDefinedField3");
+                                    }
+                                
+
+                                          if (localUserDefinedField3==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("userDefinedField3 cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localUserDefinedField3);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localSpecialInstructionsTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"specialInstructions", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"specialInstructions");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("specialInstructions");
+                                    }
+                                
+
+                                          if (localSpecialInstructions==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("specialInstructions cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localSpecialInstructions);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localReferenceNumberTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"referenceNumber", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"referenceNumber");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("referenceNumber");
+                                    }
+                                
+
+                                          if (localReferenceNumber==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("referenceNumber cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localReferenceNumber);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localOrderStatusCodeTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"orderStatusCode", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"orderStatusCode");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("orderStatusCode");
+                                    }
+                                
+
+                                          if (localOrderStatusCode==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("orderStatusCode cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localOrderStatusCode);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"removeFlag", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"removeFlag");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("removeFlag");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("removeFlag cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRemoveFlag));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                              if (localLineItemsTracker){
+                                       if (localLineItems!=null){
+                                            for (int i = 0;i < localLineItems.length;i++){
+                                                if (localLineItems[i] != null){
+                                                 localLineItems[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","lineItems"),
+                                                           factory,xmlWriter);
+                                                } else {
+                                                   
+                                                        // we don't have to do any thing since minOccures is zero
+                                                    
+                                                }
+
+                                            }
+                                     } else {
+                                        
+                                               throw new org.apache.axis2.databinding.ADBException("lineItems cannot be null!!");
+                                        
+                                    }
+                                 } if (localContainersTracker){
+                                       if (localContainers!=null){
+                                            for (int i = 0;i < localContainers.length;i++){
+                                                if (localContainers[i] != null){
+                                                 localContainers[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","containers"),
+                                                           factory,xmlWriter);
+                                                } else {
+                                                   
+                                                        // we don't have to do any thing since minOccures is zero
+                                                    
+                                                }
+
+                                            }
+                                     } else {
+                                        
+                                               throw new org.apache.axis2.databinding.ADBException("containers cannot be null!!");
+                                        
+                                    }
+                                 } if (localFinancialDetailsTracker){
+                                       if (localFinancialDetails!=null){
+                                            for (int i = 0;i < localFinancialDetails.length;i++){
+                                                if (localFinancialDetails[i] != null){
+                                                 localFinancialDetails[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","financialDetails"),
+                                                           factory,xmlWriter);
+                                                } else {
+                                                   
+                                                        // we don't have to do any thing since minOccures is zero
+                                                    
+                                                }
+
+                                            }
+                                     } else {
+                                        
+                                               throw new org.apache.axis2.databinding.ADBException("financialDetails cannot be null!!");
+                                        
+                                    }
+                                 } if (localActivitiesTracker){
+                                       if (localActivities!=null){
+                                            for (int i = 0;i < localActivities.length;i++){
+                                                if (localActivities[i] != null){
+                                                 localActivities[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","activities"),
+                                                           factory,xmlWriter);
+                                                } else {
+                                                   
+                                                        // we don't have to do any thing since minOccures is zero
+                                                    
+                                                }
+
+                                            }
+                                     } else {
+                                        
+                                               throw new org.apache.axis2.databinding.ADBException("activities cannot be null!!");
+                                        
+                                    }
+                                 }
+                    xmlWriter.writeEndElement();
+               
+
         }
-        if (getQuantities() != null) {
-            _hashCode += getQuantities().hashCode();
-        }
-        if (getReasonCodes() != null) {
-            _hashCode += getReasonCodes().hashCode();
-        }
-        if (getUserDefinedField1() != null) {
-            _hashCode += getUserDefinedField1().hashCode();
-        }
-        if (getUserDefinedField2() != null) {
-            _hashCode += getUserDefinedField2().hashCode();
-        }
-        if (getUserDefinedField3() != null) {
-            _hashCode += getUserDefinedField3().hashCode();
-        }
-        if (getSpecialInstructions() != null) {
-            _hashCode += getSpecialInstructions().hashCode();
-        }
-        if (getReferenceNumber() != null) {
-            _hashCode += getReferenceNumber().hashCode();
-        }
-        if (getOrderStatusCode() != null) {
-            _hashCode += getOrderStatusCode().hashCode();
-        }
-        _hashCode += (isRemoveFlag() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        if (getLineItems() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getLineItems());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getLineItems(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
+
+         /**
+          * Util method to write an attribute with the ns prefix
+          */
+          private void writeAttribute(java.lang.String prefix,java.lang.String namespace,java.lang.String attName,
+                                      java.lang.String attValue,javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException{
+              if (xmlWriter.getPrefix(namespace) == null) {
+                       xmlWriter.writeNamespace(prefix, namespace);
+                       xmlWriter.setPrefix(prefix, namespace);
+
+              }
+
+              xmlWriter.writeAttribute(namespace,attName,attValue);
+
+         }
+
+        /**
+          * Util method to write an attribute without the ns prefix
+          */
+          private void writeAttribute(java.lang.String namespace,java.lang.String attName,
+                                      java.lang.String attValue,javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException{
+                if (namespace.equals(""))
+              {
+                  xmlWriter.writeAttribute(attName,attValue);
+              }
+              else
+              {
+                  registerPrefix(xmlWriter, namespace);
+                  xmlWriter.writeAttribute(namespace,attName,attValue);
+              }
+          }
+
+
+           /**
+             * Util method to write an attribute without the ns prefix
+             */
+            private void writeQNameAttribute(java.lang.String namespace, java.lang.String attName,
+                                             javax.xml.namespace.QName qname, javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+
+                java.lang.String attributeNamespace = qname.getNamespaceURI();
+                java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+                if (attributePrefix == null) {
+                    attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
+                }
+                java.lang.String attributeValue;
+                if (attributePrefix.trim().length() > 0) {
+                    attributeValue = attributePrefix + ":" + qname.getLocalPart();
+                } else {
+                    attributeValue = qname.getLocalPart();
+                }
+
+                if (namespace.equals("")) {
+                    xmlWriter.writeAttribute(attName, attributeValue);
+                } else {
+                    registerPrefix(xmlWriter, namespace);
+                    xmlWriter.writeAttribute(namespace, attName, attributeValue);
                 }
             }
-        }
-        if (getContainers() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getContainers());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getContainers(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
+        /**
+         *  method to handle Qnames
+         */
+
+        private void writeQName(javax.xml.namespace.QName qname,
+                                javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+            java.lang.String namespaceURI = qname.getNamespaceURI();
+            if (namespaceURI != null) {
+                java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+                if (prefix == null) {
+                    prefix = generatePrefix(namespaceURI);
+                    xmlWriter.writeNamespace(prefix, namespaceURI);
+                    xmlWriter.setPrefix(prefix,namespaceURI);
                 }
+
+                if (prefix.trim().length() > 0){
+                    xmlWriter.writeCharacters(prefix + ":" + org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qname));
+                } else {
+                    // i.e this is the default namespace
+                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qname));
+                }
+
+            } else {
+                xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qname));
             }
         }
-        if (getFinancialDetails() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getFinancialDetails());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getFinancialDetails(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
+
+        private void writeQNames(javax.xml.namespace.QName[] qnames,
+                                 javax.xml.stream.XMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
+
+            if (qnames != null) {
+                // we have to store this data until last moment since it is not possible to write any
+                // namespace data after writing the charactor data
+                java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
+                java.lang.String namespaceURI = null;
+                java.lang.String prefix = null;
+
+                for (int i = 0; i < qnames.length; i++) {
+                    if (i > 0) {
+                        stringToWrite.append(" ");
+                    }
+                    namespaceURI = qnames[i].getNamespaceURI();
+                    if (namespaceURI != null) {
+                        prefix = xmlWriter.getPrefix(namespaceURI);
+                        if ((prefix == null) || (prefix.length() == 0)) {
+                            prefix = generatePrefix(namespaceURI);
+                            xmlWriter.writeNamespace(prefix, namespaceURI);
+                            xmlWriter.setPrefix(prefix,namespaceURI);
+                        }
+
+                        if (prefix.trim().length() > 0){
+                            stringToWrite.append(prefix).append(":").append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qnames[i]));
+                        } else {
+                            stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qnames[i]));
+                        }
+                    } else {
+                        stringToWrite.append(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(qnames[i]));
+                    }
                 }
+                xmlWriter.writeCharacters(stringToWrite.toString());
             }
+
         }
-        if (getActivities() != null) {
-            for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getActivities());
-                 i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getActivities(), i);
-                if (obj != null &&
-                    !obj.getClass().isArray()) {
-                    _hashCode += obj.hashCode();
+
+
+         /**
+         * Register a namespace prefix
+         */
+         private java.lang.String registerPrefix(javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace) throws javax.xml.stream.XMLStreamException {
+                java.lang.String prefix = xmlWriter.getPrefix(namespace);
+
+                if (prefix == null) {
+                    prefix = generatePrefix(namespace);
+
+                    while (xmlWriter.getNamespaceContext().getNamespaceURI(prefix) != null) {
+                        prefix = org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
+                    }
+
+                    xmlWriter.writeNamespace(prefix, namespace);
+                    xmlWriter.setPrefix(prefix, namespace);
                 }
+
+                return prefix;
             }
+
+
+  
+        /**
+        * databinding method to get an XML representation of this object
+        *
+        */
+        public javax.xml.stream.XMLStreamReader getPullParser(javax.xml.namespace.QName qName)
+                    throws org.apache.axis2.databinding.ADBException{
+
+
+        
+                 java.util.ArrayList elementList = new java.util.ArrayList();
+                 java.util.ArrayList attribList = new java.util.ArrayList();
+
+                 if (localOrderIdentityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "orderIdentity"));
+                            
+                            
+                                    elementList.add(localOrderIdentity==null?null:
+                                    localOrderIdentity);
+                                } if (localQuantitiesTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "quantities"));
+                            
+                            
+                                    elementList.add(localQuantities==null?null:
+                                    localQuantities);
+                                } if (localReasonCodesTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "reasonCodes"));
+                            
+                            
+                                    elementList.add(localReasonCodes==null?null:
+                                    localReasonCodes);
+                                } if (localUserDefinedField1Tracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "userDefinedField1"));
+                                 
+                                        if (localUserDefinedField1 != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUserDefinedField1));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("userDefinedField1 cannot be null!!");
+                                        }
+                                    } if (localUserDefinedField2Tracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "userDefinedField2"));
+                                 
+                                        if (localUserDefinedField2 != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUserDefinedField2));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("userDefinedField2 cannot be null!!");
+                                        }
+                                    } if (localUserDefinedField3Tracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "userDefinedField3"));
+                                 
+                                        if (localUserDefinedField3 != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUserDefinedField3));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("userDefinedField3 cannot be null!!");
+                                        }
+                                    } if (localSpecialInstructionsTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "specialInstructions"));
+                                 
+                                        if (localSpecialInstructions != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSpecialInstructions));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("specialInstructions cannot be null!!");
+                                        }
+                                    } if (localReferenceNumberTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "referenceNumber"));
+                                 
+                                        if (localReferenceNumber != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localReferenceNumber));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("referenceNumber cannot be null!!");
+                                        }
+                                    } if (localOrderStatusCodeTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "orderStatusCode"));
+                                 
+                                        if (localOrderStatusCode != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOrderStatusCode));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("orderStatusCode cannot be null!!");
+                                        }
+                                    }
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "removeFlag"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRemoveFlag));
+                             if (localLineItemsTracker){
+                             if (localLineItems!=null) {
+                                 for (int i = 0;i < localLineItems.length;i++){
+
+                                    if (localLineItems[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                          "lineItems"));
+                                         elementList.add(localLineItems[i]);
+                                    } else {
+                                        
+                                                // nothing to do
+                                            
+                                    }
+
+                                 }
+                             } else {
+                                 
+                                        throw new org.apache.axis2.databinding.ADBException("lineItems cannot be null!!");
+                                    
+                             }
+
+                        } if (localContainersTracker){
+                             if (localContainers!=null) {
+                                 for (int i = 0;i < localContainers.length;i++){
+
+                                    if (localContainers[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                          "containers"));
+                                         elementList.add(localContainers[i]);
+                                    } else {
+                                        
+                                                // nothing to do
+                                            
+                                    }
+
+                                 }
+                             } else {
+                                 
+                                        throw new org.apache.axis2.databinding.ADBException("containers cannot be null!!");
+                                    
+                             }
+
+                        } if (localFinancialDetailsTracker){
+                             if (localFinancialDetails!=null) {
+                                 for (int i = 0;i < localFinancialDetails.length;i++){
+
+                                    if (localFinancialDetails[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                          "financialDetails"));
+                                         elementList.add(localFinancialDetails[i]);
+                                    } else {
+                                        
+                                                // nothing to do
+                                            
+                                    }
+
+                                 }
+                             } else {
+                                 
+                                        throw new org.apache.axis2.databinding.ADBException("financialDetails cannot be null!!");
+                                    
+                             }
+
+                        } if (localActivitiesTracker){
+                             if (localActivities!=null) {
+                                 for (int i = 0;i < localActivities.length;i++){
+
+                                    if (localActivities[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                          "activities"));
+                                         elementList.add(localActivities[i]);
+                                    } else {
+                                        
+                                                // nothing to do
+                                            
+                                    }
+
+                                 }
+                             } else {
+                                 
+                                        throw new org.apache.axis2.databinding.ADBException("activities cannot be null!!");
+                                    
+                             }
+
+                        }
+
+                return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
+            
+            
+
         }
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
 
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(Order.class, true);
+  
 
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "Order"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("orderIdentity");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "orderIdentity"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "OrderIdentity"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("quantities");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "quantities"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "ItemQuantities"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("reasonCodes");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "reasonCodes"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "ReasonCodes"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("userDefinedField1");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "userDefinedField1"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("userDefinedField2");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "userDefinedField2"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("userDefinedField3");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "userDefinedField3"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("specialInstructions");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "specialInstructions"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("referenceNumber");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "referenceNumber"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("orderStatusCode");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "orderStatusCode"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("removeFlag");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "removeFlag"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("lineItems");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "lineItems"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "LineItem"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("containers");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "containers"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "OrderContainer"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("financialDetails");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "financialDetails"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "OrderFinancialDetail"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("activities");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "activities"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "OrderActivity"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        elemField.setMaxOccursUnbounded(true);
-        typeDesc.addFieldDesc(elemField);
-    }
+     /**
+      *  Factory class that keeps the parse method
+      */
+    public static class Factory{
 
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
+        
+        
 
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
+        /**
+        * static method to create the object
+        * Precondition:  If this object is an element, the current or next start element starts this object and any intervening reader events are ignorable
+        *                If this object is not an element, it is a complex type and the reader is at the event just after the outer start element
+        * Postcondition: If this object is an element, the reader is positioned at its end element
+        *                If this object is a complex type, the reader is positioned at the end element of its outer element
+        */
+        public static Order parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            Order object =
+                new Order();
 
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           java.lang.String mechType, 
-           java.lang.Class _javaType,  
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
-    }
+            int event;
+            java.lang.String nillableValue = null;
+            java.lang.String prefix ="";
+            java.lang.String namespaceuri ="";
+            try {
+                
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
 
-}
+                
+                if (reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","type")!=null){
+                  java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                        "type");
+                  if (fullTypeName!=null){
+                    java.lang.String nsPrefix = null;
+                    if (fullTypeName.indexOf(":") > -1){
+                        nsPrefix = fullTypeName.substring(0,fullTypeName.indexOf(":"));
+                    }
+                    nsPrefix = nsPrefix==null?"":nsPrefix;
+
+                    java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
+                    
+                            if (!"Order".equals(type)){
+                                //find namespace for the prefix
+                                java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
+                                return (Order)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                     nsUri,type,reader);
+                              }
+                        
+
+                  }
+                
+
+                }
+
+                
+
+                
+                // Note all attributes that were handled. Used to differ normal attributes
+                // from anyAttributes.
+                java.util.Vector handledAttributes = new java.util.Vector();
+                
+
+                 
+                    
+                    reader.next();
+                
+                        java.util.ArrayList list11 = new java.util.ArrayList();
+                    
+                        java.util.ArrayList list12 = new java.util.ArrayList();
+                    
+                        java.util.ArrayList list13 = new java.util.ArrayList();
+                    
+                        java.util.ArrayList list14 = new java.util.ArrayList();
+                    
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orderIdentity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setOrderIdentity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setOrderIdentity(com.freshdirect.routing.proxy.stub.transportation.OrderIdentity.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","quantities").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setQuantities(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setQuantities(com.freshdirect.routing.proxy.stub.transportation.ItemQuantities.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","reasonCodes").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setReasonCodes(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setReasonCodes(com.freshdirect.routing.proxy.stub.transportation.ReasonCodes.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","userDefinedField1").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setUserDefinedField1(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","userDefinedField2").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setUserDefinedField2(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","userDefinedField3").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setUserDefinedField3(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","specialInstructions").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setSpecialInstructions(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","referenceNumber").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setReferenceNumber(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orderStatusCode").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setOrderStatusCode(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","removeFlag").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setRemoveFlag(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","lineItems").equals(reader.getName())){
+                                
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list11.add(com.freshdirect.routing.proxy.stub.transportation.LineItem.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone11 = false;
+                                                        while(!loopDone11){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone11 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","lineItems").equals(reader.getName())){
+                                                                    list11.add(com.freshdirect.routing.proxy.stub.transportation.LineItem.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone11 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
+                                                        object.setLineItems((com.freshdirect.routing.proxy.stub.transportation.LineItem[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.LineItem.class,
+                                                                list11));
+                                                            
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","containers").equals(reader.getName())){
+                                
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list12.add(com.freshdirect.routing.proxy.stub.transportation.OrderContainer.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone12 = false;
+                                                        while(!loopDone12){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone12 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","containers").equals(reader.getName())){
+                                                                    list12.add(com.freshdirect.routing.proxy.stub.transportation.OrderContainer.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone12 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
+                                                        object.setContainers((com.freshdirect.routing.proxy.stub.transportation.OrderContainer[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.OrderContainer.class,
+                                                                list12));
+                                                            
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","financialDetails").equals(reader.getName())){
+                                
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list13.add(com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone13 = false;
+                                                        while(!loopDone13){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone13 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","financialDetails").equals(reader.getName())){
+                                                                    list13.add(com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone13 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
+                                                        object.setFinancialDetails((com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.OrderFinancialDetail.class,
+                                                                list13));
+                                                            
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","activities").equals(reader.getName())){
+                                
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list14.add(com.freshdirect.routing.proxy.stub.transportation.OrderActivity.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone14 = false;
+                                                        while(!loopDone14){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone14 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","activities").equals(reader.getName())){
+                                                                    list14.add(com.freshdirect.routing.proxy.stub.transportation.OrderActivity.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone14 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
+                                                        object.setActivities((com.freshdirect.routing.proxy.stub.transportation.OrderActivity[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.OrderActivity.class,
+                                                                list14));
+                                                            
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                  
+                            while (!reader.isStartElement() && !reader.isEndElement())
+                                reader.next();
+                            
+                                if (reader.isStartElement())
+                                // A start element we are not expecting indicates a trailing invalid property
+                                throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                            
+
+
+
+            } catch (javax.xml.stream.XMLStreamException e) {
+                throw new java.lang.Exception(e);
+            }
+
+            return object;
+        }
+
+        }//end of factory class
+
+        
+
+        }
+           
+          

@@ -1,6 +1,5 @@
 package com.freshdirect.routing.service.impl;
 
-import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,10 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.rpc.ServiceException;
-
-import com.freshdirect.delivery.AddressScrubber;
-import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
 import com.freshdirect.routing.constants.EnumGeocodeQualityType;
 import com.freshdirect.routing.dao.IGeographyDAO;
@@ -22,23 +17,26 @@ import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.proxy.stub.roadnet.GeocodeData;
 import com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions;
-import com.freshdirect.routing.proxy.stub.roadnet.RouteNetPortType;
+import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
-import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService_PortType;
+import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
 import com.freshdirect.routing.service.IGeographyService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.service.util.BaseGeocodeEngine;
 import com.freshdirect.routing.service.util.IGeocodeEngine;
+import com.freshdirect.routing.util.AddressScrubber;
 import com.freshdirect.routing.util.RoutingDataEncoder;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingUtil;
 
-public class GeographyService implements IGeographyService {
+public class GeographyService extends BaseService implements IGeographyService {
 
 	private IGeographyDAO geographyDAOImpl;
 
@@ -52,7 +50,8 @@ public class GeographyService implements IGeographyService {
 				return locModel;
 			}
 		} catch (SQLException e) {
-			throw new RoutingServiceException(e, IIssue.PROCESS_LOCATION_NOTFOUND);
+			//throw new RoutingServiceException(e, IIssue.PROCESS_LOCATION_NOTFOUND);
+			
 		}
 		return null;
 	}
@@ -82,7 +81,52 @@ public class GeographyService implements IGeographyService {
 			return baseGeocodeEngine.getGeocode( street, zipCode, country);
 		}
 	}
+	
+	public ILocationModel locateOrder(IOrderModel orderModel)  throws RoutingServiceException {
+						
+		ILocationModel locModel = orderModel.getDeliveryInfo().getDeliveryLocation();
 		
+		locModel.setStreetAddress1(standardizeStreetAddress(locModel));
+		ILocationModel locationModel = getLocation(locModel);			
+		
+		IBuildingModel buildingModel = null;			
+		if(locationModel == null) {				
+			buildingModel = getBuildingLocation(locModel);
+			
+			if(buildingModel != null && buildingModel.getBuildingId() != null) {
+																			
+	    		locModel.setGeographicLocation(buildingModel.getGeographicLocation());		    							
+				
+			} else {
+				
+				buildingModel = getNewBuildingEx(locModel);					
+				locModel.setZipCode(buildingModel.getZipCode());
+				locModel.setGeographicLocation(buildingModel.getGeographicLocation());
+				buildingModel.setServiceTimeType(locModel.getServiceTimeType());
+								
+				insertBuilding(buildingModel);
+				buildingModel = getBuildingLocation(locModel);					
+				
+			}
+			
+			locModel.setBuildingId(buildingModel.getBuildingId());
+			
+			insertLocation(locModel);
+			
+			locationModel = getLocation(locModel);
+			
+			locModel.setLocationId(locationModel.getLocationId());
+			locModel.setGeographicLocation(locationModel.getGeographicLocation());
+			locModel.setServiceTimeType(locationModel.getServiceTimeType());
+			
+		} else {
+			locModel.setLocationId(locationModel.getLocationId());
+			locModel.setGeographicLocation(locationModel.getGeographicLocation());
+			locModel.setServiceTimeType(locationModel.getServiceTimeType());
+		}
+		
+		return locModel;
+	}
 
 	public IGeographicLocation getRoutingLocation(String locationId) throws RoutingServiceException  {
 
@@ -90,7 +134,7 @@ public class GeographyService implements IGeographyService {
 
 		try {
 
-			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
 			if(locationId != null) {
 				ILocationModel locModel = geographyDAOImpl.getLocationById(locationId);
 				if(locModel != null) {
@@ -111,11 +155,6 @@ public class GeographyService implements IGeographyService {
 					}
 				}
 			}
-		} catch (ServiceException exp) {
-			exp.printStackTrace();
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
-		} catch (MalformedURLException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
 		} catch (RemoteException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
 		} catch (SQLException exp) {
@@ -170,7 +209,7 @@ public class GeographyService implements IGeographyService {
 																		, null);
 							}
 						}
-						TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+						TransportationWebService port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
 						Location[] saveResult = port.saveLocations(result);
 						if(saveResult != null && saveResult.length >0) {
 							throw new RoutingServiceException(null, IIssue.PROCESS_LOCATION_SAVEERROR);
@@ -180,11 +219,6 @@ public class GeographyService implements IGeographyService {
 				
 			}
 			
-		} catch (ServiceException exp) {
-			exp.printStackTrace();
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_SAVEERROR);
-		} catch (MalformedURLException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_SAVEERROR);
 		} catch (SQLException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_SAVEERROR);
 		} catch (RemoteException exp) {
@@ -197,29 +231,36 @@ public class GeographyService implements IGeographyService {
 		List lstResult = new ArrayList();
 		try {
 
-			RouteNetPortType port = RoutingServiceLocator.getInstance().getRouteNetService();
+			RouteNetWebService port = RoutingServiceLocator.getInstance().getRouteNetService();
 			if(dataList != null) {
 				com.freshdirect.routing.proxy.stub.roadnet.Address[] addressLst = getAddressArray(dataList);
 				GeocodeData[] geographicData = port.batchGeocode(addressLst, new GeocodeOptions());
 				lstResult = getGeographyList(geographicData);
 			}
 
-		} catch (ServiceException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_GEOCODE_UNSUCCESSFUL);
-		} catch (MalformedURLException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_GEOCODE_UNSUCCESSFUL);
 		} catch (RemoteException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_GEOCODE_UNSUCCESSFUL);
 		}
 		return lstResult;
 	}
 	
-	public IBuildingModel getNewBuilding(ILocationModel baseModel) throws RoutingServiceException {
+public IBuildingModel getNewBuilding(ILocationModel baseModel) throws RoutingServiceException {
 		
 		return getNewBuilding(null, baseModel);
 	}
 	
+	public IBuildingModel getNewBuildingEx(ILocationModel baseModel) throws RoutingServiceException {
+		
+		return processNewBuilding(null, baseModel, false);
+	}
+	
 	public IBuildingModel getNewBuilding(IGeocodeEngine geocodeEngine, ILocationModel baseModel) throws RoutingServiceException {
+						
+		return processNewBuilding(geocodeEngine, baseModel, true);
+	}
+	
+		
+	private IBuildingModel processNewBuilding(IGeocodeEngine geocodeEngine, ILocationModel baseModel, boolean processID) throws RoutingServiceException {
 		
 		IBuildingModel buildingModel = null;
 		IGeocodeResult geocodeResult = getGeocode(geocodeEngine
@@ -249,8 +290,10 @@ public class GeographyService implements IGeographyService {
 		} else {
 			buildingModel.setZipCode(baseModel.getZipCode());
 		}
-				
-		buildingModel.setBuildingId(getBuildingId());
+		
+		if(processID) {
+			buildingModel.setBuildingId(getBuildingId());
+		}
 		buildingModel.setSrubbedStreet(baseModel.getStreetAddress1());
 		buildingModel.setCity(baseModel.getCity());
 		buildingModel.setState(baseModel.getState());		
@@ -260,7 +303,7 @@ public class GeographyService implements IGeographyService {
 					
 		return buildingModel;
 	}
-	
+
 	private List getGeographyList(GeocodeData[] inputDataList) {
 
 		List result = new ArrayList();
@@ -297,7 +340,25 @@ public class GeographyService implements IGeographyService {
 
 		return addressLst;
 	}
+	
+	public void insertBuilding(IBuildingModel model) throws RoutingServiceException {
+		try {
+			geographyDAOImpl.insertBuilding(model);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_BUILDING_SAVEERROR);
+		}
+	}
 
+	public void insertLocation(ILocationModel model) throws RoutingServiceException {
+		try {
+			geographyDAOImpl.insertLocation(model);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_LOCATION_SAVEERROR);
+		}
+	}
+	
 	public String getLocationId() throws RoutingServiceException {
 		try {
 			return geographyDAOImpl.getLocationId();
@@ -381,10 +442,12 @@ public class GeographyService implements IGeographyService {
 		try {
 			streetAddressResult = AddressScrubber.standardizeForGeocode(address1);
 			//streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress1());
-		} catch (InvalidAddressException iae1) {
+		} catch (RoutingServiceException iae1) {
+			System.out.println(" >>> Error >> "+address1+"->"+address2);
 			try {
 				streetAddressResult = AddressScrubber.standardizeForGeocode(address2);
-			} catch (InvalidAddressException iae2) {
+			} catch (RoutingServiceException iae2) {
+				System.out.println(" >>> Error2 >> "+address1+"->"+address2);
 				throw new RoutingServiceException(iae2, IIssue.PROCESS_ADDRESSSTANDARDIZE_UNSUCCESSFUL);
 			}
 		}

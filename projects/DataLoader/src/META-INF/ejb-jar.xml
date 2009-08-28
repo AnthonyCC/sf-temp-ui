@@ -134,16 +134,7 @@
 			</resource-ref>
 	</session>
 		        
-         <message-driven>
-            <ejb-name>RoutingAddressLoadListener</ejb-name>
-            <ejb-class>com.freshdirect.dataloader.routing.ejb.RoutingAddressLoadListener</ejb-class>
-            <transaction-type>Container</transaction-type>
-            <message-selector>(MessageType='ROUTINGADDRESS/process')</message-selector>
-            <message-driven-destination>
-                <destination-type>javax.jms.Queue</destination-type>
-            </message-driven-destination>
-        </message-driven>
-        	
+                 	
     </enterprise-beans>
     
     <assembly-descriptor>
@@ -164,10 +155,7 @@
         		<method-intf>Remote</method-intf>
         		<method-name>*</method-name>
         	</method>
-        	<method>
-            <ejb-name>RoutingAddressLoadListener</ejb-name>
-            <method-name>*</method-name>
-          </method>
+        	
         	<trans-attribute>Required</trans-attribute>
         </container-transaction>        
     </assembly-descriptor>
