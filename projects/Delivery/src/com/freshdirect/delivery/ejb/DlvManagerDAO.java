@@ -381,7 +381,7 @@ public class DlvManagerDAO {
 			rs.getString("ADDRESS_ID"),
 			rs.getDate("BASE_DATE"),
 			rs.getString("ZONE_CODE"),
-			RoutingActivityType.valueOf( rs.getString("UNASSIGNED_ACTION")))   
+			RoutingActivityType.getEnum( rs.getString("UNASSIGNED_ACTION")))   
 			;
 	}
 
