@@ -405,33 +405,57 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 	public void testYmalSetMultiple() {
 		ProductModel product = (ProductModel) findNode("product_ymal_set_multiple");
 		assertNotNull(product);
-		
-		List relatedProducts = product.getYmalProducts();
-		assertTrue(relatedProducts.size() == 6);
-		assertEquals(relatedProducts.get(0), findNode("product_mea0004561"));
-		assertEquals(relatedProducts.get(1), findNode("product_mea0004562"));
-		assertEquals(relatedProducts.get(2), findNode("product_mea0004563"));
-		assertEquals(relatedProducts.get(3), findNode("product_mea0004564"));
-		assertEquals(relatedProducts.get(4), findNode("product_mea0004565"));
-		assertEquals(relatedProducts.get(5), findNode("product_mea0004566"));
-		
-		List relatedCategories = product.getYmalCategories();
-		assertTrue(relatedCategories.size() == 6);
-		assertEquals(relatedCategories.get(0), findNode("category_mea0004561"));
-		assertEquals(relatedCategories.get(1), findNode("category_mea0004562"));
-		assertEquals(relatedCategories.get(2), findNode("category_mea0004563"));
-		assertEquals(relatedCategories.get(3), findNode("category_mea0004564"));
-		assertEquals(relatedCategories.get(4), findNode("category_mea0004565"));
-		assertEquals(relatedCategories.get(5), findNode("category_mea0004566"));
-
-		List relatedRecipes = product.getYmalRecipes();
-		assertTrue(relatedRecipes.size() == 6);
-		assertEquals(relatedRecipes.get(0), findNode("recipe_mea0004561"));
-		assertEquals(relatedRecipes.get(1), findNode("recipe_mea0004562"));
-		assertEquals(relatedRecipes.get(2), findNode("recipe_mea0004563"));
-		assertEquals(relatedRecipes.get(3), findNode("recipe_mea0004564"));
-		assertEquals(relatedRecipes.get(4), findNode("recipe_mea0004565"));
-		assertEquals(relatedRecipes.get(5), findNode("recipe_mea0004566"));
+		product.resetActiveYmalSetSession();
+		YmalSet ys = product.getActiveYmalSet();
+		System.out.println("ymalset:" + ys.getContentKey().getId());
+		if ("ymal_set_4_to_6".equals(ys.getContentKey().getId())) {
+                    List relatedProducts = product.getYmalProducts();
+                    assertEquals(6, relatedProducts.size());
+                    assertEquals(relatedProducts.get(0), findNode("product_mea0004561"));
+                    assertEquals(relatedProducts.get(1), findNode("product_mea0004562"));
+                    assertEquals(relatedProducts.get(2), findNode("product_mea0004563"));
+                    assertEquals(relatedProducts.get(3), findNode("product_mea0004564"));
+                    assertEquals(relatedProducts.get(4), findNode("product_mea0004565"));
+                    assertEquals(relatedProducts.get(5), findNode("product_mea0004566"));
+        
+                    List relatedCategories = product.getYmalCategories();
+                    assertEquals(6, relatedCategories.size());
+                    assertEquals(relatedCategories.get(0), findNode("category_mea0004561"));
+                    assertEquals(relatedCategories.get(1), findNode("category_mea0004562"));
+                    assertEquals(relatedCategories.get(2), findNode("category_mea0004563"));
+                    assertEquals(relatedCategories.get(3), findNode("category_mea0004564"));
+                    assertEquals(relatedCategories.get(4), findNode("category_mea0004565"));
+                    assertEquals(relatedCategories.get(5), findNode("category_mea0004566"));
+        
+                    List relatedRecipes = product.getYmalRecipes();
+                    assertEquals(6, relatedRecipes.size());
+                    assertEquals(relatedRecipes.get(0), findNode("recipe_mea0004561"));
+                    assertEquals(relatedRecipes.get(1), findNode("recipe_mea0004562"));
+                    assertEquals(relatedRecipes.get(2), findNode("recipe_mea0004563"));
+                    assertEquals(relatedRecipes.get(3), findNode("recipe_mea0004564"));
+                    assertEquals(relatedRecipes.get(4), findNode("recipe_mea0004565"));
+                    assertEquals(relatedRecipes.get(5), findNode("recipe_mea0004566"));
+		} else if ("ymal_set_simple".equals(ys.getContentKey().getId())) {
+                    List relatedProducts = product.getYmalProducts();
+                    assertEquals(3, relatedProducts.size());
+                    assertEquals(relatedProducts.get(0), findNode("product_mea0004561"));
+                    assertEquals(relatedProducts.get(1), findNode("product_mea0004562"));
+                    assertEquals(relatedProducts.get(2), findNode("product_mea0004563"));
+        
+                    List relatedCategories = product.getYmalCategories();
+                    assertEquals(3, relatedCategories.size());
+                    assertEquals(relatedCategories.get(0), findNode("category_mea0004561"));
+                    assertEquals(relatedCategories.get(1), findNode("category_mea0004562"));
+                    assertEquals(relatedCategories.get(2), findNode("category_mea0004563"));
+        
+                    List relatedRecipes = product.getYmalRecipes();
+                    assertEquals(3, relatedRecipes.size());
+                    assertEquals(relatedRecipes.get(0), findNode("recipe_mea0004561"));
+                    assertEquals(relatedRecipes.get(1), findNode("recipe_mea0004562"));
+                    assertEquals(relatedRecipes.get(2), findNode("recipe_mea0004563"));
+		} else {
+		    fail("Unknown ymal set:"+ys.getContentKey().getId());
+		}
 	}
 	
 	/**
@@ -542,7 +566,7 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 
 		// test getActiveYmalSet()
 		YmalSet ys = cf.getActiveYmalSet();
-		assertEquals(ys.getContentName(), "ymal_set_4_to_6");
+		assertTrue("ymal_set_4_to_6".equals(ys.getContentName()) || "ymal_set_simple".equals(ys.getContentName()));
 		
 		// test getYmalProducts()
 		List ymalProducts = cf.getYmalProducts();
