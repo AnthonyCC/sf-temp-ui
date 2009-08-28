@@ -20,15 +20,14 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
  */
 public class ContentTreePopUp extends Window {
 
-    private Set<String>		allowedTypes;
-    private NodeTree	treepanel = null;
-    private Button			ok;
-    private Button			cancel;
+    private Set<String> allowedTypes;
+    private NodeTree treepanel = null;
+    private Button ok;
+    private Button cancel;
 
     private ContentNodeModel selected;
-    
-    private static ContentTreePopUp popup = null;
 
+    private static ContentTreePopUp popup = null;
     
     private ContentTreePopUp(Set<String> aTypes) {
         super();
@@ -36,31 +35,34 @@ public class ContentTreePopUp extends Window {
         ok = new Button("Ok");
         ok.disable();
         cancel = new Button("Cancel");
-        
-        addButton( cancel );
-		addButton( ok );
-		setLayout( new FillLayout() );
-		setSize( 400, 600 );
-		setPosition( 0, 0 );
-		setModal( true );
-		        
-        setAllowedTypes( aTypes );
+
+        addButton(cancel);
+        addButton(ok);
+        setLayout(new FillLayout());
+        setSize(400, 600);
+        // setPosition( 0, 0 );
+        setModal(true);
+
+        setAllowedTypes(aTypes);
         initialize();
     }
     
-    public static ContentTreePopUp getInstance( Set<String> aTypes ) {
-    	if ( popup == null ) {
-    		popup = new ContentTreePopUp( aTypes );
-    	} else {
-    		popup.setAllowedTypes( aTypes );
+    public static ContentTreePopUp getInstance(Set<String> aTypes) {
+        if (popup == null) {
+            popup = new ContentTreePopUp(aTypes);
+        } else {
+            popup.setAllowedTypes(aTypes);
             popup.initialize();
-    	}
-    	return popup;
+            // need to remove listener, because funny things will happen, if not :)
+            for (Listener<? extends BaseEvent> listener : popup.getListeners(Events.Select)) {
+                popup.removeListener(Events.Select, listener);
+            }
+        }
+        return popup;
     }
-
     
-    public void setAllowedTypes ( Set<String> aTypes ) {
-    	allowedTypes = aTypes;
+    public void setAllowedTypes(Set<String> aTypes) {
+        allowedTypes = aTypes;
     }
     
     public Set<String> getAllowedTypes() {
@@ -97,21 +99,21 @@ public class ContentTreePopUp extends Window {
     
     private void initialize() {
 
-    	if ( treepanel == null ) {
-    		treepanel = new NodeTree(allowedTypes);
-    		treepanel.setHeaderVisible( false );
-    	} else {
-    		treepanel.setAllowedTypes( allowedTypes );
-    	}
-    	
+        if (treepanel == null) {
+            treepanel = new NodeTree(allowedTypes);
+            treepanel.setHeaderVisible(false);
+        } else {
+            treepanel.setAllowedTypes(allowedTypes);
+        }
+
         final Window w = this;
 
         ok.removeAllListeners();
         ok.addListener(Events.OnClick, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
-                if ( treepanel.getSelectedItem() != null ) {
-                    BaseEvent e = new BaseEvent( Events.Select );
-                    setSelected( (ContentNodeModel) treepanel.getSelectedItem() );
+                if (treepanel.getSelectedItem() != null) {
+                    BaseEvent e = new BaseEvent(Events.Select);
+                    setSelected((ContentNodeModel) treepanel.getSelectedItem());
                     e.setSource(w);
                     fireEvent(e.getType(), e);
                 }
@@ -131,15 +133,16 @@ public class ContentTreePopUp extends Window {
 //            treepanel.loadRootNodes();
             
             treepanel.removeSelectionChangedListener();
-            treepanel.addSelectionChangedListener( new SelectionChangedListener<ContentNodeModel>() {
-            	@Override public void selectionChanged( SelectionChangedEvent<ContentNodeModel> se ) {
-            		ContentNodeModel selectedItem = se.getSelectedItem(); 
-            		if ( selectedItem != null && ( allowedTypes == null || allowedTypes.contains( selectedItem.getType() ) ) ) {
-            			ok.enable();
-            		} else {
-            			ok.disable();
-            		}
-            	}
+            treepanel.addSelectionChangedListener(new SelectionChangedListener<ContentNodeModel>() {
+                @Override
+                public void selectionChanged(SelectionChangedEvent<ContentNodeModel> se) {
+                    ContentNodeModel selectedItem = se.getSelectedItem();
+                    if (selectedItem != null && (allowedTypes == null || allowedTypes.contains(selectedItem.getType()))) {
+                        ok.enable();
+                    } else {
+                        ok.disable();
+                    }
+                }
             });
             
             add( treepanel );            
