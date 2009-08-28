@@ -253,33 +253,31 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             	currentNode = currentNodeData;
                 WorkingSet.clear();
             	
-                final HtmlContainer contentHeader = new HtmlContainer( currentNode.getHeaderMarkup() );
+                final HtmlContainer contentHeader = new HtmlContainer(currentNode.getHeaderMarkup());
 
                 contentToolBar = new ToolBar();
-                contentToolBar.addStyleName( "main-toolbar" );
-                
+                contentToolBar.addStyleName("main-toolbar");                
                                 
                 // ============ context dropdown ============
                 GwtNodeContext ctx = currentNode.getContexts();
                 
                 contextDropdown = new SimpleComboBox<String>();
-                contextDropdown.addStyleName( "context-dropdown" );
-                final List<String> contextsList = new ArrayList<String>( ctx.size() );                
+                contextDropdown.addStyleName("context-dropdown");
+                final List<String> contextsList = new ArrayList<String>(ctx.size());
                 
-                for ( String path : ctx.getPaths() ) {
-                	contextDropdown.add( ctx.getLabel( path ) );
-                	contextsList.add( path );
+                for (String path : ctx.getPaths()) {
+                    contextDropdown.add(ctx.getLabel(path));
+                    contextsList.add(path);
                 }
                 
-                contextDropdown.setEmptyText( "Select active context" );
+                contextDropdown.setEmptyText("Select active context");
                 
-                contextDropdown.setEditable( false );
-				contextDropdown.setForceSelection( true );
+                contextDropdown.setEditable(false);
+                contextDropdown.setForceSelection(true);
 				
 				//FIXME context dropdown width
 //                contextDropdown.setAutoWidth( true );
-				contextDropdown.setWidth( 500 );
-                
+                //contextDropdown.setWidth(500);                
                 
                 contextDropdown.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
                     @Override
@@ -530,15 +528,15 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
     }
     
     private void discardAction() {
-    	setStatus( "Changes were discarded." );
-    	WorkingSet.clear();
-        History.newItem( null );
+        setStatus("Changes were discarded.");
+        WorkingSet.clear();
+        History.newItem(null);
         mainPanel.removeAll();
-	}
+    }
     
     private void contextChangeAction( String ctxPath ) {    	
     	
-    	System.out.println( " ============ Context change : " + ctxPath + " ============ " );
+    	// System.out.println( " ============ Context change : " + ctxPath + " ============ " );
     	setStatus( "Context changed to : " + currentNode.getContexts().getLabel( ctxPath ) );
     	
     	Map<String, ContentNodeAttributeI> attributes = currentNode.getNode().getOriginalAttributes();

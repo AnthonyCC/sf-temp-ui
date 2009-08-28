@@ -258,6 +258,13 @@
 	text-align : right;
 }
 
+/* context drop down */
+
+.context-dropdown input {
+  width : 500px !important;
+}
+
+
 /* TableField */
 
 .cms-table-field-MOD-even {
