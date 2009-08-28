@@ -321,6 +321,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			public void handleEvent(BaseEvent be) {
 				store.sort( "label", SortDir.ASC );
 				grid.getView().refresh( false );
+				store.setStoreSorter(null);
 			}
 		});
 		cp.getHeader().addTool( sortButton );
