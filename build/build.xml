@@ -2008,12 +2008,7 @@
 		<!-- copy dependent jar files -->
   		<copy todir="${work.dir}/TransportationAdmin/WEB-INF/lib">
 			<fileset dir="${thirdparty.home}" includes="extremecomponents-1.0.1.jar" />			
-			<fileset dir="${thirdparty.home}" includes="jaxrpc.jar" />
-			<fileset dir="${thirdparty.home}" includes="saaj.jar" />
-			<fileset dir="${thirdparty.home}" includes="wsdl4j-1.5.1.jar" />
-			<fileset dir="${work.dir}" includes="RoutingServices.jar" />
-			<fileset dir="${thirdparty.home}" includes="axis.jar" />
-			<fileset dir="${thirdparty.home}" includes="axis-ant.jar" />
+			<fileset dir="${work.dir}" includes="RoutingServices.jar" />			
 		</copy>
 
 		<!-- create .war file -->
