@@ -23,8 +23,10 @@ public class ChangeHistoryPopUp extends Window {
         BorderLayoutData bd = new BorderLayoutData(LayoutRegion.CENTER);
         add(new ChangeSetPanel(changeHistory), bd);
         
-        BorderLayoutData south = new BorderLayoutData(LayoutRegion.SOUTH);
-        add(new PublishMessagesPanel(changeHistory), south);
+        if (changeHistory.getPublishMessages() != null) {
+            BorderLayoutData south = new BorderLayoutData(LayoutRegion.SOUTH);
+            add(new PublishMessagesPanel(changeHistory), south);
+        }
         
     }
 }

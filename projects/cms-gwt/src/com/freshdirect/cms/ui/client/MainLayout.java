@@ -426,23 +426,25 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
     
     private void viewHistory() {
         if (currentNode != null) {
-        	setStatus( "Loading history..." );
-        	startProgress( "Load", "Loading history of " + currentNode.getNode().getKey(), "loading..." );
-        	final String label = currentNode.getNode().getLabel() + " " + currentNode.getNode().getType() + " [" + currentNode.getNode().getKey() + "]";
-            CmsGwt.getContentService().getChangeSets(new ChangeSetQuery().setByKey(currentNode.getNode().getKey()), new AsyncCallback<ChangeSetQueryResponse>() {
-                public void onFailure(Throwable caught) {
-                	setStatus( "Error loading history." );
-                	stopProgress();
-                    MessageBox.alert("Error", "Showing history:" + caught.getMessage(), null);
-                }
+            setStatus("Loading history...");
+            startProgress("Load", "Loading history of " + currentNode.getNode().getKey(), "loading...");
+            final String label = currentNode.getNode().getLabel() + " " + currentNode.getNode().getType() + " [" + currentNode.getNode().getKey() + "]";
 
-                public void onSuccess(ChangeSetQueryResponse result) {
-                	setStatus( "History loaded successfully." );
-                	stopProgress();
-                    ChangeHistoryPopUp cp = new ChangeHistoryPopUp( result, label );
-                    cp.show();
-                }
-            });
+            CmsGwt.getContentService().getChangeSets(new ChangeSetQuery().setByKey(currentNode.getNode().getKey()),
+                    new AsyncCallback<ChangeSetQueryResponse>() {
+                        public void onFailure(Throwable caught) {
+                            setStatus("Error loading history.");
+                            stopProgress();
+                            MessageBox.alert("Error", "Showing history:" + caught.getMessage(), null);
+                        }
+
+                        public void onSuccess(ChangeSetQueryResponse result) {
+                            setStatus("History loaded successfully.");
+                            stopProgress();
+                            ChangeHistoryPopUp cp = new ChangeHistoryPopUp(result, label);
+                            cp.show();
+                        }
+                    });
         }
     }
     

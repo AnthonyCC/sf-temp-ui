@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 public class ChangeSetPanel extends ContentPanel {
 
@@ -30,7 +31,7 @@ public class ChangeSetPanel extends ContentPanel {
         super();
         setHeading("Change Set");
 
-        setScrollMode(Scroll.AUTO);
+        setScrollMode(Scroll.NONE);
         setLayout(new FitLayout());
 
         BasePagingLoader<BasePagingLoadResult<BaseModelData>> loader = new BasePagingLoader<BasePagingLoadResult<BaseModelData>>(new ChangeSetLoader(response));
@@ -38,12 +39,16 @@ public class ChangeSetPanel extends ContentPanel {
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
         columns.add(new ColumnConfig("user", "User", 80));
-        columns.add(new ColumnConfig("date", "Creation Date", 120));
+        {
+            ColumnConfig cc = new ColumnConfig("date", "Creation Date", 120);
+            cc.setDateTimeFormat(DateTimeFormat.getMediumDateTimeFormat());
+            columns.add(cc);
+        }
         columns.add(new ColumnConfig("type", "Type", 70));
         columns.add(new ColumnConfig("key", "Content Key", 150));
         columns.add(new ColumnConfig("attribute", "Attribute", 150));
         columns.add(new ColumnConfig("old", "Old Value", 200));
-        columns.add(new ColumnConfig("new", "New Value", 200));
+        columns.add(new ColumnConfig("new", "New Value", 400));
 
         final PagingToolBar toolBar = new PagingToolBar(20);
         toolBar.bind(loader);
@@ -52,8 +57,8 @@ public class ChangeSetPanel extends ContentPanel {
         ColumnModel cm = new ColumnModel(columns);
         grid = new Grid<BaseModelData>(store, cm);
         grid.setStripeRows(true);
-        grid.setAutoExpandColumn("new");
-        grid.setAutoHeight(true);
+        // if auto height is set to true, then there will be no scrollbar!
+        // grid.setAutoHeight(true);
         add(grid);
 
         loader.load(0, 20);
