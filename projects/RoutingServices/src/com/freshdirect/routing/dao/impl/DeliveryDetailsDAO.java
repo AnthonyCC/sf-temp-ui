@@ -56,8 +56,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			"a.BALANCE_BY BALANCE_BY, a.LOADBALANCE_FACTOR LOADBALANCE_FACTOR, a.NEEDS_LOADBALANCE NEEDS_LOADBALANCE,a.IS_DEPOT IS_DEPOT  from transp.zone z, transp.trn_area a  " +
 			" where z.area = a.code and (z.OBSOLETE <> 'X' or z.OBSOLETE IS NULL)";
 	
-	private static final String GET_TIMESLOTSBYDATE_QRY = " select ta.AREA, z.ZONE_CODE, z.NAME, t.START_TIME , t.END_TIME, TO_CHAR(t.CUTOFF_TIME, 'HH_PM') wavecode  from dlv.timeslot@DBSTOSBY.NYC.FRESHDIRECT.COM t" +
-			", dlv.zone@DBSTOSBY.NYC.FRESHDIRECT.COM z, transp.zone@DBSTOSBY.NYC.FRESHDIRECT.COM ta where t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE" +
+	private static final String GET_TIMESLOTSBYDATE_QRY = " select ta.AREA, z.ZONE_CODE, z.NAME, t.START_TIME , t.END_TIME, TO_CHAR(t.CUTOFF_TIME, 'HH_PM') wavecode  from dlv.timeslot t" +
+			", dlv.zone z, transp.zone ta where t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE" +
 			" and t.base_date = ?";
 	
 	private static final String GET_UNASSIGNED_QRY = "select r.ID RID, r.STATUS_CODE STATUS, r.CUSTOMER_ID CID, r.TYPE RTYPE, r.ORDER_ID OID," +
@@ -66,10 +66,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			"from dlv.reservation r, dlv.timeslot t, cust.sale s, dlv.zone z " +
 			"where t.BASE_DATE = ? and r.STATUS_CODE in ('10','15') and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID";
 	
-	/*private static final String GET_TIMESLOTSBYDATE_QRY = " select ta.AREA, z.ZONE_CODE, z.NAME, t.START_TIME , t.END_TIME, , TO_CHAR(t.CUTOFF_TIME, 'HH_PM') wavecode  from dlv.timeslot t" +
-	", dlv.zone z, transp.zone ta where t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE" +
-	" and t.base_date = ?";*/
-	
+		
 	private static final String EARLY_WARNING_QUERY =
 		"select code, name, st, et, sum(orders) as total_order, sum(capacity) as capacity, "
 			+ "sum(total_alloc) as total_alloc, "

@@ -27927,6 +27927,11 @@
             }else{
                 throw f;
             }
+            } catch (Exception e) {
+                // we cannot intantiate the class - throw the original Axis fault
+            	System.out.println("===================== Axis Exception Debug START======================== ");
+            	e.printStackTrace();
+                throw new RuntimeException();
             } finally {
                 _messageContext.getTransportOut().getSender().cleanup(_messageContext);
             }
