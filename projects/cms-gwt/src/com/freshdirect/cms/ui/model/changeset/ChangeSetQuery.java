@@ -22,6 +22,8 @@ public class ChangeSetQuery implements Serializable {
     
     boolean publishInfoQuery = false;
     
+    String sortType;
+    
     public String getById() {
         return byId;
     }
@@ -53,6 +55,15 @@ public class ChangeSetQuery implements Serializable {
         this.start = start;
         this.limit = limit;
         return this;
+    }
+    
+    public ChangeSetQuery setSortType(String sortType) {
+        this.sortType = sortType;
+        return this;
+    }
+    
+    public String getSortType() {
+        return sortType;
     }
     
     public int getLimit() {

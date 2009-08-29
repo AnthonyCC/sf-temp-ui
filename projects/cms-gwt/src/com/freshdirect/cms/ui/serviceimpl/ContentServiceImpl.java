@@ -2,8 +2,10 @@ package com.freshdirect.cms.ui.serviceimpl;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +55,7 @@ import com.freshdirect.cms.validation.ContentValidationException;
 import com.freshdirect.cms.validation.ContentValidationMessage;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DateComparator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -380,6 +383,12 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         int changeCount = 0;
         for (GwtChangeSet gcs : changeHistory) {
             changeCount += gcs.length();
+        }
+
+        if ("user".equals(query.getSortType())) {
+            Collections.sort(changeHistory, GwtChangeSet.USER_COMPARATOR);
+        } else {
+            Collections.sort(changeHistory, GwtChangeSet.DATE_COMPARATOR);
         }
 
         int limit = query.getLimit() <= 0 ? 1000 : Math.min(query.getLimit(), 1000);

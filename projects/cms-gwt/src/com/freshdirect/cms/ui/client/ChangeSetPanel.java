@@ -36,19 +36,21 @@ public class ChangeSetPanel extends ContentPanel {
 
         BasePagingLoader<BasePagingLoadResult<BaseModelData>> loader = new BasePagingLoader<BasePagingLoadResult<BaseModelData>>(new ChangeSetLoader(response));
         store = new ListStore<BaseModelData>(loader);
+        store.setSortField("date");
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
         columns.add(new ColumnConfig("user", "User", 80));
         {
             ColumnConfig cc = new ColumnConfig("date", "Creation Date", 120);
             cc.setDateTimeFormat(DateTimeFormat.getMediumDateTimeFormat());
+
             columns.add(cc);
         }
-        columns.add(new ColumnConfig("type", "Type", 70));
-        columns.add(new ColumnConfig("key", "Content Key", 150));
-        columns.add(new ColumnConfig("attribute", "Attribute", 150));
-        columns.add(new ColumnConfig("old", "Old Value", 200));
-        columns.add(new ColumnConfig("new", "New Value", 400));
+        columns.add(noSort(new ColumnConfig("type", "Type", 70)));
+        columns.add(noSort(new ColumnConfig("key", "Content Key", 150)));
+        columns.add(noSort(new ColumnConfig("attribute", "Attribute", 150)));
+        columns.add(noSort(new ColumnConfig("old", "Old Value", 200)));
+        columns.add(noSort(new ColumnConfig("new", "New Value", 400)));
 
         final PagingToolBar toolBar = new PagingToolBar(20);
         toolBar.bind(loader);
@@ -62,6 +64,11 @@ public class ChangeSetPanel extends ContentPanel {
         add(grid);
 
         loader.load(0, 20);
+    }
+    
+    static ColumnConfig noSort(ColumnConfig cc) {
+        cc.setSortable(false);
+        return cc;
     }
 
 }

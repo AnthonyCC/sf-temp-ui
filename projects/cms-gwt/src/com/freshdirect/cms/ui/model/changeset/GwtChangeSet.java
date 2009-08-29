@@ -2,11 +2,34 @@ package com.freshdirect.cms.ui.model.changeset;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-public class GwtChangeSet implements Serializable  {
+public class GwtChangeSet implements Serializable {
+
+    public final static Comparator<GwtChangeSet> DATE_COMPARATOR = new Comparator<GwtChangeSet>() {
+        @Override
+        public int compare(GwtChangeSet o1, GwtChangeSet o2) {
+            return -o1.getModifiedDate().compareTo(o2.getModifiedDate());
+        }
+    };
+    
+    public final static Comparator<GwtChangeSet> USER_COMPARATOR = new Comparator<GwtChangeSet>() {
+        @Override
+        public int compare(GwtChangeSet o1, GwtChangeSet o2) {
+            return -o1.getUserId().compareTo(o2.getUserId());
+        }
+    };
+
+    public final static Comparator<GwtChangeSet> NOTE_COMPARATOR = new Comparator<GwtChangeSet>() {
+        @Override
+        public int compare(GwtChangeSet o1, GwtChangeSet o2) {
+            return o1.getNote().compareTo(o2.getNote());
+        }
+    };
+    
 
     /**
      * 
@@ -14,7 +37,7 @@ public class GwtChangeSet implements Serializable  {
     private static final long serialVersionUID = 1L;
 
     private String id;
-    
+
     private String userId;
 
     private Date modifiedDate;
@@ -38,11 +61,11 @@ public class GwtChangeSet implements Serializable  {
     public String getUserId() {
         return userId;
     }
-    
+
     public String getId() {
         return id;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }
@@ -75,7 +98,8 @@ public class GwtChangeSet implements Serializable  {
     /**
      * Get a filtered list of changes for a given content object.
      * 
-     * @param key content node key (never null)
+     * @param key
+     *            content node key (never null)
      * @return List of {@link GwtContentNodeChange} (never null)
      */
     public List<GwtContentNodeChange> getNodeChangesById(String key) {
@@ -88,7 +112,7 @@ public class GwtChangeSet implements Serializable  {
         }
         return nodeChanges;
     }
-    
+
     public int length() {
         int result = 0;
         for (GwtContentNodeChange c : nodeChanges) {
@@ -96,7 +120,7 @@ public class GwtChangeSet implements Serializable  {
         }
         return result;
     }
-    
+
     @Override
     public String toString() {
         return "GwtChangeSet[" + id + ',' + userId + "," + modifiedDate + ',' + note + ",length:" + length() + ']';
