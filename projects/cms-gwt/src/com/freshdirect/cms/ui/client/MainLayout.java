@@ -91,17 +91,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                     public void nodeSelected(final ContentNodeModel node) {
                         final ContentNodeModel parent = treePanel.getSelectedParent();
                         if (node != null) {
-                            if (isFormChanged()) {
-                                MessageBox.confirm("Discard changes", "You have unsaved changes. Do you want to discard them?", new Listener<MessageBoxEvent>() {
-                                    public void handleEvent(MessageBoxEvent be) {
-                                        if (be.getButtonClicked().getText().toLowerCase().trim().equals("yes")) {
-                                            openNode(node, parent);
-                                        }
-                                    };
-                                });
-                            } else {
-                                openNode(node, parent);
-                            }
+                            MainLayout.this.nodeSelected(node.getKey(), parent);
                         }
                     };
                 });		
@@ -176,20 +166,20 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
     	statusField.setText( msg );
     }    
     
-    public static void startProgress( String title, String message, String progressText ) {
-    	stopProgress();
-    	progressBar = MessageBox.progress( title, message, progressText );
-//    	if ( progressBar == null ) {
-//    		progressBar = MessageBox.progress( title, message, progressText );
-//    	} else {
-//    		progressBar.setTitle( title );
-//    		progressBar.setMessage( message );
-//    		progressBar.setProgressText( progressText );
-//    	}
-		progressBar.setModal( true );
-		progressBar.getProgressBar().auto();
-		progressBar.show();
-	}
+    public static void startProgress(String title, String message, String progressText) {
+        stopProgress();
+        progressBar = MessageBox.progress(title, message, progressText);
+        // if ( progressBar == null ) {
+        //      progressBar = MessageBox.progress( title, message, progressText );
+        // } else {
+        //      progressBar.setTitle( title );
+        //      progressBar.setMessage( message );
+        //      progressBar.setProgressText( progressText );
+        // }
+        progressBar.setModal(true);
+        progressBar.getProgressBar().auto();
+        progressBar.show();
+    }
     
     public static void stopProgress() {
 		if ( progressBar != null ) {
@@ -233,8 +223,13 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 	}
 	
 	
-	
-    public void loadNode( final String parentKey, final String nodeKey ) {
+
+    /**
+     * Initiates downloading the given content node.
+     * 	
+     * @param nodeKey
+     */
+    public void loadNode(final String nodeKey) {
         setStatus( "Loading " + nodeKey + " ... " );
         startProgress( "Load", "Loading " + nodeKey,  "loading..." );
 
@@ -356,7 +351,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                     Button discardButton = new Button("Discard", new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent ce) {
-                            discardAction();
+                            nodeSelected(currentNode.getNode().getKey(), null);
                         }
                     });
                     discardButton.setToolTip( new ToolTipConfig( "Discard", "Discard the changes in this workset." ) );
@@ -412,11 +407,11 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
         }
         int sep = historyToken.indexOf('$');
         if (sep != -1) {
-            String parentKey = historyToken.substring(0, sep);
+            //String parentKey = historyToken.substring(0, sep);
             String currentKey = historyToken.substring(sep + 1);
-            loadNode(parentKey, currentKey);
+            loadNode(currentKey);
         } else {
-            loadNode(null, historyToken);
+            loadNode(historyToken);
         }
     }
 
@@ -536,42 +531,45 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
         mainPanel.removeAll();
     }
     
-    private void contextChangeAction( String ctxPath ) {    	
-    	
-    	// System.out.println( " ============ Context change : " + ctxPath + " ============ " );
-    	setStatus( "Context changed to : " + currentNode.getContexts().getLabel( ctxPath ) );
-    	
-    	Map<String, ContentNodeAttributeI> attributes = currentNode.getNode().getOriginalAttributes();
-		Map<String, ContentNodeAttributeI> inheritedAttrs = currentNode.getContexts().getInheritedAttributes( ctxPath );
-    	
-		if ( inheritedAttrs == null || attributes == null )
-			return;
-		
-        for ( String key : attributes.keySet() ) {
-        	ContentNodeAttributeI attribute = attributes.get( key );
-        	Field<Serializable> fieldObject = (Field<Serializable>) attribute.getFieldObject();
-        	
-        	if ( fieldObject != null && fieldObject instanceof InheritanceField && attribute.isInheritable() && inheritedAttrs.containsKey( key ) ) {
-        		InheritanceField<Serializable> inheritanceField = (InheritanceField<Serializable>) fieldObject;
-        		
-        		ContentNodeAttributeI inhAttr = inheritedAttrs.get( key );
-        		if ( inhAttr != null && inheritanceField.isOverrideValue() ) {
-//        			System.out.println( "Setting : " + key + " = " + inhAttr.getValue() );
-        			
-        			inheritanceField.setInheritedValue(inhAttr.getValue());
-        		}
-        	}     
+    private void contextChangeAction(String ctxPath) {
+        setStatus("Context changed to : " + currentNode.getContexts().getLabel(ctxPath));
+
+        Map<String, ContentNodeAttributeI> attributes = currentNode.getNode().getOriginalAttributes();
+        Map<String, ContentNodeAttributeI> inheritedAttrs = currentNode.getContexts().getInheritedAttributes(ctxPath);
+
+        if (inheritedAttrs == null || attributes == null) {
+            return;
+        }
+
+        for (String key : attributes.keySet()) {
+            ContentNodeAttributeI attribute = attributes.get(key);
+            Field<Serializable> fieldObject = (Field<Serializable>) attribute.getFieldObject();
+
+            if (fieldObject != null && fieldObject instanceof InheritanceField && attribute.isInheritable() && inheritedAttrs.containsKey(key)) {
+                InheritanceField<Serializable> inheritanceField = (InheritanceField<Serializable>) fieldObject;
+
+                ContentNodeAttributeI inhAttr = inheritedAttrs.get(key);
+                if (inhAttr != null && inheritanceField.isOverrideValue()) {
+
+                    inheritanceField.setInheritedValue(inhAttr.getValue());
+                }
+            }
         }
     }
 
-    void openNode(final ContentNodeModel node, final ContentNodeModel parent) {
+    void openNode(String key, final ContentNodeModel parent) {
         StringBuilder command = new StringBuilder(64);
         if (parent != null) {
             command.append(parent.getKey());
             command.append('$');
         }
-        command.append(node.getKey());
-        History.newItem(command.toString());
+        command.append(key);
+        String c = command.toString();
+        if (c.equals(History.getToken())) {
+            History.fireCurrentHistoryState();
+        } else {
+            History.newItem(c);
+        }
     }
     
     protected boolean isFormChanged() {
@@ -611,6 +609,22 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             s.append("admin");
         }
         header.setUserInfo(s.append(')').toString());
+    }
+
+    protected void nodeSelected(final String key, final ContentNodeModel parent) {
+        if (key != null) {
+            if (isFormChanged()) {
+                MessageBox.confirm("Discard changes", "You have unsaved changes. Do you want to discard them?", new Listener<MessageBoxEvent>() {
+                    public void handleEvent(MessageBoxEvent be) {
+                        if (be.getButtonClicked().getText().toLowerCase().trim().equals("yes")) {
+                            openNode(key, parent);
+                        }
+                    };
+                });
+            } else {
+                openNode(key, parent);
+            }
+        }
     }
     
 }
