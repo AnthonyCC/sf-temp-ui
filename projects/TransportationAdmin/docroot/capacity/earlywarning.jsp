@@ -63,7 +63,7 @@
 			          var param2 = document.getElementById(compId2).value;
 			          var param3 = document.getElementById(compId3).value;
 			          
-			          if(param1.length == 0 || param3.length == 0) {
+			          if(param1.length == 0 || param2.length == 0) {
 			          		alert("Please select the required filter param (Date, Type)");
 			          } else {
 			          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3;
