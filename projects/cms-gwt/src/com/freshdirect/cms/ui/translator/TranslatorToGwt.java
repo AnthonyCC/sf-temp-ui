@@ -469,7 +469,6 @@ public class TranslatorToGwt {
         }
         return null;
     }
-
     
     private static ContentNodeModel toContentNodeModel( ContentKey key ) {
         ContentNodeI node = key.getContentNode();
@@ -479,39 +478,39 @@ public class TranslatorToGwt {
         		key.getEncoded(),
         		false
         );
-        prepareModel( node, result );
+        prepareModel(node, result);
         return result;
     }
     
-    private static OneToManyModel toOneToManyModel( ContentKey key, int idx ) {
+    private static OneToManyModel toOneToManyModel(ContentKey key, int idx) {
         ContentNodeI node = key.getContentNode();
-        OneToManyModel result = new OneToManyModel (
-        		key.getType().getName(),
-        		key.getEncoded(),
-        		node.getLabel(),
-        		idx        		
-        );
-        prepareModel( node, result );
+        OneToManyModel result = new OneToManyModel(
+                key.getType().getName(), 
+                key.getEncoded(), 
+                node != null ? node.getLabel() : key.getId(), 
+                idx);
+        prepareModel(node, result);
         return result;
     }
 
-    private static void prepareModel( ContentNodeI node, ContentNodeModel result ) {
-        if ( node != null ) {
-        	result.setHasChildren( node.getChildKeys().size() > 0 );
-	        if (result.isHtmlType()) {
-	            Object path = node.getAttribute("path").getValue();
-	            result.setPreviewUrl( FDStoreProperties.getCmsMediaBaseURL() + path );
-	        }
-	        if (result.isImageType()) {
-	            Object path = node.getAttribute("path").getValue();
-	            result.setPreviewUrl( FDStoreProperties.getCmsMediaBaseURL() + path );
-	            Object width = node.getAttribute("width").getValue();
-	            result.setWidth( (Integer)width );
-	            Object height = node.getAttribute("height").getValue();
-	            result.setHeight( (Integer)height );
-	        }
-        }    	
+    private static void prepareModel(ContentNodeI node, ContentNodeModel result) {
+        if (node != null) {
+            result.setHasChildren(node.getChildKeys().size() > 0);
+            if (result.isHtmlType()) {
+                Object path = node.getAttribute("path").getValue();
+                result.setPreviewUrl(FDStoreProperties.getCmsMediaBaseURL() + path);
+            }
+            if (result.isImageType()) {
+                Object path = node.getAttribute("path").getValue();
+                result.setPreviewUrl(FDStoreProperties.getCmsMediaBaseURL() + path);
+                Object width = node.getAttribute("width").getValue();
+                result.setWidth((Integer) width);
+                Object height = node.getAttribute("height").getValue();
+                result.setHeight((Integer) height);
+            }
+        }
     }
+
     // =========================== CHANGE SETS ===========================  
 	
     public static List<GwtChangeSet> getGwtChangeSets(List<ChangeSet> changeSet) {
@@ -545,7 +544,10 @@ public class TranslatorToGwt {
 	private static GwtContentNodeChange getGwtContentNodeChange(ContentNodeChange cnc) {
         GwtContentNodeChange gcnc = new GwtContentNodeChange();
         gcnc.setChangeType(cnc.getChangeType().getName());
-        gcnc.setContentKey(cnc.getContentKey().getEncoded());
+        gcnc.setContentType(cnc.getContentKey().getType().getName());
+        gcnc.setContentKey(cnc.getContentKey().getId());
+        ContentNodeI contentNode = cnc.getContentKey().getContentNode();
+        gcnc.setLabel(contentNode != null ? contentNode.getLabel() : cnc.getContentKey().getEncoded());
         for ( ChangeDetail cd : (List<ChangeDetail>)cnc.getChangeDetails() ) {
             gcnc.addDetail(new GwtChangeDetail(cd.getAttributeName(), cd.getOldValue(), cd.getNewValue()));
         }

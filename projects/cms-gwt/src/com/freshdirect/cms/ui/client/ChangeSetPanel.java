@@ -14,6 +14,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.freshdirect.cms.ui.client.fields.Renderers;
 import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -46,8 +47,12 @@ public class ChangeSetPanel extends ContentPanel {
 
             columns.add(cc);
         }
-        columns.add(noSort(new ColumnConfig("type", "Type", 70)));
-        columns.add(noSort(new ColumnConfig("key", "Content Key", 150)));
+        columns.add(noSort(new ColumnConfig("changeType", "Type", 70)));
+        {
+            ColumnConfig cc = noSort(new ColumnConfig("contentNode", "Content", 150));
+            cc.setRenderer(Renderers.GRID_LINK_RENDERER);
+            columns.add(cc);
+        }
         columns.add(noSort(new ColumnConfig("attribute", "Attribute", 150)));
         columns.add(noSort(new ColumnConfig("old", "Old Value", 200)));
         columns.add(noSort(new ColumnConfig("new", "New Value", 400)));

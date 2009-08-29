@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.freshdirect.cms.ui.client.fields.OneToManyRelationField;
+import com.freshdirect.cms.ui.client.fields.Renderers;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.GwtPublishMessage;
@@ -31,7 +32,7 @@ public class PublishMessagesPanel extends ContentPanel {
         columns.add(new ColumnConfig("severity", "Severity", 80));
         columns.add(new ColumnConfig("date", "Timestamp", 120));
         ColumnConfig cc = new ColumnConfig("key", "Content Node", 150);
-        cc.setRenderer(OneToManyRelationField.GRID_LINK_RENDERER);
+        cc.setRenderer(Renderers.GRID_LINK_RENDERER);
         columns.add(cc);
         columns.add(new ColumnConfig("message", "Message", 150));
 

@@ -26,9 +26,6 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 	protected ContentNodeModel() {		
 	}
 
-    public ContentNodeModel( String label, String key ) {
-    	this( key.substring( 0, key.indexOf( ':' ) ), label, key, true );    	
-	}
 
     public ContentNodeModel( String type, String label, String key ) {
     	this( type, label, key, true );    	

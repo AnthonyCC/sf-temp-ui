@@ -19,6 +19,10 @@ public class GwtContentNodeChange implements Serializable  {
     
     private String changeType;
 
+    private String label;
+
+    private String contentType;
+
 
     /**
      * @return List of {@link GwtChangeDetail}
@@ -27,10 +31,19 @@ public class GwtContentNodeChange implements Serializable  {
         return changeDetails;
     }
 
-    public String getKey() {
-        return key;
+    
+    public String getContentType() {
+        return contentType;
+    }
+    
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
+    public String getContentKey() {
+        return key;
+    }
+    
     public void setContentKey(String key) {
         this.key = key;
     }
@@ -41,6 +54,14 @@ public class GwtContentNodeChange implements Serializable  {
 
     public String getChangeType() {
         return changeType;
+    }
+    
+    public void setLabel(String label) {
+        this.label = label;
+    }
+    
+    public String getLabel() {
+        return label;
     }
 
     public void setChangeType(String changeType) {

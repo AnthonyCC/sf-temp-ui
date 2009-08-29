@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.data.DataReader;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeDetail;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
@@ -22,7 +23,7 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
 
     int loadedPosition;
 
-    List<BaseModelData> alreadyLoaded = new ArrayList<BaseModelData>();
+    List<ContentNodeModel> alreadyLoaded = new ArrayList<ContentNodeModel>();
 
     public ChangeSetLoader(ChangeSetQueryResponse response) {
         this.response = response;
@@ -76,10 +77,9 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
         for (GwtChangeSet g : response.getChanges()) {
             for (GwtContentNodeChange node : g.getNodeChanges()) {
                 if (node.getChangeDetails().size() == 0) {
-                    BaseModelData b = new BaseModelData();
+                    ContentNodeModel b = new ContentNodeModel(node.getContentType(), node.getLabel(), node.getContentKey());
 
-                    b.set("key", node.getKey());
-                    b.set("type", node.getChangeType());
+                    b.set("changeType", node.getChangeType());
 
                     b.set("user", g.getUserId());
                     b.set("note", g.getNote());
@@ -88,13 +88,12 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
 
                 } else {
                     for (GwtChangeDetail detail : node.getChangeDetails()) {
-                        BaseModelData b = new BaseModelData();
+                        ContentNodeModel b = new ContentNodeModel(node.getContentType(), node.getLabel(), node.getContentKey());
                         b.set("old", detail.getOldValue());
                         b.set("new", detail.getNewValue());
                         b.set("attribute", detail.getAttributeName());
 
-                        b.set("key", node.getKey());
-                        b.set("type", node.getChangeType());
+                        b.set("changeType", node.getChangeType());
 
                         b.set("user", g.getUserId());
                         b.set("note", g.getNote());

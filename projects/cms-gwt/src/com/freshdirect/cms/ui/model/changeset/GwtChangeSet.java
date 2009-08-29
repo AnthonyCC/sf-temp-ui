@@ -106,7 +106,7 @@ public class GwtChangeSet implements Serializable {
         List<GwtContentNodeChange> nodeChanges = new ArrayList<GwtContentNodeChange>();
         for (Iterator<GwtContentNodeChange> i = this.nodeChanges.iterator(); i.hasNext();) {
             GwtContentNodeChange cnc = i.next();
-            if (key.equals(cnc.getKey())) {
+            if (key.equals(cnc.getContentKey())) {
                 nodeChanges.add(cnc);
             }
         }

@@ -180,7 +180,7 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
         });
 
         this.extraColumns = new ArrayList<GridCellRenderer<OneToManyModel>>();
-        this.extraColumns.add(new LabelRenderer("label"));
+        this.extraColumns.add(new Renderers.LabelRenderer("label"));
         for (ContentNodeModel domain : domains) {
             extraColumns.add(new DropDownRenderer(domain.getKey()));
         }

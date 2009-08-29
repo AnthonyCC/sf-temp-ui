@@ -48,30 +48,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class OneToManyRelationField extends MultiField<List<OneToManyModel>> implements HasCustomDefaultValue<List<OneToManyModel>> {
     
-    public static class LabelRenderer implements GridCellRenderer<OneToManyModel> {
-        String modelProperty;
-        
-        LabelRenderer (String modelProperty) {
-            this.modelProperty = modelProperty;
-        }
-        
-        @Override
-        public Object render(OneToManyModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<OneToManyModel> store,
-                Grid<OneToManyModel> grid) {
-            return model.get(modelProperty);
-        }
-    }
-    
-    /**
-     * Renders a link to the row content node model. This can be used, when
-     * content nodes are displayed with their properties, so the
-     * ContentNodeModel contains "key", "label", and "id" values.
-     */
-    public final static GridCellRenderer<ContentNodeModel> GRID_LINK_RENDERER = new GridCellRenderer<ContentNodeModel>() {
-        public Object render(ContentNodeModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ContentNodeModel> store, Grid<ContentNodeModel> grid) {
-            return model.renderLinkComponent();
-        }
-    };
 
 	protected Grid<OneToManyModel> grid;
 	protected ListStore<OneToManyModel> store;
@@ -434,12 +410,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
                 indexColumn.setWidth(25);
                 indexColumn.setStyle("vertical-align: middle;");
                 indexColumn.setAlignment(HorizontalAlignment.RIGHT);
-                indexColumn.setRenderer(new GridCellRenderer<OneToManyModel>() {
-                    public Object render(OneToManyModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<OneToManyModel> store,
-                            Grid<OneToManyModel> grid) {
-                        return String.valueOf(rowIndex+1);
-                    }
-                });
+                indexColumn.setRenderer(Renderers.ROW_INDEX);
                 config.add(indexColumn);
         }
 
@@ -448,7 +419,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		    column.setId("label");
             column.setMenuDisabled(true);
             column.setWidth(MAIN_LABEL_WIDTH);
-            column.setRenderer(GRID_LINK_RENDERER);
+            column.setRenderer(Renderers.GRID_LINK_RENDERER);
             config.add(column);
 		} else {
             int idx = 0;

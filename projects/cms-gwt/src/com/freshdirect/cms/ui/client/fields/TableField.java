@@ -72,22 +72,6 @@ public class TableField extends MultiField {
         }
     }
     
-    /**
-     * Renders a link to a content node model, which stored as the property of
-     * the model.
-     */
-    public final static GridCellRenderer<BaseModelData> GRID_LINK_FROM_PROPERTY_RENDERER = new GridCellRenderer<BaseModelData>() {
-        public Object render(BaseModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<BaseModelData> store,Grid<BaseModelData> grid) {
-            Object rmodel = model.get(property);
-            if (rmodel instanceof ContentNodeModel) {
-                return ((ContentNodeModel) rmodel).renderLinkComponent();
-            } else {
-                return rmodel != null ? rmodel.toString() : "<i>null</i>";
-            }
-        }
-    };
-
-    
     TableAttribute attribute;
 
     protected Grid<BaseModelData> grid;
@@ -110,7 +94,7 @@ public class TableField extends MultiField {
             ColumnConfig cc = new ColumnConfig("col_" + i, col.getLabel(), 150);
             
             if (ColumnType.KEY == types[i]) {
-                cc.setRenderer(GRID_LINK_FROM_PROPERTY_RENDERER);
+                cc.setRenderer(Renderers.GRID_LINK_FROM_PROPERTY_RENDERER);
             } else if (ColumnType.CLASS == types[i]) {
                 cc.setHidden(true);
             }
