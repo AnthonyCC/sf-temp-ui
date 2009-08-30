@@ -1,9 +1,12 @@
 package com.freshdirect.routing.service;
 
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.client.Stub;
+import org.apache.log4j.Category;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceStub;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
@@ -17,6 +20,10 @@ public class RoutingServiceLocator {
 	private BeanFactory factory = null;
 	
 	private long SERVICE_TIMEOUT = 10 * 60 * 1000;
+	
+	private boolean useProxy;
+	
+	private static final Category LOGGER = LoggerFactory.getInstance(RoutingServiceLocator.class);
 
 	private RoutingServiceLocator() {
 		try {
@@ -66,27 +73,58 @@ public class RoutingServiceLocator {
 	
 	public RouteNetWebService getRouteNetService() throws AxisFault {
 		RouteNetWebServiceStub stub = new RouteNetWebServiceStub(RoutingServicesProperties.getRoadNetProviderURL());
-		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(SERVICE_TIMEOUT);
+		initStub(stub);
 		return stub;
 	}
 	
 	public TransportationWebService getTransportationSuiteService() throws AxisFault {
-				
+		TransportationWebServiceStub stub = null;
+		if(this.isUseProxy()) {
+			stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteProxyURL());
+		} else {
+			stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteProviderURL());
+		}
+		initStub(stub);
+		return stub;
+	}
+	
+	
+
+	public TransportationWebService getTransportationSuiteProviderService() throws AxisFault {
 		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteProviderURL());
-		//stub._getServiceClient().getOptions().setProperty(org.apache.axis2.transport.java.JavaTransportSender., property)
-		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(SERVICE_TIMEOUT);
+		
+		initStub(stub);
 		return stub;
 	}
 	
 	public TransportationWebService getTransportationSuiteService(String deliveryType) throws AxisFault {
-		String url = RoutingServicesProperties.getTransportationSuiteProviderURL(deliveryType);
-		if(url == null) {
+		String url = null;
+		if(this.isUseProxy()) {
+			url = RoutingServicesProperties.getTransportationSuiteProxyURL();
+		} else {
+			url = RoutingServicesProperties.getTransportationSuiteProviderURL(deliveryType);
+		}
+		LOGGER.debug("getTransportationSuiteService:"+ deliveryType +":"+ url);
+		
+		if(url == null) {			
 			url = RoutingServicesProperties.getTransportationSuiteProviderURL();
+			LOGGER.debug("getTransportationSuiteService Server not found :"+ deliveryType +":"+ url);
 		}
 		
 		TransportationWebServiceStub stub = new TransportationWebServiceStub(url);
-		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(SERVICE_TIMEOUT);
+		initStub(stub);
 		return stub;
+	}
+	
+	public boolean isUseProxy() {
+		return useProxy;
+	}
+
+	public void setUseProxy(boolean useProxy) {
+		this.useProxy = useProxy;
+	}
+	private void initStub(Stub stub) {
+		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(SERVICE_TIMEOUT);
 	}
 
 }

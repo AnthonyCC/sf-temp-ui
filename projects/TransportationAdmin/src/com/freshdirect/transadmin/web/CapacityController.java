@@ -61,14 +61,16 @@ public class CapacityController extends AbstractMultiActionController {
 		
 		ModelAndView mav = new ModelAndView("earlyWarningView");
 		
-		if(TransStringUtil.isEmpty(rDate)) {
-			rDate = TransStringUtil.getCurrentDate();
-		}
+		
 		
 		if("T".equalsIgnoreCase(rType)) {
 			executeEarlyWarningTime(mav, rDate, cutOff, rType);
 		} else {
 			executeEarlyWarningOrder(mav, rDate, cutOff, rType);
+		}
+		
+		if(TransStringUtil.isEmpty(rDate)) {
+			rDate = TransStringUtil.getCurrentDate();
 		}
 		
 		mav.getModel().put("rDate", rDate);

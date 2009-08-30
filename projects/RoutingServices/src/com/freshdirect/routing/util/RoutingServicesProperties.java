@@ -66,6 +66,8 @@ public class RoutingServicesProperties {
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 	
+	private final static String PROP_TRANSPORTATIONSUITE_PROXY_URL		= "routingservices.transportationsuite.proxyURL";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -131,24 +133,24 @@ public class RoutingServicesProperties {
 	}
 	
 	public static String getTransportationSuiteProviderURL() {
-		return get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL);
+		return get(get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL));
+	}
 
-    }
-    
+	public static String getTransportationSuiteProxyURL() {
+		return get(get(PROP_TRANSPORTATIONSUITE_PROXY_URL));
+	}
 
-    public static String getTransportationSuiteProviderURL(String serviceType) {
-    	String _refKey = get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL+"."+serviceType);
-    	
-    	if(_refKey != null) {
-    		return get(_refKey);
-    	} else {
-    		return getTransportationSuiteProviderURL();
-    	}
-    }
 
+	public static String getTransportationSuiteProviderURL(String serviceType) {
+		String _refUrl = get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL+"."+serviceType);
+		if(_refUrl != null) {
+			return get(_refUrl);
+		}
+		return null;
+	}
 
 	public static String getRoadNetProviderURL() {
-		return get(PROP_ROADNET_PROVIDER_URL);
+		return get(get(PROP_ROADNET_PROVIDER_URL));
 	}
 	
 	public static int getDefaultFixedServiceTime() {

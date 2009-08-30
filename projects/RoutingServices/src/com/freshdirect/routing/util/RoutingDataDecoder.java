@@ -212,6 +212,7 @@ public static List<IDeliveryWindowMetrics> decodeDeliveryWindowMetrics(Scheduler
 		slot.setSchedulerId(decodeSchedulerId(window.getSchedulerIdentity()));
 		slot.setStartTime(window.getStartTime().getAsCalendar().getTime());
 		slot.setStopTime(window.getStopTime().getAsCalendar().getTime());
+		slot.setWaveCode(window.getWaveCode());
 		return slot;
 	}
 	

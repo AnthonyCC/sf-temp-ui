@@ -1,7 +1,9 @@
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewaySB;
 import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.routing.model.DeliveryModel;
 import com.freshdirect.routing.model.DeliverySlot;
 import com.freshdirect.routing.model.IDeliveryModel;
@@ -122,7 +125,7 @@ public class RoutingUtil {
 		return deliverySlot;
 	}
 	
-public IDeliverySlot getDeliverySlot(DlvTimeslotModel timeSlot) {
+	public IDeliverySlot getDeliverySlot(DlvTimeslotModel timeSlot) {
 		
 		IDeliverySlot deliverySlot=new DeliverySlot();
 		IRoutingSchedulerIdentity identity=new RoutingSchedulerIdentity();
@@ -130,6 +133,7 @@ public IDeliverySlot getDeliverySlot(DlvTimeslotModel timeSlot) {
 		deliverySlot.setSchedulerId(identity);
 		deliverySlot.setStartTime(timeSlot.getStartTimeAsDate());
 		deliverySlot.setStopTime(timeSlot.getEndTimeAsDate());
+		deliverySlot.setWaveCode(getHourAMPM(timeSlot.getCutoffTimeAsDate()));
 		return deliverySlot;
 	}
 
@@ -138,11 +142,12 @@ public IDeliverySlot getDeliverySlot(DlvTimeslotModel timeSlot) {
 		Map<java.util.Date,java.util.List<IDeliverySlot>> data=new HashMap<java.util.Date,java.util.List<IDeliverySlot>>();
 		
 		for(int i=0;i<dlvTimeSlots.size();i++) {
-			DeliverySlot routeDlvTimeslot=new DeliverySlot();
+			IDeliverySlot routeDlvTimeslot=new DeliverySlot();
 			FDTimeslot dlvTimeSlot= dlvTimeSlots.get(i);
 			
 			routeDlvTimeslot.setStartTime(dlvTimeSlot.getBegDateTime());
 			routeDlvTimeslot.setStopTime(dlvTimeSlot.getEndDateTime());
+			routeDlvTimeslot.setWaveCode(getHourAMPM(dlvTimeSlot.getCutoffDateTime()));
 			
 			if(data.containsKey(dlvTimeSlot.getBaseDate())) {
 				List<IDeliverySlot> _timeSlots=data.get(dlvTimeSlot.getBaseDate());
@@ -185,6 +190,13 @@ public IDeliverySlot getDeliverySlot(DlvTimeslotModel timeSlot) {
 		return dlvInfo;
 	}
 	
+	private String getHourAMPM(Date date) {
+		try {
+			return  DateUtil.formatTimeAMPM(date);
+		} catch (ParseException pe) {
+			return null;
+		}
+	}
 	
 	private  RoutingGatewayHome getRoutingGatewayHome() {
 		try {
