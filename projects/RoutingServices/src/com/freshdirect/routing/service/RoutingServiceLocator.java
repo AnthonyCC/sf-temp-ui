@@ -116,6 +116,28 @@ public class RoutingServiceLocator {
 		return stub;
 	}
 	
+	public TransportationWebService getTransportationSuiteBatchProviderService() throws AxisFault {
+		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties
+																.getTransportationSuiteBatchProviderURL());
+		
+		initStub(stub);
+		return stub;
+	}
+	
+	public TransportationWebService getTransportationSuiteDBatchProviderService() throws AxisFault {
+		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties
+																.getTransportationSuiteDBatchProviderURL());
+		
+		initStub(stub);
+		return stub;
+	}
+	
+	public RouteNetWebService getRouteNetBatchService() throws AxisFault {
+		RouteNetWebServiceStub stub = new RouteNetWebServiceStub(RoutingServicesProperties.getRoadNetBatchProviderURL());
+		initStub(stub);
+		return stub;
+	}
+	
 	public boolean isUseProxy() {
 		return useProxy;
 	}

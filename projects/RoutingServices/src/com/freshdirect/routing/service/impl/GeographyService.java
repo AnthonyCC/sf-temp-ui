@@ -134,7 +134,7 @@ public class GeographyService extends BaseService implements IGeographyService {
 
 		try {
 
-			TransportationWebService port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService port = getTransportationSuiteBatchService(null);
 			if(locationId != null) {
 				ILocationModel locModel = geographyDAOImpl.getLocationById(locationId);
 				if(locModel != null) {
@@ -209,7 +209,7 @@ public class GeographyService extends BaseService implements IGeographyService {
 																		, null);
 							}
 						}
-						TransportationWebService port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+						TransportationWebService port = getTransportationSuiteBatchService(null);
 						Location[] saveResult = port.saveLocations(result);
 						if(saveResult != null && saveResult.length >0) {
 							throw new RoutingServiceException(null, IIssue.PROCESS_LOCATION_SAVEERROR);
@@ -231,7 +231,7 @@ public class GeographyService extends BaseService implements IGeographyService {
 		List lstResult = new ArrayList();
 		try {
 
-			RouteNetWebService port = RoutingServiceLocator.getInstance().getRouteNetService();
+			RouteNetWebService port = getRouteNetBatchService();
 			if(dataList != null) {
 				com.freshdirect.routing.proxy.stub.roadnet.Address[] addressLst = getAddressArray(dataList);
 				GeocodeData[] geographicData = port.batchGeocode(addressLst, new GeocodeOptions());

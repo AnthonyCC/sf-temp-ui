@@ -11,12 +11,12 @@ import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.proxy.stub.roadnet.GeocodeData;
 import com.freshdirect.routing.proxy.stub.roadnet.MapArc;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
-import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.impl.BaseService;
 import com.freshdirect.routing.util.RoutingUtil;
 
-public class BaseGeocodeEngine implements IGeocodeEngine {
+public class BaseGeocodeEngine extends BaseService implements IGeocodeEngine {
 	
 	public IGeocodeResult getGeocode(String street, String zipCode, String country) throws RoutingServiceException {
 		
@@ -25,7 +25,7 @@ public class BaseGeocodeEngine implements IGeocodeEngine {
 		geocodeResult.setGeographicLocation(result);
 		try {
 
-			RouteNetWebService port = RoutingServiceLocator.getInstance().getRouteNetService();
+			RouteNetWebService port = getRouteNetBatchService();
 			com.freshdirect.routing.proxy.stub.roadnet.Address address = new com.freshdirect.routing.proxy.stub.roadnet.Address();
 			address.setLine1(street);
 			address.setPostalCode(zipCode);

@@ -135,7 +135,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 	
 	public IDrivingDirection buildDriverDirections(List destinations)  throws RoutingServiceException {
 		try {
-			RouteNetWebService port = RoutingServiceLocator.getInstance().getRouteNetService();
+			RouteNetWebService port = getRouteNetBatchService();
 			return RoutingDataDecoder.decodeDrivingDirection(port.buildDriverDirections(RoutingDataEncoder.encodeGeoPointList(destinations)
 												, new DriverDirectionsOptions()));
 		} catch (Exception e) {

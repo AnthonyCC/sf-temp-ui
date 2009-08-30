@@ -68,12 +68,19 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_TRANSPORTATIONSUITE_PROXY_URL		= "routingservices.transportationsuite.proxyURL";
 	
+	private final static String PROP_TRANSPORTATIONSUITEBATCH_PROVIDER_URL		= "routingservices.transportationsuitebatch.providerURL";
+	
+	private final static String PROP_TRANSPORTATIONSUITEDBATCH_PROVIDER_URL		= "routingservices.transportationsuitedbatch.providerURL";
+	
+	private final static String PROP_ROADNETBATCH_PROVIDER_URL		= "routingservices.roadnetbatch.providerURL";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
 		
 		defaults.put(PROP_TRANSPORTATIONSUITE_PROVIDER_URL, 	"http://localhost:81");
-		defaults.put(PROP_ROADNET_PROVIDER_URL, 	"http://localhost:82");		
+		defaults.put(PROP_ROADNET_PROVIDER_URL, 	"http://localhost:82");	
+		
 		defaults.put(PROP_DEFAULT_TRUCKREGION, 	"FD");
 		defaults.put(PROP_DEFAULT_DEPOTREGION, 	"MDP");
 		defaults.put(PROP_DEFAULT_LOCATIONTYPE, 	"SIT");
@@ -130,6 +137,18 @@ public class RoutingServicesProperties {
 	
 	public static String getRoutingFlowType() {
 		return get(PROP_ROUTING_FLOWTYPE);
+	}
+	
+	public static String getTransportationSuiteBatchProviderURL() {
+		return get(get(PROP_TRANSPORTATIONSUITEBATCH_PROVIDER_URL));
+	}
+	
+	public static String getTransportationSuiteDBatchProviderURL() {
+		return get(get(PROP_TRANSPORTATIONSUITEDBATCH_PROVIDER_URL));
+	}
+	
+	public static String getRoadNetBatchProviderURL() {
+		return get(get(PROP_ROADNETBATCH_PROVIDER_URL));
 	}
 	
 	public static String getTransportationSuiteProviderURL() {
