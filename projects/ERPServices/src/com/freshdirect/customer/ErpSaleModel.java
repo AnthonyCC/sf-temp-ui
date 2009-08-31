@@ -30,7 +30,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 	private PrimaryKey customerPk;
 	private List transactions;
-	private List complaints;
+	private List<ErpComplaintModel> complaints;
 	private EnumSaleStatus status;
 	private String sapOrderNumber;
 	private ErpShippingInfo shippingInfo;
@@ -70,7 +70,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.transactions = new ArrayList();
 		this.transactions.add(order);
 		this.status = EnumSaleStatus.NEW;
-		this.complaints = new ArrayList();
+		this.complaints = new ArrayList<ErpComplaintModel>();
 		this.usedPromotionCodes = usedPromotionCodes;
 		this.deliveryPassId = dlvPassId;
 		this.type=type;
@@ -501,7 +501,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.assertStatus(((EnumSaleStatus[]) allowedStatus.toArray(new EnumSaleStatus[allowedStatus.size()])));
 
 		ErpComplaintModel oldComplaint = null;
-		for (ListIterator it = this.complaints.listIterator(); it.hasNext();) {
+		for (ListIterator<ErpComplaintModel> it = this.complaints.listIterator(); it.hasNext();) {
 			oldComplaint = (ErpComplaintModel) it.next();
 			if (oldComplaint.getPK().getId().equals(newComplaint.getPK().getId())) {
 				//
@@ -858,14 +858,12 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return lastOrder;
 	}
 
-	/** @return Collection<ErpComplaintModel> */
-	public Collection getComplaints() {
+	public Collection<ErpComplaintModel> getComplaints() {
 		return Collections.unmodifiableCollection(this.complaints);
 	}
 
 	public ErpComplaintModel getComplaint(String complaintId) {
-		for (Iterator it = complaints.iterator(); it.hasNext();) {
-			ErpComplaintModel cm = (ErpComplaintModel) it.next();
+		for (ErpComplaintModel cm : this.complaints) {
 			if (cm.getPK().getId().equals(complaintId)) {
 				return cm;
 			}

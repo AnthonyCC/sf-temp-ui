@@ -128,7 +128,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
     public CrmAgentList getAllAgents() throws FDResourceException {
         try{
             Collection agentEB = this.getCrmAgentHome().findAll();
-            List agents = new ArrayList();
+            List<CrmAgentModel> agents = new ArrayList<CrmAgentModel>();
             for (Iterator i = agentEB.iterator(); i.hasNext();) {
                 CrmAgentEB eb = (CrmAgentEB) i.next();
                 agents.add((CrmAgentModel) eb.getModel());
@@ -275,7 +275,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		cm.setState(caseInfo.getState());
 		cm.setAssignedAgentPK(this.getSystemUser().getPK());
 		
-		List caseActions = new ArrayList();
+		List<CrmCaseAction> caseActions = new ArrayList<CrmCaseAction>();
 		
 		CrmCaseAction caseAction = new CrmCaseAction();
 		caseAction.setAgentPK(this.getSystemUser().getPK());
@@ -1094,6 +1094,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		"    on(cdc.id=cl.complaint_dept_code_id) " +
 		"  join cust.complaint_code cc " +
 		"    on(cc.code=cdc.comp_code) " +
+		"  where c.status = 'APP' " +
 		"  order by c.sale_id, cc.dlv_issue_code " +
 		") x on(s.id=x.sale_id) " +
 		"where s.customer_id=? " +
@@ -1102,7 +1103,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 	
 	
 	/* @return Map<String,Set<String>> */
-	public Map getComplaintDeliveryIssueTypes(String erpCustomerId) throws FDResourceException {
+	public Map<String,Set<String>> getComplaintDeliveryIssueTypes(String erpCustomerId) throws FDResourceException {
         Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -1111,15 +1112,15 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			ps.setString(1, erpCustomerId);
 			ResultSet rs = ps.executeQuery();
 
-			Map complDlvIssueTypes = new HashMap();
+			Map<String,Set<String>> complDlvIssueTypes = new HashMap<String,Set<String>>();
 			while(rs.next()) {
 				String key=rs.getString("sale_id");
 				if (complDlvIssueTypes.get(key) == null) {
-					Set s = new HashSet();
+					Set<String> s = new HashSet<String>();
 					s.add(rs.getString("itype"));
 					complDlvIssueTypes.put(key, s);
 				} else {
-					((Set) complDlvIssueTypes.get(key)).add(rs.getString("itype"));
+					complDlvIssueTypes.get(key).add(rs.getString("itype"));
 				}
 			}
 
