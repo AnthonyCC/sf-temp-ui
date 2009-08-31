@@ -97,6 +97,7 @@ public class TableField extends MultiField {
                 cc.setRenderer(Renderers.GRID_LINK_FROM_PROPERTY_RENDERER);
             } else if (ColumnType.CLASS == types[i]) {
                 cc.setHidden(true);
+                cc.setWidth(5);
             }
             
             columns.add(cc);
@@ -132,8 +133,10 @@ public class TableField extends MultiField {
         }
         grid.getView().setViewConfig(new RowStyler());
 
-        grid.setAutoHeight(true);
+        //grid.setAutoHeight(true);
         grid.setStripeRows(true);
+        grid.setWidth(800);
+        grid.setHeight(600);
         // grid.getView().setForceFit(true);
         loader.load(0, 20);
 

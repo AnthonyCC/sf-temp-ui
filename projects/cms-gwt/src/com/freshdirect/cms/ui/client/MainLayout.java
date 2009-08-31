@@ -581,9 +581,9 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
      */
     public void userChanged() {
         GwtUser currentUser = CmsGwt.getCurrentUser();
-        if ( currentUser == null ) {
-        	//TODO error handling?
-        	return;
+        if (currentUser == null) {
+            // TODO error handling?
+            return;
         }
         if (currentUser.isAdmin()) {
             Hyperlink hp = new Hyperlink("Administration", "administration");
@@ -601,17 +601,21 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
         hp.addStyleName("commandLink");
         this.header.addToButtonPanel(hp);
         
-        StringBuilder s = new StringBuilder().append(currentUser.getName()).append(" (");
-        if (currentUser.isAllowedToWrite()) {
-            s.append("editor");
+        StringBuilder s = new StringBuilder().append(currentUser.getName());
+        if (currentUser.isAdmin() || currentUser.isAllowedToWrite()) {
+            s.append(" (");
+            if (currentUser.isAllowedToWrite()) {
+                s.append("editor");
+            }
+            if (currentUser.isAllowedToWrite() && currentUser.isAdmin()) {
+                s.append(' ');
+            }
+            if (currentUser.isAdmin()) {
+                s.append("admin");
+            }
+            s.append(')');
         }
-        if (currentUser.isAllowedToWrite() && currentUser.isAdmin()) {
-            s.append(' ');
-        }
-        if (currentUser.isAdmin()) {
-            s.append("admin");
-        }
-        header.setUserInfo(s.append(')').toString());
+        header.setUserInfo(s.toString());
     }
 
     protected void nodeSelected(final String key, final ContentNodeModel parent) {
