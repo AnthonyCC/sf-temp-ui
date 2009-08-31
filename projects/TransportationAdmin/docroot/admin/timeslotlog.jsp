@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="css/transportation.css" type="text/css" />		
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Unassigned Management</tmpl:put>
+    <tmpl:put name='title' direct='true'>TimeSlot Log</tmpl:put>
 	<tmpl:put name='yui-lib'>
 		<%@ include file='/common/i_yui.jspf'%>
 	</tmpl:put>	
@@ -35,7 +35,7 @@
               <table border = "0">
                 <tr>
                 <td> 
-                    <span style="font-size: 18px;font-weight: bold;">Unassigned View</span>
+                    <span style="font-size: 18px;font-weight: bold;">TimeSlot Log View</span>
                 </td>                
                   <td> 
                     <span><input maxlength="10" size="10" name="rDate" id="rDate" value='<c:out value="${rDate}"/>' /></span>
@@ -54,17 +54,30 @@
                        }
                       );
                       
-                               
+                      function doTimeSlotLog(compId1,compId2, compId3) {
+			        	 var param1 = document.getElementById(compId1).value;
+			        	 var param2 = document.getElementById(compId2).value;
+			        	 var param3 = document.getElementById(compId3).value;
+			        	 if(param1.trim().length ==0 || 
+			        	 	param2.trim().length ==0 || 
+			        	 		param3.trim().length ==0 ) {
+			        	 		alert("Please select required values");
+			        	 } else {
+			        	 	showForm(param1, param2, param3);
+			        	 }
+        			  }           
                   </script>
                 </td>
                 <td>
                   &nbsp;<form:errors path="rDate" />
-                </td>
-                 <td>
-                     <input type = "button" value="&nbsp;View UnAssigned&nbsp;" onclick="javascript:doCompositeLink('rDate','unassigned.do')" />
-                  </td> 
-                  
-                  
+                </td>                  
+                 
+                  <td><span style="font-size: 12px;font-weight: plain;">Start Time:</span><input type="text" id="startTime" name="startTime" value=""style="width: 95px;" onblur="this.value=time(this.value);"></td> 
+                   <td><span style="font-size: 12px;font-weight: plain;">End Time:</span><input type="text" id="endTime" name="endTime" value="" style="width: 88px;" onblur="this.value=time(this.value);"></td>
+                   
+                   <td>
+                     <input type = "button" value="&nbsp;View Log&nbsp;" onclick="javascript:doCompositeLink('timeslotlog.do')" />
+                  </td>
               </tr>
               </table>        
               
@@ -72,10 +85,18 @@
           </tr>               
         </table>    
        <script>
-         function doCompositeLink(compId1, url) {
-          var param1 = document.getElementById(compId1).value;
+         function doCompositeLink(url) {
+          var param1 = document.getElementById('rDate').value;
+          var param2 = document.getElementById('startTime').value;
+          var param3 = document.getElementById('endTime').value;
           
-          location.href = url+"?"+compId1+"="+ param1;
+          if(param1.trim().length ==0 || 
+	        	 	param2.trim().length ==0 || 
+	        	 		param3.trim().length ==0 ) {
+	        	 		alert("Please select required values");
+	       } else {
+          		location.href = url+"?"+"rDate="+ param1+"&sTime="+ param2+"&eTime="+ param3;
+	       }
         } 
        
       
@@ -83,26 +104,23 @@
       </div>
     
     <div align="center">
-      <ec:table items="unassigneds"   action="${pageContext.request.contextPath}/unassigned.do"
+      <ec:table items="timeslotlogs"   action="${pageContext.request.contextPath}/timeslotlog.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
             width="98%"  rowsDisplayed="25" view="fd" >
             
-            <ec:exportPdf fileName="unassigned.pdf" tooltip="Export PDF" 
-                      headerTitle="Unassigned" />
-              <ec:exportXls fileName="unassigned.xls" tooltip="Export PDF" />
-              <ec:exportCsv fileName="unassigned.csv" tooltip="Export CSV" delimiter="|"/>
+            <ec:exportPdf fileName="timeslotlog.pdf" tooltip="Export PDF" 
+                      headerTitle="Timeslot Log" />
+              <ec:exportXls fileName="timeslotlog.xls" tooltip="Export PDF" />
+              <ec:exportCsv fileName="timeslotlog.csv" tooltip="Export CSV" delimiter="|"/>
                 
-            <ec:row>                            	
-			  <ec:column property="id" title="ID"/>
+            <ec:row>               
+              <ec:column property="id" title="ID"/>
 			  <ec:column property="orderId" title="Order ID"/>
 			  <ec:column property="customerId" title="Customer ID"/>
 			  <ec:column property="eventtype" title="Event Type"/>
-			  <ec:column  property="eventDate" title="Event Date"  cell="date" format="MM/dd/yyyy HH:MM"/>
-			  
-			  <ec:column property="timeWindow" title="Time Window"/>
-			  <ec:column alias="oId" property="orderId" title="Order No"/>                                  
-			  <ec:column  property="unassignedTime" title="Unassigned Time"  cell="date" format="MM/dd/yyyy HH:MM"/>
-			  <ec:column  property="createModTime" title="Order Create/Mod Time"  cell="date" format="MM/dd/yyyy HH:MM"/>				              
+			  <ec:column  property="eventDtm" title="Event Time"  cell="date" format="HH:MM"/>
+			  <ec:column  property="responseTime" title="Response Time"/>			  
+			  <ec:column property="detailDisplay" title="Event Details"/>				              
             </ec:row>
           </ec:table>
     </div>

@@ -179,7 +179,7 @@
 	  <td width="55%">
 	      <ec:table items="earlywarnings"   action="${pageContext.request.contextPath}/earlywarning.do"
 	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-	            width="98%"  rowsDisplayed="100" view="fd" >
+	            width="98%" showPagination="false" rowsDisplayed="1000" view="fd" >
 	            
 	            <ec:exportPdf fileName="earlywarnings.pdf" tooltip="Export PDF" 
 	                      headerTitle="Early Warning" />

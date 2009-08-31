@@ -9,7 +9,6 @@ public interface IDispatchProvider {
 	Collection getActivityLog(String date);
 	String generateCommunityReport(String routeDate, String cutOff);
 	public int updateUserPref(String key,String value);
-	public String getUserPref(String key);
-	Collection getTimeSlotLogs(String date, String startTime, String endTime);
+	public String getUserPref(String key);	
 
 }

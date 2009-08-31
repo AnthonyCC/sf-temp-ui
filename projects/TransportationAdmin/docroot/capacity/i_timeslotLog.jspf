@@ -19,6 +19,7 @@
 		    	{key:"customerId", label:"Customer Id",sortable:true,className:"forms1"}, 
 		    	{key:"eventtype", label:"Event Type",sortable:true,className:"forms1"} ,
 		    	{key:"eventDateDisplay", label:"Event Time",sortable:false,className:"forms1"},
+		    	{key:"responseTime", label:"Response Time(msec)",sortable:true,className:"forms1"},
 		    	{key:"detailDisplay", label:"Detail",sortable:false,className:"forms1"} 		    	
 			];
 		  table.render(); 

@@ -415,12 +415,12 @@ div.subtab a {
 
 
 /*table prep*/
-.MNM001 table, .MNM002 table, .MNM003 table {
+.MNM001 table, .MNM002 table, .MNM003, .MNM004 table {
 	width: 100%;
 }
 /*div prep*/
 
-div.MNM001, div.MNM002, div.MNM003 {
+div.MNM001, div.MNM002, div.MNM003, div.MNM004 {
 	border: 0px;
 	margin: 0px;
 }
@@ -713,6 +713,102 @@ div.MNM001, div.MNM002, div.MNM003 {
 	div.t_tab a:hover {
 		color: #fff;
 	}
+	
+	
+/*operations styles*/
+	/*these two are the l/r tab angles*/
+	.tabL_MNM004 {
+		border-color: #fff #f90; 
+	}
+	.tabR_MNM004 {
+		border-color: #f90 #fff; 
+	}
+	/*
+		these two are the l/r subtab angles
+		don't use transparent here, IE6 doesn't support it
+	 */
+	.sub_tabL_MNM004 {
+		border-color: #f90 #666;
+	}
+	.sub_tabR_MNM004 {
+		border-color: #666 #f90; 
+	}
+	.subsub .sub_tabL_MNM004 {
+		border-color: #999 #666;
+	}
+	.subsub .sub_tabR_MNM004 {
+		border-color: #666 #999; 
+	}
+	/*this is the color of the tab*/
+	div.MNM004 {
+		background-color: #f90;
+	}
+	/*NOT selected*/
+	div.t_tab a.MNM004 {
+		color: #666;
+	}
+	/*sub tab color*/
+	div.MNM004 div.subtab a {
+		color: #999;
+	}
+	/*selected*/
+	div.MNM004 div.MNM004 a  {
+		color: #fff;
+	}
+	/*selected, and hover*/
+	div.MNM004 .subtab a:hover  {
+		color: #fff;
+	}
+	/*subtab selected*/
+	div.MNM004 div.activeT a  {
+		color: #f90;
+	}
+	/*sub-subtab selected*/
+	div.MNM004 div.MNM004_subs a  {
+		color: #666;
+	}
+	/*subtab selected IE hover fix*/
+	div.MNM004 div.activeT a:hover {
+		color: #f90;
+	}
+	/*sub-subtab selected*/
+	div.or_999 div.activeT a {
+		color: #f90;
+	}
+	/*sub-subtab selected IE hover fix*/
+	div.or_999 div.activeT a:hover {
+		color: #666;
+	}
+	/*subtabs, not active*/
+	div.MNM004 .subtab { 
+		background-color: #666;
+	}
+	/*
+		these two are the l/r subtab angles of an active subtab
+		these need to be after other colors
+	 */
+	.MNM004 div.MNM004_subs_L {
+		border-color: #f90 #999;
+	}
+	.MNM004 .activeL {
+		border-color: #f90 #fff;
+	}
+	.MNM004 div.MNM004_subs_R {
+		border-color: #999 #f90;
+	}
+	.MNM004 .activeR {
+		border-color: #fff #f90; 
+	}
+	/*
+		these two are the l/r subtab angles of an active sub-subtab
+		these need to be after other colors
+	 */
+	.or_999 .activeL {
+		border-color: #999 #fff;
+	}
+	.or_999 .activeR {
+		border-color: #fff #999;
+	}
 
 /*this is the active subtab bgcolor*/
 .activeL, div.activeT a, .activeR {
@@ -731,6 +827,11 @@ div.MNM002_subs a {
 }
 div.MNM003_subs a {
 	background-color: #3c3;
+	color: #060;
+}
+
+div.MNM004_subs a {
+	background-color: #f90;
 	color: #060;
 }
 /* over-rides for sub-subtab backgrounds */

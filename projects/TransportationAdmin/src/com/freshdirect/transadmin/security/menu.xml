@@ -143,4 +143,15 @@
 	     </menu>
          
 </menu>
+
+<menu id="MNM004" title="ADMIN" orientation="LEFT" link="">
+		 <access-uris></access-uris>
+	     <access-roles></access-roles>
+	     
+	     <menu id="ADO001" title="Timeslot Log" orientation="RIGHT" link="timeslotlog.do">
+	     	<access-uris>timeslotlog.do</access-uris>
+	     	<access-roles>TrnAdmin</access-roles>
+	     </menu>	     	     
+         
+</menu>
 </menus>

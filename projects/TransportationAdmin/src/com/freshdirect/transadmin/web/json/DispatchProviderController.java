@@ -235,26 +235,7 @@ public class DispatchProviderController extends JsonRpcController implements
 		return resultFile;
 	}
 	
-
-	public Collection getTimeSlotLogs(String date, String startTime, String endTime) {
-		try {
-			Date fromDate = TransStringUtil.getDatewithTime(date+" "+startTime);
-			Date toDate = TransStringUtil.getDatewithTime(date+" "+endTime);
-			
-			fromDate = new Timestamp(fromDate.getTime());
-			toDate = new Timestamp(toDate.getTime());
-			Collection list = logManager.getTimeSlotLogs(fromDate, toDate);
-			
-			if (list == null) {
-				list = new ArrayList();
-			}
-			return list;
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
+	
 
 	protected Map getAreaMapping(Collection areaLst) {
 		Map areaMapping = new HashMap();
