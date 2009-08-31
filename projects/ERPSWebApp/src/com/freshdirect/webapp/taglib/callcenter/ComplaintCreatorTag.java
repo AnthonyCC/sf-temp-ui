@@ -194,7 +194,10 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
         Map<String,Double> prevTotals = new HashMap<String, Double>();
         for (int i = 0; i < orderLineQty.length; i++) {
             final double previousAmount = this.getPreviousComplaintAmount(order.getComplaints(), this.orderLineId[i]);
-            prevTotals.put(this.orderLineId[i], previousAmount);
+            if (prevTotals.containsKey(this.orderLineId[i]))
+            	prevTotals.put(this.orderLineId[i], prevTotals.get(this.orderLineId[i])+previousAmount);
+            else
+            	prevTotals.put(this.orderLineId[i], previousAmount);
         }
 
 
