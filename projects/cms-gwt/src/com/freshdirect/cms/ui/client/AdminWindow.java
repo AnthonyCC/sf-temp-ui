@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.freshdirect.cms.ui.model.AdminProcStatus;
 import com.freshdirect.cms.ui.service.AdminService;
 import com.freshdirect.cms.ui.service.AdminServiceAsync;
+import com.freshdirect.cms.ui.service.BaseCallback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 

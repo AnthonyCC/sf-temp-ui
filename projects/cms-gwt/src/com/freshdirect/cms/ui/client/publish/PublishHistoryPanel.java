@@ -1,4 +1,4 @@
-package com.freshdirect.cms.ui.client;
+package com.freshdirect.cms.ui.client.publish;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,9 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.freshdirect.cms.ui.client.ChangeHistoryPopUp;
+import com.freshdirect.cms.ui.client.CmsGwt;
+import com.freshdirect.cms.ui.client.MainLayout;
 import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.GwtPublishData;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;

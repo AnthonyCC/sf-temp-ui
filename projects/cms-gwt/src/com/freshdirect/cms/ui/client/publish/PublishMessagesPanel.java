@@ -1,4 +1,4 @@
-package com.freshdirect.cms.ui.client;
+package com.freshdirect.cms.ui.client.publish;
 
 import java.util.ArrayList;
 import java.util.List;

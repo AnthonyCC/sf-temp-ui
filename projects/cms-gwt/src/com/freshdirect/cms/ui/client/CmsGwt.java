@@ -1,6 +1,7 @@
 package com.freshdirect.cms.ui.client;
 
 import com.freshdirect.cms.ui.model.GwtUser;
+import com.freshdirect.cms.ui.service.BaseCallback;
 import com.freshdirect.cms.ui.service.ContentService;
 import com.freshdirect.cms.ui.service.ContentServiceAsync;
 import com.google.gwt.core.client.EntryPoint;

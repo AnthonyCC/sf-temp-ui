@@ -4,6 +4,7 @@ import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.freshdirect.cms.ui.client.publish.PublishMessagesPanel;
 import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
 
 public class ChangeHistoryPopUp extends Window {

@@ -34,6 +34,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.client.nodetree.NodeTree;
+import com.freshdirect.cms.ui.client.publish.PublishHistoryPanel;
 import com.freshdirect.cms.ui.client.treetable.EditorTree;
 import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.GwtNodeContext;

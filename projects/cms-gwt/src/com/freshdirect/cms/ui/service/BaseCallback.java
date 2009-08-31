@@ -1,7 +1,6 @@
-package com.freshdirect.cms.ui.client;
+package com.freshdirect.cms.ui.service;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.freshdirect.cms.ui.service.GwtSecurityException;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public abstract class BaseCallback<X> implements AsyncCallback<X> {
