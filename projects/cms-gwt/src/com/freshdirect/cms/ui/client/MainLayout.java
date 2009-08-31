@@ -530,7 +530,8 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
         mainPanel.removeAll();
     }
     
-    private void contextChangeAction(String ctxPath) {
+    @SuppressWarnings( "unchecked" )
+	private void contextChangeAction(String ctxPath) {
         setStatus("Context changed to : " + currentNode.getContexts().getLabel(ctxPath));
 
         Map<String, ContentNodeAttributeI> attributes = currentNode.getNode().getOriginalAttributes();
@@ -580,22 +581,25 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
      */
     public void userChanged() {
         GwtUser currentUser = CmsGwt.getCurrentUser();
-        if (currentUser != null && currentUser.isAdmin()) {
+        if ( currentUser == null ) {
+        	//TODO error handling?
+        	return;
+        }
+        if (currentUser.isAdmin()) {
             Hyperlink hp = new Hyperlink("Administration", "administration");
             hp.addStyleName("commandLink");
             this.header.addToButtonPanel(hp);
         }
         
-        if (currentUser != null && currentUser.isAllowedToWrite()) {
+        if (currentUser.isAllowedToWrite()) {
             Hyperlink hp = new Hyperlink("Publish", "publish");
             hp.addStyleName("commandLink");
             this.header.addToButtonPanel(hp);
         }
-        if (currentUser != null) {
-            Anchor hp = new Anchor("Logout", "logout.jsp");
-            hp.addStyleName("commandLink");
-            this.header.addToButtonPanel(hp);
-        }
+        
+        Anchor hp = new Anchor("Logout", "logout.jsp");
+        hp.addStyleName("commandLink");
+        this.header.addToButtonPanel(hp);
         
         StringBuilder s = new StringBuilder().append(currentUser.getName()).append(" (");
         if (currentUser.isAllowedToWrite()) {
