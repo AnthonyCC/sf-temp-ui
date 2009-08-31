@@ -15,6 +15,7 @@ import com.freshdirect.crm.CrmCaseModel;
 import com.freshdirect.crm.CrmCaseTemplate;
 import com.freshdirect.crm.CrmLateIssueModel;
 import com.freshdirect.crm.CrmManager;
+import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpComplaintLineModel;
@@ -78,8 +79,8 @@ public class CustomerSummaryUtil {
 		return recentCases;
 	}
 
-	static final Comparator COMP_BY_PLACE_DATE = new Comparator() {
-		public int compare(Object arg0, Object arg1) {
+	static final Comparator<FDOrderInfoI> COMP_BY_PLACE_DATE = new Comparator<FDOrderInfoI>() {
+		public int compare(FDOrderInfoI arg0, FDOrderInfoI arg1) {
 			FDOrderInfoI o1 = (FDOrderInfoI) arg0;
 			FDOrderInfoI o2 = (FDOrderInfoI) arg1;
 
@@ -89,8 +90,8 @@ public class CustomerSummaryUtil {
 	};
 
 	/* @return List<FDOrderInfoI> */
-	public List getRecentOrders(int n) throws FDResourceException {
-		List orderInfos = new ArrayList( ((FDOrderHistory)user.getOrderHistory()).getFDOrderInfos() );
+	public List<FDOrderInfoI> getRecentOrders(int n) throws FDResourceException {
+		List<FDOrderInfoI> orderInfos = new ArrayList<FDOrderInfoI>( ((FDOrderHistory)user.getOrderHistory()).getFDOrderInfos() );
 
 		// sort orders in descent order
 		Collections.sort(orderInfos, COMP_BY_PLACE_DATE);
@@ -109,7 +110,7 @@ public class CustomerSummaryUtil {
 	
 
 	public FDOrderInfoI getLastOrderInfo() throws FDResourceException {
-		List orderInfos = new ArrayList( ((FDOrderHistory)user.getOrderHistory()).getFDOrderInfos() );
+		List<FDOrderInfoI> orderInfos = new ArrayList<FDOrderInfoI>( ((FDOrderHistory)user.getOrderHistory()).getFDOrderInfos() );
 
 		// sort orders in descent order
 		Collections.sort(orderInfos, COMP_BY_PLACE_DATE);
@@ -134,8 +135,8 @@ public class CustomerSummaryUtil {
 
 
     
-	static final Comparator COMP_ACTIONS_BY_RECENCY = new Comparator() {
-		public int compare(Object arg0, Object arg1) {
+	static final Comparator<CrmCaseAction> COMP_ACTIONS_BY_RECENCY = new Comparator<CrmCaseAction>() {
+		public int compare(CrmCaseAction arg0, CrmCaseAction arg1) {
 			CrmCaseAction o1 = (CrmCaseAction) arg0;
 			CrmCaseAction o2 = (CrmCaseAction) arg1;
 
@@ -145,10 +146,10 @@ public class CustomerSummaryUtil {
 	};
 
 
-    public List getRecentActions(String caseId, int maxActions) throws FDResourceException {
+    public List<CrmCaseAction> getRecentActions(String caseId, int maxActions) throws FDResourceException {
 		CrmCaseModel thisCase = CrmManager.getInstance().getCaseByPk(caseId);
 		
-		List actions = new ArrayList(thisCase.getActions());
+		List<CrmCaseAction> actions = new ArrayList<CrmCaseAction>(thisCase.getActions());
 		// sort orders in descent order
 		Collections.sort(actions, COMP_ACTIONS_BY_RECENCY);
     	
@@ -181,9 +182,10 @@ public class CustomerSummaryUtil {
     	ErpComplaintModel c = null;
     	int pri = 0;
     	
-    	for (Iterator cit=anOrder.getComplaints().iterator(); cit.hasNext();) {
-    		ErpComplaintModel aComplaint = (ErpComplaintModel) cit.next();
-    		
+    	for (ErpComplaintModel aComplaint : anOrder.getComplaints()) {
+    		if (!EnumComplaintStatus.APPROVED.equals(aComplaint.getStatus()))
+    			continue;
+
     		int complaintPriority = aComplaint.getPriority();
     		if (complaintPriority > pri) {
     			c = aComplaint;
@@ -195,27 +197,26 @@ public class CustomerSummaryUtil {
     }
 
 
-
     /**
      * Returns reasons for a complaint reverse ordered by their priorities
      * @param comp
      * @return List<ErpComplaintReason>
      */
-    public List getSortedReasons(ErpComplaintModel comp) {
-    	Set reasons = new HashSet();
+    public List<ErpComplaintReason> getSortedReasons(ErpComplaintModel comp) {
+    	Set<ErpComplaintReason> reasons = new HashSet<ErpComplaintReason>();
     	
-    	for (Iterator it=comp.getComplaintLines().iterator(); it.hasNext();) {
-    		ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
+    	for (Iterator<ErpComplaintLineModel> it=comp.getComplaintLines().iterator(); it.hasNext();) {
+    		ErpComplaintLineModel line = it.next();
     		
     		reasons.add(line.getReason());
     	}
 
-    	List sortedReasons = new ArrayList(reasons);
+    	List<ErpComplaintReason> sortedReasons = new ArrayList<ErpComplaintReason>(reasons);
     	
-    	Collections.sort(sortedReasons, new Comparator() {
-			public int compare(Object arg0, Object arg1) {
-				int i1 = ((ErpComplaintReason) arg0).getPriority();
-				int i2 = ((ErpComplaintReason) arg1).getPriority();
+    	Collections.sort(sortedReasons, new Comparator<ErpComplaintReason>() {
+			public int compare(ErpComplaintReason arg0, ErpComplaintReason arg1) {
+				final int i1 = ((ErpComplaintReason) arg0).getPriority();
+				final int i2 = ((ErpComplaintReason) arg1).getPriority();
 				return i1 < i2 ? 1 : i1 > i2 ? -1 : 0;
 			}
 		});
