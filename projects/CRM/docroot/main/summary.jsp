@@ -143,7 +143,7 @@ if (ldlv != null) {
 	if (comp != null) {
 %>			<div>
 <%
-		for (Iterator rit = util.getSortedReasons(comp).iterator(); rit.hasNext(); ) {
+		for (Iterator<ErpComplaintReason> rit = util.getSortedReasons(comp).iterator(); rit.hasNext(); ) {
 			ErpComplaintReason r = (ErpComplaintReason) rit.next();
 			%><span style="color: green; padding-right: 1em;"><%= r.getReason() %></span><%
 		}

@@ -62,11 +62,17 @@ boolean isReversible = false;
 
 FDCustomerCreditHistoryModel _creditHistory = FDCustomerManager.getCreditHistory(new FDIdentity(nav_order.getCustomerId()));
 
-Collection nav_complaints = nav_order.getComplaints();
-for (Iterator it = nav_complaints.iterator(); it.hasNext(); ) {
-	ErpComplaintModel complaint = (ErpComplaintModel) it.next();
-	if(FDComplaintUtil.isComplaintReversable(complaint, _creditHistory.getCreditsForComplaint(complaint.getPK().getId())))
+// is there any reversible complaint 
+Collection<ErpComplaintModel> nav_complaints = (Collection<ErpComplaintModel>) nav_order.getComplaints();
+for (ErpComplaintModel complaint : nav_complaints ) {
+	if(FDComplaintUtil.isComplaintReversable(complaint, _creditHistory.getCreditsForComplaint(complaint.getPK().getId()))) {
 		isReversible = true;
+		break;
+	}
+}
+
+// find the first pending complaint
+for (ErpComplaintModel complaint : nav_complaints ) {
 	if ( EnumComplaintStatus.PENDING.equals(complaint.getStatus()) ) {
 		nav_complaintId = complaint.getPK().getId();
 		nav_autoCaseId = complaint.getAutoCaseId();

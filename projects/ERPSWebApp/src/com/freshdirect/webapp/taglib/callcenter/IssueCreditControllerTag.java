@@ -125,6 +125,13 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 						doApproval(request, actionResult, true);
 						if (actionResult.isSuccess()) {
 							CrmSession.invalidateCachedOrder(session);
+							
+							// Also invalidate assigned user's order history
+							FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+							if (user != null) {
+								user.invalidateOrderHistoryCache();
+							}
+							
 							LOGGER.debug("Success, redirecting to: " + successPage);
 							HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 							try {
@@ -151,6 +158,13 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 						doApproval(request, actionResult, false);
 						if (actionResult.isSuccess()) {
 							CrmSession.invalidateCachedOrder(session);
+
+							// Also invalidate assigned user's order history
+							FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+							if (user != null) {
+								user.invalidateOrderHistoryCache();
+							}
+							
 							LOGGER.debug("Success, redirecting to: " + successPage);
 							HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 							try {

@@ -64,11 +64,9 @@ String orderNumber = request.getParameter("orderId");
     </script>		
 		<fd:ComplaintGrabber order="<%= order %>" complaints="complaints" lineComplaints="lineComplaints" deptComplaints="deptComplaints" miscComplaints="miscComplaints" fullComplaints="fullComplaints" restockComplaints="restockComplaints" retrieveApproved="true" retrievePending="false" retrieveRejected="false">
 		<TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" class="list_content_text">
-			<logic:iterate id="complaint" collection="<%=complaints%>" type="com.freshdirect.customer.ErpComplaintModel">
-			<form method="POST" action="/order/reverse_credit.jsp?orderId=<%=orderNumber%>" name="reverseCredit_<%=complaint.getPK().getId()%>">
-				<input type="hidden" name="orderNum" value="<%=orderNumber%>">
-				<input type="hidden" name="action" value="reverse_credit">
-				<input type="hidden" name="complaint_id" value="<%=complaint.getPK().getId()%>">
+<%
+			for (ErpComplaintModel complaint : ((Collection<ErpComplaintModel>)complaints) ) {
+%>
 				<tr>
 					<td width="20%"><%=complaint.getDescription()%></td>
 					<td width="13%"><%=complaint.getCreatedBy()%></td>
@@ -77,12 +75,24 @@ String orderNumber = request.getParameter("orderId");
 					<td width="11%"><%=CCFormatter.formatDate(complaint.getApprovedDate())%></td>
 					<td width="10%"><%=complaint.getStatus()%></td>
 					<td width="12%"><%=CCFormatter.formatCurrency(complaint.getAmount())%></td>
-					<td width="9%"><%if(FDComplaintUtil.isComplaintReversable(complaint, creditHistory.getCreditsForComplaint(complaint.getPK().getId()))){%><input type="button" onClick="javascript:confirmReverse(reverseCredit_<%=complaint.getPK().getId()%>)" class="submit" value="REVERSE"><%}else{%>&nbsp;<%}%>
-					</td>
+					<td width="9%">
+<%				if(FDComplaintUtil.isComplaintReversable(complaint, creditHistory.getCreditsForComplaint(complaint.getPK().getId()))) {
+%>						<form method="POST" action="/order/reverse_credit.jsp?orderId=<%=orderNumber%>" name="reverseCredit_<%=complaint.getPK().getId()%>">
+							<input type="hidden" name="orderNum" value="<%=orderNumber%>">
+							<input type="hidden" name="action" value="reverse_credit">
+							<input type="hidden" name="complaint_id" value="<%=complaint.getPK().getId()%>">
+							<input type="button" onClick="javascript:confirmReverse(reverseCredit_<%=complaint.getPK().getId()%>)" class="submit" value="REVERSE">
+						</form>
+<%
+				} else {
+					%>&nbsp;<%
+				}
+%>					</td>
 				</tr>
 				<tr><td colspan="8" class="list_separator" style="padding: 0px;"><img src="images/clear.gif" width="1" height="1"></td></tr>
-			</form>
-			</logic:iterate>	
+<%
+			}
+%>
 		</TABLE>	
 		</fd:ComplaintGrabber>
 </div>

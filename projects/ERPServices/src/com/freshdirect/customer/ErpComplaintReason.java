@@ -79,4 +79,18 @@ public class ErpComplaintReason implements java.io.Serializable {
 	public String toString() {
 		return "{id="+this.id+"; dept="+this.departmentName+"; reason="+this.reason+"}";
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof ErpComplaintReason) {
+			ErpComplaintReason other = (ErpComplaintReason) obj;
+			return this.id.equalsIgnoreCase(other.getId());
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.id.hashCode();
+	}
 }
