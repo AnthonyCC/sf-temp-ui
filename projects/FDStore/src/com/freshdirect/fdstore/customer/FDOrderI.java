@@ -18,6 +18,7 @@ import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.EnumSaleType;
 
@@ -63,7 +64,7 @@ public interface FDOrderI extends FDCartI {
 
 	public int hasCreditIssued();
 
-	public Collection getComplaints();
+	public Collection<ErpComplaintModel> getComplaints();
 
 	public Collection getAppliedCredits();
 	
@@ -115,6 +116,7 @@ public interface FDOrderI extends FDCartI {
 	public double getInvoicedDepositValue();
 	
 	public double getInvoicedDeliveryCharge();
+	
 	
 	public List getInvoicedCharges();
 	
