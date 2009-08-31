@@ -45,10 +45,10 @@ import com.freshdirect.cms.ui.model.GwtUser;
 import com.freshdirect.cms.ui.model.GwtValidationError;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
+import com.freshdirect.cms.ui.service.BaseCallback;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Hyperlink;
 
@@ -234,10 +234,10 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
         setStatus( "Loading " + nodeKey + " ... " );
         startProgress( "Load", "Loading " + nodeKey,  "loading..." );
 
-        CmsGwt.getContentService().getNodeData( nodeKey, new AsyncCallback<GwtNodeData>() {
+        CmsGwt.getContentService().getNodeData( nodeKey, new BaseCallback<GwtNodeData>() {
 
-            public void onFailure( Throwable caught ) {
-                MessageBox.alert( "Error", "Node loading failed:" + caught.getMessage(), null );
+            @Override
+            public void errorOccured(Throwable error) {
                 setStatus( "Loading failed." );
                 stopProgress();
             }
@@ -427,11 +427,11 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             final String label = currentNode.getNode().getLabel() + " " + currentNode.getNode().getType() + " [" + currentNode.getNode().getKey() + "]";
 
             CmsGwt.getContentService().getChangeSets(new ChangeSetQuery().setByKey(currentNode.getNode().getKey()),
-                    new AsyncCallback<ChangeSetQueryResponse>() {
-                        public void onFailure(Throwable caught) {
+                    new BaseCallback<ChangeSetQueryResponse>() {
+                        @Override
+                        public void errorOccured(Throwable error) {
                             setStatus("Error loading history.");
                             stopProgress();
-                            MessageBox.alert("Error", "Showing history:" + caught.getMessage(), null);
                         }
 
                         public void onSuccess(ChangeSetQueryResponse result) {
@@ -449,7 +449,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
         startProgress( "Load", "Loading publish history",  "loading..." );
         
         CmsGwt.getContentService().getPublishHistory(
-            new AsyncCallback<List<GwtPublishData>>() {
+            new BaseCallback<List<GwtPublishData>>() {
                 @Override
                 public void onSuccess(List<GwtPublishData> result) {
                     stopProgress();
@@ -460,11 +460,9 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                 }
 
                 @Override
-                public void onFailure(Throwable caught) {
+                public void errorOccured(Throwable error) {
                     stopProgress();
                     setStatus("Error loading publish history.");
-                    MessageBox.alert("Error", "Showing history:" + caught.getMessage(), null);
-                    caught.printStackTrace();
                 }
             });
     }
@@ -486,7 +484,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             // important thing is : adds changed nodes to the workingset!
         }
         
-        CmsGwt.getContentService().save( WorkingSet.getWorkingSet(), new AsyncCallback<GwtSaveResponse>() {
+        CmsGwt.getContentService().save( WorkingSet.getWorkingSet(), new BaseCallback<GwtSaveResponse>() {
             public void onSuccess(GwtSaveResponse result) {
                 if (result.isOk()) {
                     WorkingSet.clear();
@@ -517,10 +515,10 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                     MessageBox.alert("Validation Errors", s.toString(), null);
                 }
             }
-            public void onFailure(Throwable caught) {
+            @Override
+            public void errorOccured(Throwable error) {
                 setStatus( "Save failed." );
                 stopProgress();
-                MessageBox.alert( "Error", "Saving failed:" + caught.getMessage(), null );
             }
         });
     }

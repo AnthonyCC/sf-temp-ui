@@ -15,6 +15,7 @@ import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeDetail;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
 import com.freshdirect.cms.ui.model.changeset.GwtContentNodeChange;
+import com.freshdirect.cms.ui.service.BaseCallback;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends ModelData>> {
@@ -40,9 +41,9 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
             // we have to load other objects
             if ((response.getQuery() != null) && (loadedPosition < response.getChangeCount())) {
                 response.getQuery().setRange(loadedPosition, config.getLimit());
-                CmsGwt.getContentService().getChangeSets(response.getQuery(), new AsyncCallback<ChangeSetQueryResponse>() {
+                CmsGwt.getContentService().getChangeSets(response.getQuery(), new BaseCallback<ChangeSetQueryResponse>() {
                     @Override
-                    public void onFailure(Throwable error) {
+                    public void errorOccured(Throwable error) {
                         callback.onFailure(error);
                     }
 
