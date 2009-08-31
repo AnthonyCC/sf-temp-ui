@@ -163,6 +163,8 @@ public class ContentForm extends FormPanel {
         } else {
             field.setFieldLabel(attribute.getLabel());
         }
+        
+        field.setLabelSeparator( "" );
 
         // TODO contentkey tooltip...
         field.setToolTip(new ToolTipConfig(attributeKey));
