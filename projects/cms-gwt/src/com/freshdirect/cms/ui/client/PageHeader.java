@@ -5,7 +5,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PageHeader extends LayoutContainer {
@@ -23,7 +22,6 @@ public class PageHeader extends LayoutContainer {
                 + "<div id=\"buttonPanel\">BUTTONS</div></div>");
 
         buttonPanel = new HorizontalPanel();
-        buttonPanel.setSpacing(4);
         
         headerMarkup.add(buttonPanel, "#buttonPanel");
 
