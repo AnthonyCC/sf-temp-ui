@@ -74,7 +74,7 @@ public class ProductNameTag extends BodyTagSupport {
 		
 		buf.append("<span" + styleStr + ">");
 		if ( !this.disabled && action != null )
-			buf.append("<a href=\"" + action + "\">");
+			buf.append("<a href=\"" + action + "\"" + styleStr + ">");
 
 		if ( shortenedProductName != null ) {
 			buf.append("<span style=\"" );
