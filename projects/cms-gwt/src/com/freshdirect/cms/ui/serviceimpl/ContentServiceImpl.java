@@ -456,9 +456,9 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         
         // TODO : eliminate this check, user principal is null, if it's running in hosted mode OR it isn't authenticated.
         if (userPrincipal == null) {
-            return new GwtUser("cms-teszt-user", true, false);
+            return new GwtUser("cms-teszt-user", true, true);
         } else {
-            return new GwtUser(userPrincipal.getName(), request.isUserInRole("cms_editor") || true, request.isUserInRole("cms_admin"));
+            return new GwtUser(userPrincipal.getName(), request.isUserInRole("cms_editor"), request.isUserInRole("cms_admin"));
         }
     }
     
