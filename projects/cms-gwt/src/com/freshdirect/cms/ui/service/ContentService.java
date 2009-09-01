@@ -16,41 +16,41 @@ import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-@RemoteServiceRelativePath( "contentService" )
+@RemoteServiceRelativePath("contentService")
 public interface ContentService extends RemoteService {
 
-	List<ContentNodeModel> search( String searchTerm );
+    List<ContentNodeModel> search(String searchTerm) throws ServerException;
 
-	List<ContentNodeModel> getChildren( ContentNodeModel loadConfig );
+    List<ContentNodeModel> getChildren(ContentNodeModel loadConfig) throws ServerException;
 
-    GwtNodeData getNodeData( String key );
+    GwtNodeData getNodeData(String key) throws ServerException;
 
-    GwtNodeData createNodeData(String type, String id);
-    
-	List<BulkEditModel> getEditChildren( BulkEditModel loadConfig );
+    GwtNodeData createNodeData(String type, String id) throws ServerException;
 
-	String generateUniqueId( String type );
+    List<BulkEditModel> getEditChildren(BulkEditModel loadConfig) throws ServerException;
 
-	/**
-	 * 
-	 * @param models
-	 * @return the changeset ID
-	 */
-	GwtSaveResponse save( Collection<GwtContentNode> models );
+    String generateUniqueId(String type) throws ServerException;
 
-	GwtUser getUser();
-	
-	ChangeSetQueryResponse getChangeSets(ChangeSetQuery query);
-	
-	/**
-	 * Return a map of domains -> domainValues
-	 * 
-	 * @param domains
-	 * @return
-	 */
-	Map<String, List<ContentNodeModel>> getDomainValues(List<ContentNodeModel> domains);
-	
-	List<GwtPublishData> getPublishHistory();
+    /**
+     * 
+     * @param models
+     * @return the changeset ID
+     */
+    GwtSaveResponse save(Collection<GwtContentNode> models) throws ServerException;
 
-    String startPublish(String comment);
+    GwtUser getUser() throws ServerException;
+
+    ChangeSetQueryResponse getChangeSets(ChangeSetQuery query) throws ServerException;
+
+    /**
+     * Return a map of domains -> domainValues
+     * 
+     * @param domains
+     * @return
+     */
+    Map<String, List<ContentNodeModel>> getDomainValues(List<ContentNodeModel> domains) throws ServerException;
+
+    List<GwtPublishData> getPublishHistory() throws ServerException;
+
+    String startPublish(String comment) throws ServerException;
 }

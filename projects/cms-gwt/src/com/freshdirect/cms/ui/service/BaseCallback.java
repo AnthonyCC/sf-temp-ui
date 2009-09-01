@@ -9,21 +9,32 @@ public abstract class BaseCallback<X> implements AsyncCallback<X> {
 
     @Override
     public final void onFailure(Throwable error) {
-        if (error instanceof InvocationException &&
-            error.getMessage().contains("<!--SESSION EXPIRATION-->")) {
+        if (error instanceof InvocationException && error.getMessage().contains("<!--SESSION EXPIRATION-->")) {
             Location.reload();
             return;
         }
         errorOccured(error);
         if (error instanceof GwtSecurityException) {
-            MessageBox.alert("Access Denied", error.getMessage(), null);
+            alert("Access Denied", error.getMessage());
+        } else if (error instanceof ServerException) {
+            alert("Server Error", error.getMessage());
         } else {
-            MessageBox.alert("Error", "Error occured on the server:" + error.getClass() + " message: " + error.getMessage(), null);
+            alert("Error", "Error occured on the server:" + error.getClass() + " message: " + error.getMessage());
         }
     }
-    
+
     public void errorOccured(Throwable error) {
-        
+
     }
 
+    void alert(String title, String msg) {
+        MessageBox box = new MessageBox();
+        box.setTitle(title);
+        box.setMessage(msg);
+        box.setButtons(MessageBox.OK);
+        box.setIcon(MessageBox.WARNING);
+        box.setMaxWidth(800);
+        box.setMinWidth(700);
+        box.show();
+    }
 }

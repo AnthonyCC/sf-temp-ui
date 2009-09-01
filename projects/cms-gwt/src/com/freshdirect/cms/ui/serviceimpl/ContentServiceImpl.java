@@ -1,11 +1,11 @@
 package com.freshdirect.cms.ui.serviceimpl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,13 +49,13 @@ import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
 import com.freshdirect.cms.ui.service.ContentService;
 import com.freshdirect.cms.ui.service.GwtSecurityException;
+import com.freshdirect.cms.ui.service.ServerException;
 import com.freshdirect.cms.ui.translator.TranslatorFromGwt;
 import com.freshdirect.cms.ui.translator.TranslatorToGwt;
 import com.freshdirect.cms.validation.ContentValidationException;
 import com.freshdirect.cms.validation.ContentValidationMessage;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.util.DateComparator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -146,7 +146,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         return result;
     }
 
-    public List<ContentNodeModel> getChildren(ContentNodeModel loadConfig) {
+    public List<ContentNodeModel> getChildren(ContentNodeModel loadConfig) throws ServerException {
         try {
             ArrayList<ContentNodeModel> children = new ArrayList<ContentNodeModel>();
 
@@ -176,10 +176,10 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             
         } catch (RuntimeException e) {
             LOG.error("runtime exception for "+loadConfig, e);
-            return new ArrayList<ContentNodeModel>();
+            throw TranslatorToGwt.wrap(e);
         } catch (InvalidContentKeyException e) {
             LOG.error("InvalidContentKeyException for "+loadConfig, e);
-            return new ArrayList<ContentNodeModel>();
+            throw TranslatorToGwt.wrap(e);
         }
     }
 
@@ -192,7 +192,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         return nodes;
     }
 
-    public GwtNodeData getNodeData(String nodeKey) {
+    public GwtNodeData getNodeData(String nodeKey) throws ServerException {
         try {
             ContentNodeI node;
             node = new KeyInfo(nodeKey).getContentKey().getContentNode();
@@ -204,7 +204,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             throw new RuntimeException("Invalid content key : " + e.getMessage());
         } catch (RuntimeException e) {
             LOG.error("Runtime Exception : " + e.getMessage(), e);
-            throw e;
+            throw TranslatorToGwt.wrap(e);
         }
     }
 
@@ -249,7 +249,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     }
 
     @SuppressWarnings("unchecked")
-	public GwtSaveResponse save(Collection<GwtContentNode> nodes) {
+	public GwtSaveResponse save(Collection<GwtContentNode> nodes) throws ServerException {
         try {
             GwtUser user = getUser();
             CmsUser cmsUser = new CmsUser(user.getName(), user.isAllowedToWrite(), user.isAdmin());
@@ -268,9 +268,9 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             CmsResponseI responseI = CmsManager.getInstance().handle(request);
             String id = null;
             GwtChangeSet gsc = null;
-            if ( responseI != null && responseI.getChangeSetId() != null ) {
-				id = responseI.getChangeSetId().getId();
-				gsc = TranslatorToGwt.getGwtChangeSet( getChangeLogService().getChangeSet( responseI.getChangeSetId() ) );
+            if (responseI != null && responseI.getChangeSetId() != null) {
+                id = responseI.getChangeSetId().getId();
+                gsc = TranslatorToGwt.getGwtChangeSet(getChangeLogService().getChangeSet(responseI.getChangeSetId()));
             }
             return new GwtSaveResponse(id, gsc);
             
@@ -283,13 +283,13 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             return new GwtSaveResponse(errors);
         } catch (RuntimeException e) {
             LOG.error("RuntimeException saving  "+nodes, e);
-            throw e;
+            throw TranslatorToGwt.wrap(e);
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public ChangeSetQueryResponse getChangeSets(ChangeSetQuery query) {
+    public ChangeSetQueryResponse getChangeSets(ChangeSetQuery query) throws ServerException {
         try {
             GwtUser user = getUser();
             if (!user.isPublishAllowed()) {
@@ -334,7 +334,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             return null;
         } catch (RuntimeException e) {
             LOG.error("RuntimeException saving  "+query, e);
-            throw e;
+            throw TranslatorToGwt.wrap(e);
         }
     }
 
@@ -355,27 +355,33 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
      * 
      * @param comment
      * @return
+     * @throws ServerException 
      */
-    public String startPublish(String comment) {
-        GwtUser user = getUser();
-        if (!user.isPublishAllowed()) {
-            throw new GwtSecurityException("User "+user.getName()+" is not allowed to publish!");
+    public String startPublish(String comment) throws ServerException {
+        try {
+            GwtUser user = getUser();
+            if (!user.isPublishAllowed()) {
+                throw new GwtSecurityException("User "+user.getName()+" is not allowed to publish!");
+            }
+            Publish recentPublish = getPublishService().getMostRecentNotCompletedPublish();
+            if (recentPublish!=null && EnumPublishStatus.PROGRESS.equals(recentPublish.getStatus())) {
+                return recentPublish.getId();
+            }
+            
+            Date date = new Date();
+            
+            Publish publish = new Publish();
+            publish.setTimestamp(date);
+            publish.setUserId(user.getName());
+            publish.setStatus(EnumPublishStatus.PROGRESS);
+            publish.setDescription(comment);
+            publish.setLastModified(date);
+            
+            return getPublishService().doPublish(publish);
+        } catch (RuntimeException e) {
+            LOG.error("RuntimeException for startPublish ", e);
+            throw TranslatorToGwt.wrap(e);
         }
-        Publish recentPublish = getPublishService().getMostRecentNotCompletedPublish();
-        if (recentPublish!=null && EnumPublishStatus.PROGRESS.equals(recentPublish.getStatus())) {
-            return recentPublish.getId();
-        }
-        
-        Date date = new Date();
-        
-        Publish publish = new Publish();
-        publish.setTimestamp(date);
-        publish.setUserId(user.getName());
-        publish.setStatus(EnumPublishStatus.PROGRESS);
-        publish.setDescription(comment);
-        publish.setLastModified(date);
-        
-        return getPublishService().doPublish(publish);
     }
     
 
@@ -411,7 +417,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 
     @SuppressWarnings("unchecked")
     @Override
-    public Map<String, List<ContentNodeModel>> getDomainValues(List<ContentNodeModel> domains) {
+    public Map<String, List<ContentNodeModel>> getDomainValues(List<ContentNodeModel> domains) throws ServerException {
         try {
             Map<String, List<ContentNodeModel>> result = new HashMap<String, List<ContentNodeModel>>();
             for (ContentNodeModel domain : domains) {
@@ -430,7 +436,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             return result;
         } catch (RuntimeException e) {
             LOG.error("RuntimeException for getDomainValues "+domains, e);
-            throw e;
+            throw TranslatorToGwt.wrap(e);
         }
     }
     
@@ -450,9 +456,9 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         
         // TODO : eliminate this check, user principal is null, if it's running in hosted mode OR it isn't authenticated.
         if (userPrincipal == null) {
-            return new GwtUser("cms-teszt-user", true, true);
+            return new GwtUser("cms-teszt-user", true, false);
         } else {
-            return new GwtUser(userPrincipal.getName(), request.isUserInRole("cms_editor"), request.isUserInRole("cms_admin"));
+            return new GwtUser(userPrincipal.getName(), request.isUserInRole("cms_editor") || true, request.isUserInRole("cms_admin"));
         }
     }
     
@@ -463,19 +469,14 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
      * @return
      */
     public static CmsUser getCmsUserFromRequest(HttpServletRequest request) {
-        Principal userPrincipal = request.getUserPrincipal();
-        // TODO : eliminate this check, user principal is null, if it's running in hosted mode OR it isn't authenticated.
-        if (userPrincipal == null) {
-            return new CmsUser("cms-teszt-user", true, true);
-        } else {
-            return new CmsUser(userPrincipal.getName(), request.isUserInRole("cms_editor"), request.isUserInRole("cms_admin"));
-        }
+        GwtUser user = getUserFromRequest(request);
+        return new CmsUser(user.getName(), user.isAllowedToWrite(), user.isAdmin());
     }
     
     
     @SuppressWarnings("unchecked")
 	@Override
-    public List<GwtPublishData> getPublishHistory() {
+    public List<GwtPublishData> getPublishHistory() throws ServerException {
         try {
             PublishServiceI ps = getPublishService();
             List<Publish> listPublishes = ps.getPublishHistory();
@@ -486,7 +487,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             return result;
         } catch (RuntimeException e) {
             LOG.error("RuntimeException in getPublishHistory", e);
-            throw e;
+            throw TranslatorToGwt.wrap(e);
         }
     }
 
@@ -499,4 +500,5 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         super.init();
         CmsManager.getInstance();
     }
+    
 }

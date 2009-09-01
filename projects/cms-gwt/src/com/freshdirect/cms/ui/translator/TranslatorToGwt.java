@@ -52,6 +52,7 @@ import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeDetail;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
 import com.freshdirect.cms.ui.model.changeset.GwtContentNodeChange;
+import com.freshdirect.cms.ui.service.ServerException;
 import com.freshdirect.fdstore.FDStoreProperties;
 
 /**
@@ -600,5 +601,35 @@ public class TranslatorToGwt {
     public static List<GwtPublishMessage> getPublishMessages(Publish publish) {
         return getPublishMessages(publish.getMessages());
     }
-    
+
+    /**
+     * This method encapsulates the stack trace into the message of the server
+     * 
+     * @param ex
+     * @throws ServerException
+     */
+    public static ServerException wrap(Throwable ex) {
+        StringBuilder sw = new StringBuilder();
+        sw.append(ex.getClass().toString()).append(" : ").append(ex.getMessage()).append('\n');
+        StackTraceElement[] stackTrace = ex.getStackTrace();
+        if (stackTrace != null) {
+            boolean prevSkipped = false;
+            for (int i = 0; i < stackTrace.length; i++) {
+                String cname = stackTrace[i].getClassName();
+                if (cname.startsWith("$") || cname.startsWith("com.google.gwt") || cname.startsWith("javax.servlet.") || cname.startsWith("sun.reflect.")
+                        || cname.startsWith("java.lang.") || cname.startsWith("weblogic.") || cname.startsWith("org.mortbay.")) {
+                    if (!prevSkipped) {
+                        sw.append("...\n");
+                        prevSkipped = true;
+                    }
+                } else {
+                    String line = stackTrace[i].toString();
+                    sw.append(line).append('\n');
+                    prevSkipped = false;
+                }
+            }
+        }
+        return new ServerException(sw.toString(), ex);
+    }
+
 }
