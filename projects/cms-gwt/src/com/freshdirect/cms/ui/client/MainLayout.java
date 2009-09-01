@@ -445,6 +445,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
     }
     
     private void showPublishPanel() {
+    	//FIXME quiet discard???
         discardAction();
         startProgress( "Load", "Loading publish history",  "loading..." );
         

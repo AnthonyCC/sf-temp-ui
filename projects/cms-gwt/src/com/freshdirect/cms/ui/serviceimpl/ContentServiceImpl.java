@@ -65,68 +65,34 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 
     static final Logger LOG = LoggerFactory.getInstance(ContentServiceImpl.class);
     
-    static class KeyInfo {
-        int    start = -1;
-        int    end   = -1;
-        String type;
-        String id;
-
-        String originalKey;
-
-        public KeyInfo(String originalKey) {
-            this.originalKey = originalKey;
-            String[] segments = originalKey.split(":");
-            if ("page".equals(segments[0])) {
-                start = Integer.parseInt(segments[1]);
-                end = Integer.parseInt(segments[2]);
-                type = segments[3];
-                id = segments[4];
-            } else {
-                type = segments[0];
-                id = segments[1];
-            }
-        }
-        
-        public String getType() {
-            return type;
-        }
-        
-        public String getId() {
-            return id;
-        }
-
-        public int getStart() {
-            return start;
-        }
-
-        public int getEnd() {
-            return end;
-        }
-
-        public ContentKey getContentKey() throws InvalidContentKeyException {
-            return new ContentKey(ContentType.get(type), id);
-        }
-
-        public String getPageKey(int nstart, int nend) {
-            return "page:" + nstart + ":" + nend + ":" + type + ":" + id;
-        }
-
-        public boolean isPaging() {
-            return start >= 0;
-        }
-
-    }
-
     private static final long     serialVersionUID = 1893834571301941106L;
 
     private final static int      MAX_HITS         = 120;
     
-//    private final static int      MAX_CHILD_KEYS   = 100;
-
     private static final String[] ROOTKEYS         = { "Store:FreshDirect", "MediaFolder:/", "CmsFolder:forms", "CmsQueryFolder:queries",
             "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", "FDFolder:starterLists",
             "FDFolder:synonymList", "FDFolder:searchRelevancyList" };
 
+    public static ContentKey getContentKey( String type, String id ) throws InvalidContentKeyException {
+    	try { 
+    		return new ContentKey(ContentType.get(type), id);
+    	} catch (IllegalArgumentException e) {
+    		throw new InvalidContentKeyException();			
+		}
+    }
+    public static ContentKey getContentKey( String key ) throws InvalidContentKeyException {
+    	try { 
+	    	int idx = key.indexOf( ':' );
+	    	String type = key.substring( 0, idx );
+	    	String id = key.substring( idx + 1 );
+	        return new ContentKey(ContentType.get(type), id);
+    	} catch (IndexOutOfBoundsException e) {
+    		throw new InvalidContentKeyException();
+		} catch ( IllegalArgumentException e ) {
+    		throw new InvalidContentKeyException();			
+		}
+    }
+    
     public String getLabel(String nodeKey) {
         return ContentKey.decode(nodeKey).getContentNode().getLabel();
     }
@@ -162,8 +128,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 return children;
             }
 
-            KeyInfo keyInfo = new KeyInfo(loadConfig.getKey());
-            ContentNodeI root = CmsManager.getInstance().getContentNode(keyInfo.getContentKey());
+            ContentNodeI root = CmsManager.getInstance().getContentNode( getContentKey( loadConfig.getKey() ) );
             if (root != null) {
                 List<ContentKey> childKeys = new ArrayList<ContentKey>((Collection<ContentKey>)root.getChildKeys());
                 TreeSet<ContentNodeI> nodes = getOrderedNodes(childKeys);
@@ -195,8 +160,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     public GwtNodeData getNodeData(String nodeKey) throws ServerException {
         try {
             ContentNodeI node;
-            node = new KeyInfo(nodeKey).getContentKey().getContentNode();
-            
+            node = getContentKey( nodeKey ).getContentNode();            
             return TranslatorToGwt.gwtNodeData( node, !getUser().isAllowedToWrite() );
             
         } catch (InvalidContentKeyException e) {
@@ -268,9 +232,9 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             CmsResponseI responseI = CmsManager.getInstance().handle(request);
             String id = null;
             GwtChangeSet gsc = null;
-            if (responseI != null && responseI.getChangeSetId() != null) {
-                id = responseI.getChangeSetId().getId();
-                gsc = TranslatorToGwt.getGwtChangeSet(getChangeLogService().getChangeSet(responseI.getChangeSetId()));
+            if ( responseI != null && responseI.getChangeSetId() != null ) {
+				id = responseI.getChangeSetId().getId();
+				gsc = TranslatorToGwt.getGwtChangeSet( getChangeLogService().getChangeSet( responseI.getChangeSetId() ) );
             }
             return new GwtSaveResponse(id, gsc);
             
@@ -359,25 +323,25 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
      */
     public String startPublish(String comment) throws ServerException {
         try {
-            GwtUser user = getUser();
-            if (!user.isPublishAllowed()) {
-                throw new GwtSecurityException("User "+user.getName()+" is not allowed to publish!");
-            }
-            Publish recentPublish = getPublishService().getMostRecentNotCompletedPublish();
-            if (recentPublish!=null && EnumPublishStatus.PROGRESS.equals(recentPublish.getStatus())) {
-                return recentPublish.getId();
-            }
-            
-            Date date = new Date();
-            
-            Publish publish = new Publish();
-            publish.setTimestamp(date);
-            publish.setUserId(user.getName());
-            publish.setStatus(EnumPublishStatus.PROGRESS);
-            publish.setDescription(comment);
-            publish.setLastModified(date);
-            
-            return getPublishService().doPublish(publish);
+	        GwtUser user = getUser();
+	        if (!user.isPublishAllowed()) {
+	            throw new GwtSecurityException("User "+user.getName()+" is not allowed to publish!");
+	        }
+	        Publish recentPublish = getPublishService().getMostRecentNotCompletedPublish();
+	        if (recentPublish!=null && EnumPublishStatus.PROGRESS.equals(recentPublish.getStatus())) {
+	            return recentPublish.getId();
+	        }
+	        
+	        Date date = new Date();
+	        
+	        Publish publish = new Publish();
+	        publish.setTimestamp(date);
+	        publish.setUserId(user.getName());
+	        publish.setStatus(EnumPublishStatus.PROGRESS);
+	        publish.setDescription(comment);
+	        publish.setLastModified(date);
+	        
+	        return getPublishService().doPublish(publish);
         } catch (RuntimeException e) {
             LOG.error("RuntimeException for startPublish ", e);
             throw TranslatorToGwt.wrap(e);
@@ -500,5 +464,4 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         super.init();
         CmsManager.getInstance();
     }
-    
 }

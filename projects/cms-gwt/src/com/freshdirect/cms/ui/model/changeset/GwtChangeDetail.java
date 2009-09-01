@@ -3,10 +3,8 @@ package com.freshdirect.cms.ui.model.changeset;
 import java.io.Serializable;
 
 public class GwtChangeDetail implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = 1L;
     
     private String attributeName;
     private String oldValue;

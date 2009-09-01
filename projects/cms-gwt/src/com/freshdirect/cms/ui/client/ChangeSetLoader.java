@@ -75,30 +75,30 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
 
     void convertToRows(ChangeSetQueryResponse response) {
 
-        for (GwtChangeSet g : response.getChanges()) {
-            for (GwtContentNodeChange node : g.getNodeChanges()) {
-                if (node.getChangeDetails().size() == 0) {
-                    ContentNodeModel b = new ContentNodeModel(node.getContentType(), node.getLabel(), node.getContentKey());
+        for (GwtChangeSet changeSet : response.getChanges()) {
+            for (GwtContentNodeChange nodeChange : changeSet.getNodeChanges()) {
+                if (nodeChange.getChangeDetails().size() == 0) {
+                    ContentNodeModel b = new ContentNodeModel(nodeChange.getContentType(), nodeChange.getLabel(), nodeChange.getContentKey() );
 
-                    b.set("changeType", node.getChangeType());
+                    b.set("changeType", nodeChange.getChangeType());
 
-                    b.set("user", g.getUserId());
-                    b.set("note", g.getNote());
-                    b.set("date", g.getModifiedDate());
+                    b.set("user", changeSet.getUserId());
+                    b.set("note", changeSet.getNote());
+                    b.set("date", changeSet.getModifiedDate());
                     alreadyLoaded.add(b);
 
                 } else {
-                    for (GwtChangeDetail detail : node.getChangeDetails()) {
-                        ContentNodeModel b = new ContentNodeModel(node.getContentType(), node.getLabel(), node.getContentKey());
+                    for (GwtChangeDetail detail : nodeChange.getChangeDetails()) {
+                        ContentNodeModel b = new ContentNodeModel(nodeChange.getContentType(), nodeChange.getLabel(), nodeChange.getContentKey());
                         b.set("old", detail.getOldValue());
                         b.set("new", detail.getNewValue());
                         b.set("attribute", detail.getAttributeName());
 
-                        b.set("changeType", node.getChangeType());
+                        b.set("changeType", nodeChange.getChangeType());
 
-                        b.set("user", g.getUserId());
-                        b.set("note", g.getNote());
-                        b.set("date", g.getModifiedDate());
+                        b.set("user", changeSet.getUserId());
+                        b.set("note", changeSet.getNote());
+                        b.set("date", changeSet.getModifiedDate());
 
                         alreadyLoaded.add(b);
                     }

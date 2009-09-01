@@ -71,12 +71,6 @@ public class TranslatorToGwt {
     
 	public static ContentNodeModel getContentNodeModel( ContentNodeI node ) {
 		return toContentNodeModel( node.getKey() );
-//		return new ContentNodeModel( 
-//				node.getDefinition().getType().getName(), 
-//				node.getLabel(), 
-//				node.getKey().getEncoded(), 
-//				node.getChildKeys().size() > 0 
-//		);
 	}
 
 	public static BulkEditModel getBulkModel( ContentNodeI node ) {
@@ -543,16 +537,14 @@ public class TranslatorToGwt {
 
     @SuppressWarnings("unchecked")
 	private static GwtContentNodeChange getGwtContentNodeChange(ContentNodeChange cnc) {
-        GwtContentNodeChange gcnc = new GwtContentNodeChange();
-        gcnc.setChangeType(cnc.getChangeType().getName());
-        gcnc.setContentType(cnc.getContentKey().getType().getName());
-        gcnc.setContentKey(cnc.getContentKey().getId());
-        ContentNodeI contentNode = cnc.getContentKey().getContentNode();
-        gcnc.setLabel(contentNode != null ? contentNode.getLabel() : cnc.getContentKey().getEncoded());
-        for ( ChangeDetail cd : (List<ChangeDetail>)cnc.getChangeDetails() ) {
-            gcnc.addDetail(new GwtChangeDetail(cd.getAttributeName(), cd.getOldValue(), cd.getNewValue()));
-        }
-        return gcnc;
+    	
+		GwtContentNodeChange gcnc = new GwtContentNodeChange( cnc.getContentKey().getEncoded(), cnc.getChangeType().getName() );		
+		ContentNodeI contentNode = cnc.getContentKey().getContentNode();
+		gcnc.setLabel( contentNode != null ? contentNode.getLabel() : cnc.getContentKey().getEncoded() );
+		for ( ChangeDetail cd : (List<ChangeDetail>)cnc.getChangeDetails() ) {
+			gcnc.addDetail( new GwtChangeDetail( cd.getAttributeName(), cd.getOldValue(), cd.getNewValue() ) );
+		}
+		return gcnc;
     }
 	
 	// =========================== private methods  ===========================
