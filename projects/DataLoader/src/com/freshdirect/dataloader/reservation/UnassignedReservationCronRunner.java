@@ -89,11 +89,12 @@ public class UnassignedReservationCronRunner {
 																 reservation.getReservationType(),
 																 reservation.getCustomerId(),
 																 address.getPK().getId(),
-																 reservation.isChefsTable()
+																 reservation.isChefsTable(),
+																 reservation.isUnassigned()
 																);
 				dlvManager.reserveTimeslotEx(_reservation, address);
 			 }
-			 dlvManager.clearUnassignedInfo(reservation.getId());
+			 
 			} catch (FDResourceException e) {
 				
 				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner: ").append(" failed to reassign reservation for id ").append(reservation.getId()).toString(),e);

@@ -26,6 +26,7 @@ public class FDReservation extends ModelSupport {
 	private final String customerId;
 	private final String addressId;
 	private final boolean chefsTable;
+	private final boolean isUnassigned;
 	 
 
 	public FDReservation(
@@ -35,7 +36,8 @@ public class FDReservation extends ModelSupport {
 		EnumReservationType type,
 		String customerId,
 		String addressId,
-		boolean chefsTable) {
+		boolean chefsTable,
+		boolean isUnassigned) {
 		this.setPK(pk);
 		this.timeslot = timeslot;
 		this.expirationDateTime = expirationDateTime;
@@ -43,6 +45,7 @@ public class FDReservation extends ModelSupport {
 		this.customerId = customerId;
 		this.addressId = addressId;
 		this.chefsTable = chefsTable;
+		this.isUnassigned=isUnassigned;
 	}
 
 	public String getTimeslotId() {
@@ -89,4 +92,7 @@ public class FDReservation extends ModelSupport {
 		return chefsTable;
 	}
 	
+	public boolean isUnassigned() {
+		return isUnassigned;
+	}
 }

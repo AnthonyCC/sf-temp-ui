@@ -1635,7 +1635,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			String zoneCode=_timeSlots.get(0).getZoneCode();
 			
 			Map<java.util.Date,java.util.List<IDeliverySlot>> routingTimeSlots=util.getDeliverySlot(_timeSlots);
-			LOGGER.info("getTimeslotForDateRangeAndZoneEx():: DeliverySlot Map:"+routingTimeSlots);
+			//LOGGER.info("getTimeslotForDateRangeAndZoneEx():: DeliverySlot Map:"+routingTimeSlots);
 			Iterator<java.util.Date> it=routingTimeSlots.keySet().iterator();
 			java.util.Date _date=null;
 			while(it.hasNext()) {
@@ -1646,7 +1646,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				order.getDeliveryInfo().setPackagingInfo(estimateOrderSize(order,srvScenario));
 				order.getDeliveryInfo().setServiceTime(dlvService.estimateOrderServiceTime(order,srvScenario));
 				timeSlots.add(schedulerAnalyzeOrder(order,_date,1,routingTimeSlots.get(_date)));
-				LOGGER.info("getTimeslotForDateRangeAndZoneEx():: Date:" +RoutingDateUtil.formatDateTime(_date)+" DeliverySlot:"+timeSlots);
+				//LOGGER.info("getTimeslotForDateRangeAndZoneEx():: Date:" +RoutingDateUtil.formatDateTime(_date)+" DeliverySlot:"+timeSlots);
 			}
 			long endTime=System.currentTimeMillis();
 			
@@ -1654,10 +1654,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		} catch (RoutingServiceException e) {
 			e.printStackTrace();
 			LOGGER.warn("getTimeslotForDateRangeAndZoneEx():"+e.toString());
-		} catch (ParseException e) {
+		} /*catch (ParseException e) {
 			e.printStackTrace();
 			LOGGER.warn("getTimeslotForDateRangeAndZoneEx():"+e.toString());
-		}
+		}*/
 		
 	 return timeSlots;
 	}
@@ -1679,7 +1679,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getTimeslot().getZoneCode()));
 			order=setDeliveryInfo(order,reservation.getTimeslot().getBaseDate());
 			reservedSlot=util.getDeliverySlot(reservation);
-			return schedulerReserveOrder(order,reservedSlot );
+			IDeliveryReservation _reservation=schedulerReserveOrder(order,reservedSlot );
+			if(reservation.isUnassigned())
+				clearUnassignedInfo(reservation.getId());
+			return _reservation;
 			
 		} catch (RoutingServiceException e) {
 			e.printStackTrace();
@@ -1691,7 +1694,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address) {
 		
 		long startTime=System.currentTimeMillis();
-		if(reservation==null || address==null)
+		if(reservation==null || address==null /*|| reservation.getUnassignedActivityType().*/)
 			return ;		
 		
 		RoutingUtil util=RoutingUtil.getInstance();
@@ -1705,6 +1708,9 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			schedulerConfirmOrder(order,reservation);
 			long endTime=System.currentTimeMillis();
 			logTimeslots(order.getOrderNumber(),address.getCustomerId(),RoutingActivityType.CONFIRM_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime));
+			if(reservation.isUnassigned()) {
+				clearUnassignedInfo(reservation.getId());
+			}
 			
 		} catch (RoutingServiceException e) {
 			e.printStackTrace();
@@ -1712,6 +1718,8 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 		
 	}
+	
+	
 	
 	private List<java.util.List<IDeliverySlot>> getDeliverySlots(DlvReservationModel reservation) {
 		List<IDeliverySlot> _slots=new ArrayList<IDeliverySlot>();
@@ -1741,6 +1749,9 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getZoneCode()));
 			order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
 			schedulerCancelOrder(order,reservation);
+			if(reservation.isUnassigned()) {
+				clearUnassignedInfo(reservation.getId());
+			}
 			
 		} catch (RoutingServiceException e) {
 			e.printStackTrace();
@@ -1776,7 +1787,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	private IDeliveryReservation schedulerReserveOrder(IOrderModel orderModel, IDeliverySlot slot) throws RoutingServiceException {
 		
 		IDeliveryReservation reservation=new RoutingEngineServiceProxy().schedulerReserveOrder(orderModel, slot, RoutingServicesProperties.getDefaultLocationType(), RoutingServicesProperties.getDefaultOrderType());
-		LOGGER.info("schedulerReserveOrder():: DeliveryReservation:"+reservation);
+		//LOGGER.info("schedulerReserveOrder():: DeliveryReservation:"+reservation);
 		return reservation;
 	}
 	
@@ -1832,10 +1843,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		
 		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
 		orderModel.setOrderNumber(reservation.getOrderId());
-		LOGGER.info("Old order #"+reservation.getId()+" New order#"+orderModel.getOrderNumber());
+		//LOGGER.info("Old order #"+reservation.getId()+" New order#"+orderModel.getOrderNumber());
 		routingService.schedulerUpdateOrder(orderModel, reservation.getId());
 		routingService.schedulerConfirmOrder(orderModel);
-		LOGGER.info("schedulerConfirmOrder():: commitReservationEx:"+"SUCCESS");
+		//LOGGER.info("schedulerConfirmOrder():: commitReservationEx:"+"SUCCESS");
 		//throw new RoutingServiceException(new Exception("F***"),"1234");
 		return ;
 	}
@@ -1845,7 +1856,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
 		orderModel.setOrderNumber(reservation.getOrderId());
 		routingService.schedulerCancelOrder(orderModel);
-		LOGGER.info("schedulerCancelOrder():: releaseReservationEx:"+"SUCCESS");
+		//LOGGER.info("schedulerCancelOrder():: releaseReservationEx:"+"SUCCESS");
 		//throw new RoutingServiceException(new Exception("F***"),"1234");
 		return ;
 	}

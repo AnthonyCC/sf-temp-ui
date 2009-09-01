@@ -2906,7 +2906,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}						
 		this.logActivity(getReservationActivityLog(timeslot, aInfo, EnumAccountActivityType.MAKE_PRE_RESERVATION, rsvType));
 		return new FDReservation(rsv.getPK(), timeslot, rsv.getExpirationDateTime(), rsv.getReservationType(), rsv
-				.getCustomerId(), addressId, rsv.isChefsTable());
+				.getCustomerId(), addressId, rsv.isChefsTable(),rsv.isUnassigned());
 		
 	}
 

@@ -468,9 +468,12 @@ public class FDDeliveryManager {
 		boolean chefsTable) throws FDResourceException, ReservationException {
 
 		try {
+			
+			
+			
 			DlvManagerSB sb = getDlvManagerHome().create();
 			DlvReservationModel dlvReservation = sb
-				.reserveTimeslot(timeslot.getDlvTimeslot(), customerId, holdTime, type, address.getPK().getId(), chefsTable);
+				.reserveTimeslot(timeslot.getDlvTimeslot(), customerId, holdTime, type, address.getId(), chefsTable);
 
 			FDReservation reservation = new FDReservation(
 				dlvReservation.getPK(),
@@ -479,7 +482,7 @@ public class FDDeliveryManager {
 				dlvReservation.getReservationType(),
 				dlvReservation.getCustomerId(),
 				address.getPK().getId(),
-				dlvReservation.isChefsTable());
+				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) 
 				RoutingUtil.getInstance().sendTimeslotReservationRequest(reservation,address);
 			return reservation;
@@ -502,7 +505,7 @@ public class FDDeliveryManager {
 			sb.extendReservation(reservation.getPK().getId(), newExpTime.getTime());
 
 			return new FDReservation(reservation.getPK(), reservation.getTimeslot(), newExpTime.getTime(), reservation
-				.getReservationType(), reservation.getCustomerId(), reservation.getAddressId(), reservation.isChefsTable());
+				.getReservationType(), reservation.getCustomerId(), reservation.getAddressId(), reservation.isChefsTable(),reservation.isUnassigned());
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -549,7 +552,8 @@ public class FDDeliveryManager {
 					dlvRsv.getReservationType(),
 					dlvRsv.getCustomerId(),
 					dlvRsv.getAddressId(),
-					dlvRsv.isChefsTable()));
+					dlvRsv.isChefsTable(),
+					dlvRsv.isUnassigned()));
 			}
 			return rsvLst;
 
@@ -604,7 +608,7 @@ public class FDDeliveryManager {
 			FDTimeslot timeslot = this.getTimeslotsById(dlvRsv.getTimeslotId());
 
 			FDReservation fdRes = new FDReservation(dlvRsv.getPK(), timeslot, dlvRsv.getExpirationDateTime(), dlvRsv
-				.getReservationType(), dlvRsv.getCustomerId(), dlvRsv.getAddressId(), dlvRsv.isChefsTable());
+				.getReservationType(), dlvRsv.getCustomerId(), dlvRsv.getAddressId(), dlvRsv.isChefsTable(),dlvRsv.isUnassigned());
 
 			return fdRes;
 		} catch (ObjectNotFoundException ex) {

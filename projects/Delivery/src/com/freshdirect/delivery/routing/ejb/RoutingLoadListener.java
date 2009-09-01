@@ -50,6 +50,8 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 		try {
 			msgId = msg.getJMSMessageID();
 			System.out.println("Message ID :"+msgId);
+			System.out.println("Eat this shit:");
+			
 
 			if (!(msg instanceof ObjectMessage)) {
 				LOGGER.error("Message is not an ObjectMessage: " + msg +"-"+msgId);
@@ -116,11 +118,12 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 		} catch (RoutingServiceException rx) {
 			LOGGER.error("JMSException occured while executing address load command, holding RuntimeException", rx);	
 			//throw new RuntimeException("JMSException occured while reading command: " + rx.getMessage());
-		}/* catch (FDResourceException e) {
+		}
+		/* catch (FDResourceException e) {
 			//throw new RuntimeException("JMSException occured while reading command: " + e.getMessage());
 		}*/
 		catch(Exception e) {
-			getMessageDrivenContext().setRollbackOnly();
+			//getMessageDrivenContext().setRollbackOnly();
 			e.printStackTrace();
 		}
 		

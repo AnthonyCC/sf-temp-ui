@@ -88,4 +88,7 @@ public class ErpDepotAddressModel extends ErpAddressModel {
 	public EnumServiceType getServiceType() {
 		return pickup ? EnumServiceType.PICKUP : EnumServiceType.DEPOT;
 	}
+	public String getId() {
+		return getLocationId();
+	}
 }

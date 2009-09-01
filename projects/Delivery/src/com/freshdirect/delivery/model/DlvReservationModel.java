@@ -51,7 +51,7 @@ public class DlvReservationModel extends ModelSupport {
 	}
 	
 	public boolean isUnassigned() {
-		return unassignedActivityType==null;
+		return unassignedActivityType!=null;
 	}
 
 	public Date getDeliveryDate() {
