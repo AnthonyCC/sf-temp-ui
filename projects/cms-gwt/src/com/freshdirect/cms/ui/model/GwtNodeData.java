@@ -132,12 +132,14 @@ public class GwtNodeData implements Serializable {
 	 */
     public void collectValuesFromFields() {
         for (Map.Entry<String, ContentNodeAttributeI> e : node.getOriginalAttributes().entrySet()) {
-            Field<Serializable> fieldObject = e.getValue().getFieldObject();
-            // field object can be null, if the field not rendered
-            if (fieldObject != null) {
-                getValueFromField(e.getKey(), e.getValue().getFieldObject());
-            } else {
-                this.node.changeValue(e.getKey(), e.getValue().getValue());
+            if (!e.getValue().isReadonly()) {
+                Field<Serializable> fieldObject = e.getValue().getFieldObject();
+                // field object can be null, if the field not rendered
+                if (fieldObject != null) {
+                    getValueFromField(e.getKey(), e.getValue().getFieldObject());
+                } else {
+                    this.node.changeValue(e.getKey(), e.getValue().getValue());
+                }
             }
         }
     }

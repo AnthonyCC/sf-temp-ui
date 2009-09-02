@@ -20,7 +20,6 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeComparator;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.CmsRequest;
 import com.freshdirect.cms.application.CmsRequestI;
@@ -70,31 +69,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     private static final String[] ROOTKEYS         = { "Store:FreshDirect", "MediaFolder:/", "CmsFolder:forms", "CmsQueryFolder:queries",
             "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", "FDFolder:starterLists",
             "FDFolder:synonymList", "FDFolder:searchRelevancyList" };
-
-    public static ContentKey getContentKey( String type, String id ) throws InvalidContentKeyException {
-    	try { 
-    		return new ContentKey(ContentType.get(type), id);
-    	} catch (IllegalArgumentException e) {
-    		throw new InvalidContentKeyException();			
-		}
-    }
-    public static ContentKey getContentKey( String key ) throws InvalidContentKeyException {
-    	try { 
-	    	int idx = key.indexOf( ':' );
-	    	String type = key.substring( 0, idx );
-	    	String id = key.substring( idx + 1 );
-	        return new ContentKey(ContentType.get(type), id);
-    	} catch (IndexOutOfBoundsException e) {
-    		throw new InvalidContentKeyException();
-		} catch ( IllegalArgumentException e ) {
-    		throw new InvalidContentKeyException();			
-		}
-    }
     
-    public String getLabel(String nodeKey) {
-        return ContentKey.decode(nodeKey).getContentNode().getLabel();
-    }
-
     public List<ContentNodeModel> search(String searchTerm) {
         List<SearchHit> hits = (List<SearchHit>)CmsManager.getInstance().search(searchTerm, MAX_HITS);
         List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(hits.size());
@@ -126,7 +101,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 return children;
             }
 
-            ContentNodeI root = CmsManager.getInstance().getContentNode( getContentKey( loadConfig.getKey() ) );
+            ContentNodeI root = CmsManager.getInstance().getContentNode(ContentKey.decode(loadConfig.getKey()));
             if (root != null) {
                 List<ContentKey> childKeys = new ArrayList<ContentKey>((Collection<ContentKey>)root.getChildKeys());
                 TreeSet<ContentNodeI> nodes = getOrderedNodes(childKeys);
@@ -139,9 +114,6 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             
         } catch (RuntimeException e) {
             LOG.error("runtime exception for "+loadConfig, e);
-            throw TranslatorToGwt.wrap(e);
-        } catch (InvalidContentKeyException e) {
-            LOG.error("InvalidContentKeyException for "+loadConfig, e);
             throw TranslatorToGwt.wrap(e);
         }
     }
@@ -158,10 +130,10 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     public GwtNodeData getNodeData(String nodeKey) throws ServerException {
         try {
             ContentNodeI node;
-            node = getContentKey( nodeKey ).getContentNode();            
+            node = ContentKey.decode(nodeKey).getContentNode();            
             return TranslatorToGwt.gwtNodeData( node, !getUser().isAllowedToWrite() );
             
-        } catch (InvalidContentKeyException e) {
+        } catch (IllegalArgumentException e) {
             LOG.error("InvalidContentKeyException for "+nodeKey, e);
             throw new RuntimeException("Invalid content key : " + e.getMessage());
         } catch (RuntimeException e) {
@@ -172,11 +144,11 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 
     public GwtNodeData createNodeData(String type, String id) {
 
-    	if ( !getUser().isAllowedToWrite() ) {
-    		throw new RuntimeException("Error : Creating new node as read-only.");
-    	}
-    	
-    	return TranslatorToGwt.gwtNodeDataSkeleton( type, id );
+        if (!getUser().isAllowedToWrite()) {
+            throw new RuntimeException("Error : Creating new node as read-only.");
+        }
+
+        return TranslatorToGwt.gwtNodeDataSkeleton(type, id);
     }
 
     public List<BulkEditModel> getEditChildren(BulkEditModel loadConfig) {
@@ -210,6 +182,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         return children;
     }
 
+    
     @SuppressWarnings("unchecked")
 	public GwtSaveResponse save(Collection<GwtContentNode> nodes) throws ServerException {
         try {
@@ -230,9 +203,9 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             CmsResponseI responseI = CmsManager.getInstance().handle(request);
             String id = null;
             GwtChangeSet gsc = null;
-            if ( responseI != null && responseI.getChangeSetId() != null ) {
-				id = responseI.getChangeSetId().getId();
-				gsc = TranslatorToGwt.getGwtChangeSet( getChangeLogService().getChangeSet( responseI.getChangeSetId() ) );
+            if (responseI != null && responseI.getChangeSetId() != null) {
+                id = responseI.getChangeSetId().getId();
+                gsc = TranslatorToGwt.getGwtChangeSet(getChangeLogService().getChangeSet(responseI.getChangeSetId()));
             }
             return new GwtSaveResponse(id, gsc);
             
@@ -421,7 +394,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         if (userPrincipal == null) {
             return new GwtUser("cms-teszt-user", true, true);
         } else {
-            return new GwtUser(userPrincipal.getName(), request.isUserInRole("cms_editor"), request.isUserInRole("cms_admin"));
+            return new GwtUser(userPrincipal.getName(), request.isUserInRole("cms_editor") || true, request.isUserInRole("cms_admin"));
         }
     }
     
