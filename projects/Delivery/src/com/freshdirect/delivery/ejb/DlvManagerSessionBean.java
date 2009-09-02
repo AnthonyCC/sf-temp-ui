@@ -631,7 +631,8 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	}
 
 	public void removeReservation(String reservationId) {
-		Connection conn = null;
+		cancelReservation(reservationId);
+		/*Connection conn = null;
 		try {
 			conn = this.getConnection();
 			DlvManagerDAO.removeReservation(conn, reservationId);
@@ -645,7 +646,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			} catch (SQLException e) {
 				LOGGER.warn("SQLException while trying to cleanup", e);
 			}
-		}
+		}*/
 	}
 
 	private final static String FIND_ZONES_BY_ZONEID_QUERY =

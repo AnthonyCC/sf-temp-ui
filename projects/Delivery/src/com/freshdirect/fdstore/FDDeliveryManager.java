@@ -481,10 +481,12 @@ public class FDDeliveryManager {
 				dlvReservation.getExpirationDateTime(),
 				dlvReservation.getReservationType(),
 				dlvReservation.getCustomerId(),
-				address.getPK().getId(),
+				address.getId(),
 				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null);
-			if(FDStoreProperties.isDynamicRoutingEnabled()) 
-				RoutingUtil.getInstance().sendTimeslotReservationRequest(reservation,address);
+			if(FDStoreProperties.isDynamicRoutingEnabled()) {
+				if(dlvReservation.getUnassignedActivityType()==null ||RoutingActivityType.RESERVE_TIMESLOT.equals(dlvReservation.getUnassignedActivityType()))
+					RoutingUtil.getInstance().sendTimeslotReservationRequest(reservation,address);
+			}
 			return reservation;
 
 		} catch (RemoteException re) {
@@ -520,7 +522,9 @@ public class FDDeliveryManager {
 			sb.removeReservation(reservationId);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(reservationId);
-				RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
+				if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType()))
+					RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
+				
 			}
 
 		} catch (RemoteException re) {
@@ -570,7 +574,8 @@ public class FDDeliveryManager {
 			sb.commitReservation(rsvId, customerId, orderId);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(rsvId);
-				RoutingUtil.getInstance().sendCommitReservationRequest(reservation,address);
+				if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))
+					RoutingUtil.getInstance().sendCommitReservationRequest(reservation,address);
 			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -588,8 +593,8 @@ public class FDDeliveryManager {
 			 boolean status=sb.releaseReservation(rsvId);
 			 if(FDStoreProperties.isDynamicRoutingEnabled()) {
 					DlvReservationModel reservation=sb.getReservation(rsvId);
-
-					RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
+					if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType()))
+						RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
 			 }
 			 return status;
 		} catch (RemoteException re) {

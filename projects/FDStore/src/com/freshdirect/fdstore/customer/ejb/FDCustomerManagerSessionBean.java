@@ -2953,6 +2953,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		EnumReservationType rsvType,
 		FDActionInfo actionInfo) throws FDResourceException {
 		
+		System.out.println("Reservation :"+reservation);
 			if (reservation != null) {
 				/*DlvManagerSB dlvSB = this.getDlvManagerHome().create();
 				dlvSB.removeReservation(reservation.getPK().getId());*/
