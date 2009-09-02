@@ -23,7 +23,6 @@ import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
@@ -66,7 +65,6 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 	private CheckBoxSelectionModel<OneToManyModel> selection;
 	
 	private String attributeKey;
-//	private GwtNodeData nodeData;
 	
 	/**
 	 * empty constructor for descendants.
@@ -75,17 +73,16 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 	    
 	}
 	
-    public OneToManyRelationField(GwtNodeData node, String attrKey, Set<String> allowedTypes, boolean navigable) {
-        this(node, attrKey, allowedTypes, navigable, new ArrayList<GridCellRenderer<OneToManyModel>>(0));
+    public OneToManyRelationField(String attrKey, Set<String> allowedTypes, boolean navigable) {
+        this(attrKey, allowedTypes, navigable, new ArrayList<GridCellRenderer<OneToManyModel>>(0));
     }
 
-	public OneToManyRelationField(GwtNodeData node, String attrKey, Set<String> allowedTypes, boolean navigable, List<GridCellRenderer<OneToManyModel>> extraColumns) {
+	public OneToManyRelationField(String attrKey, Set<String> allowedTypes, boolean navigable, List<GridCellRenderer<OneToManyModel>> extraColumns) {
 		super();
 		this.attributeKey = attrKey;
 		this.allowedTypes = allowedTypes;
 		this.navigable = navigable;
 		this.extraColumns = extraColumns;
-//		this.nodeData = node;
 		initialize();
 	}
 
@@ -97,15 +94,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		allowedTypes = aTypes;
 	}
 	
-	@Override
-	public void setReadOnly( boolean readOnly ) {
-		super.setReadOnly( readOnly );
-		if ( addButton != null )
-			addButton.setEnabled( !readOnly );	
-		if ( createButton != null )
-			createButton.setEnabled( !readOnly );
-	}
-	
+	@SuppressWarnings( "unchecked" )
 	@Override
 	public void setValue(final List<OneToManyModel> values) {
 		// TODO FIXME bad solution, needs some checking
@@ -140,6 +129,10 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		return store.getModels();
 	}
 	
+    @Override
+    public List<OneToManyModel> getDefaultValue() {
+        return new ArrayList<OneToManyModel>(0);
+    }
 
 	private void addRelationshipsToNode ( String targetNodeKey, final String targetAttributeKey, final List<OneToManyModel> relationships ) {
 		
@@ -515,9 +508,11 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
     	if ( sortButton != null )
     		sortButton.enable();
     }
-    
-    @Override
-    public List<OneToManyModel> getDefaultValue() {
-        return new ArrayList<OneToManyModel>(0);
-    }
+
+	@Override
+	public void setReadOnly( boolean readOnly ) {
+		super.setReadOnly( readOnly );
+		setEnabled( !readOnly );	
+	}
+	
 }

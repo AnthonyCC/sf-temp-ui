@@ -16,11 +16,12 @@ import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
 public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 
     private IconButton relationButton;
+    private IconButton deleteButton;
+    
     private LabelField valueField;
 
     private ContentNodeModel value;
     private HashSet<String> allowedTypes;
-    private IconButton deleteButton;
 
     public OneToOneRelationField(HashSet<String> aTypes) {
         super();
@@ -43,12 +44,6 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
         } else {
             valueField.setValue("");
         }
-    }
-	
-    @Override
-    public void setReadOnly(boolean readOnly) {
-        super.setReadOnly(readOnly);
-        relationButton.setEnabled(!readOnly);
     }
 	
     private void initialize() {
@@ -89,6 +84,9 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
         if (relationButton != null) {
             relationButton.disable();
         }
+        if (deleteButton != null) {
+        	deleteButton.disable();
+        }
     }
 
     @Override
@@ -97,5 +95,14 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
         if (relationButton != null) {
             relationButton.enable();
         }
+        if (deleteButton != null) {
+        	deleteButton.enable();
+        }
     }
+        
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        super.setReadOnly(readOnly);
+        setEnabled(!readOnly);
+    }	
 }

@@ -141,27 +141,25 @@ public class ContentForm extends FormPanel {
         if (innerField == null) {
             return null;
         }
-        innerField.setReadOnly(attribute.isReadonly() || node.isReadonly());
+        innerField.setReadOnly( attribute.isReadonly() || node.isReadonly() );
 
         Field<Serializable> field;
-        if (attribute.isInheritable()) {
-            field = new InheritanceField<Serializable>(innerField, value == null, attributeKey);
-            ContentNodeAttributeI attr = node.getContexts() == null ? null : node.getContexts().getInheritedAttribute(contextPath, attributeKey);
-            // Serializable inhvalue = attr == null ? null : attr instanceof
-            // EnumAttribute ? ((EnumAttribute)attr).getEnumModel() :
-            // attr.getValue();
-            Serializable inhvalue = attr == null ? null : attr.getValue();
-            ((InheritanceField<Serializable>) field).setInheritedValue(inhvalue);
-        } else {
-            field = innerField;
-        }
+		if ( attribute.isInheritable() ) {
+			field = new InheritanceField<Serializable>( innerField, value == null, attributeKey );
+			ContentNodeAttributeI attr = node.getContexts() == null ? null : node.getContexts().getInheritedAttribute( contextPath, attributeKey );
+			Serializable inhvalue = attr == null ? null : attr.getValue();
+			( (InheritanceField<Serializable>)field ).setInheritedValue( inhvalue );
+		} else {
+			field = innerField;
+		}
 
-        attribute.setFieldObject(field);
-
-        if (attribute.isReadonly() || node.isReadonly()) {
-            field.setFieldLabel( "<span class=\"readonly\">" + attribute.getLabel() + "</span>");
+		attribute.setFieldObject( field );
+        field.setReadOnly( attribute.isReadonly() || node.isReadonly() );
+        
+		if ( attribute.isReadonly() || node.isReadonly() ) {
+            field.setFieldLabel( "<span class=\"readonly\">" + attribute.getLabel() + "</span>" );
         } else {
-            field.setFieldLabel(attribute.getLabel());
+            field.setFieldLabel( attribute.getLabel() );
         }
         
         field.setLabelSeparator( "" );
@@ -259,11 +257,11 @@ public class ContentForm extends FormPanel {
 			        field = new VariationMatrixField(attr.getAllowedTypes(), node.getNode());
 			    }
 			    if (customFieldDefinition.getGridColumns() != null) {
-			        field = new CustomGridField(node, attributeKey, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition);
+			        field = new CustomGridField(attributeKey, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition);
 			    }
 			} 
 			if (field == null) {
-			    field = new OneToManyRelationField(node, attributeKey, attr.getAllowedTypes(), attr.isNavigable());    
+			    field = new OneToManyRelationField(attributeKey, attr.getAllowedTypes(), attr.isNavigable());    
 			}
 			
 			if (value != null) {

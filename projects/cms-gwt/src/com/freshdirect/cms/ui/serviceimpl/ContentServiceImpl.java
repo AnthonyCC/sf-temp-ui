@@ -134,7 +134,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             return TranslatorToGwt.gwtNodeData( node, !getUser().isAllowedToWrite() );
             
         } catch (IllegalArgumentException e) {
-            LOG.error("InvalidContentKeyException for "+nodeKey, e);
+            LOG.error("IllegalArgumentException for "+nodeKey, e);
             throw new RuntimeException("Invalid content key : " + e.getMessage());
         } catch (RuntimeException e) {
             LOG.error("Runtime Exception : " + e.getMessage(), e);
@@ -394,7 +394,9 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         if (userPrincipal == null) {
             return new GwtUser("cms-teszt-user", true, true);
         } else {
-            return new GwtUser(userPrincipal.getName(), request.isUserInRole("cms_editor") || true, request.isUserInRole("cms_admin"));
+        	// FIXME whats the point with the " || true "? ( X || true == true ) ! 
+            // return new GwtUser(userPrincipal.getName(), request.isUserInRole("cms_editor") || true, request.isUserInRole("cms_admin"));
+            return new GwtUser(userPrincipal.getName(), request.isUserInRole("cms_editor"), request.isUserInRole("cms_admin"));
         }
     }
     

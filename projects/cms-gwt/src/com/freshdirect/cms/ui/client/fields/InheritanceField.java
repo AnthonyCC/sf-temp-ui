@@ -77,6 +77,20 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
 			innerField.disable();
     	checkbox.enable();
     }
+    
+    @Override
+    public void setReadOnly( boolean readOnly ) {
+    	super.setReadOnly( readOnly );
+    	innerField.setReadOnly( readOnly );
+    	if ( readOnly ) {
+    		disable();
+        	checkbox.disable();    		
+    	} else {
+			enable();
+			checkbox.enable();
+		}
+    }
+
 
     
     @SuppressWarnings("unchecked")

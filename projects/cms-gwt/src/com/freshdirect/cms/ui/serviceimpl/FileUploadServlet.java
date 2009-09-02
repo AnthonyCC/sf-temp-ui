@@ -23,12 +23,13 @@ public abstract class FileUploadServlet extends HttpServlet {
         upload = new ServletFileUpload(new DiskFileItemFactory());
     }
 
-    @Override
+    @SuppressWarnings( "unchecked" )
+	@Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {
             //System.out.println("TYPE:"+ req.getParameter("type"));
-            if (upload.isMultipartContent(req)) {
+            if (ServletFileUpload.isMultipartContent(req)) {
                 List<FileItem> list = upload.parseRequest(req);
                     
                 String response = handleFileItems(req, list);

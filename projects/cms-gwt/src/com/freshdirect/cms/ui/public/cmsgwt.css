@@ -148,7 +148,7 @@
 
 
 
-/* ====== publish status ====== */
+/* ====== publish status and publish message severity colors ====== */
 .publish-complete {
 	color: green;
 }
@@ -158,7 +158,23 @@
 .publish-progress {
 	color: blue;
 }
-/* ====== publish status ====== */
+
+.publish-failure {
+	color: red;
+}
+.publish-error {
+	color: orangered;
+}
+.publish-warning {
+	color: orange;
+}
+.publish-info {
+	color: blue;
+}
+.publish-debug {
+	color: green;
+}
+/* ====== publish ... ====== */
 
 
 

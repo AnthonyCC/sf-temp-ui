@@ -48,8 +48,8 @@ public class CustomGridField extends OneToManyRelationField implements SaveListe
     
     CustomFieldDefinition customFields;
     
-    public CustomGridField(GwtNodeData node, String attributeKey, Set<String> allowedTypes, boolean navigable, CustomFieldDefinition customFields) {
-        super(node, attributeKey, allowedTypes, navigable, createExtraColumns(customFields));
+    public CustomGridField(String attributeKey, Set<String> allowedTypes, boolean navigable, CustomFieldDefinition customFields) {
+        super(attributeKey, allowedTypes, navigable, createExtraColumns(customFields));
         this.customFields = customFields;
     }
     

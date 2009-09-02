@@ -572,13 +572,13 @@ public class TranslatorToGwt {
 		return d;
     }
 
-    public static GwtPublishMessage getPublishMessage(PublishMessage pm) {
-        GwtPublishMessage g = new GwtPublishMessage ();
-        g.setContentId(pm.getContentId());
-        g.setContentType(pm.getContentType());
-        g.setMessage(pm.getMessage());
-        g.setTimestamp(pm.getTimestamp());
-        g.setSeverity(pm.getSeverity());
+    public static GwtPublishMessage getPublishMessage( PublishMessage pm ) {
+    	
+    	String contentKey = pm.getContentKey() == null ? null : pm.getContentKey().getEncoded();
+        GwtPublishMessage g = new GwtPublishMessage( pm.getContentType(), contentKey );
+		g.setMessage( pm.getMessage() );
+		g.setTimestamp( pm.getTimestamp() );
+		g.setSeverity( pm.getSeverity() );
         return g;
     }
     

@@ -1,97 +1,47 @@
 package com.freshdirect.cms.ui.model.publish;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class GwtPublishMessage implements Serializable {
+import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
+
+public class GwtPublishMessage extends ContentNodeModel {
 
     // the ordinals are important, check the constants in PublishMessage. 
     public enum Level {
         FAILURE, ERROR, WARNING, INFO, DEBUG
     }
 
-    /**
-     *  The time the message was created or last modified.
-     */
-    private Date timestamp;
     
-    /**
-     *  The severity level.
-     */
-    private Level severity;
+	public GwtPublishMessage() {
+		super();
+	}
     
-    /**
-     * The message.
-     */
-    private String message;
-    
-    /**
-     *  The id of the key of the content object related to the message.
-     */
-    private String contentId;
-    
-    /**
-     *  The type of the key of the content object related to the message.
-     */
-    private String contentType;
-    
-    
-    public GwtPublishMessage() {
+    public GwtPublishMessage( String type, String key ) {
+    	super( type, "", key );
     }
 
-    public Date getTimestamp() {
-        return timestamp;
+    public void setSeverity( int severity ) {
+    	set( "severity", Level.values()[severity] );
     }
-
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
-
+    
     public Level getSeverity() {
-        return severity;
-    }
-
-
-    public void setSeverity(Level severity) {
-        this.severity = severity;
+		return get( "severity" );    	
     }
     
-    public void setSeverity(int severity) {
-        this.severity = Level.values()[severity];
+    public void setMessage( String message ) {
+    	set( "message", message );    	
     }
-
-
+    
     public String getMessage() {
-        return message;
+		return get( "message" );    	
     }
-
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-
-    public String getContentId() {
-        return contentId;
-    }
-
-
-    public void setContentId(String contentId) {
-        this.contentId = contentId;
-    }
-
-
-    public String getContentType() {
-        return contentType;
-    }
-
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
     
+    public void setTimestamp( Date timestamp ) {
+    	set( "timestamp", timestamp );    	
+    }
     
+    public Date getTimestamp() {
+		return get( "timestamp" );    	
+    }
+
 }

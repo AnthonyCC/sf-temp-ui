@@ -20,7 +20,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
-import com.freshdirect.cms.ui.client.ChangeHistoryPopUp;
 import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.MainLayout;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
@@ -74,10 +73,22 @@ public class PublishHistoryPanel extends ContentPanel {
     private Grid<GwtPublishData> grid;
 
     public PublishHistoryPanel(List<GwtPublishData> datas) {
-    	
+    	super();
         setHeading("Publish History");
         setScrollMode( Scroll.AUTO );
 
+        getHeader().addTool(new Button("Start Publish", new SelectionListener<ButtonEvent> () {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                ChangeSetQuery q = new ChangeSetQuery();
+                q.setPublishId("latest");
+                q.setRange(0, 20);
+                MainLayout.startProgress("Details", "Downloading recent changes since last publish", "loading...");
+                CmsGwt.getContentService().getChangeSets(q, new ShowChangeHistoryCallback());
+            }
+        }));
+
+        
         BasePagingLoader<BasePagingLoadResult<GwtPublishData>> loader = new BasePagingLoader<BasePagingLoadResult<GwtPublishData>> (new PagingModelMemoryProxy(datas));
         store = new ListStore<GwtPublishData>(loader);
         
@@ -96,9 +107,8 @@ public class PublishHistoryPanel extends ContentPanel {
 						int colIndex, ListStore<GwtPublishData> store, Grid<GwtPublishData> grid ) {
 
 					final String statusCode = model.getStatusCode();
-					final String statusMessage = model.getStatusMessage();
 
-					Text statusLabel = new Text( statusMessage );
+					Text statusLabel = new Text( model.getStatusMessage() );
 					statusLabel.setTagName( "span" );
 
 					if ( GwtPublishData.COMPLETE.equals( statusCode ) ) {
@@ -147,21 +157,11 @@ public class PublishHistoryPanel extends ContentPanel {
             columns.add(c);
         }
         
-        final PagingToolBar toolBar = new PagingToolBar(20);  
-        toolBar.bind(loader);
-        setBottomComponent(toolBar);
-
-        getHeader().addTool(new Button("Start Publish", new SelectionListener<ButtonEvent> () {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                ChangeSetQuery q = new ChangeSetQuery();
-                q.setPublishId("latest");
-                q.setRange(0, 20);
-                MainLayout.startProgress("Details", "Downloading recent changes since last publish", "loading...");
-                CmsGwt.getContentService().getChangeSets(q, new ShowChangeHistoryCallback());
-            }
-        }));
         
+		final PagingToolBar toolBar = new PagingToolBar( 20 );
+		toolBar.bind( loader );
+		setBottomComponent( toolBar );
+
 		grid = new Grid<GwtPublishData>( store, new ColumnModel( columns ) );
         grid.setStripeRows(true);
         grid.setAutoExpandColumn("comment");
@@ -169,6 +169,5 @@ public class PublishHistoryPanel extends ContentPanel {
 
         add(grid);
         loader.load(0, 20);
-
     }
 }
