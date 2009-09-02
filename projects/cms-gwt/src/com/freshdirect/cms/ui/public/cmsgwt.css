@@ -150,13 +150,13 @@
 
 /* ====== publish status ====== */
 .publish-complete {
-	background-color: #88FF88;
+	color: green;
 }
 .publish-failed {
-	background-color: #FF8888;
+	color: red;
 }
 .publish-progress {
-	background-color: #8888FF;
+	color: blue;
 }
 /* ====== publish status ====== */
 
