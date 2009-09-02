@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+
   <display-name>cms-gwt</display-name>
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
@@ -30,43 +31,43 @@
   </servlet>
 
 
-  <servlet-mapping>
-    <servlet-name>contentService</servlet-name>
-    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/contentService</url-pattern>
-  </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>contentService</servlet-name>
     <url-pattern>/contentService</url-pattern>
+    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/contentService</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>adminService</servlet-name>
     <url-pattern>/adminService</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>adminService</servlet-name>
     <url-pattern>/com.freshdirect.cms.ui.cmsgwt/adminService</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>recipeUpload</servlet-name>
-    <url-pattern>/RecipeUpload</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>recipeUpload</servlet-name>
     <url-pattern>/com.freshdirect.cms.ui.cmsgwt/RecipeUpload</url-pattern>
+    <url-pattern>/RecipeUpload</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>xlsUpload</servlet-name>
     <url-pattern>/XlsUpload</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>xlsUpload</servlet-name>
     <url-pattern>/com.freshdirect.cms.ui.cmsgwt/XlsUpload</url-pattern>
   </servlet-mapping>
 
+  <filter>
+		<filter-name>registry</filter-name>
+		<filter-class>com.freshdirect.framework.conf.FDRegistryFilter</filter-class>
+  </filter>	
+
+  <filter-mapping>
+  	<filter-name>registry</filter-name>
+    <url-pattern>/contentService</url-pattern>
+    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/contentService</url-pattern>
+    <url-pattern>/adminService</url-pattern>
+    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/adminService</url-pattern>
+  </filter-mapping>
 <!--  -->
   <security-constraint>
 		<display-name>CMS Security Constraint</display-name>
