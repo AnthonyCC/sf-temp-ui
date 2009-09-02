@@ -64,7 +64,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, t.BASE_DATE BDATE, t.START_TIME STIME, " +
 			"t.END_TIME ETIME, s.CROMOD_DATE SCROMODDATE, z.ZONE_CODE ZCODE   " +
 			"from dlv.reservation r, dlv.timeslot t, cust.sale s, dlv.zone z " +
-			"where t.BASE_DATE = ? and r.STATUS_CODE in ('10','15') and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID";
+			"where t.BASE_DATE = ? and r.STATUS_CODE in ('5','10') and UNASSIGNED_DATETIME is not null and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID";
 	
 		
 	private static final String EARLY_WARNING_QUERY =

@@ -96,7 +96,8 @@ public class CapacityController extends AbstractMultiActionController {
 				DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
 				RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
 				
-				Map<String, List<IDeliveryWindowMetrics>> slotsByArea = deliveryProxy.getTimeslotsByDateEx(deliveryDate, getCutOffTime(cutOff), null);
+				Map<String, List<IDeliveryWindowMetrics>> slotsByArea = deliveryProxy.getTimeslotsByDateEx
+																			(deliveryDate, getCutOffTime(cutOff), null);
 								
 				Iterator<String> _itr = slotsByArea.keySet().iterator();
 				
@@ -236,7 +237,8 @@ public class CapacityController extends AbstractMultiActionController {
 				DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
 				RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
 				
-				Map<String, List<IDeliverySlot>> slotsByArea = deliveryProxy.getTimeslotsByDate(deliveryDate, getCutOffTime(cutOff), null);
+				Map<String, List<IDeliverySlot>> slotsByArea = deliveryProxy.getTimeslotsByDate
+																	(deliveryDate, getCutOffTime(cutOff), null);
 								
 				Iterator<String> _itr = slotsByArea.keySet().iterator();
 				

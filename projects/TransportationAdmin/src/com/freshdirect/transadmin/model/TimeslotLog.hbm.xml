@@ -20,7 +20,7 @@
         <property name="eventDtm" type="timestamp">
             <column name="EVENT_DTM" length="7" not-null="true" />
         </property>
-        <property name="responseTime" type="long">
+        <property name="responseTime" type="string">
             <column name="RESPONSE_TIME" />
         </property>
         <set name="timeslotLogDtls" inverse="false" lazy="false" table="TIMESLOT_LOG_DTL" fetch="select">

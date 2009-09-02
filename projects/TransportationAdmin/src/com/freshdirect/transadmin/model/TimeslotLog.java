@@ -17,7 +17,7 @@ public class TimeslotLog implements java.io.Serializable, TrnBaseEntityI {
 	private String orderId;
 	private String customerId;
 	private String eventtype;
-	private long responseTime;
+	private String responseTime;
 	private Date eventDtm;
 	private Set timeslotLogDtls = new HashSet(0);
 
@@ -33,7 +33,7 @@ public class TimeslotLog implements java.io.Serializable, TrnBaseEntityI {
 	}
 
 	public TimeslotLog(String id, String orderId, String customerId,
-			String eventtype, Date eventDtm, long responseTime, Set timeslotLogDtls) {
+			String eventtype, Date eventDtm, String responseTime, Set timeslotLogDtls) {
 		this.id = id;
 		this.orderId = orderId;
 		this.customerId = customerId;
@@ -91,11 +91,11 @@ public class TimeslotLog implements java.io.Serializable, TrnBaseEntityI {
 		this.timeslotLogDtls = timeslotLogDtls;
 	}
 	
-	public long getResponseTime() {
+	public String getResponseTime() {
 		return responseTime;
 	}
 
-	public void setResponseTime(long responseTime) {
+	public void setResponseTime(String responseTime) {
 		this.responseTime = responseTime;
 	}
 
