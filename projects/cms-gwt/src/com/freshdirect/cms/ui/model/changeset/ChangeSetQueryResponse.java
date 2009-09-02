@@ -1,12 +1,11 @@
-package com.freshdirect.cms.ui.model;
+package com.freshdirect.cms.ui.model.changeset;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
-import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
+import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
 
 public class ChangeSetQueryResponse implements Serializable {
 

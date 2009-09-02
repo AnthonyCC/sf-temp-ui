@@ -11,7 +11,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
-import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
+import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeDetail;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
 import com.freshdirect.cms.ui.model.changeset.GwtContentNodeChange;

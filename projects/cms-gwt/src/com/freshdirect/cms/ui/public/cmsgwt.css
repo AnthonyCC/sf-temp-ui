@@ -147,6 +147,22 @@
 }
 
 
+
+/* ====== publish status ====== */
+.publish-complete {
+	background-color: #88FF88;
+}
+.publish-failed {
+	background-color: #FF8888;
+}
+.publish-progress {
+	background-color: #8888FF;
+}
+/* ====== publish status ====== */
+
+
+
+
 /* ====== form ====== */
 .x-form-checkbox {
 	position: static ! important;

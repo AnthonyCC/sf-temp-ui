@@ -3,6 +3,7 @@ package com.freshdirect.cms.ui.client.publish;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.PagingModelMemoryProxy;
@@ -11,6 +12,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -21,9 +23,9 @@ import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.freshdirect.cms.ui.client.ChangeHistoryPopUp;
 import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.MainLayout;
-import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
-import com.freshdirect.cms.ui.model.GwtPublishData;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
+import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
+import com.freshdirect.cms.ui.model.publish.GwtPublishData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -72,17 +74,57 @@ public class PublishHistoryPanel extends ContentPanel {
     private Grid<GwtPublishData> grid;
 
     public PublishHistoryPanel(List<GwtPublishData> datas) {
+    	
         setHeading("Publish History");
+        setScrollMode( Scroll.AUTO );
 
         BasePagingLoader<BasePagingLoadResult<GwtPublishData>> loader = new BasePagingLoader<BasePagingLoadResult<GwtPublishData>> (new PagingModelMemoryProxy(datas));
         store = new ListStore<GwtPublishData>(loader);
         
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+        
+        // ============ ID ============
         columns.add(new ColumnConfig("id", "ID", 50));
-        columns.add(new ColumnConfig("status", "Status", 100));
+        
+        // ============ STATUS ============
+        {
+			ColumnConfig c = new ColumnConfig( "status", "Status", 100 );
+			c.setRenderer( new GridCellRenderer<GwtPublishData>() {
+
+				@Override
+				public Object render( GwtPublishData model, String property, ColumnData config, int rowIndex,
+						int colIndex, ListStore<GwtPublishData> store, Grid<GwtPublishData> grid ) {
+
+					final String statusCode = model.getStatusCode();
+					final String statusMessage = model.getStatusMessage();
+
+					Text statusLabel = new Text( statusMessage );
+					statusLabel.setTagName( "span" );
+
+					if ( GwtPublishData.COMPLETE.equals( statusCode ) ) {
+						statusLabel.addStyleName( "publish-complete" );
+					} else if ( GwtPublishData.FAILED.equals( statusCode ) ) {
+						statusLabel.addStyleName( "publish-failed" );
+					} else if ( GwtPublishData.PROGRESS.equals( statusCode ) ) {
+						statusLabel.addStyleName( "publish-progress" );
+					}
+
+					return statusLabel;
+				}
+			} );
+			columns.add( c );
+        }
+        
+        // ============ CREATED ============
         columns.add(new ColumnConfig("created", "Publish On", 150));
+        
+        // ============ PUBLISHER ============
         columns.add(new ColumnConfig("publisher", "Publish By", 150));
+        
+        // ============ COMMENT ============
         columns.add(new ColumnConfig("comment", "Comment", 300));
+        
+        // ============ DETAILS BUTTON ============
         {
             ColumnConfig c = new ColumnConfig("button", "Details", 50);
             c.setRenderer(new GridCellRenderer<GwtPublishData> () {
@@ -120,8 +162,7 @@ public class PublishHistoryPanel extends ContentPanel {
             }
         }));
         
-        ColumnModel cm = new ColumnModel(columns);
-        grid = new Grid<GwtPublishData>(store, cm);
+		grid = new Grid<GwtPublishData>( store, new ColumnModel( columns ) );
         grid.setStripeRows(true);
         grid.setAutoExpandColumn("comment");
         grid.setAutoHeight(true);

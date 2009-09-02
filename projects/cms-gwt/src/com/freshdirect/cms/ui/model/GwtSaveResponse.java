@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
+import com.freshdirect.cms.ui.model.publish.GwtValidationError;
 
 public class GwtSaveResponse implements Serializable {
 

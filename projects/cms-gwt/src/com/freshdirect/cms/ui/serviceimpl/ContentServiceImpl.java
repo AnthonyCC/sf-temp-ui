@@ -1,7 +1,5 @@
 package com.freshdirect.cms.ui.serviceimpl;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,16 +35,16 @@ import com.freshdirect.cms.publish.PublishServiceI;
 import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.BulkEditModel;
-import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
-import com.freshdirect.cms.ui.model.GwtPublishData;
-import com.freshdirect.cms.ui.model.GwtPublishMessage;
 import com.freshdirect.cms.ui.model.GwtSaveResponse;
 import com.freshdirect.cms.ui.model.GwtUser;
-import com.freshdirect.cms.ui.model.GwtValidationError;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
+import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
+import com.freshdirect.cms.ui.model.publish.GwtPublishData;
+import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
+import com.freshdirect.cms.ui.model.publish.GwtValidationError;
 import com.freshdirect.cms.ui.service.ContentService;
 import com.freshdirect.cms.ui.service.GwtSecurityException;
 import com.freshdirect.cms.ui.service.ServerException;
@@ -304,6 +302,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 
     private String getLastInfo(Publish publish) {
         String lastMessage = null;
+        //FIXME lastDate is always null, whats the point?
         Date lastDate = null;
         for (PublishMessage m : publish.getMessages()) {
             if (m.getSeverity() == PublishMessage.INFO) {

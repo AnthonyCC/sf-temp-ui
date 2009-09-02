@@ -15,7 +15,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.freshdirect.cms.ui.client.fields.Renderers;
-import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
+import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
 import com.google.gwt.i18n.client.DateTimeFormat;
 

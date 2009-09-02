@@ -1,4 +1,4 @@
-package com.freshdirect.cms.ui.model;
+package com.freshdirect.cms.ui.model.publish;
 
 import java.io.Serializable;
 

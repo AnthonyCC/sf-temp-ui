@@ -38,8 +38,6 @@ import com.freshdirect.cms.ui.model.CustomFieldDefinition;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeContext;
 import com.freshdirect.cms.ui.model.GwtNodeData;
-import com.freshdirect.cms.ui.model.GwtPublishData;
-import com.freshdirect.cms.ui.model.GwtPublishMessage;
 import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.freshdirect.cms.ui.model.TabDefinition;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
@@ -52,6 +50,8 @@ import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeDetail;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
 import com.freshdirect.cms.ui.model.changeset.GwtContentNodeChange;
+import com.freshdirect.cms.ui.model.publish.GwtPublishData;
+import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
 import com.freshdirect.cms.ui.service.ServerException;
 import com.freshdirect.fdstore.FDStoreProperties;
 
@@ -562,14 +562,14 @@ public class TranslatorToGwt {
     }
 
 	
-    public static GwtPublishData getPublishData(Publish p) {
-        GwtPublishData d = new GwtPublishData();
-        d.setId(p.getId());
-        d.setComment(p.getDescription());
-        d.setPublisher(p.getUserId());
-        d.setCreated(p.getTimestamp());
-        d.setStatus(p.getStatus().getDescription());
-        return d;
+	public static GwtPublishData getPublishData( Publish p ) {
+		GwtPublishData d = new GwtPublishData();
+		d.setId( p.getId() );
+		d.setComment( p.getDescription() );
+		d.setPublisher( p.getUserId() );
+		d.setCreated( p.getTimestamp() );
+		d.setStatus( p.getStatus().getName(), p.getStatus().getDescription() );
+		return d;
     }
 
     public static GwtPublishMessage getPublishMessage(PublishMessage pm) {

@@ -12,8 +12,8 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.freshdirect.cms.ui.client.fields.Renderers;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
-import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
-import com.freshdirect.cms.ui.model.GwtPublishMessage;
+import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
+import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
 
 public class PublishMessagesPanel extends ContentPanel {
 

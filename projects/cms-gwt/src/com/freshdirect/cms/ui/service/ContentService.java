@@ -6,13 +6,13 @@ import java.util.Map;
 
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.BulkEditModel;
-import com.freshdirect.cms.ui.model.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
-import com.freshdirect.cms.ui.model.GwtPublishData;
 import com.freshdirect.cms.ui.model.GwtSaveResponse;
 import com.freshdirect.cms.ui.model.GwtUser;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
+import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
+import com.freshdirect.cms.ui.model.publish.GwtPublishData;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
