@@ -407,6 +407,7 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 		assertNotNull(product);
 		product.resetActiveYmalSetSession();
 		YmalSet ys = product.getActiveYmalSet();
+		assertNotNull(ys);
 		System.out.println("ymalset:" + ys.getContentKey().getId());
 		if ("ymal_set_4_to_6".equals(ys.getContentKey().getId())) {
                     List relatedProducts = product.getYmalProducts();
@@ -535,6 +536,7 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 
 		// test getActiveYmalSet()
 		YmalSet ys = cf.getActiveYmalSet();
+		assertNotNull(ys);
 		assertEquals(ys.getContentName(), "ymal_set_4_to_6");
 		
 		// test getYmalProducts()
@@ -566,6 +568,7 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 
 		// test getActiveYmalSet()
 		YmalSet ys = cf.getActiveYmalSet();
+		assertNotNull(ys);
 		assertTrue("ymal_set_4_to_6".equals(ys.getContentName()) || "ymal_set_simple".equals(ys.getContentName()));
 		
 		// test getYmalProducts()

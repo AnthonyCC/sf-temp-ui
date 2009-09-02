@@ -122,7 +122,11 @@ public class Impression {
         
         String triggerProductId = (trigger instanceof ProductModel)? trigger.getContentKey().getId() : "";
         String triggerCategoryId = (category != null) ? category.getContentKey().getId() : "";
-        String ymalSetId = ymalSource != null ? ymalSource.getActiveYmalSet().getContentKey().getId() : "";
+        String ymalSetId = ymalSource != null  
+        		? (ymalSource.getActiveYmalSet() != null
+        				? ymalSource.getActiveYmalSet().getContentKey().getId()
+        				: "")
+        		: "";
 
         return logFeatureImpression(parentFeatureImpId, parentVariantId, variant.getId(), triggerCategoryId, triggerProductId, ymalSetId);
     }
