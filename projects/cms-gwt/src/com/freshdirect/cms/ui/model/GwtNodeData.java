@@ -7,6 +7,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.freshdirect.cms.ui.client.contenteditor.ContentEditor;
 import com.freshdirect.cms.ui.client.contenteditor.ContentForm;
+import com.freshdirect.cms.ui.client.fields.ChangeTrackingField;
 import com.freshdirect.cms.ui.client.fields.SaveListenerField;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
@@ -129,25 +130,32 @@ public class GwtNodeData implements Serializable {
 	 * @return the extra, related nodes.
 	 *  
 	 */
-	public void collectValuesFromFields() {
-        for ( Map.Entry<String, ContentNodeAttributeI> e : node.getOriginalAttributes().entrySet() ) {
-        	Field<Serializable> fieldObject = e.getValue().getFieldObject();
+    public void collectValuesFromFields() {
+        for (Map.Entry<String, ContentNodeAttributeI> e : node.getOriginalAttributes().entrySet()) {
+            Field<Serializable> fieldObject = e.getValue().getFieldObject();
             // field object can be null, if the field not rendered
-            if (fieldObject!=null) {
-                getValueFromField( e.getKey(), e.getValue().getFieldObject() );
+            if (fieldObject != null) {
+                getValueFromField(e.getKey(), e.getValue().getFieldObject());
             } else {
                 this.node.changeValue(e.getKey(), e.getValue().getValue());
             }
         }
-	}	
+    }
 	
-    private void getValueFromField(String name, Field<Serializable> fieldObject ) {
+    private void getValueFromField(String name, Field<Serializable> fieldObject) {
         if (fieldObject instanceof SaveListenerField) {
-        	// onSave will add nodes to the workingset
-            ((SaveListenerField)fieldObject).onSave();
+            // onSave will add nodes to the workingset
+            ((SaveListenerField) fieldObject).onSave();
         }
-        Serializable value = (Serializable) fieldObject.getValue();
-        this.node.changeValue(name, value);
+        if (fieldObject instanceof ChangeTrackingField) {
+            if (((ChangeTrackingField) fieldObject).isFieldValueChanged()) {
+                Serializable value = ((ChangeTrackingField) fieldObject).getChangedValue();
+                this.node.changeValue(name, value);
+            }
+        } else {
+            Serializable value = (Serializable) fieldObject.getValue();
+            this.node.changeValue(name, value);
+        }
     }
     
     public boolean isChanged() {

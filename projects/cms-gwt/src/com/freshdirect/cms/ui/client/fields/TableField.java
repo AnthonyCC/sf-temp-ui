@@ -31,7 +31,7 @@ import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute.ColumnType;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class TableField extends MultiField {
+public class TableField extends MultiField implements ChangeTrackingField {
 
     private static final class TableRowLoader implements DataProxy<PagingLoadResult<? extends ModelData>> {
         TableAttribute attribute;
@@ -150,6 +150,15 @@ public class TableField extends MultiField {
         // return the original value, because no editing is possible with this field.
         return attribute.getValue();
     }
+
+    @Override
+    public boolean isFieldValueChanged() {
+        return false;
+    }
     
+    @Override
+    public Serializable getChangedValue() {
+        return null;
+    }
 
 }
