@@ -1,4 +1,4 @@
-package com.freshdirect.cms.ui.client;
+package com.freshdirect.cms.ui.client.publish;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,43 +32,57 @@ public class ChangeSetPanel extends ContentPanel {
         super();
         setHeading("Change Set");
 
-        setScrollMode(Scroll.NONE);
-        setLayout(new FitLayout());
+		setScrollMode( Scroll.AUTO );
+		setLayout( new FitLayout() );
 
         BasePagingLoader<BasePagingLoadResult<BaseModelData>> loader = new BasePagingLoader<BasePagingLoadResult<BaseModelData>>(new ChangeSetLoader(response));
         store = new ListStore<BaseModelData>(loader);
         store.setSortField("date");
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("user", "User", 80));
+        
+        // ============ USER ============
+        columns.add(new ColumnConfig("user", "User", 60));
+        
+        // ============ DATE ============
         {
             ColumnConfig cc = new ColumnConfig("date", "Creation Date", 120);
             cc.setDateTimeFormat(DateTimeFormat.getMediumDateTimeFormat());
 
             columns.add(cc);
         }
-        columns.add(noSort(new ColumnConfig("changeType", "Type", 70)));
+        
+        // ============ CHANGETYPE ============
+        columns.add(noSort(new ColumnConfig("changeType", "Type", 50)));
+
+        // ============ CONTENTNODE ============
         {
             ColumnConfig cc = noSort(new ColumnConfig("contentNode", "Content", 150));
             cc.setRenderer(Renderers.GRID_LINK_RENDERER);
             columns.add(cc);
         }
+        
+        // ============ ATTRIBUTE ============
         columns.add(noSort(new ColumnConfig("attribute", "Attribute", 150)));
+        
+        // ============ OLD VALUE ============
         columns.add(noSort(new ColumnConfig("old", "Old Value", 200)));
-        columns.add(noSort(new ColumnConfig("new", "New Value", 400)));
+        
+        // ============ NEW VALUE ============
+        columns.add(noSort(new ColumnConfig("new", "New Value", 200)));
 
-        final PagingToolBar toolBar = new PagingToolBar(20);
-        toolBar.bind(loader);
-        setBottomComponent(toolBar);
+        
+		final PagingToolBar toolBar = new PagingToolBar( 20 );
+		toolBar.bind( loader );
+		setBottomComponent( toolBar );
 
-        ColumnModel cm = new ColumnModel(columns);
-        grid = new Grid<BaseModelData>(store, cm);
-        grid.setStripeRows(true);
-        // if auto height is set to true, then there will be no scrollbar!
-        // grid.setAutoHeight(true);
-        add(grid);
-
-        loader.load(0, 20);
+		grid = new Grid<BaseModelData>( store, new ColumnModel( columns ) );
+		grid.setStripeRows( true );
+		grid.setAutoExpandColumn( "attribute" );
+		grid.setAutoHeight( true );
+		
+		add( grid );
+		loader.load( 0, 20 );
     }
     
     static ColumnConfig noSort(ColumnConfig cc) {

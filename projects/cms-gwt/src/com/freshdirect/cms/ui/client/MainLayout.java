@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.widget.HtmlContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.Viewport;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.form.Field;
@@ -28,12 +29,14 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.client.nodetree.NodeTree;
+import com.freshdirect.cms.ui.client.publish.ChangeHistoryPanel;
 import com.freshdirect.cms.ui.client.publish.ChangeHistoryPopUp;
 import com.freshdirect.cms.ui.client.publish.PublishHistoryPanel;
 import com.freshdirect.cms.ui.client.treetable.EditorTree;
@@ -55,7 +58,7 @@ import com.google.gwt.user.client.ui.Hyperlink;
 
 public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 	private PageHeader header;
-	private ContentPanel mainPanel;
+	private static ContentPanel mainPanel;
 	private NodeTree treePanel;
 	private SimpleComboBox<String> contextDropdown;
 	private ToolBar contentToolBar;
@@ -128,10 +131,6 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 		
 		statusToolBar.add( new FillToolItem() );
 		
-//		progressBar = new ProgressBar();	
-//		progressBar.setWidth( 200 );		
-//		statusToolBar.add( progressBar );
-		
 		mainPanel.setBottomComponent( statusToolBar );
 		
 		
@@ -171,13 +170,6 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
     public static void startProgress(String title, String message, String progressText) {
         stopProgress();
         progressBar = MessageBox.progress(title, message, progressText);
-        // if ( progressBar == null ) {
-        //      progressBar = MessageBox.progress( title, message, progressText );
-        // } else {
-        //      progressBar.setTitle( title );
-        //      progressBar.setMessage( message );
-        //      progressBar.setProgressText( progressText );
-        // }
         progressBar.setModal(true);
         progressBar.getProgressBar().auto();
         progressBar.show();
@@ -438,8 +430,24 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                         public void onSuccess(ChangeSetQueryResponse result) {
                             setStatus("History loaded successfully.");
                             stopProgress();
-                            ChangeHistoryPopUp cp = new ChangeHistoryPopUp(result, label);
-                            cp.show();
+                            
+                            Window popup = new Window();
+                            popup.setHeaderVisible( false );
+                            popup.setLayout( new FitLayout() );
+                            popup.setModal( true );
+                            popup.setMaximizable( true );
+                            popup.setMinimizable( true );
+                            popup.setClosable( true );
+                            popup.setDraggable( true );
+                            popup.setResizable( true );
+                            popup.setSize( 900, 600 );
+                            
+                            ChangeHistoryPanel panel = new ChangeHistoryPanel(result, label);                            
+                            popup.add( panel );
+                            popup.show();
+                            
+//                            ChangeHistoryPopUp cp = new ChangeHistoryPopUp(result, label);
+//                            cp.show();
                         }
                     });
         }
@@ -495,11 +503,9 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                     currentNode = null;
                     
                     if (result.getChangeSet() != null) {
-                        ChangeHistoryPopUp cp = new ChangeHistoryPopUp(new ChangeSetQueryResponse(result.getChangeSet()), "saved nodes");
-                        cp.show();
+                        ChangeHistoryPanel cp = new ChangeHistoryPanel(new ChangeSetQueryResponse(result.getChangeSet()), "saved nodes");
+                        setContentPanel( cp );
                     }
-                    mainPanel.layout();
-
                     
                     //nodeTree.getSelectionModel().deselectAll();
                     setStatus( "Saved succesfully." );
@@ -635,5 +641,12 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             }
         }
     }
+
+	public static void setContentPanel( ContentPanel panel ) {
+		//TODO save/discard ?
+		mainPanel.removeAll();
+        mainPanel.add( panel );
+        mainPanel.layout();		
+	}
     
 }

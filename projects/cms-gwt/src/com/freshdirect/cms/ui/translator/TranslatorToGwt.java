@@ -524,11 +524,12 @@ public class TranslatorToGwt {
 
     @SuppressWarnings("unchecked")
 	public static GwtChangeSet getGwtChangeSet(ChangeSet changeSet) {
-        GwtChangeSet gwt = new GwtChangeSet ();
-        gwt.setId(changeSet.getId());
-        gwt.setModifiedDate(changeSet.getModifiedDate());
-        gwt.setUserId(changeSet.getUserId());
-        gwt.setNote(changeSet.getNote());
+    	
+		GwtChangeSet gwt = new GwtChangeSet();
+		gwt.setChangeSetId( changeSet.getId() );
+		gwt.setUserId( changeSet.getUserId() );
+		gwt.setModifiedDate( changeSet.getModifiedDate() );
+		gwt.setNote( changeSet.getNote() );
         for ( ContentNodeChange cnc : (List<ContentNodeChange>)changeSet.getNodeChanges() ) {
             gwt.addChange(getGwtContentNodeChange(cnc));
         }

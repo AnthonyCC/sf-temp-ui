@@ -1,25 +1,19 @@
 package com.freshdirect.cms.ui.client.publish;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 
-public class ChangeHistoryPopUp extends Window {
 
-	public ChangeHistoryPopUp( ChangeSetQueryResponse changeHistory, String label ) {
+public class ChangeHistoryPanel extends ContentPanel {
+
+	public ChangeHistoryPanel( ChangeSetQueryResponse changeHistory, String label ) {
 		super();
 		setHeading( "Change History for : " + label );
-		setLayout( new FitLayout() );
-		setModal( true );
-		setMaximizable( true );
-		setMinimizable( true );
-		setClosable( true );
-		setDraggable( true );
-		setResizable( true );
-		setSize( 900, 600 );
-		
+        setScrollMode( Scroll.AUTO );
 		 
 		TabPanel tabPanel = new TabPanel();	
 		
@@ -38,4 +32,5 @@ public class ChangeHistoryPopUp extends Window {
 		add( tabPanel );
 
 	}
+	
 }

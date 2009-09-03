@@ -1,4 +1,4 @@
-package com.freshdirect.cms.ui.client;
+package com.freshdirect.cms.ui.client.publish;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.data.DataReader;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeDetail;

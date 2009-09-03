@@ -9,12 +9,10 @@ import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
 
 public class ChangeSetQueryResponse implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     List<GwtChangeSet> changes;
+    List<GwtPublishMessage> publishMessages;
 
     int changeSetCount;
     int changeCount;
@@ -25,8 +23,6 @@ public class ChangeSetQueryResponse implements Serializable {
     Date publishStart;
     long elapsedTime;
     String lastInfo;
-    
-    List<GwtPublishMessage> publishMessages;
     
 
     public ChangeSetQueryResponse() {

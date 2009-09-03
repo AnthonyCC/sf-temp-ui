@@ -63,8 +63,9 @@ public class PublishHistoryPanel extends ContentPanel {
                 PublishConfirmationPopup popup = new PublishConfirmationPopup(result);
                 popup.show();
             } else {
-                ChangeHistoryPopUp popup = new ChangeHistoryPopUp(result, "Publish "+id);
-                popup.show();
+            	ChangeHistoryPanel historyPanel = new ChangeHistoryPanel(result, "Publish "+id);
+            	MainLayout.setContentPanel( historyPanel );
+                MainLayout.setStatus("Change history loaded.");
             }
         }
     }

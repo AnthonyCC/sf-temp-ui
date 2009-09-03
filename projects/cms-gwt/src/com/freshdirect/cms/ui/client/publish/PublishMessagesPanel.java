@@ -18,7 +18,6 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.freshdirect.cms.ui.client.fields.Renderers;
-import com.freshdirect.cms.ui.model.publish.GwtPublishData;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage.Level;
 
@@ -35,27 +34,8 @@ public class PublishMessagesPanel extends ContentPanel {
 
 		BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>> loader = new BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>>( new PagingModelMemoryProxy( messages ) );
         store = new ListStore<GwtPublishMessage>( loader );
-
-        
-        
-//		for ( GwtPublishMessage p : messages ) {
-//			String contentKey = p.getContentType() + ":" + p.getContentId();
-//			ContentNodeModel b = new ContentNodeModel( p.getContentType(), p.getContentId(), contentKey );
-//			b.set( "severity", p.getSeverity().name() );
-//			b.set( "date", p.getTimestamp() );
-//			b.set( "key", contentKey );
-//			b.set( "message", p.getMessage() );
-//			store.add( b );
-//		}
-
-        
-        
         
 		List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-		
-        // ============ SEVERITY ============
-//		columns.add( new ColumnConfig( "severity", "Severity", 80 ) );
-
 		
         // ============ SEVERITY ============
         {
@@ -94,9 +74,6 @@ public class PublishMessagesPanel extends ContentPanel {
 			} );
 			columns.add( c );
         }
-		
-		
-		
 		
         // ============ TIMESTAMP ============
 		columns.add( new ColumnConfig( "timestamp", "Timestamp", 120 ) );
