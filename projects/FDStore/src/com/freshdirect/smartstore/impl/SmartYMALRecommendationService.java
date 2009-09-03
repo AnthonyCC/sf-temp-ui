@@ -111,6 +111,9 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 			
 				Recommender rec = (Recommender) recommenders.get(i);
 				RecommenderStrategy strategy = rec.getStrategy();
+				if (strategy == null)
+					continue;
+
 				List scope = rec.getScope();
 				
 				RecommendationService rs = getScriptRecommendationService(strategy);
