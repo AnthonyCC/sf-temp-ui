@@ -37,7 +37,6 @@ import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.client.nodetree.NodeTree;
 import com.freshdirect.cms.ui.client.publish.ChangeHistoryPanel;
-import com.freshdirect.cms.ui.client.publish.ChangeHistoryPopUp;
 import com.freshdirect.cms.ui.client.publish.PublishHistoryPanel;
 import com.freshdirect.cms.ui.client.treetable.EditorTree;
 import com.freshdirect.cms.ui.model.GwtNodeContext;
@@ -444,10 +443,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                             
                             ChangeHistoryPanel panel = new ChangeHistoryPanel(result, label);                            
                             popup.add( panel );
-                            popup.show();
-                            
-//                            ChangeHistoryPopUp cp = new ChangeHistoryPopUp(result, label);
-//                            cp.show();
+                            popup.show();                            
                         }
                     });
         }
