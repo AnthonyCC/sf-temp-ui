@@ -156,7 +156,7 @@ class FDProductHelper {
 				erpProductInfo.getDefaultPrice(), erpProductInfo.getBasePriceUnit(), erpProductInfo.getDefaultPriceUnit());
 		int dealsPercentage=-1;
 		if(hasWasPrice) {
-			LOGGER.debug("has was price for SKU " + erpProductInfo.getSkuCode());			
+			//LOGGER.debug("has was price for SKU " + erpProductInfo.getSkuCode());			
 			dealsPercentage=DealsHelper.getVariancePercentage(erpProductInfo.getBasePrice(), erpProductInfo.getDefaultPrice());
 		}
 		
@@ -164,7 +164,7 @@ class FDProductHelper {
 				erpProductInfo.getDefaultPrice(), erpProductInfo.getDefaultPriceUnit(),
 				erpProductInfo.getMaterialPrices());
 		if (tieredDeal > 0 && DealsHelper.isDealOutOfBounds(tieredDeal)) {
-			LOGGER.debug("tiered deal is out of bounds for SKU " + erpProductInfo.getSkuCode());
+			//LOGGER.debug("tiered deal is out of bounds for SKU " + erpProductInfo.getSkuCode());
 			tieredDeal = 0;
 		}
 		

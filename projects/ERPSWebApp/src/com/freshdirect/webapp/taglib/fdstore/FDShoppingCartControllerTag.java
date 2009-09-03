@@ -1242,9 +1242,10 @@ public class FDShoppingCartControllerTag extends
 		
 		if (theCartLine != null) {
 			String catId = request.getParameter("catId");
-			String ymalSetId = request.getParameter(suffix != null ? "ymalSetId"+suffix : "ymalSetId");
+			String sfx = request.getParameter("ymal_box") != null ? "" : suffix != null ? suffix : ""; 
+			String ymalSetId = request.getParameter("ymalSetId"+sfx);
 			String originatingProductId = request
-					.getParameter(suffix != null ? "originatingProductId"+suffix : "originatingProductId");
+					.getParameter("originatingProductId"+sfx);
 			String originalOrderLineId = request
 					.getParameter("originalOrderLineId" + suffix);
 

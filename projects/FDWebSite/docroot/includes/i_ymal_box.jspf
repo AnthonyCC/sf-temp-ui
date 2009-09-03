@@ -160,6 +160,7 @@
 
 
 				<form class="ymal" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
+					<input type="hidden" name="ymal_box" value="present">
 				
 <%		if (ym_aset != null) { %>
 					<input type="hidden" name="ymalSetId" value="<%= ym_aset.getContentKey().getId() %>">
