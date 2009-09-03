@@ -533,7 +533,14 @@ public class RoutingDataEncoder {
 		return schMetricsOptions;
 	}
 	
-	
+	public static com.freshdirect.routing.proxy.stub.roadnet.Address encodeAddress(String street, String zipCode, String country) {
+		
+		com.freshdirect.routing.proxy.stub.roadnet.Address address = new com.freshdirect.routing.proxy.stub.roadnet.Address();
+		address.setLine1(street);
+		address.setPostalCode(zipCode);
+		address.setCountry(country);
+		return address;
+	}
 		
 	private static Time getTime(Date date) {
 		

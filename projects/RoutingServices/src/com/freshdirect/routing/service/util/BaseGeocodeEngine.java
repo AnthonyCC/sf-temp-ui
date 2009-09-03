@@ -8,12 +8,14 @@ import com.freshdirect.routing.model.GeocodeResult;
 import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
+import com.freshdirect.routing.proxy.stub.roadnet.Address;
 import com.freshdirect.routing.proxy.stub.roadnet.GeocodeData;
 import com.freshdirect.routing.proxy.stub.roadnet.MapArc;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.impl.BaseService;
+import com.freshdirect.routing.util.RoutingDataEncoder;
 import com.freshdirect.routing.util.RoutingUtil;
 
 public class BaseGeocodeEngine extends BaseService implements IGeocodeEngine {
@@ -26,11 +28,9 @@ public class BaseGeocodeEngine extends BaseService implements IGeocodeEngine {
 		try {
 
 			RouteNetWebService port = getRouteNetBatchService();
-			com.freshdirect.routing.proxy.stub.roadnet.Address address = new com.freshdirect.routing.proxy.stub.roadnet.Address();
-			address.setLine1(street);
-			address.setPostalCode(zipCode);
-			address.setCountry(country);
 			
+			Address address = RoutingDataEncoder.encodeAddress(street, zipCode, country); 
+						
 			//GeocodeOptions options = new GeocodeOptions();
 			//options.setReturnCandidates(true);
 			//options.setReturnMatchingArc(false);
@@ -42,7 +42,7 @@ public class BaseGeocodeEngine extends BaseService implements IGeocodeEngine {
 				
 				while(iterator.hasNext()) {
 					tmpZipCode = (String)iterator.next();
-					address.setPostalCode(tmpZipCode);
+ 					address.setPostalCode(tmpZipCode);
 					GeocodeData geographicData = port.geocode(address);
 					
 					if(geographicData != null) {
@@ -77,7 +77,7 @@ public class BaseGeocodeEngine extends BaseService implements IGeocodeEngine {
 			result.setConfidence(geographicData.getConfidence().getValue());
 			result.setQuality(geographicData.getQuality().getValue());*/
 
-		} catch (RemoteException exp) {
+		} catch (Exception exp) {
 			exp.printStackTrace();
 			throw new RoutingServiceException(exp, IIssue.PROCESS_GEOCODE_UNSUCCESSFUL);
 		}
