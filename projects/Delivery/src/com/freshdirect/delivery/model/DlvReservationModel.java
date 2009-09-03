@@ -16,6 +16,8 @@ import java.util.Date;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.*;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 public class DlvReservationModel extends ModelSupport {
 
@@ -178,6 +180,10 @@ public class DlvReservationModel extends ModelSupport {
 
 	public void setChefsTable(boolean chefsTable) {
 		this.chefsTable = chefsTable;
+	}
+	
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
 
 }

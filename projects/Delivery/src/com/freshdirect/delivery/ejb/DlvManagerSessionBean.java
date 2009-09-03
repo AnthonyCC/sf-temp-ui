@@ -1652,15 +1652,17 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			long endTime=System.currentTimeMillis();
 			
 			logTimeslots(order.getOrderNumber(),address.getCustomerId(),RoutingActivityType.GET_TIMESLOT,timeSlots,(int)(endTime-startTime));
-		} catch (RoutingServiceException e) {
+			
+		} catch (Exception e) {
+			
 			e.printStackTrace();
-			LOGGER.warn("getTimeslotForDateRangeAndZoneEx():"+e.toString());
+			LOGGER.debug("Exception in getTimeslotForDateRangeAndZoneEx():"+e.toString());
 		} /*catch (ParseException e) {
 			e.printStackTrace();
 			LOGGER.warn("getTimeslotForDateRangeAndZoneEx():"+e.toString());
 		}*/
 		
-	 return timeSlots;
+		return timeSlots;
 	}
 	
 	public IDeliveryReservation reserveTimeslotEx(FDReservation reservation,ContactAddressModel address ) {
@@ -1685,8 +1687,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				clearUnassignedInfo(reservation.getId());
 			return _reservation;
 			
-		} catch (RoutingServiceException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			LOGGER.debug("Exception in reserveTimeslotEx():"+e.toString());
+			LOGGER.debug(reservation);
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);
 		}
 		return null;
@@ -1713,12 +1717,16 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				clearUnassignedInfo(reservation.getId());
 			}
 			
-		} catch (RoutingServiceException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			LOGGER.debug("Exception in commitReservationEx():"+e.toString());
+			LOGGER.debug(reservation);
+			
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.CONFIRM_TIMESLOT);
 		}
 		
 	}
+	
 	
 	
 	
@@ -1738,7 +1746,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	
 	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) {
 		
-
+        
 		if(reservation==null || address==null)
 			return ;		
 		
@@ -1754,8 +1762,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				clearUnassignedInfo(reservation.getId());
 			}
 			
-		} catch (RoutingServiceException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			LOGGER.debug("Exception in releaseReservationEx():"+e.toString());
+			LOGGER.debug(reservation);
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.CANCEL_TIMESLOT);
 		}
 	}

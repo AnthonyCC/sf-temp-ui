@@ -49,10 +49,6 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 		AddressI address = null;
 		try {
 			msgId = msg.getJMSMessageID();
-			System.out.println("Message ID :"+msgId);
-			System.out.println("Eat this shit:");
-			
-
 			if (!(msg instanceof ObjectMessage)) {
 				LOGGER.error("Message is not an ObjectMessage: " + msg +"-"+msgId);
 				// discard msg, no point in throwing it back to the queue
@@ -60,8 +56,8 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 			}
 
 			ObjectMessage addressMsg = (ObjectMessage) msg;
-			System.out.println("IRoutingMessageType.GET_TIMESLOT :"+RoutingActivityType.GET_TIMESLOT);
-			if(RoutingActivityType.PROCESS_ADDRESS.equals(addressMsg.getStringProperty("MessageType"))) {
+			
+			if(RoutingActivityType.PROCESS_ADDRESS.value().equals(addressMsg.getStringProperty("MessageType"))) {
 				Object ox = addressMsg.getObject();
 				if ((ox == null) || (!(ox instanceof AddressI))) {
 					LOGGER.error("Message is not an AddressI: " + msg);

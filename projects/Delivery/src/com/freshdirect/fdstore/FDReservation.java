@@ -10,6 +10,9 @@ package com.freshdirect.fdstore;
 
 import java.util.Date;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -94,5 +97,8 @@ public class FDReservation extends ModelSupport {
 	
 	public boolean isUnassigned() {
 		return isUnassigned;
+	}
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
 }

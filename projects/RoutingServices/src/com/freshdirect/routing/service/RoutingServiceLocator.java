@@ -81,8 +81,10 @@ public class RoutingServiceLocator {
 		TransportationWebServiceStub stub = null;
 		if(this.isUseProxy()) {
 			stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteProxyURL());
+			LOGGER.debug("RoutingServicesProperties.serviceURL()"+RoutingServicesProperties.getTransportationSuiteProxyURL());
 		} else {
 			stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteProviderURL());
+			LOGGER.debug("RoutingServicesProperties.serviceURL()"+RoutingServicesProperties.getTransportationSuiteProviderURL());
 		}
 		initStub(stub);
 		return stub;
@@ -91,8 +93,9 @@ public class RoutingServiceLocator {
 	
 
 	public TransportationWebService getTransportationSuiteProviderService() throws AxisFault {
+		String url = RoutingServicesProperties.getTransportationSuiteProviderURL();
 		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteProviderURL());
-		
+		LOGGER.debug("RoutingServicesProperties.serviceURL()"+url);
 		initStub(stub);
 		return stub;
 	}
@@ -110,30 +113,32 @@ public class RoutingServiceLocator {
 			url = RoutingServicesProperties.getTransportationSuiteProviderURL();
 			LOGGER.debug("getTransportationSuiteService Server not found :"+ deliveryType +":"+ url);
 		}
-		
+		LOGGER.debug("RoutingServicesProperties.serviceURL()"+url);
 		TransportationWebServiceStub stub = new TransportationWebServiceStub(url);
 		initStub(stub);
 		return stub;
 	}
 	
 	public TransportationWebService getTransportationSuiteBatchProviderService() throws AxisFault {
-		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties
-																.getTransportationSuiteBatchProviderURL());
-		
+		String url = RoutingServicesProperties.getTransportationSuiteBatchProviderURL();
+		TransportationWebServiceStub stub = new TransportationWebServiceStub(url);
+		LOGGER.debug("RoutingServicesProperties.serviceURL()"+url);
 		initStub(stub);
 		return stub;
 	}
 	
 	public TransportationWebService getTransportationSuiteDBatchProviderService() throws AxisFault {
-		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties
-																.getTransportationSuiteDBatchProviderURL());
-		
+		String url = RoutingServicesProperties.getTransportationSuiteDBatchProviderURL();
+		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties														.getTransportationSuiteDBatchProviderURL());
+		LOGGER.debug("RoutingServicesProperties.serviceURL()"+url);
 		initStub(stub);
 		return stub;
 	}
 	
 	public RouteNetWebService getRouteNetBatchService() throws AxisFault {
+		String url = RoutingServicesProperties.getRoadNetBatchProviderURL();
 		RouteNetWebServiceStub stub = new RouteNetWebServiceStub(RoutingServicesProperties.getRoadNetBatchProviderURL());
+		LOGGER.debug("RoutingServicesProperties.serviceURL()"+url);
 		initStub(stub);
 		return stub;
 	}
@@ -147,6 +152,7 @@ public class RoutingServiceLocator {
 	}
 	private void initStub(Stub stub) {
 		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(SERVICE_TIMEOUT);
+
 	}
 
 }

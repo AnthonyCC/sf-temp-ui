@@ -522,9 +522,11 @@ public class FDDeliveryManager {
 			sb.removeReservation(reservationId);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(reservationId);
-				if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType()))
+				if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
 					RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
-				
+				} else {
+					sb.clearUnassignedInfo(reservationId);
+				}
 			}
 
 		} catch (RemoteException re) {
@@ -922,8 +924,10 @@ public class FDDeliveryManager {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			return sb.getUnassignedReservations();
 			
+			
 
 		} catch (RemoteException re) {
+			re.printStackTrace();
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
