@@ -10,11 +10,19 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	private Date deliveryStartTime;
 	private Date deliveryEndTime;
 	private String serviceType;
-	private String deliveryZoneType;
+	
 	private IPackagingModel packagingInfo;
 	private double serviceTime;
 	private ILocationModel deliveryLocation;
+	
+	private String reservationId;
 		
+	public String getReservationId() {
+		return reservationId;
+	}
+	public void setReservationId(String reservationId) {
+		this.reservationId = reservationId;
+	}
 	public String getServiceType() {
 		return serviceType;
 	}

@@ -125,6 +125,8 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_AUTODISPATCH_VALIDATION		= "transportation.autodispatch.validation";	
 	private final static String PROP_TRANSPORTATION_PLAN_VALIDATION		= "transportation.plan.validation";
 	
+	private final static String PROP_TRANSPORTATION_EARLYWARNING_PAGEREFRESHTIME = "transportation.earlywarning.pagerefreshtime";
+	
 	static {
 				
 		
@@ -202,6 +204,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_REFRESHTIME, "45");
 		
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_PAGEREFRESHTIME, "10");
+		
+		defaults.put(PROP_TRANSPORTATION_EARLYWARNING_PAGEREFRESHTIME, "10");
 		
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_PAGESIZE, "16");
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_MAX_READY, "8");

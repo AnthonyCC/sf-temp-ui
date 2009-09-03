@@ -320,11 +320,13 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		order.setCustomerNumber(rs.getString("CID"));
 				    		order.setCreateModifyTime(rs.getTimestamp("SCROMODDATE"));
 				    		order.setUnassignedTime(rs.getTimestamp("UDATETIME"));
+				    		order.setUnassignedAction(rs.getString("UACTION"));
 				    						    		
 				    		IDeliveryModel dModel = new DeliveryModel();
 				    		dModel.setDeliveryDate(rs.getDate("BDATE"));
 				    		dModel.setDeliveryStartTime(rs.getTimestamp("STIME"));
 				    		dModel.setDeliveryEndTime(rs.getTimestamp("ETIME"));
+				    		dModel.setReservationId(rs.getString("RID"));
 				    		
 				    		IZoneModel zModel = new ZoneModel();
 				    		zModel.setZoneNumber(rs.getString("ZCODE"));

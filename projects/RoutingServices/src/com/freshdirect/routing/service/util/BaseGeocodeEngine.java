@@ -1,6 +1,5 @@
 package com.freshdirect.routing.service.util;
 
-import java.rmi.RemoteException;
 import java.util.Iterator;
 import java.util.List;
 

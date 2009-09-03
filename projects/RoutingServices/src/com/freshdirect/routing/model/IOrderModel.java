@@ -20,4 +20,7 @@ public interface IOrderModel {
 	
 	Date getUnassignedTime();
 	void setUnassignedTime(Date unassignedTime);
+	
+	String getUnassignedAction();
+	void setUnassignedAction(String unassignedAction);
 }

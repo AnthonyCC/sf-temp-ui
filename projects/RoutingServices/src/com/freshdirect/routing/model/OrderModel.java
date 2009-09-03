@@ -13,6 +13,16 @@ public class OrderModel extends BaseModel implements IOrderModel {
 	private Date unassignedTime;
 	
 	private IDeliveryModel deliveryInfo;
+	
+	private String unassignedAction;
+
+	public String getUnassignedAction() {
+		return unassignedAction;
+	}
+
+	public void setUnassignedAction(String unassignedAction) {
+		this.unassignedAction = unassignedAction;
+	}
 
 	public IDeliveryModel getDeliveryInfo() {
 		return deliveryInfo;

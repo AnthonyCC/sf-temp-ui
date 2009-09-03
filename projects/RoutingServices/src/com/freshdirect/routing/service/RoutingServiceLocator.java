@@ -18,11 +18,10 @@ public class RoutingServiceLocator {
 	private static RoutingServiceLocator instance = null;
 
 	private BeanFactory factory = null;
-	
+
 	private long SERVICE_TIMEOUT = 10 * 60 * 1000;
-	
-	private boolean useProxy;
-	
+
+
 	private static final Category LOGGER = LoggerFactory.getInstance(RoutingServiceLocator.class);
 
 	private RoutingServiceLocator() {
@@ -42,11 +41,11 @@ public class RoutingServiceLocator {
 	      }
 	      return instance;
 	   }
-	
+
 	public Object getService(String beanId) {
 		return factory.getBean(beanId);
 	}
-	
+
 	public IGeographyService getGeographyService() {
 		return (IGeographyService)factory.getBean("geographyService");
 	}
@@ -58,101 +57,94 @@ public class RoutingServiceLocator {
 	public IPlantService getPlantService() {
 		return (IPlantService)factory.getBean("plantService");
 	}
-	
+
 	public IUtilityService getUtilityService() {
 		return (IUtilityService)factory.getBean("utilityService");
 	}
-	
+
 	public IRoutingInfoService getRoutingInfoService() {
 		return (IRoutingInfoService)factory.getBean("routingInfoService");
 	}
-	
+
 	public IRoutingEngineService getRoutingEngineService() {
 		return (IRoutingEngineService)factory.getBean("routingEngineService");
 	}
-	
+
 	public RouteNetWebService getRouteNetService() throws AxisFault {
 		RouteNetWebServiceStub stub = new RouteNetWebServiceStub(RoutingServicesProperties.getRoadNetProviderURL());
+		LOGGER.debug("RSL:getRouteNetService():"+ RoutingServicesProperties.getRoadNetProviderURL());
 		initStub(stub);
 		return stub;
 	}
-	
+
 	public TransportationWebService getTransportationSuiteService() throws AxisFault {
 		TransportationWebServiceStub stub = null;
-		if(this.isUseProxy()) {
+		if(RoutingServicesProperties.isProxyEnabled()) {
 			stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteProxyURL());
-			LOGGER.debug("RoutingServicesProperties.serviceURL()"+RoutingServicesProperties.getTransportationSuiteProxyURL());
+			LOGGER.debug("RSL:getTransportationSuiteService()Proxy:"+ RoutingServicesProperties.getTransportationSuiteProxyURL());
 		} else {
 			stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteProviderURL());
-			LOGGER.debug("RoutingServicesProperties.serviceURL()"+RoutingServicesProperties.getTransportationSuiteProviderURL());
+			LOGGER.debug("RSL:getTransportationSuiteService()No Proxy:"+ RoutingServicesProperties.getTransportationSuiteProviderURL());
 		}
 		initStub(stub);
 		return stub;
 	}
-	
-	
+
+
 
 	public TransportationWebService getTransportationSuiteProviderService() throws AxisFault {
-		String url = RoutingServicesProperties.getTransportationSuiteProviderURL();
 		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteProviderURL());
-		LOGGER.debug("RoutingServicesProperties.serviceURL()"+url);
+		LOGGER.debug("RSL:getTransportationSuiteProviderService():"+ RoutingServicesProperties.getTransportationSuiteProviderURL());
 		initStub(stub);
 		return stub;
 	}
-	
+
 	public TransportationWebService getTransportationSuiteService(String deliveryType) throws AxisFault {
 		String url = null;
-		if(this.isUseProxy()) {
+		if(RoutingServicesProperties.isProxyEnabled()) {
 			url = RoutingServicesProperties.getTransportationSuiteProxyURL();
 		} else {
 			url = RoutingServicesProperties.getTransportationSuiteProviderURL(deliveryType);
 		}
 		LOGGER.debug("getTransportationSuiteService:"+ deliveryType +":"+ url);
-		
-		if(url == null) {			
+
+		if(url == null) {
 			url = RoutingServicesProperties.getTransportationSuiteProviderURL();
 			LOGGER.debug("getTransportationSuiteService Server not found :"+ deliveryType +":"+ url);
 		}
-		LOGGER.debug("RoutingServicesProperties.serviceURL()"+url);
+
 		TransportationWebServiceStub stub = new TransportationWebServiceStub(url);
 		initStub(stub);
 		return stub;
-	}
-	
-	public TransportationWebService getTransportationSuiteBatchProviderService() throws AxisFault {
-		String url = RoutingServicesProperties.getTransportationSuiteBatchProviderURL();
-		TransportationWebServiceStub stub = new TransportationWebServiceStub(url);
-		LOGGER.debug("RoutingServicesProperties.serviceURL()"+url);
-		initStub(stub);
-		return stub;
-	}
-	
-	public TransportationWebService getTransportationSuiteDBatchProviderService() throws AxisFault {
-		String url = RoutingServicesProperties.getTransportationSuiteDBatchProviderURL();
-		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties														.getTransportationSuiteDBatchProviderURL());
-		LOGGER.debug("RoutingServicesProperties.serviceURL()"+url);
-		initStub(stub);
-		return stub;
-	}
-	
-	public RouteNetWebService getRouteNetBatchService() throws AxisFault {
-		String url = RoutingServicesProperties.getRoadNetBatchProviderURL();
-		RouteNetWebServiceStub stub = new RouteNetWebServiceStub(RoutingServicesProperties.getRoadNetBatchProviderURL());
-		LOGGER.debug("RoutingServicesProperties.serviceURL()"+url);
-		initStub(stub);
-		return stub;
-	}
-	
-	public boolean isUseProxy() {
-		return useProxy;
 	}
 
-	public void setUseProxy(boolean useProxy) {
-		this.useProxy = useProxy;
+	public TransportationWebService getTransportationSuiteBatchProviderService() throws AxisFault {
+		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties
+																.getTransportationSuiteBatchProviderURL());
+		LOGGER.debug("RSL:getTransportationSuiteBatchProviderService():"+ RoutingServicesProperties
+																	.getTransportationSuiteBatchProviderURL());
+		initStub(stub);
+		return stub;
 	}
+
+	public TransportationWebService getTransportationSuiteDBatchProviderService() throws AxisFault {
+		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties
+																.getTransportationSuiteDBatchProviderURL());
+		LOGGER.debug("RSL:getTransportationSuiteDBatchProviderService():"+ RoutingServicesProperties
+																		.getTransportationSuiteDBatchProviderURL());
+		initStub(stub);
+		return stub;
+	}
+
+	public RouteNetWebService getRouteNetBatchService() throws AxisFault {
+		System.out.println("RSL:getRoadNetBatchProviderURL() >>"+RoutingServicesProperties.getRoadNetBatchProviderURL());
+		RouteNetWebServiceStub stub = new RouteNetWebServiceStub(RoutingServicesProperties.getRoadNetBatchProviderURL());
+		initStub(stub);
+		return stub;
+	}
+
 	private void initStub(Stub stub) {
 		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(SERVICE_TIMEOUT);
-
 	}
 
 }

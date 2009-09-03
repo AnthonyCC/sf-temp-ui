@@ -384,7 +384,9 @@ public class CapacityController extends AbstractMultiActionController {
 					_unassigned.setTimeWindow(RoutingDateUtil.formatDateTime(_order.getDeliveryInfo().getDeliveryStartTime()
 								, _order.getDeliveryInfo().getDeliveryEndTime()));
 					_unassigned.setUnassignedTime(_order.getUnassignedTime());
+					_unassigned.setUnassignedAction(_order.getUnassignedAction());
 					
+					_unassigned.setReservationId(_order.getDeliveryInfo().getReservationId());
 					_unassigned.setZone(_order.getDeliveryInfo().getDeliveryZone().getZoneNumber());
 					unassigneds.add(_unassigned);
 				}

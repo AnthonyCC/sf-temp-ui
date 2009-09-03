@@ -74,6 +74,8 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_ROADNETBATCH_PROVIDER_URL		= "routingservices.roadnetbatch.providerURL";
 	
+	private final static String PROP_TRANSPORTATIONSUITE_USEPROXY		= "routingservices.transportationsuite.useproxy";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -105,6 +107,8 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_ROUTINGPARAM_RETRIEVEBUILT, "true");
 		defaults.put(PROP_ROUTINGPARAM_RETRIEVEPUBLISHED, "true");
 		defaults.put(PROP_LDPROCESSING_ENABLED, 	"true");
+		
+		defaults.put(PROP_TRANSPORTATIONSUITE_USEPROXY, 	"false");
 		refresh();		
 	}
 
@@ -212,6 +216,9 @@ public class RoutingServicesProperties {
         return (new Boolean(get(PROP_LDPROCESSING_ENABLED))).booleanValue();
     }
 	
+	public static boolean isProxyEnabled() {
+		return (new Boolean(get(PROP_TRANSPORTATIONSUITE_USEPROXY))).booleanValue();
+	}
 	
 	public static int getDefaultTimeWindowFactor() {
 		return getIntVal(get(PROP_TIMEWINDOW_FACTOR));

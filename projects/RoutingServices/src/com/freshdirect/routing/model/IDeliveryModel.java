@@ -22,4 +22,6 @@ public interface IDeliveryModel  {
 	double getServiceTime();
 	void setServiceTime(double serviceTime);
 	
+	String getReservationId();
+	void setReservationId(String reservationId);
 }

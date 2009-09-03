@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class UnassignedCommand extends BaseCommand {
 	
+	private String reservationId;
+	
 	private String orderId;
 	
 	private String customerId;
@@ -15,6 +17,24 @@ public class UnassignedCommand extends BaseCommand {
 	private Date createModTime;
 	
 	private Date unassignedTime;
+	
+	private String unassignedAction;
+
+	public String getReservationId() {
+		return reservationId;
+	}
+
+	public void setReservationId(String reservationId) {
+		this.reservationId = reservationId;
+	}
+
+	public String getUnassignedAction() {
+		return unassignedAction;
+	}
+
+	public void setUnassignedAction(String unassignedAction) {
+		this.unassignedAction = unassignedAction;
+	}
 
 	public String getOrderId() {
 		return orderId;

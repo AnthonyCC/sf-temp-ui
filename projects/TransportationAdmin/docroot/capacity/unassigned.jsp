@@ -93,14 +93,13 @@
               <ec:exportCsv fileName="unassigned.csv" tooltip="Export CSV" delimiter="|"/>
                 
             <ec:row>                            	
-			  <ec:column property="id" title="ID"/>
+			  <ec:column property="reservationId" title="ID"/>
 			  <ec:column property="orderId" title="Order ID"/>
 			  <ec:column property="customerId" title="Customer ID"/>
-			  <ec:column property="eventtype" title="Event Type"/>
-			  <ec:column  property="eventDate" title="Event Date"  cell="date" format="MM/dd/yyyy HH:MM"/>
-			  
-			  <ec:column property="timeWindow" title="Time Window"/>
-			  <ec:column alias="oId" property="orderId" title="Order No"/>                                  
+			  <ec:column property="zone" title="Zone"/>
+			  <ec:column property="unassignedAction" title="Event Type"/>
+			 			  
+			  <ec:column property="timeWindow" title="Time Window"/>			                                   
 			  <ec:column  property="unassignedTime" title="Unassigned Time"  cell="date" format="MM/dd/yyyy HH:MM"/>
 			  <ec:column  property="createModTime" title="Order Create/Mod Time"  cell="date" format="MM/dd/yyyy HH:MM"/>				              
             </ec:row>
