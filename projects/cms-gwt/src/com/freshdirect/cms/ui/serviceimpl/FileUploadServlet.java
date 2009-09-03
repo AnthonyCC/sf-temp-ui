@@ -33,7 +33,8 @@ public abstract class FileUploadServlet extends HttpServlet {
                 List<FileItem> list = upload.parseRequest(req);
                     
                 String response = handleFileItems(req, list);
-                resp.setContentType("text/plain");
+                resp.setContentType("text/html");
+                response = "<div class='file-upload-response'>" + response.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") + "</div>";
                 resp.getWriter().print(response);
                 
             } else {

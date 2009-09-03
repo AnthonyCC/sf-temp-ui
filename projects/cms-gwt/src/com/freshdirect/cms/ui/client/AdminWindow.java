@@ -132,7 +132,7 @@ public class AdminWindow extends Window {
         form.setMethod(FormPanel.Method.POST);
         form.setHeaderVisible(false);
         FileUploadField f = new FileUploadField();
-        f.setFieldLabel("Recipies");
+        f.setFieldLabel("XLS File");
         f.setAllowBlank(false);
         f.getMessages().setBrowseText("Select file...");
         f.addStyleName("cms-gwt-file-upload");

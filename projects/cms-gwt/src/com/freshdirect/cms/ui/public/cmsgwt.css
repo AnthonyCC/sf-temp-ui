@@ -343,6 +343,11 @@
 }
 
 
+div.file-upload-response {
+	overflow: auto;
+	height : 300px;	
+}
+
 
 /* ============ i think styles below this line are not used anymore anywhere ... ============*/
 
