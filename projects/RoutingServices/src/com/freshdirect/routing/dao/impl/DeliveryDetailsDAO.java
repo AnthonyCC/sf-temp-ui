@@ -259,7 +259,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	
 	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws SQLException {
 		
-		final Map<String, List<IDeliveryWindowMetrics>> timeslotByArea = new TreeMap<String, List<IDeliveryWindowMetrics>>();
+		final Map<String, List<IDeliveryWindowMetrics>> timeslotByZone = new TreeMap<String, List<IDeliveryWindowMetrics>>();
 				
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
@@ -286,15 +286,15 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		metrics.setTotalConfirmedOrders(rs.getInt("total_order"));
 				    		metrics.setTotalAllocatedOrders(rs.getInt("total_alloc"));
 				    		
-				    		if(!timeslotByArea.containsKey(zCode)) {
-				    			timeslotByArea.put(zCode, new ArrayList<IDeliveryWindowMetrics>());
+				    		if(!timeslotByZone.containsKey(zCode)) {
+				    			timeslotByZone.put(zCode, new ArrayList<IDeliveryWindowMetrics>());
 				    		}
-				    		timeslotByArea.get(zCode).add(metrics);
+				    		timeslotByZone.get(zCode).add(metrics);
 				    	 } while(rs.next());		        		    	
 				      }
 				  }
 			);
-		return timeslotByArea;
+		return timeslotByZone;
 	}
 	
 	public List<IOrderModel> getUnassigned(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws SQLException {

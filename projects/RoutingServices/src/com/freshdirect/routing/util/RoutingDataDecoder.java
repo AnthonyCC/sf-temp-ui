@@ -153,7 +153,7 @@ public class RoutingDataDecoder {
 		return result;
 	}
 	
-public static List<IDeliveryWindowMetrics> decodeDeliveryWindowMetrics(SchedulerDeliveryWindowMetrics[] delWindowMetrics) {
+	public static List<IDeliveryWindowMetrics> decodeDeliveryWindowMetrics(SchedulerDeliveryWindowMetrics[] delWindowMetrics) {
 		
 		List<IDeliveryWindowMetrics> result = null;
 		if(delWindowMetrics != null) {
@@ -172,20 +172,24 @@ public static List<IDeliveryWindowMetrics> decodeDeliveryWindowMetrics(Scheduler
 		metrics.setDeliveryStartTime(window.getWindow().getStart().getAsCalendar().getTime());
 		metrics.setDeliveryEndTime(window.getWindow().getEnd().getAsCalendar().getTime());
 		
+		metrics.setTotalCapacityTime((RoutingDateUtil.getDiffInSeconds
+										(metrics.getDeliveryEndTime(), metrics.getDeliveryStartTime())
+											* window.getAllocatedVehicles())/60.0);
+		
 		metrics.setAllocatedVehicles(window.getAllocatedVehicles());
 		metrics.setVehiclesInUse(window.getVehiclesInUse());
 		
 		metrics.setConfirmedDeliveryQuantity(window.getConfirmed().getDeliveryQuantity());
 		metrics.setConfirmedItems(window.getConfirmed().getItems());
 		metrics.setConfirmedPickupQuantity(window.getConfirmed().getPickupQuantity());
-		metrics.setConfirmedServiceTime(window.getConfirmed().getServiceTime());
-		metrics.setConfirmedTravelTime(window.getConfirmed().getTravelTime());
+		metrics.setConfirmedServiceTime(window.getConfirmed().getServiceTime()/60.0);
+		metrics.setConfirmedTravelTime(window.getConfirmed().getTravelTime()/60.0);
 		
 		metrics.setReservedDeliveryQuantity(window.getReserved().getDeliveryQuantity());
 		metrics.setReservedItems(window.getReserved().getItems());
 		metrics.setReservedPickupQuantity(window.getReserved().getPickupQuantity());
-		metrics.setReservedServiceTime(window.getReserved().getServiceTime());
-		metrics.setReservedTravelTime(window.getReserved().getTravelTime());
+		metrics.setReservedServiceTime(window.getReserved().getServiceTime()/60.0);
+		metrics.setReservedTravelTime(window.getReserved().getTravelTime()/60.0);
 		
 		
 		return metrics;

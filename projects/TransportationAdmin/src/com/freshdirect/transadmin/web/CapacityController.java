@@ -61,13 +61,16 @@ public class CapacityController extends AbstractMultiActionController {
 		
 		ModelAndView mav = new ModelAndView("earlyWarningView");
 		
+		Map<String, List<Capacity>> capacityMapping = null;
 		
-		
-		if("T".equalsIgnoreCase(rType)) {
-			executeEarlyWarningTime(mav, rDate, cutOff, rType);
+		if("T".equalsIgnoreCase(rType)) {			
+			processEarlyWarning(mav, new TimeEarlyWarningFormatter(), 
+					executeEarlyWarningTime(mav, rDate, cutOff, rType));
 		} else {
-			executeEarlyWarningOrder(mav, rDate, cutOff, rType);
+			processEarlyWarning(mav, new OrderEarlyWarningFormatter(), 
+					executeEarlyWarningOrder(mav, rDate, cutOff, rType));
 		}
+		
 		
 		if(TransStringUtil.isEmpty(rDate)) {
 			rDate = TransStringUtil.getCurrentDate();
@@ -81,153 +84,63 @@ public class CapacityController extends AbstractMultiActionController {
 		return mav;
 	}
 	
-	private void executeEarlyWarningOrder(ModelAndView mav, String rDate, String cutOff, String rType) {
+	private Map<String, List<Capacity>> executeEarlyWarningOrder(ModelAndView mav, String rDate, String cutOff, String rType) {
 		
-		List<EarlyWarningCommand> capacity = new ArrayList<EarlyWarningCommand>();
-		
-		Map<String, Capacity> regionCapacity = new TreeMap<String, Capacity>();
-		
-		List<EarlyWarningCommand> regCapacity = new ArrayList<EarlyWarningCommand>();
-		
+		Map<String, List<Capacity>> capacityMapping = new TreeMap<String, List<Capacity>>();
+				
 		if(!TransStringUtil.isEmpty(rDate)) {
 			try {
 				Date deliveryDate = TransStringUtil.getDate(rDate);
 				
 				DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
-				RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
-				
-				Map<String, List<IDeliveryWindowMetrics>> slotsByArea = deliveryProxy.getTimeslotsByDateEx
+								
+				Map<String, List<IDeliveryWindowMetrics>> slotsByZone = deliveryProxy.getTimeslotsByDateEx
 																			(deliveryDate, getCutOffTime(cutOff), null);
 								
-				Iterator<String> _itr = slotsByArea.keySet().iterator();
-				
-				Map<String, Zone> areaMapping = getZoneMapping();
-				
+				Iterator<String> _itr = slotsByZone.keySet().iterator();
+								
 				String _zoneCode = null;
 								
 				List<IDeliveryWindowMetrics> metrics = null;
-				EarlyWarningCommand _displayCommand = null;
-				EarlyWarningCommand _timeslotCommand = null;
-				List<EarlyWarningCommand> timeslotDetails = null;
-				
-				
+												
 				while(_itr.hasNext()) {
-					
-					_zoneCode = _itr.next();
-					Zone _refZone = areaMapping.get(_zoneCode);
-					
-					metrics = slotsByArea.get(_zoneCode);
-					
-					double totalCapacity = 0;
-					double totalConfirmed = 0;
-					double totalAllocated = 0;
-					
-					double _tmpTotalCapacity = 0;
-					double _tmpTotalConfirmed = 0;
-					double _tmpTotalAllocated = 0;
-					
-					double percentageConfirmed = 0;
-					double percentageAllocated = 0;
-					
+					_zoneCode = _itr.next();										
+					metrics = slotsByZone.get(_zoneCode);
+					if(!capacityMapping.containsKey(_zoneCode)) {
+						capacityMapping.put(_zoneCode, new ArrayList<Capacity>());
+					}
+									
 					if(metrics != null) {
 						
 						Iterator<IDeliveryWindowMetrics> _metricsItr = metrics.iterator();						
 						IDeliveryWindowMetrics _metrics = null;
-						_displayCommand =  new EarlyWarningCommand();
-						timeslotDetails = new ArrayList<EarlyWarningCommand>();
-						_displayCommand.setTimeslotDetails(timeslotDetails);
-						_displayCommand.setCode(_refZone.getArea().getCode());
-						_displayCommand.setName(_refZone.getArea().getName());
-						 
+						Capacity _capacity = null;
+						
 						while(_metricsItr.hasNext()) {							
 							_metrics = _metricsItr.next();
-							_tmpTotalCapacity = _metrics.getOrderCapacity();
-							_tmpTotalConfirmed = _metrics.getTotalConfirmedOrders();
-							_tmpTotalAllocated = _metrics.getTotalAllocatedOrders();
 							
-							totalCapacity = totalCapacity + _tmpTotalCapacity;
-							totalConfirmed = totalConfirmed + _tmpTotalConfirmed;							
-							totalAllocated = totalAllocated + _tmpTotalAllocated;
+							_capacity = new Capacity();
+							capacityMapping.get(_zoneCode).add(_capacity);
 							
-							_timeslotCommand = new EarlyWarningCommand();
-							timeslotDetails.add(_timeslotCommand);
-							_timeslotCommand.setName(RoutingDateUtil.formatDateTime
-									(_metrics.getDeliveryStartTime(), _metrics.getDeliveryEndTime()));
-							_timeslotCommand.setTotalCapacity(""+Math.round(_tmpTotalCapacity));
-							_timeslotCommand.setConfirmedCapacity(""+Math.round(_tmpTotalConfirmed));
-							_timeslotCommand.setAllocatedCapacity(""+Math.round(_tmpTotalAllocated));
-							_timeslotCommand.setPercentageConfirmed("0%");
-							_timeslotCommand.setPercentageAllocated("0%");
-							if(_tmpTotalCapacity > 0) {
-								_timeslotCommand.setPercentageConfirmed(""+Math.round((_tmpTotalConfirmed/_tmpTotalCapacity)*100.0)+"%");
-								_timeslotCommand.setPercentageAllocated(""+Math.round((_tmpTotalAllocated/_tmpTotalCapacity)*100.0)+"%");								
-							}
-						}
-						
-					}
-					if(totalCapacity > 0) {
-						percentageConfirmed = (totalConfirmed/totalCapacity)*100.0;
-						percentageAllocated = (totalAllocated/totalCapacity)*100.0;
-					}
-					_displayCommand.setTotalCapacity(""+Math.round(totalCapacity));
-					_displayCommand.setConfirmedCapacity(""+Math.round(totalConfirmed));
-					_displayCommand.setAllocatedCapacity(""+Math.round(totalAllocated));
-					_displayCommand.setPercentageConfirmed(""+Math.round(percentageConfirmed)+"%");
-					_displayCommand.setPercentageAllocated(""+Math.round(percentageAllocated)+"%");
-					capacity.add(_displayCommand);
-					
-					if(!regionCapacity.containsKey(_refZone.getRegion().getName())) {
-						regionCapacity.put(_refZone.getRegion().getName(), new Capacity());
-					}
-					Capacity _tmpRegCapacity = regionCapacity.get(_refZone.getRegion().getName());
-					_tmpRegCapacity.setTotalCapacity(_tmpRegCapacity.getTotalCapacity()+totalCapacity);
-					_tmpRegCapacity.setTotalAllocated(_tmpRegCapacity.getTotalAllocated()+totalAllocated);
-					_tmpRegCapacity.setTotalConfirmed(_tmpRegCapacity.getTotalConfirmed()+totalConfirmed);
+							_capacity.setDeliveryStartTime(_metrics.getDeliveryStartTime());
+							_capacity.setDeliveryEndTime(_metrics.getDeliveryEndTime());
+							_capacity.setTotalCapacity(_metrics.getOrderCapacity());
+							_capacity.setTotalAllocated(_metrics.getTotalAllocatedOrders());
+							_capacity.setTotalConfirmed(_metrics.getTotalConfirmedOrders());							
+							
+						}						
+					}					
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-			
-			Iterator<String> _regItr = regionCapacity.keySet().iterator();
-			String _regName = null;
-			Capacity _regCap = null;
-			EarlyWarningCommand _regDisplayCommand = null; 
-			
-			
-			while(_regItr.hasNext()) {
-				
-				double _regPerConfirmed = 0;
-				double _regPerAllocated = 0;
-				_regName = _regItr.next();
-				_regCap = regionCapacity.get(_regName);
-				
-				_regDisplayCommand =  new EarlyWarningCommand();
-				_regDisplayCommand.setName(_regName);
-				_regDisplayCommand.setTotalCapacity(""+Math.round(_regCap.getTotalCapacity()));
-				_regDisplayCommand.setAllocatedCapacity(""+Math.round(_regCap.getTotalAllocated()));
-				_regDisplayCommand.setConfirmedCapacity(""+Math.round(_regCap.getTotalConfirmed()));
-				
-				if(_regCap.getTotalCapacity() > 0) {
-					_regPerConfirmed = (_regCap.getTotalConfirmed()/_regCap.getTotalCapacity())*100.0;
-					_regPerAllocated = (_regCap.getTotalAllocated()/_regCap.getTotalCapacity())*100.0;
-				}
-				
-				_regDisplayCommand.setPercentageConfirmed(""+Math.round(_regPerConfirmed)+"%");
-				_regDisplayCommand.setPercentageAllocated(""+Math.round(_regPerAllocated)+"%");
-				regCapacity.add(_regDisplayCommand);
-			}
-			mav.getModel().put("earlywarnings", capacity );
-			mav.getModel().put("earlywarnings_region", regCapacity );			
+			}			
 		} 
+		return capacityMapping;
 	}
 
-	private void executeEarlyWarningTime(ModelAndView mav, String rDate, String cutOff, String rType) {
+	private Map<String, List<Capacity>> executeEarlyWarningTime(ModelAndView mav, String rDate, String cutOff, String rType) {
 		
-		List<EarlyWarningCommand> capacity = new ArrayList<EarlyWarningCommand>();
-		
-		Map<String, Capacity> regionCapacity = new TreeMap<String, Capacity>();
-		
-		List<EarlyWarningCommand> regCapacity = new ArrayList<EarlyWarningCommand>();
+		Map<String, List<Capacity>> capacityMapping = new TreeMap<String, List<Capacity>>();
 		
 		
 		if(!TransStringUtil.isEmpty(rDate)) {
@@ -237,10 +150,10 @@ public class CapacityController extends AbstractMultiActionController {
 				DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
 				RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
 				
-				Map<String, List<IDeliverySlot>> slotsByArea = deliveryProxy.getTimeslotsByDate
+				Map<String, List<IDeliverySlot>> slotsByZone = deliveryProxy.getTimeslotsByDate
 																	(deliveryDate, getCutOffTime(cutOff), null);
 								
-				Iterator<String> _itr = slotsByArea.keySet().iterator();
+				Iterator<String> _itr = slotsByZone.keySet().iterator();
 				
 				Map<String, Zone> areaMapping = getZoneMapping();
 				
@@ -252,13 +165,8 @@ public class CapacityController extends AbstractMultiActionController {
 				IAreaModel _aModel = new AreaModel();
 				_zModel.setArea(_aModel);
 				
-				_schId.setArea(_aModel);
-				
-				List<IDeliveryWindowMetrics> metrics = null;
-				EarlyWarningCommand _displayCommand = null;
-				EarlyWarningCommand _timeslotCommand = null;
-				List<EarlyWarningCommand> timeslotDetails = null;
-				
+				_schId.setArea(_aModel);				
+				List<IDeliveryWindowMetrics> metrics = null;							
 				
 				while(_itr.hasNext()) {
 					
@@ -270,82 +178,114 @@ public class CapacityController extends AbstractMultiActionController {
 					_schId.setArea(_aModel);
 					
 					_schId.setRegionId(RoutingUtil.getRegion(_zModel));
-					metrics = proxy.retrieveCapacityMetrics(_schId, slotsByArea.get(_zoneCode));
-					
-					double totalCapacity = 0;
-					double totalConfirmed = 0;
-					double totalAllocated = 0;
-					
-					double _tmpTotalCapacity = 0;
-					double _tmpTotalConfirmed = 0;
-					double _tmpTotalAllocated = 0;
-					
-					double percentageConfirmed = 0;
-					double percentageAllocated = 0;
+					metrics = proxy.retrieveCapacityMetrics(_schId, slotsByZone.get(_zoneCode));
+					if(!capacityMapping.containsKey(_zoneCode)) {
+						capacityMapping.put(_zoneCode, new ArrayList<Capacity>());
+					}	
 					
 					if(metrics != null) {
 						
 						Iterator<IDeliveryWindowMetrics> _metricsItr = metrics.iterator();						
 						IDeliveryWindowMetrics _metrics = null;
-						_displayCommand =  new EarlyWarningCommand();
-						timeslotDetails = new ArrayList<EarlyWarningCommand>();
-						_displayCommand.setTimeslotDetails(timeslotDetails);
-						_displayCommand.setCode(_refZone.getArea().getCode());
-						_displayCommand.setName(_refZone.getArea().getName());
+						Capacity _capacity = null;
+						
 						 
 						while(_metricsItr.hasNext()) {							
 							_metrics = _metricsItr.next();
-							_tmpTotalCapacity = (RoutingDateUtil.getDiffInSeconds
-									(_metrics.getDeliveryEndTime(), _metrics.getDeliveryStartTime())
-									* _metrics.getAllocatedVehicles())/60.0;
-							_tmpTotalConfirmed = (_metrics.getConfirmedServiceTime()/60.0) 
-													+ (_metrics.getConfirmedTravelTime()/60.0);
-							_tmpTotalAllocated = (_metrics.getConfirmedServiceTime()/60.0) 
-														+ (_metrics.getConfirmedTravelTime()/60.0)
-														+ (_metrics.getReservedServiceTime()/60.0)
-														+ (_metrics.getReservedTravelTime()/60.0);
+							_capacity = new Capacity();
+							capacityMapping.get(_zoneCode).add(_capacity);
 							
-							totalCapacity = totalCapacity + _tmpTotalCapacity;
-							totalConfirmed = totalConfirmed + _tmpTotalConfirmed;							
-							totalAllocated = totalAllocated + _tmpTotalAllocated;
-							
-							_timeslotCommand = new EarlyWarningCommand();
-							timeslotDetails.add(_timeslotCommand);
-							_timeslotCommand.setName(RoutingDateUtil.formatDateTime
-									(_metrics.getDeliveryStartTime(), _metrics.getDeliveryEndTime()));
-							_timeslotCommand.setTotalCapacity(""+TransStringUtil.formatIntoHHMM(_tmpTotalCapacity));
-							_timeslotCommand.setConfirmedCapacity(""+TransStringUtil.formatIntoHHMM(_tmpTotalConfirmed));
-							_timeslotCommand.setAllocatedCapacity(""+TransStringUtil.formatIntoHHMM(_tmpTotalAllocated));
-							_timeslotCommand.setPercentageConfirmed("0%");
-							_timeslotCommand.setPercentageAllocated("0%");
-							if(_tmpTotalCapacity > 0) {
-								_timeslotCommand.setPercentageConfirmed(""+Math.round((_tmpTotalConfirmed/_tmpTotalCapacity)*100.0)+"%");
-								_timeslotCommand.setPercentageAllocated(""+Math.round((_tmpTotalAllocated/_tmpTotalCapacity)*100.0)+"%");								
-							}
-						}
-						
-					}
-					if(totalCapacity > 0) {
-						percentageConfirmed = (totalConfirmed/totalCapacity)*100.0;
-						percentageAllocated = (totalAllocated/totalCapacity)*100.0;
-					}
-					_displayCommand.setTotalCapacity(""+TransStringUtil.formatIntoHHMM(totalCapacity));
-					_displayCommand.setConfirmedCapacity(""+TransStringUtil.formatIntoHHMM(totalConfirmed));
-					_displayCommand.setAllocatedCapacity(""+TransStringUtil.formatIntoHHMM(totalAllocated));
-					_displayCommand.setPercentageConfirmed(""+Math.round(percentageConfirmed)+"%");
-					_displayCommand.setPercentageAllocated(""+Math.round(percentageAllocated)+"%");
-					capacity.add(_displayCommand);
-					
-					if(!regionCapacity.containsKey(_refZone.getRegion().getName())) {
-						regionCapacity.put(_refZone.getRegion().getName(), new Capacity());
-					}
-					Capacity _tmpRegCapacity = regionCapacity.get(_refZone.getRegion().getName());
-					_tmpRegCapacity.setTotalCapacity(_tmpRegCapacity.getTotalCapacity()+totalCapacity);
-					_tmpRegCapacity.setTotalAllocated(_tmpRegCapacity.getTotalAllocated()+totalAllocated);
-					_tmpRegCapacity.setTotalConfirmed(_tmpRegCapacity.getTotalConfirmed()+totalConfirmed);
+							_capacity.setDeliveryStartTime(_metrics.getDeliveryStartTime());
+							_capacity.setDeliveryEndTime(_metrics.getDeliveryEndTime());
+							_capacity.setTotalCapacity(_metrics.getTotalCapacityTime());
+							_capacity.setTotalAllocated(_metrics.getConfirmedServiceTime() 
+															+ _metrics.getConfirmedTravelTime()
+															+ _metrics.getReservedServiceTime()
+															+ _metrics.getReservedTravelTime());
+							_capacity.setTotalConfirmed(_metrics.getConfirmedServiceTime() 
+															+ _metrics.getConfirmedTravelTime());							
+						}						
+					}					
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+			}						
+		}
+		return capacityMapping;
+	}
+	
+	private void processEarlyWarning(ModelAndView mav, EarlyWarningFormatter formatter
+										, Map<String, List<Capacity>> capacityMapping)  {
+		
+		List<EarlyWarningCommand> capacity = new ArrayList<EarlyWarningCommand>();
+		Map<String, Capacity> regionCapacity = new TreeMap<String, Capacity>();
+		List<EarlyWarningCommand> regCapacity = new ArrayList<EarlyWarningCommand>();
+		
+		Map<String, Zone> zoneMapping = getZoneMapping();
+		Iterator<String> _capItr = capacityMapping.keySet().iterator();
+		String _zoneCode = null;
+		Capacity _capacity = null;
+		try {
+			while(_capItr.hasNext()) {
+				_zoneCode = _capItr.next();
+				Zone _refZone = zoneMapping.get(_zoneCode);
+				Iterator<Capacity> _childItr = capacityMapping.get(_zoneCode).iterator();
+				
+				double totalCapacity = 0;
+				double totalConfirmed = 0;
+				double totalAllocated = 0;
+				double percentageConfirmed = 0;
+				double percentageAllocated = 0;
+				
+				EarlyWarningCommand _displayCommand = null;
+				EarlyWarningCommand _timeslotCommand = null;
+				List<EarlyWarningCommand> timeslotDetails = null;
+				
+				_displayCommand =  new EarlyWarningCommand();
+				timeslotDetails = new ArrayList<EarlyWarningCommand>();
+				_displayCommand.setTimeslotDetails(timeslotDetails);
+				_displayCommand.setCode(_refZone.getArea().getCode());
+				_displayCommand.setName(_refZone.getArea().getName());
+				
+				while(_childItr.hasNext()) {
+					_capacity = _childItr.next();
+					
+					totalCapacity = totalCapacity + _capacity.getTotalCapacity();
+					totalConfirmed = totalConfirmed + _capacity.getTotalConfirmed();							
+					totalAllocated = totalAllocated + _capacity.getTotalAllocated();
+					
+					_timeslotCommand = new EarlyWarningCommand();
+					timeslotDetails.add(_timeslotCommand);
+					_timeslotCommand.setName(RoutingDateUtil.formatDateTime
+							(_capacity.getDeliveryStartTime(), _capacity.getDeliveryEndTime()));
+					_timeslotCommand.setTotalCapacity(formatter.formatCapacity(_capacity.getTotalCapacity()));
+					_timeslotCommand.setConfirmedCapacity(formatter.formatCapacity(_capacity.getTotalConfirmed()));
+					_timeslotCommand.setAllocatedCapacity(formatter.formatCapacity(_capacity.getTotalAllocated()));
+					_timeslotCommand.setPercentageConfirmed("0%");
+					_timeslotCommand.setPercentageAllocated("0%");
+					if(_capacity.getTotalCapacity() > 0) {
+						_timeslotCommand.setPercentageConfirmed(""+Math.round((_capacity.getTotalConfirmed()/_capacity.getTotalCapacity())*100.0)+"%");
+						_timeslotCommand.setPercentageAllocated(""+Math.round((_capacity.getTotalAllocated()/_capacity.getTotalCapacity())*100.0)+"%");								
+					}
+				}
+				if(totalCapacity > 0) {
+					percentageConfirmed = (totalConfirmed/totalCapacity)*100.0;
+					percentageAllocated = (totalAllocated/totalCapacity)*100.0;
+				}
+				_displayCommand.setTotalCapacity(formatter.formatCapacity(totalCapacity));
+				_displayCommand.setConfirmedCapacity(formatter.formatCapacity(totalConfirmed));
+				_displayCommand.setAllocatedCapacity(formatter.formatCapacity(totalAllocated));
+				_displayCommand.setPercentageConfirmed(""+Math.round(percentageConfirmed)+"%");
+				_displayCommand.setPercentageAllocated(""+Math.round(percentageAllocated)+"%");
+				capacity.add(_displayCommand);
+				
+				if(!regionCapacity.containsKey(_refZone.getRegion().getName())) {
+					regionCapacity.put(_refZone.getRegion().getName(), new Capacity());
+				}
+				Capacity _tmpRegCapacity = regionCapacity.get(_refZone.getRegion().getName());
+				_tmpRegCapacity.setTotalCapacity(_tmpRegCapacity.getTotalCapacity()+totalCapacity);
+				_tmpRegCapacity.setTotalAllocated(_tmpRegCapacity.getTotalAllocated()+totalAllocated);
+				_tmpRegCapacity.setTotalConfirmed(_tmpRegCapacity.getTotalConfirmed()+totalConfirmed);
 			}
 			
 			Iterator<String> _regItr = regionCapacity.keySet().iterator();
@@ -353,6 +293,11 @@ public class CapacityController extends AbstractMultiActionController {
 			Capacity _regCap = null;
 			EarlyWarningCommand _regDisplayCommand = null; 
 			
+			double totalCapacity = 0;
+			double totalConfirmed = 0;
+			double totalAllocated = 0;
+			double percentageConfirmed = 0;
+			double percentageAllocated = 0;
 			
 			while(_regItr.hasNext()) {
 				
@@ -361,11 +306,15 @@ public class CapacityController extends AbstractMultiActionController {
 				_regName = _regItr.next();
 				_regCap = regionCapacity.get(_regName);
 				
+				totalCapacity = totalCapacity + _regCap.getTotalCapacity();
+				totalConfirmed = totalConfirmed + _regCap.getTotalConfirmed();							
+				totalAllocated = totalAllocated + _regCap.getTotalAllocated();
+				
 				_regDisplayCommand =  new EarlyWarningCommand();
 				_regDisplayCommand.setName(_regName);
-				_regDisplayCommand.setTotalCapacity(""+TransStringUtil.formatIntoHHMM(_regCap.getTotalCapacity()));
-				_regDisplayCommand.setAllocatedCapacity(""+TransStringUtil.formatIntoHHMM(_regCap.getTotalAllocated()));
-				_regDisplayCommand.setConfirmedCapacity(""+TransStringUtil.formatIntoHHMM(_regCap.getTotalConfirmed()));
+				_regDisplayCommand.setTotalCapacity(formatter.formatCapacity(_regCap.getTotalCapacity()));
+				_regDisplayCommand.setAllocatedCapacity(formatter.formatCapacity(_regCap.getTotalAllocated()));
+				_regDisplayCommand.setConfirmedCapacity(formatter.formatCapacity(_regCap.getTotalConfirmed()));
 				
 				if(_regCap.getTotalCapacity() > 0) {
 					_regPerConfirmed = (_regCap.getTotalConfirmed()/_regCap.getTotalCapacity())*100.0;
@@ -376,9 +325,24 @@ public class CapacityController extends AbstractMultiActionController {
 				_regDisplayCommand.setPercentageAllocated(""+Math.round(_regPerAllocated)+"%");
 				regCapacity.add(_regDisplayCommand);
 			}
-			mav.getModel().put("earlywarnings", capacity );
-			mav.getModel().put("earlywarnings_region", regCapacity );			
-		} 
+			_regDisplayCommand =  new EarlyWarningCommand();
+			_regDisplayCommand.setName("");
+			_regDisplayCommand.setTotalCapacity(formatter.formatCapacity(totalCapacity));
+			_regDisplayCommand.setAllocatedCapacity(formatter.formatCapacity(totalAllocated));
+			_regDisplayCommand.setConfirmedCapacity(formatter.formatCapacity(totalConfirmed));
+			if(_regCap.getTotalCapacity() > 0) {
+				percentageConfirmed = (totalConfirmed/totalCapacity)*100.0;
+				percentageAllocated = (totalAllocated/totalCapacity)*100.0;
+			}
+			_regDisplayCommand.setPercentageConfirmed(""+Math.round(percentageConfirmed)+"%");
+			_regDisplayCommand.setPercentageAllocated(""+Math.round(percentageAllocated)+"%");
+			regCapacity.add(_regDisplayCommand);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		mav.getModel().put("earlywarnings", capacity );
+		mav.getModel().put("earlywarnings_region", regCapacity );
 	}
 	
 	/**
@@ -437,6 +401,21 @@ public class CapacityController extends AbstractMultiActionController {
 	
 	class Capacity {
 		
+		private Date deliveryStartTime;
+		private Date deliveryEndTime;
+		
+		public Date getDeliveryStartTime() {
+			return deliveryStartTime;
+		}
+		public void setDeliveryStartTime(Date deliveryStartTime) {
+			this.deliveryStartTime = deliveryStartTime;
+		}
+		public Date getDeliveryEndTime() {
+			return deliveryEndTime;
+		}
+		public void setDeliveryEndTime(Date deliveryEndTime) {
+			this.deliveryEndTime = deliveryEndTime;
+		}
 		private double totalCapacity = 0;
 		private double totalConfirmed = 0;
 		private double totalAllocated = 0;
@@ -458,6 +437,25 @@ public class CapacityController extends AbstractMultiActionController {
 		}
 		public void setTotalAllocated(double totalAllocated) {
 			this.totalAllocated = totalAllocated;
+		}
+	}
+	
+	interface EarlyWarningFormatter {
+		
+		String formatCapacity(double value);
+	}
+	
+	class TimeEarlyWarningFormatter implements EarlyWarningFormatter{
+		
+		public String formatCapacity(double value) {
+			return ""+TransStringUtil.formatIntoHHMM(value);
+		}
+	}
+	
+	class OrderEarlyWarningFormatter implements EarlyWarningFormatter{
+		
+		public String formatCapacity(double value) {
+			return ""+Math.round(value);
 		}
 	}
 	

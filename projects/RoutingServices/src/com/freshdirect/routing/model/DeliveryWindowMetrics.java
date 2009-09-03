@@ -18,9 +18,9 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 
 	private int confirmedPickupQuantity;
 
-	private int confirmedServiceTime;
+	private double confirmedServiceTime;
 
-	private int confirmedTravelTime;
+	private double confirmedTravelTime;
 	
 	private int reservedItems;
 
@@ -28,15 +28,25 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 
 	private int reservedPickupQuantity;
 
-	private int reservedServiceTime;
+	private double reservedServiceTime;
 
-	private int reservedTravelTime;
+	private double reservedTravelTime;
 	
 	private int orderCapacity;
 	
 	private int totalConfirmedOrders;
 	
 	private int totalAllocatedOrders;
+	
+	private double totalCapacityTime;
+
+	public double getTotalCapacityTime() {
+		return totalCapacityTime;
+	}
+
+	public void setTotalCapacityTime(double totalCapacityTime) {
+		this.totalCapacityTime = totalCapacityTime;
+	}
 
 	public Date getDeliveryStartTime() {
 		return deliveryStartTime;
@@ -94,19 +104,19 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 		this.confirmedPickupQuantity = confirmedPickupQuantity;
 	}
 
-	public int getConfirmedServiceTime() {
+	public double getConfirmedServiceTime() {
 		return confirmedServiceTime;
 	}
 
-	public void setConfirmedServiceTime(int confirmedServiceTime) {
+	public void setConfirmedServiceTime(double confirmedServiceTime) {
 		this.confirmedServiceTime = confirmedServiceTime;
 	}
 
-	public int getConfirmedTravelTime() {
+	public double getConfirmedTravelTime() {
 		return confirmedTravelTime;
 	}
 
-	public void setConfirmedTravelTime(int confirmedTravelTime) {
+	public void setConfirmedTravelTime(double confirmedTravelTime) {
 		this.confirmedTravelTime = confirmedTravelTime;
 	}
 
@@ -134,19 +144,19 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 		this.reservedPickupQuantity = reservedPickupQuantity;
 	}
 
-	public int getReservedServiceTime() {
+	public double getReservedServiceTime() {
 		return reservedServiceTime;
 	}
 
-	public void setReservedServiceTime(int reservedServiceTime) {
+	public void setReservedServiceTime(double reservedServiceTime) {
 		this.reservedServiceTime = reservedServiceTime;
 	}
 
-	public int getReservedTravelTime() {
+	public double getReservedTravelTime() {
 		return reservedTravelTime;
 	}
 
-	public void setReservedTravelTime(int reservedTravelTime) {
+	public void setReservedTravelTime(double reservedTravelTime) {
 		this.reservedTravelTime = reservedTravelTime;
 	}
 
