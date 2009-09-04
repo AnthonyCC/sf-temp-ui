@@ -418,34 +418,34 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             startProgress("Load", "Loading history of " + currentNode.getNode().getKey(), "loading...");
             final String label = currentNode.getNode().getLabel() + " " + currentNode.getNode().getType() + " [" + currentNode.getNode().getKey() + "]";
 
-            CmsGwt.getContentService().getChangeSets(new ChangeSetQuery().setByKey(currentNode.getNode().getKey()),
-                    new BaseCallback<ChangeSetQueryResponse>() {
-                        @Override
-                        public void errorOccured(Throwable error) {
-                            setStatus("Error loading history.");
-                            stopProgress();
-                        }
+            CmsGwt.getContentService().getChangeSets(new ChangeSetQuery().setByKey(currentNode.getNode().getKey()), new BaseCallback<ChangeSetQueryResponse>() {
+                @Override
+                public void errorOccured(Throwable error) {
+                    setStatus("Error loading history.");
+                    stopProgress();
+                }
 
-                        public void onSuccess(ChangeSetQueryResponse result) {
-                            setStatus("History loaded successfully.");
-                            stopProgress();
-                            
-                            Window popup = new Window();
-                            popup.setHeaderVisible( false );
-                            popup.setLayout( new FitLayout() );
-                            popup.setModal( true );
-                            popup.setMaximizable( true );
-                            popup.setMinimizable( true );
-                            popup.setClosable( true );
-                            popup.setDraggable( true );
-                            popup.setResizable( true );
-                            popup.setSize( 900, 600 );
-                            
-                            ChangeHistoryPanel panel = new ChangeHistoryPanel(result, label);                            
-                            popup.add( panel );
-                            popup.show();                            
-                        }
-                    });
+                public void onSuccess(ChangeSetQueryResponse result) {
+                    setStatus("History loaded successfully.");
+                    stopProgress();
+
+                    Window popup = new Window();
+                    popup.setHeaderVisible(true);
+                    popup.setLayout(new FitLayout());
+                    popup.setModal(true);
+                    popup.setMaximizable(true);
+                    popup.setMinimizable(true);
+                    popup.setClosable(true);
+                    popup.setDraggable(true);
+                    popup.setResizable(true);
+                    popup.setSize(900, 600);
+                    popup.setHeading("Change History for : " + label);
+
+                    ChangeHistoryPanel panel = new ChangeHistoryPanel(result, null);
+                    popup.add(panel);
+                    popup.show();
+                }
+            });
         }
     }
     

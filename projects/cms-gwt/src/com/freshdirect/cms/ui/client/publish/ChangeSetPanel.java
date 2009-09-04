@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
@@ -32,12 +33,16 @@ public class ChangeSetPanel extends ContentPanel {
         super();
         setHeading("Change Set");
 
-		setScrollMode( Scroll.AUTO );
-		setLayout( new FitLayout() );
+        setScrollMode(Scroll.AUTO);
+        setLayout(new FitLayout());
 
         BasePagingLoader<BasePagingLoadResult<BaseModelData>> loader = new BasePagingLoader<BasePagingLoadResult<BaseModelData>>(new ChangeSetLoader(response));
+        loader.setRemoteSort(true);
+        loader.setSortDir(SortDir.ASC);
+        loader.setSortField("date");
         store = new ListStore<BaseModelData>(loader);
         store.setSortField("date");
+        store.setSortDir(SortDir.ASC);
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
         

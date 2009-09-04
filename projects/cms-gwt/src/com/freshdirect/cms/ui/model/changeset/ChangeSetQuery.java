@@ -2,6 +2,8 @@ package com.freshdirect.cms.ui.model.changeset;
 
 import java.io.Serializable;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
+
 public class ChangeSetQuery implements Serializable {
 
     /**
@@ -23,6 +25,8 @@ public class ChangeSetQuery implements Serializable {
     boolean publishInfoQuery = false;
     
     String sortType;
+    
+    SortDir direction = SortDir.NONE;
     
     public String getById() {
         return byId;
@@ -80,6 +84,14 @@ public class ChangeSetQuery implements Serializable {
     
     public boolean isPublishInfoQuery() {
         return publishInfoQuery;
+    }
+    
+    public SortDir getDirection() {
+        return direction;
+    }
+    
+    public void setDirection(SortDir direction) {
+        this.direction = direction;
     }
     
     @Override

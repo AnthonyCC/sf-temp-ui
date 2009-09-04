@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeComparator;
@@ -274,13 +275,16 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     }
 
     private String getLastInfo(Publish publish) {
-        String lastMessage = null;
+        String lastMessage = "running.";
         //FIXME lastDate is always null, whats the point?
         Date lastDate = null;
         for (PublishMessage m : publish.getMessages()) {
             if (m.getSeverity() == PublishMessage.INFO) {
                 if (lastDate==null || lastDate.before(m.getTimestamp())) {
-                    lastMessage = m.getMessage();
+                    if (m.getMessage()!=null && m.getMessage().trim().length()>0) {
+                        lastMessage = m.getMessage();
+                        lastDate = m.getTimestamp();
+                    }
                 }
             }
         }
@@ -327,9 +331,21 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             changeCount += gcs.length();
         }
 
-        if ("user".equals(query.getSortType())) {
-            Collections.sort(changeHistory, GwtChangeSet.USER_COMPARATOR);
-        } else {
+        if (query.getDirection() != null && query.getDirection()!=SortDir.NONE) {
+            if ("user".equals(query.getSortType())) {
+                if (query.getDirection()==SortDir.ASC) {
+                    Collections.sort(changeHistory, GwtChangeSet.USER_COMPARATOR);
+                } else {
+                    Collections.sort(changeHistory, GwtChangeSet.USER_COMPARATOR_INV);
+                }
+            } if ("date".equals(query.getSortType())) {
+                if (query.getDirection()==SortDir.ASC) {
+                    Collections.sort(changeHistory, GwtChangeSet.DATE_COMPARATOR);
+                } else {
+                    Collections.sort(changeHistory, GwtChangeSet.DATE_COMPARATOR_INV);
+                }
+            }
+        } else  {
             Collections.sort(changeHistory, GwtChangeSet.DATE_COMPARATOR);
         }
 

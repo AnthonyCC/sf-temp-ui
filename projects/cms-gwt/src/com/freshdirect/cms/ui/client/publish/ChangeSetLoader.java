@@ -25,11 +25,15 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
 
     int loadedPosition;
 
+    String lastOrder;
+    
+    
     List<ContentNodeModel> alreadyLoaded = new ArrayList<ContentNodeModel>();
 
     public ChangeSetLoader(ChangeSetQueryResponse response) {
         this.response = response;
         this.loadedPosition = 0;
+        this.lastOrder = response.getQuery().getSortType();
         convertToRows(response);
     }
 
@@ -37,11 +41,23 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
     public void load(DataReader<PagingLoadResult<? extends ModelData>> reader, Object loadConfig,
             final AsyncCallback<PagingLoadResult<? extends ModelData>> callback) {
         final PagingLoadConfig config = (PagingLoadConfig) loadConfig;
+        String newSortOrder = config.getSortDir().name() +'-'+config.getSortField();
+        if (lastOrder != null) { 
+            if (!lastOrder.equals(newSortOrder)) {
+                alreadyLoaded.clear();
+                loadedPosition = 0;
+            }
+        } else {
+            lastOrder = newSortOrder;
+        }
+        
 
         if (config.getOffset() + config.getLimit() > alreadyLoaded.size()) {
             // we have to load other objects
             if ((response.getQuery() != null) && (loadedPosition < response.getChangeCount())) {
                 response.getQuery().setRange(loadedPosition, config.getLimit());
+                response.getQuery().setSortType(config.getSortField());
+                response.getQuery().setDirection(config.getSortDir());
                 CmsGwt.getContentService().getChangeSets(response.getQuery(), new BaseCallback<ChangeSetQueryResponse>() {
                     @Override
                     public void errorOccured(Throwable error) {
@@ -50,6 +66,7 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
 
                     @Override
                     public void onSuccess(ChangeSetQueryResponse newResponse) {
+                        ChangeSetLoader.this.lastOrder = newResponse.getQuery().getDirection().name() + '-' + newResponse.getQuery().getSortType();
                         convertToRows(newResponse);
                         deliverResponse(callback, config);
                     }
