@@ -279,23 +279,25 @@ public class ErpComplaintModel extends ModelSupport {
 	 * @return Complaint can be auto approved or not
 	 * 
 	 */
-	public boolean canBeAutoApproved() {
+	public boolean canBeAutoApproved(EnumSaleStatus orderStatus) {
+		final double creditAutoApproveAmount = ErpServicesProperties.getCreditAutoApproveAmount();
+		final double amount = getAmount();
 		return
-			((getAmount() <= ErpServicesProperties.getCreditAutoApproveAmount())
+			((amount <= creditAutoApproveAmount)
 				&& (getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)
-				&& (EnumSaleStatus.SETTLED.equals(status)
-					|| EnumSaleStatus.PAYMENT_PENDING.equals(status)
-					|| EnumSaleStatus.CAPTURE_PENDING.equals(status)))
-			|| ((0 == Math.round(getAmount() * 100.0))
+				&& (EnumSaleStatus.SETTLED.equals(orderStatus)
+					|| EnumSaleStatus.PAYMENT_PENDING.equals(orderStatus)
+					|| EnumSaleStatus.CAPTURE_PENDING.equals(orderStatus)))
+			|| ((0 == Math.round(amount * 100.0))
 				&& (getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)
-				&& (EnumSaleStatus.SETTLED.equals(status)
-					|| EnumSaleStatus.PAYMENT_PENDING.equals(status)
-					|| EnumSaleStatus.CAPTURE_PENDING.equals(status)
-					|| EnumSaleStatus.ENROUTE.equals(status)))
+				&& (EnumSaleStatus.SETTLED.equals(orderStatus)
+					|| EnumSaleStatus.PAYMENT_PENDING.equals(orderStatus)
+					|| EnumSaleStatus.CAPTURE_PENDING.equals(orderStatus)
+					|| EnumSaleStatus.ENROUTE.equals(orderStatus)))
 			|| ((getComplaintMethod() == ErpComplaintModel.CASH_BACK
 					|| getComplaintMethod() == ErpComplaintModel.MIXED)
-					&& getAmount() <= ErpServicesProperties.getCreditAutoApproveAmount()
-					&& EnumSaleStatus.SETTLED.equals(status));
+					&& amount <= creditAutoApproveAmount
+					&& EnumSaleStatus.SETTLED.equals(orderStatus));
 		
 	}
 	

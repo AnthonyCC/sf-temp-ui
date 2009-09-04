@@ -1144,9 +1144,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		Connection conn = null;
 		try {
 			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			EnumSaleStatus status = eb.getStatus();
-			
-			boolean autoApprove = complaint.canBeAutoApproved();
+			boolean autoApprove = complaint.canBeAutoApproved(eb.getStatus());
 
 
 			//
