@@ -136,7 +136,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 		// ============ layout ============
 		
 		BorderLayoutData pageHeaderData = new BorderLayoutData(LayoutRegion.NORTH);
-		pageHeaderData.setSize(30);
+		pageHeaderData.setSize(20);
 		
 		BorderLayoutData treeLayoutData = new BorderLayoutData(LayoutRegion.WEST);
 		treeLayoutData.setCollapsible(true);
