@@ -394,8 +394,6 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         if (userPrincipal == null) {
             return new GwtUser("cms-teszt-user", true, true);
         } else {
-        	// FIXME whats the point with the " || true "? ( X || true == true ) ! 
-            // return new GwtUser(userPrincipal.getName(), request.isUserInRole("cms_editor") || true, request.isUserInRole("cms_admin"));
             return new GwtUser(userPrincipal.getName(), request.isUserInRole("cms_editor"), request.isUserInRole("cms_admin"));
         }
     }

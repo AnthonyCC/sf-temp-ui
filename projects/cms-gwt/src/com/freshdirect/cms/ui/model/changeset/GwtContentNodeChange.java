@@ -93,7 +93,7 @@ public class GwtContentNodeChange implements Serializable {
     }
 
     public int length() {
-        // just for delete events ... [wtf? if size is 0 return 1 ?]
+        // delete/create events have no details, but count as one change.
         return changeDetails.size() == 0 ? 1 : changeDetails.size();
     }
 
