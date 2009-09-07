@@ -24,6 +24,9 @@ public class CmsGwt implements EntryPoint {
      */
     public void onModuleLoad() {
         contentService = (ContentServiceAsync) GWT.create(ContentService.class);
+        mainLayout = new MainLayout();
+        RootPanel.get().add(mainLayout);
+
         contentService.getUser(new BaseCallback<GwtUser>() {
             @Override
             public void onSuccess(GwtUser result) {
@@ -32,8 +35,6 @@ public class CmsGwt implements EntryPoint {
             }
         });
 
-        mainLayout = new MainLayout();
-        RootPanel.get().add(mainLayout);
     }
 
     public static GwtUser getCurrentUser() {
