@@ -37,13 +37,6 @@
 
 	<module>
 		<web>
-			<web-uri>cms-slide.war</web-uri>
-			<context-root>/cms-slide</context-root>
-		</web>
-	</module>
-
-	<module>
-		<web>
 			<web-uri>cms-gwt.war</web-uri>
 			<context-root>/cms-gwt</context-root>
 		</web>
