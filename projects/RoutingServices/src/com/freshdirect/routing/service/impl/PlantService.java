@@ -1,10 +1,12 @@
 package com.freshdirect.routing.service.impl;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
@@ -12,18 +14,46 @@ import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.service.IPlantService;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.ServiceTimeUtil;
 import com.freshdirect.sap.command.SapCartonInfo;
 import com.freshdirect.sap.ejb.SapException;
 
 public class PlantService extends BaseService implements IPlantService {
 	
+	private IDeliveryDetailsDAO deliveryDAOImpl;
+	
+	public IDeliveryDetailsDAO getDeliveryDAOImpl() {
+		return deliveryDAOImpl;
+	}
+
+	public void setDeliveryDAOImpl(IDeliveryDetailsDAO deliveryDAOImpl) {
+		this.deliveryDAOImpl = deliveryDAOImpl;
+	}
+	
 	public IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
 		
+		IPackagingModel _historyInfo = null;
+		int cartonCount = (int)scenario.getDefaultCartonCount(); 
+		int freezerCount = (int)scenario.getDefaultFreezerCount();
+		int caseCount = (int)scenario.getDefaultCaseCount();
+		try {
+			
+			_historyInfo = deliveryDAOImpl.getHistoricOrderSize(model.getCustomerNumber()
+																, RoutingServicesProperties.getDefaultOrderEstimationRange());
+			
+			if(_historyInfo != null && !(_historyInfo.getNoOfCartons() == 0
+											&& _historyInfo.getNoOfCases() == 0
+												&& _historyInfo.getNoOfFreezers() == 0)) {
+				cartonCount = (int)_historyInfo.getNoOfCartons(); 
+				freezerCount = (int)_historyInfo.getNoOfFreezers();
+				caseCount = (int)_historyInfo.getNoOfCases();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();			
+		}	
 		return getPackageModel(new HashMap(), scenario.getOrderSizeFormula(),
-												(int)scenario.getDefaultCartonCount(),
-													(int)scenario.getDefaultFreezerCount(),
-														(int)scenario.getDefaultCaseCount());
+												cartonCount, freezerCount, caseCount);
 	}
 	
 	public Map getOrderSize(IOrderModel model) throws RoutingServiceException {
@@ -105,6 +135,7 @@ public class PlantService extends BaseService implements IPlantService {
 		//tmpPackageModel.setTotalSize2(ServiceTimeUtil.evaluateExpression(RoutingServicesProperties.getTotalSize2Expression()
 										//, ServiceTimeUtil.getServiceTimeFactorParams(tmpPackageModel)));
 		tmpPackageModel.setDefault(isDefault);
+		
 		return tmpPackageModel;
 	}
 	

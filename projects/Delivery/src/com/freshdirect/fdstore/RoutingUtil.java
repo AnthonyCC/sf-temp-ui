@@ -112,6 +112,7 @@ public class RoutingUtil {
 		IOrderModel order= new OrderModel();
 		order.setDeliveryInfo(getDeliveryModel(address));
 		order.setCustomerName(new StringBuffer(100).append(address.getLastName()).append(", ").append(address.getFirstName()).toString());
+		order.setCustomerNumber(address.getCustomerId());
 		order.setOrderNumber(orderNumber);
 		return order;
 	}

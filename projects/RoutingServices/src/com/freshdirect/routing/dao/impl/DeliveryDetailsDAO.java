@@ -25,10 +25,12 @@ import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IServiceTimeModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.OrderModel;
+import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.model.ServiceTimeModel;
 import com.freshdirect.routing.model.ZoneModel;
 
@@ -88,6 +90,38 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			+ "where ts.zone_id=z.id and ts.capacity<>0 and ts.base_date = ? and ts.CUTOFF_TIME =  ? "
 			+ ") group by code, name, st, et order by code ";
 			
+	private static final String ORDERSIZE_ESTIMATION_QUERY = "select Ceil(Avg(NUM_REGULAR_CARTONS)) CCOUNT, " +
+			" Ceil(Avg(NUM_FREEZER_CARTONS)) FCOUNT, Ceil(Avg(NUM_ALCOHOL_CARTONS)) ACOUNT" +
+			" from cust.sale s where s.CUSTOMER_ID = ? and s.STATUS = 'STL' " +
+			" and ROWNUM <= ? order by s.CROMOD_DATE desc";
+	
+	public IPackagingModel getHistoricOrderSize(final String customerId, final int range) throws SQLException {
+		
+		final IPackagingModel model = new PackagingModel();
+		
+        PreparedStatementCreator creator=new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+                PreparedStatement ps =
+                    connection.prepareStatement(ORDERSIZE_ESTIMATION_QUERY);
+                ps.setString(1, customerId);
+                ps.setInt(2, range);
+                return ps;
+            }  
+        };
+        jdbcTemplate.query(creator, 
+       		  new RowCallbackHandler() { 
+       		      public void processRow(ResultSet rs) throws SQLException {
+       		    	
+       		    	do {
+       		    		model.setNoOfCartons(rs.getInt("CCOUNT")+ rs.getInt("ACOUNT"));
+       		    		model.setNoOfFreezers(rs.getInt("FCOUNT"));
+       		    	}  while(rs.next());		        		    	
+       		      }
+       		  }
+       	); 
+        
+		return model;
+	}
 	
 	public IDeliveryModel getDeliveryInfo(final String saleId) throws SQLException {
 		 final IDeliveryModel model = new DeliveryModel();	         

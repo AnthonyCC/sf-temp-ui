@@ -9,6 +9,7 @@ import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IServiceTimeModel;
 
 public interface IDeliveryDetailsDAO {
@@ -30,4 +31,6 @@ public interface IDeliveryDetailsDAO {
 	Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws SQLException;
 	
 	List<IOrderModel> getUnassigned(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws SQLException;
+	
+	IPackagingModel getHistoricOrderSize(final String customerId, final int range) throws SQLException;
 }

@@ -312,7 +312,7 @@ public class FDStoreProperties {
 	private static final String DYNAMIC_ROUTING_ENABLED = "fdstore.dynamicrouting.enabled";
 	static {
 
-		defaults.put(PROP_PROVIDER_URL, 	"t3://appp1.nyc1.freshdirect.com:7001");
+		defaults.put(PROP_PROVIDER_URL, 	"t3://app01.stdev01.nyc1.freshdirect.com:7001");
 		defaults.put(PROP_INIT_CTX_FACTORY,	"weblogic.jndi.WLInitialContextFactory");
 		defaults.put(PROP_CRM_GEOCODELINK, "http://www.geocode.com/EZLI/LoginServlet?uname=ECM0001468&pword=Lzxjb&servID=USA_Geo_002&formAction=GetInputFormServlet&submit=Login&cmd=li");
 		defaults.put(PROP_CRM_CASE_LIST_LENGTH, "100");

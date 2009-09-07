@@ -76,6 +76,8 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_TRANSPORTATIONSUITE_USEPROXY		= "routingservices.transportationsuite.useproxy";
 	
+	private final static String PROP_ORDER_ESTIMATIONRANGE		= "routingservices.order.estimationrange";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -109,6 +111,7 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_LDPROCESSING_ENABLED, 	"true");
 		
 		defaults.put(PROP_TRANSPORTATIONSUITE_USEPROXY, 	"false");
+		defaults.put(PROP_ORDER_ESTIMATIONRANGE, 	"5");
 		refresh();		
 	}
 
@@ -262,7 +265,11 @@ public class RoutingServicesProperties {
 	
 	public static String getRoutingLateDeliveryQuery() {
         return get(PROP_LATEDELIVERY_QUERY);
-    }		
+    }
+	
+	public static int getDefaultOrderEstimationRange() {
+		return getIntVal(get(PROP_ORDER_ESTIMATIONRANGE));
+	}
 	
 	private static int getIntVal(String strVal) {
 		int intVal = 0;

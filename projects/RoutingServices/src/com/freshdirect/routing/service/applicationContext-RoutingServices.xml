@@ -32,7 +32,9 @@
            <property name="deliveryDAOImpl" ref="deliveryDAO"/>    		
 	</bean>
 	
-	<bean id="plantService" class="com.freshdirect.routing.service.impl.PlantService"/>
+	<bean id="plantService" class="com.freshdirect.routing.service.impl.PlantService">
+		<property name="deliveryDAOImpl" ref="deliveryDAO"/>    		
+	</bean>
         
     <bean id="utilityService" class="com.freshdirect.routing.service.impl.UtilityService"/> 
     
@@ -71,6 +73,17 @@
 	<bean id="routingInfoServiceMng" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager" ref="transactionManager"/>
 		<property name="target" ref="routingInfoService"/>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="plantServiceMng" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target" ref="plantService"/>
 		<property name="transactionAttributes">
 			<props>
 				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
