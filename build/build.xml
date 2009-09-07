@@ -211,7 +211,6 @@
 		<checkoutLabeled dir="projects/FDWebSite"/>
 		<checkoutLabeled dir="projects/CRM/docroot"/>
 		<checkoutLabeled dir="projects/cms-tap"/>
-		<checkoutLabeled dir="projects/cms-slide"/>
 		<checkoutLabeled dir="projects/Tools/src"/>
 		<checkoutLabeled dir="projects/Tests"/>
 		<checkoutLabeled dir="projects/Resources/"/>
@@ -271,7 +270,6 @@
 		<checkoutLatest dir="projects/FDWebSite"/>
 		<checkoutLatest dir="projects/CRM/docroot"/>
 		<checkoutLatest dir="projects/cms-tap"/>
-		<checkoutLatest dir="projects/cms-slide"/>
 		<checkoutLatest dir="projects/Tools/src"/>
 		<checkoutLatest dir="projects/Tests"/>
 		<checkoutLatest dir="projects/Resources/"/>
@@ -364,7 +362,6 @@
 		<mkdir dir="${work.dir}/func-logs" />
 		<mkdir dir="${work.dir}/perf-logs" />
 		<mkdir dir="${work.dir}/Resources" />
-		<mkdir dir="${work.dir}/cms-slide" />
 		<mkdir dir="${work.dir}/OCF" />
 		<mkdir dir="${work.dir}/listadmin" />
 		<mkdir dir="${work.dir}/ocf-adm" />
@@ -474,7 +471,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,resources,cms-slide" description="Build everything">
+	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,resources" description="Build everything">
 	</target>
 
 	<target name="jsmin" description="Minimizing javascript files">
@@ -535,7 +532,6 @@
 		                <pathelement location="${work.dir}/ERPServices-emma.jar"/>
 		                <pathelement location="${work.dir}/Delivery-emma.jar"/>
 		                <pathelement location="${work.dir}/CMS-emma.jar"/>
-		                <pathelement location="${work.dir}/cms-slide-emma.jar"/>
 		                <pathelement location="${work.dir}/FDStore-emma.jar"/>
 		                <pathelement location="${work.dir}/DataLoader-emma.jar"/>
 		                <pathelement location="${work.dir}/ERPSWebApp-emma.jar"/>
@@ -577,7 +573,6 @@
 		   				<pathelement location="${work.dir}/ERPServices.jar"/>
 		   				<pathelement location="${work.dir}/Delivery.jar"/>
 		   				<pathelement location="${work.dir}/CMS.jar"/>
-		   				<pathelement location="${work.dir}/cms-slide.jar"/>
 		   				<pathelement location="${work.dir}/FDStore.jar"/>
 		   				<pathelement location="${work.dir}/DataLoader.jar"/>
 		   				<pathelement location="${work.dir}/ERPSWebApp.jar"/>
@@ -617,7 +612,6 @@
                             <pathelement location="${projects.dir}/DataLoader/src"/>
                             <pathelement location="${projects.dir}/ERPSWebApp/src"/>
                             <pathelement location="${projects.dir}/listadmin/src"/>
-                            <pathelement location="${projects.dir}/cms-slide/src"/>
                         </sourcepath>
                         <fileset dir="${work.dir}/logs" >
                             <include name="*.emma" />
@@ -652,7 +646,7 @@
 						<path refid="common.classpath"/>
 						<path refid="testing.classpath"/>
 						<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-						<pathelement path="${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar;${work.dir}/cms-slide.jar"/>
+						<pathelement path="${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
 					</classpath>
 				</javac>
 				<record name="${work.dir}/func-logs/log.txt" action="stop"/>
@@ -690,7 +684,6 @@
 				<pathelement location="${work.dir}/ERPServices.jar"/>
 				<pathelement location="${work.dir}/Delivery.jar"/>
 				<pathelement location="${work.dir}/CMS.jar"/>
-				<pathelement location="${work.dir}/cms-slide.jar"/>
 				<pathelement location="${work.dir}/FDStore.jar"/>
 				<pathelement location="${work.dir}/DataLoader.jar"/>
 				<pathelement location="${work.dir}/ERPSWebApp.jar"/>
@@ -728,7 +721,7 @@
 						<path refid="common.classpath"/>
 						<path refid="testing.classpath"/>
 						<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-						<pathelement path="${work.dir}/FunctionalTests;${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar;${work.dir}/cms-slide.jar"/>
+						<pathelement path="${work.dir}/FunctionalTests;${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
 					</classpath>
 				</javac>
 				<record name="${work.dir}/perf-logs/log.txt" action="stop"/>
@@ -769,7 +762,7 @@
 			<path refid="common.classpath"/>
 			<path refid="testing.classpath"/>
 			<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar;${work.dir}/cms-slide.jar"/>
+			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
 			</classpath>
 		</java>
 		<java classname="com.freshdirect.tools.monitor.WebStatsReport" output="${work.dir}/perf-logs/webstats-reset.log">
@@ -780,7 +773,7 @@
 			<path refid="common.classpath"/>
 			<path refid="testing.classpath"/>
 			<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar;${work.dir}/cms-slide.jar"/>
+			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
 			</classpath>
 		</java>
 		<junit fork="yes" jvm="${jdk15.executable}">
@@ -808,7 +801,6 @@
 				<pathelement location="${work.dir}/ERPServices.jar"/>
 				<pathelement location="${work.dir}/Delivery.jar"/>
 				<pathelement location="${work.dir}/CMS.jar"/>
-				<pathelement location="${work.dir}/cms-slide.jar"/>
 				<pathelement location="${work.dir}/FDStore.jar"/>
 				<pathelement location="${work.dir}/DataLoader.jar"/>
 				<pathelement location="${work.dir}/ERPSWebApp.jar"/>
@@ -824,7 +816,7 @@
 			<path refid="common.classpath"/>
 			<path refid="testing.classpath"/>
 			<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar;${work.dir}/cms-slide.jar"/>
+			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar;${work.dir}/listadmin.jar"/>
 			</classpath>
 		</java>
 
@@ -1523,27 +1515,6 @@
 			classpathref="crm.classpath"/>
 	</target>
 
-	<target name="cms-slide" description="Build cms-slide">
-		<path id="cms-slide.classpath">
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
-			<pathelement location="${work.dir}/CMS.jar"/>
-			<pathelement location="${thirdparty.home}/slide/slide-kernel-2.1.jar"/>
-			<pathelement location="${thirdparty.home}/slide/slide-webdavservlet-2.1.jar"/>
-			<pathelement location="${thirdparty.home}/slide/jakarta-slide-webdavlib-2.1.jar"/>
-            <pathelement location="${thirdparty.home}/poi-3.0-rc4-20070503.jar"/>
-		</path>
-
-		<makeProject
-			project="cms-slide"
-			classpathref="cms-slide.classpath"/>
-
-		<zip destfile="${work.dir}/cms-slide.war">
-			<zipfileset src="${projects.dir}/cms-slide/lib/slide.war" excludes="Domain.xml,**/web.xml,**/weblogic.xml,WEB-INF/lib/**"/>
-			<zipfileset dir="${projects.dir}/cms-slide/docroot" includes="**" />
-		</zip>
-	</target>
-
 	<target name="dlvadmin" description="Build DlvAdmin">
 		<!-- directory for compiled stuff -->
 		<mkdir dir="${work.dir}/DlvAdmin/WEB-INF/classes" />
@@ -2087,7 +2058,6 @@
 						<pathelement path="${work.dir}/DataLoaderEJB-WL.jar"/>
 						<pathelement path="${work.dir}/ERPSWebApp.jar"/>
 						<pathelement path="${work.dir}/listadmin.jar"/>
-						<pathelement path="${work.dir}/cms-slide.jar"/>
 					</classpath>
 				</javac>
 				<record name="${work.dir}/logs/log.txt" action="stop"/>
@@ -2345,7 +2315,6 @@
 				<include name="FDWebSite.war"/>
 				<include name="cms-tap.war"/>
 				<include name="cms-gwt.war"/>
-				<include name="cms-slide.war"/>
 				<include name="CRM.war"/>
 			</ejbs>
 			<libraries>
@@ -2353,7 +2322,6 @@
 				<include name="Resources.jar"/>
 				<include name="CMS.jar"/>
 				<include name="ERPSWebApp.jar"/>
-				<include name="cms-slide.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="RoutingServices.jar"/>
 			</libraries>
