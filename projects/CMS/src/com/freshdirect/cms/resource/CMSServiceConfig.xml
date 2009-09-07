@@ -215,9 +215,9 @@ because otherwise the external modifications of the slide database won't get pic
 		MEDIA CONTENT SERVICE
 	-->
 
-	<service-point id="SlideService" interface="com.freshdirect.cms.application.ContentServiceI">
+	<service-point id="MediaService" interface="com.freshdirect.cms.application.ContentServiceI">
 		<invoke-factory>
-			<construct class="com.freshdirect.cms.slide.SlideService" service-id-property="name">
+			<construct class="com.freshdirect.cms.application.service.media.MediaService" service-id-property="name">
 				<service>cmsdatasource</service>
 			</construct>
 		</invoke-factory>
@@ -291,7 +291,7 @@ because otherwise the external modifications of the slide database won't get pic
 	<configuration-point id="composedServices" schema-id="serviceList"/>
 	<contribution configuration-id="composedServices">
 		<service name="StoreContent"/>
-		<service name="SlideService"/>
+		<service name="MediaService"/>
 		<service name="FormContent"/>
 		<service name="CmsQueries"/>
 	</contribution>

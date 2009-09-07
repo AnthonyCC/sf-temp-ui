@@ -24,7 +24,7 @@ Symbols:
 	<service-point id="PublishSlide" interface="com.freshdirect.cms.publish.PublishTask">
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.publish.PublishXmlTask">
-				<service>com.freshdirect.cms.SlideService</service>
+				<service>com.freshdirect.cms.application.service.media.MediaService</service>
 				<string>/Media.xml.gz</string>
 			</construct>
 		</invoke-factory>
