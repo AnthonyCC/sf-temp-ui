@@ -146,6 +146,12 @@ public class ContentForm extends FormPanel {
 		
 		innerField.setReadOnly( readonly );
 		innerField.setEnabled( !readonly );
+		
+		if ( readonly ) {
+			innerField.addInputStyleName( "x-item-disabled" );
+			innerField.addStyleName( "x-item-disabled" );
+			innerField.addStyleName( "akarmi" );
+		}
         
 		
         Field<Serializable> field;
