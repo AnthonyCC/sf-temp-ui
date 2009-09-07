@@ -586,7 +586,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
     public void userChanged() {
         GwtUser currentUser = CmsGwt.getCurrentUser();
         if (currentUser == null) {
-            // TODO error handling?
+            MessageBox.alert( "Authentication error", "Couldn't authenticate user.", null );
             return;
         }
         if (currentUser.isAdmin()) {
