@@ -137,26 +137,31 @@ public class ContentForm extends FormPanel {
             value = null;
         }
 
-        final Field<Serializable> innerField = createFieldInner(attributeKey, node, value, attribute);
-        if (innerField == null) {
-            return null;
-        }
-        innerField.setReadOnly( attribute.isReadonly() || node.isReadonly() );
-
+        boolean readonly = attribute.isReadonly() || node.isReadonly() ;
+        
+		final Field<Serializable> innerField = createFieldInner( attributeKey, node, value, attribute, readonly );
+		if ( innerField == null ) {
+			return null;
+		}
+		
+		innerField.setReadOnly( readonly );
+		innerField.setEnabled( !readonly );
+        
+		
         Field<Serializable> field;
 		if ( attribute.isInheritable() ) {
-			field = new InheritanceField<Serializable>( innerField, value == null, attributeKey );
+			field = new InheritanceField<Serializable>( innerField, value == null, attributeKey, readonly );
 			ContentNodeAttributeI attr = node.getContexts() == null ? null : node.getContexts().getInheritedAttribute( contextPath, attributeKey );
 			Serializable inhvalue = attr == null ? null : attr.getValue();
 			( (InheritanceField<Serializable>)field ).setInheritedValue( inhvalue );
+			
 		} else {
 			field = innerField;
 		}
 
 		attribute.setFieldObject( field );
-        field.setReadOnly( attribute.isReadonly() || node.isReadonly() );
-        
-		if ( attribute.isReadonly() || node.isReadonly() ) {
+		
+		if ( readonly ) {
             field.setFieldLabel( "<span class=\"readonly\">" + attribute.getLabel() + "</span>" );
         } else {
             field.setFieldLabel( attribute.getLabel() );
@@ -180,7 +185,7 @@ public class ContentForm extends FormPanel {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	protected Field createFieldInner( String attributeKey, GwtNodeData node, Serializable value, ContentNodeAttributeI attribute ) {
+	protected Field createFieldInner( String attributeKey, GwtNodeData node, Serializable value, ContentNodeAttributeI attribute, boolean readonly ) {
 	    
 		CustomFieldDefinition customFieldDefinition = node.getTabDefinition() == null ? null : node.getTabDefinition().getCustomFieldDefinition( attributeKey );
 		String type = attribute.getType();
@@ -242,7 +247,7 @@ public class ContentForm extends FormPanel {
 		
 		if (type.equals("onetoone")) {
 			OneToOneAttribute attr = (OneToOneAttribute) attribute;
-			OneToOneRelationField field = new OneToOneRelationField( attr.getAllowedTypes() );
+			OneToOneRelationField field = new OneToOneRelationField( attr.getAllowedTypes(), readonly );
 			if (value != null) {
 				field.setValue((ContentNodeModel)value);					
 			}				
@@ -257,11 +262,11 @@ public class ContentForm extends FormPanel {
 			        field = new VariationMatrixField(attr.getAllowedTypes(), node.getNode());
 			    }
 			    if (customFieldDefinition.getGridColumns() != null) {
-			        field = new CustomGridField(attributeKey, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition);
+			        field = new CustomGridField(attributeKey, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition, readonly);
 			    }
 			} 
 			if (field == null) {
-			    field = new OneToManyRelationField(attributeKey, attr.getAllowedTypes(), attr.isNavigable());    
+				field = new OneToManyRelationField( attributeKey, attr.getAllowedTypes(), attr.isNavigable(), readonly );
 			}
 			
 			if (value != null) {

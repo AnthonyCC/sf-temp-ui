@@ -20,12 +20,15 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     TYPE inheritedValue = null;
     TYPE explicitValue = null;
     
-    public InheritanceField( Field<TYPE> field, boolean override, String attrKey ) {
+    protected boolean readonly;
+    
+    public InheritanceField( Field<TYPE> field, boolean override, String attrKey, boolean readonly ) {
     	
         super();
         addStyleName("inheritable");
         
         this.attributeKey = attrKey;
+        this.readonly = readonly;
         
         this.innerField = field;
         this.innerField.addStyleName("inheritable-value");
@@ -44,8 +47,14 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
         	enable();
         }
         
-        checkbox.addListener( Events.OnClick, checkBoxListener );
-        checkbox.addListener( Events.OnKeyPress, checkBoxListener );
+        if ( readonly ) {
+        	disable();
+        	checkbox.setReadOnly( true );
+        	checkbox.disable();        	
+        } else {        
+	        checkbox.addListener( Events.OnClick, checkBoxListener );
+	        checkbox.addListener( Events.OnKeyPress, checkBoxListener );
+        }
     }
     
     public Listener<BaseEvent> checkBoxListener = new Listener<BaseEvent>() {
@@ -84,13 +93,13 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     	innerField.setReadOnly( readOnly );
     	if ( readOnly ) {
     		disable();
+    		innerField.disable();
         	checkbox.disable();    		
     	} else {
 			enable();
 			checkbox.enable();
 		}
     }
-
 
     
     @SuppressWarnings("unchecked")

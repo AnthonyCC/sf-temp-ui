@@ -5,10 +5,13 @@ import java.util.HashSet;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
+import com.extjs.gxt.ui.client.widget.layout.ColumnData;
+import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
@@ -22,10 +25,15 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 
     private ContentNodeModel value;
     private HashSet<String> allowedTypes;
+    
+    protected boolean readonly;
 
-    public OneToOneRelationField(HashSet<String> aTypes) {
+	final static int                       MAIN_LABEL_WIDTH = 415;
+	
+    public OneToOneRelationField(HashSet<String> aTypes, boolean readonly) {
         super();
         allowedTypes = aTypes;
+        this.readonly = readonly;
         initialize();
     }
 
@@ -47,6 +55,11 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
     }
 	
     private void initialize() {
+    	
+		ContentPanel cp = new ContentPanel();		
+		cp.setWidth(MAIN_LABEL_WIDTH + 50);
+		cp.setLayout( new ColumnLayout() );
+		
         relationButton = new IconButton("rel-button");
         relationButton.setToolTip("Change relationship");
         relationButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
@@ -62,10 +75,10 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
                 popup.show();
             }
         });
-        add(new AdapterField(relationButton));
+		cp.add( relationButton, new ColumnData( 20.0 ) );
 
-        valueField = new LabelField();
-        add(valueField);
+		valueField = new LabelField();
+		cp.add( valueField, new ColumnData( 420.0 ) );
 
         deleteButton = new IconButton("delete-button");
         deleteButton.setToolTip(new ToolTipConfig("DELETE", "Delete relation."));
@@ -75,7 +88,19 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
                 OneToOneRelationField.this.setValue(null);
             }
         });
-        add(new AdapterField(deleteButton));
+		cp.add( deleteButton, new ColumnData( 20.0 ) );
+        
+		AdapterField f = new AdapterField( cp );
+		f.setWidth( MAIN_LABEL_WIDTH + 70 );
+		
+		if ( readonly ) {
+			cp.disable();
+			f.setReadOnly( true );
+			f.disable();
+		}
+		
+		add(f);
+		
     }
 	
     @Override
@@ -104,5 +129,5 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
     public void setReadOnly(boolean readOnly) {
         super.setReadOnly(readOnly);
         setEnabled(!readOnly);
-    }	
+    }    
 }

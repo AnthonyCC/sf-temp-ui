@@ -53,8 +53,10 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 	protected Set<String> allowedTypes;
 	protected List<GridCellRenderer<OneToManyModel>> extraColumns;
 	protected boolean navigable;
+	protected boolean readonly;
 
 	final static int                       MAIN_LABEL_WIDTH = 415;
+	
 	private ToolButton	addButton;
 	private ToolButton	createButton;
 	private ToolButton	copyButton;
@@ -73,16 +75,18 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 	    
 	}
 	
-    public OneToManyRelationField(String attrKey, Set<String> allowedTypes, boolean navigable) {
-        this(attrKey, allowedTypes, navigable, new ArrayList<GridCellRenderer<OneToManyModel>>(0));
-    }
+	public OneToManyRelationField( String attrKey, Set<String> allowedTypes, boolean navigable, boolean readonly ) {
+		this( attrKey, allowedTypes, navigable, new ArrayList<GridCellRenderer<OneToManyModel>>( 0 ), readonly );
+	}
 
-	public OneToManyRelationField(String attrKey, Set<String> allowedTypes, boolean navigable, List<GridCellRenderer<OneToManyModel>> extraColumns) {
+	public OneToManyRelationField( String attrKey, Set<String> allowedTypes, boolean navigable,
+			List<GridCellRenderer<OneToManyModel>> extraColumns, boolean readonly ) {
 		super();
 		this.attributeKey = attrKey;
 		this.allowedTypes = allowedTypes;
 		this.navigable = navigable;
 		this.extraColumns = extraColumns;
+		this.readonly = readonly;
 		initialize();
 	}
 
@@ -348,7 +352,6 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		}
 		
 		
-		
 		store = new ListStore<OneToManyModel>();
 		store.removeAll();
 
@@ -382,12 +385,17 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(OneToManyRelationField.this));
 			}
 		});
+			
+		cp.add( grid );
+				
+		AdapterField f = new AdapterField( cp );
+		f.setWidth( MAIN_LABEL_WIDTH + 70 );
 		
-		
-		cp.add(grid);
-		
-		AdapterField f = new AdapterField(cp);
-		f.setWidth(MAIN_LABEL_WIDTH + 70);
+		if ( readonly ) {
+			cp.disable();
+			f.setReadOnly( true );
+			f.disable();
+		}
 		
 		add(f);
 	}
@@ -514,5 +522,4 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		super.setReadOnly( readOnly );
 		setEnabled( !readOnly );	
 	}
-	
 }

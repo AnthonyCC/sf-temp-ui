@@ -17,7 +17,6 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.freshdirect.cms.ui.client.WorkingSet;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
 import com.freshdirect.cms.ui.model.GwtContentNode;
-import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -48,8 +47,8 @@ public class CustomGridField extends OneToManyRelationField implements SaveListe
     
     CustomFieldDefinition customFields;
     
-    public CustomGridField(String attributeKey, Set<String> allowedTypes, boolean navigable, CustomFieldDefinition customFields) {
-        super(attributeKey, allowedTypes, navigable, createExtraColumns(customFields));
+    public CustomGridField(String attributeKey, Set<String> allowedTypes, boolean navigable, CustomFieldDefinition customFields, boolean readonly ) {
+        super(attributeKey, allowedTypes, navigable, createExtraColumns(customFields), readonly);
         this.customFields = customFields;
     }
     
