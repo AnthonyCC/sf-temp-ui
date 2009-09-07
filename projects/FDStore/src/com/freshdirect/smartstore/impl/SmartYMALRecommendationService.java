@@ -111,8 +111,10 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 			
 				Recommender rec = (Recommender) recommenders.get(i);
 				RecommenderStrategy strategy = rec.getStrategy();
-				if (strategy == null)
+				if (strategy == null) {
+					recommendations[i] = Collections.EMPTY_LIST;
 					continue;
+				}
 
 				List scope = rec.getScope();
 				
