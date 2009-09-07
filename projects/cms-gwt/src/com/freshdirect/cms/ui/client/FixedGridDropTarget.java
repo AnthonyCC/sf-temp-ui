@@ -54,7 +54,11 @@ public class FixedGridDropTarget extends GridDropTarget {
 	        mid += row.getAbsoluteTop();
 	        int y = event.getClientY();
 	        boolean before = y < mid;
-	        int idx = grid.getView().findRowIndex(row);	        
+	        int idx = grid.getView().findRowIndex(row);
+	        if (before && idx > 0) {
+	            // 'before' means that the first half of the row, so if the pointer is in the first half of the row, then we want to insert before this row.
+	            idx --;
+	        }
 	        insertIndex = idx;
 	        
 	        if (before) {
