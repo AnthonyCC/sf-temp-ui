@@ -34,7 +34,7 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/javaee-api-5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Oracle WebLogic Server v10.3 JRE"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/DevEAR"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
