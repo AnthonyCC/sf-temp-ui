@@ -72,23 +72,19 @@
 	     	<access-uris>dlvservicetimescenario.do,deletedlvservicetimescenario.do,editdlvservicetimescenario.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
-	     
-	     <menu id="RUT007" title="Cut Off" orientation="LEFT" link="cutoff.do">
-	     	<access-uris>cutoff.do,deletecutoff.do,editcutoff.do</access-uris>
-     	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
-     	 </menu>
+	          
      	 
-     	<menu id="RUT008" title="SCRIB" orientation="LEFT" link="scrib.do">
+     	<menu id="RUT007" title="SCRIB" orientation="LEFT" link="scrib.do">
 	     	<access-uris>scrib.do,editscrib.do,copyscrib.do,deletescrib.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>
      	 
-     	 <menu id="RUT009" title="Early Warning" orientation="LEFT" link="earlywarning.do">
+     	 <menu id="RUT008" title="Early Warning" orientation="LEFT" link="earlywarning.do">
 	     	<access-uris>earlywarning.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>
      	 
-     	 <menu id="RUT010" title="Unassigned" orientation="LEFT" link="unassigned.do">
+     	 <menu id="RUT009" title="Unassigned" orientation="LEFT" link="unassigned.do">
 	     	<access-uris>unassigned.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>
@@ -151,7 +147,12 @@
 	     <menu id="ADO001" title="Timeslot Log" orientation="RIGHT" link="timeslotlog.do">
 	     	<access-uris>timeslotlog.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
-	     </menu>	     	     
+	     </menu>	
+	     
+	     <menu id="ADO002" title="Cut Off" orientation="LEFT" link="cutoff.do">
+	     	<access-uris>cutoff.do,deletecutoff.do,editcutoff.do</access-uris>
+     	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+     	 </menu>     	     
          
 </menu>
 </menus>

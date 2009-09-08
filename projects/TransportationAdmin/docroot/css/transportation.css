@@ -728,10 +728,10 @@ div.MNM001, div.MNM002, div.MNM003, div.MNM004 {
 		don't use transparent here, IE6 doesn't support it
 	 */
 	.sub_tabL_MNM004 {
-		border-color: #f90 #666;
+		border-color: #f90 #a50;
 	}
 	.sub_tabR_MNM004 {
-		border-color: #666 #f90; 
+		border-color: #a50 #f90; 
 	}
 	.subsub .sub_tabL_MNM004 {
 		border-color: #999 #666;
@@ -749,7 +749,7 @@ div.MNM001, div.MNM002, div.MNM003, div.MNM004 {
 	}
 	/*sub tab color*/
 	div.MNM004 div.subtab a {
-		color: #999;
+		color: #ccc;
 	}
 	/*selected*/
 	div.MNM004 div.MNM004 a  {
@@ -781,7 +781,7 @@ div.MNM001, div.MNM002, div.MNM003, div.MNM004 {
 	}
 	/*subtabs, not active*/
 	div.MNM004 .subtab { 
-		background-color: #666;
+		background-color: #a50;
 	}
 	/*
 		these two are the l/r subtab angles of an active subtab

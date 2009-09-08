@@ -72,8 +72,8 @@
                   &nbsp;<form:errors path="rDate" />
                 </td>                  
                  
-                  <td><span style="font-size: 12px;font-weight: plain;">Start Time:</span><input type="text" id="startTime" name="startTime" value=""style="width: 95px;" onblur="this.value=time(this.value);"></td> 
-                   <td><span style="font-size: 12px;font-weight: plain;">End Time:</span><input type="text" id="endTime" name="endTime" value="" style="width: 88px;" onblur="this.value=time(this.value);"></td>
+                  <td><span style="font-size: 12px;font-weight: plain;">Start Time:</span><input type="text" id="sTime" name="sTime" value="<c:out value="${sTime}"/>" style="width: 95px;" onblur="this.value=time(this.value);"></td> 
+                   <td><span style="font-size: 12px;font-weight: plain;">End Time:</span><input type="text" id="eTime" name="eTime" value="<c:out value="${eTime}"/>" style="width: 88px;" onblur="this.value=time(this.value);"></td>
                    
                    <td>
                      <input type = "button" value="&nbsp;View Log&nbsp;" onclick="javascript:doCompositeLink('timeslotlog.do')" />
@@ -87,8 +87,8 @@
        <script>
          function doCompositeLink(url) {
           var param1 = document.getElementById('rDate').value;
-          var param2 = document.getElementById('startTime').value;
-          var param3 = document.getElementById('endTime').value;
+          var param2 = document.getElementById('sTime').value;
+          var param3 = document.getElementById('eTime').value;
           
           if(param1.trim().length ==0 || 
 	        	 	param2.trim().length ==0 || 
