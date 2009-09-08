@@ -59,6 +59,8 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 		ContentPanel cp = new ContentPanel();		
 		cp.setWidth(MAIN_LABEL_WIDTH + 50);
 		cp.setLayout( new ColumnLayout() );
+		cp.setHeaderVisible( false );
+		cp.setBorders( false );
 		
         relationButton = new IconButton("rel-button");
         relationButton.setToolTip("Change relationship");
