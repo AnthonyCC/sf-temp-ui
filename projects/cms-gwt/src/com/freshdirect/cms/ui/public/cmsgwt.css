@@ -349,6 +349,75 @@ div.file-upload-response {
 }
 
 
+/* ====== hack to make disabled fields look disabled, same as gxt-all.css/x-item-disabled styles ====== */
+.cms-field-disabled {
+    cursor: default;
+    opacity: .6;
+    -moz-opacity: .6;
+    filter: alpha(opacity=60);
+}
+.cms-field-disabled * {
+    cursor: default !important;
+}
+.cms-field-disabled .x-form-trigger-over{
+    background-position:0 0 !important;
+    border-bottom: 1px solid;
+}
+.cms-field-disabled .x-form-trigger-click{
+    background-position:0 0 !important;
+    border-bottom: 1px solid;
+}
+.x-toolbar .cms-field-disabled .x-btn-icon {
+    opacity: .35;
+    -moz-opacity: .35;
+    filter: alpha(opacity=35);
+}
+.x-toolbar .cms-field-disabled {
+	cursor:default;
+	opacity:.6;
+	-moz-opacity:.6;
+	filter:alpha(opacity=60);
+}
+.x-toolbar .cms-field-disabled * {
+	cursor:default;
+}
+.cms-field-disabled {
+    color: gray;
+}
+.cms-field-disabled * {
+    color: gray !important;
+}
+.cms-field-disabled .x-form-trigger-over{
+    border-bottom-color:#b5b8c8;
+}
+.cms-field-disabled .x-form-trigger-click{
+    border-bottom-color:#b5b8c8;
+}
+.x-toolbar .cms-field-disabled {
+	color:gray;
+}
+.x-toolbar .cms-field-disabled * {
+	color:gray;
+}
+.cms-field-disabled .x-tbar-page-first{
+	background-image: url(../images/default/grid/page-first-disabled.gif) !important;
+}
+.cms-field-disabled .x-tbar-page-last{
+	background-image: url(../images/default/grid/page-last-disabled.gif) !important;
+}
+.cms-field-disabled .x-tbar-page-next{
+	background-image: url(../images/default/grid/page-next-disabled.gif) !important;
+}
+.cms-field-disabled .x-tbar-page-prev{
+	background-image: url(../images/default/grid/page-prev-disabled.gif) !important;
+}
+/* ====== hack to make disabled fields look disabled, same as gxt-all.css/x-item-disabled styles ====== */
+
+
+
+
+
+
 /* ============ i think styles below this line are not used anymore anywhere ... ============*/
 
 .my-tree-icon div {

@@ -55,9 +55,8 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     		innerField.setReadOnly( true );
     		innerField.disable();
     		
-			innerField.addInputStyleName( "x-item-disabled" );
-			innerField.addStyleName( "x-item-disabled" );
-			innerField.addStyleName( "akarmi" );
+			innerField.addInputStyleName( "cms-field-disabled" );
+			innerField.addStyleName( "cms-field-disabled" );
 			
         } else {        
 	        checkbox.addListener( Events.OnClick, checkBoxListener );
@@ -103,9 +102,8 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     		disable();
     		innerField.disable();
     		
-			innerField.addInputStyleName( "x-item-disabled" );
-			innerField.addStyleName( "x-item-disabled" );
-			innerField.addStyleName( "akarmi" );
+			innerField.addInputStyleName( "cms-field-disabled" );
+			innerField.addStyleName( "cms-field-disabled" );
 			
         	checkbox.disable();    		
     	} else {

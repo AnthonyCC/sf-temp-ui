@@ -148,9 +148,8 @@ public class ContentForm extends FormPanel {
 		innerField.setEnabled( !readonly );
 		
 		if ( readonly ) {
-			innerField.addInputStyleName( "x-item-disabled" );
-			innerField.addStyleName( "x-item-disabled" );
-			innerField.addStyleName( "akarmi" );
+			innerField.addInputStyleName( "cms-field-disabled" );
+			innerField.addStyleName( "cms-field-disabled" );
 		}
         
 		
