@@ -33,7 +33,7 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
     public ChangeSetLoader(ChangeSetQueryResponse response) {
         this.response = response;
         this.loadedPosition = 0;
-        this.lastOrder = response.getQuery().getSortType();
+        this.lastOrder = response.getQuery() != null ? response.getQuery().getSortType() : null;
         convertToRows(response);
     }
 
