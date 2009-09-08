@@ -1667,7 +1667,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	
 	public IDeliveryReservation reserveTimeslotEx(FDReservation reservation,ContactAddressModel address ) {
 		
-		
+		long startTime=System.currentTimeMillis();
 		
 		if(reservation==null || address==null)
 			return null;
@@ -1683,6 +1683,8 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			order=setDeliveryInfo(order,reservation.getTimeslot().getBaseDate());
 			reservedSlot=util.getDeliverySlot(reservation);
 			IDeliveryReservation _reservation=schedulerReserveOrder(order,reservedSlot );
+			long endTime=System.currentTimeMillis();
+			logTimeslots(order.getOrderNumber(),address.getCustomerId(),RoutingActivityType.RESERVE_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime));
 			if(reservation.isUnassigned())
 				clearUnassignedInfo(reservation.getId());
 			return _reservation;
@@ -1729,7 +1731,97 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	
 	
 	
+
 	
+	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) {
+		
+		long startTime=System.currentTimeMillis();
+		if(reservation==null || address==null)
+			return ;		
+		
+		RoutingUtil util=RoutingUtil.getInstance();
+		IOrderModel order= util.getOrderModel(address,reservation.getOrderId());
+		try {
+			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
+			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
+			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getZoneCode()));
+			order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
+			schedulerCancelOrder(order,reservation);
+			long endTime=System.currentTimeMillis();
+			logTimeslots(order.getOrderNumber(),address.getCustomerId(),RoutingActivityType.CANCEL_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime));
+			if(reservation.isUnassigned()) {
+				clearUnassignedInfo(reservation.getId());
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.debug("Exception in releaseReservationEx():"+e.toString());
+			LOGGER.debug(reservation);
+			setUnassignedInfo(reservation.getId(),RoutingActivityType.CANCEL_TIMESLOT);
+		}
+	}
+	public void setUnassignedInfo(String reservationId,RoutingActivityType activity ) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DlvManagerDAO.setUnassignedInfo(conn, reservationId,activity.value());
+
+		} catch (SQLException e) {
+			LOGGER.warn("SQLException in DlvManagerDAO.unassignReservation() call ", e);
+			e.printStackTrace();
+			//throw new EJBException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("SQLException while closing conn in cleanup", e);
+			}
+		}
+
+	}
+	public void clearUnassignedInfo(String reservationId ) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DlvManagerDAO.clearUnassignedInfo(conn, reservationId);
+
+		} catch (SQLException e) {
+			LOGGER.warn("SQLException in DlvManagerDAO.unassignReservation() call ", e);
+			e.printStackTrace();
+			//throw new EJBException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("SQLException while closing conn in cleanup", e);
+			}
+		}
+
+	}
+	public List<DlvReservationModel> getUnassignedReservations() throws DlvResourceException {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return DlvManagerDAO.getUnassignedReservations(conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			LOGGER.warn("DlvManagerSB getUnassignedReservations(): " + e);
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("DlvManagerSB getUnassignedReservations(): Exception while cleaning: " + e);
+			}
+		}
+		
+	}
 	private List<java.util.List<IDeliverySlot>> getDeliverySlots(DlvReservationModel reservation) {
 		List<IDeliverySlot> _slots=new ArrayList<IDeliverySlot>();
 		try {
@@ -1742,32 +1834,17 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		slots.add(_slots);
 		return slots;
 	}
-	
-	
-	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) {
-		
-        
-		if(reservation==null || address==null)
-			return ;		
-		
-		RoutingUtil util=RoutingUtil.getInstance();
-		IOrderModel order= util.getOrderModel(address,reservation.getOrderId());
+	private List<java.util.List<IDeliverySlot>> getDeliverySlots(FDReservation reservation) {
+		List<IDeliverySlot> _slots=new ArrayList<IDeliverySlot>();
 		try {
-			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
-			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
-			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getZoneCode()));
-			order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
-			schedulerCancelOrder(order,reservation);
-			if(reservation.isUnassigned()) {
-				clearUnassignedInfo(reservation.getId());
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.debug("Exception in releaseReservationEx():"+e.toString());
-			LOGGER.debug(reservation);
-			setUnassignedInfo(reservation.getId(),RoutingActivityType.CANCEL_TIMESLOT);
+			DlvTimeslotModel timeslotModel= this.getTimeslotById(reservation.getTimeslotId());
+			IDeliverySlot slot=RoutingUtil.getInstance().getDeliverySlot(timeslotModel);
+			_slots.add(slot);
+		} catch (FinderException e) {
 		}
+		List<java.util.List<IDeliverySlot>> slots =new ArrayList<java.util.List<IDeliverySlot>>();
+		slots.add(_slots);
+		return slots;
 	}
 	private IOrderModel setDeliveryInfo(IOrderModel order,Date deliveryDate) throws RoutingServiceException {
 		
@@ -1804,50 +1881,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	
 	
 	
-	public void setUnassignedInfo(String reservationId,RoutingActivityType activity ) {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			DlvManagerDAO.setUnassignedInfo(conn, reservationId,activity.value());
-
-		} catch (SQLException e) {
-			LOGGER.warn("SQLException in DlvManagerDAO.unassignReservation() call ", e);
-			e.printStackTrace();
-			//throw new EJBException(e);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup", e);
-			}
-		}
-
-	}
 	
 	
-	public void clearUnassignedInfo(String reservationId ) {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			DlvManagerDAO.clearUnassignedInfo(conn, reservationId);
-
-		} catch (SQLException e) {
-			LOGGER.warn("SQLException in DlvManagerDAO.unassignReservation() call ", e);
-			e.printStackTrace();
-			//throw new EJBException(e);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup", e);
-			}
-		}
-
-	}
+	
+	
 	
 	private void schedulerConfirmOrder(IOrderModel orderModel,DlvReservationModel reservation) throws RoutingServiceException {
 		
@@ -1920,26 +1957,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		
 	}
 	
-	public List<DlvReservationModel> getUnassignedReservations() throws DlvResourceException {
-		Connection conn = null;
-		try {
-			conn = this.getConnection();
-			return DlvManagerDAO.getUnassignedReservations(conn);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			LOGGER.warn("DlvManagerSB getUnassignedReservations(): " + e);
-			throw new DlvResourceException(e);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("DlvManagerSB getUnassignedReservations(): Exception while cleaning: " + e);
-			}
-		}
-		
-	}
+	
 	
 	public void doSXXX() throws DlvResourceException {
 		
