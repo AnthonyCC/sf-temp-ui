@@ -32,14 +32,14 @@ public class GwtChangeSet extends ContentNodeModel {
     private static final class UserComparator implements Comparator<GwtChangeSet> {
         @Override
         public int compare(GwtChangeSet o1, GwtChangeSet o2) {
-            return -o1.getUserId().compareTo(o2.getUserId());
+            return o1.getUserId().compareTo(o2.getUserId());
         }
     }
 
     private static final class DateComparator implements Comparator<GwtChangeSet> {
         @Override
         public int compare(GwtChangeSet o1, GwtChangeSet o2) {
-            return -o1.getModifiedDate().compareTo(o2.getModifiedDate());
+            return o1.getModifiedDate().compareTo(o2.getModifiedDate());
         }
     }
 
