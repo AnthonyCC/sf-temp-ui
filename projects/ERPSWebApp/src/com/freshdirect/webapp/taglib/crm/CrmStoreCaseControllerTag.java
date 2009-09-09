@@ -81,6 +81,9 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 				String saleId = NVL.apply(request.getParameter("salePK"), "");
 				PrimaryKey salePK = "".equals(saleId) ? null : new PrimaryKey(saleId);
 
+				String autoCase = NVL.apply(request.getParameter("isAutoCase"), "false");
+				boolean isAutoCase = Boolean.parseBoolean(autoCase);
+				
 				String summary = NVL.apply(request.getParameter("summary"), "").trim();
 
 				String[] deptCodes = request.getParameterValues("departments");
@@ -172,7 +175,8 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 				actionResult.addError(note.length() > MAX_NOTE, "note", "too long (max " + MAX_NOTE + ")");
 
                 // [APPREQ-478] Special case - if subject is ??? then case must have at least one carton assigned
-				actionResult.addError(subject.isCartonsRequired() && cartons.size() == 0, "carton", "One or more cartons required!");
+				// [APPREQ-675] no check for auto cases
+				actionResult.addError( !isAutoCase && subject.isCartonsRequired() && cartons.size() == 0, "carton", "One or more cartons required!");
 
 				// execute
 				if (actionResult.isSuccess()) {

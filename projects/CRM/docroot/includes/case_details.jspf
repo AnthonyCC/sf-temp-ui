@@ -255,6 +255,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 			$('requiredError').className = 'casedisp_Err_invis';
 		}
 
+<% if (autoCaseComplaintId == null) { %>
 		/* check if subject requires one ore more checked cartons */
 		{
 			var t = true;
@@ -281,6 +282,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 				}
 			}
 		}
+<% } %>
 
 		if ( err ) { 
 			CaseButton.className = 'case_save_disabled';
@@ -393,6 +395,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 <input type="hidden" name="customerPK" value="<%= thisCase.getCustomerPK() != null ? thisCase.getCustomerPK().getId() : "" %>">
 <input type="hidden" name="salePK" value="<%= thisCase.getSalePK() != null ? thisCase.getSalePK().getId() : "" %>">
 <input type="hidden" name="isCaseClosed" value="<%= "closed".equalsIgnoreCase(thisCase.getState().getName()) ? "true" : "false" %>">
+<input type="hidden" name="isAutoCase" value="<%= autoCaseComplaintId != null ? "true" : "false" %>">
 
 <table width="96%" cellpadding="0" cellspacing="5" border="0" class="case_content_text">
 	<tr>
