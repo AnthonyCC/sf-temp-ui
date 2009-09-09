@@ -145,13 +145,6 @@ public class ContentForm extends FormPanel {
 		}
 		
 		innerField.setReadOnly( readonly );
-		innerField.setEnabled( !readonly );
-		
-		if ( readonly ) {
-			innerField.addInputStyleName( "cms-field-disabled" );
-			innerField.addStyleName( "cms-field-disabled" );
-		}
-        
 		
         Field<Serializable> field;
 		if ( attribute.isInheritable() ) {

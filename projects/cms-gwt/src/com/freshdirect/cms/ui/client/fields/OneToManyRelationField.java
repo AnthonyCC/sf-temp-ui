@@ -89,6 +89,255 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		this.readonly = readonly;
 		initialize();
 	}
+	
+	
+	protected void initialize() {
+		
+		ContentPanel cp = new ContentPanel();		
+		cp.setWidth(MAIN_LABEL_WIDTH + 50);
+		cp.addStyleName("one-to-many");
+		
+		
+		// ==================================== COPY ====================================
+		copyButton = new ToolButton("copy-button");
+		copyButton.setToolTip( new ToolTipConfig( "COPY", "Copy selected relations to another node." ) );		
+		copyButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			public void handleEvent(BaseEvent be) {
+				
+				final List<OneToManyModel> selectedList = selection.getSelectedItems();
+				
+				final ContentTreePopUp popup = ContentTreePopUp.getInstance( null );		
+				popup.setHeading( "Copy " + selectedList.size() + " item(s) to :" );
+				
+				popup.addListener( Events.Select, new Listener<BaseEvent>() {
+					
+					public void handleEvent( BaseEvent be ) {
+						ContentNodeModel targetNode = popup.getSelected();
+						addRelationshipsToNode( targetNode.getKey(), attributeKey, selectedList );
+					}					
+				});		
+				popup.show();
+
+			}			
+		});
+		cp.getHeader().addTool( copyButton );
+		
+		
+		if ( !readonly ) {
+				
+			// ==================================== MOVE ====================================
+			moveButton = new ToolButton("move-button");
+			moveButton.setToolTip( new ToolTipConfig( "MOVE", "Move selected relations to another node." ) );		
+			moveButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+				public void handleEvent(BaseEvent be) {
+					
+					final List<OneToManyModel> selectedList = selection.getSelectedItems();
+					
+					final ContentTreePopUp popup = ContentTreePopUp.getInstance( null );		
+					popup.setHeading( "Move " + selectedList.size() + " item(s) to :" );
+					
+					popup.addListener( Events.Select, new Listener<BaseEvent>() {
+						
+						public void handleEvent( BaseEvent be ) {
+							ContentNodeModel targetNode = popup.getSelected();
+							addRelationshipsToNode( targetNode.getKey(), attributeKey, selectedList );
+							removeRelationships( selectedList );
+						}					
+					});		
+					popup.show();
+	
+				}			
+			});
+			cp.getHeader().addTool( moveButton );
+	
+			
+			// ==================================== DELETE ====================================		
+			deleteButton = new ToolButton("delete-button");
+			deleteButton.setToolTip( new ToolTipConfig( "DELETE", "Delete selected relations." ) );		
+			deleteButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+				public void handleEvent(BaseEvent be) {
+	
+					final List<OneToManyModel> selectedList = selection.getSelectedItems();
+	
+					String question;
+					if ( selectedList.size() == 0 ) {
+						return;
+					} else if ( selectedList.size() == 1 ) {
+						question = "Do you really want to delete '" + selectedList.get( 0 ).getLabel() + "' ?";
+					} else {
+						question = "Do you really want to delete " + selectedList.size() + " items?";
+					}
+					MessageBox.confirm( "Delete", question, new Listener<MessageBoxEvent>() {
+						
+						public void handleEvent( MessageBoxEvent we ) {
+							if ( we.getButtonClicked().getText().equals( "Yes" ) ) {
+								removeRelationships( selectedList );
+							}
+						}
+					} );
+				}			
+			});
+			cp.getHeader().addTool( deleteButton );
+			
+			
+			// ==================================== SORT ====================================		
+			sortButton = new ToolButton("sort-button");
+			sortButton.setToolTip( new ToolTipConfig( "SORT", "Sort the relations alphabetically." ) );		
+			sortButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+				public void handleEvent(BaseEvent be) {
+					store.sort( "label", SortDir.ASC );
+					grid.getView().refresh( false );
+					store.setStoreSorter(null);
+				}
+			});
+			cp.getHeader().addTool( sortButton );
+	
+			
+			
+			// TODO separatortoolitem doesnt work in header, need to add separator with different method
+			cp.getHeader().addTool( new SeparatorToolItem() );
+			
+			
+			// ==================================== ADD ====================================
+			addButton = new ToolButton("add-relation");		
+			addButton.setToolTip( new ToolTipConfig( "ADD", "Add a relation..." ) );		
+			addButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+				public void handleEvent(BaseEvent be) {
+					final ContentTreePopUp popup = ContentTreePopUp.getInstance( getAllowedTypes() );		
+					popup.setHeading(getFieldLabel());
+					popup.addListener(Events.Select, new Listener<BaseEvent>() {
+						public void handleEvent(BaseEvent be) {
+							ContentNodeModel m = popup.getSelected();
+							addOneToManyModel(m.getType(), m.getKey(), m.getLabel());
+						}					
+					});		
+					popup.show();
+				}			
+			});
+			
+			cp.getHeader().addTool(addButton);
+			
+			
+			// ==================================== CREATE ====================================
+			if (navigable && allowedTypes.size() > 0) {
+			    createButton = new ToolButton("create-relation");
+				createButton.setToolTip( new ToolTipConfig( "CREATE", "Create new node..." ) );
+			    createButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			        @Override
+			        public void handleEvent(BaseEvent be) {
+			            if (OneToManyRelationField.this.allowedTypes.size() == 1) {
+			                generateUniqueIdForType(OneToManyRelationField.this.allowedTypes.iterator().next());
+			                return;
+			            }
+			            
+			            final ContentTypeSelectorPopup typeSelector = new ContentTypeSelectorPopup(OneToManyRelationField.this.allowedTypes);
+		                typeSelector.addListener(Events.Select, new Listener<BaseEvent>() {
+		                    @Override
+		                    public void handleEvent(BaseEvent be) {
+		                        String type = typeSelector.getSelectedType();
+		                        generateUniqueIdForType(type);
+		                    } 
+		                });
+		                typeSelector.show();
+			        }
+			    });
+			    cp.getHeader().addTool(createButton);
+			}
+			
+		}
+		
+		
+		store = new ListStore<OneToManyModel>();
+		store.removeAll();
+
+        List<ColumnConfig> config = setupExtraColumns();
+		grid = new Grid<OneToManyModel>(store, new ColumnModel(config));
+				
+		grid.setSelectionModel( selection );
+		grid.addPlugin( selection );
+
+		grid.setWidth(MAIN_LABEL_WIDTH + 50);			
+		grid.setAutoHeight(true);
+		grid.setHideHeaders(true);
+		grid.setStripeRows(true);
+		grid.getView().setForceFit(true);
+		grid.getView().setEmptyText("empty");		
+	    
+		grid.hide();		
+		
+
+		if ( !readonly ) {
+			GridDragSource dragSource = new GridDragSource(grid);
+			dragSource.setGroup(grid.getId() + "-ddgroup");
+			FixedGridDropTarget dropTarget = new FixedGridDropTarget(grid);
+			dropTarget.setAllowSelfAsSource(true);
+			dropTarget.setFeedback(Feedback.INSERT);
+			dropTarget.setGroup(grid.getId() + "-ddgroup");
+			
+			dropTarget.addDNDListener(new DNDListener() {
+				@Override
+				public void dragDrop(DNDEvent e) {				
+					grid.getView().refresh(true);
+			        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(OneToManyRelationField.this));
+				}
+			});
+		}
+			
+		cp.add( grid );
+				
+		AdapterField f = new AdapterField( cp );
+		f.setWidth( MAIN_LABEL_WIDTH + 70 );
+		
+		if ( readonly ) {
+			f.setReadOnly( true );
+		}
+		
+		add(f);
+	}
+	
+
+
+    protected List<ColumnConfig> setupExtraColumns() {
+        List<ColumnConfig> config = new ArrayList<ColumnConfig>();
+        {
+            ColumnConfig indexColumn = new ColumnConfig();  
+                indexColumn.setId("idx");
+                indexColumn.setMenuDisabled(true);
+                indexColumn.setWidth(25);
+                indexColumn.setStyle("vertical-align: middle;");
+                indexColumn.setAlignment(HorizontalAlignment.RIGHT);
+                indexColumn.setRenderer(Renderers.ROW_INDEX);
+                config.add(indexColumn);
+        }
+
+        if ( extraColumns == null || extraColumns.size()==0 ) {
+		    ColumnConfig column = new ColumnConfig();  
+		    column.setId("label");
+            column.setMenuDisabled(true);
+            column.setWidth(MAIN_LABEL_WIDTH);
+            column.setRenderer(Renderers.GRID_LINK_RENDERER);
+            config.add(column);
+		} else {
+            int idx = 0;
+            int size = MAIN_LABEL_WIDTH / (extraColumns.size());
+            for (GridCellRenderer<OneToManyModel> renderer : extraColumns) {
+                ColumnConfig extraColumn = new ColumnConfig();
+                extraColumn.setId("extra_" + idx);
+                extraColumn.setMenuDisabled(true);
+                extraColumn.setWidth(size);
+                extraColumn.setStyle("vertical-align: middle;");
+                extraColumn.setRenderer(renderer);
+                config.add(extraColumn);
+                idx++;
+            }
+		}
+        {
+        	selection = new CheckBoxSelectionModel<OneToManyModel>();
+			config.add( selection.getColumn() );              			
+        }
+        return config;
+    }
+
 
 	public Set<String> getAllowedTypes() {
 		return allowedTypes;
@@ -199,249 +448,6 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 
 	}
 
-	
-	protected void initialize() {
-		
-		ContentPanel cp = new ContentPanel();		
-		cp.setWidth(MAIN_LABEL_WIDTH + 50);
-		cp.addStyleName("one-to-many");
-		
-		
-		// ==================================== COPY ====================================
-		copyButton = new ToolButton("copy-button");
-		copyButton.setToolTip( new ToolTipConfig( "COPY", "Copy selected relations to another node." ) );		
-		copyButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-			public void handleEvent(BaseEvent be) {
-				
-				final List<OneToManyModel> selectedList = selection.getSelectedItems();
-				
-				final ContentTreePopUp popup = ContentTreePopUp.getInstance( null );		
-				popup.setHeading( "Copy " + selectedList.size() + " item(s) to :" );
-				
-				popup.addListener( Events.Select, new Listener<BaseEvent>() {
-					
-					public void handleEvent( BaseEvent be ) {
-						ContentNodeModel targetNode = popup.getSelected();
-						addRelationshipsToNode( targetNode.getKey(), attributeKey, selectedList );
-					}					
-				});		
-				popup.show();
-
-			}			
-		});
-		cp.getHeader().addTool( copyButton );
-		
-		
-		// ==================================== MOVE ====================================
-		moveButton = new ToolButton("move-button");
-		moveButton.setToolTip( new ToolTipConfig( "MOVE", "Move selected relations to another node." ) );		
-		moveButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-			public void handleEvent(BaseEvent be) {
-				
-				final List<OneToManyModel> selectedList = selection.getSelectedItems();
-				
-				final ContentTreePopUp popup = ContentTreePopUp.getInstance( null );		
-				popup.setHeading( "Move " + selectedList.size() + " item(s) to :" );
-				
-				popup.addListener( Events.Select, new Listener<BaseEvent>() {
-					
-					public void handleEvent( BaseEvent be ) {
-						ContentNodeModel targetNode = popup.getSelected();
-						addRelationshipsToNode( targetNode.getKey(), attributeKey, selectedList );
-						removeRelationships( selectedList );
-					}					
-				});		
-				popup.show();
-
-			}			
-		});
-		cp.getHeader().addTool( moveButton );
-
-		
-		// ==================================== DELETE ====================================		
-		deleteButton = new ToolButton("delete-button");
-		deleteButton.setToolTip( new ToolTipConfig( "DELETE", "Delete selected relations." ) );		
-		deleteButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-			public void handleEvent(BaseEvent be) {
-
-				final List<OneToManyModel> selectedList = selection.getSelectedItems();
-
-				String question;
-				if ( selectedList.size() == 0 ) {
-					return;
-				} else if ( selectedList.size() == 1 ) {
-					question = "Do you really want to delete '" + selectedList.get( 0 ).getLabel() + "' ?";
-				} else {
-					question = "Do you really want to delete " + selectedList.size() + " items?";
-				}
-				MessageBox.confirm( "Delete", question, new Listener<MessageBoxEvent>() {
-					
-					public void handleEvent( MessageBoxEvent we ) {
-						if ( we.getButtonClicked().getText().equals( "Yes" ) ) {
-							removeRelationships( selectedList );
-						}
-					}
-				} );
-			}			
-		});
-		cp.getHeader().addTool( deleteButton );
-		
-		
-		// ==================================== SORT ====================================		
-		sortButton = new ToolButton("sort-button");
-		sortButton.setToolTip( new ToolTipConfig( "SORT", "Sort the relations alphabetically." ) );		
-		sortButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-			public void handleEvent(BaseEvent be) {
-				store.sort( "label", SortDir.ASC );
-				grid.getView().refresh( false );
-				store.setStoreSorter(null);
-			}
-		});
-		cp.getHeader().addTool( sortButton );
-
-		
-		
-		// TODO separatortoolitem doesnt work in header, need to add separator with different method
-		cp.getHeader().addTool( new SeparatorToolItem() );
-		
-		
-		// ==================================== ADD ====================================
-		addButton = new ToolButton("add-relation");		
-		addButton.setToolTip( new ToolTipConfig( "ADD", "Add a relation..." ) );		
-		addButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-			public void handleEvent(BaseEvent be) {
-				final ContentTreePopUp popup = ContentTreePopUp.getInstance( getAllowedTypes() );		
-				popup.setHeading(getFieldLabel());
-				popup.addListener(Events.Select, new Listener<BaseEvent>() {
-					public void handleEvent(BaseEvent be) {
-						ContentNodeModel m = popup.getSelected();
-						addOneToManyModel(m.getType(), m.getKey(), m.getLabel());
-					}					
-				});		
-				popup.show();
-			}			
-		});
-		
-		cp.getHeader().addTool(addButton);
-		
-		
-		// ==================================== CREATE ====================================
-		if (navigable && allowedTypes.size() > 0) {
-		    createButton = new ToolButton("create-relation");
-			createButton.setToolTip( new ToolTipConfig( "CREATE", "Create new node..." ) );
-		    createButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-		        @Override
-		        public void handleEvent(BaseEvent be) {
-		            if (OneToManyRelationField.this.allowedTypes.size() == 1) {
-		                generateUniqueIdForType(OneToManyRelationField.this.allowedTypes.iterator().next());
-		                return;
-		            }
-		            
-		            final ContentTypeSelectorPopup typeSelector = new ContentTypeSelectorPopup(OneToManyRelationField.this.allowedTypes);
-	                typeSelector.addListener(Events.Select, new Listener<BaseEvent>() {
-	                    @Override
-	                    public void handleEvent(BaseEvent be) {
-	                        String type = typeSelector.getSelectedType();
-	                        generateUniqueIdForType(type);
-	                    } 
-	                });
-	                typeSelector.show();
-		        }
-		    });
-		    cp.getHeader().addTool(createButton);
-		}
-		
-		
-		store = new ListStore<OneToManyModel>();
-		store.removeAll();
-
-        List<ColumnConfig> config = setupExtraColumns();
-		grid = new Grid<OneToManyModel>(store, new ColumnModel(config));
-				
-		grid.setSelectionModel( selection );
-		grid.addPlugin( selection );
-
-		grid.setWidth(MAIN_LABEL_WIDTH + 50);			
-		grid.setAutoHeight(true);
-		grid.setHideHeaders(true);
-		grid.setStripeRows(true);
-		grid.getView().setForceFit(true);
-		grid.getView().setEmptyText("empty");		
-	    
-		grid.hide();		
-		
-
-		GridDragSource dragSource = new GridDragSource(grid);
-		dragSource.setGroup(grid.getId() + "-ddgroup");
-		FixedGridDropTarget dropTarget = new FixedGridDropTarget(grid);
-		dropTarget.setAllowSelfAsSource(true);
-		dropTarget.setFeedback(Feedback.INSERT);
-		dropTarget.setGroup(grid.getId() + "-ddgroup");
-		
-		dropTarget.addDNDListener(new DNDListener() {
-			@Override
-			public void dragDrop(DNDEvent e) {				
-				grid.getView().refresh(true);
-		        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(OneToManyRelationField.this));
-			}
-		});
-			
-		cp.add( grid );
-				
-		AdapterField f = new AdapterField( cp );
-		f.setWidth( MAIN_LABEL_WIDTH + 70 );
-		
-		if ( readonly ) {
-			cp.disable();
-			f.setReadOnly( true );
-			f.disable();
-		}
-		
-		add(f);
-	}
-	
-
-
-    protected List<ColumnConfig> setupExtraColumns() {
-        List<ColumnConfig> config = new ArrayList<ColumnConfig>();
-        {
-            ColumnConfig indexColumn = new ColumnConfig();  
-                indexColumn.setId("idx");
-                indexColumn.setMenuDisabled(true);
-                indexColumn.setWidth(25);
-                indexColumn.setStyle("vertical-align: middle;");
-                indexColumn.setAlignment(HorizontalAlignment.RIGHT);
-                indexColumn.setRenderer(Renderers.ROW_INDEX);
-                config.add(indexColumn);
-        }
-
-        if ( extraColumns == null || extraColumns.size()==0 ) {
-		    ColumnConfig column = new ColumnConfig();  
-		    column.setId("label");
-            column.setMenuDisabled(true);
-            column.setWidth(MAIN_LABEL_WIDTH);
-            column.setRenderer(Renderers.GRID_LINK_RENDERER);
-            config.add(column);
-		} else {
-            int idx = 0;
-            int size = MAIN_LABEL_WIDTH / (extraColumns.size());
-            for (GridCellRenderer<OneToManyModel> renderer : extraColumns) {
-                ColumnConfig extraColumn = new ColumnConfig();
-                extraColumn.setId("extra_" + idx);
-                extraColumn.setMenuDisabled(true);
-                extraColumn.setWidth(size);
-                extraColumn.setStyle("vertical-align: middle;");
-                extraColumn.setRenderer(renderer);
-                config.add(extraColumn);
-                idx++;
-            }
-		}
-        {
-        	selection = new CheckBoxSelectionModel<OneToManyModel>();
-			config.add( selection.getColumn() );              			
-        }
-        return config;
-    }
 
     void generateUniqueIdForType(final String type) {
         final ContentServiceAsync contentService = (ContentServiceAsync) GWT.create(ContentService.class);
@@ -520,6 +526,5 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 	@Override
 	public void setReadOnly( boolean readOnly ) {
 		super.setReadOnly( readOnly );
-		setEnabled( !readOnly );	
 	}
 }

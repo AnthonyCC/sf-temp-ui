@@ -62,43 +62,45 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 		cp.setHeaderVisible( false );
 		cp.setBorders( false );
 		
-        relationButton = new IconButton("rel-button");
-        relationButton.setToolTip("Change relationship");
-        relationButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                final ContentTreePopUp popup = ContentTreePopUp.getInstance(allowedTypes);
-                popup.setHeading(getFieldLabel());
-                popup.addListener(Events.Select, new Listener<BaseEvent>() {
-                    public void handleEvent(BaseEvent be) {
-                        setValue(popup.getSelected());
-                        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(OneToOneRelationField.this));
-                    }
-                });
-                popup.show();
-            }
-        });
-		cp.add( relationButton, new ColumnData( 20.0 ) );
+		if ( !readonly ) {
+	        relationButton = new IconButton("rel-button");
+	        relationButton.setToolTip("Change relationship");
+	        relationButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+	            public void handleEvent(BaseEvent be) {
+	                final ContentTreePopUp popup = ContentTreePopUp.getInstance(allowedTypes);
+	                popup.setHeading(getFieldLabel());
+	                popup.addListener(Events.Select, new Listener<BaseEvent>() {
+	                    public void handleEvent(BaseEvent be) {
+	                        setValue(popup.getSelected());
+	                        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(OneToOneRelationField.this));
+	                    }
+	                });
+	                popup.show();
+	            }
+	        });
+			cp.add( relationButton, new ColumnData( 20.0 ) );
+		}
 
 		valueField = new LabelField();
 		cp.add( valueField, new ColumnData( 420.0 ) );
 
-        deleteButton = new IconButton("delete-button");
-        deleteButton.setToolTip(new ToolTipConfig("DELETE", "Delete relation."));
-        deleteButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
-                OneToOneRelationField.this.setValue(null);
-            }
-        });
-		cp.add( deleteButton, new ColumnData( 20.0 ) );
+		if ( !readonly ) { 
+	        deleteButton = new IconButton("delete-button");
+	        deleteButton.setToolTip(new ToolTipConfig("DELETE", "Delete relation."));
+	        deleteButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+	            @Override
+	            public void handleEvent(BaseEvent be) {
+	                OneToOneRelationField.this.setValue(null);
+	            }
+	        });
+			cp.add( deleteButton, new ColumnData( 20.0 ) );
+		}
         
 		AdapterField f = new AdapterField( cp );
 		f.setWidth( MAIN_LABEL_WIDTH + 70 );
 		
 		if ( readonly ) {
-			cp.disable();
 			f.setReadOnly( true );
-			f.disable();
 		}
 		
 		add(f);
@@ -130,6 +132,5 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
     @Override
     public void setReadOnly(boolean readOnly) {
         super.setReadOnly(readOnly);
-        setEnabled(!readOnly);
     }    
 }

@@ -50,14 +50,7 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
         if ( readonly ) {
         	disable();
         	checkbox.setReadOnly( true );
-        	checkbox.disable();
-        	
-    		innerField.setReadOnly( true );
-    		innerField.disable();
-    		
-			innerField.addInputStyleName( "cms-field-disabled" );
-			innerField.addStyleName( "cms-field-disabled" );
-			
+    		innerField.setReadOnly( true );			
         } else {        
 	        checkbox.addListener( Events.OnClick, checkBoxListener );
 	        checkbox.addListener( Events.OnKeyPress, checkBoxListener );
@@ -98,18 +91,6 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     public void setReadOnly( boolean readOnly ) {
     	super.setReadOnly( readOnly );
     	innerField.setReadOnly( readOnly );
-    	if ( readOnly ) {
-    		disable();
-    		innerField.disable();
-    		
-			innerField.addInputStyleName( "cms-field-disabled" );
-			innerField.addStyleName( "cms-field-disabled" );
-			
-        	checkbox.disable();    		
-    	} else {
-			enable();
-			checkbox.enable();
-		}
     }
 
     
