@@ -26,6 +26,7 @@
 <%@ page import="com.freshdirect.customer.ErpComplaintReason"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDIdentity"%>
+<%@ page import="com.freshdirect.webapp.crm.util.DeliveryTimeWindowFormatter"%>
 <%
 String orderId = request.getParameter("orderId");
 FDSessionUser user = null;
@@ -45,7 +46,8 @@ if (orderId != null) {
     String custId = order.getCustomerId();
 	user = (FDSessionUser) session.getAttribute(SessionName.USER);
     if (user == null || user.getIdentity() == null || !custId.equals(user.getIdentity().getErpCustomerPK())) {
-    	%><fd:LoadUser newIdentity="<%= new FDIdentity(custId) %>" /><%
+    	%>
+<fd:LoadUser newIdentity="<%= new FDIdentity(custId) %>" /><%
     	user = (FDSessionUser) session.getAttribute(SessionName.USER);
 	}
 } else {
@@ -367,7 +369,7 @@ for (Iterator it=recentOrders.iterator(); it.hasNext(); ){
 		<td><%= orderInfo.getTruckNumber() %></td>
 		<td><%= orderInfo.getStopSequence() %></td>
 <% } %>
-		<td style="text-align: right"><%= Integer.toString(order.getDeliveryReservation().getStartTime().getHours()) + "-" + Integer.toString(order.getDeliveryReservation().getEndTime().getHours())+"p" %></td>
+		<td style="text-align: center"><%= DeliveryTimeWindowFormatter.formatTime(order.getDeliveryReservation().getStartTime(), order.getDeliveryReservation().getEndTime()) %></td>
 		<td style="text-align: left"><%= order.getDeliveryAddress().getAddress1() %></td>
 		<td style="text-align: center; font-weight: bold;"><%= orderInfo.getSaleStatus() %></td>
 		<td style="text-align: right;  font-weight: bold;"><%= CCFormatter.formatCurrency(orderInfo.getTotal()) %></td>
