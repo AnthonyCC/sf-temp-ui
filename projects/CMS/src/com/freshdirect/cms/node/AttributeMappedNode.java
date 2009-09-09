@@ -37,7 +37,7 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 
 	private final ContentNodeI node;
 	private final String mapAttributeName;
-	private final Map attributes;
+	private final Map<String,AttributeI> attributes;
 	private final ContentTypeDefI definition;
 	private final String separator;
 
@@ -47,23 +47,23 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 	 * @param mapAttributeName the attribute to expose
 	 * @param mapDefinition Map of String (key) -> {@link AttributeDefI}
 	 */
-	public AttributeMappedNode(ContentNodeI node, String mapAttributeName, Map mapDefinition, String separator) {
+	public AttributeMappedNode(ContentNodeI node, String mapAttributeName, Map<String, AttributeDefI> mapDefinition, String separator) {
 		this.node = node;
 		this.mapAttributeName = mapAttributeName;
 		this.separator = separator;
 
-		Map paramAttributes = new HashMap(mapDefinition.size());
-		Map paramDefs = new HashMap(mapDefinition.size());
-		for (Iterator i = mapDefinition.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
-			String name = (String) e.getKey();
-			AttributeDefI def = (AttributeDefI) e.getValue();
+		Map<String,AttributeI> paramAttributes = new HashMap<String,AttributeI>(mapDefinition.size());
+		Map<String,AttributeDefI> paramDefs = new HashMap<String,AttributeDefI>(mapDefinition.size());
+		for (Iterator<Map.Entry<String, AttributeDefI>> i = mapDefinition.entrySet().iterator(); i.hasNext();) {
+			Map.Entry<String, AttributeDefI> e = i.next();
+			String name = e.getKey();
+			AttributeDefI def = e.getValue();
 			MappedAttribute a = new MappedAttribute(node.getAttribute(mapAttributeName), name, def);
 			paramAttributes.put(a.getName(), a);
 		}
 
-		for (Iterator i = node.getAttributes().values().iterator(); i.hasNext();) {
-			AttributeI a = (AttributeI) i.next();
+		for (Iterator<AttributeI> i = node.getAttributes().values().iterator(); i.hasNext();) {
+			AttributeI a = i.next();
 			AttributeDefI definition = null;
 			if (mapAttributeName.equals(a.getName())) {
 				AttributeDefI p = a.getDefinition();
@@ -106,11 +106,11 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 		return (AttributeI) this.attributes.get(name);
 	}
 
-	public Map getAttributes() {
+	public Map<String,AttributeI> getAttributes() {
 		return this.attributes;
 	}
 
-	public Set getChildKeys() {
+	public Set<ContentKey> getChildKeys() {
 		return node.getChildKeys();
 	}
 
@@ -127,7 +127,8 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 	}
 
 	public ContentNodeI copy() {
-		return this;
+	    // it seems to be strange, but CompositeContentNode with DbDecorator cannot be cloned... 
+	    return this;
 	}
 
 	public ContentNodeI getWrappedNode() {
@@ -136,9 +137,9 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 
 	private class ParametrizedTypeDef implements ContentTypeDefI, Serializable {
 
-		private final Map parameterDefs;
+		private final Map<String, AttributeDefI> parameterDefs;
 
-		public ParametrizedTypeDef(Map parameterDefs) {
+		public ParametrizedTypeDef(Map<String, AttributeDefI> parameterDefs) {
 			this.parameterDefs = parameterDefs;
 		}
 
@@ -159,15 +160,15 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 		}
 
 		public AttributeDefI getSelfAttributeDef(String name) {
-			AttributeDefI d = (AttributeDefI) parameterDefs.get(name);
+			AttributeDefI d = parameterDefs.get(name);
 			return d == null ? getBaseDef().getSelfAttributeDef(name) : d;
 		}
 
-		public Collection getSelfAttributeDefs() {
-			List l = new ArrayList();
+		public Collection<AttributeDefI> getSelfAttributeDefs() {
+			List<AttributeDefI> l = new ArrayList<AttributeDefI>();
 			l.addAll(parameterDefs.values());
-			for (Iterator i = getBaseDef().getSelfAttributeDefs().iterator(); i.hasNext();) {
-				AttributeDefI d = (AttributeDefI) i.next();
+			for (Iterator<AttributeDefI> i = getBaseDef().getSelfAttributeDefs().iterator(); i.hasNext();) {
+				AttributeDefI d = i.next();
 				if (mapAttributeName.equals(d.getName())) {
 					continue;
 				}
@@ -180,12 +181,12 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 			if (mapAttributeName.equals(name)) {
 				return null;
 			}
-			AttributeDefI d = (AttributeDefI) parameterDefs.get(name);
+			AttributeDefI d = parameterDefs.get(name);
 			return d == null ? getBaseDef().getAttributeDef(name) : d;
 		}
 
-		public Set getAttributeNames() {
-			Set s = new HashSet();
+		public Set<String> getAttributeNames() {
+			Set<String> s = new HashSet<String>();
 			s.addAll(parameterDefs.keySet());
 			s.addAll(getBaseDef().getAttributeNames());
 			s.remove(mapAttributeName);
@@ -215,17 +216,17 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 			return getMap().get(key);
 		}
 
-		private Map getMap() {
+		private Map<String,String> getMap() {
 			return stringToMap((String) mapAttribute.getValue(), getSeparator());
 		}
 
-		private void setMap(Map map) {
+		private void setMap(Map<String,String> map) {
 			mapAttribute.setValue(mapToString(map, getSeparator()));
 		}
 
 		public void setValue(Object o) {
-			Map m = getMap();
-			m.put(key, o);
+			Map<String, String> m = getMap();
+			m.put(key, o != null ? o.toString() : null);
 			setMap(m);
 		}
 
@@ -240,11 +241,16 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 		public String getName() {
 			return definition.getName();
 		}
+		
+		@Override
+		public String toString() {
+		    return "MappedAttribute["+key+':' + mapAttribute.getValue()+']';
+		}
 
 	}
 
-	public static Map stringToMap(String str, String separator) {
-		HashMap ret = new HashMap();
+	public static Map<String,String> stringToMap(String str, String separator) {
+		HashMap<String,String> ret = new HashMap<String,String>();
 		if (str != null) {
 			StringTokenizer st = new StringTokenizer(str, separator);
 			while (st.hasMoreTokens()) {
@@ -258,12 +264,12 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 		return ret;
 	}
 
-	public static String mapToString(Map map, String separator) {
+	public static String mapToString(Map<String,String> map, String separator) {
 		StringBuffer ret = new StringBuffer();
-		for (Iterator i = map.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
+		for (Iterator<Map.Entry<String,String>> i = map.entrySet().iterator(); i.hasNext();) {
+			Map.Entry<String,String> e = i.next();
 			String key = (String) e.getKey();
-			Object value = e.getValue();
+			String value = e.getValue();
 			if (value == null) {
 				continue;
 			}
@@ -308,6 +314,11 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 		public String getName() {
 			return attribute.getName();
 		}
+		
+                @Override
+                public String toString() {
+                    return "ProxyAttribute[" + attribute + ']';
+                }
 
 	}
 
