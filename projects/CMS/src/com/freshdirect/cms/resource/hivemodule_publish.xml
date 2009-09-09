@@ -24,7 +24,7 @@ Symbols:
 	<service-point id="PublishSlide" interface="com.freshdirect.cms.publish.PublishTask">
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.publish.PublishXmlTask">
-				<service>com.freshdirect.cms.application.service.media.MediaService</service>
+				<service>com.freshdirect.cms.MediaService</service>
 				<string>/Media.xml.gz</string>
 			</construct>
 		</invoke-factory>
@@ -113,7 +113,7 @@ and def_name='source'
 
 	<configuration-point id="publishTasks" schema-id="com.freshdirect.cms.serviceList"/>
 	<contribution configuration-id="publishTasks" >
-		<service name="PublishValidation"/>
+ 		<service name="PublishValidation"/> 
 		<service name="PublishStore"/>
 		<service name="PublishSlide"/>
 		<service name="PublishMedia"/>
