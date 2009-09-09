@@ -66,6 +66,10 @@ public class WorkingSet {
     	return null;
     }
     
+    public static boolean isEmpty() {
+    	return workingset.isEmpty();
+    }
+    
     public static void clear() {
     	workingset.clear();
     }

@@ -622,9 +622,9 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
         header.setUserInfo(s.toString());
     }
 
-    protected void nodeSelected(final String key, final ContentNodeModel parent) {
-        if (key != null) {
-            if (isFormChanged()) {
+	protected void nodeSelected( final String key, final ContentNodeModel parent ) {
+		if ( key != null ) {
+            if ( isFormChanged() || !WorkingSet.isEmpty() ) {
                 MessageBox.confirm("Discard changes", "You have unsaved changes. Do you want to discard them?", new Listener<MessageBoxEvent>() {
                     public void handleEvent(MessageBoxEvent be) {
                         if (be.getButtonClicked().getText().toLowerCase().trim().equals("yes")) {

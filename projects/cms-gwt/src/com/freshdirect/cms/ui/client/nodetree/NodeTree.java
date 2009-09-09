@@ -1,5 +1,6 @@
 package com.freshdirect.cms.ui.client.nodetree;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -58,10 +59,10 @@ public class NodeTree extends ContentPanel {
 	// ==================================== constructor methods ====================================
 	
 	public NodeTree() {
-		this( null );
+		this( null, false );
 	}
 	
-	public NodeTree( final Set<String> aTypes ) {
+	public NodeTree( final Set<String> aTypes, boolean multiSelect ) {
 		
 		this.allowedTypes = aTypes;
 		
@@ -94,7 +95,7 @@ public class NodeTree extends ContentPanel {
 		tree.addStyleName( "node-tree" );
 		tree.setBorders( false );
 		tree.setSelectionModel( new NodeTreeSelectionModel( this ) );
-		tree.getSelectionModel().setSelectionMode( SelectionMode.SINGLE );		
+		setMultiSelect( multiSelect );
 
 		// icon provider
 		tree.setIconProvider( new ModelIconProvider<ContentNodeModel>() {
@@ -266,6 +267,19 @@ public class NodeTree extends ContentPanel {
 		this.allowedTypes = aTypes;
 	}
 	
+	public void setMultiSelect( boolean multiSelect ) {
+		if ( tree == null )
+			return;
+		
+		tree.getSelectionModel().setSelection( new ArrayList<ContentNodeModel>() );
+		
+		if ( multiSelect ) {
+			tree.getSelectionModel().setSelectionMode( SelectionMode.MULTI );			
+		} else {
+			tree.getSelectionModel().setSelectionMode( SelectionMode.SINGLE );
+		}
+	}
+	
 	public void addNodeSelectListener( NodeSelectListener listener ) {
 		selectListener = listener;
 	}
@@ -285,6 +299,9 @@ public class NodeTree extends ContentPanel {
 	
 	public ContentNodeModel getSelectedItem() {
 		return tree.getSelectionModel().getSelectedItem();	
+	}	
+	public List<ContentNodeModel> getSelectedItems() {
+		return tree.getSelectionModel().getSelectedItems();	
 	}	
 	public ContentNodeModel getSelectedParent() {
 		return store.getParent( tree.getSelectionModel().getSelectedItem() );

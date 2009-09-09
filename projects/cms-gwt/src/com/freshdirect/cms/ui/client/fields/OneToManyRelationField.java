@@ -106,14 +106,15 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 				
 				final List<OneToManyModel> selectedList = selection.getSelectedItems();
 				
-				final ContentTreePopUp popup = ContentTreePopUp.getInstance( null );		
+				final ContentTreePopUp popup = ContentTreePopUp.getInstance( null, false );		
 				popup.setHeading( "Copy " + selectedList.size() + " item(s) to :" );
 				
 				popup.addListener( Events.Select, new Listener<BaseEvent>() {
 					
 					public void handleEvent( BaseEvent be ) {
-						ContentNodeModel targetNode = popup.getSelected();
+						ContentNodeModel targetNode = popup.getSelectedItem();
 						addRelationshipsToNode( targetNode.getKey(), attributeKey, selectedList );
+						MainLayout.setStatus( "" + selectedList.size() + " item(s) copied to " + targetNode.getLabel() );
 					}					
 				});		
 				popup.show();
@@ -133,15 +134,16 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 					
 					final List<OneToManyModel> selectedList = selection.getSelectedItems();
 					
-					final ContentTreePopUp popup = ContentTreePopUp.getInstance( null );		
+					final ContentTreePopUp popup = ContentTreePopUp.getInstance( null, false );		
 					popup.setHeading( "Move " + selectedList.size() + " item(s) to :" );
 					
 					popup.addListener( Events.Select, new Listener<BaseEvent>() {
 						
 						public void handleEvent( BaseEvent be ) {
-							ContentNodeModel targetNode = popup.getSelected();
+							ContentNodeModel targetNode = popup.getSelectedItem();
 							addRelationshipsToNode( targetNode.getKey(), attributeKey, selectedList );
 							removeRelationships( selectedList );
+							MainLayout.setStatus( "" + selectedList.size() + " item(s) moved to " + targetNode.getLabel() );
 						}					
 					});		
 					popup.show();
@@ -203,12 +205,14 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			addButton.setToolTip( new ToolTipConfig( "ADD", "Add a relation..." ) );		
 			addButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
 				public void handleEvent(BaseEvent be) {
-					final ContentTreePopUp popup = ContentTreePopUp.getInstance( getAllowedTypes() );		
+					final ContentTreePopUp popup = ContentTreePopUp.getInstance( getAllowedTypes(), true );		
 					popup.setHeading(getFieldLabel());
 					popup.addListener(Events.Select, new Listener<BaseEvent>() {
 						public void handleEvent(BaseEvent be) {
-							ContentNodeModel m = popup.getSelected();
-							addOneToManyModel(m.getType(), m.getKey(), m.getLabel());
+							List<ContentNodeModel> selection = popup.getSelectedItems();
+							for ( ContentNodeModel m : selection ) {							
+								addOneToManyModel(m.getType(), m.getKey(), m.getLabel());
+							}
 						}					
 					});		
 					popup.show();

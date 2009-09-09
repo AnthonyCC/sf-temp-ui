@@ -67,11 +67,11 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 	        relationButton.setToolTip("Change relationship");
 	        relationButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
 	            public void handleEvent(BaseEvent be) {
-	                final ContentTreePopUp popup = ContentTreePopUp.getInstance(allowedTypes);
+	                final ContentTreePopUp popup = ContentTreePopUp.getInstance(allowedTypes, false);
 	                popup.setHeading(getFieldLabel());
 	                popup.addListener(Events.Select, new Listener<BaseEvent>() {
 	                    public void handleEvent(BaseEvent be) {
-	                        setValue(popup.getSelected());
+							setValue( popup.getSelectedItem() );
 	                        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(OneToOneRelationField.this));
 	                    }
 	                });

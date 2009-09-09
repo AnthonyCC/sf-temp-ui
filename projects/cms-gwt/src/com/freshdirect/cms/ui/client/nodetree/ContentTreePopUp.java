@@ -1,5 +1,6 @@
 package com.freshdirect.cms.ui.client.nodetree;
 
+import java.util.List;
 import java.util.Set;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -25,11 +26,11 @@ public class ContentTreePopUp extends Window {
     private Button ok;
     private Button cancel;
 
-    private ContentNodeModel selected;
+    private List<ContentNodeModel> selected;
 
     private static ContentTreePopUp popup = null;
     
-    private ContentTreePopUp(Set<String> aTypes) {
+    private ContentTreePopUp( Set<String> aTypes, boolean multiSelect ) {
         super();
         
         ok = new Button("Ok");
@@ -44,15 +45,15 @@ public class ContentTreePopUp extends Window {
         setModal(true);
 
         setAllowedTypes(aTypes);
-        initialize();
+        initialize( multiSelect );
     }
     
-    public static ContentTreePopUp getInstance(Set<String> aTypes) {
+    public static ContentTreePopUp getInstance(Set<String> aTypes, boolean multiSelect) {
         if (popup == null) {
-            popup = new ContentTreePopUp(aTypes);
+            popup = new ContentTreePopUp(aTypes, multiSelect);
         } else {
             popup.setAllowedTypes(aTypes);
-            popup.initialize();
+            popup.initialize( multiSelect );
             // need to remove listener, because funny things will happen, if not :)
             for (Listener<? extends BaseEvent> listener : popup.getListeners(Events.Select)) {
                 popup.removeListener(Events.Select, listener);
@@ -70,11 +71,17 @@ public class ContentTreePopUp extends Window {
     }
 
     
-    public void setSelected(ContentNodeModel s) {
+    public void setSelected(List<ContentNodeModel> s) {
         selected = s;
     }
 
-    public ContentNodeModel getSelected() {
+    public ContentNodeModel getSelectedItem() {
+    	if ( selected.size() > 0 )
+    		return selected.get( 0 );
+    	else
+    		return null;
+    }
+    public List<ContentNodeModel> getSelectedItems() {
         return selected;
     }
 
@@ -97,14 +104,15 @@ public class ContentTreePopUp extends Window {
         super.setHeading(title.toString());
     }
     
-    private void initialize() {
+    private void initialize( boolean multiSelect ) {
 
-        if (treepanel == null) {
-            treepanel = new NodeTree(allowedTypes);
-            treepanel.setHeaderVisible(false);
-        } else {
-            treepanel.setAllowedTypes(allowedTypes);
-        }
+		if ( treepanel == null ) {
+			treepanel = new NodeTree( allowedTypes, multiSelect );
+			treepanel.setHeaderVisible( false );
+		} else {
+			treepanel.setAllowedTypes( allowedTypes );
+			treepanel.setMultiSelect( multiSelect );
+		}
 
         final Window w = this;
 
@@ -113,7 +121,7 @@ public class ContentTreePopUp extends Window {
             public void handleEvent(BaseEvent be) {
                 if (treepanel.getSelectedItem() != null) {
                     BaseEvent e = new BaseEvent(Events.Select);
-                    setSelected((ContentNodeModel) treepanel.getSelectedItem());
+                    setSelected(treepanel.getSelectedItems());
                     e.setSource(w);
                     fireEvent(e.getType(), e);
                 }
