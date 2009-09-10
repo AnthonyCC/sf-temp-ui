@@ -2,7 +2,7 @@
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
-<%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
+<%@ page import= 'com.freshdirect.transadmin.util.*' %>
 <%@ page import= 'java.util.*' %>
 <%@ page import= 'com.freshdirect.transadmin.web.model.*' %>
 
@@ -112,7 +112,9 @@
 					                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
 					tsPanel.render(document.body);
           			tsPanel.show();					                          
-                 }                
+                 }  
+
+                          
                   </script>
                 </td>
                 <td>
@@ -255,10 +257,10 @@
 	        </div>
 	        <script>
 		      addTSRowHandlers('ec_table', 'rowMouseOver');
+		      doRefresh(<%= TransportationAdminProperties.getCapacityRefreshTime() %>);
 		    </script>
 	     </div>     
 	  
   </tmpl:put>
-  
   
 </tmpl:insert>

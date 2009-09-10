@@ -205,7 +205,7 @@ public class TransportationAdminProperties {
 		
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_PAGEREFRESHTIME, "10");
 		
-		defaults.put(PROP_TRANSPORTATION_EARLYWARNING_PAGEREFRESHTIME, "10");
+		defaults.put(PROP_TRANSPORTATION_EARLYWARNING_PAGEREFRESHTIME, "60000");
 		
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_PAGESIZE, "16");
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_MAX_READY, "8");
@@ -434,6 +434,10 @@ public class TransportationAdminProperties {
 	public static int getDispatchDashboardRefreshTime() 
 	{
 		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_REFRESHTIME));
+	}
+	
+	public static int getCapacityRefreshTime() 	{
+		return getIntVal(get(PROP_TRANSPORTATION_EARLYWARNING_PAGEREFRESHTIME));		
 	}
 	
 	public static int getDispatchDashboardPageRefreshTime() 

@@ -2,12 +2,12 @@ package com.freshdirect.transadmin.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import com.freshdirect.transadmin.util.TransStringUtil;
 
@@ -115,7 +115,7 @@ public class TimeslotLog implements java.io.Serializable, TrnBaseEntityI {
 				Iterator _itr = timeslotLogDtls.iterator();
 				Date _tmpDate = null;
 				TimeslotLogDtl _dtl = null;
-				Map<Date, List<TimeslotLogDtl>> dtlMapping = new HashMap<Date, List<TimeslotLogDtl>>();
+				Map<Date, List<TimeslotLogDtl>> dtlMapping = new TreeMap<Date, List<TimeslotLogDtl>>();
 				
 				while(_itr.hasNext()) {
 					_dtl = (TimeslotLogDtl) _itr.next();

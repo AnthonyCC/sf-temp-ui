@@ -574,12 +574,15 @@ public class FDDeliveryManager {
 
 	public void commitReservation(String rsvId, String customerId, String orderId, ContactAddressModel address) throws ReservationException, FDResourceException {
 		try {
+			
 			DlvManagerSB sb = getDlvManagerHome().create();
+			DlvReservationModel oldReserve = sb.getReservation(rsvId);
+			System.out.println("oldReserve >>"+oldReserve.getOrderId());
 			sb.commitReservation(rsvId, customerId, orderId);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(rsvId);
 				if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))
-					RoutingUtil.getInstance().sendCommitReservationRequest(reservation,address);
+					RoutingUtil.getInstance().sendCommitReservationRequest(reservation, address, oldReserve.getOrderId());
 			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -890,12 +893,12 @@ public class FDDeliveryManager {
 			} 
 		}	
 
-	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address) throws FDResourceException{
+	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) throws FDResourceException{
 		try {
 			
 			
 			DlvManagerSB sb = getDlvManagerHome().create();
-			sb.commitReservationEx(reservation,address);
+			sb.commitReservationEx(reservation,address, previousOrderId);
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);

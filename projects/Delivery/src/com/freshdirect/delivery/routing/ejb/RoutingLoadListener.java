@@ -182,7 +182,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 	
     private void process(ConfirmTimeslotCommand command) throws FDResourceException {
 		
-		FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(),command.getAddress());
+		FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(),command.getAddress(), command.getPreviousOrderId());
 	}
     
 private void process(CancelTimeslotCommand command) throws FDResourceException {

@@ -2,7 +2,7 @@
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
-<%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
+<%@ page import= 'com.freshdirect.transadmin.util.*' %>
 <% 
 	pageContext.setAttribute("HAS_ADDBUTTON", "false"); 
 	pageContext.setAttribute("HAS_DELETEBUTTON", "false"); 
@@ -72,6 +72,7 @@
           </tr>               
         </table>    
        <script>
+       	  
          function doCompositeLink(compId1, url) {
           var param1 = document.getElementById(compId1).value;
           
@@ -105,6 +106,9 @@
             </ec:row>
           </ec:table>
     </div>
+    <script>
+  		doRefresh(<%= TransportationAdminProperties.getCapacityRefreshTime() %>);
+    </script>
   </tmpl:put>
   
   

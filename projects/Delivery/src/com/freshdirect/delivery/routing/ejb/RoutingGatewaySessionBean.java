@@ -50,11 +50,11 @@ public class RoutingGatewaySessionBean extends GatewaySessionBeanSupport {
 		this.enqueue(command);
 	}
 	
-	public void sendCommitReservationRequest(DlvReservationModel reservation, ContactAddressModel address) {
+	public void sendCommitReservationRequest(DlvReservationModel reservation, ContactAddressModel address, String previousOrderId) {
 		ConfirmTimeslotCommand command=new ConfirmTimeslotCommand();
 		command.setReservation(reservation);
 		command.setAddress(address);
-		
+		command.setPreviousOrderId(previousOrderId);
 		this.enqueue(command);
 	}
 	

@@ -130,7 +130,7 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public IDeliveryReservation reserveTimeslotEx(FDReservation reservation,ContactAddressModel address ) throws RemoteException;
 	
-	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address) throws  RemoteException;
+	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) throws  RemoteException;
 	
 	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) throws  RemoteException;
 	

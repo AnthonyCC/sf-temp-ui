@@ -7,7 +7,16 @@ public class ConfirmTimeslotCommand implements java.io.Serializable {
 	
 	private DlvReservationModel reservation;
 	private ContactAddressModel address;
+	private String previousOrderId;
 	
+	public String getPreviousOrderId() {
+		return previousOrderId;
+	}
+
+	public void setPreviousOrderId(String previousOrderId) {
+		this.previousOrderId = previousOrderId;
+	}
+
 	public void setReservation(DlvReservationModel reservation) {
 		this.reservation=reservation;
 	}

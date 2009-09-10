@@ -75,11 +75,11 @@ public class RoutingUtil {
 			}
 	}
 	
-	public void sendCommitReservationRequest(DlvReservationModel reservation,ContactAddressModel address) throws FDResourceException{
+	public void sendCommitReservationRequest(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) throws FDResourceException{
 		
 		try {
 			RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
-			routingSB.sendCommitReservationRequest(reservation,address);
+			routingSB.sendCommitReservationRequest(reservation,address, previousOrderId);
 
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);

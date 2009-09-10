@@ -87,4 +87,9 @@ function doSend(tableId, url) {
 	}else{
 		location.href = url+"&"+compId+"="+ param;
 	}
-  }      
+  }
+  
+  function doRefresh(timeoutPeriod) {
+	  setTimeout("location.reload(true);",timeoutPeriod);
+  
+  }

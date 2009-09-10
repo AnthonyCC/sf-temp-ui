@@ -1698,7 +1698,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		return null;
 	}
 	
-	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address) {
+	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) {
 		
 		long startTime=System.currentTimeMillis();
 		if(reservation==null || address==null /*|| reservation.getUnassignedActivityType().*/)
@@ -1712,9 +1712,9 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
 			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getZoneCode()));
 			order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
-			schedulerConfirmOrder(order,reservation);
+			schedulerConfirmOrder(order,reservation, previousOrderId);
 			long endTime=System.currentTimeMillis();
-			logTimeslots(order.getOrderNumber(),address.getCustomerId(),RoutingActivityType.CONFIRM_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime));
+			logTimeslots(order.getOrderNumber(),reservation.getCustomerId(),RoutingActivityType.CONFIRM_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime));
 			if(reservation.isUnassigned()) {
 				clearUnassignedInfo(reservation.getId());
 			}
@@ -1887,13 +1887,13 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	
 	
 	
-	private void schedulerConfirmOrder(IOrderModel orderModel,DlvReservationModel reservation) throws RoutingServiceException {
+	private void schedulerConfirmOrder(IOrderModel orderModel,DlvReservationModel reservation, String previousOrderId) throws RoutingServiceException {
 		
 		
 		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
 		orderModel.setOrderNumber(reservation.getOrderId());
 		//LOGGER.info("Old order #"+reservation.getId()+" New order#"+orderModel.getOrderNumber());
-		routingService.schedulerUpdateOrder(orderModel, reservation.getId());
+		routingService.schedulerUpdateOrder(orderModel, previousOrderId);
 		routingService.schedulerConfirmOrder(orderModel);
 		//LOGGER.info("schedulerConfirmOrder():: commitReservationEx:"+"SUCCESS");
 		//throw new RoutingServiceException(new Exception("F***"),"1234");
