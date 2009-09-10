@@ -343,7 +343,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
 
     			// [debug] System.err.println("OL["+i+"]/E: Total $" + origTotal + " exceeded by $"+accumulatedTotal+" for order line " + oID + "; adjusted price=" + amount + ";");
 
-    			result.addError(new ActionError("ol_error_"+i, "Amount exceeded the maximum available "+CCFormatter.formatCurrency(amount)+" for this order."));
+    			result.addError(new ActionError("ol_error_"+i, "Amount exceeded the maximum available "+CCFormatter.formatCurrency(origTotal)+" for this order."));
             	addGeneralError(result);
             	return;
     		} else {
