@@ -21,7 +21,7 @@ public class DateUtil {
 	
 	private static final DateFormat MIN_HOUR_FORMATTER = new SimpleDateFormat("h:mm a");
 	private static final DateFormat DAY_INWEEK_FORMATTER = new SimpleDateFormat("E");
-	private static final DateFormat MIN_AMPM_FORMATTER = new SimpleDateFormat("hh_a");
+	private static final DateFormat MIN_AMPM_FORMATTER = new SimpleDateFormat("hh_mm_a");
 	
 	private DateUtil() {
 	}
