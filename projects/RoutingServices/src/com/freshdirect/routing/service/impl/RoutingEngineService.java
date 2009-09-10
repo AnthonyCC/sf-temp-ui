@@ -213,7 +213,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
 						
 			port.schedulerConfirmOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), 
-											orderModel.getOrderNumber());
+											encodeString(orderModel.getOrderNumber()));
 			
 
 		} catch (RemoteException exp) {
@@ -230,8 +230,8 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 					
 			
 			port.schedulerUpdateOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId)
-											, RoutingDataEncoder.encodeDeliveryAreaOrderIdentity(schedulerId, previousOrderNumber)
-											, RoutingDataEncoder.encodeSchedulerUpdateOrderOptions(orderModel.getOrderNumber()));
+											, RoutingDataEncoder.encodeDeliveryAreaOrderIdentity(schedulerId, encodeString(previousOrderNumber))
+											, RoutingDataEncoder.encodeSchedulerUpdateOrderOptions(encodeString(orderModel.getOrderNumber())));
 
 		} catch (RemoteException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_UPDATE_UNSUCCESSFUL);
@@ -245,7 +245,8 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
 					
 			
-			port.schedulerCancelOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), orderModel.getOrderNumber());
+			port.schedulerCancelOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), encodeString(orderModel.getOrderNumber()));
+			
 
 		} catch (RemoteException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_CANCEL_UNSUCCESSFUL);
@@ -277,6 +278,10 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		}
 
 		return result;
+	}
+	
+	private String encodeString(String strRoot) {
+		return strRoot != null ? strRoot.toUpperCase() : strRoot;
 	}
 	
 }

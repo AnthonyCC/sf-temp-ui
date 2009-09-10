@@ -49,7 +49,7 @@ public class CartFactory {
 				new FDReservation(
 					null,
 					new FDTimeslot(new DlvTimeslotModel()),
-					endCal.getTime(), EnumReservationType.STANDARD_RESERVATION, identity.getErpCustomerPK(), null, false,false);
+					endCal.getTime(), EnumReservationType.STANDARD_RESERVATION, identity.getErpCustomerPK(), null, false,false, null);
             
             cart.setZoneInfo(zInfo);
             cart.setDeliveryReservation(deliveryReservation);

@@ -120,7 +120,9 @@ public class RoutingDataEncoder {
 															, String sessionId, DeliveryAreaOrder orderModel) {
 		
 		RoutingImportOrder order = new RoutingImportOrder();
-		order.setOrderNumber(orderModel.getIdentity().getOrderNumber());
+		order.setOrderNumber(orderModel.getIdentity().getOrderNumber() != null 
+								? orderModel.getIdentity().getOrderNumber().toUpperCase() : 
+									orderModel.getIdentity().getOrderNumber());
 		order.setSessionIdentity(encodeRoutingSessionIdentity(schedulerId.getRegionId(), sessionId));
 		order.setDeliveryDate(orderModel.getIdentity().getDeliveryDate());
 		order.setLocationIdentity(encodeLocationIdentity(orderModel.getIdentity().getRegionId()
@@ -248,7 +250,7 @@ public class RoutingDataEncoder {
 		DeliveryAreaOrderIdentity delOrderId = new DeliveryAreaOrderIdentity();
 		delOrderId.setArea(area);
 		delOrderId.setDeliveryDate(deliveryDate);
-		delOrderId.setOrderNumber(orderNum);
+		delOrderId.setOrderNumber(orderNum != null ? orderNum.toUpperCase() : orderNum);
 		delOrderId.setRegionId(regionId);
 		return delOrderId;
 	}
@@ -285,7 +287,7 @@ public class RoutingDataEncoder {
 		schId.setArea(schedulerId.getArea().getAreaCode());
 		schId.setDeliveryDate(schedulerId.getDeliveryDate());
 		
-		schId.setOrderNumber(orderNo);
+		schId.setOrderNumber(orderNo != null ? orderNo.toUpperCase() : orderNo);
 		return schId;
 	}
 	

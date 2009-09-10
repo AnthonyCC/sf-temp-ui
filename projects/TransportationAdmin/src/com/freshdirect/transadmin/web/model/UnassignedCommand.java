@@ -2,6 +2,8 @@ package com.freshdirect.transadmin.web.model;
 
 import java.util.Date;
 
+import com.freshdirect.transadmin.util.TransStringUtil;
+
 public class UnassignedCommand extends BaseCommand {
 	
 	private String reservationId;
@@ -82,6 +84,22 @@ public class UnassignedCommand extends BaseCommand {
 
 	public void setUnassignedTime(Date unassignedTime) {
 		this.unassignedTime = unassignedTime;
+	}
+	
+	public String getFormattedUnassignedTime() {
+		return formatDateTime(getUnassignedTime());
+	}
+	
+	public String getFormattedCreateModTime() {
+		return formatDateTime(getCreateModTime());
+	}
+	
+	private String formatDateTime(Date dateVal) {
+		try {
+			return TransStringUtil.getDatewithTime(dateVal);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }

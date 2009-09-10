@@ -28,6 +28,7 @@ public class FDReservation extends ModelSupport {
 	private final FDTimeslot timeslot;
 	private final String customerId;
 	private final String addressId;
+	private final String orderId;
 	private final boolean chefsTable;
 	private final boolean isUnassigned;
 	 
@@ -40,7 +41,8 @@ public class FDReservation extends ModelSupport {
 		String customerId,
 		String addressId,
 		boolean chefsTable,
-		boolean isUnassigned) {
+		boolean isUnassigned,
+		String orderId) {
 		this.setPK(pk);
 		this.timeslot = timeslot;
 		this.expirationDateTime = expirationDateTime;
@@ -49,6 +51,11 @@ public class FDReservation extends ModelSupport {
 		this.addressId = addressId;
 		this.chefsTable = chefsTable;
 		this.isUnassigned=isUnassigned;
+		this.orderId = orderId;
+	}
+
+	public String getOrderId() {
+		return orderId;
 	}
 
 	public String getTimeslotId() {

@@ -861,7 +861,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 	private static FDReservation getFDReservation(String customerID, String addressID) {
 		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
 		FDTimeslot timeSlot=null;
-		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, customerID, addressID, false,false);
+		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, customerID, addressID, false,false, null);
 		return reservation;
 		
 	}

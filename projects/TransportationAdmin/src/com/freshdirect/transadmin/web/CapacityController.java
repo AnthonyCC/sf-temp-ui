@@ -330,7 +330,7 @@ public class CapacityController extends AbstractMultiActionController {
 			_regDisplayCommand.setTotalCapacity(formatter.formatCapacity(totalCapacity));
 			_regDisplayCommand.setAllocatedCapacity(formatter.formatCapacity(totalAllocated));
 			_regDisplayCommand.setConfirmedCapacity(formatter.formatCapacity(totalConfirmed));
-			if(_regCap.getTotalCapacity() > 0) {
+			if(totalCapacity > 0) {
 				percentageConfirmed = (totalConfirmed/totalCapacity)*100.0;
 				percentageAllocated = (totalAllocated/totalCapacity)*100.0;
 			}

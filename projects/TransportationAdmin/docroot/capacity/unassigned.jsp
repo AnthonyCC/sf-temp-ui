@@ -100,8 +100,8 @@
 			  <ec:column property="unassignedAction" title="Event Type"/>
 			 			  
 			  <ec:column property="timeWindow" title="Time Window"/>			                                   
-			  <ec:column  property="unassignedTime" title="Unassigned Time"  cell="date" format="MM/dd/yyyy HH:MM"/>
-			  <ec:column  property="createModTime" title="Order Create/Mod Time"  cell="date" format="MM/dd/yyyy HH:MM"/>				              
+			  <ec:column  property="formattedUnassignedTime" title="Unassigned Time" />
+			  <ec:column  property="formattedCreateModTime" title="Order Create/Mod Time" />				              
             </ec:row>
           </ec:table>
     </div>

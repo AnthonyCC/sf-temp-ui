@@ -118,7 +118,7 @@
 			  <ec:column property="orderId" title="Order ID"/>
 			  <ec:column property="customerId" title="Customer ID"/>
 			  <ec:column property="eventtype" title="Event Type"/>
-			  <ec:column  property="eventDtm" title="Event Time"  cell="date" format="HH:MM"/>
+			  <ec:column  property="eventTime" title="Event Time" />
 			  <ec:column  property="responseTime" title="Response Time"/>			  
 			  <ec:column property="detailDisplay" title="Event Details"/>				              
             </ec:row>

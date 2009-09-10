@@ -1674,7 +1674,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		IDeliverySlot reservedSlot=null;
 		
 		RoutingUtil util=RoutingUtil.getInstance();
-		IOrderModel order=util.getOrderModel(address,reservation.getId());
+		IOrderModel order=util.getOrderModel(address, reservation.getOrderId());
 		try {
 			
 			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
@@ -1705,7 +1705,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			return ;		
 		
 		RoutingUtil util=RoutingUtil.getInstance();
-		IOrderModel order= util.getOrderModel(address,reservation.getId());
+		IOrderModel order= util.getOrderModel(address,reservation.getOrderId());
 		
 		try {
 			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
@@ -1872,6 +1872,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		
 		return new RoutingEngineServiceProxy().schedulerAnalyzeOrder(orderModel, RoutingServicesProperties.getDefaultLocationType(), RoutingServicesProperties.getDefaultOrderType(), startDate, noOfDays, slots);
 	}
+	
 	private IDeliveryReservation schedulerReserveOrder(IOrderModel orderModel, IDeliverySlot slot) throws RoutingServiceException {
 		
 		IDeliveryReservation reservation=new RoutingEngineServiceProxy().schedulerReserveOrder(orderModel, slot, RoutingServicesProperties.getDefaultLocationType(), RoutingServicesProperties.getDefaultOrderType());

@@ -94,8 +94,8 @@ public class UnassignedReservationCronRunner {
 																 reservation.getCustomerId(),
 																 address.getPK().getId(),
 																 reservation.isChefsTable(),
-																 reservation.isUnassigned()
-																);
+																 reservation.isUnassigned(),
+																 reservation.getOrderId());
 				dlvManager.reserveTimeslotEx(_reservation, address);
 				if(RoutingActivityType.CONFIRM_TIMESLOT.equals(unassignedAction)) {
 					 dlvManager.commitReservationEx(reservation, address);

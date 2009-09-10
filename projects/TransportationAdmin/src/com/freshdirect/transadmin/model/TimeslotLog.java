@@ -99,6 +99,12 @@ public class TimeslotLog implements java.io.Serializable, TrnBaseEntityI {
 		this.responseTime = responseTime;
 	}
 
+	public String getEventTime() {
+		if(getEventDtm() != null) {
+			return TransStringUtil.formatTime(getEventDtm());
+		}
+		return null;
+	}
 		
 	public String getDetailDisplay() 	{
 		
