@@ -127,11 +127,14 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 			}
 		}
 
-		Set extraOptions = new HashSet(options.keySet());
-		extraOptions.removeAll(definitions.keySet());
-		if (!extraOptions.isEmpty()) {
-			delegate.record(node.getKey(), "OPTIONS", "Extraneous characteristics " + extraOptions);
-		}
+		// extraneous characteristics message - disabled this warning by request  	 
+		// [APPREQ-680] => cms validation: extraneous characteristics should not be warning
+		//
+		//		Set extraOptions = new HashSet(options.keySet());
+		//		extraOptions.removeAll(definitions.keySet());
+		//		if (!extraOptions.isEmpty()) {
+		//			delegate.record(node.getKey(), "OPTIONS", "Extraneous characteristics " + extraOptions);
+		//		}
 		
 		// validate parent counts
 		Set parentKeys = service.getParentKeys(node.getKey());
