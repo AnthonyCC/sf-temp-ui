@@ -182,7 +182,7 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 				return "<iframe src=\"" + previewUrl + "\"></iframe>";
 			}			
 		}
-		return "";
+		return getKey();
 	}
 	
 	protected boolean checkPreviewTypes( String previewUrl ) {
