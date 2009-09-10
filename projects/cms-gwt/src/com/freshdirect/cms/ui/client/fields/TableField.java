@@ -2,8 +2,11 @@ package com.freshdirect.cms.ui.client.fields;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
@@ -23,6 +26,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute.ColumnType;
@@ -30,11 +34,89 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class TableField extends MultiField implements ChangeTrackingField {
 
+    static class SerializableArrayComparator implements Comparator<Serializable[]>  {
+        int idx;
+        boolean revert = false;
+        
+        public SerializableArrayComparator(int idx, boolean revert) {
+            this.idx = idx;
+            this.revert = revert;
+        }
+
+        @Override
+        public final int compare(Serializable[] o1, Serializable[] o2) {
+            int result = compareOne(o1[idx], o2[idx]);
+            if (revert) {
+                return -result;
+            } else {
+                return result;
+            }
+        }
+        
+        public int compareOne(Serializable o1, Serializable o2) {
+            return ((Comparable) o1).compareTo(o2);
+        }
+    }
+
+
+    static class ContentNodeModelComparator extends SerializableArrayComparator  {
+
+        public ContentNodeModelComparator(int idx, boolean revert) {
+            super(idx, revert);
+        }
+
+        @Override
+        public int compareOne(Serializable o1, Serializable o2) {
+            ContentNodeModel m1 = (ContentNodeModel) o1;
+            ContentNodeModel m2 = (ContentNodeModel) o2;
+            return m1.getId().compareTo(m2.getId());
+        }
+    }
+
     private static final class TableRowLoader implements DataProxy<PagingLoadResult<? extends ModelData>> {
         TableAttribute attribute;
-
+        String sortKey = null;
+        List<Serializable[]> rows;
+        
         public TableRowLoader(TableAttribute attribute) {
             this.attribute = attribute;
+        }
+
+        List<Serializable[]> getRows(PagingLoadConfig config) {
+            String newSortOrder = config.getSortDir().name() +'-'+config.getSortField();
+
+            if (sortKey!=null && sortKey.equals(newSortOrder)) {
+                return rows;
+            }
+            rows = this.attribute.getRows();
+            if (config.getSortField() != null && config.getSortDir() != SortDir.NONE) {
+                int idx = Integer.parseInt(config.getSortField().substring("col_".length()));
+                Comparator<Serializable[]> comparator = getComparator(rows, idx, config.getSortDir() == SortDir.DESC);
+                if (comparator != null) {
+                    Collections.sort(rows, comparator);
+                }
+            }
+            sortKey = newSortOrder;
+            return rows;
+        }
+        
+        private Comparator<Serializable[]> getComparator(List<Serializable[]> datas, int idx, boolean reverse) {
+            for (int i = 0; i < datas.size(); i++) {
+                Serializable[] serializables = datas.get(i);
+                Serializable value = serializables[idx];
+                if (value != null) {
+                    if (value instanceof Integer) {
+                        return new SerializableArrayComparator(idx, reverse);
+                    }
+                    if (value instanceof String) {
+                        return new SerializableArrayComparator(idx, reverse);
+                    }
+                    if (value instanceof ContentNodeModel) {
+                        return new ContentNodeModelComparator(idx, reverse);
+                    }
+                }
+            }
+            return null;
         }
 
         @Override
@@ -42,10 +124,11 @@ public class TableField extends MultiField implements ChangeTrackingField {
                 AsyncCallback<PagingLoadResult<? extends ModelData>> callback) {
             final PagingLoadConfig config = (PagingLoadConfig) loadConfig;
             List<BaseModelData> result = new ArrayList<BaseModelData>(config.getLimit());
-            List<Serializable[]> rows = this.attribute.getRows();
+            
+            List<Serializable[]> lines = getRows(config);
             ColumnType[] types = attribute.getTypes();
-            for (int i = 0; i < config.getLimit() && config.getOffset() + i < rows.size(); i++) {
-                Serializable[] serializables = rows.get(config.getOffset() + i);
+            for (int i = 0; i < config.getLimit() && config.getOffset() + i < lines.size(); i++) {
+                Serializable[] serializables = lines.get(config.getOffset() + i);
                 BaseModelData bmd = new BaseModelData();
                 for (int j = 0; j < serializables.length; j++) {
                     bmd.set("col_" + j, serializables[j]);
@@ -55,7 +138,7 @@ public class TableField extends MultiField implements ChangeTrackingField {
                 }
                 result.add(bmd);
             }
-            BasePagingLoadResult<BaseModelData> bplr = new BasePagingLoadResult<BaseModelData>(result, config.getOffset(), rows.size());
+            BasePagingLoadResult<BaseModelData> bplr = new BasePagingLoadResult<BaseModelData>(result, config.getOffset(), lines.size());
             callback.onSuccess(bplr);
         }
     }
@@ -77,7 +160,8 @@ public class TableField extends MultiField implements ChangeTrackingField {
         this.attribute = attribute;
 
         BasePagingLoader<BasePagingLoadResult<BaseModelData>> loader = new BasePagingLoader<BasePagingLoadResult<BaseModelData>>(new TableRowLoader(attribute));
-
+        loader.setRemoteSort(true);
+        
         ColumnType[] types = attribute.getTypes();
 
         int groupingColumn = -1;
