@@ -175,7 +175,7 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
     }
     
 	public String getPreviewToolTip() {
-		if ( previewUrl != null ) {
+		if ( checkPreviewTypes( previewUrl ) ) {
 			if ( isImageType() ) {
 				return "<img src=\"" + previewUrl + "\" width=\"" + width + "\" height=\"" + height + "\">";
 			} else if ( isHtmlType() ) {
@@ -183,6 +183,11 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 			}			
 		}
 		return "";
+	}
+	
+	protected boolean checkPreviewTypes( String previewUrl ) {
+		return previewUrl != null && ( previewUrl.endsWith( "gif" ) || previewUrl.endsWith( "jpg" ) || previewUrl.endsWith( "jpeg" )
+				|| previewUrl.endsWith( "htm" ) || previewUrl.endsWith( "html" ) || previewUrl.endsWith( "txt" ) );		
 	}
 	
 	public String getJavascriptPreviewLink() {
