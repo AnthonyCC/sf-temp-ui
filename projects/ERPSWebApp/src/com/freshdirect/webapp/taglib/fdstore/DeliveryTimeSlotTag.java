@@ -243,8 +243,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		}
 	
 		DateRange advOrdDateRange = FDStoreProperties.getAdvanceOrderRange();
+		boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
+		DateRange advOrdNewDateRange = FDStoreProperties.getAdvanceOrderNewRange();
+		DateRange restrictionRangeNew=null;
 		
 		LOGGER.debug("advOrdDateRange :"+advOrdDateRange);
+		LOGGER.debug("advOrdNewDateRange :"+advOrdNewDateRange);
 		
 		if (useAdvanceOrderDates && advOrdDateRange.overlaps(new DateRange(period.getStartDate(),DateUtil.addDays(period.getStartDate(),daysInAdvance))) ) {
 			// get the advanced Dlv date range and factor them into the date range
@@ -269,13 +273,42 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				}
 		    }
 		}
-				
+		
+		//Get the second advance order range for gaps
+		if (useAdvanceOrderDates && advOrdNewDateRange.overlaps(new DateRange(period.getStartDate(),DateUtil.addDays(period.getStartDate(),daysInAdvance))) ) {
+			// adjust the end and start range 
+		    if (restrictionRangeNew==null) {
+		    	restrictionRangeNew=new DateRange(advOrdNewDateRange.getStartDate(),advOrdNewDateRange.getEndDate());
+		    } else {
+				if ( advOrdNewDateRange.getEndDate().after(restrictionRangeNew.getEndDate()) ) {
+					restrictionRangeNew = new DateRange(restrictionRangeNew.getStartDate(), advOrdNewDateRange.getEndDate());
+				} else if (daysInAdvance  < (restrictionRangeNew.getStartDate().getTime()-period.getStartDate().getTime()) / DateUtil.DAY){
+				    // if the holiday starts after advance range and holiday is not in the lookahead range then use advance order end date
+					if (advOrdNewDateRange.getStartDate().before(restrictionRangeNew.getStartDate()) ) {
+						restrictionRangeNew = new DateRange(advOrdNewDateRange.getStartDate(), advOrdNewDateRange.getEndDate());
+					} else {
+						restrictionRangeNew = new DateRange(restrictionRangeNew.getStartDate(), advOrdNewDateRange.getEndDate());
+					}
+				}
+	
+				if (advOrdNewDateRange.getStartDate().before(restrictionRangeNew.getStartDate()) ) {
+					restrictionRangeNew = new DateRange(advOrdNewDateRange.getStartDate(),restrictionRangeNew.getEndDate());
+				}
+		    }
+		}//Advance order range for gaps
+		
 		// shrink the date range if it is more than 7
-		if (restrictionRange != null &&  (restrictionRange.getEndDate().getTime()- restrictionRange.getStartDate().getTime()) / DateUtil.DAY > ErpServicesProperties.getHorizonDays()) {
+		if (restrictionRange != null && !isAdvOrderGap &&  (restrictionRange.getEndDate().getTime()- restrictionRange.getStartDate().getTime()) / DateUtil.DAY > ErpServicesProperties.getHorizonDays()) {
 		    restrictionRange = new DateRange(restrictionRange.getStartDate(),DateUtil.addDays(restrictionRange.getStartDate(),ErpServicesProperties.getHorizonDays()));
+		}else if((restrictionRange != null && isAdvOrderGap && (restrictionRange.getEndDate().getTime()- restrictionRange.getStartDate().getTime()) / DateUtil.DAY >= ErpServicesProperties.getHorizonDays()) ||
+				restrictionRangeNew != null && isAdvOrderGap && (restrictionRangeNew.getEndDate().getTime()- restrictionRangeNew.getStartDate().getTime()) / DateUtil.DAY >= ErpServicesProperties.getHorizonDays()){
+			// if there is advance order timeslots with a gap then read the second date range from properties
+			restrictionRange = new DateRange(advOrdDateRange.getStartDate(), advOrdDateRange.getEndDate());
+			restrictionRangeNew = new DateRange(advOrdNewDateRange.getStartDate(),advOrdNewDateRange.getEndDate());
 		}
 		
 		LOGGER.debug("restrictionRange :"+restrictionRange);
+		LOGGER.debug("restrictionRangeNew  :"+restrictionRangeNew);
 		
 		List lst = new ArrayList();
 		int dayDiff = 0;
@@ -284,7 +317,46 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		}
 		
 		int remainingDays  = restrictionRange==null ? 0 : (int) ((restrictionRange.getEndDate().getTime() - period.getEndDate().getTime()) / DateUtil.DAY);
-		if ( dayDiff > daysInAdvance   
+		
+		// If there is advance order with gap read the second date range along with first range
+		if(isAdvOrderGap){
+			int dayDiffNew = 0;
+			if (restrictionRangeNew != null) {
+				dayDiffNew = (int) ((restrictionRangeNew.getStartDate().getTime()- period.getStartDate().getTime()) / DateUtil.DAY);
+			}
+			int remainingDaysNew  = restrictionRangeNew==null ? 0 : (int) ((restrictionRangeNew.getEndDate().getTime() - period.getEndDate().getTime()) / DateUtil.DAY);
+			
+			//read the first advance order date range
+			if(dayDiff > daysInAdvance   
+				    || dayDiff < 6 || (!lookahead && !useAdvanceOrderDates)){
+				if (dayDiff < 6 && remainingDays > 0) {
+			        lst.add (new DateRange(period.getEndDate(),restrictionRange.getEndDate()));
+			    }else{
+			    	
+			    }
+				
+			}else if (dayDiff > 6) {
+				lst.add(restrictionRange);
+			} else{
+				restrictionRange = new DateRange(DateUtil.addDays(restrictionRange.getStartDate(),1),restrictionRange.getEndDate());
+				lst.add(restrictionRange);
+			}
+			
+			//read the second advance order date range
+			if(dayDiffNew > daysInAdvance   
+				    || dayDiffNew < 6 || (!lookahead && !useAdvanceOrderDates)){
+				if (dayDiffNew < 6 && remainingDaysNew > 0) {
+			        lst.add (new DateRange(period.getEndDate(),restrictionRangeNew.getEndDate()));
+			    }
+				
+			}else if (dayDiffNew > 6) {
+				lst.add(restrictionRangeNew);
+			} else{
+				restrictionRangeNew = new DateRange(DateUtil.addDays(restrictionRangeNew.getStartDate(),1),restrictionRangeNew.getEndDate());
+				lst.add(restrictionRangeNew);
+			}
+			lst.add(period);
+		}else if ( dayDiff > daysInAdvance   
 		    || dayDiff < 6 || (!lookahead && !useAdvanceOrderDates) ) {
 		    if (dayDiff < 6 && remainingDays > 0) {
 		        lst.add (new DateRange(period.getEndDate(),restrictionRange.getEndDate()));
