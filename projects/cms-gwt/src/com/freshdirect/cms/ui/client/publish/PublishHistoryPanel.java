@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -137,13 +138,13 @@ public class PublishHistoryPanel extends ContentPanel {
         
         // ============ DETAILS BUTTON ============
         {
-            ColumnConfig c = new ColumnConfig("button", "Details", 50);
+            ColumnConfig c = new ColumnConfig("button", "Details", 150);
             c.setRenderer(new GridCellRenderer<GwtPublishData> () {
                 @Override
                 public Object render(GwtPublishData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtPublishData> store,
                         Grid<GwtPublishData> grid) {
                     final String id = model.getId();
-                    return new Button("Details", new SelectionListener<ButtonEvent>() {
+                    Button detailsButton = new Button("Details", new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent ce) {
                             ChangeSetQuery q = new ChangeSetQuery();
@@ -153,6 +154,21 @@ public class PublishHistoryPanel extends ContentPanel {
                             CmsGwt.getContentService().getChangeSets(q, new ShowChangeHistoryCallback(id));
                         } 
                     });
+                    if (GwtPublishData.PROGRESS.equals(model.getStatusCode())) {
+                        HorizontalPanel hp = new HorizontalPanel();
+                        hp.add(detailsButton);
+                        final String publishId = model.getId();
+                        hp.add(new Button("View Progress", new SelectionListener<ButtonEvent>() {
+                            @Override
+                            public void componentSelected(ButtonEvent ce) {
+                                new PublishStatusPopup(publishId).show();
+                            } 
+                        }));
+                        return hp;
+                    } else {
+                        return detailsButton;
+                    }
+                    
                 }
             });
             columns.add(c);
