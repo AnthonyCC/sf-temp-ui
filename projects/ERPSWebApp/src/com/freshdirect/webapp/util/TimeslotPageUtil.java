@@ -9,6 +9,7 @@ import java.util.List;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 
@@ -44,10 +45,11 @@ public class TimeslotPageUtil {
 		System.out.println("total dayDiff :"+dayDiff);
 		
 		boolean[] restDays = new boolean[dayDiff];
-
+		boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
+		
 		int i = 0;
 		while (baseCal.before(endCal) || baseCal.equals(endCal)) {
-			if(dayDiff==7 && EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){
+			if(dayDiff==7 && EnumDlvRestrictionReason.THANKSGIVING.equals(reason) && !isAdvOrderGap){
 			restDays[i]=true;
 			}else{
 			restDays[i] = restrictions.isRestricted(EnumDlvRestrictionCriterion.DELIVERY, reason, new DateRange(
