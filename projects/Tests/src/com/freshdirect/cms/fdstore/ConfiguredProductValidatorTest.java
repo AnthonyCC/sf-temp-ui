@@ -1,7 +1,6 @@
 package com.freshdirect.cms.fdstore;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -30,7 +29,7 @@ public class ConfiguredProductValidatorTest extends TestCase {
 
 	public void setUp() {
 
-		List list = new ArrayList();
+		List<XmlTypeService> list = new ArrayList<XmlTypeService>();
 		list.add(new XmlTypeService(
 				"classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
 		list.add(new XmlTypeService(
@@ -79,13 +78,6 @@ public class ConfiguredProductValidatorTest extends TestCase {
 				null);
 		assertEquals(1, delegate.getValidationMessages().size());
 		assertValidationMessage(0, "No value for characteristic C_MT_BF_PAK");
-	}
-
-	public void testExtraOption() {
-		validator
-				.validate(delegate, service, findProduct("extra_option"), null);
-		assertEquals(1, delegate.getValidationMessages().size());
-		assertValidationMessage(0, "Extraneous characteristics [FOO]");
 	}
 
 	private void assertValidationMessage(int index, String message) {
