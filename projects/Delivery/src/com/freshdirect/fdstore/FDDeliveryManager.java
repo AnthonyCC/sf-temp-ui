@@ -439,7 +439,7 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public List getTimeslotsForDepot(Date begDate, Date endDate, String regionId, String zoneCode) throws FDResourceException {
+	public List getTimeslotsForDepot(Date begDate, Date endDate, String regionId, String zoneCode, ContactAddressModel address) throws FDResourceException {
 
 		try {
 			List retLst = new ArrayList();
@@ -449,6 +449,9 @@ public class FDDeliveryManager {
 				DlvTimeslotModel timeslot = (DlvTimeslotModel) i.next();
 				retLst.add(new FDTimeslot(timeslot));
 			}
+			
+			if(FDStoreProperties.isDynamicRoutingEnabled()) 
+				RoutingUtil.getInstance().sendDateRangeAndZoneForTimeslots(retLst, address);
 			return retLst;
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);

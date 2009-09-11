@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
@@ -45,8 +44,12 @@ import com.freshdirect.fdstore.FDTimeslotList;
 import com.freshdirect.fdstore.FDZoneNotFoundException;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
+import com.freshdirect.fdstore.promotion.FDPromotionRulesEngine;
+import com.freshdirect.fdstore.promotion.PromotionContextI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 /**
@@ -120,6 +123,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		List dateRanges = getDateRanges(baseRange, (containsSpecialHoliday && !deliveryInfo), restrictions, specialHoliday, containsAdvanceOrderItem);
 
 		List timeslotList = new ArrayList();
+		if(address != null && user != null && user.getIdentity() != null 
+									&& StringUtil.isEmpty(user.getIdentity().getErpCustomerPK())) {
+			address.setCustomerId(user.getIdentity().getErpCustomerPK());
+		}
 		for (Iterator i = dateRanges.iterator(); i.hasNext();) {
 			DateRange range = (DateRange) i.next();
 			List timeslots = this.getTimeslots(
@@ -153,6 +160,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				for(Iterator k = col.iterator(); k.hasNext();){
 					FDTimeslot timeslot = (FDTimeslot) k.next();
 					DlvTimeslotModel ts = timeslot.getDlvTimeslot();
+					
+					if(hasTimeslotDiscount(user, timeslot)) {
+						timeslot.setDiscounted(true);
+					}
 					if ((ts.getCapacity() <= 0 ||  
 							GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages, geoRestrictionRange)) 
 								&& !retainTimeslotIds.contains(ts.getId())) {
@@ -179,7 +190,20 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		return new Result(timeslotList, zonesMap, ctActive, messages);
 	}
 	
-		
+	private boolean hasTimeslotDiscount(FDUserI user, FDTimeslot timeslot) {
+		PromotionContextI ctx = new PromotionContextAdapter(user);
+		ctx.setIntermTimeslot(timeslot);
+		List promoCodes = FDPromotionRulesEngine.getEligiblePromotions(ctx);
+		System.out.println("hasTimeslotDiscount promoCodes >>"+promoCodes+" ------------ "+timeslot.getBaseDate()+" -> "+timeslot.getDisplayString(true));
+		for(Iterator i = promoCodes.iterator(); i.hasNext(); ){
+			String promoCode = (String) i.next();
+			if("FAKE_DISCOUNT".equals(promoCode)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private List getTimeslots(ErpAddressModel address, Date startDate, Date endDate) throws FDResourceException {
 
 		if (address instanceof ErpDepotAddressModel) {
@@ -188,7 +212,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				startDate,
 				endDate,
 				depotAddress.getRegionId(),
-				depotAddress.getZoneCode());
+				depotAddress.getZoneCode(), this.address);
 		} else {
 			return FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(startDate, endDate, this.address);
 		}

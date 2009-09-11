@@ -48,6 +48,13 @@ public class ContactAddressModel extends AddressModel implements BasicContactAdd
 		this.setPhone(address.getPhone());
 		this.setCustomerId(address.getCustomerId());
 	}
+	
+	public void setFrom(AddressI address, String firstName, String lastName, String customerId) {
+		super.setFrom(address);		
+		this.setFirstName(firstName);
+		this.setLastName(lastName);		
+		this.setCustomerId(customerId);
+	}
 
 	public String getCustomerId() {
 		return customerId;

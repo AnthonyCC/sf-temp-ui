@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.delivery.depot.DlvDepotModel;
 import com.freshdirect.delivery.depot.DlvLocationModel;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -79,7 +80,7 @@ public class DepotCapacityCache implements Runnable {
 								begCal.getTime(),
 								endCal.getTime(),
 								depot.getRegionId(),
-								location.getZoneCode());
+								location.getZoneCode(), getContactAddress(location));
 						for (int idx = 0, size = timeslots.size(); idx < size; idx++) {
 							FDTimeslot timeslot = (FDTimeslot) timeslots.get(idx);
 							if (timeslot.getTotalAvailable() > 0) {
@@ -101,5 +102,11 @@ public class DepotCapacityCache implements Runnable {
 			this.availability.put(depotCode, new Boolean(available));
 		}
 		LOGGER.debug("Refresh cache done...");
+	}
+	
+	private ContactAddressModel getContactAddress(DlvLocationModel model) {
+		ContactAddressModel _cModel = new ContactAddressModel();
+		_cModel.setFrom(model.getAddress(), model.getId(), model.getFacility(), model.getId());
+		return _cModel;
 	}
 }

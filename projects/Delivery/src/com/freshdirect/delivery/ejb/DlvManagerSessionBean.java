@@ -1684,7 +1684,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			reservedSlot=util.getDeliverySlot(reservation);
 			IDeliveryReservation _reservation=schedulerReserveOrder(order,reservedSlot );
 			long endTime=System.currentTimeMillis();
-			logTimeslots(order.getOrderNumber(),address.getCustomerId(),RoutingActivityType.RESERVE_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime));
+			logTimeslots(order.getOrderNumber(),reservation.getCustomerId(),RoutingActivityType.RESERVE_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime));
 			if(reservation.isUnassigned())
 				clearUnassignedInfo(reservation.getId());
 			return _reservation;
@@ -1748,7 +1748,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
 			schedulerCancelOrder(order,reservation);
 			long endTime=System.currentTimeMillis();
-			logTimeslots(order.getOrderNumber(),address.getCustomerId(),RoutingActivityType.CANCEL_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime));
+			logTimeslots(order.getOrderNumber(),reservation.getCustomerId(),RoutingActivityType.CANCEL_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime));
 			if(reservation.isUnassigned()) {
 				clearUnassignedInfo(reservation.getId());
 			}
