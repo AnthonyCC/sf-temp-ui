@@ -235,10 +235,6 @@
 }
 /* ====== form ====== */
 
-
-.notab-form .x-panel {
-	margin-left: 10px;
-}
 .notab-form .x-panel-body form {
 	padding-top: 0px ! important;
 }
