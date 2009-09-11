@@ -29,6 +29,7 @@ import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.freshdirect.cms.ui.client.MainLayout;
+import com.freshdirect.cms.ui.service.BaseCallback;
 import com.freshdirect.cms.ui.service.ContentService;
 import com.freshdirect.cms.ui.service.ContentServiceAsync;
 import com.google.gwt.core.client.GWT;
@@ -59,91 +60,109 @@ public class NodeTree extends ContentPanel {
 	// ==================================== constructor methods ====================================
 	
 	public NodeTree() {
-		this( null, false );
+            this(null, false);
 	}
 	
-	public NodeTree( final Set<String> aTypes, boolean multiSelect ) {
+        public NodeTree(final Set<String> aTypes, boolean multiSelect) {
 		
-		this.allowedTypes = aTypes;
-		
-		// content service
-		cs = (ContentServiceAsync)GWT.create( ContentService.class );
-
-	    // data proxy
-		RpcProxy<List<ContentNodeModel>> proxy = new RpcProxy<List<ContentNodeModel>>() {
-			@Override
-			protected void load( Object loadConfig, AsyncCallback<List<ContentNodeModel>> callback ) {
-				if ( loadConfig == null || loadConfig instanceof ContentNodeModel ) {
-					cs.getChildren( (ContentNodeModel)loadConfig, callback );
-				}
-			}
-		};
-	    
-	    // tree loader
-		loader = new BaseTreeLoader<ContentNodeModel>( proxy ) {
-			@Override public boolean hasChildren( ContentNodeModel parent ) {
-				return parent.hasChildren();
-			}
-		};	    	   
-	    
-	    // tree store
-		store = new TreeStore<ContentNodeModel>( loader );
-	    
-	    // tree panel
-		tree = new NodeTreePanel( this, store );
-		
-		tree.addStyleName( "node-tree" );
-		tree.setBorders( false );
-		tree.setSelectionModel( new NodeTreeSelectionModel( this ) );
-		setMultiSelect( multiSelect );
-
-		// icon provider
-		tree.setIconProvider( new ModelIconProvider<ContentNodeModel>() {
-			@Override public AbstractImagePrototype getIcon( ContentNodeModel model ) {
-				return IconHelper.createPath( "img/icons/" + model.getType() + ".gif" );				
-			}
-		} );
-		
-		// label provider
-		tree.setLabelProvider( new ModelStringProvider<ContentNodeModel>() {
-			@Override public String getStringValue( ContentNodeModel model, String property ) {				
-				if ( model == null )
-					return "";
-				
-				StringBuilder sb = new StringBuilder(256);
-				
-				sb.append( model.getJavascriptPreviewLink() );
-				
-				if ( allowedTypes == null || allowedTypes.contains( model.getType() ) ) {
-					sb.append( model.getLabel() );
-					sb.append( " <span class=\"dimmed\">[" );
-					sb.append( model.getId() );
-					sb.append( "]</span>" );
-				} else {	
-					sb.append( "<span class=\"disabled\">" );
-					sb.append( model.getLabel() );
-					sb.append( "</span>" );
-				}
-				return sb.toString();
-			}			
-		} );
-		
-		
-		// TODO sorting? needed? here or server side? 
-//		store.setStoreSorter( new StoreSorter<ContentNodeModel>() {
-//			@Override public int compare( Store<ContentNodeModel> store, ContentNodeModel m1, ContentNodeModel m2, String property ) {
-//				return m1.compareTo( m2 );
-//			}
-//		});
-		
-		setHeading( "Content Tree" );
-		setScrollMode( Scroll.AUTO );
-		
-		createToolBar();
-		loadRootNodes();
-		
-		this.setLayout( new FitLayout() );		
-		this.add( tree, new FitData() );
+            this.allowedTypes = aTypes;
+    
+            // content service
+            cs = (ContentServiceAsync) GWT.create(ContentService.class);
+    
+            // data proxy
+            RpcProxy<List<ContentNodeModel>> proxy = new RpcProxy<List<ContentNodeModel>>() {
+                @Override
+                protected void load(Object loadConfig, final AsyncCallback<List<ContentNodeModel>> callback) {
+                    if (loadConfig == null || loadConfig instanceof ContentNodeModel) {
+                        ContentNodeModel model = (ContentNodeModel) loadConfig;
+                        MainLayout.startProgress("Loading children", model != null ? model.getLabel() : "Root nodes", "");
+                        cs.getChildren((ContentNodeModel) loadConfig, new BaseCallback<List<ContentNodeModel>>() {
+                            @Override
+                            public void onSuccess(List<ContentNodeModel> result) {
+                                MainLayout.stopProgress();
+                                callback.onSuccess(result);
+                            }
+                            
+                            @Override
+                            public void errorOccured(Throwable error) {
+                                MainLayout.stopProgress();
+                                callback.onFailure(error);
+                            }
+                           
+                        });
+                    }
+                }
+            };
+    
+            // tree loader
+            loader = new BaseTreeLoader<ContentNodeModel>(proxy) {
+                @Override
+                public boolean hasChildren(ContentNodeModel parent) {
+                    return parent.hasChildren();
+                }
+            };
+    
+            // tree store
+            store = new TreeStore<ContentNodeModel>(loader);
+    
+            // tree panel
+            tree = new NodeTreePanel(this, store);
+    
+            tree.addStyleName("node-tree");
+            tree.setBorders(false);
+            tree.setSelectionModel(new NodeTreeSelectionModel(this));
+            setMultiSelect(multiSelect);
+    
+            // icon provider
+            tree.setIconProvider(new ModelIconProvider<ContentNodeModel>() {
+                @Override
+                public AbstractImagePrototype getIcon(ContentNodeModel model) {
+                    return IconHelper.createPath("img/icons/" + model.getType() + ".gif");
+                }
+            });
+    
+            // label provider
+            tree.setLabelProvider(new ModelStringProvider<ContentNodeModel>() {
+                @Override
+                public String getStringValue(ContentNodeModel model, String property) {
+                    if (model == null)
+                        return "";
+    
+                    StringBuilder sb = new StringBuilder(256);
+    
+                    sb.append(model.getJavascriptPreviewLink());
+    
+                    if (allowedTypes == null || allowedTypes.contains(model.getType())) {
+                        sb.append(model.getLabel());
+                        sb.append(" <span class=\"dimmed\">[");
+                        sb.append(model.getId());
+                        sb.append("]</span>");
+                    } else {
+                        sb.append("<span class=\"disabled\">");
+                        sb.append(model.getLabel());
+                        sb.append("</span>");
+                    }
+                    return sb.toString();
+                }
+            });
+    
+            // TODO sorting? needed? here or server side?
+            // store.setStoreSorter( new StoreSorter<ContentNodeModel>() {
+            // @Override public int compare( Store<ContentNodeModel> store,
+            // ContentNodeModel m1, ContentNodeModel m2, String property ) {
+            // return m1.compareTo( m2 );
+            // }
+            // });
+    
+            setHeading("Content Tree");
+            setScrollMode(Scroll.AUTO);
+    
+            createToolBar();
+            loadRootNodes();
+    
+            this.setLayout(new FitLayout());
+            this.add(tree, new FitData());
 
 	}
 
