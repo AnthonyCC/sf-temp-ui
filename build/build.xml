@@ -2424,6 +2424,7 @@
 			<zipfileset src="${work.dir}/CMS.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
+            <zipfileset src="${work.dir}/RoutingServices.jar" excludes="META-INF/*"/>
 
 			<!-- Tools -->
 			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*"/>
