@@ -26,6 +26,7 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.crm.CrmAuthorizationException;
 import com.freshdirect.crm.CrmCaseAction;
 import com.freshdirect.crm.CrmCaseActionType;
 import com.freshdirect.crm.CrmCaseInfo;
@@ -149,6 +150,9 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 						LOGGER.warn("FDResourceException: ", ex);
 						actionResult.addError(
 							new ActionError("technical_difficulty", "Action not processed due to technical difficulty."));
+					} catch (CrmAuthorizationException ex) {
+						LOGGER.warn("CrmAuthorizationException: could not approve complaint.", ex);
+						actionResult.addError(new ActionError("technical_difficulty", ex.getMessage()));
 					}
 				} else if (ACTION_REJECT.equals(this.action)) {
 					//
@@ -182,6 +186,9 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 						LOGGER.warn("FDResourceException: ", ex);
 						actionResult.addError(
 							new ActionError("technical_difficulty", "Action not processed due to technical difficulty."));
+					} catch (CrmAuthorizationException ex) {
+						LOGGER.warn("CrmAuthorizationException: could not approve complaint.", ex);
+						actionResult.addError(new ActionError("technical_difficulty", ex.getMessage()));
 					}
 				} else if (ACTION_SUBMIT.equals(this.action)) {
 					//
@@ -344,9 +351,36 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 	}
 
 	private void doApproval(HttpServletRequest request, ActionResult result, boolean isApproved)
-		throws FDResourceException, ErpComplaintException {
+		throws FDResourceException, ErpComplaintException, CrmAuthorizationException {
 		HttpSession session = pageContext.getSession();
 		CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
+
+		
+		// Close auto case first
+		if (agent != null && this.complaintModel.getAutoCaseId() != null) {
+			// debug
+			//   final boolean isSameComplaint = complaintModel.getPK().getId().equals(request.getParameter("complaintId"));
+			//   System.err.println("this.complaint.PK("+complaintModel.getPK().getId()+") == " + request.getParameter("complaintId") + " = " + isSameComplaint);
+			CrmCaseModel aCase = CrmManager.getInstance().getCaseByPk(this.complaintModel.getAutoCaseId());
+			
+			// try to lock case
+			CrmSession.setLockedCase(session, aCase);
+			if (true && CrmManager.getInstance().lockCase(agent.getPK(), aCase.getPK())) {
+				aCase.setState(CrmCaseState.getEnum(CrmCaseState.CODE_CLOSED));
+	
+				CrmCaseAction caseAction = new CrmCaseAction();
+				caseAction.setType(CrmCaseActionType.getEnum( CrmCaseActionType.CODE_CLOSE ) );
+				caseAction.setTimestamp(new Date());
+				caseAction.setAgentPK(agent.getPK());
+				caseAction.setNote((isApproved ? "Approved" : "Rejected")+" and closed");
+	
+				CrmManager.getInstance().updateCase(aCase.getCaseInfo(), caseAction, agent.getPK());
+			} else {
+				result.addError(true, "approval_error", "Failed to lock auto case.");
+			}
+		}
+
+		
 		
 		boolean sendMail = true;
 		if(request.getParameter("sendMail") != null) sendMail = false;
@@ -357,6 +391,5 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 			CallcenterUser ccUser = (CallcenterUser) session.getAttribute(SessionName.CUSTOMER_SERVICE_REP);
 			FDCustomerManager.approveComplaint(request.getParameter("complaintId"), isApproved, ccUser.getId(), sendMail);
 		}
-		return;
 	}
 }
