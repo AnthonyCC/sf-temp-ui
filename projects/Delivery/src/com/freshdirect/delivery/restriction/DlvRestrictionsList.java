@@ -35,7 +35,22 @@ public class DlvRestrictionsList implements Serializable {
 		// stupid requirement
 		System.out.println("range111 :"+range);
 		
-		if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason))
+		// For advance orders on holidays we should check the holiday dates fall between the advance order dates
+		// The check is for displaying holiday bar on top of timeslot when they fall under horizon
+		boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
+		if(isAdvOrderGap){
+			if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){
+				DateRange advOrdDateRange = FDStoreProperties.getAdvanceOrderRange();
+				DateRange advOrdNewDateRange = FDStoreProperties.getAdvanceOrderNewRange();
+				if (((range.getStartDate().after(advOrdDateRange.getStartDate()) || range.getStartDate().equals(advOrdDateRange.getStartDate())) && 
+						range.getEndDate().before(advOrdDateRange.getEndDate())) ||
+						((range.getStartDate().after(advOrdNewDateRange.getStartDate()) || range.getStartDate().equals(advOrdNewDateRange.getStartDate())) && 
+								range.getEndDate().before(advOrdNewDateRange.getEndDate()))) {
+				    return false;				
+				}else
+					return true;
+			}
+		}else if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason))
 		{
 			DateRange advOrdDateRange = FDStoreProperties.getAdvanceOrderRange();
 			reason=EnumDlvRestrictionReason.THANKSGIVING_MEALS;
