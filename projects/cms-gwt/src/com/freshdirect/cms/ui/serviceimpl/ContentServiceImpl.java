@@ -80,7 +80,6 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             ContentNodeModel n = TranslatorToGwt.getContentNodeModel(node);
             result.add(n);
         }
-        
         Collections.sort( result );
         
         return result;
@@ -113,7 +112,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             }
             return children;
             
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             LOG.error("runtime exception for "+loadConfig, e);
             throw TranslatorToGwt.wrap(e);
         }
@@ -137,14 +136,13 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         } catch (IllegalArgumentException e) {
             LOG.error("IllegalArgumentException for "+nodeKey, e);
             throw new RuntimeException("Invalid content key : " + e.getMessage());
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             LOG.error("Runtime Exception : " + e.getMessage(), e);
             throw TranslatorToGwt.wrap(e);
         }
     }
 
     public GwtNodeData createNodeData(String type, String id) {
-
         if (!getUser().isAllowedToWrite()) {
             throw new RuntimeException("Error : Creating new node as read-only.");
         }
@@ -153,7 +151,6 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     }
 
     public List<BulkEditModel> getEditChildren(BulkEditModel loadConfig) {
-        
         ArrayList<BulkEditModel> children = new ArrayList<BulkEditModel>();
 
         if (loadConfig == null) {
@@ -217,7 +214,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 errors.add(new GwtValidationError(msg.getContentKey().getEncoded(), msg.getAttribute(), msg.getMessage()));
             }
             return new GwtSaveResponse(errors);
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             LOG.error("RuntimeException saving  "+nodes, e);
             throw TranslatorToGwt.wrap(e);
         }
@@ -255,6 +252,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                     timestamp = publish.getTimestamp();
                 }
                 if (query.isPublishInfoQuery()) {
+                    LOG.info("publish info:"+query.getPublishId() + " -> "+ publish.getId()+':'+publish.getStatus().getName()+" ("+publish.getDescription()+')');
                     return new ChangeSetQueryResponse(publish.getStatus().getName(),
                             publish.getTimestamp(), 
                             System.currentTimeMillis() - publish.getTimestamp().getTime(), TranslatorToGwt.getPublishMessages(publish), getLastInfo(publish));
@@ -268,7 +266,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 return createResponse(TranslatorToGwt.getGwtChangeSets(result), query, TranslatorToGwt.getPublishMessages(publish));
             }
             return null;
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             LOG.error("RuntimeException saving  "+query, e);
             throw TranslatorToGwt.wrap(e);
         }
@@ -318,7 +316,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 	        publish.setLastModified(date);
 	        
 	        return getPublishService().doPublish(publish);
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             LOG.error("RuntimeException for startPublish ", e);
             throw TranslatorToGwt.wrap(e);
         }
@@ -386,7 +384,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 
             }
             return result;
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             LOG.error("RuntimeException for getDomainValues "+domains, e);
             throw TranslatorToGwt.wrap(e);
         }
@@ -437,7 +435,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 result.add(TranslatorToGwt.getPublishData(p));
             }
             return result;
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             LOG.error("RuntimeException in getPublishHistory", e);
             throw TranslatorToGwt.wrap(e);
         }
