@@ -35,6 +35,7 @@ public class ReservationCronRunner {
 			FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
 
 			FDCustomerManagerSB sb = home.create();
+		
 			List rsvInfo = new ArrayList();
 			if (args.length >= 1) {
 				int day_of_week = Integer.parseInt(args[0]);
@@ -52,6 +53,7 @@ public class ReservationCronRunner {
 				try {
 					dsb.makeRecurringReservation(info.getCustomerId(), info.getDayOfWeek(), info.getStartTime()
 															, info.getEndTime(), info.getAddress());
+					
 				} catch(Exception e) {
 					LOGGER.warn("Could not Reserve a Weekly recurring timeslot "+info.getCustomerId(), e);			
 				}

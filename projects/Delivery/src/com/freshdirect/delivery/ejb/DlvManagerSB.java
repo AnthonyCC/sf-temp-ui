@@ -102,7 +102,7 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public void removeReservation(String reservationId) throws RemoteException;
 	
-	public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, AddressModel address) throws RemoteException;
+	public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, ContactAddressModel address) throws RemoteException;
 	
 	public void addExceptionAddress(ExceptionAddress ex) throws RemoteException;
 
@@ -134,7 +134,7 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) throws  RemoteException;
 	
-	public List<DlvReservationModel> getUnassignedReservations() throws DlvResourceException, RemoteException;
+	public List<DlvReservationModel> getUnassignedReservations(Date _date) throws DlvResourceException, RemoteException;
 	
 	public void setUnassignedInfo(String reservationId,RoutingActivityType activity )throws  RemoteException;
 	

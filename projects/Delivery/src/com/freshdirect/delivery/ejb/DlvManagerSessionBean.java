@@ -59,6 +59,7 @@ import com.freshdirect.delivery.ExceptionAddress;
 import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.ReservationUnavailableException;
+import com.freshdirect.delivery.depot.DlvLocationModel;
 import com.freshdirect.delivery.model.DlvRegionModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
@@ -549,7 +550,37 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		return DateUtil.truncate(cal).getTime();
 	}
 	
-	public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, AddressModel address) {
+	
+	public void makeRecurringReservationEx(List<DlvTimeslotModel> timeslots, DlvReservationModel dlvReservation, DlvTimeslotModel foundTimeslot, ContactAddressModel address) {
+		
+		try {
+		ArrayList<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
+		
+		for (Iterator<DlvTimeslotModel> i = timeslots.iterator(); i.hasNext();) {
+			DlvTimeslotModel timeslot =  i.next();
+			retLst.add(new FDTimeslot(timeslot));
+		}
+		getTimeslotForDateRangeAndZoneEx(retLst,address);
+		
+		FDReservation reservation= new FDReservation(
+				dlvReservation.getPK(),
+				new FDTimeslot(foundTimeslot),
+				dlvReservation.getExpirationDateTime(),
+				dlvReservation.getReservationType(),
+				dlvReservation.getCustomerId(),
+				address.getId(),
+				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null, dlvReservation.getOrderId());
+		this.reserveTimeslotEx(reservation, address);
+		
+	   } catch (Exception e) {
+		   e.printStackTrace();
+		   LOGGER.error(e);
+	   }
+		
+	}
+	
+	
+	public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, ContactAddressModel address) {
 		try {
 			Date startDate = getDateByNextDayOfWeek(dayOfWeek);
 			Date endDate = DateUtil.addDays(startDate, 1);
@@ -609,7 +640,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				duration = Math.min(foundTimeslot.getCutoffTimeAsDate().getTime() - System.currentTimeMillis(), DateUtil.HOUR);
 			}
 			//recurring timeslot should not go to chefs table capacity
-			this.reserveTimeslot(
+			DlvReservationModel dlvReservation=this.reserveTimeslot(
 				foundTimeslot,
 				customerId,
 				duration,
@@ -621,6 +652,9 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			
 			LOGGER.info("Made recurring reservation for " + customerId);
 
+			if(FDStoreProperties.isDynamicRoutingEnabled()) {
+				this.makeRecurringReservationEx(lst, dlvReservation, foundTimeslot,address);
+			}
 			return true;
 			
 		} catch (Exception e) {
@@ -1802,11 +1836,11 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 
 	}
-	public List<DlvReservationModel> getUnassignedReservations() throws DlvResourceException {
+	public List<DlvReservationModel> getUnassignedReservations(Date _date) throws DlvResourceException {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			return DlvManagerDAO.getUnassignedReservations(conn);
+			return DlvManagerDAO.getUnassignedReservations(conn,_date);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			LOGGER.warn("DlvManagerSB getUnassignedReservations(): " + e);
@@ -1896,7 +1930,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		routingService.schedulerUpdateOrder(orderModel, previousOrderId);
 		routingService.schedulerConfirmOrder(orderModel);
 		//LOGGER.info("schedulerConfirmOrder():: commitReservationEx:"+"SUCCESS");
-		//throw new RoutingServiceException(new Exception("F***"),"1234");
+		
 		return ;
 	}
 	private void schedulerCancelOrder(IOrderModel orderModel,DlvReservationModel reservation) throws RoutingServiceException {
@@ -1906,7 +1940,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		orderModel.setOrderNumber(reservation.getOrderId());
 		routingService.schedulerCancelOrder(orderModel);
 		//LOGGER.info("schedulerCancelOrder():: releaseReservationEx:"+"SUCCESS");
-		//throw new RoutingServiceException(new Exception("F***"),"1234");
+		
 		return ;
 	}
 	
@@ -1930,10 +1964,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	private void logTimeslots(String orderId,String customerId,RoutingActivityType actionType,List<java.util.List<IDeliverySlot>> slots, int responseTime ) {
 		/*for (List<IDeliverySlot> list : slots) {
 		    for (IDeliverySlot slot : list) {
-		    	LOGGER.info("Base Date:"+slot.getSchedulerId().getDeliveryDate());
-		    	LOGGER.info("Start Time:"+slot.getStartTime());
-		    	LOGGER.info("End Time:"+slot.getStopTime());
-		    	LOGGER.info("Region: "+slot.getSchedulerId().getRegionId());
+		    	System.out.println("Base Date:"+slot.getSchedulerId().getDeliveryDate());
+		    	System.out.println("Start Time:"+slot.getStartTime());
+		    	System.out.println("End Time:"+slot.getStopTime());
+		    	System.out.println("Region: "+slot.getSchedulerId().getRegionId());
 		    	
 		    }
 		}*/
@@ -1957,16 +1991,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 		
 	}
-	
-	
-	
-	public void doSXXX() throws DlvResourceException {
-		
-		List<DlvReservationModel> unassignedReservations=getUnassignedReservations();
-		 for (DlvReservationModel reservation : unassignedReservations) {
-			 
-			 reservation.getCustomerId();
-		 }
+	private ContactAddressModel getContactAddress(AddressModel model, String customerId) {
+		ContactAddressModel _cModel = new ContactAddressModel();
+		_cModel.setFrom(model, "", "", customerId);
+		return _cModel;
 	}
-
+	
 }

@@ -161,9 +161,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 					FDTimeslot timeslot = (FDTimeslot) k.next();
 					DlvTimeslotModel ts = timeslot.getDlvTimeslot();
 					
-					if(hasTimeslotDiscount(user, timeslot)) {
-						timeslot.setDiscounted(true);
-					}
+					
 					if ((ts.getCapacity() <= 0 ||  
 							GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages, geoRestrictionRange)) 
 								&& !retainTimeslotIds.contains(ts.getId())) {
@@ -190,19 +188,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		return new Result(timeslotList, zonesMap, ctActive, messages);
 	}
 	
-	private boolean hasTimeslotDiscount(FDUserI user, FDTimeslot timeslot) {
-		PromotionContextI ctx = new PromotionContextAdapter(user);
-		ctx.setIntermTimeslot(timeslot);
-		List promoCodes = FDPromotionRulesEngine.getEligiblePromotions(ctx);
-		System.out.println("hasTimeslotDiscount promoCodes >>"+promoCodes+" ------------ "+timeslot.getBaseDate()+" -> "+timeslot.getDisplayString(true));
-		for(Iterator i = promoCodes.iterator(); i.hasNext(); ){
-			String promoCode = (String) i.next();
-			if("FAKE_DISCOUNT".equals(promoCode)) {
-				return true;
-			}
-		}
-		return false;
-	}
+	
 	
 	private List getTimeslots(ErpAddressModel address, Date startDate, Date endDate) throws FDResourceException {
 

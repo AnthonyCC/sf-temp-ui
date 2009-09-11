@@ -26,6 +26,7 @@ public class DateUtil {
 	private DateUtil() {
 	}
 
+
 	public static Calendar toCalendar(Date date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);

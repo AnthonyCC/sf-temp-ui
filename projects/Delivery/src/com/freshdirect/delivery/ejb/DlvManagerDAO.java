@@ -44,6 +44,7 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -861,11 +862,12 @@ public class DlvManagerDAO {
 	
 	private static final String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
 	" T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z "+
-	" WHERE unassigned_datetime IS NOT NULL AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
-	public static List<DlvReservationModel> getUnassignedReservations(Connection conn)  throws SQLException {
+	" WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) AND unassigned_datetime IS NOT NULL";
+	public static List<DlvReservationModel> getUnassignedReservations(Connection conn, Date _date)  throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
 		
+		ps.setDate(1, new java.sql.Date(_date.getTime()));
 		ResultSet rs = ps.executeQuery();
 		List<DlvReservationModel>  reservations = new ArrayList<DlvReservationModel>();
 		while (rs.next()) {

@@ -90,6 +90,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 				process((ReserveTimeslotCommand)ox);
 			}
 			else if (RoutingActivityType.CONFIRM_TIMESLOT.value().equals(addressMsg.getStringProperty("MessageType"))) {
+				System.out.println("IRoutingMessageType.CONFIRM_TIMESLOT :"+RoutingActivityType.CONFIRM_TIMESLOT);
 				Object ox = addressMsg.getObject();
 				if ((ox == null) || (!(ox instanceof ConfirmTimeslotCommand))) {
 					LOGGER.error("Message is not an ConfirmTimeslotCommand: " + msg);
@@ -109,9 +110,11 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 			
 
 		} catch (JMSException ex) {
+			ex.printStackTrace();
 			LOGGER.error("JMSException occured while reading command, throwing RuntimeException", ex);
 			//throw new RuntimeException("JMSException occured while reading command: " + ex.getMessage());
 		} catch (RoutingServiceException rx) {
+			rx.printStackTrace();
 			LOGGER.error("JMSException occured while executing address load command, holding RuntimeException", rx);	
 			//throw new RuntimeException("JMSException occured while reading command: " + rx.getMessage());
 		}

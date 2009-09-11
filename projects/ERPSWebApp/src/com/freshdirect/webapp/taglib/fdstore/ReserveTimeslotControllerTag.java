@@ -72,7 +72,6 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 					return true;
 				}
 				if(reservation != null){
-					
 					ErpAddressModel address=getAddress(user.getIdentity(),reservation.getAddressId());
 					FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address);
 				}

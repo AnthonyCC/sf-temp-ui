@@ -65,6 +65,8 @@ public class RoutingGatewaySessionBean extends GatewaySessionBeanSupport {
 		this.enqueue(command);
 	}
 	
+	
+	
 	private void enqueue(AddressI addressCommand) {
 		try {
 			ObjectMessage addressMsg = this.qsession.createObjectMessage();

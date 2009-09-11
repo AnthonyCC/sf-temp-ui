@@ -40,25 +40,69 @@ public class UnassignedReservationCronRunner {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(UnassignedReservationCronRunner.class);
 
+	private static final int DEFAULT_DAYS=7;
 	public static void main(String[] args) {
 		
 		Context ctx = null;
 		try {
 			ctx = getInitialContext();
 			
-			List<DlvReservationModel> unassignedReservations=null;
+			List<DlvReservationModel> unassignedReservations=new ArrayList<DlvReservationModel>();
 			DlvManagerSB dlvManager =null;
+			FDCustomerManagerSB custManager=null;
+			Calendar startDate=null;//Calendar.getInstance().getTime();
+			
+			
+			boolean hasArg=false;
+			try {
+				 if (args.length >=1) {
+					startDate=DateUtil.truncate(DateUtil.toCalendar(DateUtil.parse(args[0])));
+					Calendar now=Calendar.getInstance();
+			        now=DateUtil.truncate(now);
+					now.add(Calendar.DATE, 1);
+					if(startDate.before(now)) {
+						throw new Exception("Invalid date argument. Accepted Format is [yyyy-MM-dd]" );
+					}
+					hasArg=true;
+				} else {
+					startDate=DateUtil.truncate(Calendar.getInstance());
+					startDate.add(Calendar.DATE, 1);
+				}
+			} catch (Exception e) {
+			
+				e.printStackTrace();
+				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(e.toString()).toString());
+				LOGGER.error("Invalid date argument. Accepted Format is [yyyy-MM-dd]");
+				LOGGER.error(e);
+				return ;
+			}
+			
 			try {
 				DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
 				dlvManager = dlh.create();
-				unassignedReservations=dlvManager.getUnassignedReservations();
+				FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
+
+				custManager = home.create();
+				
+				if(hasArg) {
+					List<DlvReservationModel> _unassignedReservations=dlvManager.getUnassignedReservations(startDate.getTime());
+					if(_unassignedReservations!=null && !_unassignedReservations.isEmpty())
+						unassignedReservations.addAll(_unassignedReservations);
+				} else {
+					for(int i=0;i<DEFAULT_DAYS;i++) {
+						List<DlvReservationModel> _unassignedReservations=dlvManager.getUnassignedReservations(startDate.getTime());
+						if(_unassignedReservations!=null && !_unassignedReservations.isEmpty())
+							unassignedReservations.addAll(_unassignedReservations);
+						startDate.add(Calendar.DATE, 1);
+					}
+				}
 			} catch (Exception e) {
 				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(e.toString()).toString());
 			}
 			if(unassignedReservations==null || unassignedReservations.isEmpty())
 				return;
 			for (DlvReservationModel reservation : unassignedReservations) {
-				reassignReservation(dlvManager,reservation);
+				reassignReservation(dlvManager,custManager,reservation);
 			 }
 			LOGGER.info("UnassignedReservationCronRunner finished");
 		}catch (NamingException e) {
@@ -77,11 +121,11 @@ public class UnassignedReservationCronRunner {
 		}
 	}
 		
-    private static void reassignReservation(DlvManagerSB dlvManager,DlvReservationModel reservation) {
+    private static void reassignReservation(DlvManagerSB dlvManager,FDCustomerManagerSB sb,DlvReservationModel reservation) {
     	try {
-    		FDTimeslot f=null;
+    		
 			 FDIdentity identity=getIdentity(reservation.getCustomerId());
-			 ContactAddressModel address= FDCustomerManager.getAddress(identity, reservation.getAddressId());
+			 ContactAddressModel address= sb.getAddress(identity, reservation.getAddressId());
 			 RoutingActivityType unassignedAction=reservation.getUnassignedActivityType();
 			 if(RoutingActivityType.CANCEL_TIMESLOT.equals(unassignedAction)) {
 				 dlvManager.releaseReservationEx(reservation, address);
@@ -103,7 +147,7 @@ public class UnassignedReservationCronRunner {
 			 }
 			 
 			} catch (Exception e) {
-				
+				e.printStackTrace();
 				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner: ").append(" failed to reassign reservation for id ").append(reservation.getId()).toString(),e);
 			}
     }

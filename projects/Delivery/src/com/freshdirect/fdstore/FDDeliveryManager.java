@@ -925,13 +925,13 @@ public class FDDeliveryManager {
 	}
 	
 	
-	public List<DlvReservationModel> getUnassignedReservations() throws FDResourceException {
+	public List<DlvReservationModel> getUnassignedReservations(Date _date) throws FDResourceException {
 		
 		try {
 			
 			
 			DlvManagerSB sb = getDlvManagerHome().create();
-			return sb.getUnassignedReservations();
+			return sb.getUnassignedReservations(_date);
 			
 			
 

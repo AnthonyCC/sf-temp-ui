@@ -38,6 +38,8 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.address.BasicContactAddressI;
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
@@ -2953,7 +2955,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		EnumReservationType rsvType,
 		FDActionInfo actionInfo) throws FDResourceException {
 		
-		System.out.println("Reservation :"+reservation);
+
 			if (reservation != null) {
 				/*DlvManagerSB dlvSB = this.getDlvManagerHome().create();
 				dlvSB.removeReservation(reservation.getPK().getId());*/
@@ -2977,7 +2979,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 
 	private static final String RECURRING_RSV_QUERY = "SELECT CI.CUSTOMER_ID, CI.EMAIL, CI.RSV_DAY_OF_WEEK, CI.RSV_START_TIME, CI.RSV_END_TIME, "
-		+ "A.ID AS ADDRESS_ID, A.ADDRESS1, A.ADDRESS2, A.APARTMENT, A.CITY, A.STATE, A.ZIP, A.SCRUBBED_ADDRESS, A.LONGITUDE, A.LATITUDE, A.SERVICE_TYPE "
+		+ "A.ID AS ADDRESS_ID, A.ADDRESS1, A.ADDRESS2, A.APARTMENT, A.CITY, A.STATE, A.ZIP, A.SCRUBBED_ADDRESS, A.LONGITUDE, A.LATITUDE, A.SERVICE_TYPE,A.FIRST_NAME,A.LAST_NAME  "
 		+ "FROM CUST.CUSTOMERINFO CI, CUST.ADDRESS A "
 		+ "WHERE RSV_ADDRESS_ID IS NOT NULL AND CI.RSV_ADDRESS_ID = A.ID and CI.RSV_DAY_OF_WEEK = ?";
 
@@ -3021,8 +3023,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 
 	}
-	private AddressModel getAddressFromResultSet(ResultSet rs) throws SQLException {
-		AddressModel address = new AddressModel();
+	private ContactAddressModel getAddressFromResultSet(ResultSet rs) throws SQLException {
+		ContactAddressModel address = new ContactAddressModel();
 		address.setPK(new PrimaryKey(rs.getString("ADDRESS_ID")));
 		address.setAddress1(rs.getString("ADDRESS1"));
 		address.setAddress2(rs.getString("ADDRESS2"));
@@ -3037,6 +3039,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		info.setLatitude(rs.getDouble("LATITUDE"));
 		info.setLongitude(rs.getDouble("LONGITUDE"));
 		address.setAddressInfo(info);
+		address.setFirstName(rs.getString("FIRST_NAME"));
+		address.setLastName(rs.getString("LAST_NAME"));
 		return address;
 
 	}
@@ -3488,9 +3492,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 		private final Date endTime;
 
-		private final AddressModel address;
-
-		public ReservationInfo(String customerId, int dayOfWeek, Date startTime, Date endTime, AddressModel address) {
+		private final ContactAddressModel address;
+		
+		public ReservationInfo(String customerId, int dayOfWeek, Date startTime, Date endTime, ContactAddressModel address) {
 			this.customerId = customerId;
 			this.dayOfWeek = dayOfWeek;
 			this.startTime = startTime;
@@ -3498,7 +3502,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			this.address = address;
 		}
 
-		public AddressModel getAddress() {
+		public ContactAddressModel getAddress() {
 			return address;
 		}
 
