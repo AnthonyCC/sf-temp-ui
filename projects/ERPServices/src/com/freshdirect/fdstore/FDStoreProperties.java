@@ -244,6 +244,10 @@ public class FDStoreProperties {
 	//	Handle Advanced Order date
 	private final static String ADVANCE_ORDER_START = "fdstore.advance.order.start";
 	private final static String ADVANCE_ORDER_END = "fdstore.advance.order.end";
+	// Advance Order with days gap
+	private final static String ADVANCE_ORDER_GAP = "fdstore.advance.order.isGap";
+	private final static String ADVANCE_ORDER_NEW_START = "fdstore.advance.order.newstart";
+	private final static String ADVANCE_ORDER_NEW_END = "fdstore.advance.order.newend";
 
 	private static final String MRKTING_ADMIN_URL="fdstore.mktAdmin.URL";
 
@@ -479,7 +483,11 @@ public class FDStoreProperties {
 
 		defaults.put(ADVANCE_ORDER_START, "2004-01-01");
 		defaults.put(ADVANCE_ORDER_END, "2004-01-02");
-
+		// Advance Order Gap
+		defaults.put(ADVANCE_ORDER_GAP, "false");
+		defaults.put(ADVANCE_ORDER_NEW_START, "2004-01-01");
+		defaults.put(ADVANCE_ORDER_NEW_END, "2004-01-02");
+		
 		// mrkting admin
 		defaults.put(MRKTING_ADMIN_URL, "http://adm.freshdirect.com/MrktAdmin");
 		//DCPD ALIAS Handling.
@@ -1199,7 +1207,37 @@ public class FDStoreProperties {
  		}
  		return bccs;
  	}	
+	
+	public static boolean IsAdvanceOrderGap() {
+		return Boolean.valueOf(get(ADVANCE_ORDER_GAP)).booleanValue();
+	}
+	
+	public static DateRange getAdvanceOrderNewRange() {
+		Date dStart = null;
+		Date dEnd = null;
+		try{
+			dStart = SF.parse(get(ADVANCE_ORDER_NEW_START));
+		}catch(ParseException e){
+		    try {
+		        dStart = SF.parse("2000-01-01");
+		        LOGGER.warn("fdstore.advance.order.newstart property in fdstore.properties is not in correct yyyy-MM-dd format, defaulting to 2000-01-01");
+		    } catch(ParseException f) {
+			  throw new FDRuntimeException("Error parsing advance new start date, default value");
+		    }
+		}
+		try{
+			dEnd = SF.parse(get(ADVANCE_ORDER_NEW_END));
+		}catch(ParseException e){
+		    try {
+		        dEnd = SF.parse("2000-01-01");
+		        LOGGER.warn("fdstore.advance.order.newend property in fdstore.properties is not in correct yyyy-MM-dd format, defaulting to 2000-01-01");
+		    } catch(ParseException f) {
+			  throw new FDRuntimeException("Error parsing advance new end date, default value");
+		    }
+		}
 
+		return new DateRange(DateUtil.truncate(dStart),DateUtil.truncate(dEnd));
+	}
 	public static String getRoutingGatewayHome() {
 		return get(PROP_ROUTINGGATEWAY_HOME);
 	}
