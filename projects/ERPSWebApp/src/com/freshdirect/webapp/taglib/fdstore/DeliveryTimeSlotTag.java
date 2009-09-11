@@ -124,7 +124,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 
 		List timeslotList = new ArrayList();
 		if(address != null && user != null && user.getIdentity() != null 
-									&& StringUtil.isEmpty(user.getIdentity().getErpCustomerPK())) {
+									&& !StringUtil.isEmpty(user.getIdentity().getErpCustomerPK())) {
 			address.setCustomerId(user.getIdentity().getErpCustomerPK());
 		}
 		for (Iterator i = dateRanges.iterator(); i.hasNext();) {
