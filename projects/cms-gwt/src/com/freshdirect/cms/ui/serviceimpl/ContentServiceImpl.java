@@ -77,6 +77,8 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         for (SearchHit hit : hits) {
             ContentKey key = hit.getContentKey();
             ContentNodeI node = CmsManager.getInstance().getContentNode(key);
+            if ( node == null )
+            	continue;
             ContentNodeModel n = TranslatorToGwt.getContentNodeModel(node);
             result.add(n);
         }
