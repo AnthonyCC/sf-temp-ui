@@ -69,7 +69,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote,TimeslotBottom");
 	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
 		
 		<% // fix for advance orders showing on this page
-			if ((timeslotList.size()>1 && idx.intValue() == 1) || timeslotList.size()==1) { %>
+		if (idx.intValue() == timeslotList.size()-1 && timeslotList.size() > idx.intValue()) { %>
 			<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
 		<% } %>
 	</logic:iterate>
