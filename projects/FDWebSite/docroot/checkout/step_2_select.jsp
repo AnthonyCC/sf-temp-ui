@@ -37,7 +37,7 @@ tomorrow.add(Calendar.DATE, 1);
 tomorrow = DateUtil.truncate(tomorrow);
 DateRange validRange = new DateRange(tomorrow.getTime(),DateUtil.addDays(tomorrow.getTime(),FDStoreProperties.getHolidayLookaheadDays()));
 boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
-
+boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
  //System.out.println("validRange:"+validRange);
 
 %>
@@ -363,7 +363,13 @@ if (errorMsg!=null) {%>
 <% } %>
 <logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
 <TR><td colspan="2" align="center">
-<%if(idx.intValue() == 1){
+
+<%	// If there are 2 advance order timeslots then show standard delivery header accordingly
+	if((timeslotList.size()>2 && isAdvOrderGap && idx.intValue()==2) ||
+		(timeslotList.size()==2 && isAdvOrderGap && idx.intValue()==1) ||
+		(!isAdvOrderGap && idx.intValue()==1)){
+	//if(idx.intValue() == 1){
+	
 	showAdvanceOrderBand=false;
 %>
 	<span class="text12"><b>Standard Delivery Slots</b></span>
