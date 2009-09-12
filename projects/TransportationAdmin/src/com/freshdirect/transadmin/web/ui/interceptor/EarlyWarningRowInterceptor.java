@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.web.ui.interceptor;
 import org.extremecomponents.table.bean.Row;
 import org.extremecomponents.table.core.TableModel;
 
+import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.EarlyWarningCommand;
 
 public class EarlyWarningRowInterceptor extends FDRowInterceptor {
@@ -17,7 +18,11 @@ public class EarlyWarningRowInterceptor extends FDRowInterceptor {
     	if(getDouble(rowEntity.getPercentageAllocated()) > 90.0) {
     		row.setStyleClass("earlyWarningRow");
     	} else {
-    		super.modifyRowAttributes(model, row);
+    		if(TransStringUtil.isEmpty(rowEntity.getName())) {
+    			row.setStyleClass("earlyWarningTotalRow");
+    		} else {
+    			super.modifyRowAttributes(model, row);
+    		}
     	}
     }
     
