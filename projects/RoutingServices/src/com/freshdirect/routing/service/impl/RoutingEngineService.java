@@ -171,8 +171,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 										, startDate
 										, noOfDays, slots)));
 
-		} catch (RemoteException exp) {
-			exp.printStackTrace();
+		} catch (RemoteException exp) {			
 			throw new RoutingServiceException(exp, IIssue.PROCESS_ANALYZE_UNSUCCESSFUL);
 		}
 	}
@@ -216,8 +215,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 											encodeString(orderModel.getOrderNumber()));
 			
 
-		} catch (RemoteException exp) {
-			exp.printStackTrace();
+		} catch (RemoteException exp) {			
 			throw new RoutingServiceException(exp, IIssue.PROCESS_CONFIRM_UNSUCCESSFUL);
 		}
 	}

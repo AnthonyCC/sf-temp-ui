@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -320,7 +321,7 @@ public class GenericSearchDAO {
 	private static String RESERVATION_SEARCH_QUERY = 
 			"SELECT "
 			+ "ci.customer_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
-			+ "ci.cell_phone, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ze.zone_code, rs.id, rs.type  "
+			+ "ci.cell_phone, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ze.zone_code, rs.id, rs.type, rs.address_id  "
 			+ "from dlv.reservation rs, dlv.timeslot ts, dlv.zone ze, cust.customerinfo ci, cust.customer c "
 			+ "where ts.id = rs.timeslot_id and ze.id = ts.zone_id and rs.customer_id = c.id and ci.customer_id = c.id and rs.status_code = 5 "
 			+ "and rs.type in ('WRR','OTR')";
@@ -362,6 +363,9 @@ public class GenericSearchDAO {
 			java.util.Date endTime = rs.getTimestamp("END_TIME");
 			String zone = rs.getString("ZONE_CODE");
 			EnumReservationType rsvType = EnumReservationType.getEnum(rs.getString("TYPE"));
+			
+			ContactAddressModel address = new ContactAddressModel();
+			address.setId(rs.getString("ADDRESS_ID"));
 			
 			FDCustomerReservationInfo rInfo = new FDCustomerReservationInfo(id, 
 																			baseDate, 

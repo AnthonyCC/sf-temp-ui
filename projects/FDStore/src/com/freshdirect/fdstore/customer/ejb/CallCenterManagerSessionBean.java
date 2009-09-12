@@ -52,6 +52,7 @@ import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpInvoiceLineI;
@@ -68,14 +69,13 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.ejb.DlvManagerDAO;
-import com.freshdirect.delivery.model.RestrictedAddressModel;
-import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.meal.MealModel;
 import com.freshdirect.fdstore.content.meal.ejb.MealPersistentBean;
@@ -86,7 +86,9 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDComplaintInfo;
 import com.freshdirect.fdstore.customer.FDComplaintReportCriteria;
 import com.freshdirect.fdstore.customer.FDCreditSummary;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
+import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
 import com.freshdirect.fdstore.customer.FDCutoffTimeInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
@@ -1625,6 +1627,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			int updateCount = DlvManagerDAO.cancelReservations(conn, resvCriteria);
 			//Create Activity Log.
 			AdminToolsDAO.logCancelledReservations(conn, reservations, initiator, notes);
+			
+			postMassCancellation(reservations);
+			
 			return updateCount;
 		} catch (SQLException e) {
 			LOGGER.error("SQL Error occurred while creating activity logs after cancelling reservations.");
@@ -1636,6 +1641,24 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				} catch (SQLException e) {
 					LOGGER.warn("Trouble closing connection after cancelReservations", e);
 				}
+			}
+		}
+	}
+	
+	private void postMassCancellation(List reservations) {
+		for (Iterator i = reservations.iterator(); i.hasNext();) {
+			FDCustomerReservationInfo info = (FDCustomerReservationInfo)i.next();
+			try {
+				Collection<ErpAddressModel> addressList= FDCustomerManager.getShipToAddresses(info.getIdentity());
+				for (ErpAddressModel address : addressList) {
+					if(address.getId().equals(info.getAddress().getId())) {
+						info.getAddress().setFrom(address, info.getFirstName(), info.getLastName(), info.getIdentity().getErpCustomerPK());
+						FDDeliveryManager.getInstance().removeReservationEx(info.getId(), info.getAddress());
+					}						
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+				//For Dynamic Async Phase 1 will be changed in Dynamic Routing Phase2
 			}
 		}
 	}

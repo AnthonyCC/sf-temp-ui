@@ -371,7 +371,7 @@ public class FDDeliveryManager {
 	}
 
 	public ArrayList<FDTimeslot> getTimeslotsForDateRangeAndZone(Date begDate, Date endDate, ContactAddressModel address) throws FDResourceException {
-		try {
+		try {			
 			ArrayList<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
 			List<DlvTimeslotModel> timeslots = sb.getTimeslotForDateRangeAndZone(begDate, endDate, address);
@@ -525,9 +525,23 @@ public class FDDeliveryManager {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			sb.removeReservation(reservationId);
+			removeReservationEx(reservationId, address);
+
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}
+	}
+	
+	public void removeReservationEx(String reservationId,ContactAddressModel address) throws FDResourceException {
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(reservationId);
-				if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
+				if(reservation.getUnassignedActivityType()==null 
+						|| RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
 					RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
 				} else {
 					sb.clearUnassignedInfo(reservationId);
@@ -580,7 +594,7 @@ public class FDDeliveryManager {
 			
 			DlvManagerSB sb = getDlvManagerHome().create();
 			DlvReservationModel oldReserve = sb.getReservation(rsvId);
-			System.out.println("oldReserve >>"+oldReserve.getOrderId());
+			
 			sb.commitReservation(rsvId, customerId, orderId);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(rsvId);

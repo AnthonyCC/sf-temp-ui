@@ -11,6 +11,7 @@ package com.freshdirect.fdstore.customer;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.delivery.EnumReservationType;
 
 /**
@@ -35,6 +36,8 @@ public class FDCustomerReservationInfo implements Serializable {
 	private String zone;
 	private final EnumReservationType type;
 	
+	private ContactAddressModel address;
+		
 	public FDCustomerReservationInfo(String id,
 									 Date baseDate,
 									 Date cutoffTime,
@@ -106,6 +109,13 @@ public class FDCustomerReservationInfo implements Serializable {
 	}
 	public EnumReservationType getType() {
 		return type;
+	}
+	
+	public ContactAddressModel getAddress() {
+		return address;
+	}
+	public void setAddress(ContactAddressModel address) {
+		this.address = address;
 	}
 	
 }
