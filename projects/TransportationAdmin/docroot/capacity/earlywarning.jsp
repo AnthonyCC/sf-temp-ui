@@ -257,7 +257,9 @@
 	        </div>
 	        <script>
 		      addTSRowHandlers('ec_table', 'rowMouseOver');
-		      doRefresh(<%= TransportationAdminProperties.getCapacityRefreshTime() %>);
+		      <% if(request.getParameter("cutOff") != null && request.getParameter("rType") != null) { %>
+		      		doRefresh(<%= TransportationAdminProperties.getCapacityRefreshTime() %>);
+		      <% } %>
 		    </script>
 	     </div>     
 	  

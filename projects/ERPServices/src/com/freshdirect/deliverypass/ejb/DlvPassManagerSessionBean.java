@@ -872,7 +872,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 					allStatusMap.put(dlvPassStatus, dlvPassId);
 				}
 			}
-			LOGGER.debug("Status Map Info "+allStatusMap);
+			//LOGGER.debug("Status Map Info "+allStatusMap);
 		} catch (SQLException e) {
 			LOGGER
 					.warn(
