@@ -85,6 +85,7 @@ import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
@@ -1931,7 +1932,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
 		orderModel.setOrderNumber(reservation.getOrderId());
 		//LOGGER.info("Old order #"+reservation.getId()+" New order#"+orderModel.getOrderNumber());
-		routingService.schedulerUpdateOrder(orderModel, previousOrderId);
+		boolean isUpdated=routingService.schedulerUpdateOrder(orderModel, previousOrderId);
+		LOGGER.debug("routingService.schedulerUpdateOrder() :"+isUpdated);
+		if(!isUpdated) 
+			throw new RoutingServiceException(null, IIssue.PROCESS_UPDATE_UNSUCCESSFUL);
 		routingService.schedulerConfirmOrder(orderModel);
 		//LOGGER.info("schedulerConfirmOrder():: commitReservationEx:"+"SUCCESS");
 		
