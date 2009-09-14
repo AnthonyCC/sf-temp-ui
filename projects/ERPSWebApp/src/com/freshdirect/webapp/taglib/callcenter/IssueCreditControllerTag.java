@@ -381,6 +381,7 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 
 			// now do the work - close case physically
 			{
+				/*
 				aCase.setState(CrmCaseState.getEnum(CrmCaseState.CODE_CLOSED));
 	
 				CrmCaseAction caseAction = new CrmCaseAction();
@@ -388,8 +389,9 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 				caseAction.setTimestamp(new Date());
 				caseAction.setAgentPK(agent.getPK());
 				caseAction.setNote((isApproved ? "Approved" : "Rejected")+" and closed");
-	
-				CrmManager.getInstance().updateCase(aCase.getCaseInfo(), caseAction, agent.getPK());
+				*/
+
+				CrmManager.getInstance().closeAutoCase(aCase.getPK());
 			}
 		}
 
