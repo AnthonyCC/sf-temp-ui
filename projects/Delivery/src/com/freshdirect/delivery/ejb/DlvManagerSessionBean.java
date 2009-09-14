@@ -1719,8 +1719,12 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			IDeliveryReservation _reservation=schedulerReserveOrder(order,reservedSlot );
 			long endTime=System.currentTimeMillis();
 			logTimeslots(order.getOrderNumber(),reservation.getCustomerId(),RoutingActivityType.RESERVE_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime));
-			if(reservation.isUnassigned())
-				clearUnassignedInfo(reservation.getId());
+			if(_reservation==null || !_reservation.isReserved()) {
+				setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);
+			} else {
+				if(reservation.isUnassigned())
+					clearUnassignedInfo(reservation.getId());
+			}
 			return _reservation;
 			
 		} catch (Exception e) {
@@ -1910,7 +1914,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	private IDeliveryReservation schedulerReserveOrder(IOrderModel orderModel, IDeliverySlot slot) throws RoutingServiceException {
 		
 		IDeliveryReservation reservation=new RoutingEngineServiceProxy().schedulerReserveOrder(orderModel, slot, RoutingServicesProperties.getDefaultLocationType(), RoutingServicesProperties.getDefaultOrderType());
-		//LOGGER.info("schedulerReserveOrder():: DeliveryReservation:"+reservation);
+		LOGGER.info("schedulerReserveOrder():: DeliveryReservation:"+reservation.isReserved());
 		return reservation;
 	}
 	

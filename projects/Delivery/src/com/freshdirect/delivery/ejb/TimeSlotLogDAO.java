@@ -17,9 +17,9 @@ public class TimeSlotLogDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(TimeSlotLogDAO.class);
 	
-	
+	private static final String EMPTY_TIMESLOT="1";
 	private static final String TIMESLOT_LOG_INSERT="INSERT INTO DLV.TIMESLOT_LOG (ID, EVENT_DTM, ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME) VALUES (?,SYSDATE,?,?,?,?)";
-	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO DLV.TIMESLOT_LOG_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME, END_TIME) VALUES (?,?,?,?)";
+	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO DLV.TIMESLOT_LOG_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME, END_TIME, IS_EMPTY) VALUES (?,?,?,?,?)";
 	
 	public static void addEntry(Connection conn,String orderId,String customerId,RoutingActivityType actionType,List<java.util.List<IDeliverySlot>> slots, int responseTime ) throws SQLException{
 		
@@ -41,6 +41,13 @@ public class TimeSlotLogDAO {
 		    	ps.setTimestamp(2, new java.sql.Timestamp(DateUtil.truncate(slot.getSchedulerId().getDeliveryDate()).getTime()));
 		    	ps.setTimestamp(3, new java.sql.Timestamp(slot.getStartTime().getTime()));
 		    	ps.setTimestamp(4, new java.sql.Timestamp(slot.getStopTime().getTime()));
+		    	if(slot.getDeliveryCost()!=null && slot.getDeliveryCost().isAvailable()) {
+		    		ps.setNull(5, java.sql.Types.VARCHAR);
+		    		
+		    	}
+		    	else {
+		    		ps.setString(5, EMPTY_TIMESLOT);
+		    	}
 		    	ps.addBatch();
 		    }
 		}
