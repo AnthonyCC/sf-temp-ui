@@ -434,6 +434,24 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
     }
     
+    public boolean closeAutoCase(PrimaryKey casePK) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			CrmCaseDAO dao = new CrmCaseDAO();
+			return dao.closeAutoCase(conn, casePK);
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ignored) {
+			}
+		}
+    }
+
     public List getOperations() throws FDResourceException {
         Connection conn = null;
         try {

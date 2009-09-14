@@ -223,6 +223,15 @@ public class CrmManager {
 		}
 	}
 
+	public boolean closeAutoCase(PrimaryKey casePK) throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().closeAutoCase(casePK);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
+		}
+	}
+
+
 	public void downloadCases(PrimaryKey agentPK, String queue, String subject, int numberToDownload) throws FDResourceException {
 		try {
 			this.getCrmManagerSB().downloadCases(agentPK, queue, subject, numberToDownload);

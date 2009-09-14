@@ -713,4 +713,33 @@ public class CrmCaseDAO implements EntityDAOI {
 		return actions;
 	}
 
+
+	/**
+	 * Close auto case
+	 * 
+	 * @param conn
+	 * @param casePK
+	 * @return action result
+	 * @throws SQLException 
+	 */
+	public boolean closeAutoCase(Connection conn, PrimaryKey casePK) throws SQLException {
+		// Close case if
+		// 1. state is/was 'escalated for review'
+		// 2. is auto case
+		PreparedStatement ps = conn.prepareStatement(
+			"update cust.case set case_state='"+CrmCaseState.CODE_CLOSED+"' " +
+			"where id=? " +
+			"and case_state='"+CrmCaseState.CODE_REVIEW+"' " /* +
+			"and " +
+			"(select count(id) from cust.complaint where auto_case_id=?)=1;" */
+		);
+		ps.setString(1, casePK.getId());
+		// ps.setString(2, casePK.getId());
+		
+		final int cnt = ps.executeUpdate();
+		
+		ps.close();
+		
+		return cnt==1;
+	}
 }
