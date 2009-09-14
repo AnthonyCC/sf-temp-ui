@@ -30,7 +30,7 @@ public class ErpComplaintModel extends ModelSupport {
 	public static final int MIXED			= 2;
 	
 	// List<ErpComplaintLineModel>
-	private List complaintLines;
+	private List<ErpComplaintLineModel> complaintLines;
 	private String description;
 	private String createdBy;
 	private Date createDate;
@@ -48,13 +48,13 @@ public class ErpComplaintModel extends ModelSupport {
     private String autoCaseId;
     
     public ErpComplaintModel() {
-        this.complaintLines = new ArrayList();
+        this.complaintLines = new ArrayList<ErpComplaintLineModel>();
     }
 
 	// List<ErpComplaintLineModel>
-    public List getComplaintLines() { return complaintLines; }
-    public void setComplaintLines(List l) { this.complaintLines = l; }
-    public void addComplaintLines(List l) { this.complaintLines.addAll(l); }
+    public List<ErpComplaintLineModel> getComplaintLines() { return complaintLines; }
+    public void setComplaintLines(List<ErpComplaintLineModel> l) { this.complaintLines = l; }
+    public void addComplaintLines(List<ErpComplaintLineModel> l) { this.complaintLines.addAll(l); }
 
     /**
      * cartonized = complaint lines are following cartonized arrangement
@@ -317,9 +317,9 @@ public class ErpComplaintModel extends ModelSupport {
 		buf.append("Creating credits for the following departments:\n");
 		buf.append("  Method\t\tDepartment\t\t\tAmount\t\t\tReason\n");
 		buf.append("  ------\t\t----------\t\t\t------\t\t\t------\n");
-		List lines = this.getComplaintLines();
-		for (Iterator it = lines.iterator(); it.hasNext();) {
-			ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
+		List<ErpComplaintLineModel> lines = this.getComplaintLines();
+		for (Iterator<ErpComplaintLineModel> it = lines.iterator(); it.hasNext();) {
+			ErpComplaintLineModel line = it.next();
 			buf.append(
 				line.getMethod().getStatusCode()
 					+ "\t\t"
@@ -353,14 +353,13 @@ public class ErpComplaintModel extends ModelSupport {
 	
 
 	/**
-	 * Find the most important reason in complaint lines
+	 * Find the most important reason in complaint lines. Lowest priority is the best
 	 */
 	public ErpComplaintReason getTopReason() {
 		ErpComplaintReason topReason = null;
 		
-		for (Iterator it=complaintLines.iterator(); it.hasNext(); ) {
-			ErpComplaintLineModel l = (ErpComplaintLineModel) it.next();
-			if (topReason == null || l.getReason().getPriority() > topReason.getPriority()) {
+		for (ErpComplaintLineModel l : complaintLines) {
+			if (topReason == null || l.getReason().getPriority() < topReason.getPriority()) {
 				topReason = l.getReason();
 			}
 		}
