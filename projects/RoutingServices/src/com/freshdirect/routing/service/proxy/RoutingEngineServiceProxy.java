@@ -65,8 +65,8 @@ public class RoutingEngineServiceProxy extends BaseServiceProxy {
 		getService().schedulerConfirmOrder(orderModel);
 	}
 	
-	public void schedulerUpdateOrder(IOrderModel orderModel, String previousOrderNumber) throws RoutingServiceException {
-		getService().schedulerUpdateOrder(orderModel, previousOrderNumber);
+	public boolean schedulerUpdateOrder(IOrderModel orderModel, String previousOrderNumber) throws RoutingServiceException {
+		return getService().schedulerUpdateOrder(orderModel, previousOrderNumber);
 	}
 	
 	public void schedulerCancelOrder(IOrderModel orderModel) throws RoutingServiceException {

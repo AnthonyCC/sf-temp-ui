@@ -8,16 +8,26 @@ public class TimeslotLogDtlId implements java.io.Serializable {
 	private Date baseDate;
 	private Date startTime;
 	private Date endTime;
+	private String isEmpty;
+
+	public String getIsEmpty() {
+		return isEmpty;
+	}
+
+	public void setIsEmpty(String isEmpty) {
+		this.isEmpty = isEmpty;
+	}
 
 	public TimeslotLogDtlId() {
 	}
 
 	public TimeslotLogDtlId(String timeslotLogId, Date baseDate,
-			Date startTime, Date endTime) {
+			Date startTime, Date endTime, String isEmpty) {
 		this.timeslotLogId = timeslotLogId;
 		this.baseDate = baseDate;
 		this.startTime = startTime;
 		this.endTime = endTime;
+		this.isEmpty = isEmpty;
 	}
 
 	public String getTimeslotLogId() {
@@ -76,7 +86,11 @@ public class TimeslotLogDtlId implements java.io.Serializable {
 				&& ((this.getEndTime() == castOther.getEndTime()) || (this
 						.getEndTime() != null
 						&& castOther.getEndTime() != null && this.getEndTime()
-						.equals(castOther.getEndTime())));
+						.equals(castOther.getEndTime())))
+				&& ((this.getIsEmpty() == castOther.getIsEmpty()) || (this
+						.getIsEmpty() != null
+						&& castOther.getIsEmpty() != null && this.getIsEmpty()
+						.equals(castOther.getIsEmpty())));
 	}
 
 	public int hashCode() {
@@ -92,6 +106,8 @@ public class TimeslotLogDtlId implements java.io.Serializable {
 				+ (getStartTime() == null ? 0 : this.getStartTime().hashCode());
 		result = 37 * result
 				+ (getEndTime() == null ? 0 : this.getEndTime().hashCode());
+		result = 37 * result
+		+ (getIsEmpty() == null ? 0 : this.getIsEmpty().hashCode());
 		return result;
 	}
 

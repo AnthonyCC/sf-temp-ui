@@ -134,7 +134,8 @@ public class TimeslotLog implements java.io.Serializable, TrnBaseEntityI {
 					Iterator<TimeslotLogDtl> _dtlItr = _tmpLst.iterator();
 					while(_dtlItr.hasNext()) {
 						_dtl = _dtlItr.next();						
-						strBuf.append(TransStringUtil.formatTimeRange(_dtl.getId().getStartTime(), _dtl.getId().getEndTime()));
+						strBuf.append("1".equalsIgnoreCase(_dtl.getId().getIsEmpty()) ? "x":"")
+								.append(TransStringUtil.formatTimeRange(_dtl.getId().getStartTime(), _dtl.getId().getEndTime()));
 						if(_dtlItr.hasNext()) {
 							strBuf.append(", ");
 						}

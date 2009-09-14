@@ -40,7 +40,7 @@ public interface IRoutingEngineService {
 
 	void schedulerConfirmOrder(IOrderModel orderModel) throws RoutingServiceException;
 	
-	void schedulerUpdateOrder(IOrderModel orderModel, String previousOrderNumber) throws RoutingServiceException;
+	boolean schedulerUpdateOrder(IOrderModel orderModel, String previousOrderNumber) throws RoutingServiceException;
 	
 	void schedulerCancelOrder(IOrderModel orderModel) throws RoutingServiceException;
 	

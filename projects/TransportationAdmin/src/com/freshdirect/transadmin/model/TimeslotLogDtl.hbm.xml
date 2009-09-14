@@ -17,6 +17,9 @@
             <key-property name="endTime" type="timestamp">
                 <column name="END_TIME" length="7" />
             </key-property>
+            <key-property name="isEmpty" type="string">
+            	<column name="IS_EMPTY" length="1" />
+        	</key-property>
         </composite-id>
         
     </class>

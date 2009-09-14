@@ -188,7 +188,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			TransportationWebService port = getTransportationSuiteService(schedulerId);
 						
 			
-			return RoutingDataDecoder.decodeDeliveryReservation(
+			IDeliveryReservation reservation = RoutingDataDecoder.decodeDeliveryReservation(
 										port.schedulerReserveOrder(
 												RoutingDataEncoder.encodeSchedulerIdentity(schedulerId) ,
 												RoutingDataEncoder.encodeOrder(
@@ -199,7 +199,8 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 												, false),
 												RoutingDataEncoder.encodeDeliveryWindow(deliverySlot,schedulerId) ,
 												RoutingDataEncoder.encodeSchedulerReserveOrderOptions()));
-
+			
+			return reservation;
 		} catch (Exception exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_RESERVE_UNSUCCESSFUL);
 		}
@@ -220,14 +221,14 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		}
 	}
 	
-	public void schedulerUpdateOrder(IOrderModel orderModel, String previousOrderNumber) throws RoutingServiceException {
+	public boolean schedulerUpdateOrder(IOrderModel orderModel, String previousOrderNumber) throws RoutingServiceException {
 
 		try {
 			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
 					
 			
-			port.schedulerUpdateOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId)
+			return port.schedulerUpdateOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId)
 											, RoutingDataEncoder.encodeDeliveryAreaOrderIdentity(schedulerId, encodeString(previousOrderNumber))
 											, RoutingDataEncoder.encodeSchedulerUpdateOrderOptions(encodeString(orderModel.getOrderNumber())));
 
