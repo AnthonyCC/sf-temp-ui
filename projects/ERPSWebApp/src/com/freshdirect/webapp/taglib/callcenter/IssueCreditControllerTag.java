@@ -358,14 +358,29 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 		
 		// Close auto case first
 		if (agent != null && this.complaintModel.getAutoCaseId() != null) {
-			// debug
-			//   final boolean isSameComplaint = complaintModel.getPK().getId().equals(request.getParameter("complaintId"));
-			//   System.err.println("this.complaint.PK("+complaintModel.getPK().getId()+") == " + request.getParameter("complaintId") + " = " + isSameComplaint);
 			CrmCaseModel aCase = CrmManager.getInstance().getCaseByPk(this.complaintModel.getAutoCaseId());
 			
 			// try to lock case
-			CrmSession.setLockedCase(session, aCase);
-			if (true && CrmManager.getInstance().lockCase(agent.getPK(), aCase.getPK())) {
+			PrimaryKey ownerPK = aCase.getLockedAgentPK();
+
+			boolean caseIsMine = false;
+			if (ownerPK != null) {
+				if (!agent.getPK().equals(ownerPK)) {
+					// gosh .. someone already owning the case
+					result.addError(true, "approval_error", "Requested action cannot be performed. Associated case is locked by another user.");
+					return;
+				}
+				caseIsMine = true;
+			}
+
+			if (!caseIsMine) {
+				// lock the case
+				CrmSession.setLockedCase(session, aCase);
+			}
+
+
+			// now do the work - close case physically
+			{
 				aCase.setState(CrmCaseState.getEnum(CrmCaseState.CODE_CLOSED));
 	
 				CrmCaseAction caseAction = new CrmCaseAction();
@@ -375,8 +390,6 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 				caseAction.setNote((isApproved ? "Approved" : "Rejected")+" and closed");
 	
 				CrmManager.getInstance().updateCase(aCase.getCaseInfo(), caseAction, agent.getPK());
-			} else {
-				result.addError(true, "approval_error", "Failed to lock auto case.");
 			}
 		}
 
