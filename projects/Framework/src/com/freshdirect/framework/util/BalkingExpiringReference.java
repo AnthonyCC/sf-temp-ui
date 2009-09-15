@@ -4,7 +4,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-import edu.emory.mathcs.backport.java.util.concurrent.Executor;
+import java.util.concurrent.Executor;
 
 /**
  * @author csongor

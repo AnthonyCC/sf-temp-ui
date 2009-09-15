@@ -8,7 +8,7 @@ import javax.naming.NamingException;
 
 import com.freshdirect.framework.core.ServiceLocator;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class FDAbstractCache {
 	

@@ -11,7 +11,6 @@ import java.util.SortedMap;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 
-// import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Recommendation service configuration.

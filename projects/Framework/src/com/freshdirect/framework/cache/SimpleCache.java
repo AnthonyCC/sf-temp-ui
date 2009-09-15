@@ -2,7 +2,7 @@ package com.freshdirect.framework.cache;
 
 import java.io.Serializable;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Basic {@link com.freshdirect.framework.cache.CacheI} implementation
