@@ -67,7 +67,6 @@
 		<pathelement location="${thirdparty.home}/hivemind-1.1.1.jar"/>
 		<pathelement location="${thirdparty.home}/hivemind-lib-1.1.1.jar"/>
 		<pathelement location="${thirdparty.home}/aopalliance-1.0.jar"/>
-		<pathelement location="${thirdparty.home}/backport-util-concurrent.jar"/>
 		<pathelement location="${thirdparty.home}/hibernate3.jar"/>
 		<pathelement location="${thirdparty.home}/quartz.jar"/>
 		<pathelement location="${thirdparty.home}/asm.jar"/>
@@ -1188,7 +1187,6 @@
 					<include name="hivemind-1.1.1.jar"/>
 					<include name="hivemind-lib-1.1.1.jar"/>
 					<include name="aopalliance-1.0.jar"/>
-					<include name="backport-util-concurrent.jar"/>
 					<include name="hibernate3.jar"/>
 					<include name="quartz.jar"/>
 					<include name="antlr-2.7.5H3.jar"/>
@@ -1291,7 +1289,6 @@
 					<include name="hivemind-1.1.1.jar"/>
 					<include name="hivemind-lib-1.1.1.jar"/>
 					<include name="aopalliance-1.0.jar"/>
-					<include name="backport-util-concurrent.jar"/>
 					<include name="hibernate3.jar"/>
 					<include name="ehcache-1.1.jar"/>
 					<include name="batik-1.5-fop-0.20-5.jar"/>
@@ -2415,7 +2412,6 @@
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
-            <zipfileset src="${thirdparty.home}/backport-util-concurrent.jar" excludes="META-INF/*"/>
 			<!-- hivemind -->
 			<zipfileset src="${thirdparty.home}/hivemind-1.1.1.jar"/>
 			<zipfileset src="${thirdparty.home}/hivemind-lib-1.1.1.jar" excludes="META-INF/*"/>
@@ -2508,7 +2504,6 @@
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/backport-util-concurrent.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/opencsv-1.8.jar" excludes="META-INF/*"/>
 			<zipfileset src="${weblogic.home}/server/ext/jdbc/oracle/10g/ojdbc14_g.jar" excludes="META-INF/*"/>
 			<zipfileset src="${weblogic.home}/server/lib/weblogic.jar" excludes="META-INF/*"/>			
