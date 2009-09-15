@@ -19,7 +19,7 @@ import javax.management.ObjectName;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import edu.emory.mathcs.backport.java.util.LinkedList;
+import java.util.LinkedList;
 
 import weblogic.management.MBeanHome;
 import weblogic.management.RemoteMBeanServer;

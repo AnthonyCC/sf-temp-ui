@@ -10,8 +10,8 @@ import com.freshdirect.dataloader.autoorder.create.util.DataUtil;
 import com.freshdirect.dataloader.autoorder.create.util.IConstants;
 import com.freshdirect.dataloader.autoorder.create.util.ResourceUtil;
 
-import edu.emory.mathcs.backport.java.util.concurrent.BlockingQueue;
-import edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class TesterCommand implements ITesterCommand,IAccept {
 	

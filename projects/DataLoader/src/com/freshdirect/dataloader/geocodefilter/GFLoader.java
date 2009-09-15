@@ -16,8 +16,8 @@ import com.freshdirect.dataloader.SynchronousParserClient;
 import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-import edu.emory.mathcs.backport.java.util.concurrent.BlockingQueue;
-import edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class GFLoader implements SynchronousParserClient {
 	private IParser parser;
