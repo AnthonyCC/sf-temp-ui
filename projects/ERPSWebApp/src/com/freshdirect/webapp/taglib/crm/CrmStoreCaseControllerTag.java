@@ -224,7 +224,7 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 						caseInfo.setDepartments(departments);
 						caseInfo.setActualQuantity(actualQuantity);
 						caseInfo.setProjectedQuantity(reportedQuantity);
-						caseInfo.setCartonNumbers(cartons);
+						caseInfo.setCartonNumbers(isAutoCase ? cm.getCartonNumbers() : cartons);
 
 						if(!"true".equalsIgnoreCase(isCaseClosed)){
 							caseInfo.setCrmCaseMedia(media);
