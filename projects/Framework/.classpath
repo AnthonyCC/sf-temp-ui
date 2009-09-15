@@ -20,7 +20,6 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-codec-1.3.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/bsf-2.3.0.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/aopalliance-1.0.jar"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/backport-util-concurrent.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/quartz.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/hibernate3.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/asm.jar"/>
