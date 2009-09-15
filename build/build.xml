@@ -37,6 +37,8 @@
 	
 	<property name="log4j.jar"				value="log4j.jar"/>
 
+        <property name="gwt.compiler.style"             value="OBFUSCATED"/>
+
 	<path id="j2ee.classpath">
 		<pathelement location="${weblogic.home}/server/lib/weblogic_sp.jar"/>
 		<pathelement location="${weblogic.home}/server/lib/weblogic.jar"/>
@@ -1611,6 +1613,8 @@
                 <jvmarg value="-Xss16M"/>
 
                 <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+                <arg value="-style"/>
+                <arg value="${gwt.compiler.style}" />
                 <arg value="@{module-name}"/>
                 <arg value="-war" />
                 <arg value="${work.dir}/@{project}.js"/>
