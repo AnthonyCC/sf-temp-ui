@@ -367,7 +367,9 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 			if (ownerPK != null) {
 				if (!agent.getPK().equals(ownerPK)) {
 					// gosh .. someone already owning the case
-					result.addError(true, "approval_error", "Requested action cannot be performed. Associated case is locked by another user.");
+					CrmAgentModel otherAgent = CrmManager.getInstance().getAgentByPk(ownerPK.getId());
+					
+					result.addError(true, "approval_error", "Requested action cannot be performed. Associated case is locked by another user "+otherAgent.getFirstName()+" "+otherAgent.getLastName()+".");
 					return;
 				}
 				caseIsMine = true;
