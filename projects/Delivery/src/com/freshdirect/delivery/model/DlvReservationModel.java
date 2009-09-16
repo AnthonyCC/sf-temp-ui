@@ -177,7 +177,7 @@ public class DlvReservationModel extends ModelSupport {
 	}
 
 	public boolean isInUPS() {
-		return chefsTable;
+		return inUPS;
 	}
 
 	public void setInUPS(boolean inUPS) {
