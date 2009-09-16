@@ -6,7 +6,9 @@ import java.util.Set;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
+import com.extjs.gxt.ui.client.data.DataProxy;
 import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.data.ModelStringProvider;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -41,9 +43,13 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class NodeTree extends ContentPanel {
 	
-	private ContentServiceAsync cs; 
-	private TreeLoader<ContentNodeModel> loader;
-	private TreeStore<ContentNodeModel> store;
+	private static ContentServiceAsync cs; 
+	private static RpcProxy<List<ContentNodeModel>> proxy;
+	private static TreeLoader<ContentNodeModel> loader;
+	
+	private static TreeStore<ContentNodeModel> mainStore;
+//	private static TreeStore<ContentNodeModel> searchStore;
+	
 	private NodeTreePanel tree;
 	
 	private TextField<String> searchField;
@@ -52,118 +58,231 @@ public class NodeTree extends ContentPanel {
 	
 	Set<String> allowedTypes = null;
 	
+	private NodeSelectListener selectListener; 
+
+	// ==================================== inner classes ====================================
+	
 	public interface NodeSelectListener {		
 		public void nodeSelected( ContentNodeModel node );
 	}
-	private NodeSelectListener selectListener; 
 	
+	private class NodeTreeProxy extends RpcProxy<List<ContentNodeModel>> {		
+		@Override
+		protected void load( Object loadConfig, final AsyncCallback<List<ContentNodeModel>> callback ) {
+			if ( loadConfig == null || loadConfig instanceof ContentNodeModel ) {
+				ContentNodeModel model = (ContentNodeModel)loadConfig;
+				MainLayout.startProgress( "Loading children", model != null ? model.getLabel() : "Root nodes", "" );
+				cs.getChildren( (ContentNodeModel)loadConfig, new BaseCallback<List<ContentNodeModel>>() {
+
+					@Override
+					public void onSuccess( List<ContentNodeModel> result ) {
+						MainLayout.stopProgress();
+						callback.onSuccess( result );
+					}
+
+					@Override
+					public void errorOccured( Throwable error ) {
+						MainLayout.stopProgress();
+						callback.onFailure( error );
+					}
+
+				} );
+			}
+		}
+	}	
+	
+	private class NodeTreeLoader extends BaseTreeLoader<ContentNodeModel> {
+		
+		@SuppressWarnings( "unchecked" )
+		public NodeTreeLoader( DataProxy proxy ) {
+			super( proxy );
+		}
+		
+		@Override
+		public boolean hasChildren( ContentNodeModel parent ) {
+			return parent.hasChildren();
+		}		
+	}
+	
+	
+	private class NodeTreeIconProvider implements ModelIconProvider<ContentNodeModel> {
+		@Override
+		public AbstractImagePrototype getIcon( ContentNodeModel model ) {
+			return IconHelper.createPath( "img/icons/" + model.getType() + ".gif" );
+		}		
+	}
+	
+	private class NodeTreeLabelProvider implements ModelStringProvider<ContentNodeModel> {
+		@Override
+		public String getStringValue( ContentNodeModel model, String property ) {
+			if ( model == null )
+				return "";
+
+			StringBuilder sb = new StringBuilder( 256 );
+
+			sb.append( model.getJavascriptPreviewLink() );
+
+			if ( allowedTypes == null || allowedTypes.contains( model.getType() ) ) {
+				sb.append( model.getLabel() );
+				sb.append( " <span class=\"dimmed\">[" );
+				sb.append( model.getId() );
+				sb.append( "]</span>" );
+			} else {
+				sb.append( "<span class=\"disabled\">" );
+				sb.append( model.getLabel() );
+				sb.append( "</span>" );
+			}
+			return sb.toString();
+		}
+	}
+	
+    private class SearchCallback implements AsyncCallback<List<ContentNodeModel>> {
+    	
+        public void onSuccess( List<ContentNodeModel> result ) {
+            mainStore.removeAll();
+            for ( ContentNodeModel m : result ) {
+            	mainStore.add( m, false );
+            }
+            mainStore.commitChanges();
+            
+            MainLayout.setStatus( "Search done." );
+            if ( isMainTree() )
+            	MainLayout.stopProgress();
+            
+            // TODO this doesn't work like expected 
+            // store.add( result, false );
+        }
+        
+        public void onFailure( Throwable caught ) {
+        	MainLayout.setStatus( "Search failed." );
+            if ( isMainTree() )
+            	MainLayout.stopProgress();
+            MessageBox.alert( "Error", "Details:" + caught.getMessage(), null );
+        }
+    }
+		
+    private class Synchronizer implements Listener<BaseEvent> {
+
+    	private StringTokenizer tokens;
+    	private List<ContentNodeModel> nodes;
+    	ContentNodeModel currentNode;
+    	
+    	
+    	public void synchronize( String path ) {
+    		tokens = new StringTokenizer( path, "/" );
+    		nodes = mainStore.getRootItems();
+        	tree.collapseAll();    	
+    		
+    		tree.addListener( Events.Expand, this );
+    		
+    		eatToken();
+    		tree.setExpanded( currentNode, true );
+    	}
+    	
+		@Override
+		public void handleEvent( BaseEvent be ) {
+			if (tokens.countTokens() > 0) {
+				nodes = mainStore.getChildren( currentNode );
+				eatToken();
+				if ( tokens.countTokens() == 0 ) {
+					// last one
+					tree.getSelectionModel().select( currentNode, false );
+					tree.scrollIntoView( currentNode );
+				} else {
+					tree.setExpanded( currentNode, true );
+				}
+			} else {
+				tree.removeListener( Events.Expand, this );
+			}
+		}
+		
+		private void eatToken() {
+	    	if ( tokens.hasMoreTokens() ) {
+	    		
+	    		String token = tokens.nextToken();
+	    		
+	    		for ( ContentNodeModel node : nodes ) {
+	    			if ( node.getKey().equals( token ) ) {
+	    				currentNode = node;
+	    				return;
+	    			}
+	    		}		
+	    	}    	
+	    	currentNode = null;
+	    	return;
+		}
+    }    
+    
+    
 	// ==================================== constructor methods ====================================
 	
 	public NodeTree() {
-            this(null, false);
+		this( null, false );
 	}
 	
-        public NodeTree(final Set<String> aTypes, boolean multiSelect) {
-		
-            this.allowedTypes = aTypes;
-    
-            // content service
-            cs = (ContentServiceAsync) GWT.create(ContentService.class);
-    
-            // data proxy
-            RpcProxy<List<ContentNodeModel>> proxy = new RpcProxy<List<ContentNodeModel>>() {
-                @Override
-                protected void load(Object loadConfig, final AsyncCallback<List<ContentNodeModel>> callback) {
-                    if (loadConfig == null || loadConfig instanceof ContentNodeModel) {
-                        ContentNodeModel model = (ContentNodeModel) loadConfig;
-                        MainLayout.startProgress("Loading children", model != null ? model.getLabel() : "Root nodes", "");
-                        cs.getChildren((ContentNodeModel) loadConfig, new BaseCallback<List<ContentNodeModel>>() {
-                            @Override
-                            public void onSuccess(List<ContentNodeModel> result) {
-                                MainLayout.stopProgress();
-                                callback.onSuccess(result);
-                            }
-                            
-                            @Override
-                            public void errorOccured(Throwable error) {
-                                MainLayout.stopProgress();
-                                callback.onFailure(error);
-                            }
-                           
-                        });
-                    }
-                }
-            };
-    
-            // tree loader
-            loader = new BaseTreeLoader<ContentNodeModel>(proxy) {
-                @Override
-                public boolean hasChildren(ContentNodeModel parent) {
-                    return parent.hasChildren();
-                }
-            };
-    
-            // tree store
-            store = new TreeStore<ContentNodeModel>(loader);
-    
-            // tree panel
-            tree = new NodeTreePanel(this, store);
-    
-            tree.addStyleName("node-tree");
-            tree.setBorders(false);
-            tree.setSelectionModel(new NodeTreeSelectionModel(this));
-            setMultiSelect(multiSelect);
-    
-            // icon provider
-            tree.setIconProvider(new ModelIconProvider<ContentNodeModel>() {
-                @Override
-                public AbstractImagePrototype getIcon(ContentNodeModel model) {
-                    return IconHelper.createPath("img/icons/" + model.getType() + ".gif");
-                }
-            });
-    
-            // label provider
-            tree.setLabelProvider(new ModelStringProvider<ContentNodeModel>() {
-                @Override
-                public String getStringValue(ContentNodeModel model, String property) {
-                    if (model == null)
-                        return "";
-    
-                    StringBuilder sb = new StringBuilder(256);
-    
-                    sb.append(model.getJavascriptPreviewLink());
-    
-                    if (allowedTypes == null || allowedTypes.contains(model.getType())) {
-                        sb.append(model.getLabel());
-                        sb.append(" <span class=\"dimmed\">[");
-                        sb.append(model.getId());
-                        sb.append("]</span>");
-                    } else {
-                        sb.append("<span class=\"disabled\">");
-                        sb.append(model.getLabel());
-                        sb.append("</span>");
-                    }
-                    return sb.toString();
-                }
-            });
-    
-            // TODO sorting? needed? here or server side?
-            // store.setStoreSorter( new StoreSorter<ContentNodeModel>() {
-            // @Override public int compare( Store<ContentNodeModel> store,
-            // ContentNodeModel m1, ContentNodeModel m2, String property ) {
-            // return m1.compareTo( m2 );
-            // }
-            // });
-    
-            setHeading("Content Tree");
-            setScrollMode(Scroll.AUTO);
-    
-            createToolBar();
-            loadRootNodes();
-    
-            this.setLayout(new FitLayout());
-            this.add(tree, new FitData());
+	public NodeTree( final Set<String> aTypes, boolean multiSelect ) {
 
+		this.allowedTypes = aTypes;
+
+		// content service
+		if ( cs == null )
+			cs = (ContentServiceAsync)GWT.create( ContentService.class );
+
+		// data proxy
+		if ( proxy == null ) {
+			proxy = new NodeTreeProxy();
+		}
+
+		// tree loader
+		if ( loader == null ) {
+			loader = new NodeTreeLoader( proxy );
+		}
+
+		// tree store
+		if ( mainStore == null )
+			mainStore = new TreeStore<ContentNodeModel>( loader );
+
+
+		// TODO sorting? needed? here or server side?
+		// store.setStoreSorter( new StoreSorter<ContentNodeModel>() {
+		// @Override public int compare( Store<ContentNodeModel> store,
+		// ContentNodeModel m1, ContentNodeModel m2, String property ) {
+		// return m1.compareTo( m2 );
+		// }
+		// });
+		
+		tree = createTreePanel( multiSelect );
+
+		setHeading( "Content Tree" );
+		setScrollMode( Scroll.AUTO );
+
+		createToolBar();
+		loadRootNodes();
+
+		this.setLayout( new FitLayout() );
+		this.add( tree, new FitData() );
+
+	}
+	
+	private NodeTreePanel createTreePanel( boolean multiSelect ) {		 
+		
+		// tree panel
+		NodeTreePanel tree = new NodeTreePanel( this, mainStore );
+
+		tree.addStyleName( "node-tree" );
+		tree.setBorders( false );
+		
+		// selection model
+		tree.setSelectionModel( new NodeTreeSelectionModel( this ) );
+		tree.getSelectionModel().setSelectionMode( multiSelect ? SelectionMode.MULTI : SelectionMode.SINGLE );
+
+		// icon provider
+		tree.setIconProvider( new NodeTreeIconProvider() );
+
+		// label provider
+		tree.setLabelProvider( new NodeTreeLabelProvider() );
+		
+		return tree;
 	}
 
 	private void createToolBar() {
@@ -199,62 +318,6 @@ public class NodeTree extends ContentPanel {
 		nodeToolBar.add( searchButton );
 		
 		
-		// Disabled toolbar buttons ... 
-		
-//		// clear search button
-//		ToolButton clearSearchButton = new ToolButton("x-tool-close"); 
-//		clearSearchButton.setToolTip( new ToolTipConfig("Clear", "Clear search results.") );  
-//		clearSearchButton.addListener( Events.OnClick, new Listener<BaseEvent>() { 
-//			@Override public void handleEvent( BaseEvent be ) { 
-//				clearSearchAction(); 
-//			}; 
-//		} );
-//		nodeToolBar.add( clearSearchButton );
-//		nodeToolBar.add( new SeparatorToolItem() );
-		// expand button
-//		ToolButton expandButton = new ToolButton("x-tool-plus"); 
-//		expandButton.setToolTip( new ToolTipConfig("Expand", "Expand the children of the selected node.") );  
-//		expandButton.addListener( Events.OnClick, new Listener<BaseEvent>() { 
-//			@Override public void handleEvent( BaseEvent be ) { 				
-//				ContentNodeModel selected = getSelectedItem();
-//				if ( selected != null ) {
-//					tree.setExpanded( selected , true );
-//					List<ContentNodeModel> children = store.getChildren( selected );
-//					for ( ContentNodeModel target : children ) {
-//						tree.setExpanded( target, true );					
-//					}
-//				}
-//			}; 
-//		} );
-//		nodeToolBar.add( expandButton );
-		// collapse all button
-//		ToolButton collapseButton = new ToolButton("x-tool-minus"); 
-//		collapseButton.setToolTip( new ToolTipConfig("Collapse", "Collapse all nodes in the content tree.") );  
-//		collapseButton.addListener( Events.OnClick, new Listener<BaseEvent>() { 
-//			@Override public void handleEvent( BaseEvent be ) { 
-//				tree.collapseAll(); 
-//			}; 
-//		} );
-//		nodeToolBar.add( collapseButton );
-//		nodeToolBar.add( new SeparatorToolItem() );
-//		ToolButton showIdButton = new ToolButton("x-tool-gear"); 
-//		showIdButton.setToolTip( new ToolTipConfig("Show id", "Show the name or the id of the nodes?") );  
-//		showIdButton.addListener( Events.OnClick, new Listener<BaseEvent>() { 
-//			@Override public void handleEvent( BaseEvent be ) {
-//				showId = !showId;
-//			}; 
-//		} );
-//		nodeToolBar.add( showIdButton );
-//		nodeToolBar.add( new FillToolItem() );
-//		ToolButton refreshButton = new ToolButton("x-tool-refresh"); 
-//		refreshButton.setToolTip( new ToolTipConfig("Refresh", "Reload the content tree?") );  
-//		refreshButton.addListener( Events.OnClick, new Listener<BaseEvent>() { 
-//			@Override public void handleEvent( BaseEvent be ) { 
-//				loadRootNodes();
-//			}; 
-//		} );
-//		nodeToolBar.add( refreshButton );
-
 		
 		nodeToolBar.add( new FillToolItem() );	
 		
@@ -323,7 +386,7 @@ public class NodeTree extends ContentPanel {
 		return tree.getSelectionModel().getSelectedItems();	
 	}	
 	public ContentNodeModel getSelectedParent() {
-		return store.getParent( tree.getSelectionModel().getSelectedItem() );
+		return mainStore.getParent( tree.getSelectionModel().getSelectedItem() );
 	}
 	
 	public String getSelectedPath() {
@@ -335,7 +398,7 @@ public class NodeTree extends ContentPanel {
 		return sb.toString();
 	}
 	private void getSelectedPathRecursive ( ContentNodeModel node, StringBuilder sb ) {
-		ContentNodeModel parent = store.getParent( node );
+		ContentNodeModel parent = mainStore.getParent( node );
 		if ( parent != null )
 			getSelectedPathRecursive( parent, sb );		
 		sb.append( "/" );
@@ -350,32 +413,8 @@ public class NodeTree extends ContentPanel {
 	    loader.load( null );
 	}
 	
-	public void search( String searchTerm ) {
-		
-	    cs.search( searchTerm, new AsyncCallback<List<ContentNodeModel>>() {
-	    	
-	        public void onSuccess( List<ContentNodeModel> result ) {
-                store.removeAll();
-                for ( ContentNodeModel m : result ) {
-                	store.add( m, false );
-                }
-                store.commitChanges();
-                
-                MainLayout.setStatus( "Search done." );
-	            if ( isMainTree() )
-	            	MainLayout.stopProgress();
-                
-                // TODO this doesn't work like expected 
-                // store.add( result, false );
-	        }
-	        
-	        public void onFailure( Throwable caught ) {
-	        	MainLayout.setStatus( "Search failed." );
-	            if ( isMainTree() )
-	            	MainLayout.stopProgress();
-	            MessageBox.alert( "Error", "Details:" + caught.getMessage(), null );
-	        }
-	    });
+	public void search( String searchTerm ) {		
+	    cs.search( searchTerm, new SearchCallback() ); 
 	}
 	
 
@@ -420,55 +459,19 @@ public class NodeTree extends ContentPanel {
     	synchronizer.synchronize( path );
     }
     
-    private class Synchronizer implements Listener<BaseEvent> {
-
-    	private StringTokenizer tokens;
-    	private List<ContentNodeModel> nodes;
-    	ContentNodeModel currentNode;
-    	
-    	
-    	public void synchronize( String path ) {
-    		tokens = new StringTokenizer( path, "/" );
-    		nodes = store.getRootItems();
-        	tree.collapseAll();    	
-    		
-    		tree.addListener( Events.Expand, this );
-    		
-    		eatToken();
-    		tree.setExpanded( currentNode, true );
-    	}
-    	
-		@Override
-		public void handleEvent( BaseEvent be ) {
-			if (tokens.countTokens() > 0) {
-				nodes = store.getChildren( currentNode );
-				eatToken();
-				if ( tokens.countTokens() == 0 ) {
-					// last one
-					tree.getSelectionModel().select( currentNode, false );
-					tree.scrollIntoView( currentNode );
-				} else {
-					tree.setExpanded( currentNode, true );
-				}
-			} else {
-				tree.removeListener( Events.Expand, this );
-			}
-		}
-		
-		private void eatToken() {
-	    	if ( tokens.hasMoreTokens() ) {
-	    		
-	    		String token = tokens.nextToken();
-	    		
-	    		for ( ContentNodeModel node : nodes ) {
-	    			if ( node.getKey().equals( token ) ) {
-	    				currentNode = node;
-	    				return;
-	    			}
-	    		}		
-	    	}    	
-	    	currentNode = null;
-	    	return;
-		}
-    }    
+    public void invalidate() {
+    	loader.load();
+    }
+    
+    public static void removeItemFromOrphans( String contentKey ) {
+    	ContentNodeModel orphans = mainStore.findModel( "key", "CmsQuery:orphans" );
+    	ContentNodeModel model = mainStore.findModel( "key", contentKey );
+    	mainStore.remove( orphans, model );
+    }
+    
+    public void scrollHack() {
+		El elek = new El( tree.getElement() );
+		int scroll = elek.getScrollTop();				
+		elek.scrollTo( "top", 0 ).scrollTo( "top", 1 ).scrollTo( "top", scroll );
+    }
 } 

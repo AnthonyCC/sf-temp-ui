@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Hyperlink;
 public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 	private PageHeader header;
 	private static ContentPanel mainPanel;
-	private NodeTree treePanel;
+	private static NodeTree treePanel;
 	private SimpleComboBox<String> contextDropdown;
 	private ToolBar contentToolBar;
 	
@@ -168,8 +168,8 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
     
     public static void startProgress(String title, String message, String progressText) {
         stopProgress();
-        progressBar = MessageBox.progress(title, message, progressText);
-        progressBar.setModal(true);
+		progressBar = MessageBox.progress( title, message, progressText );
+		progressBar.setModal( true );
         progressBar.getProgressBar().auto();
         progressBar.show();
     }
@@ -408,6 +408,13 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
         }
     }
 
+    public static void scrollHack() {
+    	treePanel.scrollHack();
+    }
+    
+    public static NodeTree getMainTree() {
+    	return treePanel;
+    }
     
     // =============== ACTION METHODS =============== 
     
@@ -507,6 +514,8 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                     setStatus( "Saved succesfully." );
                     stopProgress();
                     MessageBox.info("Save", "Successful. Saved with id:" + result.getChangesetId(), null);
+                    
+//                    getMainTree().invalidate();
                     
                 } else {
                 	

@@ -99,7 +99,6 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                         children.add(n);
                     }
                 }
-
                 return children;
             }
 
@@ -111,7 +110,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                     ContentNodeModel child = TranslatorToGwt.getContentNodeModel(childNode);
                     children.add(child);
                 }
-            }
+            }            
             return children;
             
         } catch (Throwable e) {

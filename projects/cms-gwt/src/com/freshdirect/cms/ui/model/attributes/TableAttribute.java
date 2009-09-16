@@ -22,9 +22,6 @@ public class TableAttribute extends BaseAttribute implements ModifiableAttribute
 
     ColumnType[] types;
 
-    /**
-     * 
-     */
     public TableAttribute() {
     }
 
@@ -48,21 +45,11 @@ public class TableAttribute extends BaseAttribute implements ModifiableAttribute
         values.add(row);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI#getType()
-     */
     @Override
     public String getType() {
         return "table";
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI#getValue()
-     */
     @Override
     public Serializable getValue() {
         return (Serializable) values;

@@ -138,8 +138,6 @@ public class ContentTreePopUp extends Window {
 
         if ( treepanel != null ) {
         	
-//            treepanel.loadRootNodes();
-            
             treepanel.removeSelectionChangedListener();
             treepanel.addSelectionChangedListener(new SelectionChangedListener<ContentNodeModel>() {
                 @Override
@@ -155,5 +153,11 @@ public class ContentTreePopUp extends Window {
             
             add( treepanel );            
         }
+    }
+    
+    @Override
+    public void show() {
+    	super.show();
+    	treepanel.scrollHack();
     }
 }

@@ -71,8 +71,12 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 	                popup.setHeading(getFieldLabel());
 	                popup.addListener(Events.Select, new Listener<BaseEvent>() {
 	                    public void handleEvent(BaseEvent be) {
-							setValue( popup.getSelectedItem() );
+	                    	ContentNodeModel model = popup.getSelectedItem();
+							setValue( model );
 	                        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(OneToOneRelationField.this));
+//	                        NodeTree.removeItemFromOrphans( model.getKey() );
+//	                        MainLayout.getMainTree().invalidate();
+//	                        MainLayout.scrollHack();
 	                    }
 	                });
 	                popup.show();

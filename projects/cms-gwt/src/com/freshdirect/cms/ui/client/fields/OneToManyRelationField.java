@@ -209,13 +209,13 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 					popup.setHeading(getFieldLabel());
 					popup.addListener(Events.Select, new Listener<BaseEvent>() {
 						public void handleEvent(BaseEvent be) {
-							List<ContentNodeModel> selection = popup.getSelectedItems();
-							for ( ContentNodeModel m : selection ) {							
-								addOneToManyModel(m.getType(), m.getKey(), m.getLabel());
-							}
+							addOneToManyModels( popup.getSelectedItems() );
+//							MainLayout.getMainTree().invalidate();
+//					        MainLayout.scrollHack();
 						}					
 					});		
-					popup.show();
+					
+					popup.show();					
 				}			
 			});
 			
@@ -480,8 +480,20 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
         store.add(model);
         grid.show();
         grid.getView().refresh(false);
-        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(this));
+        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(this));       
+//        NodeTree.removeItemFromOrphans( key );
     }
+
+	public void addOneToManyModels( List<ContentNodeModel> list ) {
+		for ( ContentNodeModel cmModel : list ) {
+			OneToManyModel otmModel = createModel( cmModel.getType(), cmModel.getKey(), cmModel.getLabel() );
+			store.add( otmModel );
+//			NodeTree.removeItemFromOrphans( cmModel.getKey() );
+		}
+		grid.show();
+		grid.getView().refresh( false );
+		fireEvent( AttributeChangeEvent.TYPE, new AttributeChangeEvent( this ) );
+	}
 
     protected OneToManyModel createModel(String type, String key, String label) {
         return new OneToManyModel(type, key, label, store.getCount());
