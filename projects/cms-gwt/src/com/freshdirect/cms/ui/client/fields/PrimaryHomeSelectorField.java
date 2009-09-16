@@ -9,7 +9,7 @@ public class PrimaryHomeSelectorField extends ComboBox<ContentNodeModel> {
 
     public PrimaryHomeSelectorField(ContentNodeModel value, GwtNodeContext ctx) {
         ListStore<ContentNodeModel> store = new ListStore<ContentNodeModel>();
-        String key = value.getKey();
+        String key = value != null ? value.getKey() : null;
         ContentNodeModel selected = null;
         for (String path : ctx.getPaths()) {
             String label =  ctx.getLabel(path);
