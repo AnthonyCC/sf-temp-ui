@@ -257,7 +257,6 @@ public class NodeTree extends ContentPanel {
 		setScrollMode( Scroll.AUTO );
 
 		createToolBar();
-		loadRootNodes();
 
 		this.setLayout( new FitLayout() );
 		this.add( tree, new FitData() );
@@ -442,10 +441,7 @@ public class NodeTree extends ContentPanel {
                 // search in popups is not using history
                 search(searchField.getValue().trim());
             }
-
-        } else {
-            loadRootNodes();
-        }
+        } 
     }
 	
 	private void clearSearchAction() {
