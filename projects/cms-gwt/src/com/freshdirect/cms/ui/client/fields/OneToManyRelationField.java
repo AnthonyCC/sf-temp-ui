@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.form.AdapterField;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -63,6 +64,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 	private ToolButton	moveButton;
 	private ToolButton	deleteButton;
 	private ToolButton	sortButton;
+	private CheckBox	selectCheckbox;
 	
 	private CheckBoxSelectionModel<OneToManyModel> selection;
 	
@@ -248,6 +250,27 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			    cp.getHeader().addTool(createButton);
 			}
 			
+		}
+		
+		{
+			cp.getHeader().addTool( new SeparatorToolItem() );
+			
+			// ==================================== SELECT CHECKBOX ====================================
+		    Listener<BaseEvent> selectListener = new Listener<BaseEvent>() {
+		        public void handleEvent( BaseEvent event ) {
+		            if ( selectCheckbox.getValue() ) {
+		            	selection.selectAll();
+		            } else {
+		            	selection.deselectAll();
+		            }
+		        }
+		    };
+		    selectCheckbox = new CheckBox();
+		    selectCheckbox.setToolTip( new ToolTipConfig( "Select all/none", "Select all/none relations." ) );
+		    selectCheckbox.addListener( Events.OnClick, selectListener );
+		    selectCheckbox.addListener( Events.OnKeyPress, selectListener );
+		    cp.getHeader().addTool(selectCheckbox);
+		    
 		}
 		
 		
@@ -521,6 +544,8 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
     		deleteButton.disable();
     	if ( sortButton != null )
     		sortButton.disable();
+    	if ( selectCheckbox != null )
+    		selectCheckbox.disable();
     }
     @Override
     public void enable() {
@@ -537,6 +562,8 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
     		deleteButton.enable();
     	if ( sortButton != null )
     		sortButton.enable();
+    	if ( selectCheckbox != null )
+    		selectCheckbox.enable();
     }
 
 	@Override
