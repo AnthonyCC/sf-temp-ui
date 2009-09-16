@@ -1,6 +1,7 @@
 package com.freshdirect.cms.ui.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Map;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -11,6 +12,7 @@ import com.freshdirect.cms.ui.client.fields.ChangeTrackingField;
 import com.freshdirect.cms.ui.client.fields.SaveListenerField;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 
 public class GwtNodeData implements Serializable {
@@ -183,6 +185,11 @@ public class GwtNodeData implements Serializable {
             }
             if (oldValue instanceof String) {
                 oldValue = ((String) oldValue).replace('\n', ' ');
+            }
+            if (value instanceof Date && oldValue instanceof Date) {
+                DateTimeFormat dateFormat = DateTimeFormat.getMediumDateFormat();
+                value = dateFormat.format((Date) value);
+                oldValue = dateFormat.format((Date) oldValue);
             }
             return value.equals(oldValue);
         } else {
