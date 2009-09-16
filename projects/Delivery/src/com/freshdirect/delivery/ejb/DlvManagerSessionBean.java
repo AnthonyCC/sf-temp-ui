@@ -2030,9 +2030,13 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		
 		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
 		orderModel.setOrderNumber(reservation.getOrderId());
-		//LOGGER.info("Old order #"+reservation.getId()+" New order#"+orderModel.getOrderNumber());
-		boolean isUpdated=routingService.schedulerUpdateOrder(orderModel, previousOrderId);
-		LOGGER.debug("routingService.schedulerUpdateOrder() :"+isUpdated);
+		boolean isUpdated = true;
+		if(orderModel.getOrderNumber() != null && !orderModel.getOrderNumber().equalsIgnoreCase(previousOrderId)) {
+			isUpdated=routingService.schedulerUpdateOrder(orderModel, previousOrderId);
+			LOGGER.debug("routingService.schedulerUpdateOrder() :"+isUpdated);
+			
+		}		
+		
 		if(!isUpdated) 
 			throw new RoutingServiceException(null, IIssue.PROCESS_UPDATE_UNSUCCESSFUL);
 		routingService.schedulerConfirmOrder(orderModel);

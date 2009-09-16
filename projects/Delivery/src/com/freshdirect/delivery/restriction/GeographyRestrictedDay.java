@@ -42,7 +42,7 @@ public class GeographyRestrictedDay implements Serializable {
 		if(condition == null) {
 			return true;
 		} else {
-			System.out.println(timeSlotStartTime+" : "+startTime+" : "+(timeSlotStartTime.after(startTime) && timeSlotStartTime.before(endTime)));
+			//System.out.println(timeSlotStartTime+" : "+startTime+" : "+(timeSlotStartTime.after(startTime) && timeSlotStartTime.before(endTime)));
 			if (condition.equals(EnumLogicalOperator.LESS_THAN)) {             
                 return timeSlotStartTime.before(startTime);
             }
