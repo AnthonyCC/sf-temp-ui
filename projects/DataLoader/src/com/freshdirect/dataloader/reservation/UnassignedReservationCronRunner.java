@@ -2,37 +2,24 @@ package com.freshdirect.dataloader.reservation;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.ContactAddressModel;
-import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
-import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
-import com.freshdirect.fdstore.CallCenterServices;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDReservation;
-import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSessionBean.ReservationInfo;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -42,6 +29,9 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 
 	private static final int DEFAULT_DAYS=7;
 	public static void main(String[] args) {
+		if(!FDStoreProperties.isDynamicRoutingEnabled()) {
+			return;
+		}
 		UnassignedReservationCronRunner cron=new UnassignedReservationCronRunner();
 		Context ctx = null;
 		try {
@@ -147,26 +137,23 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 																 reservation.getOrderId(),
 																 reservation.isInUPS());
 				 
-				dlvManager.reserveTimeslotEx(_reservation, address);
-				if(reservation.getStatusCode()==10) {
-					 dlvManager.commitReservationEx(reservation, address, reservation.getOrderId());
-				}
-			 }else if(RoutingActivityType.CONFIRM_TIMESLOT.equals(unassignedAction)) {
-				FDReservation _reservation = new FDReservation( reservation.getPK(),
-											 new FDTimeslot(dlvManager.getTimeslotById(reservation.getTimeslotId())),
-											 reservation.getExpirationDateTime(),
-											 reservation.getReservationType(),
-											 reservation.getCustomerId(),
-											 address.getPK().getId(),
-											 reservation.isChefsTable(),
-											 reservation.isUnassigned(),
-											 reservation.getOrderId(),
-											 reservation.isInUPS());
-				
+				 if(reservation.getStatusCode() == 15 || reservation.getStatusCode() == 20) {
+					 dlvManager.clearUnassignedInfo(reservation.getPK().getId());
+				 } else {
+					dlvManager.reserveTimeslotEx(_reservation, address);
+					if(reservation.getStatusCode() == 10) {
+						 dlvManager.commitReservationEx(reservation, address, reservation.getOrderId());
+					}
+				 }
+			 } else if(RoutingActivityType.CONFIRM_TIMESLOT.equals(unassignedAction)) {
+								
 				//dlvManager.reserveTimeslotEx(_reservation, address);
-				if(reservation.getStatusCode()==10) {
+				//if(reservation.getStatusCode() == 10) {
 					dlvManager.commitReservationEx(reservation, address, reservation.getOrderId());
-				}
+				//}
+				if(reservation.getStatusCode() == 15 || reservation.getStatusCode() == 20) {
+					 dlvManager.releaseReservationEx(reservation, address);
+				}	
 			 }
 			 
 			 

@@ -11,6 +11,7 @@ import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
@@ -44,7 +45,7 @@ public class CancelReservationCronRunner extends BaseReservationCronRunner {
 				LOGGER.info(new StringBuilder("CancelReservationCronRunner failed with exception : ").append(e.toString()).toString());
 				return;
 			}
-			if(expiredReservations==null || expiredReservations.isEmpty())
+			if(expiredReservations==null || expiredReservations.isEmpty() || !FDStoreProperties.isDynamicRoutingEnabled())
 				return;
 			
 			
