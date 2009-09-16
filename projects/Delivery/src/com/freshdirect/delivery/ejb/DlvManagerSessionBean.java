@@ -1747,7 +1747,8 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	
 	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) {
 				
-		if(reservation==null || address==null ||reservation.isInUPS()/*|| reservation.getUnassignedActivityType().*/)
+		
+		if(reservation==null || address==null ||!reservation.isInUPS()/*|| reservation.getUnassignedActivityType().*/)
 			return ;		
 		
 		if (RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
