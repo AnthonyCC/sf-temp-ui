@@ -99,35 +99,34 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		cp.setWidth(MAIN_LABEL_WIDTH + 50);
 		cp.addStyleName("one-to-many");
 		
-		
-		// ==================================== COPY ====================================
-		copyButton = new ToolButton("copy-button");
-		copyButton.setToolTip( new ToolTipConfig( "COPY", "Copy selected relations to another node." ) );		
-		copyButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-			public void handleEvent(BaseEvent be) {
-				
-				final List<OneToManyModel> selectedList = selection.getSelectedItems();
-				
-				final ContentTreePopUp popup = ContentTreePopUp.getInstance( null, false );		
-				popup.setHeading( "Copy " + selectedList.size() + " item(s) to :" );
-				
-				popup.addListener( Events.Select, new Listener<BaseEvent>() {
-					
-					public void handleEvent( BaseEvent be ) {
-						ContentNodeModel targetNode = popup.getSelectedItem();
-						addRelationshipsToNode( targetNode.getKey(), attributeKey, selectedList );
-						MainLayout.setStatus( "" + selectedList.size() + " item(s) copied to " + targetNode.getLabel() );
-					}					
-				});		
-				popup.show();
-
-			}			
-		});
-		cp.getHeader().addTool( copyButton );
-		
-		
 		if ( !readonly ) {
-				
+
+			// ==================================== COPY ====================================
+			copyButton = new ToolButton("copy-button");
+			copyButton.setToolTip( new ToolTipConfig( "COPY", "Copy selected relations to another node." ) );		
+			copyButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+				public void handleEvent(BaseEvent be) {
+					
+					final List<OneToManyModel> selectedList = selection.getSelectedItems();
+					
+					final ContentTreePopUp popup = ContentTreePopUp.getInstance( null, false );		
+					popup.setHeading( "Copy " + selectedList.size() + " item(s) to :" );
+					
+					popup.addListener( Events.Select, new Listener<BaseEvent>() {
+						
+						public void handleEvent( BaseEvent be ) {
+							ContentNodeModel targetNode = popup.getSelectedItem();
+							addRelationshipsToNode( targetNode.getKey(), attributeKey, selectedList );
+							MainLayout.setStatus( "" + selectedList.size() + " item(s) copied to " + targetNode.getLabel() );
+						}					
+					});		
+					popup.show();
+	
+				}			
+			});
+			cp.getHeader().addTool( copyButton );
+			
+							
 			// ==================================== MOVE ====================================
 			moveButton = new ToolButton("move-button");
 			moveButton.setToolTip( new ToolTipConfig( "MOVE", "Move selected relations to another node." ) );		
@@ -250,9 +249,6 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			    cp.getHeader().addTool(createButton);
 			}
 			
-		}
-		
-		{
 			cp.getHeader().addTool( new SeparatorToolItem() );
 			
 			// ==================================== SELECT CHECKBOX ====================================
@@ -447,13 +443,13 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			newValue = new ArrayList<OneToManyModel>();
 		}
 
-		// TODO check if it is already in the list? duplicate items are possible here!
-		newValue.addAll( relationships );
-		node.changeValue( targetAttributeKey, (Serializable)newValue );
-		
-		// TODO check if node really changed?  
+		for ( OneToManyModel otmModel : relationships ) {
+			if ( !newValue.contains( otmModel ) ) {
+				newValue.add( otmModel );				
+			}
+		}	
+		node.changeValue( targetAttributeKey, (Serializable)newValue );		
     	WorkingSet.add( node );
-		
 	}
 	
 	private void removeRelationships( final List<OneToManyModel> relationships ) {
@@ -498,20 +494,22 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
         });
     }
 
-    public void addOneToManyModel(String type, String key, String label) {
-        OneToManyModel model = createModel(type, key, label);
-        store.add(model);
-        grid.show();
-        grid.getView().refresh(false);
-        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(this));       
-//        NodeTree.removeItemFromOrphans( key );
+    public void addOneToManyModel(String type, String key, String label) {    	
+        if ( store.findModel( "key", key ) == null ) {        
+	        OneToManyModel model = createModel(type, key, label);
+	        store.add(model);
+	        grid.show();
+	        grid.getView().refresh(false);
+	        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(this));       
+        }
     }
 
 	public void addOneToManyModels( List<ContentNodeModel> list ) {
 		for ( ContentNodeModel cmModel : list ) {
-			OneToManyModel otmModel = createModel( cmModel.getType(), cmModel.getKey(), cmModel.getLabel() );
-			store.add( otmModel );
-//			NodeTree.removeItemFromOrphans( cmModel.getKey() );
+			if ( store.findModel( "key", cmModel.getKey() ) == null ) {
+				OneToManyModel otmModel = createModel( cmModel.getType(), cmModel.getKey(), cmModel.getLabel() );
+				store.add( otmModel );
+			}
 		}
 		grid.show();
 		grid.getView().refresh( false );
