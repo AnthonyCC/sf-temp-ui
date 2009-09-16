@@ -62,11 +62,11 @@ public class RoutingUtil {
 			}
 	}
 	
-	public   void sendTimeslotReservationRequest(FDReservation reservation, ContactAddressModel address) throws FDResourceException {
+	public   void sendTimeslotReservationRequest(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot) throws FDResourceException {
 
 		try {
 				RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
-				routingSB.sendReserveTimeslotRequest(reservation,address);
+				routingSB.sendReserveTimeslotRequest(reservation,address, timeslot);
 
 			} catch (CreateException ce) {
 				throw new FDResourceException(ce);
@@ -118,11 +118,11 @@ public class RoutingUtil {
 	}
 	
 	
-	public IDeliverySlot getDeliverySlot(FDReservation reservation) {
+	public IDeliverySlot getDeliverySlot(FDTimeslot timeslot) {
 		
 		IDeliverySlot deliverySlot=new DeliverySlot();
-		deliverySlot.setStartTime(reservation.getStartTime());
-		deliverySlot.setStopTime(reservation.getEndTime());
+		deliverySlot.setStartTime(timeslot.getBegDateTime());
+		deliverySlot.setStopTime(timeslot.getEndDateTime());
 		return deliverySlot;
 	}
 	

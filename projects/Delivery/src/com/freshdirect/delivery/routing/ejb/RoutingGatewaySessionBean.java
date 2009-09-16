@@ -42,10 +42,11 @@ public class RoutingGatewaySessionBean extends GatewaySessionBeanSupport {
 		this.enqueue(command);
 	}
 
-	public void sendReserveTimeslotRequest(FDReservation reservation, ContactAddressModel address) {
+	public void sendReserveTimeslotRequest(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot) {
 		ReserveTimeslotCommand command=new ReserveTimeslotCommand();
 		command.setAddress(address);
 		command.setReservation(reservation);
+		command.setTimeslot(timeslot);
 		
 		this.enqueue(command);
 	}

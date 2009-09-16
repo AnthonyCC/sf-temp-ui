@@ -1,18 +1,27 @@
 package com.freshdirect.delivery.routing.ejb;
 
 import com.freshdirect.common.address.ContactAddressModel;
-import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.delivery.model.DlvReservationModel;
+import com.freshdirect.fdstore.FDTimeslot;
 
 public class ReserveTimeslotCommand implements java.io.Serializable {
-	private FDReservation reservation;
+	private DlvReservationModel reservation;
 	private ContactAddressModel address;
+	private FDTimeslot timeslot;
 	
-	public FDReservation getReservation() {
+	public FDTimeslot getTimeslot() {
+		return timeslot;
+	}
+	public void setTimeslot(FDTimeslot timeslot) {
+		this.timeslot = timeslot;
+	}
+	public DlvReservationModel getReservation() {
 		return reservation;
 	}
-	public void setReservation(FDReservation reservation) {
+	public void setReservation(DlvReservationModel reservation) {
 		this.reservation = reservation;
 	}
+	
 	public ContactAddressModel getAddress() {
 		return address;
 	}

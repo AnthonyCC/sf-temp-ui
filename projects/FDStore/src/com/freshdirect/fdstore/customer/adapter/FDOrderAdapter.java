@@ -134,7 +134,7 @@ public class FDOrderAdapter implements FDOrderI {
 					info.getDeliveryCutoffTime(),
 					EnumReservationType.STANDARD_RESERVATION,
 					this.getCustomerId(),
-					null, false,false, this.sale.getId(),false);
+					null, false,false, this.sale.getId(),false,null,20);
 			}
 		} catch (FDResourceException ex) {
 			throw new FDRuntimeException(ex);

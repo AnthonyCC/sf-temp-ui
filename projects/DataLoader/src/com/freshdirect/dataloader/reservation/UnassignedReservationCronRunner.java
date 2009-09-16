@@ -123,44 +123,21 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 			 FDIdentity identity=getIdentity(reservation.getCustomerId());
 			 ContactAddressModel address= sb.getAddress(identity, reservation.getAddressId());
 			 RoutingActivityType unassignedAction=reservation.getUnassignedActivityType();
-			 if(RoutingActivityType.CANCEL_TIMESLOT.equals(unassignedAction)) {
-				 dlvManager.releaseReservationEx(reservation, address);
-			 } else if(RoutingActivityType.RESERVE_TIMESLOT.equals(unassignedAction)) {
-				 FDReservation _reservation = new FDReservation( reservation.getPK(),
-						 										 new FDTimeslot(dlvManager.getTimeslotById(reservation.getTimeslotId())),
-																 reservation.getExpirationDateTime(),
-																 reservation.getReservationType(),
-																 reservation.getCustomerId(),
-																 address.getPK().getId(),
-																 reservation.isChefsTable(),
-																 reservation.isUnassigned(),
-																 reservation.getOrderId(),
-																 reservation.isInUPS());
-				 
-				 if(reservation.getStatusCode() == 15 || reservation.getStatusCode() == 20) {
-					 dlvManager.clearUnassignedInfo(reservation.getPK().getId());
-				 } else {
-					dlvManager.reserveTimeslotEx(_reservation, address);
-					if(reservation.getStatusCode() == 10) {
-						 dlvManager.commitReservationEx(reservation, address, reservation.getOrderId());
-					}
-				 }
-			 } else if(RoutingActivityType.CONFIRM_TIMESLOT.equals(unassignedAction)) {
+			 FDTimeslot _timeslot = new FDTimeslot(dlvManager.getTimeslotById(reservation.getTimeslotId()));
+			if(RoutingActivityType.RESERVE_TIMESLOT.equals(unassignedAction)) {
+				if(_timeslot != null) {
+					dlvManager.reserveTimeslotEx(reservation, address, _timeslot);
+				}
+			 } else {
 								
-				//dlvManager.reserveTimeslotEx(_reservation, address);
-				//if(reservation.getStatusCode() == 10) {
-					dlvManager.commitReservationEx(reservation, address, reservation.getOrderId());
-				//}
-				if(reservation.getStatusCode() == 15 || reservation.getStatusCode() == 20) {
-					 dlvManager.releaseReservationEx(reservation, address);
-				}	
+				 dlvManager.commitReservationEx(reservation, address, reservation.getOrderId());
 			 }
 			 
 			 
-			} catch (Exception e) {
-				e.printStackTrace();
-				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner: ").append(" failed to reassign reservation for id ").append(reservation.getId()).toString(),e);
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.info(new StringBuilder("UnassignedReservationCronRunner: ").append(" failed to reassign reservation for id ").append(reservation.getId()).toString(),e);
+		}
     }
 	
 

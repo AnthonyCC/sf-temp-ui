@@ -14,6 +14,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 import com.freshdirect.delivery.EnumReservationType;
+import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 
@@ -32,7 +33,8 @@ public class FDReservation extends ModelSupport {
 	private final boolean chefsTable;
 	private final boolean isUnassigned;
 	private final boolean isInUPS;
-	 
+	private final RoutingActivityType unassignedActivityType;
+	private final int statusCode;
 
 	public FDReservation(
 		PrimaryKey pk,
@@ -44,7 +46,9 @@ public class FDReservation extends ModelSupport {
 		boolean chefsTable,
 		boolean isUnassigned,
 		String orderId,
-		boolean isInUPS) {
+		boolean isInUPS,
+		RoutingActivityType unassignedActivityType,
+		int statusCode) {
 		this.setPK(pk);
 		this.timeslot = timeslot;
 		this.expirationDateTime = expirationDateTime;
@@ -55,8 +59,19 @@ public class FDReservation extends ModelSupport {
 		this.isUnassigned=isUnassigned;
 		this.orderId = orderId;
 		this.isInUPS=isInUPS;
+		this.unassignedActivityType=unassignedActivityType;
+		this.statusCode=statusCode;
 	}
-
+	public EnumReservationType getType() {
+		return type;
+	}
+	public int getStatusCode() {
+		return statusCode;
+	}
+	
+	public RoutingActivityType getUnassignedActivityType() {
+		return unassignedActivityType;
+	}
 	public String getOrderId() {
 		return orderId;
 	}

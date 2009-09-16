@@ -128,7 +128,7 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public List<java.util.List<IDeliverySlot>> getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) throws RemoteException;
 	
-	public IDeliveryReservation reserveTimeslotEx(FDReservation reservation,ContactAddressModel address ) throws RemoteException;
+	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation,ContactAddressModel address , FDTimeslot timeslot) throws RemoteException;
 	
 	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) throws  RemoteException;
 	

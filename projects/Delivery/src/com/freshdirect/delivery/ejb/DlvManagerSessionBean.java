@@ -558,17 +558,8 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			DlvTimeslotModel timeslot =  i.next();
 			retLst.add(new FDTimeslot(timeslot));
 		}
-		getTimeslotForDateRangeAndZoneEx(retLst,address);
-		
-		FDReservation reservation= new FDReservation(
-				dlvReservation.getPK(),
-				new FDTimeslot(foundTimeslot),
-				dlvReservation.getExpirationDateTime(),
-				dlvReservation.getReservationType(),
-				dlvReservation.getCustomerId(),
-				address.getId(),
-				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null, dlvReservation.getOrderId(),dlvReservation.isInUPS());
-		this.reserveTimeslotEx(reservation, address);
+		getTimeslotForDateRangeAndZoneEx(retLst,address);			
+		this.reserveTimeslotEx(dlvReservation, address, new FDTimeslot(foundTimeslot));
 		
 	   } catch (Exception e) {
 		   e.printStackTrace();
@@ -1691,12 +1682,34 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		return timeSlots;
 	}
 	
-	public IDeliveryReservation reserveTimeslotEx(FDReservation reservation,ContactAddressModel address ) {
-		
-		long startTime=System.currentTimeMillis();
+	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation, ContactAddressModel address , FDTimeslot timeslot) {
+				
+		IDeliveryReservation _reservation = null;
 		
 		if(reservation==null || address==null)
 			return null;
+		if (RoutingActivityType.RESERVE_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
+			if(reservation.getStatusCode() == 5) {
+				_reservation = doReserveEx(reservation, address, timeslot);
+			} else if(reservation.getStatusCode() == 15 || reservation.getStatusCode() == 20) {
+				clearUnassignedInfo(reservation.getId());
+			} else if(reservation.getStatusCode() == 10) {
+				_reservation = doReserveEx(reservation, address, timeslot);
+				if( _reservation != null && _reservation.isReserved()) {
+					doConfirmEx(reservation, address, reservation.getOrderId());
+				}
+			}
+		} else {
+			_reservation = doReserveEx(reservation, address, timeslot);
+		}		
+		
+		return _reservation;
+	}
+	
+	private IDeliveryReservation doReserveEx(DlvReservationModel reservation,ContactAddressModel address , FDTimeslot timeslot) {
+		
+		long startTime=System.currentTimeMillis();
+				
 		IDeliverySlot reservedSlot=null;
 		
 		RoutingUtil util=RoutingUtil.getInstance();
@@ -1706,9 +1719,9 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			
 			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
 			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
-			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getTimeslot().getZoneCode()));
-			order=setDeliveryInfo(order,reservation.getTimeslot().getBaseDate());
-			reservedSlot=util.getDeliverySlot(reservation);
+			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(timeslot.getZoneCode()));
+			order=setDeliveryInfo(order,timeslot.getBaseDate());
+			reservedSlot = util.getDeliverySlot(timeslot);
 			_reservation=schedulerReserveOrder(order,reservedSlot );
 			long endTime=System.currentTimeMillis();
 			logTimeslots(order.getOrderNumber(),reservation.getCustomerId(),RoutingActivityType.RESERVE_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime),address);
@@ -1730,12 +1743,30 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		return _reservation;
 	}
 	
+	
+	
 	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) {
-		
-		long startTime=System.currentTimeMillis();
-		if(reservation==null || address==null ||!reservation.isInUPS()/*|| reservation.getUnassignedActivityType().*/)
+				
+		if(reservation==null || address==null ||reservation.isInUPS()/*|| reservation.getUnassignedActivityType().*/)
 			return ;		
 		
+		if (RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
+			if(reservation.getStatusCode() == 10) {
+				doConfirmEx(reservation, address, previousOrderId);
+			} else if(reservation.getStatusCode() == 15 || reservation.getStatusCode() == 20) {
+				clearUnassignedInfo(reservation.getId());
+			} else if(reservation.getStatusCode() == 10) {
+				doReleaseReservationEx(reservation, address);
+			}
+		} else {
+			doConfirmEx(reservation, address, previousOrderId);
+		}		
+	}
+	
+	private void doConfirmEx(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) {
+		
+		long startTime=System.currentTimeMillis();
+			
 		RoutingUtil util=RoutingUtil.getInstance();
 		IOrderModel order= util.getOrderModel(address,reservation.getOrderId());
 		
@@ -1759,14 +1790,21 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.CONFIRM_TIMESLOT);
 		}
-		setUPSIndicator(reservation.getId());
 	}
 	
-	
-	
-
-	
 	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) {
+				
+		if(reservation==null || address==null ||!reservation.isInUPS())
+			return ;		
+		
+		if (RoutingActivityType.RESERVE_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
+			this.clearUnassignedInfo(reservation.getId());
+		} else {
+			doReleaseReservationEx(reservation, address);
+		}	
+	}
+	
+	private void doReleaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) {
 		
 		long startTime=System.currentTimeMillis();
 		if(reservation==null || address==null ||!reservation.isInUPS())
@@ -1795,6 +1833,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 		setUPSIndicator(reservation.getId());
 	}
+	
 	public void setUnassignedInfo(String reservationId,RoutingActivityType activity ) {
 		Connection conn = null;
 		try {

@@ -22,7 +22,7 @@ public interface RoutingGatewaySB extends EJBObject {
 	
 	public void sendDateRangeAndZoneForTimeslots(List<FDTimeslot> timeSlots, ContactAddressModel address) throws RemoteException;
 	
-	public void sendReserveTimeslotRequest(FDReservation  reservation, ContactAddressModel address)throws RemoteException;
+	public void sendReserveTimeslotRequest(DlvReservationModel  reservation, ContactAddressModel address, FDTimeslot timeslot)throws RemoteException;
 	
 	public void sendCommitReservationRequest(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) throws RemoteException;
 	

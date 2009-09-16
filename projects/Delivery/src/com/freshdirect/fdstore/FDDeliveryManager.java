@@ -485,10 +485,12 @@ public class FDDeliveryManager {
 				dlvReservation.getReservationType(),
 				dlvReservation.getCustomerId(),
 				address.getId(),
-				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null, dlvReservation.getOrderId(),dlvReservation.isInUPS());
+				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null, dlvReservation.getOrderId(),dlvReservation.isInUPS(),
+				dlvReservation.getUnassignedActivityType(),
+				dlvReservation.getStatusCode());
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
-				if(dlvReservation.getUnassignedActivityType()==null ||RoutingActivityType.RESERVE_TIMESLOT.equals(dlvReservation.getUnassignedActivityType()))
-					RoutingUtil.getInstance().sendTimeslotReservationRequest(reservation,address);
+				//if(dlvReservation.getUnassignedActivityType()==null ||RoutingActivityType.RESERVE_TIMESLOT.equals(dlvReservation.getUnassignedActivityType()))
+					RoutingUtil.getInstance().sendTimeslotReservationRequest(dlvReservation, address, timeslot);
 			}
 			return reservation;
 
@@ -512,7 +514,9 @@ public class FDDeliveryManager {
 			return new FDReservation(reservation.getPK(), reservation.getTimeslot(), newExpTime.getTime(), reservation
 				.getReservationType(), reservation.getCustomerId(), reservation.getAddressId(), reservation.isChefsTable()
 				,reservation.isUnassigned()
-				, reservation.getOrderId(),reservation.isInUPS());
+				, reservation.getOrderId(),reservation.isInUPS(),
+				 reservation.getUnassignedActivityType(),
+				 reservation.getStatusCode());
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -540,12 +544,13 @@ public class FDDeliveryManager {
 			
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(reservationId);
-				if(reservation.getUnassignedActivityType()==null 
+				RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
+				/*if(reservation.getUnassignedActivityType()==null 
 						|| RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
 					RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
 				} else {
 					sb.clearUnassignedInfo(reservationId);
-				}
+				}*/
 			}
 
 		} catch (RemoteException re) {
@@ -578,7 +583,9 @@ public class FDDeliveryManager {
 					dlvRsv.getCustomerId(),
 					dlvRsv.getAddressId(),
 					dlvRsv.isChefsTable(),
-					dlvRsv.isUnassigned(), dlvRsv.getOrderId(),dlvRsv.isInUPS()));
+					dlvRsv.isUnassigned(), dlvRsv.getOrderId(),dlvRsv.isInUPS(),
+					dlvRsv.getUnassignedActivityType(),
+					dlvRsv.getStatusCode()));
 			}
 			return rsvLst;
 
@@ -598,7 +605,7 @@ public class FDDeliveryManager {
 			sb.commitReservation(rsvId, customerId, orderId);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(rsvId);
-				if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))
+				//if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))
 					RoutingUtil.getInstance().sendCommitReservationRequest(reservation, address, oldReserve.getOrderId());
 			}
 		} catch (RemoteException re) {
@@ -617,7 +624,7 @@ public class FDDeliveryManager {
 			 boolean status=sb.releaseReservation(rsvId);
 			 if(FDStoreProperties.isDynamicRoutingEnabled()) {
 					DlvReservationModel reservation=sb.getReservation(rsvId);
-					if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType()))
+					//if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType()))
 						RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
 			 }
 			 return status;
@@ -638,7 +645,8 @@ public class FDDeliveryManager {
 
 			FDReservation fdRes = new FDReservation(dlvRsv.getPK(), timeslot, dlvRsv.getExpirationDateTime(), dlvRsv
 				.getReservationType(), dlvRsv.getCustomerId(), dlvRsv.getAddressId(), dlvRsv.isChefsTable(),dlvRsv.isUnassigned()
-				, dlvRsv.getOrderId(),dlvRsv.isInUPS());
+				, dlvRsv.getOrderId(),dlvRsv.isInUPS(),dlvRsv.getUnassignedActivityType(),
+				dlvRsv.getStatusCode());
 
 			return fdRes;
 		} catch (ObjectNotFoundException ex) {
@@ -895,13 +903,13 @@ public class FDDeliveryManager {
 		} 
 	}
 
-	public IDeliveryReservation reserveTimeslotEx(FDReservation reservation,ContactAddressModel address) throws FDResourceException {
+	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot) throws FDResourceException {
 
 			try {
 				
 				
 				DlvManagerSB sb = getDlvManagerHome().create();
-				return sb.reserveTimeslotEx(reservation, address);
+				return sb.reserveTimeslotEx(reservation, address, timeslot);
 
 			} catch (RemoteException re) {
 				throw new FDResourceException(re);
