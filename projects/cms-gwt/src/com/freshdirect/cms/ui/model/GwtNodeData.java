@@ -190,7 +190,7 @@ public class GwtNodeData implements Serializable {
                 DateTimeFormat dateFormat = DateTimeFormat.getMediumDateFormat();
                 value = dateFormat.format((Date) value);
                 oldValue = dateFormat.format((Date) oldValue);
-            }
+            }            
             return value.equals(oldValue);
         } else {
             return oldValue==null;
