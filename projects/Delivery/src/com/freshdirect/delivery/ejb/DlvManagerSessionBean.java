@@ -1723,6 +1723,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			order=setDeliveryInfo(order,timeslot.getBaseDate());
 			reservedSlot = util.getDeliverySlot(timeslot);
 			_reservation=schedulerReserveOrder(order,reservedSlot );
+			
 			long endTime=System.currentTimeMillis();
 			logTimeslots(order.getOrderNumber(),reservation.getCustomerId(),RoutingActivityType.RESERVE_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime),address);
 			if(_reservation==null || !_reservation.isReserved()) {
@@ -1759,7 +1760,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			} else if(reservation.getStatusCode() == 10) {
 				doReleaseReservationEx(reservation, address);
 			}
-		} else {
+		} else if (reservation.getUnassignedActivityType()==null){
 			doConfirmEx(reservation, address, previousOrderId);
 		}		
 	}
