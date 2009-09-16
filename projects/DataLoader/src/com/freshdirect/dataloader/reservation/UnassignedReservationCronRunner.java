@@ -36,16 +36,16 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSessionBean.Reserva
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class UnassignedReservationCronRunner {
+public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(UnassignedReservationCronRunner.class);
 
 	private static final int DEFAULT_DAYS=7;
 	public static void main(String[] args) {
-		
+		UnassignedReservationCronRunner cron=new UnassignedReservationCronRunner();
 		Context ctx = null;
 		try {
-			ctx = getInitialContext();
+			ctx = cron.getInitialContext();
 			
 			List<DlvReservationModel> unassignedReservations=new ArrayList<DlvReservationModel>();
 			DlvManagerSB dlvManager =null;
@@ -86,11 +86,15 @@ public class UnassignedReservationCronRunner {
 				
 				if(hasArg) {
 					List<DlvReservationModel> _unassignedReservations=dlvManager.getUnassignedReservations(startDate.getTime());
-					if(_unassignedReservations!=null && !_unassignedReservations.isEmpty())
+					System.out.println("Total unassigned reservations for :"+startDate.getTime()+"->"+(_unassignedReservations!=null ? _unassignedReservations.size() : 0));
+					if(_unassignedReservations!=null && !_unassignedReservations.isEmpty()) {
+						
 						unassignedReservations.addAll(_unassignedReservations);
+					}
 				} else {
 					for(int i=0;i<DEFAULT_DAYS;i++) {
 						List<DlvReservationModel> _unassignedReservations=dlvManager.getUnassignedReservations(startDate.getTime());
+						System.out.println("Total unassigned reservations for :"+startDate.getTime()+"->"+(_unassignedReservations!=null ? _unassignedReservations.size() : 0));
 						if(_unassignedReservations!=null && !_unassignedReservations.isEmpty())
 							unassignedReservations.addAll(_unassignedReservations);
 						startDate.add(Calendar.DATE, 1);
@@ -101,8 +105,10 @@ public class UnassignedReservationCronRunner {
 			}
 			if(unassignedReservations==null || unassignedReservations.isEmpty())
 				return;
+			
+			
 			for (DlvReservationModel reservation : unassignedReservations) {
-				reassignReservation(dlvManager,custManager,reservation);
+				cron.processReservation(dlvManager,custManager,reservation);
 			 }
 			LOGGER.info("UnassignedReservationCronRunner finished");
 		}catch (NamingException e) {
@@ -121,7 +127,7 @@ public class UnassignedReservationCronRunner {
 		}
 	}
 		
-    private static void reassignReservation(DlvManagerSB dlvManager,FDCustomerManagerSB sb,DlvReservationModel reservation) {
+    public void processReservation(DlvManagerSB dlvManager,FDCustomerManagerSB sb,DlvReservationModel reservation) {
     	try {
     		
 			 FDIdentity identity=getIdentity(reservation.getCustomerId());
@@ -129,8 +135,7 @@ public class UnassignedReservationCronRunner {
 			 RoutingActivityType unassignedAction=reservation.getUnassignedActivityType();
 			 if(RoutingActivityType.CANCEL_TIMESLOT.equals(unassignedAction)) {
 				 dlvManager.releaseReservationEx(reservation, address);
-			 } else if(RoutingActivityType.RESERVE_TIMESLOT.equals(unassignedAction)
-					 || RoutingActivityType.CONFIRM_TIMESLOT.equals(unassignedAction)) {
+			 } else if(RoutingActivityType.RESERVE_TIMESLOT.equals(unassignedAction)) {
 				 FDReservation _reservation = new FDReservation( reservation.getPK(),
 						 										 new FDTimeslot(dlvManager.getTimeslotById(reservation.getTimeslotId())),
 																 reservation.getExpirationDateTime(),
@@ -139,28 +144,37 @@ public class UnassignedReservationCronRunner {
 																 address.getPK().getId(),
 																 reservation.isChefsTable(),
 																 reservation.isUnassigned(),
-																 reservation.getOrderId());
+																 reservation.getOrderId(),
+																 reservation.isInUPS());
+				 
 				dlvManager.reserveTimeslotEx(_reservation, address);
-				if(RoutingActivityType.CONFIRM_TIMESLOT.equals(unassignedAction)) {
+				if(reservation.getStatusCode()==10) {
 					 dlvManager.commitReservationEx(reservation, address, reservation.getOrderId());
 				}
+			 }else if(RoutingActivityType.CONFIRM_TIMESLOT.equals(unassignedAction)) {
+				FDReservation _reservation = new FDReservation( reservation.getPK(),
+											 new FDTimeslot(dlvManager.getTimeslotById(reservation.getTimeslotId())),
+											 reservation.getExpirationDateTime(),
+											 reservation.getReservationType(),
+											 reservation.getCustomerId(),
+											 address.getPK().getId(),
+											 reservation.isChefsTable(),
+											 reservation.isUnassigned(),
+											 reservation.getOrderId(),
+											 reservation.isInUPS());
+				
+				//dlvManager.reserveTimeslotEx(_reservation, address);
+				if(reservation.getStatusCode()==10) {
+					dlvManager.commitReservationEx(reservation, address, reservation.getOrderId());
+				}
 			 }
+			 
 			 
 			} catch (Exception e) {
 				e.printStackTrace();
 				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner: ").append(" failed to reassign reservation for id ").append(reservation.getId()).toString(),e);
 			}
     }
-	static public Context getInitialContext() throws NamingException {
-		Hashtable h = new Hashtable();
-		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-		System.out.println("ErpServicesProperties.getProviderURL() :"+ErpServicesProperties.getProviderURL());
-		h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
-		return new InitialContext(h);
-	}
 	
-	private static FDIdentity getIdentity(String erpCustomerId) {
-		return new FDIdentity(erpCustomerId);
-	}
 
 }

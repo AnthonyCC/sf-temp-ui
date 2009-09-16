@@ -140,4 +140,8 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public void clearUnassignedInfo(String reservationId )throws  RemoteException;
 	
+	public List<DlvReservationModel> getExpiredReservations() throws DlvResourceException,RemoteException;
+	
+	public void expireReservations() throws DlvResourceException,RemoteException;
+	
 }   

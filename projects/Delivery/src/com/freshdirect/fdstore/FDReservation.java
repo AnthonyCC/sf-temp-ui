@@ -31,6 +31,7 @@ public class FDReservation extends ModelSupport {
 	private final String orderId;
 	private final boolean chefsTable;
 	private final boolean isUnassigned;
+	private final boolean isInUPS;
 	 
 
 	public FDReservation(
@@ -42,7 +43,8 @@ public class FDReservation extends ModelSupport {
 		String addressId,
 		boolean chefsTable,
 		boolean isUnassigned,
-		String orderId) {
+		String orderId,
+		boolean isInUPS) {
 		this.setPK(pk);
 		this.timeslot = timeslot;
 		this.expirationDateTime = expirationDateTime;
@@ -52,6 +54,7 @@ public class FDReservation extends ModelSupport {
 		this.chefsTable = chefsTable;
 		this.isUnassigned=isUnassigned;
 		this.orderId = orderId;
+		this.isInUPS=isInUPS;
 	}
 
 	public String getOrderId() {
@@ -104,6 +107,9 @@ public class FDReservation extends ModelSupport {
 	
 	public boolean isUnassigned() {
 		return isUnassigned;
+	}
+	public boolean isInUPS() {
+		return isInUPS;
 	}
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);

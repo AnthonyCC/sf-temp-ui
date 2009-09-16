@@ -33,6 +33,7 @@ public class DlvReservationModel extends ModelSupport {
 	private Date deliveryDate;
 	private String zoneCode;
 	private RoutingActivityType unassignedActivityType;
+	private boolean inUPS;
 	/*private Date unassignedDateTime;
 	
 
@@ -79,7 +80,7 @@ public class DlvReservationModel extends ModelSupport {
 		Date expirationDateTime,
 		String timeslotId,
 		String zoneId,
-		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType) {
+		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS) {
 			
 		this.orderId = orderId;
 		this.customerId = customerId;
@@ -93,6 +94,7 @@ public class DlvReservationModel extends ModelSupport {
 		this.zoneCode=zoneCode;
 		//this.unassignedDateTime=unassignedDateTime;
 		this.unassignedActivityType=unassignedActivityType;
+		this.inUPS=inUPS;
 	}
 
 	public DlvReservationModel(
@@ -103,9 +105,9 @@ public class DlvReservationModel extends ModelSupport {
 		Date expirationDateTime,
 		String timeslotId,
 		String zoneId,
-		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType) {
+		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS) {
 			
-		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type, addressId,deliveryDate,zoneCode/*,unassignedDateTime*/,unassignedActivityType);
+		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type, addressId,deliveryDate,zoneCode/*,unassignedDateTime*/,unassignedActivityType,inUPS);
 		this.setPK(pk);
 
 	}
@@ -174,6 +176,14 @@ public class DlvReservationModel extends ModelSupport {
 		this.addressId = addressId;
 	}
 
+	public boolean isInUPS() {
+		return chefsTable;
+	}
+
+	public void setInUPS(boolean inUPS) {
+		this.inUPS = inUPS;
+	}
+	
 	public boolean isChefsTable() {
 		return chefsTable;
 	}
@@ -181,7 +191,6 @@ public class DlvReservationModel extends ModelSupport {
 	public void setChefsTable(boolean chefsTable) {
 		this.chefsTable = chefsTable;
 	}
-	
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}

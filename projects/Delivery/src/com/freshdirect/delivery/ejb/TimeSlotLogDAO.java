@@ -19,10 +19,10 @@ public class TimeSlotLogDAO {
 	
 	private static final String EMPTY_TIMESLOT="1";
 	private static final String AVAILABLE_TIMESLOT="0";
-	private static final String TIMESLOT_LOG_INSERT="INSERT INTO DLV.TIMESLOT_LOG (ID, EVENT_DTM, ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME) VALUES (?,SYSDATE,?,?,?,?)";
+	private static final String TIMESLOT_LOG_INSERT="INSERT INTO DLV.TIMESLOT_LOG (ID, EVENT_DTM, ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS) VALUES (?,SYSDATE,?,?,?,?,?)";
 	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO DLV.TIMESLOT_LOG_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME, END_TIME, IS_EMPTY) VALUES (?,?,?,?,?)";
 	
-	public static void addEntry(Connection conn,String orderId,String customerId,RoutingActivityType actionType,List<java.util.List<IDeliverySlot>> slots, int responseTime ) throws SQLException{
+	public static void addEntry(Connection conn,String orderId,String customerId,RoutingActivityType actionType,List<java.util.List<IDeliverySlot>> slots, int responseTime,String comments ) throws SQLException{
 		
 		PreparedStatement ps = conn.prepareStatement(TIMESLOT_LOG_INSERT);
 		String id = SequenceGenerator.getNextId(conn, "DLV", "TIMESLOT_LOG_SEQUENCE");
@@ -31,8 +31,11 @@ public class TimeSlotLogDAO {
 	    ps.setString(3, customerId);
 	    ps.setString(4, actionType.value());
 	    ps.setInt(5, responseTime);
+	    ps.setString(6, comments);
 	    ps.execute();
 	    ps.close();
+	    if (slots==null) return;
+	    
 	    ps=conn.prepareStatement(TIMESLOT_LOG_DTL_INSERT);
 	    for (List<IDeliverySlot> list : slots) {
 	    	
@@ -44,7 +47,6 @@ public class TimeSlotLogDAO {
 		    	ps.setTimestamp(4, new java.sql.Timestamp(slot.getStopTime().getTime()));
 		    	if(slot.getDeliveryCost()!=null && slot.getDeliveryCost().isAvailable()) {
 		    		ps.setString(5, AVAILABLE_TIMESLOT);
-		    		
 		    	}
 		    	else {
 		    		ps.setString(5, EMPTY_TIMESLOT);

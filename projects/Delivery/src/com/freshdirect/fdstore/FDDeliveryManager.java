@@ -485,7 +485,7 @@ public class FDDeliveryManager {
 				dlvReservation.getReservationType(),
 				dlvReservation.getCustomerId(),
 				address.getId(),
-				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null, dlvReservation.getOrderId());
+				dlvReservation.isChefsTable(),dlvReservation.getUnassignedActivityType()!=null, dlvReservation.getOrderId(),dlvReservation.isInUPS());
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				if(dlvReservation.getUnassignedActivityType()==null ||RoutingActivityType.RESERVE_TIMESLOT.equals(dlvReservation.getUnassignedActivityType()))
 					RoutingUtil.getInstance().sendTimeslotReservationRequest(reservation,address);
@@ -512,7 +512,7 @@ public class FDDeliveryManager {
 			return new FDReservation(reservation.getPK(), reservation.getTimeslot(), newExpTime.getTime(), reservation
 				.getReservationType(), reservation.getCustomerId(), reservation.getAddressId(), reservation.isChefsTable()
 				,reservation.isUnassigned()
-				, reservation.getOrderId());
+				, reservation.getOrderId(),reservation.isInUPS());
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -578,7 +578,7 @@ public class FDDeliveryManager {
 					dlvRsv.getCustomerId(),
 					dlvRsv.getAddressId(),
 					dlvRsv.isChefsTable(),
-					dlvRsv.isUnassigned(), dlvRsv.getOrderId()));
+					dlvRsv.isUnassigned(), dlvRsv.getOrderId(),dlvRsv.isInUPS()));
 			}
 			return rsvLst;
 
@@ -638,7 +638,7 @@ public class FDDeliveryManager {
 
 			FDReservation fdRes = new FDReservation(dlvRsv.getPK(), timeslot, dlvRsv.getExpirationDateTime(), dlvRsv
 				.getReservationType(), dlvRsv.getCustomerId(), dlvRsv.getAddressId(), dlvRsv.isChefsTable(),dlvRsv.isUnassigned()
-				, dlvRsv.getOrderId());
+				, dlvRsv.getOrderId(),dlvRsv.isInUPS());
 
 			return fdRes;
 		} catch (ObjectNotFoundException ex) {
