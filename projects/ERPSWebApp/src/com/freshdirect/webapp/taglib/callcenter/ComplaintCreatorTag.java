@@ -13,9 +13,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -37,6 +39,7 @@ import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -67,17 +70,17 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     private String orderId					= null;
     
     // OrderLine credit inputs
-    private String [] orderLineQty			= null;
+    private String [] orderLineQty			= null;	// credit quantity
     private String [] orderLineId			= null;
-    private String [] orderLineReason		= null;
-    private String [] orderLineMethod		= null;
-    private String [] orderLineQtyReturned	= null;
-    private String [] orderLineCreditAmount = null;
-    private String [] orderLineOriginalQty	= null;
-    private String [] orderLineOriginalPrice = null;
-    private String [] orderLineDeposit        = null;
-    private String [] orderLineTaxRate        = null;
-    private String [] orderLineCartonNumber	= null;
+    private String [] orderLineReason		= null;	// credit reason
+    private String [] orderLineMethod		= null;	// credit method
+    private String [] orderLineQtyReturned	= null;	// quantity of previous returns
+    private String [] orderLineCreditAmount = null;	// explicit credit value
+    private String [] orderLineOriginalQty	= null; // orderline quantity (per split items)
+    private String [] orderLineOriginalPrice = null; // orderline total price
+    private String [] orderLineDeposit        = null; // deposit
+    private String [] orderLineTaxRate        = null; // tax rate
+    private String [] orderLineCartonNumber	= null; // ID of carton that contains the product (optional - only in cartonized view)
     
     // General credit inputs
     String [] miscCreditAmount      = null;
@@ -101,7 +104,8 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     boolean agent_signature=false;
     String custom_message = null;
     boolean previewEmail = false;
-    
+
+
     public void setResult(String result) {
         this.result = result;
     }
@@ -168,15 +172,91 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
      * Builds a valid, well-formed ErpComplaintModel
      *
      */
-    private void buildComplaint(ActionResult result, ErpComplaintModel complaintModel) throws FDResourceException, JspException  {
-        
-        this.parseOrderLines(result, complaintModel);
-        this.parseMiscellaneous(result, complaintModel);
-        this.setComplaintDetails(result, complaintModel);
-        this.checkForCashBack(result, complaintModel);
-        this.parseEmailOptions(result,complaintModel);
-    }
+	private void buildComplaint(ActionResult result, ErpComplaintModel complaintModel) throws FDResourceException, JspException  {
+		this.parseOrderLines(result, complaintModel);
+		this.parseMiscellaneous(result, complaintModel);
+		this.setComplaintDetails(result, complaintModel);
+		this.checkForCashBack(result, complaintModel);
+		this.parseEmailOptions(result,complaintModel);
+	}
+
     
+    /**
+     * orderline entity
+     * @author segabor
+     *
+     */
+    static class OLStat {
+    	public String	orderlineId;
+    	public Set<Integer> indices = new HashSet<Integer>(); // set of indices pointing to form table entries
+    	public double	prevCredits = 0; // sum of already issued credits
+    	public double	newCredits = 0;  // (new) credit to be issued
+    	
+    	public double	price = 0; // original (total) price
+    	public double	tax = 0;
+    	
+    	public OLStat(String id, double prev) {
+    		this.orderlineId = id;
+    		this.prevCredits = prev;
+    	}
+
+    	public void setTotalPrice(double price) {
+    		this.price = price;
+    	}
+    	
+    	/**
+    	 * Returns the total price of orderline
+    	 * @return
+    	 */
+    	public double getTotalPrice() {
+    		return this.price;
+    	}
+    	
+    	public double getPrevCredits() {
+    		return this.prevCredits;
+    	}
+    	
+    	public void addPrevCredit(double amnt) {
+    		this.prevCredits += amnt;
+    	}
+
+    	public void addIndex(int ix) {
+    		this.indices.add(ix);
+    	}
+
+    	public Set<Integer> getIndices() {
+    		return new HashSet<Integer>(this.indices);
+    	}
+    	
+    	/**
+    	 * Credit to be issued for this particular (split) order line
+    	 * @return
+    	 */
+    	public double getNewCredits() {
+    		return this.newCredits;
+    	}
+    	
+    	public void setNewCredits(double amnt) {
+    		this.newCredits = amnt;
+    	}
+
+    	/**
+    	 * Is order line single or split into more cartons?
+    	 * 
+    	 * @return
+    	 */
+    	public boolean isSingle() {
+    		return this.indices.size() == 1;
+    	}
+
+    	/**
+    	 * Is orderline split?
+    	 * @return
+    	 */
+    	public boolean isSplit() {
+    		return this.indices.size() > 1;
+    	}
+    }
 
     /**
      * Build complaint lines for each order line and validate data.
@@ -187,17 +267,23 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
         List<ErpComplaintLineModel> lines = new ArrayList<ErpComplaintLineModel>();
         FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder(this.orderId);
         
-        // Map<String,Double> => orderline ID -> credit amount
-        Map<String,Double> crAmounts = new HashMap<String,Double>();
-
-
-        Map<String,Double> prevTotals = new HashMap<String, Double>();
+        Map<String,OLStat> olstat = new HashMap<String,OLStat>();
+        
+        /*
+         * Get already issued credits for each order lines
+         */
         for (int i = 0; i < orderLineQty.length; i++) {
             final double previousAmount = this.getPreviousComplaintAmount(order.getComplaints(), this.orderLineId[i]);
-            if (prevTotals.containsKey(this.orderLineId[i]))
-            	prevTotals.put(this.orderLineId[i], prevTotals.get(this.orderLineId[i])+previousAmount);
-            else
-            	prevTotals.put(this.orderLineId[i], previousAmount);
+            
+            if (olstat.get(this.orderLineId[i]) != null) {
+            	System.err.println(this.orderLineId[i] + "/" +i+" +> "+previousAmount);
+            	// olstat.get(this.orderLineId[i]).addPrevCredit(previousAmount);
+            } else {
+            	System.err.println(this.orderLineId[i] + "/" +i+" => "+previousAmount);
+            	OLStat s = new OLStat(this.orderLineId[i], previousAmount);
+            	olstat.put(this.orderLineId[i], s );
+            }
+            olstat.get(this.orderLineId[i]).addIndex(i);
         }
 
 
@@ -225,7 +311,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             //line.setDepartment( orderLineDept[i] );
 
 
-            processCreditAmount(line, orderline, crAmounts, prevTotals, i, result);
+            processCreditAmount(line, orderline, olstat, i, result);
 
             if ( orderLineReason[i] != null && !"".equals(orderLineReason[i]) )
                 line.setReason( ComplaintUtil.getReasonById(orderLineReason[i]) );
@@ -265,7 +351,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
                 }
             }
             
-            final double previousAmount = prevTotals.get(oID) /* this.getPreviousComplaintAmount(order.getComplaints(), line.getOrderLineId()) */;
+            final double previousAmount = olstat.get(oID).getPrevCredits() /* this.getPreviousComplaintAmount(order.getComplaints(), line.getOrderLineId()) */;
             // ErpOrderLineModel orderline = order.getOrderLine(line.getOrderLineId());
             ErpInvoiceLineI invline = order.getInvoiceLine(orderline.getOrderLineNumber());
             final double allowedAmount = MathUtil.roundDecimal((invline != null ? invline.getPrice() : orderline.getPrice()) * (1 + ErpServicesProperties.getCreditBuffer()));
@@ -287,73 +373,98 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
      * @param m order line price accumulator
      * @param i form input index
      */
-    private void processCreditAmount(ErpComplaintLineModel line, ErpOrderLineModel orderline, Map<String,Double> crAmounts, Map<String,Double> prevTotals, int i, ActionResult result) {
+    private void processCreditAmount(ErpComplaintLineModel line, ErpOrderLineModel orderline, Map<String,OLStat> stat, int i, ActionResult result) {
     	final String oID = orderline.getPK().getId();
+    	final OLStat st = stat.get(oID);
 
     	// quantity parameter is set
-    	double quantity = 0.0;
-        double amount = 0.0;
-        double amount_ex = 0.0;
+    	final double quantity; // credit quantity
+        final double amount; // credit amount increased with various rates
+
+        double taxRate = 0.0;
+        double deposit = 0.0;
+
+        final double origQty = Double.parseDouble(orderLineOriginalQty[i]); // original orderline quantity (eg. in the invoice)
+        final double origTotal = Double.parseDouble( orderLineOriginalPrice[i]);
+
+        // additional rates
+        if (orderLineTaxRate[i] != null && !"".equals(orderLineTaxRate[i]))
+        	taxRate = Double.parseDouble( orderLineTaxRate[i]);
+        if (orderLineDeposit[i] != null && !"".equals(orderLineDeposit[i]))
+        	deposit = Double.parseDouble( orderLineTaxRate[i]);
+
+
         if ( orderLineQty[i] != null && !"".equals(orderLineQty[i]) ){
         	// quantity is set
             quantity = Double.parseDouble(orderLineQty[i]);
         	line.setQuantity(quantity);
-        }	
+        } else {
+        	 quantity = 0.0;
+        }
+
+
+
 
         // Stage I - set amount by given quantity OR credit amount
         //   check quantity first
     	if (quantity > 0) {
-            if (Double.parseDouble(orderLineOriginalQty[i])>0) {
-                amount= Double.parseDouble(orderLineQty[i]) * (Double.parseDouble( orderLineOriginalPrice[i])/Double.parseDouble(orderLineOriginalQty[i]) );
-                amount_ex = amount;
-				// [debug] System.err.println("Amount["+i+"/1]="+amount);
+            double x = quantity * ( origTotal/origQty );
 
-				if (orderLineTaxRate[i] != null && !"".equals(orderLineTaxRate[i])) {
-					amount_ex+= (amount_ex * Double.parseDouble( orderLineTaxRate[i]));
-					// [debug] System.err.println("Amount["+i+"/2]="+amount_ex);
-				}
+            // Handle tax
+			if (taxRate > 0) {
+				x+= (x * taxRate);
+			}
 
-                if (orderLineDeposit[i] != null && !"".equals(orderLineDeposit[i])) {
-                	amount_ex+= Double.parseDouble(orderLineQty[i]) * (Double.parseDouble( orderLineDeposit[i])/Double.parseDouble(orderLineOriginalQty[i]) );
-    				// [debug] System.err.println("Amount["+i+"/3]="+amount_ex);
-                }
+			// Handle deposit value
+            if (deposit > 0) {
+            	x+= quantity * ( deposit/origQty );
             }
-    	} else if(this.orderLineCreditAmount[i] != null && !"".equals(orderLineCreditAmount[i])){
-    		// ... then the explicitly set amount
+            amount = x;
+    	} else if (this.orderLineCreditAmount[i] != null && !"".equals(orderLineCreditAmount[i])) {
+    		// ... or get the explicit value
         	amount = Double.parseDouble(orderLineCreditAmount[i]);
-        	amount_ex = amount;
+        } else {
+        	amount = 0;
         }
+
+
+
+
 
 
     	// Stage II - Check amount fits into spendable / freely usable credit amount
     	if (amount > 0) {
-    		// Ensure price does not exceed orderline total
-    		Double accValue = (Double) crAmounts.get(oID);
-    		double acc = (accValue != null ? accValue.doubleValue() : 0);
+    		double newCredsSoFar = st.getNewCredits();
+
+    		double olPrice = origTotal; // get actual NET price
+    		if (taxRate > 0) // apply tax (if exists)
+    			olPrice = MathUtil.roundDecimal(olPrice * (1.0+taxRate));
     		
-    		double origTotal = MathUtil.roundDecimal(Double.parseDouble( orderLineOriginalPrice[i] )-prevTotals.get(oID));
-    		double accumulatedTotal = MathUtil.roundDecimal(amount+acc);
+    		double freeCredits = MathUtil.roundDecimal(olPrice - st.getPrevCredits() ); // free credits = price - already issued credits
+    		double newCredsIssued = MathUtil.roundDecimal(amount+newCredsSoFar);
     		
-    		if (origTotal < accumulatedTotal) {
+    		if (freeCredits < newCredsIssued) {
     			// calculate the difference
-    			amount = origTotal - acc;
+    			final double diff = MathUtil.roundDecimal(freeCredits-newCredsSoFar);
 
-    			// total is exceeded
-    			crAmounts.put(oID, new Double(origTotal));
+    			// debug
+    			System.err.println("---- Orderline at #"+i+" / ID="+oID + " ----");
+    			System.err.println("  Net Price (Total!) = " +origTotal+"; Taxed = " + olPrice);
+    			System.err.println("  Credits already issued = " + st.getPrevCredits());
+    			System.err.println("  New credits so far = " + newCredsSoFar);
+    			System.err.println("  Free / available credits = " + freeCredits + " (= Gross Total - previous credits)");
+    			System.err.println("  Max credit = " + diff);
 
-    			// [debug] System.err.println("OL["+i+"]/E: Total $" + origTotal + " exceeded by $"+accumulatedTotal+" for order line " + oID + "; adjusted price=" + amount + ";");
-
-    			result.addError(new ActionError("ol_error_"+i, "Amount exceeded the maximum available "+CCFormatter.formatCurrency(origTotal)+" for this order."));
+    			result.addError(new ActionError("ol_error_"+i, "Amount exceeded the maximum available "+CCFormatter.formatCurrency(diff)+" for this order."));
             	addGeneralError(result);
             	return;
     		} else {
     			// store the increased value
-    			crAmounts.put(oID, new Double(accumulatedTotal));
-    			// [debug] System.err.println("OL["+i+"]/N: Store incremented price " + crAmounts.get(oID) + " for " + oID);
+    			st.setNewCredits(newCredsIssued);
     		}
     	}
-		// [debug] System.err.println("OL["+i+"]: Set amount " + amount_ex + " for " + oID);
-		line.setAmount(amount_ex);
+		// [debug] System.err.println("OL["+i+"]: Set amount " + amount + " for " + oID);
+		line.setAmount(amount);
     }
     
     
@@ -506,7 +617,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     private void getFormData(HttpServletRequest request, ActionResult result) {
         
         orderId					= request.getParameter("orig_sale_id");
-        this.orderLineId 		= request.getParameterValues("orderlineId");
+        orderLineId 			= request.getParameterValues("orderlineId");
         orderLineQty 			= request.getParameterValues("ol_credit_qty");
         orderLineQtyReturned	= request.getParameterValues("ol_credit_qty_returned");
         orderLineCreditAmount	= request.getParameterValues("ol_credit_amount");
