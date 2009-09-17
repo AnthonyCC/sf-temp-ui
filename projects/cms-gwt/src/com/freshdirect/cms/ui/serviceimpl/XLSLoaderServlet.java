@@ -52,7 +52,7 @@ public class XLSLoaderServlet extends FileUploadServlet {
             e.printStackTrace();
         } finally {
             for (ContentKey ck : successes) {
-                response.append("Success:" + ck.getEncoded());
+                response.append("Success:" + ck.getEncoded() + "\n");
             }
             if (failures.size() > 0) {
                 for (Iterator<Map.Entry<String, String>> i = failures.entrySet().iterator(); i.hasNext();) {

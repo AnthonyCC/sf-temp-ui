@@ -41,8 +41,8 @@ public class AdminWindow extends Window {
 
     private final static class FormUploadListener implements Listener<FormEvent> {
         @Override
-        public void handleEvent(FormEvent be) {
-            HtmlPopup hp = new HtmlPopup("Upload Result", be.getResultHtml());
+		public void handleEvent( FormEvent be ) {
+			HtmlPopup hp = new HtmlPopup( "Upload Result", be.getResultHtml() );
             hp.show();
         }
     }
