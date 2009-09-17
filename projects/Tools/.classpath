@@ -11,5 +11,6 @@
 	<classpathentry kind="src" path="/listadmin"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/log4j.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-core-2.2.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
