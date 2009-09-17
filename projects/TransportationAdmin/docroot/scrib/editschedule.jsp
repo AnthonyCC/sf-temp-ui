@@ -256,8 +256,14 @@ function disableTimeZone(day)
 	{
 		eval("f['"+day+".timeS'].disabled=false");	
 		if(value=='Depot')	
+		{
 			eval("f['"+day+".depotZoneS'].disabled=false");
-		else eval("f['"+day+".depotZoneS'].disabled=true");
+		}
+		else 
+		{
+			eval("f['"+day+".depotZoneS'].value=''");
+			eval("f['"+day+".depotZoneS'].disabled=true");
+		}
 	}
 }
 disableTimeZone("mon");

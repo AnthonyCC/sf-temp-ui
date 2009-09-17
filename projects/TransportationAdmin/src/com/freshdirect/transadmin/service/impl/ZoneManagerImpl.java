@@ -28,4 +28,8 @@ public class ZoneManagerImpl extends BaseManagerImpl implements ZoneManagerI {
 		this.zoneManagerDAO = zoneManagerDAO;
 	}
 
+	public Collection getActiveZoneCodes(String date) {
+		return getZoneManagerDAO().getActiveZoneCodes(date);
+	}
+
 }

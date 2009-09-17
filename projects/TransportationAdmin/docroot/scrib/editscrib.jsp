@@ -9,6 +9,8 @@
 <% boolean hasErrors = session.getAttribute("apperrors") != null; 
  
 %>
+<script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
+<script src="js/activeZone.js" language="javascript" type="text/javascript"></script>
 <style>
 	* {font-family:Arial, Helvetica, sans-serif;
 		font-size:9pt;}
@@ -61,7 +63,7 @@
 						<tr>
 							<td>Date</td>
 							<td>
-								<form:input maxlength="50" size="24" path="scribDate" />&nbsp;
+								<form:input maxlength="50" size="24" path="scribDate" onchange="javascript:getActiveZoneInfo(this.value,scribForm.zoneS)"/>&nbsp;
 								<a href="#" id="trigger_scribDate" style="font-size: 9px;">
 									<img src="images/calendar.gif" style="border: 0;" alt=">>" />
 								</a>
@@ -199,6 +201,45 @@
 	      	}     	      	
 	      	planForm.submit();
 	    }
+       //update the active zone for the particular day
+     /*   function getActiveZoneInfo()
+        {
+         if(scribForm.scribDate.value!='')
+         {
+        	var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+        	var scribDate=scribForm.scribDate.value;        	
+        	jsonrpcClient.AsyncDispatchProvider.getActiveZones(getActiveZoneInfoCallback,scribDate);
+         }
+        }
+        function getActiveZoneInfoCallback(result, exception) 
+        {
+      	  
+          if(exception) 
+          {               
+              alert('Unable to connect to host system. Please contact system administrator!');               
+              return;
+          }
+         
+		  var selectedZone=scribForm.zoneS.value;	  
+		  for(var i=scribForm.zoneS.options.length-1;i>=1;i--)
+		  {
+			  scribForm.zoneS.remove(i);
+		  }		 
+		  var selected=false;
+		  var results=result.list;
+		  for(var i=0;i<results.length;i++)
+		  {			
+			  	var optn = document.createElement("OPTION");
+			  	optn.text = results[i].name;
+	          	optn.value = results[i].zoneCode;
+	          	if(optn.value==selectedZone)
+	          	{
+	          		optn.selected=true;	          		
+	          	}	          	
+	          	scribForm.zoneS.options.add(optn);	        
+          }                               
+      }   */
+	    
 	</script>
   </tmpl:put>
 </tmpl:insert>

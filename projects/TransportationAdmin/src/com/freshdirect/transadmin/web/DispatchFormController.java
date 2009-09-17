@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -38,6 +40,8 @@ public class DispatchFormController extends AbstractFormController {
 
 	private EmployeeManagerI employeeManagerService;
 
+	private ZoneManagerI zoneManagerService;
+	
 	public DispatchManagerI getDispatchManagerService() {
 		return dispatchManagerService;
 	}
@@ -52,6 +56,20 @@ public class DispatchFormController extends AbstractFormController {
 	}
 
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
+		
+		Collection zones=getDomainManagerService().getZones();
+		Collection activeZoneCodes = getZoneManagerService().getActiveZoneCodes();
+    	if(zones != null && activeZoneCodes != null) {
+    		Iterator _iterator = zones.iterator();
+    		Zone _tmpZone = null;
+    		while(_iterator.hasNext()) {
+    			_tmpZone = (Zone)_iterator.next();
+    			if(!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
+    				_iterator.remove();
+    			}
+    		}
+    	}
+		
 		Map refData = new HashMap();
 		refData.put("statuses", domainManagerService.getDispositionTypes());
 		String dispDate = request.getParameter("dispDate");
@@ -73,7 +91,7 @@ public class DispatchFormController extends AbstractFormController {
 		refData.put("helpers", DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.HELPER.getName())));
 		refData.put("runners", DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.RUNNER.getName())));
 
-		refData.put("zones", domainManagerService.getZones());
+		refData.put("zones", zones);
 		refData.put("regions", domainManagerService.getRegions());
 		return refData;
 	}
@@ -232,6 +250,14 @@ public class DispatchFormController extends AbstractFormController {
 
 	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
 		this.employeeManagerService = employeeManagerService;
+	}
+
+	public ZoneManagerI getZoneManagerService() {
+		return zoneManagerService;
+	}
+
+	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+		this.zoneManagerService = zoneManagerService;
 	}
 
 }

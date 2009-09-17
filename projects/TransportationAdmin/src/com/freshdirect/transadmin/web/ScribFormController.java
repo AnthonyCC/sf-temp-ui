@@ -32,6 +32,7 @@ import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.editor.RegionPropertyEditor;
@@ -43,6 +44,7 @@ public class ScribFormController extends AbstractDomainFormController {
 			
 	private DispatchManagerI dispatchManagerService;
 	private EmployeeManagerI employeeManagerService;
+	private ZoneManagerI zoneManagerService;
 	
 	public EmployeeManagerI getEmployeeManagerService() {
 		return employeeManagerService;
@@ -54,8 +56,20 @@ public class ScribFormController extends AbstractDomainFormController {
 
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 
+		Collection zones=getDomainManagerService().getZones();
+		Collection activeZoneCodes = zoneManagerService.getActiveZoneCodes();
+    	if(zones != null && activeZoneCodes != null) {
+    		Iterator _iterator = zones.iterator();
+    		Zone _tmpZone = null;
+    		while(_iterator.hasNext()) {
+    			_tmpZone = (Zone)_iterator.next();
+    			if(!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
+    				_iterator.remove();
+    			}
+    		}
+    	}
 		Map refData = new HashMap();
-		refData.put("zones", getDomainManagerService().getZones());	
+		refData.put("zones",zones);	
 		refData.put("supervisors", DispatchPlanUtil.getSortedResources(employeeManagerService.getSupervisors()));
 		return refData;
 	}
@@ -125,6 +139,10 @@ public class ScribFormController extends AbstractDomainFormController {
 
 	protected String getIdFromRequest(HttpServletRequest request){
 		return request.getParameter("scribId");
+	}
+
+	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+		this.zoneManagerService = zoneManagerService;
 	}
 	
 }

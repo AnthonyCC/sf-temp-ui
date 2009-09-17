@@ -490,6 +490,7 @@
 	<bean name="asyncDispatchController" class="com.freshdirect.transadmin.web.json.DispatchProviderController">
 		<property name="dispatchManagerService" ref="dispatchManager"/>
 		<property name="domainManagerService" ref="domainManager"/>
+		<property name="zoneManagerService" ref="zoneManager"/>
 		<property name="logManager" ref="logManagerBase"/>
 		<property name="ajaxServices">
 			<map>
@@ -515,6 +516,7 @@
 	<bean id="scribFormController" class="com.freshdirect.transadmin.web.ScribFormController">		
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="dispatchManagerService" ref="dispatchManager"/>
+		<property name="zoneManagerService" ref="zoneManager"/>
         <property name="sessionForm" value="true"/>
         <property name="commandName" value="scribForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.model.Scrib"/>

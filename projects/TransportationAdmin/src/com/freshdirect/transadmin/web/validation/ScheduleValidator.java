@@ -37,6 +37,10 @@ public class ScheduleValidator extends AbstractValidator {
 		{
 			if(s.getTime()==null) errors.rejectValue(id+".timeS", "app.error.112", new Object[]{"Time"},"required field");
 			if(s.getRegion().getCode().equals("Depot")&&s.getDepotZone()==null) errors.rejectValue(id+".depotZoneS", "app.error.112", new Object[]{"Depot Zone"},"required field");
+			if(!s.getRegion().getCode().equals("Depot"))
+			{
+				s.setDepotZoneS(null);
+			}
 		}
 		
 	}

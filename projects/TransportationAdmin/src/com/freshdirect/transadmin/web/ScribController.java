@@ -48,6 +48,7 @@ public class ScribController extends AbstractMultiActionController
 			if(sourceDate!=null&&destDate!=null&&sourceDay!=null)
 			{
 				List toInsert=new ArrayList();
+				List toDelate=new ArrayList();
 				String[] sourceDates=getDates(sourceDate, sourceDay);
 				String[] destDates=getDates(destDate, sourceDay);
 				if(sourceDates!=null&&sourceDates.length>0&&!sourceDates[0].equalsIgnoreCase(destDates[0]))
@@ -55,6 +56,8 @@ public class ScribController extends AbstractMultiActionController
 					for(int i=0;i<sourceDates.length;i++)
 					{
 						Collection scribs=dispatchManagerService.getScribList(sourceDates[i]);
+						Collection deleteScribs=dispatchManagerService.getScribList(destDates[i]);
+						toDelate.addAll(deleteScribs);
 						if(scribs!=null)
 							for(Iterator j=scribs.iterator();j.hasNext();)
 							{
@@ -65,6 +68,7 @@ public class ScribController extends AbstractMultiActionController
 								
 							}
 					}
+					dispatchManagerService.removeEntity(toDelate);
 					dispatchManagerService.saveEntityList(toInsert);
 					saveMessage(request, getMessage("app.actionmessage.148", null));
 				}

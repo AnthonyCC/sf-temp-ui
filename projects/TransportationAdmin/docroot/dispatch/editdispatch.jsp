@@ -9,6 +9,7 @@
  String dispDate = request.getParameter("dispDate") != null ? request.getParameter("dispDate") : "";
  %>
  <script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
+ <script src="js/activeZone.js" language="javascript" type="text/javascript"></script>
         <script language="javascript">         
         function setTruckNumber(truckNo) {
             dispatchForm.truck.value = truckNo;
@@ -148,7 +149,7 @@
 					<tr>
 						<td>Date</td>
 						<td>
-								<span><form:input maxlength="50" size="24" path="dispatchDate" onChange="javascript:getRouteInfo();"/></span>
+								<span><form:input maxlength="50" size="24" path="dispatchDate" onChange="javascript:getRouteInfo();javascript:getActiveZoneInfo(this.value,dispatchForm.zoneCode)"/></span>
 							<span><a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
 								<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
 							</span>

@@ -7,4 +7,5 @@ import org.springframework.dao.DataAccessException;
 public interface ZoneManagerDaoI {
 	
 	Collection getActiveZoneCodes() throws DataAccessException;
+	Collection getActiveZoneCodes(String date) throws DataAccessException;
 }

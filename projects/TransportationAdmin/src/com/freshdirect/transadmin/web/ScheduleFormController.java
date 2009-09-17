@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.web;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +16,10 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.EmployeeroleId;
+import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebSchedule;
 
@@ -24,14 +27,27 @@ public class ScheduleFormController extends AbstractFormController {
 
 	private EmployeeManagerI employeeManagerService;
 	private DomainManagerI domainManagerService;
-
+	private ZoneManagerI zoneManagerService;
+	
 	protected Map referenceData(HttpServletRequest request) throws ServletException 
 	{
 
+		Collection zones=getDomainManagerService().getZones();
+		Collection activeZoneCodes = getZoneManagerService().getActiveZoneCodes();
+    	if(zones != null && activeZoneCodes != null) {
+    		Iterator _iterator = zones.iterator();
+    		Zone _tmpZone = null;
+    		while(_iterator.hasNext()) {
+    			_tmpZone = (Zone)_iterator.next();
+    			if(!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
+    				_iterator.remove();
+    			}
+    		}
+    	}
 		Map refData = new HashMap();
 		//refData.put("supervisors", getDomainManagerService().getSupervisors());
 		refData.put("region", getDomainManagerService().getRegions());
-		refData.put("zone", getDomainManagerService().getZones());	
+		refData.put("zone", zones);	
 		return refData;
 	}
 
@@ -112,6 +128,14 @@ public DomainManagerI getDomainManagerService() {
 
 public void setDomainManagerService(DomainManagerI domainManagerService) {
 	this.domainManagerService = domainManagerService;
+}
+
+public ZoneManagerI getZoneManagerService() {
+	return zoneManagerService;
+}
+
+public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+	this.zoneManagerService = zoneManagerService;
 }
 
 

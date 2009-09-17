@@ -9,6 +9,8 @@
 <% boolean hasErrors = session.getAttribute("apperrors") != null; 
  
 %>
+<script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
+<script src="js/activeZone.js" language="javascript" type="text/javascript"></script>
 <style>
 	* {font-family:Arial, Helvetica, sans-serif;
 		font-size:9pt;}
@@ -64,7 +66,7 @@
 						<tr>
 							<td>Date</td>
 							<td>
-								<form:input maxlength="50" size="24" path="planDate" />&nbsp;
+								<form:input maxlength="50" size="24" path="planDate" onchange="javascript:getActiveZoneInfo(this.value,planForm.zoneCode)" />&nbsp;
 								<a href="#" id="trigger_planDate" style="font-size: 9px;">
 									<img src="images/calendar.gif" style="border: 0;" alt=">>" />
 								</a>

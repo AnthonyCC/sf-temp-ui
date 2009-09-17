@@ -12,6 +12,7 @@ import com.freshdirect.framework.util.DateComparator;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
@@ -44,9 +45,12 @@ public class DispatchValidator extends AbstractValidator {
 		//validateIntegerMinMax("sequence",new Integer(model.getSequence()),1,99,errors);
 		//ValidationUtils.rejectIfEmpty(errors, "truck", "app.error.112", new Object[]{"Truck Number"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
-		validateResources(model.getDriverReq(),model.getDriverMax(),"drivers",model.getDrivers(),errors);
-		validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);
-		validateResources(model.getRunnerReq(),model.getRunnerMax(),"runners",model.getRunners(),errors);
+		if( TransportationAdminProperties.isDispatchValidation())
+		{
+			validateResources(model.getDriverReq(),model.getDriverMax(),"drivers",model.getDrivers(),errors);
+			validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);
+			validateResources(model.getRunnerReq(),model.getRunnerMax(),"runners",model.getRunners(),errors);
+		}
 		checkForDuplicateResourceAllocation(model,errors);
 		if(errors.getErrorCount() > 0 && model.isConfirmed()){
 			model.setConfirmed(false);

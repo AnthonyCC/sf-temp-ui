@@ -31,6 +31,7 @@ import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
@@ -44,6 +45,9 @@ public class PlanningFormController extends AbstractFormController {
 	private DispatchManagerI dispatchManagerService;
 
 	private EmployeeManagerI employeeManagerService;
+	
+	private ZoneManagerI zoneManagerService;
+	
 	public DispatchManagerI getDispatchManagerService() {
 		return dispatchManagerService;
 	}
@@ -78,11 +82,23 @@ public class PlanningFormController extends AbstractFormController {
 	}
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		
+		Collection zones=getDomainManagerService().getZones();
+		Collection activeZoneCodes = getZoneManagerService().getActiveZoneCodes();
+    	if(zones != null && activeZoneCodes != null) {
+    		Iterator _iterator = zones.iterator();
+    		Zone _tmpZone = null;
+    		while(_iterator.hasNext()) {
+    			_tmpZone = (Zone)_iterator.next();
+    			if(!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
+    				_iterator.remove();
+    			}
+    		}
+    	}
 		
 		printRequestParameters(request);
 		Map refData = new HashMap();
 		refData.put("days", domainManagerService.getDays());
-		refData.put("zones", domainManagerService.getZones());
+		refData.put("zones", zones);
 		refData.put("regions", domainManagerService.getRegions());
 		refData.put("supervisors", DispatchPlanUtil.getSortedResources(employeeManagerService.getSupervisors()));
 		refData.put("drivers", DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName())));
@@ -244,6 +260,14 @@ public class PlanningFormController extends AbstractFormController {
 			id=request.getParameter("planId");
 		}
 		return id;
+	}
+
+	public ZoneManagerI getZoneManagerService() {
+		return zoneManagerService;
+	}
+
+	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+		this.zoneManagerService = zoneManagerService;
 	}
 
 }

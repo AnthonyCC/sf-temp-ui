@@ -85,5 +85,36 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
        		   });
         return result;
 	}
+	
+	private static final String GET_ALL_ACTIVE_ZONECODES_QRY_DATE =
+		"select distinct z.zone_code ZONE_CODE from dlv.region r, dlv.region_data rd, dlv.zone z "+
+            "where r.id = rd.region_id "+
+            "and rd.id = z.region_data_id "+
+            "and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id) "+
+            "or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)) "+
+            "order by z.zone_code";
+	
+	public Collection getActiveZoneCodes(final String date) throws DataAccessException {
+		final List result = new ArrayList();		         
+        PreparedStatementCreator creator=new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+                PreparedStatement ps =
+                    connection.prepareStatement(GET_ALL_ACTIVE_ZONECODES_QRY_DATE);
+                ps.setString(1,date);
+                ps.setString(2,date);
+                return ps;
+            }  
+        };
+        jdbcTemplate.query(creator, 
+       		  new RowCallbackHandler() { 
+       		      public void processRow(ResultSet rs) throws SQLException {
+       		    	
+       		    	do {       		    		
+       		    		result.add(rs.getString("ZONE_CODE"));
+       		    	}  while(rs.next());
+       		      }
+       		   });
+        return result;
+	}	
 
 }

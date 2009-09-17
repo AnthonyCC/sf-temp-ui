@@ -124,12 +124,13 @@ public class TransportationAdminProperties {
 	
 	private final static String PROP_TRANSPORTATION_AUTODISPATCH_VALIDATION		= "transportation.autodispatch.validation";	
 	private final static String PROP_TRANSPORTATION_PLAN_VALIDATION		= "transportation.plan.validation";
+	private final static String PROP_TRANSPORTATION_DISPATCH_VALIDATION		= "transportation.dispatch.validation";
 	
 	private final static String PROP_TRANSPORTATION_EARLYWARNING_PAGEREFRESHTIME = "transportation.earlywarning.pagerefreshtime";
 	
 	static {
 				
-		
+	
 		defaults.put(PROP_TRANSPORTATION_FORMAT_ORDERLOCATION_SAPOUT, 	"com/freshdirect/transadmin/datamanager/orderlocation_out_erp.xml");
 		
 		defaults.put(PROP_TRANSPORTATION_FORMAT_ORDER_ROUTINGIN, 	"com/freshdirect/transadmin/datamanager/order_in_routing.xml");
@@ -217,6 +218,7 @@ public class TransportationAdminProperties {
 		defaults.put(KRONOS_UPLOAD_ALL_EMPTY, "Upload_All_Empty.csv");
 		defaults.put(PROP_TRANSPORTATION_AUTODISPATCH_VALIDATION, "false");
 		defaults.put(PROP_TRANSPORTATION_PLAN_VALIDATION, "false");
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_VALIDATION, "false");
 		
 		refresh();		
 	}
@@ -477,5 +479,8 @@ public class TransportationAdminProperties {
     }
 	public static boolean isAutoDispatchValidation() {
         return (new Boolean(get(PROP_TRANSPORTATION_AUTODISPATCH_VALIDATION))).booleanValue();
+    }
+	public static boolean isDispatchValidation() {
+        return (new Boolean(get(PROP_TRANSPORTATION_DISPATCH_VALIDATION))).booleanValue();
     }
 }

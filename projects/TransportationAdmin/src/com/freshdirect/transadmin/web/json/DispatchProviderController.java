@@ -29,16 +29,19 @@ import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.UserPref;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
+import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LogManagerI;
+import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 import com.freshdirect.transadmin.web.util.TransWebUtil;
 
 public class DispatchProviderController extends JsonRpcController implements
-		IDispatchProvider {
+		IDispatchProvider 
+{	
 
 	private DispatchManagerI dispatchManagerService;
 
@@ -46,6 +49,11 @@ public class DispatchProviderController extends JsonRpcController implements
 
 	private LogManagerI logManager;
 
+	private ZoneManagerI zoneManagerService;
+	
+	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+		this.zoneManagerService = zoneManagerService;
+	}
 	public void setLogManager(LogManagerI logManager) {
 		this.logManager = logManager;
 	}
@@ -277,6 +285,38 @@ public class DispatchProviderController extends JsonRpcController implements
 		String value=TransWebUtil.getUserPref(getHttpServletRequest(), key,dispatchManagerService);
 		if(value==null) value="";
 		return value;
+	}
+	
+	public Collection getActiveZones(String date)
+	{
+		Collection zones=domainManagerService.getZones();
+		try {
+			date=TransStringUtil.getServerDate(date);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Collection activeZoneCodes = zoneManagerService.getActiveZoneCodes(date);
+    	if(zones != null && activeZoneCodes != null) {
+    		Iterator _iterator = zones.iterator();
+    		Zone _tmpZone = null;
+    		while(_iterator.hasNext()) {
+    			_tmpZone = (Zone)_iterator.next();
+    			if(!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
+    				_iterator.remove();
+    			}
+    		}
+    	}
+    	List result=new ArrayList();
+    	for(Iterator i=zones.iterator();i.hasNext();)
+    	{
+    		Zone tmpZone =(Zone)i.next();
+    		Zone z=new Zone();
+    		z.setZoneCode(tmpZone.getZoneCode());
+    		z.setName(tmpZone.getDisplayName());  
+    		result.add(z);
+    	}
+    	return result;
 	}
 	
 }
