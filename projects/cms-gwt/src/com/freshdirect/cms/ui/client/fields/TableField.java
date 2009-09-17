@@ -172,7 +172,7 @@ public class TableField extends MultiField implements ChangeTrackingField {
             if (ColumnType.GROUPING == types[i]) {
                 groupingColumn = i;
             }
-            ColumnConfig cc = new ColumnConfig("col_" + i, col.getLabel(), 150);
+            ColumnConfig cc = new ColumnConfig("col_" + i, col.getLabel(), 150);            
             
             if (ColumnType.KEY == types[i]) {
                 cc.setRenderer(Renderers.GRID_LINK_FROM_PROPERTY_RENDERER);
@@ -190,6 +190,7 @@ public class TableField extends MultiField implements ChangeTrackingField {
         ContentPanel cp = new ContentPanel();
         cp.setBottomComponent(toolBar);
         cp.setAutoHeight(true);
+        cp.setWidth(670);
 
         ListStore<BaseModelData> store;
         GroupingView view = null;
@@ -213,10 +214,11 @@ public class TableField extends MultiField implements ChangeTrackingField {
             grid.setView(view);
         }
         grid.getView().setViewConfig(new RowStyler());
+        grid.getView().setForceFit(false);
 
         //grid.setAutoHeight(true);
         grid.setStripeRows(true);
-        grid.setWidth(800);
+        grid.setWidth(660);
         grid.setHeight(600);
         // grid.getView().setForceFit(true);
         loader.load(0, 20);
