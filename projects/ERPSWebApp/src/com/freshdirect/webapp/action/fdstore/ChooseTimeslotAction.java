@@ -16,9 +16,11 @@ import com.freshdirect.delivery.ReservationUnavailableException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.action.WebActionSupport;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
@@ -58,7 +60,12 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		boolean chefsTable = user.isChefsTable() || "true".equals(request.getParameter("chefstable"));
 
 		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId);
-
+        String ctDeliveryProfile=CTDeliveryCapacityLogic.isEligible(user,timeSlot);
+		if(timeSlot.getBaseAvailable()<=0&&ctDeliveryProfile!=null)
+		{
+			chefsTable=true;			
+		}
+		
 		ErpAddressModel erpAddress = cart.getDeliveryAddress();
 		String addressId = "";
 		if (!(erpAddress instanceof ErpDepotAddressModel)) {
@@ -129,7 +136,8 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						RESERVATION_MILLISECONDS,
 						EnumReservationType.STANDARD_RESERVATION,
 						erpAddress,
-						chefsTable);
+						chefsTable,
+						ctDeliveryProfile);
 
 				// save reservation id in cart
 				cart.setDeliveryReservation(timeSlotResrv);

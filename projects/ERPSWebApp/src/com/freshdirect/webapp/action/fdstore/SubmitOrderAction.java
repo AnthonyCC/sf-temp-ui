@@ -28,6 +28,7 @@ import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
@@ -40,6 +41,7 @@ import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -246,6 +248,9 @@ public class SubmitOrderAction extends WebActionSupport {
 						new Object[] {origCutoff}));
 					return ERROR;
 				}
+				FDActionInfo info=AccountActivityUtil.getActionInfo(session);
+				boolean isPR1=CTDeliveryCapacityLogic.isPR1(user);
+				info.setPR1(isPR1);
 				FDCustomerManager.modifyOrder(
 					AccountActivityUtil.getActionInfo(session),
 					modCart,
@@ -258,6 +263,9 @@ public class SubmitOrderAction extends WebActionSupport {
 				
 			} else {
 				// new order -> place it
+				FDActionInfo info=AccountActivityUtil.getActionInfo(session);
+				boolean isPR1=CTDeliveryCapacityLogic.isPR1(user);
+				info.setPR1(isPR1);
 				orderNumber = FDCustomerManager.placeOrder(AccountActivityUtil.getActionInfo(session), cart, appliedPromos, sendEmail,cra,status );
 			}
 			
