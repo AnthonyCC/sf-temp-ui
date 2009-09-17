@@ -6,6 +6,9 @@
 <%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
 <%@ page import="com.freshdirect.delivery.model.DlvZoneModel" %>
 <%@ page import="com.freshdirect.delivery.DlvZoneInfoModel" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="com.freshdirect.fdstore.util.CTDeliveryCapacityLogic" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Calendar" %>
 <%!
@@ -20,6 +23,7 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 	
     request.setAttribute("AddressType",address.getServiceType().getName());
 	%>	
+
 <table border="0" cellspacing="2" cellpadding="0" summary="timeslots">
 	<tr>
 	<logic:iterate id="day" collection="<%=timeslots.getDays()%>" type="java.util.Date">
@@ -104,11 +108,19 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 
 							zoneModel = (DlvZoneModel) zones.get(slot.getZoneId());
 							Date now = new Date();
-
-							int availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, timeslot_page_type, zoneModel.getCtReleaseTime());
+							FDUserI user_ct = (FDUserI)session.getAttribute(SessionName.USER);
+							int timeslot_page_type_ct=timeslot_page_type;
+							boolean isCTCapacity=false;
+							if(CTDeliveryCapacityLogic.isEligible(user_ct,slot)!=null)
+							{
+								timeslot_page_type_ct=TimeslotLogic.PAGE_CHEFSTABLE;
+								isCTCapacity=true;
+							}
+							
+							int availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, timeslot_page_type_ct, zoneModel.getCtReleaseTime());
 							int normalAvailCapacity = availCapacity;
 
-							if (TimeslotLogic.PAGE_CHEFSTABLE == timeslot_page_type) {
+							if (TimeslotLogic.PAGE_CHEFSTABLE == timeslot_page_type_ct&&!isCTCapacity) {
 								normalAvailCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_NORMAL, zoneModel.getCtReleaseTime());
 							}
 
@@ -138,7 +150,7 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 									}
 									//int slotEndHour = DateUtil.toCalendar(slot.getBegDateTime()).get(Calendar.HOUR_OF_DAY);
 									%>
-								</span><span class="time"><!-- <%= availCapacity %>, <%= normalAvailCapacity %>, <%= timeslot_page_type %> --><%= slot.getDisplayString(firstSlot) %></span>
+								</span><span class="time"><!-- <%= availCapacity %>, <%= normalAvailCapacity %>, <%= timeslot_page_type_ct %> --><%= slot.getDisplayString(firstSlot) %></span>
 							</div>
 							<%
 							firstSlot = false;
