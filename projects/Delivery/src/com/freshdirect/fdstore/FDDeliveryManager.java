@@ -468,7 +468,8 @@ public class FDDeliveryManager {
 		long holdTime,
 		EnumReservationType type,
 		ContactAddressModel address,
-		boolean chefsTable) throws FDResourceException, ReservationException {
+		boolean chefsTable,
+		String ctDeliveryProfile) throws FDResourceException, ReservationException {
 
 		try {
 			
@@ -476,7 +477,7 @@ public class FDDeliveryManager {
 			
 			DlvManagerSB sb = getDlvManagerHome().create();
 			DlvReservationModel dlvReservation = sb
-				.reserveTimeslot(timeslot.getDlvTimeslot(), customerId, holdTime, type, address.getId(), chefsTable);
+				.reserveTimeslot(timeslot.getDlvTimeslot(), customerId, holdTime, type, address.getId(), chefsTable,ctDeliveryProfile);
 
 			FDReservation reservation = new FDReservation(
 				dlvReservation.getPK(),
@@ -596,13 +597,12 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public void commitReservation(String rsvId, String customerId, String orderId, ContactAddressModel address) throws ReservationException, FDResourceException {
+	public void commitReservation(String rsvId, String customerId, String orderId, ContactAddressModel address,boolean pr1) throws ReservationException, FDResourceException {
 		try {
 			
 			DlvManagerSB sb = getDlvManagerHome().create();
 			DlvReservationModel oldReserve = sb.getReservation(rsvId);
-			
-			sb.commitReservation(rsvId, customerId, orderId);
+			sb.commitReservation(rsvId, customerId, orderId,pr1);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(rsvId);
 				//if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))

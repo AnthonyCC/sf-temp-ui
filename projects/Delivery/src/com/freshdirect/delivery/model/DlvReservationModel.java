@@ -33,6 +33,7 @@ public class DlvReservationModel extends ModelSupport {
 	private Date deliveryDate;
 	private String zoneCode;
 	private RoutingActivityType unassignedActivityType;
+	private String profileName;	
 	private boolean inUPS;
 	/*private Date unassignedDateTime;
 	
@@ -193,6 +194,14 @@ public class DlvReservationModel extends ModelSupport {
 	}
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
+
+	public String getProfileName() {
+		return profileName;
+	}
+
+	public void setProfileName(String profileName) {
+		this.profileName = profileName;
 	}
 
 }

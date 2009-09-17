@@ -247,7 +247,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		String customerId,
 		long holdTime,
 		EnumReservationType type,
-		String addressId, boolean chefsTable) throws ReservationException {
+		String addressId, boolean chefsTable,String profileName) throws ReservationException {
 
 		// Get the Timeslot object
 		/*DlvTimeslotModel timeslotModel;
@@ -314,7 +314,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			con = getConnection();
 
 			ps = con
-				.prepareStatement("INSERT INTO dlv.reservation(ID, TIMESLOT_ID, ZONE_ID, ORDER_ID, CUSTOMER_ID, STATUS_CODE, EXPIRATION_DATETIME, TYPE, ADDRESS_ID, CHEFSTABLE, MODIFIED_DTTM) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?,SYSDATE)");
+				.prepareStatement("INSERT INTO dlv.reservation(ID, TIMESLOT_ID, ZONE_ID, ORDER_ID, CUSTOMER_ID, STATUS_CODE, EXPIRATION_DATETIME, TYPE, ADDRESS_ID, CHEFSTABLE, MODIFIED_DTTM,CT_DELIVERY_PROFILE) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?,SYSDATE,?)");
 			String newId = this.getNextId(con, "DLV");
 			ps.setString(1, newId);
 			ps.setString(2, timeslotModel.getId());
@@ -326,6 +326,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			ps.setString(8, type.getName());
 			ps.setString(9, addressId);
 			ps.setString(10, chefsTable ? "X" : " ");
+			ps.setString(11, profileName);
 			
 			ps.executeUpdate();
 			DlvReservationModel rsv = new DlvReservationModel(
@@ -386,7 +387,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		return rsv;
 	}
 
-	public void commitReservation(String rsvId, String customerId, String orderId) throws ReservationException {
+	public void commitReservation(String rsvId, String customerId, String orderId,boolean pr1) throws ReservationException {
 		Connection con = null;
 		PreparedStatement ps1 = null;
 		ResultSet rs = null;
@@ -396,7 +397,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		try {
 			con = getConnection();
 			ps1 = con
-				.prepareStatement("UPDATE DLV.RESERVATION SET ORDER_ID = ?, STATUS_CODE = ?, MODIFIED_DTTM=SYSDATE WHERE ID = ? and STATUS_CODE = ? ");
+				.prepareStatement("UPDATE DLV.RESERVATION SET ORDER_ID = ?, STATUS_CODE = ?, MODIFIED_DTTM=SYSDATE ,PR1= ? WHERE ID = ? and STATUS_CODE = ? ");
 
 			rsv = this.getReservation(con, rsvId);
 
@@ -405,8 +406,9 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				rsv.setStatusCode(EnumReservationStatus.COMMITTED.getCode());
 				ps1.setString(1, rsv.getOrderId());
 				ps1.setInt(2, rsv.getStatusCode());
-				ps1.setString(3, rsvId);
-				ps1.setInt(4, EnumReservationStatus.RESERVED.getCode());
+				ps1.setString(3, pr1 ? "X" : " ");
+				ps1.setString(4, rsvId);
+				ps1.setInt(5, EnumReservationStatus.RESERVED.getCode());
 
 				int rowsUpdated = ps1.executeUpdate();
 				if (rowsUpdated != 1) {
@@ -634,7 +636,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				customerId,
 				duration,
 				EnumReservationType.RECURRING_RESERVATION,
-				address.getPK().getId(), false);
+				address.getPK().getId(), false,null);
 			
 			logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
 								"Made recurring reservation");
@@ -2041,7 +2043,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			throw new RoutingServiceException(null, IIssue.PROCESS_UPDATE_UNSUCCESSFUL);
 		routingService.schedulerConfirmOrder(orderModel);
 		//LOGGER.info("schedulerConfirmOrder():: commitReservationEx:"+"SUCCESS");
-		
+
 		return ;
 	}
 	private void schedulerCancelOrder(IOrderModel orderModel,DlvReservationModel reservation) throws RoutingServiceException {
