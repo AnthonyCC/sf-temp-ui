@@ -894,10 +894,17 @@ public class DlvManagerDAO {
 	}
 	
 	 
-	private static final String GET_EXPIRED_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION,R.IN_UPS FROM DLV.RESERVATION R, "+
-                                                   " DLV.TIMESLOT T, DLV.ZONE Z  where  r.expiration_datetime <= sysdate and r.status_code = 5 AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
+	
+	private static final String LOCK_EXPIRED_RESERVATIONS="UPDATE DLV.RESERVATION SET STATUS_CODE=25 WHERE EXPIRATION_DATETIME<= SYSDATE AND STATUS_CODE=5";
+	private static final String GET_LOCKED_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION,R.IN_UPS FROM DLV.RESERVATION R, "+
+                                                   " DLV.TIMESLOT T, DLV.ZONE Z  where  r.expiration_datetime <= sysdate and r.status_code = 25 AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
 	public static List<DlvReservationModel> getExpiredReservations(Connection conn)  throws SQLException {
-		PreparedStatement ps =conn.prepareStatement(GET_EXPIRED_RESERVATIONS_QUERY);
+		
+		PreparedStatement ps=conn.prepareStatement(LOCK_EXPIRED_RESERVATIONS);
+		ps.execute();
+		ps.close();
+		
+		ps =conn.prepareStatement(GET_LOCKED_RESERVATIONS_QUERY);
 		ResultSet rs = ps.executeQuery();
 		List<DlvReservationModel>  reservations = new ArrayList<DlvReservationModel>();
 		while (rs.next()) {
@@ -911,10 +918,10 @@ public class DlvManagerDAO {
 		return reservations;
 	}	
 	
-	private static final String MARK_RESERVATION_AS_EXPIRED_QUERY="update dlv.reservation set status_code = 20 where expiration_datetime <= sysdate and status_code = 5";
+	private static final String MARK_LOCKED_RESERVATION_AS_EXPIRED_QUERY="update dlv.reservation set status_code = 20 where expiration_datetime <= sysdate and status_code = 25";
 	public static void expireReservations(Connection conn)  throws SQLException {
 		
-		PreparedStatement ps = conn.prepareStatement(MARK_RESERVATION_AS_EXPIRED_QUERY);
+		PreparedStatement ps = conn.prepareStatement(MARK_LOCKED_RESERVATION_AS_EXPIRED_QUERY);
 	    ps.executeUpdate();
 	    ps.close();
 	}
