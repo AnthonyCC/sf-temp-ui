@@ -259,7 +259,7 @@ public class DispatchCommand extends WebPlanInfo {
 		for(int i=0,n=punchedEmployees.size();i<n;i++)
 		{
 			PunchInfoI tempInfo=(PunchInfoI)punchedEmployees.get(i);
-			if(tempInfo.getStartTime()!=null&&tempInfo.getStartTime().getTime()<=dispatchTimeLong&&dispatchTimeLong<tempInfo.getEndTime().getTime())
+			if(tempInfo.getStartTime()!=null&& tempInfo.getEndTime()!=null&&tempInfo.getStartTime().getTime()<=dispatchTimeLong&&dispatchTimeLong<tempInfo.getEndTime().getTime())
 			{
 				return tempInfo;
 			}
