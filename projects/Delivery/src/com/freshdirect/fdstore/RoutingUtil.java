@@ -46,7 +46,7 @@ public class RoutingUtil {
 		Hashtable h = new Hashtable();
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
 		System.out.println("FDStoreProperties.getRoutingProviderURL( :"+FDStoreProperties.getRoutingProviderURL());
-		h.put(Context.PROVIDER_URL, "t3://sap01.stdev01.nyc1.freshdirect.com:7001");
+		h.put(Context.PROVIDER_URL, FDStoreProperties.getRoutingProviderURL());
 		//PROP_PROVIDER_URL, 	"t3://app01.stdev01.nyc1.freshdirect.com:7001");
 		return new InitialContext(h);
 	}
