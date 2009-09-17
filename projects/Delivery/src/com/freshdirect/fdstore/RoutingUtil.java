@@ -5,13 +5,17 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
@@ -35,8 +39,18 @@ public class RoutingUtil {
 	private static RoutingUtil _instance = null;
 	
 	private RoutingUtil() throws NamingException {
-		this.serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
+		this.serviceLocator = new ServiceLocator(/*FDStoreProperties.getInitialContext()*/getInitialContext());
 	}
+	
+	private Context getInitialContext() throws NamingException {
+		Hashtable h = new Hashtable();
+		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
+		System.out.println("FDStoreProperties.getRoutingProviderURL( :"+FDStoreProperties.getRoutingProviderURL());
+		h.put(Context.PROVIDER_URL, "t3://sap01.stdev01.nyc1.freshdirect.com:7001");
+		//PROP_PROVIDER_URL, 	"t3://app01.stdev01.nyc1.freshdirect.com:7001");
+		return new InitialContext(h);
+	}
+	
 	
 	public static RoutingUtil getInstance() {
 		if (_instance == null) {

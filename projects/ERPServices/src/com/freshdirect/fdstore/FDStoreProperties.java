@@ -314,8 +314,11 @@ public class FDStoreProperties {
 	private static final String SMART_SAVINGS_FEATURE_ENABLED  = "fdstore.smartsavings.enabled";
 	
 	private static final String DYNAMIC_ROUTING_ENABLED = "fdstore.dynamicrouting.enabled";
+	
+	private static final String PROP_ROUTING_PROVIDER_URL="fdstore.routing.providerURL";
+	
 	static {
-
+		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://sap01.stdev01.nyc1.freshdirect.com:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://app01.stdev01.nyc1.freshdirect.com:7001");
 		defaults.put(PROP_INIT_CTX_FACTORY,	"weblogic.jndi.WLInitialContextFactory");
 		defaults.put(PROP_CRM_GEOCODELINK, "http://www.geocode.com/EZLI/LoginServlet?uname=ECM0001468&pword=Lzxjb&servID=USA_Geo_002&formAction=GetInputFormServlet&submit=Login&cmd=li");
@@ -1244,4 +1247,8 @@ public class FDStoreProperties {
 	public static boolean isDynamicRoutingEnabled() {
         return (new Boolean(get(DYNAMIC_ROUTING_ENABLED))).booleanValue();
     }
+	
+	public static String getRoutingProviderURL() {
+		return config.getProperty(PROP_ROUTING_PROVIDER_URL);
+	}
 }
