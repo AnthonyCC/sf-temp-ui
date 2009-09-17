@@ -131,15 +131,7 @@ public class RoutingUtil {
 		return order;
 	}
 	
-	
-	public IDeliverySlot getDeliverySlot(FDTimeslot timeslot) {
 		
-		IDeliverySlot deliverySlot=new DeliverySlot();
-		deliverySlot.setStartTime(timeslot.getBegDateTime());
-		deliverySlot.setStopTime(timeslot.getEndDateTime());
-		return deliverySlot;
-	}
-	
 	public IDeliverySlot getDeliverySlot(DlvTimeslotModel timeSlot) {
 		
 		IDeliverySlot deliverySlot=new DeliverySlot();

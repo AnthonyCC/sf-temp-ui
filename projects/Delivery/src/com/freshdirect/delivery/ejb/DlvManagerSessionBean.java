@@ -1721,7 +1721,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
 			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(timeslot.getZoneCode()));
 			order=setDeliveryInfo(order,timeslot.getBaseDate());
-			reservedSlot = util.getDeliverySlot(timeslot);
+			reservedSlot = util.getDeliverySlot(timeslot.getDlvTimeslot());
 			_reservation=schedulerReserveOrder(order,reservedSlot );
 			
 			long endTime=System.currentTimeMillis();
