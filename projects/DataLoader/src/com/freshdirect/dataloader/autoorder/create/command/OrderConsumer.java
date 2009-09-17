@@ -182,7 +182,7 @@ public class OrderConsumer implements IConsumer {
 
 			FDReservation reservation = FDDeliveryManager.getInstance()
 											.reserveTimeslot(slot, identity.getErpCustomerPK(), (long)1000
-														, EnumReservationType.STANDARD_RESERVATION, address, false);
+														, EnumReservationType.STANDARD_RESERVATION, address, false,null);
 			cart.setDeliveryReservation(reservation);
 
 			//cart.setDeliveryChargeWaived(true);
