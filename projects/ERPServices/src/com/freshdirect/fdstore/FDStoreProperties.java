@@ -317,6 +317,15 @@ public class FDStoreProperties {
 	
 	private static final String PROP_ROUTING_PROVIDER_URL="fdstore.routing.providerURL";
 	
+	//CT & PR1
+	private static final String CT_DELIVERY_CAPACITY_FILE_NAME = "fdstore.deliverycapacity.filename";	
+	
+	private static final String PR1_MAX_ORDER = "fdstore.pr1.maxorder";
+	
+	private static final String PR1_PROFILE_NAME = "fdstore.pr1.profile.name";
+	
+	private static final String PR1_PROFILE_VALUES = "fdstore.pr1.profile.values";	
+	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://sap01.stdev01.nyc1.freshdirect.com:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://app01.stdev01.nyc1.freshdirect.com:7001");
@@ -538,6 +547,10 @@ public class FDStoreProperties {
 		
 		defaults.put(DYNAMIC_ROUTING_ENABLED, "true");
 		
+		defaults.put(CT_DELIVERY_CAPACITY_FILE_NAME, "ctprofile.xml");		
+		defaults.put(PR1_MAX_ORDER, "4");
+		defaults.put(PR1_PROFILE_NAME, "MarketingPromo");
+		defaults.put(PR1_PROFILE_VALUES, "34_actnew_70+1or2taccess,35_actnew_<70taccess");
 		refresh();
 	}
 
@@ -1250,5 +1263,29 @@ public class FDStoreProperties {
 	
 	public static String getRoutingProviderURL() {
 		return config.getProperty(PROP_ROUTING_PROVIDER_URL);
+	}
+	public static String getCTCapacityFileName()
+	{
+		return get(CT_DELIVERY_CAPACITY_FILE_NAME);
+	}	
+
+	public static int getPR1MaxOrder()
+	{
+		return Integer.parseInt(get(PR1_MAX_ORDER));
+	}
+	public static String getPR1ProfileName()
+	{
+		return get(PR1_PROFILE_NAME);
+	}
+	public static List getPR1ProfileValues()
+	{
+		String[] bcc = get(PR1_PROFILE_VALUES).split(",");
+ 		List bccs = new ArrayList(bcc.length);
+ 		for (int i = 0; i < bcc.length; i++) {
+ 			String addr = bcc[i].trim();
+ 			if (addr.length() != 0)
+ 				bccs.add(addr);
+ 		}
+ 		return bccs;		
 	}
 }
