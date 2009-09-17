@@ -15,17 +15,24 @@ import com.extjs.gxt.ui.client.data.DataReader;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
+import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
@@ -148,16 +155,18 @@ public class TableField extends MultiField implements ChangeTrackingField {
         @Override
         public String getRowStyle(ModelData model, int rowIndex, ListStore<ModelData> ds) {
             String rowClass = model.get("class");
-            return rowClass != null ? "cms-table-field-" + rowClass + (rowIndex % 2 == 0 ? "-even" : "-odd") : "";
+            return rowClass != null ? "x-selectable cms-table-field-" + rowClass + (rowIndex % 2 == 0 ? "-even" : "-odd") : "";
         }
-    }
+    }   
     
     TableAttribute attribute;
 
     protected Grid<BaseModelData> grid;
+    protected boolean renderAsLinks; 
 
     public TableField(TableAttribute attribute) {
         this.attribute = attribute;
+        renderAsLinks = true;
 
         BasePagingLoader<BasePagingLoadResult<BaseModelData>> loader = new BasePagingLoader<BasePagingLoadResult<BaseModelData>>(new TableRowLoader(attribute));
         loader.setRemoteSort(true);
@@ -175,7 +184,24 @@ public class TableField extends MultiField implements ChangeTrackingField {
             ColumnConfig cc = new ColumnConfig("col_" + i, col.getLabel(), 150);            
             
             if (ColumnType.KEY == types[i]) {
-                cc.setRenderer(Renderers.GRID_LINK_FROM_PROPERTY_RENDERER);
+                cc.setRenderer(new GridCellRenderer<BaseModelData>() {
+
+					@Override
+					public Object render(BaseModelData model, String property,
+							ColumnData config, int rowIndex, int colIndex,
+							ListStore<BaseModelData> store,
+							Grid<BaseModelData> grid) {
+						Object rmodel = model.get(property);
+			            if (rmodel instanceof ContentNodeModel) {
+			            	if (renderAsLinks) {
+			            		return ((ContentNodeModel) rmodel).renderLinkComponent();
+			            	}
+			            	return ((ContentNodeModel) rmodel).getKey();
+			            }
+			            return rmodel != null ? rmodel.toString() : "<i>null</i>";			            
+					}
+					
+				});
             } else if (ColumnType.CLASS == types[i]) {
                 cc.setHidden(true);
                 cc.setWidth(5);
@@ -191,7 +217,25 @@ public class TableField extends MultiField implements ChangeTrackingField {
         cp.setBottomComponent(toolBar);
         cp.setAutoHeight(true);
         cp.setWidth(670);
-
+        cp.setHeaderVisible(false);
+        ToolBar tb = new ToolBar();
+        tb.add(new Button("Show IDs", new SelectionListener<ButtonEvent>() {			
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				renderAsLinks = !renderAsLinks;
+				grid.getView().refresh(false);
+				if (renderAsLinks) {
+					ce.getButton().setText("Show IDs");
+				}
+				else {
+					ce.getButton().setText("Show links");
+				}
+			}
+		}));        
+        cp.add(tb);
+        
+        
+        
         ListStore<BaseModelData> store;
         GroupingView view = null;
 
@@ -204,7 +248,7 @@ public class TableField extends MultiField implements ChangeTrackingField {
             groupStore.groupBy("col_" + groupingColumn);
 
             store = groupStore;
-            // view.setGroupRenderer(new GridGroupRenderer() {
+
         } else {
             store = new ListStore<BaseModelData>(loader);
         }
@@ -216,11 +260,12 @@ public class TableField extends MultiField implements ChangeTrackingField {
         grid.getView().setViewConfig(new RowStyler());
         grid.getView().setForceFit(false);
 
-        //grid.setAutoHeight(true);
+
         grid.setStripeRows(true);
         grid.setWidth(660);
         grid.setHeight(600);
-        // grid.getView().setForceFit(true);
+        grid.addStyleName("table-field");
+
         loader.load(0, 20);
 
         cp.add(grid);
