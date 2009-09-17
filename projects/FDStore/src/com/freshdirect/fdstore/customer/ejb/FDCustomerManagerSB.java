@@ -314,7 +314,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 		boolean sendEmail,
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
-		EnumDlvPassStatus status)
+		EnumDlvPassStatus status,
+		boolean pr1)
 		throws FDResourceException,
 		ErpFraudException,
 		ErpAuthorizationException,
@@ -345,7 +346,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 		boolean sendEmail,
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
-		EnumDlvPassStatus status)
+		EnumDlvPassStatus status,
+		boolean pr1)
 		throws FDResourceException,
 		ErpFraudException,
 		ErpAuthorizationException,

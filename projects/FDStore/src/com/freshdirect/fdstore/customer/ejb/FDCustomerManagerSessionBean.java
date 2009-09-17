@@ -156,6 +156,7 @@ import com.freshdirect.fdstore.promotion.ejb.FDPromotionDAO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.request.FDProductRequestDAO;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
+import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -1310,7 +1311,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		boolean sendEmail,
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
-		EnumDlvPassStatus status) throws FDResourceException, ErpFraudException, ErpAuthorizationException, ReservationException, DeliveryPassException {
+		EnumDlvPassStatus status,
+		boolean pr1) throws FDResourceException, ErpFraudException, ErpAuthorizationException, ReservationException, DeliveryPassException {
 
 		PrimaryKey pk = null;
 		try {
@@ -1398,8 +1400,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			//commit reservation in DLV
 			//DlvManagerSB dlvSB = this.getDlvManagerHome().create();
 			//dlvSB.commitReservation(reservationId, identity.getErpCustomerPK(), pk.getId());
-			System.out.println("Order #"+pk.getId()+" Reservation #"+reservationId);
-			FDDeliveryManager.getInstance().commitReservation(reservationId,identity.getErpCustomerPK(), pk.getId(),createOrder.getDeliveryInfo().getDeliveryAddress());
+			System.out.println("Order #"+pk.getId()+" Reservation #"+reservationId);			
+			FDDeliveryManager.getInstance().commitReservation(reservationId,identity.getErpCustomerPK(), pk.getId(),createOrder.getDeliveryInfo().getDeliveryAddress(),pr1);
 
 			//AUTH sale in CYBER SOURCE
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
@@ -1679,7 +1681,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		boolean sendEmail,
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
-		EnumDlvPassStatus status) throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException, DeliveryPassException {
+		EnumDlvPassStatus status,
+		boolean pr1) throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException, DeliveryPassException {
 
 		try {
 			// !!! verify that the sale belongs to the customer
@@ -1803,8 +1806,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				//reservation has changed so release old reservation
 				FDDeliveryManager.getInstance().releaseReservation(oldReservationId,fdOrder.getDeliveryAddress());
 				//now commit the new Reservation
-				//dlvSB.commitReservation(newReservationId, identity.getErpCustomerPK(), saleId);
-				FDDeliveryManager.getInstance().commitReservation(newReservationId, identity.getErpCustomerPK(), saleId,order.getDeliveryInfo().getDeliveryAddress());
+				//dlvSB.commitReservation(newReservationId, identity.getErpCustomerPK(), saleId);				
+				FDDeliveryManager.getInstance().commitReservation(newReservationId, identity.getErpCustomerPK(), saleId,order.getDeliveryInfo().getDeliveryAddress(),pr1);
 			}
 
 			//authorize the sale
@@ -2893,7 +2896,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 
 		ErpAddressModel address=getAddress(identity,addressId);
-		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslot, identity.getErpCustomerPK(), duration, rsvType, address, chefsTable);
+		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslot, identity.getErpCustomerPK(), duration, rsvType, address, chefsTable,null);
 			
 			/*DlvManagerSB sb = this.getDlvManagerHome().create();
 			DlvReservationModel rsv = sb.reserveTimeslot(

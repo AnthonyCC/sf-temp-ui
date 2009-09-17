@@ -14,7 +14,8 @@ public class FDActionInfo implements Serializable {
 	private String initiator;
 	private String note;
 	private CrmAgentModel agent;
-
+    private boolean isPR1;
+    
 	public FDActionInfo(EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent) {
 		this.identity = identity;
 		this.source = source;
@@ -81,6 +82,14 @@ public class FDActionInfo implements Serializable {
 		rec.setNote(sb.toString());
 
 		return rec;
+	}
+
+	public boolean isPR1() {
+		return isPR1;
+	}
+
+	public void setPR1(boolean isPR1) {
+		this.isPR1 = isPR1;
 	}
 
 }

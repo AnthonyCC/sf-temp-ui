@@ -847,7 +847,8 @@ public class FDCustomerManager {
 							duration,
 							reservation.getReservationType(),
 							address,
-							reservation.isChefsTable());
+							reservation.isChefsTable(),
+							null);
 					} else {
 						return null;
 					}
@@ -1292,7 +1293,8 @@ public class FDCustomerManager {
 					sendEmail,
 					cra,
 					info.getAgent() == null ? null : info.getAgent().getRole(),
-					status
+					status,
+					info.isPR1()
 				);
 
 			return orderId;
@@ -1365,7 +1367,7 @@ public class FDCustomerManager {
 						sendEmail,
 						cra,
 						info.getAgent() == null ? null : info.getAgent().getRole(),
-						status);
+						status,info.isPR1());
 			}else if (EnumSaleType.SUBSCRIPTION.equals(type)){
 				sb.modifyAutoRenewOrder(
 						info.getIdentity(),
