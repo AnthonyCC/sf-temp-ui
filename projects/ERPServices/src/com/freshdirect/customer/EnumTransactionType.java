@@ -47,15 +47,31 @@ public class EnumTransactionType implements java.io.Serializable {
 	public final static EnumTransactionType FUNDS_REDEPOSIT			= new EnumTransactionType(26, "FRD", "Funds Redeposit");
 	public final static EnumTransactionType SETTLEMENT_CHARGE_FAILED	= new EnumTransactionType(27, "SCF", "Settlement Charge Failed");
 	public final static EnumTransactionType DELIVERY_CONFIRM	= new EnumTransactionType(28, "DLC", "delivery confirmed");
+	public final static EnumTransactionType REGISTER_GIFTCARD	= new EnumTransactionType(29, "RGC", "GiftCard Registered");
+	public final static EnumTransactionType EMAIL_GIFTCARD	= new EnumTransactionType(30, "GCE", "Email GiftCard ");
+	public final static EnumTransactionType GIFTCARD_DLV_CONFIRM	= new EnumTransactionType(31, "GCD", "GiftCard Delivery Confirm");
+	public final static EnumTransactionType PREAUTH_GIFTCARD	= new EnumTransactionType(32, "PAG", "Pre Auth GC", true);
+	public final static EnumTransactionType REVERSEAUTH_GIFTCARD	= new EnumTransactionType(33, "RAG", "Reverse Auth GC", true);
+	public final static EnumTransactionType POSTAUTH_GIFTCARD	= new EnumTransactionType(34, "POG", "Post Auth GC", true);
+	public final static EnumTransactionType BALANCETRANSFER_GIFTCARD	= new EnumTransactionType(35, "BTG", "Balance Transfer GC", true);
+	
+	public final static EnumTransactionType SETTLEMENT_PENDING = new EnumTransactionType(35, "STP", "Settlement Pending", true);
 
     private EnumTransactionType(int id, String code, String name) {
 		this.id = id;
 		this.code = code;
         this.name = name;
-        
+        this.updatable = false;
         CODE_MAP.put( this.code, this );
     }
 
+    private EnumTransactionType(int id, String code, String name, boolean updatable) {
+		this.id = id;
+		this.code = code;
+        this.name = name;
+        this.updatable = updatable;
+        CODE_MAP.put( this.code, this );
+    }
 	public String getCode(){
 		return this.code;
 	}
@@ -75,8 +91,12 @@ public class EnumTransactionType implements java.io.Serializable {
 		return false;
 	}
 
+    public boolean isUpdatable() {
+		return this.updatable;
+	}
 	private final int id;
 	private String code;
     private final String name;
+    private final boolean updatable;
 
 }

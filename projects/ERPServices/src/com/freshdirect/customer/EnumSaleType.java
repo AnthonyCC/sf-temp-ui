@@ -17,7 +17,8 @@ public class EnumSaleType implements Serializable {
 
 	public final static EnumSaleType SUBSCRIPTION= new EnumSaleType(1, "SUB", "Subscription order");
 
-
+    public final static EnumSaleType GIFTCARD= new EnumSaleType(2, "GCD", "GiftCard order");
+        
 	private final int id;
 	private final String saleType;
 	private final String name;
