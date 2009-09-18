@@ -3475,5 +3475,22 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>GetSegmentMessage</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetSegmentMessageTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.GetSegmentMessageTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>user</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 	
 </taglib>
