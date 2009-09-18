@@ -83,6 +83,8 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
             ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
             if (_is_index == Integer.parseInt( line.getComplaintLineNumber() ) ) {
                 retQty += line.getQuantity();
+            // }
+            // if ( line.getOrderLineId().equals(_is_orderline.getOrderLineId()) ) {
                 retAmount += line.getAmount();
             }
         }
