@@ -249,10 +249,10 @@ public class SubmitOrderAction extends WebActionSupport {
 					return ERROR;
 				}
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session);
-				boolean isPR1=CTDeliveryCapacityLogic.isPR1(user);
+				boolean isPR1=CTDeliveryCapacityLogic.isPR1(user,reservation.getTimeslot());
 				info.setPR1(isPR1);
 				FDCustomerManager.modifyOrder(
-					AccountActivityUtil.getActionInfo(session),
+					info,
 					modCart,
 					appliedPromos,
 					sendEmail, cra, status
@@ -264,9 +264,9 @@ public class SubmitOrderAction extends WebActionSupport {
 			} else {
 				// new order -> place it
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session);
-				boolean isPR1=CTDeliveryCapacityLogic.isPR1(user);
+				boolean isPR1=CTDeliveryCapacityLogic.isPR1(user,reservation.getTimeslot());
 				info.setPR1(isPR1);
-				orderNumber = FDCustomerManager.placeOrder(AccountActivityUtil.getActionInfo(session), cart, appliedPromos, sendEmail,cra,status );
+				orderNumber = FDCustomerManager.placeOrder(info, cart, appliedPromos, sendEmail,cra,status );
 			}
 			
 			//update or create everyItemEverOrdered Customer List
