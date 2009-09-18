@@ -195,7 +195,7 @@ public class CTDeliveryCapacityLogic
 				}
 			}
 			return null;
-		} catch (FDResourceException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
@@ -293,7 +293,7 @@ public class CTDeliveryCapacityLogic
 				}
 			}
 			return false;
-		} catch (FDResourceException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
