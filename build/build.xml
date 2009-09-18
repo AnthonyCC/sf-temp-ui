@@ -1604,7 +1604,7 @@
 	        <classpath>
                     <pathelement location="projects/@{project}/src"/>
                     <path refid="@{classpathref}"/>
-                    <pathelement location="${thirdparty.home}/gwt/gwt-dev-linux.jar"/>
+                    <pathelement location="${thirdparty.home}/gwt/gwt-dev-oophm.jar"/>
                 </classpath>
                 <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
                 <jvmarg value="-Xmx512M"/>
