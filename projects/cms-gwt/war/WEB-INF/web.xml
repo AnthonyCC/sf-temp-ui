@@ -74,6 +74,7 @@
 		<web-resource-collection>
 			<web-resource-name>CMS Application</web-resource-name>
 			<url-pattern>/cmsgwt.html</url-pattern>
+			<url-pattern>/cmsgwt_firefox.html</url-pattern>
 			<url-pattern>/contentService</url-pattern>
 			<url-pattern>/adminService</url-pattern>
 			<url-pattern>/RecipeUpload</url-pattern>

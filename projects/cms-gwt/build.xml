@@ -48,68 +48,6 @@
   	  <mkdir dir="@{dir}/WEB-INF/classes"/>
 	</sequential>	
   </macrodef>
-<!--
-  <macrodef name="setup-war" description="Copy libs and classes">
-  	<attribute name="dir"/>
-  	<sequential>
-  		<init-war dir="@{dir}"/>
-  		<mkdir dir="@{dir}/${module.name}"/>
-  	    <copy todir="@{dir}/WEB-INF/lib" file="${fd.lib.dir}/thirdparty/gwt/gwt-servlet.jar" />
-  	    <copy todir="@{dir}/WEB-INF/lib" >
-  	        <fileset dir="${fd.lib.dir}/thirdparty">
-  		        <include name="gxt.jar"/>
-  		        <include name="commons-lang-2.3.jar"/>
-  		        <include name="commons-logging-1.0.4.jar"/>
-  	        	<include name="commons-collections-3.1.jar"/>
-  		        <include name="jakarta-oro-*.jar"/>
-  		        <include name="log4j.jar"/>
-
-  		        <include name="hivemind-1.1.1.jar"/>
-  	        	<include name="hivemind-lib-1.1.1.jar"/>
-  	        	<include name="javassist-3.4.jar"/>
-  	        	
-  	        	<include name="lucene-*.jar"/>
-  	        </fileset>
-  	   	</copy>
-  	  	<copy todir="@{dir}/WEB-INF/classes">
-  	  		<fileset dir="${war.dir}/WEB-INF/classes">
-  	  			<include name="**/*.class"/>
-  	  			<include name="**/*.xml"/>
-  	  			
-  	  		</fileset>
-  	  		<fileset dir="${projects.dir}/Framework/bin">
-  	  			<include name="**/*.class"/>
-  	  			<include name="**/*.xml"/>
-  	  		</fileset>
-  	  		<fileset dir="${projects.dir}/CMS/bin">
-  	  			<include name="**/*.class"/>
-  	  			<include name="**/*.xml"/>
-  	  		</fileset>
-  	  		<fileset dir="${projects.dir}/FDStore/bin">
-  	  			<include name="**/*.class"/>
-  	  			<include name="**/*.xml"/>
-  	  		</fileset>
-  	  		<fileset dir="${projects.dir}/ERPServices/bin">
-  	  			<include name="**/*.class"/>
-  	  			<include name="**/*.xml"/>
-  	  		</fileset>
-  	  		<fileset dir="${fd.properties}">
-  				<include name="*.xml"/>
-  				<include name="*.properties"/>
-  				<include name="*.registry"/>
-  	  		</fileset>
-  	  	</copy>
-  		<copy todir="@{dir}/${module.name}">
-  			<fileset dir="${war.dir}/${module.name}"/>
-  		</copy>
-  		<copy todir="@{dir}/WEB-INF">
-  			<fileset dir="${war.dir}/WEB-INF"> 
-  				<include name="*.xml"/>
-  			</fileset>
-  		</copy>
-  	</sequential>
-  </macrodef>	
--->
 	
   <target name="javac" description="Compile java source">
     <init-war dir="${weblogic.deploy.dir}"/>
@@ -125,26 +63,65 @@
     </copy>
   </target>
 
-  <target name="gwtc" depends="javac" description="GWT compile to JavaScript">
-    <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
-      <classpath>
-        <pathelement location="src"/>
-        <path refid="project.class.path"/>
-      </classpath>
-      <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
-      <jvmarg value="-Xmx512M"/>
-      <jvmarg value="-Xss64M"/>
-      <jvmarg value="-XX:CompileCommand=exclude,org/eclipse/core/internal/dtree/DataTreeNode,forwardDeltaWith"/>
-      <jvmarg value="-XX:CompileCommand=exclude,org/eclipse/jdt/internal/compiler/lookup/ParameterizedMethodBinding,&lt;init&gt;"/>
-      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
-      <arg value="-style"/>
-      <arg value="PRETTY"/>
-      <arg value="${module.name}"/>
-      <arg value="-war"/>
-  	  <arg value="${gwtc.compile.out.dir}"/>
-    </java>
+  <macrodef name="gwtc" description="compile a module">
+  	<attribute name="module"/>
+  	<sequential>
+  	    <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+  	      <classpath>
+  	        <pathelement location="src"/>
+  	        <path refid="project.class.path"/>
+  	      </classpath>
+  	      <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+  	      <jvmarg value="-Xmx512M"/>
+  	      <jvmarg value="-Xss64M"/>
+  	      <jvmarg value="-XX:CompileCommand=exclude,org/eclipse/core/internal/dtree/DataTreeNode,forwardDeltaWith"/>
+  	      <jvmarg value="-XX:CompileCommand=exclude,org/eclipse/jdt/internal/compiler/lookup/ParameterizedMethodBinding,&lt;init&gt;"/>
+  	      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+  	      <arg value="-style"/>
+  	      <arg value="PRETTY"/>
+  	      <arg value="@{module}"/>
+  	      <arg value="-war"/>
+  	  	  <arg value="${gwtc.compile.out.dir}"/>
+  	    </java>
+  	</sequential>
+  </macrodef>
+	
+  <macrodef name="copy-module">
+  	<attribute name="module"/>
+  	<sequential>
+  	  	<copy todir="${weblogic.deploy.dir}">
+  	  		<fileset dir="${gwtc.compile.out.dir}/@{module}" />
+  	  		<fileset dir="${war.dir}">
+  	  			<exclude name="@{module}/**"/>
+  	  			<include name="*.html"/>
+  	  			<include name="*.jsp"/>
+  	  			<include name="**/*.css"/>
+  	  		</fileset>
+  	  	</copy>
+  		<copy todir="${weblogic.deploy.dir}/WEB-INF" overwrite="true">
+  			<fileset dir="${war.dir}/WEB-INF">
+  				<include name="*.xml"/>
+  			</fileset>	
+  		</copy>
+  	  	<copy todir="${weblogic.deploy.dir}/WEB-INF/classes">
+  	  		<fileset dir="${war.dir}/WEB-INF/classes"/>
+ 	  	</copy>
+  	</sequential>
+  </macrodef>
+ 
+  <target name="build" depends="javac" description="GWT compile to JavaScript to every possible permutation">
+  	<gwtc module="${module.name}"/>
   </target>
 
+  <target name="copy">
+  	<copy-module module="${module.name}"/>
+  </target>
+
+  <target name="build-firefox" depends="javac" description="GWT compile to JavaScript only for gecko1.8, and deploy it">
+  	<gwtc module="com.freshdirect.cms.ui.cmsgwt_Firefox3"/>
+  	<copy-module module="com.freshdirect.cms.ui.cmsgwt_Firefox3"/>
+  </target>
+	
   <target name="hosted" depends="javac" description="Run hosted mode">
     <java failonerror="true" fork="true" classname="com.google.gwt.dev.HostedMode" jvm="${java.exec}">
       <classpath>
@@ -159,37 +136,10 @@
     </java>
   </target>
 
-  <target name="build" depends="gwtc" description="Build this project" />
-
-<!--  <target name="war" depends="build" description="Create a war file">
-  	<setup-war dir="target/war"/>
-    <zip destfile="target/cmsgwt.war" basedir="target/war"/>
-  </target>-->
-
   <target name="clean" description="Cleans this project">
     <delete dir="${weblogic.deploy.dir}" failonerror="false" />
   </target>
 
-  <target name="copy">
-  	<copy todir="${weblogic.deploy.dir}">
-  		<fileset dir="${gwtc.compile.out.dir}/${module.name}" />
-  		<fileset dir="${war.dir}">
-  			<exclude name="${module.name}/**"/>
-  			<include name="*.html"/>
-  			<include name="*.jsp"/>
-  			<include name="**/*.css"/>
-  		</fileset>
-  	</copy>
-	<copy todir="${weblogic.deploy.dir}/WEB-INF" overwrite="true">
-		<fileset dir="${war.dir}/WEB-INF">
-			<include name="*.xml"/>
-		</fileset>	
-	</copy>
-
-  	<copy todir="${weblogic.deploy.dir}/WEB-INF/classes">
-  		<fileset dir="${war.dir}/WEB-INF/classes"/>
-  	</copy>
-  </target>
   	
   <target name="dev-compile" depends="build,copy" description="Build the project for running in the DevServer"/>
 
