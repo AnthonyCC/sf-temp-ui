@@ -177,7 +177,15 @@ request.setAttribute("listPos", "CategoryNote");
 									</tr>
 									<tr valign="middle">
 										<input type="hidden" name="serviceType" value="<%= EnumServiceType.HOME.getName()%>">
-										<td colspan="3" align="center" class="text10bold">HOME ZIP CODE:<br>
+										<td colspan="3" align="center" class="text10bold">
+											<% if ( result.hasError("technicalDifficulty") ) { %>
+												<font class="text11rbold"><%=result.getError("technicalDifficulty").getDescription() %></font><br /><br />
+											<% } else if ( result.hasError(EnumUserInfoName.DLV_ZIPCODE.getCode()) ) { %>
+												<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %></font><br />
+											<%}else if ( result.hasError(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()) ) { %>
+												<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()).getDescription() %></font><br />
+											<%}%>
+											HOME ZIP CODE:<br>
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
 											<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= zipcode %>' name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" required="true" tabindex="1">
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="6">				
