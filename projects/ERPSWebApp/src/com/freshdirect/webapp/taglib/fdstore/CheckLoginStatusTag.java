@@ -113,7 +113,16 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             }
 
         }
-
+        
+        //If user is coming from pretty URL redirect it to site_access_lite page
+        if(user==null){
+        	if (request.getRequestURI().indexOf("index.jsp") <= -1 && request.getParameter("siteAccessPage")==null) {
+                this.redirectPage = "/site_access/site_access_lite.jsp";
+                doRedirect(true);
+                return SKIP_BODY;
+            }
+        }
+        
         if ((user == null) || (user.getLevel() == FDSessionUser.GUEST && !guestAllowed) || (user.getLevel() == FDSessionUser.RECOGNIZED && !recognizedAllowed)
                 || (user.isNotServiceable() && !user.isDepotUser() && !guestAllowed)) {
             //
@@ -136,8 +145,10 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                     session.setAttribute(USER, user);
                 }
             } else {
-                doRedirect(user == null);
-                return SKIP_BODY;
+            	if(request.getParameter("siteAccessPage")==null){//if user navigates on site access do not redirect
+            		doRedirect(user == null);
+                    return SKIP_BODY;
+            	}
             }
         }
         if (this.id != null) {
@@ -182,7 +193,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 		StringBuffer redirBuf =
 			new StringBuffer(
 				this.guestAllowed
-					? "/site_access/site_access.jsp?successPage="
+		//			? "/site_access/site_access.jsp?successPage="
+					? "/about/index.jsp?siteAccessPage=aboutus&successPage="
 					: (firstRequest ? "/login/login_main.jsp?successPage=" : "/login/login.jsp?successPage="));
         redirBuf.append(request.getRequestURI());
         
