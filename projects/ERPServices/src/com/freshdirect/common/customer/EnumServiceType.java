@@ -12,7 +12,12 @@ public class EnumServiceType extends Enum {
 	public static final EnumServiceType CORPORATE = new EnumServiceType("CORPORATE");
 	public static final EnumServiceType DEPOT = new EnumServiceType("DEPOT");
 	public static final EnumServiceType PICKUP = new EnumServiceType("PICKUP");
-
+	//Added for Gift cards.
+	public static final EnumServiceType GIFT_CARD_PERSONAL = new EnumServiceType("GCP");
+	public static final EnumServiceType GIFT_CARD_CORPORATE = new EnumServiceType("GCC");
+	
+	public static final EnumServiceType WEB = new EnumServiceType("WEB");
+	
 	private EnumServiceType(String name) {
 		super(name);
 	}
