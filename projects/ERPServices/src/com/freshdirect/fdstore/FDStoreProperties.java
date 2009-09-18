@@ -244,6 +244,7 @@ public class FDStoreProperties {
 	//	Handle Advanced Order date
 	private final static String ADVANCE_ORDER_START = "fdstore.advance.order.start";
 	private final static String ADVANCE_ORDER_END = "fdstore.advance.order.end";
+
 	// Advance Order with days gap
 	private final static String ADVANCE_ORDER_GAP = "fdstore.advance.order.isGap";
 	private final static String ADVANCE_ORDER_NEW_START = "fdstore.advance.order.newstart";
@@ -267,9 +268,14 @@ public class FDStoreProperties {
 	//additional ratings 2009.06
 	private static final String PRODUCE_RATING_PREFIXES="fdstore.produceRatingPrefixes";
 	
+	// Gift Card
+	private static final String GIFT_CARD_ENABLED="fdstore.isGiftCardEnabled";
+	private static final String GIFT_CARD_LANDING_URL="fdstore.giftCardLandingUrl";
 	
-
-
+	// Robin Hood
+	private static final String ROBIN_HOOD_ENABLED="fdstore.isRobinHoodEnabled";
+	private static final String ROBIN_HOOD_LANDING_URL="fdstore.robinHoodLandingUrl";
+	
 	private static final String HPLETTER_MEDIA_ENABLED="fdstore.isHomePageMediaEnabled";
 
 	//Deals changes.
@@ -315,12 +321,26 @@ public class FDStoreProperties {
 	
 	private static final String DYNAMIC_ROUTING_ENABLED = "fdstore.dynamicrouting.enabled";
 	
+	//Gift Cards
+	private static final String PROP_GIFT_CARD_SKU_CODE = "fdstore.giftcard.skucode";
+	private final static String PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH	= "fdstore.media.giftcard.template.path"; //Location of different ftl templates of giftcards.
+	private static final String PROP_GC_TEMPLATE_BASE_URL = "fdstore.giftcard.template.baseurl";
+	private static final String PROP_GC_MIN_AMOUNT = "fdstore.giftcard.minimum.amount";
+	private static final String PROP_GC_MAX_AMOUNT = "fdstore.giftcard.maximum.amount";
+	private final static String PROP_GIFT_CARD_RECIPIENT_MAX = "giftcard.recipient.max";
+	
+	private static final String PROP_ROBIN_HOOD_SKU_CODE = "fdstore.robinhood.skucode";
+	
 	private static final String PROP_ROUTING_PROVIDER_URL="fdstore.routing.providerURL";
 	
 	//CT & PR1
-	private static final String CT_DELIVERY_CAPACITY_FILE_NAME = "fdstore.deliverycapacity.filename";
+	private static final String CT_DELIVERY_CAPACITY_FILE_NAME = "fdstore.deliverycapacity.filename";	
 	
-	private static final String PR1_DELIVERY_CAPACITY_FILE_NAME = "fdstore.pr1.filename";	
+	private static final String PR1_MAX_ORDER = "fdstore.pr1.maxorder";
+	
+	private static final String PR1_PROFILE_NAME = "fdstore.pr1.profile.name";
+	
+	private static final String PR1_PROFILE_VALUES = "fdstore.pr1.profile.values";	
 	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://sap01.stdev01.nyc1.freshdirect.com:7001");
@@ -509,6 +529,14 @@ public class FDStoreProperties {
 		defaults.put(HP_LETTER_MEDIA_PATH1, "/media/editorial/home/letter/hp_letter_new.html");
 		defaults.put(HP_LETTER_MEDIA_PATH2, "/media/editorial/home/letter/hp_letter_customer.html");
 		defaults.put(HPLETTER_MEDIA_ENABLED, "true");
+		
+		// Gift Card
+		defaults.put(GIFT_CARD_ENABLED, "false");
+		defaults.put(GIFT_CARD_LANDING_URL, "/gift_card/purchase/landing.jsp");
+		
+		// Robin Hood
+		defaults.put(ROBIN_HOOD_ENABLED, "false");
+		defaults.put(ROBIN_HOOD_LANDING_URL, "/gift_card/purchase/landing.jsp");
 
 		//deals
 		defaults.put(DEALS_SKU_PREFIX,"GRO,FRO,SPE,DAI,HBA");
@@ -543,8 +571,19 @@ public class FDStoreProperties {
 		
 		defaults.put(DYNAMIC_ROUTING_ENABLED, "true");
 		
-		defaults.put(CT_DELIVERY_CAPACITY_FILE_NAME, "ctprofile.xml");	
-		defaults.put(PR1_DELIVERY_CAPACITY_FILE_NAME, "pr1profile.xml");		
+		defaults.put(PROP_GIFT_CARD_SKU_CODE, "MKT0074896");
+		defaults.put(PROP_ROBIN_HOOD_SKU_CODE, "MKT0075239");
+		defaults.put(PROP_GC_TEMPLATE_BASE_URL,"http://www.freshdirect.com/");		
+		defaults.put(PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH,"media/editorial/giftcards/");
+		defaults.put(PROP_GIFT_CARD_RECIPIENT_MAX, "10");	
+		defaults.put(PROP_GC_MIN_AMOUNT, "20");
+		defaults.put(PROP_GC_MAX_AMOUNT, "5000");
+		
+		defaults.put(CT_DELIVERY_CAPACITY_FILE_NAME, "ctprofile.xml");		
+		defaults.put(PR1_MAX_ORDER, "4");
+		defaults.put(PR1_PROFILE_NAME, "MarketingPromo");
+		defaults.put(PR1_PROFILE_VALUES, "34_actnew_70+1or2taccess,35_actnew_<70taccess");
+		
 		refresh();
 	}
 
@@ -1077,6 +1116,22 @@ public class FDStoreProperties {
 	    return get(TEMP_DIR);
 	}
 
+	// Gift Card
+	public static boolean isGiftCardEnabled() {
+		return Boolean.valueOf(get(GIFT_CARD_ENABLED)).booleanValue();
+	}
+	public static String getGiftCardLandingUrl() {
+		return get(GIFT_CARD_LANDING_URL);
+	}
+	
+	// Robin Hood
+	public static boolean isRobinHoodEnabled() {
+		return Boolean.valueOf(get(ROBIN_HOOD_ENABLED)).booleanValue();
+	}
+	public static String getRobinHoodLandingUrl() {
+		return get(ROBIN_HOOD_LANDING_URL);
+	}
+	
 	//deals
 	public static String getDealsSkuPrefixes(){
 		return get(DEALS_SKU_PREFIX);
@@ -1199,6 +1254,17 @@ public class FDStoreProperties {
 		return get(PROP_FDWHATSGOOD_ROWS);
 	}
 	
+	public static String getGiftcardSkucode() {
+		return get(PROP_GIFT_CARD_SKU_CODE);
+	}
+	
+	public static String getRobinHoodSkucode() {
+		return get(PROP_ROBIN_HOOD_SKU_CODE);
+	}
+	
+	public static String getMediaGiftCardTemplatePath() {
+		return get(PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH);
+	}
 	/**
 	 * Used for testing, do not call from the App.
 	 * @param lastRefresh
@@ -1217,7 +1283,7 @@ public class FDStoreProperties {
  		}
  		return bccs;
  	}	
-	
+
 	public static boolean IsAdvanceOrderGap() {
 		return Boolean.valueOf(get(ADVANCE_ORDER_GAP)).booleanValue();
 	}
@@ -1248,11 +1314,12 @@ public class FDStoreProperties {
 
 		return new DateRange(DateUtil.truncate(dStart),DateUtil.truncate(dEnd));
 	}
+	
 	public static String getRoutingGatewayHome() {
 		return get(PROP_ROUTINGGATEWAY_HOME);
 	}
 	public static boolean isDynamicRoutingEnabled() {
-        return (new Boolean(get(DYNAMIC_ROUTING_ENABLED))).booleanValue();		
+        return (new Boolean(get(DYNAMIC_ROUTING_ENABLED))).booleanValue();
     }
 	
 	public static String getRoutingProviderURL() {
@@ -1262,9 +1329,37 @@ public class FDStoreProperties {
 	{
 		return get(CT_DELIVERY_CAPACITY_FILE_NAME);
 	}	
-	public static String getPR1CapacityFileName()
-	{
-		return get(PR1_DELIVERY_CAPACITY_FILE_NAME);
-	}
 
+	public static int getPR1MaxOrder()
+	{
+		return Integer.parseInt(get(PR1_MAX_ORDER));
+	}
+	public static String getPR1ProfileName()
+	{
+		return get(PR1_PROFILE_NAME);
+	}
+	public static List getPR1ProfileValues()
+	{
+		String[] bcc = get(PR1_PROFILE_VALUES).split(",");
+ 		List bccs = new ArrayList(bcc.length);
+ 		for (int i = 0; i < bcc.length; i++) {
+ 			String addr = bcc[i].trim();
+ 			if (addr.length() != 0)
+ 				bccs.add(addr);
+ 		}
+ 		return bccs;		
+	}
+	public static String getGCTemplateBaseUrl() {
+		return get(PROP_GC_TEMPLATE_BASE_URL);
+	}
+	
+	public static int getGiftCardRecipientLimit() {
+		return Integer.parseInt(config.getProperty(PROP_GIFT_CARD_RECIPIENT_MAX));
+	}
+	public static double getGiftCardMinAmount() {
+		return Double.parseDouble(config.getProperty(PROP_GC_MIN_AMOUNT));
+	}
+	public static double getGiftCardMaxAmount() {
+		return Double.parseDouble(config.getProperty(PROP_GC_MAX_AMOUNT));
+	}
 }
