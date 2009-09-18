@@ -528,6 +528,7 @@
 	<bean id="scheduleFormController" class="com.freshdirect.transadmin.web.ScheduleFormController">
 		<property name="employeeManagerService" ref="employeeManagerService"/>
 		<property name="domainManagerService" ref="domainManager"/>
+		<property name="zoneManagerService" ref="zoneManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="scheduleForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.web.model.WebSchedule"/>
