@@ -391,7 +391,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
         if (orderLineTaxRate[i] != null && !"".equals(orderLineTaxRate[i]))
         	taxRate = Double.parseDouble( orderLineTaxRate[i]);
         if (orderLineDeposit[i] != null && !"".equals(orderLineDeposit[i]))
-        	deposit = Double.parseDouble( orderLineTaxRate[i]);
+        	deposit = Double.parseDouble( orderLineDeposit[i]);
 
 
         if ( orderLineQty[i] != null && !"".equals(orderLineQty[i]) ){
@@ -450,6 +450,8 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
 			System.err.println("  New credits so far = " + newCredsSoFar);
 			System.err.println("  Free / available credits = " + freeCredits + " (= Gross Total - previous credits)");
 
+			System.err.println("  free = " + freeCredits + " <? new creds issued = " + newCredsIssued + " (amount="+amount+")");
+			
 			if (freeCredits < newCredsIssued) {
     			// calculate the difference
     			final double diff = MathUtil.roundDecimal(freeCredits-newCredsSoFar);
