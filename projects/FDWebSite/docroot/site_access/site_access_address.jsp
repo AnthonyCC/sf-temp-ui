@@ -102,7 +102,7 @@ Please enter your street address so that we can make sure your building is in a 
                         </tr>                                                        
 						<tr valign="top">
 							<td width="130" ALIGN="RIGHT" class="bodyCopy">* Zip/Postal Code</td>
-							<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt=""><input type="text"  maxlength="5" class="text9" size="6" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+							<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt=""><input type="text"  maxlength="5" class="text9" size="6" name="<%=isCorporate ? EnumUserInfoName.DLV_CORP_ZIPCODE.getCode() : EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 							</td>
 							</tr>
 						<tr valign="MIDDLE">
