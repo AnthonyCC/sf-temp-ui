@@ -4,7 +4,15 @@
 
 <fd:CheckLoginStatus />
 
-<tmpl:insert template='/common/template/left_dnav.jsp'>
+<% String siteAccessPage = request.getParameter("siteAccessPage"); 
+   String jspTemplate = null;
+   if(siteAccessPage!=null && siteAccessPage.equalsIgnoreCase("tour"))
+	   jspTemplate = "/site_access/site_access.jsp";
+   else
+	   jspTemplate = "/common/template/left_dnav.jsp";
+   %>
+
+<tmpl:insert template='<%= jspTemplate %>'>
 <tmpl:put name='title' direct='true'>FreshDirect - About FreshDirect</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <table cellpadding="0" cellspacing="0" border="0" width="568">
@@ -25,26 +33,26 @@ exactly the way you want it</b>.
 <img src="/media_stat/images/template/about/plant_tour/photo_tour_choose_dept.gif" width="568" height="17" alt="Choose a department below to start the tour!"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
 </tr>
 <tr valign="top">
-<td class="bodyCopy" align="center"><a href="/category.jsp?catId=about_tour_safety"><img src="/media_stat/images/template/about/plant_tour/tourhome_safety.jpg" width="120" height="120" alt="Food Safety Procedures" border="0" vspace="6"></a><br><a href="/category.jsp?catId=about_tour_safety"><b>Food Safety Procedures</b></a></td>
+<td class="bodyCopy" align="center"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_safety" : "/about/plant_tour/food_safety/index.jsp?siteAccessPage=tour&catId=about_tour_safety"%>><img src="/media_stat/images/template/about/plant_tour/tourhome_safety.jpg" width="120" height="120" alt="Food Safety Procedures" border="0" vspace="6"></a><br><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_safety" : "/about/plant_tour/food_safety/index.jsp?siteAccessPage=tour&catId=about_tour_safety"%>><b>Food Safety Procedures</b></a></td>
 <td>&nbsp;</td>
 <td class="bodyCopy" align="center">
-<a href="/category.jsp?catId=about_tour_coffee"><img src="/media_stat/images/template/about/plant_tour/tourhome_coffee.jpg" width="120" height="120" alt="Coffee Department" border="0" vspace="6"></a><br><a href="/category.jsp?catId=about_tour_coffee"><b>Coffee Department</b></a></td>
+<a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_coffee" : "/about/plant_tour/coffee/index.jsp?siteAccessPage=tour&catId=about_tour_coffee"%>><img src="/media_stat/images/template/about/plant_tour/tourhome_coffee.jpg" width="120" height="120" alt="Coffee Department" border="0" vspace="6"></a><br><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_coffee" : "/about/plant_tour/coffee/index.jsp?siteAccessPage=tour&catId=about_tour_coffee"%>><b>Coffee Department</b></a></td>
 <td>&nbsp;</td>
-<td class="bodyCopy" align="center"><a href="/category.jsp?catId=about_tour_meat"><img src="/media_stat/images/template/about/plant_tour/tourhome_meat.jpg" width="120" height="120" alt="Meat Department" border="0" vspace="6"></a><br><a href="/category.jsp?catId=about_tour_meat"><b>Meat<br>Department</b></a></td>
+<td class="bodyCopy" align="center"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_meat" : "/about/plant_tour/meat/index.jsp?siteAccessPage=tour&catId=about_tour_meat"%>><img src="/media_stat/images/template/about/plant_tour/tourhome_meat.jpg" width="120" height="120" alt="Meat Department" border="0" vspace="6"></a><br><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_meat" : "/about/plant_tour/meat/index.jsp?siteAccessPage=tour&catId=about_tour_meat"%>><b>Meat<br>Department</b></a></td>
 <td>&nbsp;</td>
-<td class="bodyCopy" align="center"><a href="/category.jsp?catId=about_tour_seafood"><img src="/media_stat/images/template/about/plant_tour/tourhome_seafood.jpg" width="120" height="120" alt="Seafood Department" border="0" vspace="6"></a><br><a href="/category.jsp?catId=about_tour_seafood"><b>Seafood Department</b></a></td>
+<td class="bodyCopy" align="center"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_seafood" : "/about/plant_tour/seafood/index.jsp?siteAccessPage=tour&catId=about_tour_seafood"%>><img src="/media_stat/images/template/about/plant_tour/tourhome_seafood.jpg" width="120" height="120" alt="Seafood Department" border="0" vspace="6"></a><br><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_seafood" : "/about/plant_tour/seafood/index.jsp?siteAccessPage=tour&catId=about_tour_seafood"%>><b>Seafood Department</b></a></td>
 </tr>
 <tr>
 <td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="12"></td>
 </tr>
 <tr>
-<td class="bodyCopy" align="center"><a href="/category.jsp?catId=about_tour_produce"><img src="/media_stat/images/template/about/plant_tour/tourhome_produce.jpg" width="120" height="120" alt="Produce Department" border="0" vspace="6"></a><br><a href="/category.jsp?catId=about_tour_produce"><b>Produce Department</b></a></td>
+<td class="bodyCopy" align="center"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_produce" : "/about/plant_tour/produce/index.jsp?siteAccessPage=tour&catId=about_tour_produce"%>><img src="/media_stat/images/template/about/plant_tour/tourhome_produce.jpg" width="120" height="120" alt="Produce Department" border="0" vspace="6"></a><br><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_produce" : "/about/plant_tour/produce/index.jsp?siteAccessPage=tour&catId=about_tour_produce"%>><b>Produce Department</b></a></td>
 <td>&nbsp;</td>
-<td class="bodyCopy" align="center"><a href="/category.jsp?catId=about_tour_delicheese"><img src="/media_stat/images/template/about/plant_tour/tourhome_deli.jpg" width="120" height="120" alt="Deli & Cheese Departments" border="0" vspace="6"></a><br><a href="/category.jsp?catId=about_tour_delicheese"><b>Deli & Cheese Departments</b></a></td>
+<td class="bodyCopy" align="center"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_delicheese" : "/about/plant_tour/deli_cheese/index.jsp?siteAccessPage=tour&catId=about_tour_delicheese"%>><img src="/media_stat/images/template/about/plant_tour/tourhome_deli.jpg" width="120" height="120" alt="Deli & Cheese Departments" border="0" vspace="6"></a><br><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_delicheese" : "/about/plant_tour/deli_cheese/index.jsp?siteAccessPage=tour&catId=about_tour_delicheese"%>><b>Deli & Cheese Departments</b></a></td>
 <td>&nbsp;</td>
-<td class="bodyCopy" align="center"><a href="/category.jsp?catId=about_tour_kitchen"><img src="/media_stat/images/template/about/plant_tour/tourhome_bakery_kitchen.jpg" width="120" height="120" alt="Kitchen & Bakery Departments" border="0" vspace="6"></a><br><a href="/category.jsp?catId=about_tour_kitchen"><b>Kitchen & Bakery Departments</b></a></td>
+<td class="bodyCopy" align="center"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_kitchen" : "/about/plant_tour/kitchen/index.jsp?siteAccessPage=tour&catId=about_tour_kitchen"%>><img src="/media_stat/images/template/about/plant_tour/tourhome_bakery_kitchen.jpg" width="120" height="120" alt="Kitchen & Bakery Departments" border="0" vspace="6"></a><br><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_kitchen" : "/about/plant_tour/kitchen/index.jsp?siteAccessPage=tour&catId=about_tour_kitchen"%>><b>Kitchen & Bakery Departments</b></a></td>
 <td>&nbsp;</td>
-<td class="bodyCopy" align="center"><a href="/category.jsp?catId=about_tour_sorting"><img src="/media_stat/images/template/about/plant_tour/tourhome_shipping.jpg" width="120" height="120" alt="Sorting & Shipping Process" border="0" vspace="6"></a><br><a href="/category.jsp?catId=about_tour_sorting"><b>Sorting & Shipping Process</b></a></td>
+<td class="bodyCopy" align="center"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_sorting" : "/about/plant_tour/sort_ship/index.jsp?siteAccessPage=tour&catId=about_tour_sorting"%>><img src="/media_stat/images/template/about/plant_tour/tourhome_shipping.jpg" width="120" height="120" alt="Sorting & Shipping Process" border="0" vspace="6"></a><br><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_sorting" : "/about/plant_tour/sort_ship/index.jsp?siteAccessPage=tour&catId=about_tour_sorting"%>><b>Sorting & Shipping Process</b></a></td>
 </tr>
 <%-- spacers --%>
 <tr>

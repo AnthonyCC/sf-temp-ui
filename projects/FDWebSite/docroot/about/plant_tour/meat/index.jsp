@@ -2,7 +2,15 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<fd:CheckLoginStatus />
+<fd:CheckLoginStatus/>
+
+<% String siteAccessPage = request.getParameter("siteAccessPage"); 
+   String jspTemplate = null;
+   if(siteAccessPage!=null && siteAccessPage.equalsIgnoreCase("tour"))
+	   jspTemplate = "/site_access/site_access.jsp";
+   else
+	   jspTemplate = "/common/template/left_dnav.jsp";
+   %>
 <% 
 String deptName = "meat";
 int maxNum = 12;
@@ -10,7 +18,7 @@ String link = "/about/plant_tour/tour_popup.jsp?deptName="+ deptName + "&maxNum=
 String doLink1 = "javascript:pop('"+ link ;
 String doLink2 = "',445,375);";
 %>
-<tmpl:insert template='/common/template/left_dnav.jsp'>
+<tmpl:insert template='<%= jspTemplate %>'>
 <tmpl:put name='title' direct='true'>FreshDirect - About FreshDirect</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <table cellpadding="0" cellspacing="0" border="0" width="568">
@@ -26,7 +34,7 @@ String doLink2 = "',445,375);";
 
 <tr>
 <td class="text12">
-<div align="right"><a href="/category.jsp?catId=about_tour_seafood"><img src="/media_stat/images/template/about/plant_tour/meat/meat_next.gif" width="105" height="16" alt="Next - Seafood" vspace="6" border="0"></a></div><span class="text15"><font color="#666666"><b>Click on the images below to enlarge.</b></font></span><br>
+<div align="right"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_seafood" : "/about/plant_tour/seafood/index.jsp?siteAccessPage=tour&catId=about_tour_seafood"%>><img src="/media_stat/images/template/about/plant_tour/meat/meat_next.gif" width="105" height="16" alt="Next - Seafood" vspace="6" border="0"></a></div><span class="text15"><font color="#666666"><b>Click on the images below to enlarge.</b></font></span><br>
 <a href="<%=doLink1%>1<%=doLink2%>"><img src="/media_stat/images/template/about/plant_tour/meat/meat_p_1.jpg" width="126" height="158" alt="" vspace="10" border="0"></a>
 <img src="/media_stat/images/layout/clear.gif" width="4" height="1">
 <a href="<%=doLink1%>2<%=doLink2%>"><img src="/media_stat/images/template/about/plant_tour/meat/meat_p_2.jpg" width="126" height="158" alt="" vspace="10" border="0"></a>
