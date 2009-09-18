@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
@@ -27,14 +28,18 @@ import com.thoughtworks.xstream.XStream;
 
 public class CTDeliveryCapacityLogic 
 {	
-	public static boolean loaded=false;
+	public static boolean loadedCT=false;
 	public static Set<CTProfileConfig> CT_CONFIG;
+	
+	public static boolean loadedPR1=false;
+	public static Set<CTProfileConfig> PR1_CONFIG;
+	
 	public static final DateFormat MONTH_DATE_YEAR_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
-	public static void loadCTConfig()
+	public static void loadCTConfig(int order)
 	{
-	//	if(!loaded)
+		if((order==1&&!loadedCT)||(order==2&&!loadedPR1))
 		{
-			CT_CONFIG=new TreeSet<CTProfileConfig>();
+			Set<CTProfileConfig> CONFIG=new TreeSet<CTProfileConfig>();
 			XStream xstream = new XStream();
 			xstream.alias("campaign", CTProfileConfig.class);
 			xstream.alias("code", String.class);
@@ -59,7 +64,15 @@ public class CTDeliveryCapacityLogic
 			xstream.alias("value", Zone.class);
 			
 			try {
-				InputStream is = ResourceUtil.openResource("classpath: "+FDStoreProperties.getCTCapacityFileName());
+				InputStream is;
+				if(order==1)
+				{
+					is = ResourceUtil.openResource("classpath: "+FDStoreProperties.getCTCapacityFileName());
+				}
+				else
+				{
+					is = ResourceUtil.openResource("classpath: "+FDStoreProperties.getPR1CapacityFileName());
+				}
 				if (is == null) 
 				{
 					throw new IOException("cannot find the file rules.xml on classpath");
@@ -68,12 +81,22 @@ public class CTDeliveryCapacityLogic
 				while (true) {
 					try {
 						CTProfileConfig r = (CTProfileConfig) in.readObject();
-						CT_CONFIG.add(r);
+						CONFIG.add(r);
 					} catch (EOFException e) {
 						break;
 					}
-				}				
-			loaded=true;
+				}	
+				if(order==1)
+				{
+					loadedCT=true;
+					CT_CONFIG=CONFIG;
+				}
+				else
+				{
+					loadedPR1=true;
+					PR1_CONFIG=CONFIG;
+				}
+			
 			}catch(Exception e)
 			{
 				e.printStackTrace();
@@ -87,7 +110,7 @@ public class CTDeliveryCapacityLogic
 		
 			try {
 			String zone=timeSlot.getZoneCode();
-			loadCTConfig();		
+			loadCTConfig(1);		
 			int totalOrder=user.getOrderHistory().getValidOrderCount();			
 			for(CTProfileConfig config:CT_CONFIG)
 			{ 
@@ -136,7 +159,7 @@ public class CTDeliveryCapacityLogic
 					}
 					
 					//this is for first time users.
-					if(config.getProfiles()==null&&config.getProfiles().size()==0)return config.getCode();
+					if(config.getProfiles()==null||config.getProfiles().size()==0)return config.getCode();
 					if(!config.isAllConditionMatch())
 					{
 						if(user.getFDCustomer()!=null&&user.getFDCustomer().getProfile()!=null)
@@ -179,33 +202,103 @@ public class CTDeliveryCapacityLogic
 		}		
 	}
 	
-	public static boolean isPR1(FDUserI user)
+	public static boolean isPR1(FDUserI user,FDTimeslot timeSlot)
 	{
-		try {
-			boolean result=false;
-			if(user!=null)
+		
+			try 
 			{
-				int totalOrder=user.getOrderHistory().getValidOrderCount();
-				if(totalOrder<=FDStoreProperties.getPR1MaxOrder()) return true;
-				
-				if(user.getFDCustomer()!=null&&user.getFDCustomer().getProfile()!=null)
+			String zone=timeSlot.getZoneCode();
+			loadCTConfig(2);		
+			int totalOrder=user.getOrderHistory().getValidOrderCount();			
+			for(CTProfileConfig config:PR1_CONFIG)
+			{ 
+				long currentTime=System.currentTimeMillis();
+				if(config.getStartDate()!=null&&config.getEndDate()!=null&&config.getStartDate().getTime()<=currentTime&&currentTime<=config.getEndDate().getTime())
+				if(config.getMin()<=totalOrder && totalOrder<=config.getMax())
 				{
-					ProfileModel profile=user.getFDCustomer().getProfile();
-					String value=profile.getAttribute(FDStoreProperties.getPR1ProfileName());
-					if(value!=null&&FDStoreProperties.getPR1ProfileValues()!=null&&FDStoreProperties.getPR1ProfileValues().contains(value))
+					
+					//check zone validation
+					if((config.getZones()!=null&&config.getZones().size()>0)||(config.getAllZoneCondition()!=null))
 					{
-						return true;
+						Zone z=null;
+						if(config.getZones()!=null&&config.getZones().size()>0)
+						{
+							for(Zone tempZ:config.getZones())
+							{
+								if(zone.equalsIgnoreCase(tempZ.getCode()))
+								{
+									z=tempZ;
+								}
+							}
+							if(z==null)continue;
+						}
+						String condition=config.getAllZoneCondition();
+						int matchingValue=(timeSlot.getDlvTimeslot().getTotalAvailable()*100/timeSlot.getDlvTimeslot().getCapacity());
+						int value=config.getAllZonevalue();
+						if(z!=null)
+						{
+							condition=z.getCondition();
+							value=z.getValue();
+						}
+						if (condition.equals(EnumLogicalOperator.LESS_THAN.toString())&&!(matchingValue<value)) 
+						{             
+							continue;
+			            }
+			            else if (condition.equals(EnumLogicalOperator.GREATER_THAN.toString())&&!(matchingValue>value)) {              
+			            	continue;
+			            }
+			            else if (condition.equals(EnumLogicalOperator.LESS_THAN_OR_EQUAL.toString())&&!(matchingValue<=value)) {               
+			            	continue;
+			            }
+			            else if (condition.equals(EnumLogicalOperator.GREATER_THAN_OR_EQUAL.toString())&&!(matchingValue>=value)) {                
+			            	continue;
+			            }
+						
+					}
+					
+					//this is for first time users.
+					if(config.getProfiles()==null||config.getProfiles().size()==0)return true;
+					if(!config.isAllConditionMatch())
+					{
+						if(user.getFDCustomer()!=null&&user.getFDCustomer().getProfile()!=null)
+						{
+							ProfileModel profile=user.getFDCustomer().getProfile();
+							for(Profile p:config.getProfiles())
+							{
+								String value=profile.getAttribute(p.getName());
+								if(value!=null&&p.getValue()!=null&&p.getValue().contains(value))
+								{
+									return true;
+								}
+							}
+						}
+					}
+					else
+					{
+						boolean allMatched=true;
+						if(user.getFDCustomer()!=null&&user.getFDCustomer().getProfile()!=null)
+						{
+							ProfileModel profile=user.getFDCustomer().getProfile();
+							for(Profile p:config.getProfiles())
+							{
+								String value=profile.getAttribute(p.getName());
+								if(value==null||p.getValue()==null||!p.getValue().contains(value))
+								{
+									allMatched=false;
+								}
+							}
+						}
+						if(allMatched) return true;
 					}
 				}
-			}				
-			return result;
+			}
+			return false;
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		}
-		
-	}
+		}		
+	}	
 }
 
 class CTProfileConfig implements Comparable
