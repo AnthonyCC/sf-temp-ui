@@ -266,7 +266,7 @@ public class RoutingDataDecoder {
 			reservation.setReserved(true);
 		} 
 		if(result.getResult().equals(ReserveResultType.rrtNewCost)) {
-			reservation.setReserved(true);
+			//reservation.setReserved(true);
 			reservation.setNewCost(true);
 		}
 		if(result.getExpiration() != null) {
