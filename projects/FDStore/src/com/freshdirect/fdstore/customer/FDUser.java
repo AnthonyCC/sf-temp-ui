@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumChargeType;
@@ -727,9 +729,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public String getMarketingPromoPath() throws FDResourceException {
 		// marketingPromo path is in the form of "campaign_campaign2_segment"
+		// a valid marketing promo value is in the form of "mktg_deli_default"
 		String mktgPromo = getMarketingPromo();
-		if(mktgPromo.equals("false"))
-			return mktgPromo;
+		// if the first two digits of this value is a number it is not a deli campaign but a segment value APPDEV-484
+		if(mktgPromo.equals("false") || mktgPromo.length() < 3 || StringUtils.isNumeric(mktgPromo.substring(0,3)))
+			return "false";
 
 		StringTokenizer st = new StringTokenizer(mktgPromo, "_");
 		int countTokens = st.countTokens();

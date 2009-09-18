@@ -22,43 +22,75 @@
      <br><br>Get ready to enjoy the best fresh foods in New York.
      <% } %></td></tr>
      
-<% } else { //orders > 0 %>
+<% } else { //orders > 0 
 
-     <% if (user.isEligibleForSignupPromotion()) { //has promo 
-			SignupDiscountRule rule = user.getSignupDiscountRule();
-%>
-         <% if (user.isChefsTable() || user.isDlvPassActive()) { %><tr align="left"> 
-         <% } else { %> <tr align="center"> <% } %>
+	//------------------------------------------------------------------------------------------------------------------ 
+	//-------NOT USING SEGMENT MESSAGE TAG (GetSegmentMessageTag)-----------------------------------------
+	//------------------------------------------------------------------------------------------------------------------ 
+	if(null == segmentMessage) {
+
+		 if (user.isEligibleForSignupPromotion()) { //has promo 
+				SignupDiscountRule rule = user.getSignupDiscountRule();
+		
+       		  	if (user.isChefsTable() || user.isDlvPassActive()) { %>
+       		  		<tr align="left"> 
+       		 	<% } else { %> 
+       		 	 	<tr align="center"> 
+       		 	<% } %>
          
-	 <td>
-		 <font class="title14">Welcome back, <%=custFirstName%>!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font>
-		 <% if (rule != null) { %><br><br>Get $<%=(int)rule.getMaxAmount()%> off your next order when you order $<%=(int)rule.getMinSubtotal()%> or more. <a href="/promotion.jsp">See offer details</a>.<% } %>
-	</td>
-	</tr>
+			<td>
+			 <font class="title14">Welcome back, <%=custFirstName%>!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font>
+			 <% if (rule != null) { %>
+			 	<br><br>Get $<%=(int)rule.getMaxAmount()%> off your next order when you order 
+			 	$<%=(int)rule.getMinSubtotal()%> or more. <a href="/promotion.jsp">See offer details</a>.
+			 <% } %>
+			</td>
+			</tr>
 	
-     <% } else { %>
-          <% if (user.isChefsTable() || user.isDlvPassActive()) { %><tr align="left"> 
-          <% } else { %> <tr align="center"> <% } %>
+     		<% } else { %>
+     		     <% if (user.isChefsTable() || user.isDlvPassActive()) { %>
+     		     	<tr align="left"> 
+     		     <% } else { %> 
+     		     	<tr align="center"> 
+     		     <% } %>
           
-          <td><font class="title14">Welcome back, <%=custFirstName%>!</font>&nbsp;&nbsp;
-          <font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font></td></tr>
-     <% } %>
-<% } %>
+     		     <td><font class="title14">Welcome back, <%=custFirstName%>!</font>&nbsp;&nbsp;
+     		     <font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font></td></tr>
+     
+     		<% } 
+ 
 
-<% if (user.isChefsTable()) { // Chef's Table member
+		if (user.isChefsTable()) { // Chef's Table member
 			
-%>
-        <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td></tr>
-	<tr align="left"><td><font class="title12">Thanks for being one of our best customers!</font>&nbsp;&nbsp;
-	<font class="title11"><font color="#336600"><a href="/your_account/manage_account.jsp">Click here for Chef's Table offers.</A></font></font></td></tr>
+		%>
+		        <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td></tr>
+			<tr align="left"><td><font class="title12">Thanks for being one of our best customers!</font>&nbsp;&nbsp;
+			<font class="title11"><font color="#336600"><a href="/your_account/manage_account.jsp">Click here for Chef's Table offers.</A></font></font></td></tr>
 
-<% }  else if (user.isDlvPassActive()) { // user has active delivery pass
+		<% }  else if (user.isDlvPassActive()) { // user has active delivery pass
 
-%>
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td></tr>
-	<tr align="left"><td><font class="title12">Enjoy your Unlimited DeliveryPass membership!</font>&nbsp;&nbsp;
-	<font class="title11"><font color="#336600"><a href="/your_account/delivery_pass.jsp">Click here for details.</a></font></font></td></tr>
+		%>
+			<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td></tr>
+			<tr align="left"><td><font class="title12">Enjoy your Unlimited DeliveryPass membership!</font>&nbsp;&nbsp;
+			<font class="title11"><font color="#336600"><a href="/your_account/delivery_pass.jsp">Click here for details.</a></font></font></td></tr>
+		<% }
+	//------------------------------------------------------------------------------------------------------------------ 
+	//-------USING SEGMENT MESSAGE IN GetSegmentMessageTag--------------------------------------
+	//------------------------------------------------------------------------------------------------------------------ 	
+	} else if (segmentMessage != null ) { 
+		String alignment = "left";
+		if (segmentMessage.isCenterMessage()) { 
+			alignment = "center";
+		} %>
+	       	<tr align="<%=alignment%>"> 
+		<td><font class="title14"><%= segmentMessage.getGreeting()%><%=custFirstName%>!</font>&nbsp;&nbsp;
+		          <font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font></td></tr>
+     
+		<tr align="<%=alignment%>"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td></tr>
+		<tr align="<%=alignment%>"><td><font class="title12"><%=segmentMessage.getMessage()%></font>&nbsp;&nbsp;
+		<font class="title11"><font color="#336600"><%=segmentMessage.getMessageLink()%></font></font></td></tr>
+	<% } 
 
-<% } %>
+} %>
 
 </table>

@@ -15,7 +15,9 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
+
 <fd:CheckLoginStatus guestAllowed='true' />
+
 <%
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String custFirstName = user.getFirstName();
@@ -23,26 +25,34 @@
 	boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
         
         request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
-        boolean segmentMsg = false;
+%>
+
+<fd:GetSegmentMessage id='segmentMessage' user="<%=user%>">
+
+<%
+	boolean location2Media = false;
+	if(null != segmentMessage && segmentMessage.isLocation2()) {
+        	location2Media = true;
+        }
         String mktgPath = "";
         String winbackPath = "";
-        if(!user.isCampaignMsgLimitViewed() && (!user.getWinbackPath().equals("false") || !user.getMarketingPromoPath().equals("false"))) {
-	        segmentMsg = true;
+    /* This was HP Phase 1 which has been replaced by HP Phase 2 APPDEV-484 
+    if(!user.isCampaignMsgLimitViewed() && (!user.getWinbackPath().equals("false") || !user.getMarketingPromoPath().equals("false"))) {
+	        location2Media = true;
 	        mktgPath = user.getMarketingPromoPath().trim();
 	        winbackPath = user.getWinbackPath().trim();
         } 
-        if(segmentMsg) {
+        */
+        if(location2Media) {
         	request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom");
         } else {
-        request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom,HPMiddleBottom,HPRightBottom");
+        	request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom,HPMiddleBottom,HPRightBottom");
         }
         System.out.println("limit: " + user.isCampaignMsgLimitViewed() );
         System.out.println("viewed:  " + user.getCampaignMsgViewed());
-        System.out.println("winback: " + user.getWinbackPath());
-        System.out.println("marketing: " + user.getMarketingPromoPath());
         System.out.println("isMediaEnabled: " + FDStoreProperties.IsHomePageMediaEnabled());
         System.out.println("isAdServerEnabled: " + FDStoreProperties.isAdServerEnabled());
-        System.out.println("segmentMsg:  " + segmentMsg);
+        System.out.println("location2Media:  " + location2Media);
         
 %>
 <tmpl:insert template='/common/template/no_shell.jsp'>
@@ -84,17 +94,17 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	<% if (showAltHome) { %>
 			<tr> 
 				<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" vspace="0"></td>
-    			<td height="5" style="border-bottom: solid 1px #999966;"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="204" height="1" vspace="0"></td>
+    				<td height="5" style="border-bottom: solid 1px #999966;"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="204" height="1" vspace="0"></td>
    			 	<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" vspace="0"></td>
-		    </tr>
+		    	</tr>
 			<tr> 
 				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" vspace="0"></td>
-		    </tr>
+		    	</tr>
 			<tr> 
-			<td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6" vspace="0"></td>
-			<td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" vspace="0"></td>
-			<td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6" vspace="0"></td>
-		    </tr>
+				<td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6" vspace="0"></td>
+				<td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" vspace="0"></td>
+				<td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6" vspace="0"></td>
+		    	</tr>
 			<tr> 
 				<td colspan="3" align="center" style="border-left: solid 1px #999966; border-right: solid 1px #999966;">
 					<%-- PROMO 2a --%>
@@ -112,12 +122,12 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 			</tr>
   			<tr> 
 				<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" vspace="0"></td>
-    			<td height="5" style="border-bottom: solid 1px #999966;"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="204" height="1" vspace="0"></td>
+    				<td height="5" style="border-bottom: solid 1px #999966;"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="204" height="1" vspace="0"></td>
    			 	<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" vspace="0"></td>
-		    </tr>
+		    	</tr>
 			<tr> 
 				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" vspace="0"></td>
-		    </tr>
+		    	</tr>
 			<tr>
 				<td colspan="3">
 					<%-- PROMO 3a --%>
@@ -127,13 +137,13 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 						<fd:IncludeMedia name="/media/editorial/home/home_bottom_left_default.html" />
 					<% } %>
 					<%-- END PROMO 3a --%>	
-			</td>
+				</td>
 			</tr>
 		</table>
 	<% } %>		
 	</td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-    <td colspan="3" align="center" <% if (showAltHome) { %>valign="top"<% } else { %>rowspan="5" style="border-left: solid 1px #999966; border-right: solid 1px #999966;"<% } %>>
+    	<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+    	<td colspan="3" align="center" <% if (showAltHome) { %>valign="top"<% } else { %>rowspan="5" style="border-left: solid 1px #999966; border-right: solid 1px #999966;"<% } %>>
 	<% if (showAltHome) { %>
 		<table width="524" border="0" cellspacing="0" cellpadding="0">
 			<tr> 
@@ -148,16 +158,16 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
           		mediaPath=FDStoreProperties.getHPLetterMediaPathForOldUser();
           	}
 	%>
-	<fd:IncludeMedia name="<%=mediaPath%>" />
+		<fd:IncludeMedia name="<%=mediaPath%>" />
 	<%    
-            // update user already visited home page letter
-            user.setHomePageLetterVisited(true);
-            // not sure we need to do this here because saving cart too often is not recomended
+        	// update user already visited home page letter
+        	user.setHomePageLetterVisited(true);
+        	// not sure we need to do this here because saving cart too often is not recomended
           
-              if(user instanceof FDSessionUser){                
-                FDSessionUser sessionUser=(FDSessionUser)user;
-                sessionUser.saveCart(true);          
-              }
+        	if(user instanceof FDSessionUser){                
+        		FDSessionUser sessionUser=(FDSessionUser)user;
+                	sessionUser.saveCart(true);          
+        	}
 	  } else {   
     %>
 	<%@ include file="includes/home/i_intro_hdr.jspf"%>
@@ -217,9 +227,9 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 		
 		
 		 <%
-		    if (segmentMsg) {
+		    if (location2Media) {
 					%>
-				
+			
 				<table width="490" cellpadding="0" cellspacing="0" border="0">
 				<tr><td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
 				<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td></tr>
@@ -228,27 +238,25 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 				</table>
 				<table width="490" cellpadding="0" cellspacing="0" border="0">
 				<tr><td>
-				<% if(!winbackPath.equals("false")) { %>					
-					<fd:IncludeMedia name="<%=winbackPath%>" />
-				<% } else if( !mktgPath.equals("false")) { %>
-					<fd:IncludeMedia name="<%=mktgPath%>" />
-				<% } %>
-				<% user.setCampaignMsgViewed(user.getCampaignMsgViewed() + 1); %>
+					<fd:IncludeMedia name="/media/editorial/hp_notes/winback/lapsed.html" />
+					
+					<% user.setCampaignMsgViewed(user.getCampaignMsgViewed() + 1); %>
 				</td></tr>
 				</table>
+			
 	     	<% } %>
 		<img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><br>
 		<%@ include file="/includes/i_departments.jspf" %>
 	<% } %>
 	<%-- END MAIN CONTENT--%>
-		<% if (showAltHome) { %>				
+	<% if (showAltHome) { %>				
 				</td>
 			</tr>
   			<tr> 
 				<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" vspace="0"></td>
-    			<td height="5" style="border-bottom: solid 1px #999966;"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="512" height="1" vspace="0"></td>
+    				<td height="5" style="border-bottom: solid 1px #999966;"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="512" height="1" vspace="0"></td>
    			 	<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" vspace="0"></td>
-		  </tr>
+		  	</tr>
 		</table>
 	<% } %>
 	</td>
@@ -308,9 +316,9 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	  <%-- PROMO 3, 4, 5 --%>
 	  <tr valign="top"> 
 		<td colspan="7">
-		<% if (FDStoreProperties.isAdServerEnabled() && !segmentMsg) { %>
+		<% if (FDStoreProperties.isAdServerEnabled() && !location2Media) { %>
 			<fd:IncludeMedia name="/media/editorial/home/home_bottom_new.html" />
-		<% } else if(!segmentMsg) { %>
+		<% } else if(!location2Media) { %>
 			<fd:IncludeMedia name="/media/editorial/home/home_bottom_default.html" />
 		<% } %>
 		</td>
@@ -320,3 +328,4 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 </table>
 </tmpl:put>
 </tmpl:insert>
+</fd:GetSegmentMessage>
