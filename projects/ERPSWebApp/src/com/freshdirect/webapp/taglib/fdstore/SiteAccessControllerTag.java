@@ -116,64 +116,77 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					}
 				} else if ("checkByZipCode".equalsIgnoreCase(action)) {
 					DlvServiceSelectionResult serviceResult = checkByZipCode(request, result);
+
+					//System.out.println(" WEB result :"+result);
 					if (result.isSuccess()) {
 						newSession();
 						EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
-						if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
+						if("WEB".equals(this.serviceType)){
 							this.createUser(this.serviceType, serviceResult.getAvailableServices());
-						} else { 
-							this.createUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices());
-						}
 
-						if (this.moreInfoPage.indexOf('?') < 0) {
-							this.moreInfoPage += "?serviceType=" + this.serviceType.getName();
+
+							//System.out.println(" WEB this.serviceType :"+this.serviceType);
 							
+							doRedirect(successPage);
 						} else {
-							this.moreInfoPage += "&serviceType=" + this.serviceType.getName();
-						}
+							//System.out.println(" NOTWEB this.serviceType :"+this.serviceType);
+							
+							if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
+								this.createUser(this.serviceType, serviceResult.getAvailableServices());
+							} else { 
+								this.createUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices());
+							}
 						
-						if (EnumServiceType.CORPORATE.equals(this.serviceType)) {																					
-							if(EnumDeliveryStatus.DONOT_DELIVER.equals(dlvStatus)){
-								// check home delivry is available
-								if(EnumDeliveryStatus.DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
-									// show E No Corporate HOME delivarable Survey presented /site_access/alt_dlv_home.jsp
-									doRedirect(altDeliveryHomePage);
-								}
-								else if(EnumDeliveryStatus.DONOT_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
-									// forward to site_access/cos_site_access_survey.jsp
-									doRedirect(failureCorporatePage);
-								}
-								else if(EnumDeliveryStatus.PARTIALLY_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
-									// forward to more address page									
-									doRedirect(moreInfoPage);
-								}
-								//System.out.println(" EnumDeliveryStatus.DONOT_DELIVER :"+EnumDeliveryStatus.DONOT_DELIVER);
-								//return doRedirect(failureHomePage);
+							if (this.moreInfoPage.indexOf('?') < 0) {
+								this.moreInfoPage += "?serviceType=" + this.serviceType.getName();
+								
+							} else {
+								this.moreInfoPage += "&serviceType=" + this.serviceType.getName();
 							}
-//							else if(EnumDeliveryStatus.PARTIALLY_DELIVER.equals(dlvStatus)){
-//								// forward to more address page
-//								doRedirect(moreInfoPage);
-//							}
-							//return doRedirect(moreInfoPage);
-						}
 						
-						if (EnumServiceType.HOME.equals(this.serviceType)) {
-							if(EnumDeliveryStatus.RARELY_DELIVER.equals(dlvStatus)){								
-								// forward to /site_access/delivery.jsp with rarely deliver message( not required now)
-								return doRedirect(failureHomePage);
+							if (EnumServiceType.CORPORATE.equals(this.serviceType)) {																					
+								if(EnumDeliveryStatus.DONOT_DELIVER.equals(dlvStatus)){
+									// check home delivry is available
+									if(EnumDeliveryStatus.DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
+										// show E No Corporate HOME delivarable Survey presented /site_access/alt_dlv_home.jsp
+										doRedirect(altDeliveryHomePage);
+									}
+									else if(EnumDeliveryStatus.DONOT_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
+										// forward to site_access/cos_site_access_survey.jsp
+										doRedirect(failureCorporatePage);
+									}
+									else if(EnumDeliveryStatus.PARTIALLY_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
+										// forward to more address page									
+										doRedirect(moreInfoPage);
+									}
+									//System.out.println(" EnumDeliveryStatus.DONOT_DELIVER :"+EnumDeliveryStatus.DONOT_DELIVER);
+									//return doRedirect(failureHomePage);
+								}
+	//							else if(EnumDeliveryStatus.PARTIALLY_DELIVER.equals(dlvStatus)){
+	//								// forward to more address page
+	//								doRedirect(moreInfoPage);
+	//							}
+								//return doRedirect(moreInfoPage);
 							}
-							else if(EnumDeliveryStatus.DONOT_DELIVER.equals(dlvStatus)){								
-								// forward to /site_access/delivery.jsp with no deliver message(not required now) 
-								return doRedirect(failureHomePage);
+						
+							if (EnumServiceType.HOME.equals(this.serviceType)) {
+								if(EnumDeliveryStatus.RARELY_DELIVER.equals(dlvStatus)){								
+									// forward to /site_access/delivery.jsp with rarely deliver message( not required now)
+									return doRedirect(failureHomePage);
+								}
+								else if(EnumDeliveryStatus.DONOT_DELIVER.equals(dlvStatus)){								
+									// forward to /site_access/delivery.jsp with no deliver message(not required now) 
+									return doRedirect(failureHomePage);
+								}
+							}						
+							if (EnumDeliveryStatus.PARTIALLY_DELIVER.equals(dlvStatus)) {
+								return doRedirect(moreInfoPage);
+							}							
+							if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
+								return doRedirect(successPage);
 							}
-						}						
-						if (EnumDeliveryStatus.PARTIALLY_DELIVER.equals(dlvStatus)) {
-							return doRedirect(moreInfoPage);
-						}							
-						if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
-							return doRedirect(successPage);
+							return doRedirect(failureHomePage);
 						}
-						return doRedirect(failureHomePage);
 					}
 				} else if ("checkByAddress".equalsIgnoreCase(action)) {
 					checkByAddress(request, result);
@@ -212,18 +225,30 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 	private void populate(HttpServletRequest request) {
 		this.address = new AddressModel();
-		this.address.setZipCode(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()), "").trim());
+		String homeZipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()),"").trim();
+		String corpZipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()),"").trim();
+		if(!"".equals(homeZipcode) && "".equals(corpZipcode)){
+			this.address.setZipCode(homeZipcode);
+			this.serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter("serviceType"), "").trim());
+		}else{
+			this.address.setZipCode(corpZipcode);
+			this.serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter("corpServiceType"), "").trim());
+		}
 		this.address.setAddress1(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim());		
 		this.address.setApartment(NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "").trim());
 		this.address.setCity(NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "").trim());
 		this.address.setState(NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim());				
-		this.serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter("serviceType"), "").trim());
 	}
 
 	private void validate(ActionResult result, boolean validateAddress) throws FDResourceException {
 		String zipCode = this.address.getZipCode();
+		String serviceType = this.serviceType.getName();
 		if ("".equals(zipCode)) {
-			result.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
+			if("corporate".equalsIgnoreCase(serviceType)){
+				result.addError(true, EnumUserInfoName.DLV_CORP_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
+			}else{
+				result.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
+			}
 		} else {
 			boolean isNumber = true;
 			try {
@@ -232,7 +257,11 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				isNumber = false;
 			}
 			if (zipCode.length() != 5 || !isNumber) {
-				result.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
+				if("corporate".equalsIgnoreCase(serviceType)){
+					result.addError(true, EnumUserInfoName.DLV_CORP_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
+				}else{
+					result.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
+				}
 			}
 		}
 		if (validateAddress) {
