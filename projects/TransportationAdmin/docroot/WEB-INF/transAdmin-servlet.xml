@@ -325,6 +325,7 @@
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="dispatchManagerService" ref="dispatchManager"/>
         <property name="employeeManagerService" ref="employeeManager"/>
+        <property name="zoneManagerService" ref="zoneManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="planForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.web.model.WebPlanInfo"/>
@@ -336,7 +337,8 @@
 	<bean id="dispatchFormController" class="com.freshdirect.transadmin.web.DispatchFormController">
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="dispatchManagerService" ref="dispatchManager"/>
-		 <property name="employeeManagerService" ref="employeeManager"/>
+		<property name="employeeManagerService" ref="employeeManager"/>
+		<property name="zoneManagerService" ref="zoneManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="dispatchForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.web.model.DispatchCommand"/>
