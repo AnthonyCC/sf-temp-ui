@@ -114,13 +114,14 @@
               <ec:exportCsv fileName="timeslotlog.csv" tooltip="Export CSV" delimiter="|"/>
                 
             <ec:row>               
-              <ec:column property="id" title="ID"/>
+              <ec:column width="5px" property="id" title="ID"/>
 			  <ec:column property="orderId" title="Order ID"/>
 			  <ec:column property="customerId" title="Customer ID"/>
-			  <ec:column property="eventtype" title="Event Type"/>
-			  <ec:column  property="eventTime" title="Event Time" />
-			  <ec:column  property="responseTime" title="Response Time"/>			  
-			  <ec:column property="detailDisplay" title="Event Details"/>				              
+			  <ec:column width="15px" property="eventtype" title="Event Type"/>
+			  <ec:column width="5px"  property="eventTime" title="Event Time" />
+			  <ec:column width="5px"  property="responseTime" title="Response Time"/>
+			  <ec:column width="25px" property="comments" title="Comments"/>					  
+			  <ec:column property="detailDisplay" title="Event Details"/>			 		              
             </ec:row>
           </ec:table>
     </div>

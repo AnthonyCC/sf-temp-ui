@@ -23,6 +23,9 @@
         <property name="responseTime" type="string">
             <column name="RESPONSE_TIME" />
         </property>
+        <property name="comments" type="string">
+            <column name="COMMENTS" />
+        </property>
         <set name="timeslotLogDtls" inverse="false" lazy="false" table="TIMESLOT_LOG_DTL" fetch="select">
             <key>
                 <column name="TIMESLOT_LOG_ID" length="16" />
