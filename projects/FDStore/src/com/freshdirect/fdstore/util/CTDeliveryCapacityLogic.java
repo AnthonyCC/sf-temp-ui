@@ -135,7 +135,9 @@ public class CTDeliveryCapacityLogic
 							if(z==null)continue;
 						}
 						String condition=config.getAllZoneCondition();
-						int matchingValue=(timeSlot.getDlvTimeslot().getTotalAvailable()*100/timeSlot.getDlvTimeslot().getCapacity());
+						int matchingValue=0;
+						if(timeSlot.getDlvTimeslot().getCapacity()!=0)
+						matchingValue=(timeSlot.getDlvTimeslot().getTotalAvailable()*100/timeSlot.getDlvTimeslot().getCapacity());
 						int value=config.getAllZonevalue();
 						if(z!=null)
 						{
