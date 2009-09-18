@@ -1,7 +1,5 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.util.Date;
-
 public class SegmentMessage {
 	
 	private String marketingPromoValue;

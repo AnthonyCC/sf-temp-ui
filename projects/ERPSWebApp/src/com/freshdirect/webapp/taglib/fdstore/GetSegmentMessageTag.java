@@ -1,23 +1,12 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.util.ArrayList;
+
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.freshdirect.delivery.announcement.EnumPlacement;
-import com.freshdirect.delivery.announcement.EnumUserDeliveryStatus;
-import com.freshdirect.delivery.announcement.EnumUserLevel;
-import com.freshdirect.delivery.announcement.SiteAnnouncement;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSiteAnnouncementI;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
@@ -35,8 +24,6 @@ public class GetSegmentMessageTag extends AbstractGetterTag {
 	}
 
 	protected Object getResult() throws Exception {
-		
-		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		
 		SegmentMessage sm = getSegment(user.getMarketingPromo());
 
