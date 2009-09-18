@@ -79,14 +79,16 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
         //
         double retQty = 0.0;
         double retAmount = 0.0;
+        double retAmountSum = 0.0;
         for (Iterator it = _is_lineComplaints.iterator(); it.hasNext(); ) {
             ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
             if (_is_index == Integer.parseInt( line.getComplaintLineNumber() ) ) {
                 retQty += line.getQuantity();
-            // }
-            // if ( line.getOrderLineId().equals(_is_orderline.getOrderLineId()) ) {
                 retAmount += line.getAmount();
             }
+           	if ( line.getOrderLineId().equals(_is_orderline.getOrderLineId()) ) {
+            	retAmountSum += line.getAmount();
+        	}
         }
 
 		String deptDesc=_is_lastdept;
@@ -129,7 +131,7 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
         </td>
         <td WIDTH="4%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= _is_orderline.getSalesUnitDescription() %></td>
         <td WIDTH="7%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= CCFormatter.formatCurrency(retAmount) %></td>
-        <td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= CCFormatter.formatCurrency(_is_invoiceline != null ? _is_invoiceline.getPrice() - retAmount: _is_orderline.getPrice() - retAmount) %></td>
+        <td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= CCFormatter.formatCurrency(_is_invoiceline != null ? _is_invoiceline.getPrice() - retAmountSum : _is_orderline.getPrice() - retAmountSum) %></td>
 		<td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER">
         	<INPUT TYPE="TEXT" id="qty<%= rid %>" orderline="<%= _is_orderline.getOrderLineId() %>" NAME="ol_credit_qty" SIZE="4" cartonGroup="QI_<%= _is_cartonNumber %>" fullQuantity="<%= _is_the_quantity %>" value="<%= _is_form_returnQty == null ? "0" : _is_form_returnQty[_is_index] %>" onblur="setEditReturnQty(<%=_is_index%>)">
 		</td>
