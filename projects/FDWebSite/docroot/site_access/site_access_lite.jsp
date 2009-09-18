@@ -93,6 +93,13 @@ request.setAttribute("listPos", "CategoryNote");
 				<tr><td><img src="/media_stat/images/layout/clear.gif" width="196" height="20"><br></td></tr>
 			</table>
 			<br>
+			<% if ( result.hasError("technicalDifficulty") ) { %>
+				<font class="text11rbold"><%=result.getError("technicalDifficulty").getDescription() %></font><br /><br />
+			<% } else if ( result.hasError(EnumUserInfoName.DLV_ZIPCODE.getCode()) ) { %>
+				<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %></font><br />
+			<%}else if ( result.hasError(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()) ) { %>
+				<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()).getDescription() %></font><br />
+			<%}%>
 			<table width="350" border="0" cellspacing="0" cellpadding="0">
 				<form name="site_access_corp" method="post" action="<%= actionURI %>">
 					<input type="hidden" name="successPage" value="<%= successPage %>">
