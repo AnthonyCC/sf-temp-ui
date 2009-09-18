@@ -337,6 +337,10 @@
 	background-color: #ffe6e6;
 }
 
+.table-field .x-grid3-row {
+	-moz-user-select: text!important;
+	-khtml-user-select: text!important;
+}
 
 /* ============ i think styles below this line are not used anymore anywhere ... ============*/
 
