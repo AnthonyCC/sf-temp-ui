@@ -102,6 +102,9 @@ public class EnumUserInfoName implements Serializable {
 	
 	public final static EnumUserInfoName DLV_CELL_PHONE = new EnumUserInfoName(65, "dlvcellphone", "Cell Phone");
 
+	// Site Access Update
+	public final static EnumUserInfoName DLV_CORP_ZIPCODE = new EnumUserInfoName(66, "corpZipcode", "Corporate Zip Code");
+	
 	private int id;
 	private String code;
 	private String description;
