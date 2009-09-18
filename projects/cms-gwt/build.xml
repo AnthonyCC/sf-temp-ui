@@ -20,14 +20,14 @@
   	
   <path id="project.class.path">
     <pathelement location="war/WEB-INF/classes"/>
-    <pathelement location="${gwt.sdk}/gwt-user.jar"/>
-    <fileset dir="${gwt.sdk}" includes="gwt-dev*.jar"/>
     <fileset dir="${fd.lib.dir}">
         <include name="thirdparty/gxt.jar"/>
         <include name="thirdparty/commons-lang-2.3.jar"/>
         <include name="thirdparty/hivemind-1.1.1.jar"/>
         <include name="thirdparty/log4j.jar"/>
         <include name="thirdparty/commons-fileupload-1.2.jar"/>
+        <include name="thirdparty/gwt/gwt-user.jar"/>
+        <include name="thirdparty/gwt/gwt-dev-oophm.jar"/>
     </fileset>
     <pathelement location="${CMS.classes.dir}"/>
     <pathelement location="${FDStore.classes.dir}"/>
@@ -54,7 +54,7 @@
   	<sequential>
   		<init-war dir="@{dir}"/>
   		<mkdir dir="@{dir}/${module.name}"/>
-  	    <copy todir="@{dir}/WEB-INF/lib" file="${gwt.sdk}/gwt-servlet.jar" />
+  	    <copy todir="@{dir}/WEB-INF/lib" file="${fd.lib.dir}/thirdparty/gwt/gwt-servlet.jar" />
   	    <copy todir="@{dir}/WEB-INF/lib" >
   	        <fileset dir="${fd.lib.dir}/thirdparty">
   		        <include name="gxt.jar"/>
@@ -137,6 +137,8 @@
       <jvmarg value="-XX:CompileCommand=exclude,org/eclipse/core/internal/dtree/DataTreeNode,forwardDeltaWith"/>
       <jvmarg value="-XX:CompileCommand=exclude,org/eclipse/jdt/internal/compiler/lookup/ParameterizedMethodBinding,&lt;init&gt;"/>
       <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+      <arg value="-style"/>
+      <arg value="PRETTY"/>
       <arg value="${module.name}"/>
       <arg value="-war"/>
   	  <arg value="${gwtc.compile.out.dir}"/>
@@ -172,6 +174,7 @@
   	<copy todir="${weblogic.deploy.dir}">
   		<fileset dir="${gwtc.compile.out.dir}/${module.name}" />
   		<fileset dir="${war.dir}">
+  			<exclude name="${module.name}/**"/>
   			<include name="*.html"/>
   			<include name="*.jsp"/>
   			<include name="**/*.css"/>
