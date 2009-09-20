@@ -45,7 +45,8 @@ public class TimeSlotLogDAO {
 		    	ps.setTimestamp(2, new java.sql.Timestamp(DateUtil.truncate(slot.getSchedulerId().getDeliveryDate()).getTime()));
 		    	ps.setTimestamp(3, new java.sql.Timestamp(slot.getStartTime().getTime()));
 		    	ps.setTimestamp(4, new java.sql.Timestamp(slot.getStopTime().getTime()));
-		    	if(slot.getDeliveryCost()!=null && slot.getDeliveryCost().isAvailable()) {
+		    	if((slot.getDeliveryCost() != null && slot.getDeliveryCost().isAvailable())
+		    			|| !RoutingActivityType.GET_TIMESLOT.equals(actionType)) {
 		    		ps.setString(5, AVAILABLE_TIMESLOT);
 		    	}
 		    	else {
