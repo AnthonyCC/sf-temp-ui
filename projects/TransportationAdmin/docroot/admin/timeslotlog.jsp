@@ -121,7 +121,7 @@
 			  <ec:column width="5px"  property="eventTime" title="Event Time" />
 			  <ec:column width="5px"  property="responseTime" title="Response Time"/>
 			  <ec:column width="25px" property="comments" title="Comments"/>					  
-			  <ec:column property="detailDisplay" title="Event Details"/>			 		              
+			  <ec:column cell="timeslotDtlCell" property="timeslotLogDtls" title="Event Details"/>			 		              
             </ec:row>
           </ec:table>
     </div>

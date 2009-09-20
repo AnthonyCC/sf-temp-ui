@@ -117,53 +117,7 @@ public class TimeslotLog implements java.io.Serializable, TrnBaseEntityI {
 		}
 		return null;
 	}
-		
-	public String getDetailDisplay() 	{
-		
-		StringBuffer strBuf = new StringBuffer();
-		
-		if(timeslotLogDtls != null) {
-			try {
-				Iterator _itr = timeslotLogDtls.iterator();
-				Date _tmpDate = null;
-				TimeslotLogDtl _dtl = null;
-				Map<Date, List<TimeslotLogDtl>> dtlMapping = new TreeMap<Date, List<TimeslotLogDtl>>();
-				
-				while(_itr.hasNext()) {
-					_dtl = (TimeslotLogDtl) _itr.next();
-					if(!dtlMapping.containsKey(_dtl.getId().getBaseDate())) {
-						dtlMapping.put(_dtl.getId().getBaseDate(), new ArrayList<TimeslotLogDtl>());
-					}	
-					dtlMapping.get(_dtl.getId().getBaseDate()).add(_dtl);
-				}
-				
-				Iterator _keyItr = dtlMapping.keySet().iterator();
-				List<TimeslotLogDtl> _tmpLst = null;
-				while(_keyItr.hasNext()) {
-					_tmpDate = (Date)_keyItr.next();
-					strBuf.append("<b>"+TransStringUtil.getServerDate(_tmpDate)+"</b>").append("=");
-					_tmpLst = dtlMapping.get(_tmpDate);
-					Iterator<TimeslotLogDtl> _dtlItr = _tmpLst.iterator();
-					while(_dtlItr.hasNext()) {
-						_dtl = _dtlItr.next();						
-						strBuf.append("1".equalsIgnoreCase(_dtl.getId().getIsEmpty()) ? "x":"")
-								.append(TransStringUtil.formatTimeRange(_dtl.getId().getStartTime(), _dtl.getId().getEndTime()));
-						if(_dtlItr.hasNext()) {
-							strBuf.append(", ");
-						}
-					}
-					strBuf.append("<br/>");
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		
-		return strBuf.toString();
-	}
-	
+			
 	@Override
 	public boolean isObsoleteEntity() {
 		// TODO Auto-generated method stub
