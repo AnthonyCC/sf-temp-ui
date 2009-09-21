@@ -17,6 +17,7 @@ import javax.naming.NamingException;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
@@ -35,11 +36,20 @@ import com.freshdirect.routing.model.OrderModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 
 public class RoutingUtil {
-	private final ServiceLocator serviceLocator;
-	private static RoutingUtil _instance = null;
 	
-	private RoutingUtil() throws NamingException {
-		this.serviceLocator = new ServiceLocator(/*FDStoreProperties.getInitialContext()*/getInitialContext());
+	private static RoutingUtil _instance = null;
+	private RoutingGatewayHome home=null;
+	
+	
+	
+	
+	
+	public RoutingGatewayHome getHome() {
+		return home;
+	}
+
+	private RoutingUtil() {
+		
 	}
 	
 	private Context getInitialContext() throws NamingException {
@@ -52,13 +62,26 @@ public class RoutingUtil {
 	}
 	
 	
+	
+	protected  void lookupRoutingGatewayHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			if(home==null) {
+				ctx = getInitialContext();
+				home = (RoutingGatewayHome) ctx.lookup( FDStoreProperties.getRoutingGatewayHome());
+			}
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException e) {}
+		}
+	}
+	
 	public static RoutingUtil getInstance() {
 		if (_instance == null) {
-			try {
-				_instance = new RoutingUtil();
-			} catch (NamingException e) {
-				throw new FDRuntimeException(e);
-			}
+			_instance = new RoutingUtil();
 		}
 		return _instance;
 	}
@@ -70,8 +93,11 @@ public class RoutingUtil {
 				routingSB.sendDateRangeAndZoneForTimeslots(timeSlots, address);
 
 			} catch (CreateException ce) {
+				home=null;
 				throw new FDResourceException(ce);
+				
 			} catch (RemoteException re) {
+				home=null;
 				throw new FDResourceException(re);
 			}
 	}
@@ -83,8 +109,10 @@ public class RoutingUtil {
 				routingSB.sendReserveTimeslotRequest(reservation,address, timeslot);
 
 			} catch (CreateException ce) {
+				home=null;
 				throw new FDResourceException(ce);
 			} catch (RemoteException re) {
+				home=null;
 				throw new FDResourceException(re);
 			}
 	}
@@ -96,8 +124,10 @@ public class RoutingUtil {
 			routingSB.sendCommitReservationRequest(reservation,address, previousOrderId);
 
 		} catch (CreateException ce) {
+			home=null;
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
+			home=null;
 			throw new FDResourceException(re);
 		}
 		
@@ -110,8 +140,10 @@ public class RoutingUtil {
 			routingSB.sendReleaseReservationRequest(reservation,address);
 
 		} catch (CreateException ce) {
+			home=null;
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
+			home=null;
 			throw new FDResourceException(re);
 		}
 		
@@ -205,12 +237,11 @@ public class RoutingUtil {
 		}
 	}
 	
-	private  RoutingGatewayHome getRoutingGatewayHome() {
-		try {
-			return (RoutingGatewayHome) serviceLocator.getRemoteHome(FDStoreProperties.getRoutingGatewayHome(), RoutingGatewayHome.class);
-		} catch (NamingException ne) {
-			throw new EJBException(ne);
-		}
+	private  RoutingGatewayHome getRoutingGatewayHome() throws FDResourceException {
+			lookupRoutingGatewayHome();
+			return home;
+			//(RoutingGatewayHome) //serviceLocator.getRemoteHome(FDStoreProperties.getRoutingGatewayHome(), RoutingGatewayHome.class);
+		
 	}
 	
 	/*
