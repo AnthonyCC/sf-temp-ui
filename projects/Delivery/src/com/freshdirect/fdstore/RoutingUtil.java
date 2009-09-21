@@ -10,19 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.CreateException;
-import javax.ejb.EJBException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.ContactAddressModel;
-import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewaySB;
-import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.routing.model.DeliveryModel;
 import com.freshdirect.routing.model.DeliverySlot;
@@ -74,7 +70,9 @@ public class RoutingUtil {
 			throw new FDResourceException(ne);
 		} finally {
 			try {
-				ctx.close();
+				if(ctx != null) {
+					ctx.close();
+				}
 			} catch (NamingException e) {}
 		}
 	}
