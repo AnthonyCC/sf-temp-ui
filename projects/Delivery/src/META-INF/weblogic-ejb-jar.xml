@@ -153,7 +153,7 @@
 
         <message-driven-descriptor>
            
-                <pool><max-beans-in-free-pool>5</max-beans-in-free-pool>
+                <pool><max-beans-in-free-pool>50</max-beans-in-free-pool>
                 </pool>
             <destination-jndi-name>routingQueue</destination-jndi-name>
         </message-driven-descriptor>
