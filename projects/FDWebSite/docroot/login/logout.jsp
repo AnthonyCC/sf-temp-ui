@@ -32,7 +32,8 @@ if(request.getParameter("logoutPage")!= null){
 }
 
 if (toSiteAccess) {
-	response.sendRedirect(response.encodeRedirectURL("/site_access/site_access.jsp?successPage=/index.jsp"));
+	//response.sendRedirect(response.encodeRedirectURL("/site_access/site_access.jsp?successPage=/index.jsp"));
+	response.sendRedirect(response.encodeRedirectURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp"));
 }
 
 %>
