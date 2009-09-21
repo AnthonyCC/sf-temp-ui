@@ -33,7 +33,7 @@ public class LogManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 	}
 
 	public Collection getTimeSlotLogs(Date fromDate, Date toDate) {
-		System.out.println("getTimeSlotLogs >>" + fromDate + "->" + toDate);
+		
 		String query = "from TimeslotLog a where a.eventDtm between ? and ? order by a.eventDtm desc";
 
 		return (Collection) getHibernateTemplate().find(query,
