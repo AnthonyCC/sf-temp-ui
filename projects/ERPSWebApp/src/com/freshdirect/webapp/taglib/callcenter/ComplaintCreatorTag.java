@@ -439,30 +439,27 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     		double olPrice = origTotal; // get actual NET price
     		if (taxRate > 0) // apply tax (if exists)
     			olPrice = MathUtil.roundDecimal(olPrice * (1.0+taxRate));
+    		if (deposit > 0)
+    			olPrice = MathUtil.roundDecimal(olPrice * (1.0+deposit));
     		
     		double freeCredits = MathUtil.roundDecimal(olPrice - st.getPrevCredits() ); // free credits = price - already issued credits
     		double newCredsIssued = MathUtil.roundDecimal(amount+newCredsSoFar);
-    		
+
 			// debug
+    		/*
 			System.err.println("---- Orderline at #"+i+" / ID="+oID + " ----");
 			System.err.println("  Net Price (Total!) = " +origTotal+"; Taxed = " + olPrice);
 			System.err.println("  Credits already issued = " + st.getPrevCredits());
 			System.err.println("  New credits so far = " + newCredsSoFar);
 			System.err.println("  Free / available credits = " + freeCredits + " (= Gross Total - previous credits)");
-
 			System.err.println("  free = " + freeCredits + " <? new creds issued = " + newCredsIssued + " (amount="+amount+")");
-			
+			*/
+
 			if (freeCredits < newCredsIssued) {
     			// calculate the difference
     			final double diff = MathUtil.roundDecimal(freeCredits-newCredsSoFar);
 
-    			// debug
-//    			System.err.println("---- Orderline at #"+i+" / ID="+oID + " ----");
-//    			System.err.println("  Net Price (Total!) = " +origTotal+"; Taxed = " + olPrice);
-//    			System.err.println("  Credits already issued = " + st.getPrevCredits());
-//    			System.err.println("  New credits so far = " + newCredsSoFar);
-//    			System.err.println("  Free / available credits = " + freeCredits + " (= Gross Total - previous credits)");
-    			System.err.println("  Max credit = " + diff);
+    			// System.err.println("  Max credit = " + diff);
 
     			result.addError(new ActionError("ol_error_"+i, "Amount exceeded the maximum available "+CCFormatter.formatCurrency(diff)+" for this order."));
             	addGeneralError(result);
