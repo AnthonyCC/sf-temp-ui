@@ -32,7 +32,7 @@
 	if (	
 		user_NI != null &&
 			(
-			request.getRequestURI().indexOf("/index.jsp") > -1 ||
+			request.getRequestURI().startsWith("/index.jsp") ||
 			request.getRequestURI().indexOf("/your_account/manage_account.jsp") > -1 ||
 			request.getRequestURI().indexOf("/view_cart.jsp") > -1 ||
 			request.getRequestURI().indexOf("/step_4_receipt.jsp") > -1 ||

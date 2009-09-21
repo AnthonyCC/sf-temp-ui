@@ -46,7 +46,7 @@ String sPage = request.getParameter("successPage");
 		<%}%>
 		<br><br>	
 			<font class="text13bold">New Customer?</FONT><BR>
-			<A HREF='<%= response.encodeURL("/site_access/site_access.jsp") %>'><font class="text13">See if we deliver to your area</font></a>.<% } %><br><br>
+			<A HREF='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'><font class="text13">See if we deliver to your area</font></a>.<% } %><br><br>
 			</td>
 		</tr>
 		</table>

@@ -42,7 +42,7 @@
 <TR VALIGN="TOP">
 	<td WIDTH="390" class="text13">
 		<font class="text13bold">New Customer?</font><BR>
-		<A HREF="/site_access/site_access.jsp">See if we deliver to your area</a>.<br><br>
+		<A HREF='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'>See if we deliver to your area</a>.<br><br>
 	</TD>
 </TR>
 </TABLE><BR><BR><BR>

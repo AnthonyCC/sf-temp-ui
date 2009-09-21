@@ -60,7 +60,7 @@ if(user != null) {
 		<tr><td class="text18gr "><img src="/media_stat/images/navigation/fd_not_in_area.gif" width="404" height="13" alt="" border="0"></td></tr>
 		<tr><td class="text10grbold">
 		We'll send you an e-mail a few weeks before we arrive in your neighborhood. In the meantime, please feel free to browse around our online store &#151; just remember that you will not be able to sign up or place an order. 
-		<a href="javascript:popup('/help/delivery_zones.jsp','large')">Click here</a> to see current delivery zones. To enter a different zip code, <a href="/site_access/site_access.jsp">click here</a>.
+		<a href="javascript:popup('/help/delivery_zones.jsp','large')">Click here</a> to see current delivery zones. To enter a different zip code, <a href='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'>click here</a>.
 		</td></tr>
 		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>
 		<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="745" height="1" alt="" border="0"></td></tr>
@@ -70,7 +70,7 @@ if(user != null) {
 	<table width="745" border="0" cellpadding="0" cellspacing="0">
 		<tr valign="top">
 	     <td><img src="/media_stat/images/navigation/banners/home_dlv_not_avail.gif" width="366" height="10" alt="HOME DELIVERY IS NOT CURRENTLY AVAILABLE IN YOUR AREA.">
-	     <br><a href="javascript:popup('/help/delivery_zones.jsp','large')">View our current delivery zones</a> or enter a <a href="/site_access/site_access.jsp">different zip code</a>.
+	     <br><a href="javascript:popup('/help/delivery_zones.jsp','large')">View our current delivery zones</a> or enter a <a href='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'>different zip code</a>.
 	     <br>If you'd like to pick up your order, <a href="/help/delivery_lic_pickup.jsp">click here to learn more.<b>
 	     </td>
 	     <fd:IncludeMedia name="/media/editorial/global_nav/top_right_content.html" />

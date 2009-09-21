@@ -96,7 +96,7 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 	<% } %>
 	<br>
 	<br>
-	<a href="javascript:popup('/help/delivery_zones.jsp?zipCheck=yes','large')">View our current delivery zones</a> or <a href="/site_access/site_access.jsp">enter a different zip code.</a>
+	<a href="javascript:popup('/help/delivery_zones.jsp?zipCheck=yes','large')">View our current delivery zones</a> or <a href='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'>enter a different zip code.</a>
 	<br><br><br>
 	<% if (notServiceable) { %>
 		<img src="/media_stat/images/template/site_access/zipfail_coming_to_ny.gif" width="541" height="17">	
