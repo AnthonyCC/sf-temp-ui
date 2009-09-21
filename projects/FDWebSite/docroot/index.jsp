@@ -27,6 +27,10 @@
         request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
 %>
 
+<tmpl:insert template='/common/template/no_shell.jsp'>
+	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
+	<tmpl:put name='content' direct='true'>
+
 <fd:GetSegmentMessage id='segmentMessage' user="<%=user%>">
 
 <%
@@ -55,9 +59,7 @@
         System.out.println("location2Media:  " + location2Media);
         
 %>
-<tmpl:insert template='/common/template/no_shell.jsp'>
-	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
-	<tmpl:put name='content' direct='true'>
+
 <% 
 boolean showAltHome = false;
 if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited() || (request.getParameter("show") != null && request.getParameter("show").indexOf("letter") > -1))) showAltHome = true;
@@ -326,6 +328,6 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	  <%-- END PROMO 3, 4, 5 --%>
   <% } %>
 </table>
+</fd:GetSegmentMessage>
 </tmpl:put>
 </tmpl:insert>
-</fd:GetSegmentMessage>
