@@ -65,7 +65,7 @@ public class GetSegmentMessageTag extends AbstractGetterTag {
 					  sm.setCenterMessage(true);
 					  sm.setGreeting("Welcome back, ");
 					  if(user.getPromotionHistory().getPromotionUsageCount("5FREEDEL", "") < 5) {
-						  sm.setMessage("<b>Enjoy five deliveries fee-free!</b>  Enter code <b>5FREEDEL</b> at checkout.");
+						  sm.setMessage("<b>Enjoy five deliveries fee-free!</b>  Enter code <b><a href=\"javascript:popup(\'/shared/promotion_popup.jsp?promoCode=5FREEDEL\',\'large\')\">5FREEDEL</a></b> at checkout.");
 					  }
 					  return sm;
 					 
