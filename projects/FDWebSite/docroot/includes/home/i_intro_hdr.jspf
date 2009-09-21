@@ -27,7 +27,7 @@
 	//------------------------------------------------------------------------------------------------------------------ 
 	//-------NOT USING SEGMENT MESSAGE TAG (GetSegmentMessageTag)-----------------------------------------
 	//------------------------------------------------------------------------------------------------------------------ 
-	if(null == segmentMessage) {
+	if(null == segmentMessage || !segmentMessage.isLocation1()) {
 
 		 if (user.isEligibleForSignupPromotion()) { //has promo 
 				SignupDiscountRule rule = user.getSignupDiscountRule();
@@ -77,7 +77,7 @@
 	//------------------------------------------------------------------------------------------------------------------ 
 	//-------USING SEGMENT MESSAGE IN GetSegmentMessageTag--------------------------------------
 	//------------------------------------------------------------------------------------------------------------------ 	
-	} else if (segmentMessage != null ) { 
+	} else if (segmentMessage != null && segmentMessage.isLocation1()) { 
 		String alignment = "left";
 		if (segmentMessage.isCenterMessage()) { 
 			alignment = "center";
