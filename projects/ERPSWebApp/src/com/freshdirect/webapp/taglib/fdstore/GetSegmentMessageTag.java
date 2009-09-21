@@ -41,17 +41,18 @@ public class GetSegmentMessageTag extends AbstractGetterTag {
 	
 	private SegmentMessage getSegment(String marketingPromoValue) throws FDResourceException {
 		
+		SegmentMessage sm = new SegmentMessage();
+		sm.setLocation1(false);
 		// MarketingPromo value is in the form of "29_lapsedloy_notdporctc"
 		if( null == marketingPromoValue || marketingPromoValue.length() < 2 )
-			return null;
+			return sm;
 		
 		// The first two chars of the String represent an int that uniquely identifies the MarketingPromo value (possible values:  3 through 37)
 		String parsedValue = marketingPromoValue.substring(0, 2);
 		
 		if( !StringUtils.isNumeric(parsedValue)) {
-			return null;
+			return sm;
 		}
-		SegmentMessage sm = new SegmentMessage();
 		
 		sm.setMarketingPromoValue(marketingPromoValue);
 		
@@ -209,7 +210,7 @@ public class GetSegmentMessageTag extends AbstractGetterTag {
       		  		  }
       		  		  return sm;
 		}
-		return null;
+		return sm;
 	}
 	
 
