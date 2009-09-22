@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
@@ -35,8 +36,15 @@ public class GetSegmentMessageTag extends AbstractGetterTag {
 		aWeekAgoCal.add(Calendar.DAY_OF_MONTH, -6);
 		
 		Date aWeekAgo = aWeekAgoCal.getTime();
-		Date lastOrderDelivered = user.getOrderHistory().getLastOrderDlvDate();
-		return lastOrderDelivered.before(aWeekAgo);
+		Date lastOrderDelivered = null;
+		OrderHistoryI ohi =  user.getOrderHistory();
+		if(ohi != null) {
+			lastOrderDelivered = ohi.getLastOrderDlvDate();
+		}
+		if(lastOrderDelivered != null) {
+			return lastOrderDelivered.before(aWeekAgo);
+		}
+		return false;
 	}
 	
 	private SegmentMessage getSegment(String marketingPromoValue) throws FDResourceException {
