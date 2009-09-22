@@ -172,7 +172,7 @@ public class CTDeliveryCapacityLogic
 								String value=profile.getAttribute(p.getName());
 								if(value!=null&&p.getValue()!=null&&p.getValue().contains(value))
 								{
-									return config.getName();
+									return config.getCode();
 								}
 							}
 						}
@@ -192,7 +192,7 @@ public class CTDeliveryCapacityLogic
 								}
 							}
 						}
-						if(allMatched) return config.getName();
+						if(allMatched) return config.getCode();
 					}
 				}
 			}
