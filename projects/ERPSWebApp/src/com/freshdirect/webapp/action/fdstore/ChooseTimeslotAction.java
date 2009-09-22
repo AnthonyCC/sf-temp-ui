@@ -61,10 +61,14 @@ public class ChooseTimeslotAction extends WebActionSupport {
 
 		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId);
         String ctDeliveryProfile=CTDeliveryCapacityLogic.isEligible(user,timeSlot);
+        if(timeSlot.getBaseAvailable()>0||chefsTable)
+        {
+        	ctDeliveryProfile=null;
+        }
 		if(timeSlot.getBaseAvailable()<=0&&ctDeliveryProfile!=null)
 		{
 			chefsTable=true;			
-		}
+		}		
 		
 		ErpAddressModel erpAddress = cart.getDeliveryAddress();
 		String addressId = "";
