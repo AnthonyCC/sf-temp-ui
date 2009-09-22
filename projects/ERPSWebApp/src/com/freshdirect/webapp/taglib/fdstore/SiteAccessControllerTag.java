@@ -244,11 +244,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		String zipCode = this.address.getZipCode();
 		String serviceType = this.serviceType.getName();
 		if ("".equals(zipCode)) {
-			if("corporate".equalsIgnoreCase(serviceType)){
-				result.addError(true, EnumUserInfoName.DLV_CORP_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
-			}else{
-				result.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
-			}
+			result.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
 		} else {
 			boolean isNumber = true;
 			try {
@@ -257,11 +253,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				isNumber = false;
 			}
 			if (zipCode.length() != 5 || !isNumber) {
-				if("corporate".equalsIgnoreCase(serviceType)){
-					result.addError(true, EnumUserInfoName.DLV_CORP_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
-				}else{
-					result.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
-				}
+				result.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
 			}
 		}
 		if (validateAddress) {
