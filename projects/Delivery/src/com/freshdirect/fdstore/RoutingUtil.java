@@ -84,65 +84,56 @@ public class RoutingUtil {
 		return _instance;
 	}
 	
-	public   void sendDateRangeAndZoneForTimeslots(List<FDTimeslot> timeSlots, ContactAddressModel address) throws FDResourceException {
+	public   void sendDateRangeAndZoneForTimeslots(List<FDTimeslot> timeSlots, ContactAddressModel address) {
 
 		try {
 				RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
 				routingSB.sendDateRangeAndZoneForTimeslots(timeSlots, address);
 
-			} catch (CreateException ce) {
+			} catch (Exception ce) {
 				home=null;
-				throw new FDResourceException(ce);
+				ce.printStackTrace();
 				
-			} catch (RemoteException re) {
-				home=null;
-				throw new FDResourceException(re);
 			}
 	}
 	
-	public   void sendTimeslotReservationRequest(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot) throws FDResourceException {
+	public   void sendTimeslotReservationRequest(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot)  {
 
 		try {
 				RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
 				routingSB.sendReserveTimeslotRequest(reservation,address, timeslot);
 
-			} catch (CreateException ce) {
+			} catch (Exception ce) {
 				home=null;
-				throw new FDResourceException(ce);
-			} catch (RemoteException re) {
-				home=null;
-				throw new FDResourceException(re);
+				ce.printStackTrace();
+				
 			}
 	}
 	
-	public void sendCommitReservationRequest(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) throws FDResourceException{
+	public void sendCommitReservationRequest(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) {
 		
 		try {
 			RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
 			routingSB.sendCommitReservationRequest(reservation,address, previousOrderId);
 
-		} catch (CreateException ce) {
+		} catch (Exception ce) {
 			home=null;
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			home=null;
-			throw new FDResourceException(re);
+			ce.printStackTrace();
+			
 		}
 		
 	}
 
-	public void sendReleaseReservationRequest(DlvReservationModel reservation,ContactAddressModel address) throws FDResourceException{
+	public void sendReleaseReservationRequest(DlvReservationModel reservation,ContactAddressModel address) {
 		
 		try {
 			RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
 			routingSB.sendReleaseReservationRequest(reservation,address);
 
-		} catch (CreateException ce) {
+		} catch (Exception ce) {
 			home=null;
-			throw new FDResourceException(ce);
-		} catch (RemoteException re) {
-			home=null;
-			throw new FDResourceException(re);
+			ce.printStackTrace();
+			
 		}
 		
 	}
