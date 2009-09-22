@@ -2076,8 +2076,9 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	
 	private String getAddressString(ContactAddressModel address) {
 		StringBuilder resp=new StringBuilder();
-		resp.append(address.getScrubbedStreet()).append(",")
-		    .append(address.getApartment()).append(",")
+		resp.append(address.getAddress1()).append(",")
+			.append(address.getAddress2()!=null && !"".equals(address.getAddress2())?new StringBuilder(address.getAddress2()).append(",").toString():"")
+		    .append(address.getApartment()!=null && !"".equals(address.getApartment())?new StringBuilder(address.getApartment()).append(",").toString():"")
 		    .append(address.getCity()).append(",")
 		    .append(address.getZipCode());
 		

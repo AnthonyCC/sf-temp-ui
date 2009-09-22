@@ -147,8 +147,8 @@ public class RoutingUtil {
 		
 	}
 	public IOrderModel getOrderModel(ContactAddressModel address) {
-		
-		return getOrderModel(address,"T"+address.getId());
+
+		return getOrderModel(address,address.getId()!=null?new StringBuilder("T").append(address.getId()).toString():new StringBuilder("T").append((int)(Math.random()/0.00001)).toString());
 	}
 	
 	public IOrderModel getOrderModel(ContactAddressModel address, String orderNumber) {

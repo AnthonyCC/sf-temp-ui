@@ -72,7 +72,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 				LOGGER.debug("Message is an AddressI: " + address.getAddress1()+" - >"+address.getZipCode());
 			} else if (RoutingActivityType.GET_TIMESLOT.value().equals(addressMsg.getStringProperty("MessageType"))) {
 				Object ox = addressMsg.getObject();
-				System.out.println("IRoutingMessageType.GET_TIMESLOT :"+RoutingActivityType.GET_TIMESLOT);
+				
 				if ((ox == null) || (!(ox instanceof TimeslotCommand))) {
 					LOGGER.error("Message is not an TimeslotCommand: " + msg);
 					// discard msg, no point in throwing it back to the queue
@@ -90,7 +90,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 				process((ReserveTimeslotCommand)ox);
 			}
 			else if (RoutingActivityType.CONFIRM_TIMESLOT.value().equals(addressMsg.getStringProperty("MessageType"))) {
-				System.out.println("IRoutingMessageType.CONFIRM_TIMESLOT :"+RoutingActivityType.CONFIRM_TIMESLOT);
+				
 				Object ox = addressMsg.getObject();
 				if ((ox == null) || (!(ox instanceof ConfirmTimeslotCommand))) {
 					LOGGER.error("Message is not an ConfirmTimeslotCommand: " + msg);
