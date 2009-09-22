@@ -198,6 +198,7 @@ public class ScribController extends AbstractMultiActionController
 		
 		Date d=TransStringUtil.getDate(date);
 		Calendar c=Calendar.getInstance();
+		c.setFirstDayOfWeek(Calendar.MONDAY);
 		c.setTime(d);
 		if("All".equalsIgnoreCase(day))
 		{
@@ -205,6 +206,11 @@ public class ScribController extends AbstractMultiActionController
 			for(int i=2;i<=8;i++)
 			{
 			c.set(Calendar.DAY_OF_WEEK , i);
+			/*if(i==8)
+			{
+				c.set(Calendar.DAY_OF_WEEK , 7);
+				c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR)+1);
+			}*/
 			String ds=TransStringUtil.getServerDate(c.getTime());
 			dates[i-2]=ds;
 			}
@@ -220,15 +226,15 @@ public class ScribController extends AbstractMultiActionController
 			{
 				try {
 					int k=Integer.parseInt(day);
-					if(k<8)
+				//	if(k<8)
 					{
 					c.set(Calendar.DAY_OF_WEEK , k);
 					}
-					else
+				/*	else
 					{
 						c.set(Calendar.DAY_OF_WEEK , 7);
 						c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR)+1);
-					}
+					}*/
 					String ds=TransStringUtil.getServerDate(c.getTime());
 					return new String[]{ds};
 				} catch (Exception e) {
