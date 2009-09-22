@@ -100,10 +100,10 @@ request.setAttribute("listPos", "CategoryNote");
 	if(siteAccessPage == null){
 		siteAccessPage = "aboutus";
 	}
-	System.out.println(request.getRequestURI());
-	String actionURI = "/site_access/site_access.jsp";
+	//String actionURI = "/site_access/site_access.jsp";
+	String actionURI = request.getRequestURI()+"?siteAccessPage="+siteAccessPage+"&successPage="+successPage;
+	
 %>
-
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -116,13 +116,33 @@ request.setAttribute("listPos", "CategoryNote");
 		<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>                        
 	</head>
-	
+	<script language='javascript'>
+		function validate(){
+			var zipcode = document.forms[0].zipcode.value;
+			var corpZipCode = document.forms[0].corpZipcode.value;
+			if(zipcode!='' && corpZipCode==''){
+				if(zipcode.length!=5 || zipcode==''){
+					document.forms[0].action = '<%=actionURI%>';
+				}else{
+					document.forms[0].action = "/site_access/site_access.jsp";
+				}
+			}else{
+				if(corpZipCode.length!=5 || corpZipCode==''){
+					document.forms[0].action = '<%=actionURI%>';
+				}else{
+					document.forms[0].action = "/site_access/site_access.jsp";
+				}
+			}
+			document.forms[0].submit();
+			return true;
+		}
+	</script>
 	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20" onLoad="window.document.site_access_home.<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>.focus();">
 		
 	<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
-    
-    
+		
+		
 		<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
 			 <div align="center">
 				<table border="0" cellspacing="0" cellpadding="0" width="745">
@@ -163,8 +183,9 @@ request.setAttribute("listPos", "CategoryNote");
 								<tr><td><img src="/media_stat/images/layout/clear.gif" width="180" height="10"></td></tr>
 							</table>
 							<table valign="top" border="0" cellspacing="0" cellpadding="0">
-								<form name="site_access_corp" method="post" action="<%= actionURI %>">
+								<form name="site_access_corp" method="post" onsubmit="return validate();">
 									<input type="hidden" name="successPage" value="<%= successPage %>">
+									<input type="hidden" name="siteAccessPage" value="<%= siteAccessPage %>">
 									<tr>
 										<td align="center" colspan="5"><img src="/media/editorial/site_access/images/zipcheck_side.gif" width="179" height="163"></td>
 									</tr>
@@ -181,9 +202,7 @@ request.setAttribute("listPos", "CategoryNote");
 											<% if ( result.hasError("technicalDifficulty") ) { %>
 												<font class="text11rbold"><%=result.getError("technicalDifficulty").getDescription() %></font><br /><br />
 											<% } else if ( result.hasError(EnumUserInfoName.DLV_ZIPCODE.getCode()) ) { %>
-												<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %></font><br />
-											<%}else if ( result.hasError(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()) ) { %>
-												<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()).getDescription() %></font><br />
+												<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %></font><br /><br />
 											<%}%>
 											HOME ZIP CODE:<br>
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
