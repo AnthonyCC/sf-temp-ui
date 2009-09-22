@@ -1,4 +1,4 @@
-<% int promoValue = user!= null ? (int)user.getMaxSignupPromotion() : 0; %>
+
 <table width="490" cellpadding="0" cellspacing="0" border="0">
 <tr align="center"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 <% if (user.getLevel() < FDUserI.RECOGNIZED) { %>
