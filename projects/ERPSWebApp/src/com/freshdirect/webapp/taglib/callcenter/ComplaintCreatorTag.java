@@ -417,9 +417,9 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
 
 			// Handle deposit value
             if (deposit > 0) {
-            	x+= quantity * ( deposit/origQty );
+            	x+= quantity * ( deposit/origQty ); // += credit qty * ( deposit / orig qty)
             }
-            amount = x;
+            amount = MathUtil.roundDecimal(x);
     	} else if (this.orderLineCreditAmount[i] != null && !"".equals(orderLineCreditAmount[i])) {
     		// ... or get the explicit value
         	amount = Double.parseDouble(orderLineCreditAmount[i]);
@@ -438,12 +438,14 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
 
     		double olPrice = origTotal; // get actual NET price
     		if (taxRate > 0) // apply tax (if exists)
-    			olPrice = MathUtil.roundDecimal(olPrice * (1.0+taxRate));
-    		if (deposit > 0)
-    			olPrice = MathUtil.roundDecimal(olPrice * (1.0+deposit));
+    			olPrice += (olPrice*taxRate);
+    		if (deposit > 0) // add deposit if quantity is entered
+    			olPrice += deposit;
     		
-    		double freeCredits = MathUtil.roundDecimal(olPrice - st.getPrevCredits() ); // free credits = price - already issued credits
-    		double newCredsIssued = MathUtil.roundDecimal(amount+newCredsSoFar);
+    		olPrice = MathUtil.roundDecimal(olPrice); // round orderline price
+    		
+    		double freeCredits = olPrice - st.getPrevCredits(); // free credits = price - already issued credits
+    		double newCredsIssued = amount+newCredsSoFar;
 
 			// debug
     		/*
@@ -457,7 +459,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
 
 			if (freeCredits < newCredsIssued) {
     			// calculate the difference
-    			final double diff = MathUtil.roundDecimal(freeCredits-newCredsSoFar);
+    			final double diff = freeCredits-newCredsSoFar;
 
     			// System.err.println("  Max credit = " + diff);
 
