@@ -1400,7 +1400,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			//commit reservation in DLV
 			//DlvManagerSB dlvSB = this.getDlvManagerHome().create();
 			//dlvSB.commitReservation(reservationId, identity.getErpCustomerPK(), pk.getId());
-			System.out.println("Order #"+pk.getId()+" Reservation #"+reservationId);			
+						
 			FDDeliveryManager.getInstance().commitReservation(reservationId,identity.getErpCustomerPK(), pk.getId(),createOrder.getDeliveryInfo().getDeliveryAddress(),pr1);
 
 			//AUTH sale in CYBER SOURCE
@@ -3046,6 +3046,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		address.setAddressInfo(info);
 		address.setFirstName(rs.getString("FIRST_NAME"));
 		address.setLastName(rs.getString("LAST_NAME"));
+		address.setCustomerId(rs.getString("CUSTOMER_ID"));
 		return address;
 
 	}
