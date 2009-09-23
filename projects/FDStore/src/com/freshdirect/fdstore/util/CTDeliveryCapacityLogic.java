@@ -111,7 +111,7 @@ public class CTDeliveryCapacityLogic
 			try {
 			String zone=timeSlot.getZoneCode();
 			loadCTConfig(1);		
-			int totalOrder=user.getOrderHistory().getValidOrderCount();			
+			int totalOrder=user.getOrderHistory().getSettledOrderCount();			
 			for(CTProfileConfig config:CT_CONFIG)
 			{ 
 				long currentTime=System.currentTimeMillis();
@@ -211,7 +211,7 @@ public class CTDeliveryCapacityLogic
 			{
 			String zone=timeSlot.getZoneCode();
 			loadCTConfig(2);		
-			int totalOrder=user.getOrderHistory().getValidOrderCount();			
+			int totalOrder=user.getOrderHistory().getSettledOrderCount();			
 			for(CTProfileConfig config:PR1_CONFIG)
 			{ 
 				long currentTime=System.currentTimeMillis();
