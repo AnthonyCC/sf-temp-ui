@@ -34,36 +34,38 @@ request.setAttribute("listPos", "SystemMessage,ZDeliveryRight");
 <tmpl:insert template='<%= jspTemplate %>'>
     <tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
     <tmpl:put name='content' direct='true'>
-		<table border="0" cellpadding="0" cellspacing="0" width=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("delivery")) ? "693" : "550"%> >
-		    <tr>
-				<td><img src="/media_stat/images/layout/clear.gif" width=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("delivery")) ? "512" : "519"%> height="18"></td>
-				<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-				<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width=<%=(siteAccessPage!=null && !siteAccessPage.equalsIgnoreCase("delivery")) ? "160" : "10"%> height="1"></td>
-		    </tr>
-		    <tr valign="top">
-		        <td class="text12"><img src="/media_stat/images/template/help/about_home.gif" width="306" height="13">
-                    <fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/home/main.ftl" parameters="<%=params%>" withErrorReport="true"/>		        
-                </td>
-		        <%if(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("delivery")){ %>
-			        <td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-			        <td align="center">
-	                    <% if (FDStoreProperties.isAdServerEnabled()) { %>
-			                <SCRIPT LANGUAGE=JavaScript>
-	                        <!--
-	                            OAS_AD('ZDeliveryRight');
-	                        //-->
-	      	                </SCRIPT><br><br>
-	                	 <% } %>
-	
-			            <fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/home/right.ftl" parameters="<%=params%>" withErrorReport="true"/>
-			        </td>
-		        <% } %>
-		    </tr>
-		    <tr>
-		        <td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="10" height="10"></td>
-		    </tr>
-		</table>
+		<%if(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("delivery")){%>
+			<table border="0" cellpadding="0" cellspacing="0" width="693">
+			    <tr>
+					<td><img src="/media_stat/images/layout/clear.gif" width="512" height="18"></td>
+					<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+					<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="160" height="1"></td>
+			    </tr>
+			    <tr valign="top">
+			        <td class="text12"><img src="/media_stat/images/template/help/about_home.gif" width="306" height="13">
+	                    <fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/home/main.ftl" parameters="<%=params%>" withErrorReport="true"/>		        
+	                </td>
+			            <td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+				        <td align="center">
+		                    <% if (FDStoreProperties.isAdServerEnabled()) { %>
+				                <SCRIPT LANGUAGE=JavaScript>
+		                        <!--
+		                            OAS_AD('ZDeliveryRight');
+		                        //-->
+		      	                </SCRIPT><br><br>
+		                	 <% } %>
+		
+				            <fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/home/right.ftl" parameters="<%=params%>" withErrorReport="true"/>
+				        </td>
+			    </tr>
+			    <tr>
+			        <td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="10" height="10"></td>
+			    </tr>
+			</table>
+		<%}else{ %>
+			<fd:IncludeMedia name="/media/editorial/site_access/deliveryinfo_siteaccess.ftl" withErrorReport="true"/>
+		<% } %>
     </tmpl:put>
 </tmpl:insert>
