@@ -116,7 +116,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         
         //If user is coming from pretty URL redirect it to site_access_lite page
         if(user==null){
-        	if (request.getRequestURI().indexOf("index.jsp") < -1 && request.getParameter("siteAccessPage")==null) {
+        	if (request.getRequestURI().indexOf("index.jsp") <= -1 && request.getParameter("siteAccessPage")==null) {
                 this.redirectPage = "/site_access/site_access_lite.jsp?successPage="+request.getRequestURI();
                 doRedirect(true);
                 return SKIP_BODY;
