@@ -123,7 +123,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 	
 	public List getRoutes(Date routeDate, String internalSessionID, String routeID) throws RoutingServiceException {
 		try {
-			TransportationWebService port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService port = getTransportationSuiteBatchService(null);
 			return RoutingDataDecoder.decodeRouteList(port.retrieveRoutingRoutesByCriteria
 																(RoutingDataEncoder.encodeRouteCriteria(routeDate, internalSessionID, routeID)
 															, RoutingDataEncoder.encodeRouteInfoRetrieveOptionsEx())); 
