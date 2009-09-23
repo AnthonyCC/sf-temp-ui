@@ -1609,6 +1609,8 @@
                 <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
                 <jvmarg value="-Xmx512M"/>
                 <jvmarg value="-Xss16M"/>
+                <jvmarg value="-XX:CompileCommand=exclude,org/eclipse/core/internal/dtree/DataTreeNode,forwardDeltaWith"/>
+                <jvmarg value="-XX:CompileCommand=exclude,org/eclipse/jdt/internal/compiler/lookup/ParameterizedMethodBinding,&lt;init&gt;"/>
 
                 <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
                 <arg value="-style"/>
