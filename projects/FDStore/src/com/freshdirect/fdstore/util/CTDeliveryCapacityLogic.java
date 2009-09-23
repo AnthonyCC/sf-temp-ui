@@ -141,8 +141,10 @@ public class CTDeliveryCapacityLogic
 						int value=config.getAllZonevalue();
 						if(z!=null)
 						{
-							condition=z.getCondition();
-							value=z.getValue();
+							if(z.getCondition()!=null)
+							{	condition=z.getCondition();
+								value=z.getValue();
+							}
 						}
 						if (condition.equals(EnumLogicalOperator.LESS_THAN.toString())&&!(matchingValue<value)) 
 						{             
@@ -241,8 +243,10 @@ public class CTDeliveryCapacityLogic
 						int value=config.getAllZonevalue();
 						if(z!=null)
 						{
-							condition=z.getCondition();
-							value=z.getValue();
+							if(z.getCondition()!=null)
+							{	condition=z.getCondition();
+								value=z.getValue();
+							}
 						}
 						if (condition.equals(EnumLogicalOperator.LESS_THAN.toString())&&!(matchingValue<value)) 
 						{             
