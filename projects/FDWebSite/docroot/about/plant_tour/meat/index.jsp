@@ -80,7 +80,7 @@ rest of your order.
 </tr>
 
 <tr>
-<td><div align="right"><a href="/category.jsp?catId=about_tour_seafood"><img src="/media_stat/images/template/about/plant_tour/meat/meat_next.gif" width="105" height="16" alt="Next - Seafood" vspace="6" border="0"></a></div></td>
+<td><div align="right"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_seafood" : "/about/plant_tour/seafood/index.jsp?siteAccessPage=tour&catId=about_tour_seafood"%>><img src="/media_stat/images/template/about/plant_tour/meat/meat_next.gif" width="105" height="16" alt="Next - Seafood" vspace="6" border="0"></a></div></td>
 </tr>
 </table>
 </tmpl:put>
