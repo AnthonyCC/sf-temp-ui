@@ -59,8 +59,6 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.CCFormatter;
 
 public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName  {
-	private static final double EPSILON = 0.005;	// tolerance threshol
-
 	private static final long serialVersionUID = -3777077993663056139L;
 
 	private static Category LOGGER 	= LoggerFactory.getInstance( ComplaintCreatorTag.class );
@@ -184,8 +182,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
 
     
     /**
-     * Orderline entity. It can be single or split.
-	 *
+     * orderline entity
      * @author segabor
      *
      */
@@ -196,25 +193,22 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     	public double	newCredits = 0;  // (new) credit to be issued
     	
     	public double	price = 0; // original (total) price
+    	public double	tax = 0;
     	
-    	public double		quantity = 0; // quantity to be credited
-    	public double		prevQuantity = 0; // 
-    	
-    	public OLStat(String id, double prev, double prevQty) {
+    	public OLStat(String id, double prev) {
     		this.orderlineId = id;
     		this.prevCredits = prev;
-    		this.prevQuantity = prevQty;
     	}
 
-    	public void setPrice(double price) {
+    	public void setTotalPrice(double price) {
     		this.price = price;
     	}
     	
     	/**
-    	 * Returns the (total) net price of orderline
+    	 * Returns the total price of orderline
     	 * @return
     	 */
-    	public double getPrice() {
+    	public double getTotalPrice() {
     		return this.price;
     	}
     	
@@ -222,6 +216,10 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     		return this.prevCredits;
     	}
     	
+    	public void addPrevCredit(double amnt) {
+    		this.prevCredits += amnt;
+    	}
+
     	public void addIndex(int ix) {
     		this.indices.add(ix);
     	}
@@ -234,34 +232,14 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     	 * Credit to be issued for this particular (split) order line
     	 * @return
     	 */
-    	public double getCredits() {
+    	public double getNewCredits() {
     		return this.newCredits;
     	}
     	
-    	public void setCredits(double amnt) {
+    	public void setNewCredits(double amnt) {
     		this.newCredits = amnt;
     	}
 
-    	public void addCredit(double amnt) {
-    		this.newCredits += amnt;
-    	}
-
-    	/**
-    	 * Return quantity to be returned
-    	 * @return
-    	 */
-    	public double getQuantity() {
-    		return this.quantity;
-    	}
-
-    	public double getPrevQuantity() {
-    		return this.prevQuantity;
-    	}
-
-    	public void addQuantity(double qty) {
-    		this.quantity += qty;
-    	}
-    	
     	/**
     	 * Is order line single or split into more cartons?
     	 * 
@@ -296,9 +274,13 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
          */
         for (int i = 0; i < orderLineQty.length; i++) {
             final double previousAmount = this.getPreviousComplaintAmount(order.getComplaints(), this.orderLineId[i]);
-            final double previousQty = this.getPreviousQuantitiesReturned(order.getComplaints(), this.orderLineId[i]);            
-            if (olstat.get(this.orderLineId[i]) == null) {
-            	OLStat s = new OLStat(this.orderLineId[i], previousAmount, previousQty);
+            
+            if (olstat.get(this.orderLineId[i]) != null) {
+            	System.err.println(this.orderLineId[i] + "/" +i+" +> "+previousAmount);
+            	// olstat.get(this.orderLineId[i]).addPrevCredit(previousAmount);
+            } else {
+            	System.err.println(this.orderLineId[i] + "/" +i+" => "+previousAmount);
+            	OLStat s = new OLStat(this.orderLineId[i], previousAmount);
             	olstat.put(this.orderLineId[i], s );
             }
             olstat.get(this.orderLineId[i]).addIndex(i);
@@ -329,7 +311,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             //line.setDepartment( orderLineDept[i] );
 
 
-            processCreditAmount(line, orderline, order.getInvoiceLine(orderline.getOrderLineNumber()), olstat, result);
+            processCreditAmount(line, orderline, olstat, i, result);
 
             if ( orderLineReason[i] != null && !"".equals(orderLineReason[i]) )
                 line.setReason( ComplaintUtil.getReasonById(orderLineReason[i]) );
@@ -361,13 +343,13 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
                 addGeneralError(result);
                 return;
             }
-
-            /* if (orderLineQty[i] != null && !"".equals(orderLineQty[i]) && orderLineOriginalQty[i] != null && orderLineQtyReturned[i] != null) {
+            
+            if (orderLineQty[i] != null && !"".equals(orderLineQty[i]) && orderLineOriginalQty[i] != null && orderLineQtyReturned[i] != null) {
                 if (Double.parseDouble(orderLineQty[i]) > Double.parseDouble(orderLineOriginalQty[i]) - Double.parseDouble(orderLineQtyReturned[i])) {
                     result.addError(new ActionError("ol_error_qty_"+i,"Quantity to be returned is too large."));
                     addGeneralError(result);
                 }
-            } */
+            }
             
             final double previousAmount = olstat.get(oID).getPrevCredits() /* this.getPreviousComplaintAmount(order.getComplaints(), line.getOrderLineId()) */;
             // ErpOrderLineModel orderline = order.getOrderLine(line.getOrderLineId());
@@ -391,11 +373,9 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
      * @param m order line price accumulator
      * @param i form input index
      */
-    private void processCreditAmount(ErpComplaintLineModel line, final ErpOrderLineModel orderline, final ErpInvoiceLineI invline, Map<String,OLStat> stat, ActionResult result) {
+    private void processCreditAmount(ErpComplaintLineModel line, ErpOrderLineModel orderline, Map<String,OLStat> stat, int i, ActionResult result) {
     	final String oID = orderline.getPK().getId();
     	final OLStat st = stat.get(oID);
-
-    	final int i = Integer.parseInt(line.getComplaintLineNumber());
 
     	// quantity parameter is set
     	final double quantity; // credit quantity
@@ -405,7 +385,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
         double deposit = 0.0;
 
         final double origQty = Double.parseDouble(orderLineOriginalQty[i]); // original orderline quantity (eg. in the invoice)
-        final double netTotal = Double.parseDouble( orderLineOriginalPrice[i]);
+        final double origTotal = Double.parseDouble( orderLineOriginalPrice[i]);
 
         // additional rates
         if (orderLineTaxRate[i] != null && !"".equals(orderLineTaxRate[i]))
@@ -417,27 +397,18 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
         if ( orderLineQty[i] != null && !"".equals(orderLineQty[i]) ){
         	// quantity is set
             quantity = Double.parseDouble(orderLineQty[i]);
-        } else {
-        	quantity = 0.0;
-        }
-
-
-        // quantity check
-        if ( (st.getPrevQuantity() >= origQty) || (  st.getPrevQuantity() + st.getQuantity() + quantity > origQty ) ) {
-            result.addError(new ActionError("ol_error_qty_"+i,"Quantity to be returned is too large."));
-            addGeneralError(result);
-            return;
-        } else {
         	line.setQuantity(quantity);
-        	st.addQuantity(quantity);
+        } else {
+        	 quantity = 0.0;
         }
+
 
 
 
         // Stage I - set amount by given quantity OR credit amount
         //   check quantity first
     	if (quantity > 0) {
-            double x = quantity * ( netTotal/origQty );
+            double x = quantity * ( origTotal/origQty );
 
             // Handle tax
 			if (taxRate > 0) {
@@ -461,25 +432,47 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
 
 
 
-    	// Stage II - Check amount size
+    	// Stage II - Check amount fits into spendable / freely usable credit amount
     	if (amount > 0) {
-    		double credits = amount+st.getCredits();
+    		double newCredsSoFar = st.getNewCredits();
 
-            final double allowedAmount = MathUtil.roundDecimal((invline != null ? invline.getPrice() : orderline.getPrice()) * (1 + ErpServicesProperties.getCreditBuffer()));
-            
-            if (allowedAmount < MathUtil.roundDecimal(st.getPrevCredits() + credits) ) {
-            	result.addError(new ActionError("ol_error_"+i, "Amount larger than the allowed amount."));
+    		double olPrice = origTotal; // get actual NET price
+    		if (taxRate > 0) // apply tax (if exists)
+    			olPrice += (olPrice*taxRate);
+    		if (deposit > 0) // add deposit if quantity is entered
+    			olPrice += deposit;
+    		
+    		olPrice = MathUtil.roundDecimal(olPrice); // round orderline price
+    		
+    		double freeCredits = olPrice - st.getPrevCredits(); // free credits = price - already issued credits
+    		double newCredsIssued = amount+newCredsSoFar;
+
+			// debug
+    		/*
+			System.err.println("---- Orderline at #"+i+" / ID="+oID + " ----");
+			System.err.println("  Net Price (Total!) = " +origTotal+"; Taxed = " + olPrice);
+			System.err.println("  Credits already issued = " + st.getPrevCredits());
+			System.err.println("  New credits so far = " + newCredsSoFar);
+			System.err.println("  Free / available credits = " + freeCredits + " (= Gross Total - previous credits)");
+			System.err.println("  free = " + freeCredits + " <? new creds issued = " + newCredsIssued + " (amount="+amount+")");
+			*/
+
+			if (freeCredits < newCredsIssued) {
+    			// calculate the difference
+    			final double diff = freeCredits-newCredsSoFar;
+
+    			// System.err.println("  Max credit = " + diff);
+
+    			result.addError(new ActionError("ol_error_"+i, "Amount exceeded the maximum available "+CCFormatter.formatCurrency(diff)+" for this order."));
             	addGeneralError(result);
             	return;
     		} else {
     			// store the increased value
-    			st.setCredits(credits);
-    			
-    			line.setAmount( amount );
+    			st.setNewCredits(newCredsIssued);
     		}
-    	} else {
-    		line.setAmount(0);
     	}
+		// [debug] System.err.println("OL["+i+"]: Set amount " + amount + " for " + oID);
+		line.setAmount(amount);
     }
     
     
@@ -506,23 +499,6 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     	return amount;
     }
     
-    
-    private double getPreviousQuantitiesReturned(Collection<ErpComplaintModel> complaints, String orderlineId) {
-    	double qty = 0;
-    	for(Iterator<ErpComplaintModel> i = complaints.iterator(); i.hasNext(); ) {
-    		ErpComplaintModel c = (ErpComplaintModel) i.next();
-    		if(EnumComplaintStatus.REJECTED.equals(c.getStatus())) {
-    			continue;
-    		}
-    		
-    		for (ErpComplaintLineModel cl : c.getComplaintLines()) {
-    			if (orderlineId.equalsIgnoreCase(cl.getOrderLineId())) {
-    				qty += cl.getQuantity();
-    			}
-    		}
-    	}
-    	return qty;
-    }
     
     /**
      * Build complaint lines for each miscellaneous line and validate data.
