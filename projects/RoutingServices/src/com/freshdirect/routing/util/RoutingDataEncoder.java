@@ -236,10 +236,11 @@ public class RoutingDataEncoder {
 			
 			int intCount = 0;
 			while(tmpIterator.hasNext()) {
-				_tmpModel = (IGeoPoint)tmpIterator.next();
-				result[intCount++] = new MapPoint();
-				result[intCount++].setLatitude(_tmpModel.getLatitude());
-				result[intCount++].setLongitude(_tmpModel.getLongitude());
+				_tmpModel = (IGeoPoint)tmpIterator.next();				
+				result[intCount] = new MapPoint();				
+				result[intCount].setLatitude(_tmpModel.getLatitude());
+				result[intCount].setLongitude(_tmpModel.getLongitude());
+				intCount++;
 			}
 		}
 		return result;
