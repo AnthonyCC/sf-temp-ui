@@ -9,6 +9,7 @@
 <%
     String successPage = request.getParameter("successPage");
 	String serviceType = NVL.apply(request.getParameter("serviceType"), "").trim();
+	String corpServiceType = NVL.apply(request.getParameter("corpServiceType"), "").trim();
     boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
 	boolean isCorporate = "corporate".equalsIgnoreCase(serviceType);
 	String moreInfoPage = "site_access_address.jsp?successPage="+ URLEncoder.encode(successPage);
@@ -49,6 +50,7 @@
 			<form name="address" method="post" action="<%= request.getRequestURI() %>">
 			<input type="hidden" name="successPage" value="<%= successPage %>">
 			<input type="hidden" name="serviceType" value="<%= serviceType %>">
+			<input type="hidden" name="corpServiceType" value="<%= serviceType %>">
 		<tr valign="TOP">
 
 			<td  valign="top" <%= isCorporate ? "width=\"450\" align=\"center\" class=\"bodyCopy\"" : "width=\"400\" class=\"text12\""%>>
