@@ -70,7 +70,7 @@ weighing and pricing, your produce is sent to sortation.
 </tr>
 
 <tr>
-<td><div align="right"><a href="/category.jsp?catId=about_tour_delicheese"><img src="/media_stat/images/template/about/plant_tour/produce/produce_next.gif" width="127" height="16" alt="Next - Deli & Cheese" vspace="6" border="0"></a></div></td>
+<td><div align="right"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_delicheese" : "/about/plant_tour/deli_cheese/index.jsp?siteAccessPage=tour&catId=about_tour_delicheese"%>><img src="/media_stat/images/template/about/plant_tour/produce/produce_next.gif" width="127" height="16" alt="Next - Deli & Cheese" vspace="6" border="0"></a></div></td>
 </tr>
 </table>
 </tmpl:put>

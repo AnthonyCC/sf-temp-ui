@@ -67,7 +67,7 @@ before being sent to sortation.
 </tr>
 
 <tr>
-<td><div align="right"><a href="/category.jsp?catId=about_tour_kitchen"><img src="/media_stat/images/template/about/plant_tour/deli_cheese/deli_cheese_next.gif" width="97" height="16" alt="Next - Kitchen" vspace="6" border="0"></a></div></td>
+<td><div align="right"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_kitchen" : "/about/plant_tour/kitchen/index.jsp?siteAccessPage=tour&catId=about_tour_kitchen"%>><img src="/media_stat/images/template/about/plant_tour/deli_cheese/deli_cheese_next.gif" width="97" height="16" alt="Next - Kitchen" vspace="6" border="0"></a></div></td>
 </tr>
 </table>
 </tmpl:put>

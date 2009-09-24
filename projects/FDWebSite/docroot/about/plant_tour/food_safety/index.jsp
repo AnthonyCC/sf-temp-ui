@@ -69,7 +69,7 @@ work surfaces are properly cleaned. All  fresh food areas are washed and <b>disi
 </tr>
 
 <tr>
-<td><div align="right"><a href="/category.jsp?catId=about_tour_coffee"><img src="/media_stat/images/template/about/plant_tour/food_safety/food_safety_next.gif" width="93" height="16" alt="Next - Coffee" vspace="6" border="0"></a></div></td>
+<td><div align="right"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_coffee" : "/about/plant_tour/coffee/index.jsp?siteAccessPage=tour&catId=about_tour_coffee"%>><img src="/media_stat/images/template/about/plant_tour/food_safety/food_safety_next.gif" width="93" height="16" alt="Next - Coffee" vspace="6" border="0"></a></div></td>
 </tr>
 </table>
 </tmpl:put>

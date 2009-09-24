@@ -67,7 +67,7 @@ right place before <b>packing it into a refrigerated truck</b>. Next stop: your 
 </tr>
 
 <tr>
-<td><div align="right"><a href="/category.jsp?catId=about_tour_safety"><img src="/media_stat/images/template/about/plant_tour/sort_ship/sort_ship_next.gif" width="126" height="16" alt="Next - Food Safety" vspace="6" border="0"></a></div></td>
+<td><div align="right"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_safety" : "/about/plant_tour/food_safety/index.jsp?siteAccessPage=tour&catId=about_tour_safety"%>><img src="/media_stat/images/template/about/plant_tour/sort_ship/sort_ship_next.gif" width="126" height="16" alt="Next - Food Safety" vspace="6" border="0"></a></div></td>
 </tr>
 </table>
 </tmpl:put>

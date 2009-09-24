@@ -70,7 +70,7 @@ Modified Atmosphere Packaging (MAP) to preserve the food (without altering its c
 </tr>
 
 <tr>
-<td><div align="right"><a href="/category.jsp?catId=about_tour_sorting"><img src="/media_stat/images/template/about/plant_tour/kitchen/kitchen_next.gif" width="97" height="16" alt="Next - Shipping" vspace="6" border="0"></a></div></td>
+<td><div align="right"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_sorting" : "/about/plant_tour/sort_ship/index.jsp?siteAccessPage=tour&catId=about_tour_sorting"%>><img src="/media_stat/images/template/about/plant_tour/kitchen/kitchen_next.gif" width="97" height="16" alt="Next - Shipping" vspace="6" border="0"></a></div></td>
 </tr>
 </table>
 </tmpl:put>

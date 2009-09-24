@@ -68,7 +68,7 @@ your order.
 </tr>
 
 <tr>
-<td><div align="right"><a href="/category.jsp?catId=about_tour_meat"><img src="/media_stat/images/template/about/plant_tour/coffee/coffee_next.gif" width="82" height="16" alt="Next - Meat" vspace="6" border="0"></a></div></td>
+<td><div align="right"><a href=<%=(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("tour")) ? "/category.jsp?catId=about_tour_meat" : "/about/plant_tour/meat/index.jsp?siteAccessPage=tour&catId=about_tour_meat"%>><img src="/media_stat/images/template/about/plant_tour/coffee/coffee_next.gif" width="82" height="16" alt="Next - Meat" vspace="6" border="0"></a></div></td>
 </tr>
 </table>
 </tmpl:put>
