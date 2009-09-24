@@ -14,19 +14,19 @@
 <%
 	boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
 	String successPage = request.getParameter("successPage");
-	String zipcode = NVL.apply(request.getParameter("zipCode"), "");
+	String zipcode = NVL.apply(request.getParameter("zipcode"), "");
     String serviceType=NVL.apply(request.getParameter("serviceType"), "");
-    String corpZipcode = NVL.apply(request.getParameter("corpZipCode"), "");
+    String corpZipcode = NVL.apply(request.getParameter("corpZipcode"), "");
     String corpServiceType=NVL.apply(request.getParameter("corpServiceType"), "");
     
-	if (successPage == null) {
+    if (successPage == null) {
   		// null, default to index.jsp
   		successPage = "/index.jsp";
  	}
     
     
     
-    if (successPage.startsWith("/index.jsp") && EnumServiceType.CORPORATE.getName().equalsIgnoreCase(serviceType))  {
+    if (successPage.startsWith("/index.jsp") && EnumServiceType.CORPORATE.getName().equalsIgnoreCase(corpServiceType))  {
 		successPage = "/department.jsp?deptId=COS";
 	}
  
@@ -126,6 +126,7 @@ request.setAttribute("listPos", "CategoryNote");
 				}else{
 					document.forms[0].action = "/site_access/site_access.jsp";
 				}
+				document.forms[0].corpServiceType.value = '';
 			}else{
 				if(corpZipCode.length!=5 || corpZipCode==''){
 					document.forms[0].action = '<%=actionURI%>';
@@ -240,7 +241,7 @@ request.setAttribute("listPos", "CategoryNote");
 									</tr>
 									<tr><td align="center" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 									<tr><td align="center" colspan="5"><img src="/media/editorial/site_access/images/site_access_questions.jpg" width="132" height="196"></td></tr>
-									<tr><td align="center" colspan="5"><font class="text11">E-mail us at<br><a href="mailto:<fd:GetServiceEmail />"><fd:GetServiceEmail /></a><br>or call 1-866-511-1240</font></td></tr>
+									<tr><td align="center" colspan="5"><font class="text11">E-mail us at<br><a href="mailto:service@freshdirect.com">service@freshdirect.com</a><br>or call 1-212-796-8002</font></td></tr>
 									<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="20"></td></tr>
 									</form>
 							</table>
