@@ -329,7 +329,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             //line.setDepartment( orderLineDept[i] );
 
 
-            processCreditAmount(line, orderline, order.getInvoiceLine(oID), olstat, result);
+            processCreditAmount(line, orderline, order.getInvoiceLine(orderline.getOrderLineNumber()), olstat, result);
 
             if ( orderLineReason[i] != null && !"".equals(orderLineReason[i]) )
                 line.setReason( ComplaintUtil.getReasonById(orderLineReason[i]) );
@@ -417,19 +417,20 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
         if ( orderLineQty[i] != null && !"".equals(orderLineQty[i]) ){
         	// quantity is set
             quantity = Double.parseDouble(orderLineQty[i]);
-            
-            if (st.getPrevQuantity() + st.getQuantity() + quantity > origQty) {
-                result.addError(new ActionError("ol_error_qty_"+i,"Quantity to be returned is too large."));
-                addGeneralError(result);
-                return;
-            }
-            
-        	line.setQuantity(quantity);
-        	st.addQuantity(quantity);
         } else {
-        	 quantity = 0.0;
+        	quantity = 0.0;
         }
 
+
+        // quantity check
+        if ( (st.getPrevQuantity() >= origQty) || (  st.getPrevQuantity() + st.getQuantity() + quantity > origQty ) ) {
+            result.addError(new ActionError("ol_error_qty_"+i,"Quantity to be returned is too large."));
+            addGeneralError(result);
+            return;
+        } else {
+        	line.setQuantity(quantity);
+        	st.addQuantity(quantity);
+        }
 
 
 
