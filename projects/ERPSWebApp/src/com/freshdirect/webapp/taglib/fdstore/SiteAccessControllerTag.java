@@ -234,6 +234,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			this.address.setZipCode(corpZipcode);
 			this.serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter("corpServiceType"), "").trim());
 		}
+		//this.serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter("serviceType"), "").trim());
 		this.address.setAddress1(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim());		
 		this.address.setApartment(NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "").trim());
 		this.address.setCity(NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "").trim());
@@ -242,7 +243,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 	private void validate(ActionResult result, boolean validateAddress) throws FDResourceException {
 		String zipCode = this.address.getZipCode();
-		String serviceType = this.serviceType.getName();
 		if ("".equals(zipCode)) {
 			result.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
 		} else {
