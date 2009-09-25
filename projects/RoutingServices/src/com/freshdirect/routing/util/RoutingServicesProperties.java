@@ -80,6 +80,8 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_SERVICE_TIMEOUT="routingservices.serviceTimeOut";
 	
+	private final static String PROP_BATCH_SERVICE_TIMEOUT="routingservices.serviceTimeOut";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -115,7 +117,8 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_TRANSPORTATIONSUITE_USEPROXY, 	"false");
 		defaults.put(PROP_ORDER_ESTIMATIONRANGE, 	"5");
 		
-		defaults.put(PROP_SERVICE_TIMEOUT, "120");// in seconds
+		defaults.put(PROP_SERVICE_TIMEOUT, "120");// in seconds 
+		defaults.put(PROP_BATCH_SERVICE_TIMEOUT, "600");// in seconds
 		refresh();		
 	}
 
@@ -289,4 +292,7 @@ public class RoutingServicesProperties {
 		return getIntVal(get(PROP_SERVICE_TIMEOUT));
 	}
 
+	public static int getBatchServiceTimeout() {
+		return getIntVal(get(PROP_BATCH_SERVICE_TIMEOUT));
+	}
 }

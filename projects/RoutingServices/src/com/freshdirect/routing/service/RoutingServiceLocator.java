@@ -123,7 +123,7 @@ public class RoutingServiceLocator {
 																.getTransportationSuiteBatchProviderURL());
 		LOGGER.debug("RSL:getTransportationSuiteBatchProviderService():"+ RoutingServicesProperties
 																	.getTransportationSuiteBatchProviderURL());
-		initStub(stub);
+		initBatchStub(stub);
 		return stub;
 	}
 
@@ -132,20 +132,25 @@ public class RoutingServiceLocator {
 																.getTransportationSuiteDBatchProviderURL());
 		LOGGER.debug("RSL:getTransportationSuiteDBatchProviderService():"+ RoutingServicesProperties
 																		.getTransportationSuiteDBatchProviderURL());
-		initStub(stub);
+		initBatchStub(stub);
 		return stub;
 	}
 
 	public RouteNetWebService getRouteNetBatchService() throws AxisFault {
 		System.out.println("RSL:getRoadNetBatchProviderURL() >>"+RoutingServicesProperties.getRoadNetBatchProviderURL());
 		RouteNetWebServiceStub stub = new RouteNetWebServiceStub(RoutingServicesProperties.getRoadNetBatchProviderURL());
-		initStub(stub);
+		initBatchStub(stub);
 		return stub;
 	}
 
 	private void initStub(Stub stub) {
 		System.out.println("RSL:initStub() >>"+stub._getServiceClient().getAxisService().getEndpointURL()+RoutingServicesProperties.getServiceTimeout());
 		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(RoutingServicesProperties.getServiceTimeout()*1000);
+	}
+	
+	private void initBatchStub(Stub stub) {
+		System.out.println("RSL:initBatchStub() >>"+stub._getServiceClient().getAxisService().getEndpointURL()+RoutingServicesProperties.getBatchServiceTimeout());
+		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(RoutingServicesProperties.getBatchServiceTimeout()*1000);
 	}
 
 }
