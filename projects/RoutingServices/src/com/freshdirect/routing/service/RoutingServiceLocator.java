@@ -144,7 +144,8 @@ public class RoutingServiceLocator {
 	}
 
 	private void initStub(Stub stub) {
-		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(SERVICE_TIMEOUT);
+		System.out.println("RSL:initStub() >>"+stub._getServiceClient().getAxisService().getEndpointURL()+RoutingServicesProperties.getServiceTimeout());
+		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(RoutingServicesProperties.getServiceTimeout()*1000);
 	}
 
 }
