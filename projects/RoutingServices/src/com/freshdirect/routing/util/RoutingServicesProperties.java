@@ -80,7 +80,7 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_SERVICE_TIMEOUT="routingservices.serviceTimeOut";
 	
-	private final static String PROP_BATCH_SERVICE_TIMEOUT="routingservices.serviceTimeOut";
+	private final static String PROP_BATCH_SERVICE_TIMEOUT="routingservices.batchServiceTimeOut";
 	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
