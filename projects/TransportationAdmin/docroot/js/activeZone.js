@@ -1,8 +1,8 @@
 var selectBox;
 function getActiveZoneInfo(date,s)
 {
-     if(date!='')
-     {
+     if(date!=''&&s.tagName=='SELECT')
+     {    	
     	selectBox=s;
     	var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");    	        	
     	jsonrpcClient.AsyncDispatchProvider.getActiveZones(getActiveZoneInfoCallback,date);
