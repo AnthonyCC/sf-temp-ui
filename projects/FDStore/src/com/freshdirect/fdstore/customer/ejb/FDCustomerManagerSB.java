@@ -696,7 +696,7 @@ public interface FDCustomerManagerSB extends EJBObject {
             boolean sendEmail,
             CustomerRatingI cra,
             CrmAgentRole agentRole,
-            EnumDlvPassStatus status
+            EnumDlvPassStatus status, boolean isOptIn
           ) throws RemoteException, FDResourceException,
                    ErpFraudException,
                    ErpAuthorizationException ;
@@ -706,5 +706,7 @@ public interface FDCustomerManagerSB extends EJBObject {
     public Map getGiftCardRecepientsForOrders(List saleIds) throws RemoteException, FDResourceException ;
     
     public ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(String certNum) throws RemoteException,FDResourceException ;
+    
+    public void saveDonationOptIn(String custId, String saleId, boolean optIn)throws RemoteException,FDResourceException ;
 }
 

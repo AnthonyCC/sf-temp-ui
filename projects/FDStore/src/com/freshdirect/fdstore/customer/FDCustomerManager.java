@@ -3305,7 +3305,7 @@ public class FDCustomerManager {
 				 boolean sendEmail,
 				 CustomerRatingI cra,
 				 EnumDlvPassStatus status,
-				 boolean isBulkOrder) throws FDResourceException, 
+				 boolean isOptIn) throws FDResourceException, 
 	      						  				   ErpFraudException, 
 	      						  				   ErpAuthorizationException
 	      						  				    {
@@ -3333,7 +3333,7 @@ public class FDCustomerManager {
 						            sendEmail,
 						            cra,
 						            info.getAgent() == null ? null : info.getAgent().getRole(),
-						            status);
+						            status,isOptIn);
 						//sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), orderId, EnumSaleType.GIFTCARD, cra);
 						return orderId;
 					} catch (CreateException ce) {
@@ -3353,6 +3353,21 @@ public class FDCustomerManager {
 			try {
 				FDCustomerManagerSB sb = managerHome.create();
 				return sb.GetGiftCardRecipentByCertNum(certNum);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
+		
+		
+		public static void saveDonationOptIn(String custId, String saleId, boolean optIn)throws FDResourceException{
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.saveDonationOptIn(custId, saleId, optIn);
 			} catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");

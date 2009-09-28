@@ -4995,7 +4995,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
                 boolean sendEmail,
                 CustomerRatingI cra,
                 CrmAgentRole agentRole,
-                EnumDlvPassStatus status
+                EnumDlvPassStatus status, boolean isOptIn
               ) throws FDResourceException,
                        ErpFraudException,
                        ErpAuthorizationException {
@@ -5004,6 +5004,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 				String customerPk = identity.getErpCustomerPK();
 				pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole,null,EnumSaleType.DONATION);
+				//To store the optIn Indicator
+				Connection conn = this.getConnection();
+				FDDonationOptinDAO.insert(conn, customerPk, pk.getId(), isOptIn);
+				
 				ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(pk.getId()));
 				if (sendEmail) {
 					FDOrderI order = getOrder(pk.getId());
@@ -5030,6 +5034,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 			catch (RemoteException re) {
 				throw new FDResourceException(re);
+			}catch(SQLException se){
+				throw new FDResourceException(se);
 			}
 		}
 		
@@ -5056,5 +5062,15 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			} catch (CreateException ce) {
 				throw new FDResourceException(ce);
 			}			
+		}
+		
+		
+		public void saveDonationOptIn(String custId, String saleId, boolean optIn)throws RemoteException,FDResourceException {
+			try {
+				Connection conn = this.getConnection();
+				FDDonationOptinDAO.update(conn, custId, saleId, optIn);
+			} catch (SQLException e) {
+				throw new FDResourceException(e);
+			}
 		}
 }

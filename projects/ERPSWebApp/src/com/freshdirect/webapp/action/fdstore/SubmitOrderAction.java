@@ -812,9 +812,11 @@ public class SubmitOrderAction extends WebActionSupport {
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		FDCartModel cart = user.getDonationCart();
 		String optinInd = request.getParameter("optinInd");
+		boolean optIn = false;
 		if(null != optinInd && !"".equals(optinInd)){
 			if(optinInd.equalsIgnoreCase("optin")){
 				cart.getDeliveryAddress().setOptInForDonation(true);
+				optIn = true;
 			}else{
 				cart.getDeliveryAddress().setOptInForDonation(false);
 			}
@@ -880,7 +882,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				orderNumber = FDCustomerManager.placeGiftCardOrder(AccountActivityUtil.getActionInfo(session), cart, Collections.EMPTY_SET, sendEmail,cra,status,repList,isBulkOrder );			
 			}*/
 
-			orderNumber = FDCustomerManager.placeDonationOrder(AccountActivityUtil.getActionInfo(session), cart, Collections.EMPTY_SET, sendEmail,cra,status,false );
+			orderNumber = FDCustomerManager.placeDonationOrder(AccountActivityUtil.getActionInfo(session), cart, Collections.EMPTY_SET, sendEmail,cra,status,optIn );
 			
 			//update or create everyItemEverOrdered Customer List
 			try{
