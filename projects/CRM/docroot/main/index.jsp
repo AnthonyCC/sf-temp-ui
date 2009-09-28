@@ -308,7 +308,6 @@ session.setAttribute(SessionName.USER,null);
 		
 		<div id="monitor" class="home_module" style="width: 98%; border-bottom: 2px solid; height: auto;">
             <crm:CrmCaseDownloadController actionName="downloadCases" agentPK="<%=currentAgent.getPK()%>" result="result">
-            <crm:CrmCaseDownloadController actionName="downloadCases" agentPK="<%=currentAgent.getPK()%>" result="result">
 			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; <%=worklist?"padding: 0px;":""%>">
 			<tr>
 				<td>
