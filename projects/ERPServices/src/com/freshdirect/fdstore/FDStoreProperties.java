@@ -320,8 +320,11 @@ public class FDStoreProperties {
 	private static final String PROP_GC_MIN_AMOUNT = "fdstore.giftcard.minimum.amount";
 	private static final String PROP_GC_MAX_AMOUNT = "fdstore.giftcard.maximum.amount";
 	private final static String PROP_GIFT_CARD_RECIPIENT_MAX = "giftcard.recipient.max";
-	private static final String GIFT_CARD_ENABLED="fdstore.isGiftCardEnabled";
-	private static final String GIFT_CARD_LANDING_URL="fdstore.giftCardLandingUrl";
+	private static final String PROP_GC_ENABLED="fdstore.isGiftCardEnabled";
+	private static final String PROP_GC_LANDING_URL="fdstore.giftCardLandingUrl";
+	private static final String PROP_GC_DEPTID="fdstore.giftCardDeptId";
+	private static final String PROP_GC_CATID="fdstore.giftCardCatId";
+	private static final String PROP_GC_PRODNAME="fdstore.giftCardProdName";
 	
 	// Robin Hood
 	private static final String ROBIN_HOOD_ENABLED="fdstore.isRobinHoodEnabled";
@@ -559,14 +562,17 @@ public class FDStoreProperties {
 
 		
 		// Gift Card
-		defaults.put(GIFT_CARD_ENABLED, "false");
-		defaults.put(GIFT_CARD_LANDING_URL, "/gift_card/purchase/landing.jsp");
+		defaults.put(PROP_GC_ENABLED, "false");
+		defaults.put(PROP_GC_LANDING_URL, "/gift_card/purchase/landing.jsp");
 		defaults.put(PROP_GIFT_CARD_SKU_CODE, "MKT0074896");
 		defaults.put(PROP_GC_TEMPLATE_BASE_URL,"http://www.freshdirect.com/");		
 		defaults.put(PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH,"media/editorial/giftcards/");
 		defaults.put(PROP_GIFT_CARD_RECIPIENT_MAX, "10");	
 		defaults.put(PROP_GC_MIN_AMOUNT, "20");
 		defaults.put(PROP_GC_MAX_AMOUNT, "5000");
+		defaults.put(PROP_GC_DEPTID, "GC_testDept");
+		defaults.put(PROP_GC_CATID, "GC_testCat");
+		defaults.put(PROP_GC_PRODNAME, "GC_testProd");
 		
 		// Robin Hood
 		defaults.put(ROBIN_HOOD_ENABLED, "false");
@@ -1112,16 +1118,34 @@ public class FDStoreProperties {
 
 	// Gift Card
 	public static boolean isGiftCardEnabled() {
-		return Boolean.valueOf(get(GIFT_CARD_ENABLED)).booleanValue();
+		return Boolean.valueOf(get(PROP_GC_ENABLED)).booleanValue();
 	}
 	public static String getGiftCardLandingUrl() {
-		return get(GIFT_CARD_LANDING_URL);
+		return get(PROP_GC_LANDING_URL);
 	}
 	public static String getGiftcardSkucode() {
 		return get(PROP_GIFT_CARD_SKU_CODE);
 	}
 	public static String getMediaGiftCardTemplatePath() {
 		return get(PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH);
+	}
+	public static String getGiftCardDeptId() {
+		return get(PROP_GC_DEPTID);
+	}
+	public static String getGiftCardCatId() {
+		return get(PROP_GC_CATID);
+	}
+	public static String getGiftCardProdName() {
+		return get(PROP_GC_PRODNAME);
+	}
+	public static int getGiftCardRecipientLimit() {
+		return Integer.parseInt(config.getProperty(PROP_GIFT_CARD_RECIPIENT_MAX));
+	}
+	public static double getGiftCardMinAmount() {
+		return Double.parseDouble(config.getProperty(PROP_GC_MIN_AMOUNT));
+	}
+	public static double getGiftCardMaxAmount() {
+		return Double.parseDouble(config.getProperty(PROP_GC_MAX_AMOUNT));
 	}
 	
 	// Robin Hood
@@ -1332,15 +1356,5 @@ public class FDStoreProperties {
 	}
 	public static String getGCTemplateBaseUrl() {
 		return get(PROP_GC_TEMPLATE_BASE_URL);
-	}
-	
-	public static int getGiftCardRecipientLimit() {
-		return Integer.parseInt(config.getProperty(PROP_GIFT_CARD_RECIPIENT_MAX));
-	}
-	public static double getGiftCardMinAmount() {
-		return Double.parseDouble(config.getProperty(PROP_GC_MIN_AMOUNT));
-	}
-	public static double getGiftCardMaxAmount() {
-		return Double.parseDouble(config.getProperty(PROP_GC_MAX_AMOUNT));
 	}
 }

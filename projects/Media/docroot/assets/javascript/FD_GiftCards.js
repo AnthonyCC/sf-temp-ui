@@ -2,7 +2,7 @@
  *
  *	Javascript library for display of Fresh Direct Giftcards.
  *
- *	Last Edit: 2009.09.27_02.54.20.AM
+ *	Last Edit: 2009.09.28_03.07.12.PM
  *	--------------------------------------------------------------------------*/
 
 
@@ -805,21 +805,34 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 	function recipResendFetch(saleId, certNum) {
 		var titleString = '';
 
+		gcLog('recipResendFetch s '+saleId+' '+certNum);
+
 		new Ajax.Request('/gift_card/postbacks/resend.jsp', {
 			parameters: {
 				isResendFetch: true,
 				saleId: saleId,
 				certNum: certNum
 			},
-			onSuccess: function(transport) {
+			onComplete: function(transport) {
+				gcLog('recipResendFetch onComplete ');
+				//alert(transport.responseText);
 				resendShow(transport.responseText);
 			}
 		});
+
+		gcLog('recipResendFetch e '+saleId+' '+certNum);
 	}
 
 	function resendShow(JSONstring) {
+		gcLog('resendShow s ');
+		gcLog('resendShow s '+JSONstring);
+			
 		var params = JSONstring.evalJSON(true);
+		gcLog('resendShow s2 ');
+		
+		
 		if (params.status != "error") {
+			gcLog('resendShow ma1');
 			//stick values into overlay html		
 			$('gcResendRecipName').value = params.gcRecipName;
 			$('gcResendRecipEmail').value = params.gcRecipEmail;
@@ -827,6 +840,8 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 			$('gcResendRecipMsg').value = params.gcMessage;
 			$('gcSaleId').value = params.gcSaleId;
 			$('gcCertNum').value = params.gcCertNum;
+
+			gcLog('resendShow m1');
 
 			Modalbox.show($('gcResendBox'), {
 				loadingString: 'Loading Preview...',
@@ -842,8 +857,12 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				afterLoad: function() { window.scrollTo(0,0); },
 				afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			})
+		
+			gcLog('resendShow m2');
 
 		}
+		
+		gcLog('resendShow e');
 	}
 	/* recip resend email web */
 	function recipResendEmail() {

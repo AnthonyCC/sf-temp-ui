@@ -1,24 +1,41 @@
 <%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%
 	/* these values should be set in the page calling this include */
 
 	//department where the giftcard lives
-		String deptIdToUse = deptId;
+		//String deptIdToUse = deptId;
 	//category where the giftcard lives
-		String catIdToUse = catId;
+		//String catIdToUse = catId;
 	//product name
-		String prodNameToUse = prodName;
+		//String prodNameToUse = prodName;
 
+	/* override old set values */
+		String deptIdToUse = FDStoreProperties.getGiftCardDeptId();
+		String catIdToUse = FDStoreProperties.getGiftCardCatId();
+		String prodNameToUse = FDStoreProperties.getGiftCardProdName();
+		
+		/*
+			System.out.println("deptIdToUse 1 "+deptIdToUse);
+			System.out.println("catIdToUse 1 "+catIdToUse);
+			System.out.println("prodNameToUse 1 "+prodNameToUse);
+		*/
 
-	ContentNodeModel categoryRef = ContentFactory.getInstance().getContentNodeByName(catIdToUse);
-	ProductModel prodRef = ContentFactory.getInstance().getProductByName(catIdToUse, prodNameToUse);
-	List gcList = prodRef.getGiftcardType();
+		ContentNodeModel categoryRef = ContentFactory.getInstance().getContentNodeByName(catIdToUse);
+			//System.out.println("prodNameToUse 1 ");
+		ProductModel prodRef = ContentFactory.getInstance().getProductByName(catIdToUse, prodNameToUse);
+			//System.out.println("prodNameToUse 2 ");
+		List gcList = null;
+		if (prodRef != null) {
+			gcList = prodRef.getGiftcardType();
+		}
+			//System.out.println("prodNameToUse 3 ");
 
 
 	// root of dynamic media
-		String mediaRootToUse = mediaRoot;
+		String mediaRootToUse = FDStoreProperties.getMediaGiftCardTemplatePath();
 	// root of static media
 		String mediaStaticRootToUse = mediaStaticRoot;
 	// gcDisplayType should be the type of display to use
@@ -46,19 +63,21 @@
 		var testArray = new Array;
 
 		<%
-			for(int i=0;i<gcList.size();i++) {
-				DomainValue gcType=(DomainValue)gcList.get(i);
-				%>
-				cardArr[<%=i%>]=Array(
-					<%=i%>,						// fdCard.index
-					'<%= gcType.getID() %>',	// fdCard.id
-					'<%= gcType.getLabel() %>',	// fdCard.displayName
-					true						// fdCard.preLoad
-				);
-				<%
-				//if this is the id we've passed, make it the initial card
-				if ((gcType.getID()).equals(fdTemplateId)) {
-					gcInitialCard = i;
+			if (gcList !=null) {
+				for(int i=0;i<gcList.size();i++) {
+					DomainValue gcType=(DomainValue)gcList.get(i);
+					%>
+					cardArr[<%=i%>]=Array(
+						<%=i%>,						// fdCard.index
+						'<%= gcType.getID() %>',	// fdCard.id
+						'<%= gcType.getLabel() %>',	// fdCard.displayName
+						true						// fdCard.preLoad
+					);
+					<%
+					//if this is the id we've passed, make it the initial card
+					if ((gcType.getID()).equals(fdTemplateId)) {
+						gcInitialCard = i;
+					}
 				}
 			}
 		%>
