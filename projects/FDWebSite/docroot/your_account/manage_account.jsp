@@ -269,32 +269,6 @@ your account information, this is the place to do it.<br></td>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<%!
-private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
-		StringBuffer sb = new StringBuffer();
-		int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
-		sb.append(startHour==12 ? "noon" : (startHour > 12 ? startHour - 12+"": startHour+""));
-		int startMin = startTimeCal.get(Calendar.MINUTE);
-		if(startMin != 0){
-			sb.append(":"+startMin);
-		}
-		sb.append(startTimeCal.get(Calendar.AM_PM)==1?" PM":" AM");
-		
-		sb.append(" - ");
-		
-		int endHour = endTimeCal.get(Calendar.HOUR_OF_DAY); 
-		sb.append(endHour == 0 ? "12" : (endHour == 12 ? "noon" : (endHour > 12 ? endHour - 12+"" : endHour+"")));
-		int endMin = endTimeCal.get(Calendar.MINUTE);
-		if(endMin != 0){
-			sb.append(":"+endMin);
-		}
-		sb.append(endTimeCal.get(Calendar.AM_PM)==1?" PM":" AM");
-		return sb.toString();
-	}
-    
-
-
-%>
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/no_nav.jsp'>
