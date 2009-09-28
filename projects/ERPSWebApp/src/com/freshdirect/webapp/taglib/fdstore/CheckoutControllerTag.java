@@ -259,6 +259,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 			} else if ("deletePaymentMethod".equalsIgnoreCase(action)) {
 				performDeletePaymentMethod(request, result);
+				this.setSuccessPage("/gift_card/purchase/purchase_giftcard.jsp");
 				
 			} else if ("setDeliveryAddressAndPayment".equalsIgnoreCase(action)) {
 				performSetDeliveryAddressAndPayment(request, result);

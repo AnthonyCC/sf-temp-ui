@@ -77,13 +77,16 @@ sessionuser.setGcFraudReason("");
 </fd:AddSavedRecipientController>
 
 <%
-String actionName =  request.getParameter("actionName"); 
+String actionName =  request.getParameter("actionName");
+if(null == actionName || "".equals(actionName)){
+	actionName = "gc_submitGiftCardOrder";
+}
 java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER );
 request.setAttribute("giftcard", "true");
 UserUtil.initializeGiftCart(user);
 %>
-<fd:CheckoutController actionName="gc_submitGiftCardOrder" result="result" successPage="/gift_card/purchase/receipt.jsp" ccdProblemPage="/gift_card/purchase/purchase_giftcard.jsp?ccerror=true">
+<fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="/gift_card/purchase/receipt.jsp" ccdProblemPage="/gift_card/purchase/purchase_giftcard.jsp?ccerror=true">
         <fd:ErrorHandler result='<%=result%>' name='gc_order_amount_fraud' id='errorMsg'>
             <%@ include file="/includes/i_error_messages.jspf" %>	
         </fd:ErrorHandler>
