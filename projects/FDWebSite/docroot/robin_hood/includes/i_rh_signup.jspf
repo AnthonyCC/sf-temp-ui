@@ -257,9 +257,18 @@ System.out.println("d");
 
 <br />
 <br />
+
+<table border="0" cellspacing="0" cellpadding="2" width="693">
+	<tr valign="top">
+	<td width="693">
+		<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><br />
+	</td>
+	</tr>
+</table>
+<br />
 <table border="0" cellspacing="0" cellpadding="2" width="675">
 	<tr>
-		<td align="right">YES, I understand that I am making a charitable contribution to Robin Hood.</b><br/>
+		<td align="right"><b>YES, I understand that I am making a charitable contribution to Robin Hood.</b><br/>
 			Leave checked in order to receive a one-time e-mail from Robin Hood acknowledging your gift.</td>
 		<td><input type="radio" name="optinInd" id="optin" value="optin" />
 		</td>
