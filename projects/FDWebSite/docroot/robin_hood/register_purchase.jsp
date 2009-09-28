@@ -37,9 +37,10 @@ UserUtil.initializeCartForDonationOrder(user);
 java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
 
-<%@ include file="/robin_hood/includes/i_rh_donationTotal.jspf" %>
+
 
 <form name="address" method="post" >
+	<%@ include file="/robin_hood/includes/i_rh_donationTotal.jspf" %>
 	<%@ include file="/robin_hood/includes/i_rh_signup.jspf" %>
 </form>
 
