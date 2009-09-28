@@ -21,7 +21,7 @@
 		String successPage = "nw_cst_enter_details.jsp";
 
 		//check for new serviceType, and if either GC or RH is enabled
-			if ( EnumServiceType.WEB.getName().equalsIgnoreCase(serviceType) && (FDStoreProperties.isGiftCardEnabled() || FDStoreProperties.isRobinHoodEnabled()) ) {
+			if ( EnumServiceType.WEB.getName().equalsIgnoreCase(serviceType) ) {
 				successPage = "nw_cst_web_enter_details.jsp";
 				moreInfoPage = successPage;
 				failurePage = successPage;
