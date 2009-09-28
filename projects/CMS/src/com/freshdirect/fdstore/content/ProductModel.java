@@ -614,4 +614,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public int getExpertWeight();
 	
 	public List getCountryOfOrigin() throws FDResourceException;
+	
+	//Gift Card changes
+	public List getGiftcardType();
 }

@@ -55,9 +55,14 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         } catch (ErpDuplicatePaymentMethodException ex) {
             LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
+            FDSessionUser sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+            System.out.println("Account number "+paymentMethod.getAccountNumber());
+            sessionuser.setInvalidPaymentMethod(paymentMethod);
         } catch (ErpPaymentMethodException ex) {
             LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
+            FDSessionUser sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+            sessionuser.setInvalidPaymentMethod(paymentMethod);
         }
     }
     
@@ -286,13 +291,22 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        paymentMethod.getCardType() == null || (paymentMethod.getAccountNumber() == null || "".equals(paymentMethod.getAccountNumber()) || !validateCreditCardNumber(paymentMethod.getAccountNumber(), paymentMethod.getCardType().getFdName())),
 	        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
 	        );
-	        
-	        //check expiration date
-			FDCartModel shoppingCart = user.getShoppingCart();
-			FDReservation reservation = shoppingCart.getDeliveryReservation();
+	        FDReservation reservation = null;
+	        if(request.getAttribute("gift_card") != null) {
+		        //check expiration date
+				FDCartModel cart = user.getGiftCart();
+				reservation = cart.getDeliveryReservation();
+	        } if(request.getAttribute("donation") != null){
+	        	FDCartModel cart = user.getDonationCart();
+				reservation = cart.getDeliveryReservation();
+	        }   else {
+		        //check expiration date
+				FDCartModel cart = user.getShoppingCart();
+				reservation = cart.getDeliveryReservation();
+	        }
 			Date checkDate = new Date();
 			//validate against delivery date
-			if(reservation != null){
+			if(reservation != null && reservation.getTimeslot()!=null){				
 				checkDate = reservation.getStartTime(); 
 			}
 			
@@ -373,7 +387,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         
 		result.addError(address.getZipCode() == null || "".equals(address.getZipCode()),
 				 EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
-
+		
+		if(!AddressUtil.validateTriState(address.getState())){
+			//If its a non-tri state address there is no way validate it currently. Accept the address as is.
+			return address;
+		}
 		DlvAddressVerificationResponse response = FDDeliveryManager.getInstance().scrubAddress(address);
         String apartment = address.getApartment();
         
@@ -558,5 +576,17 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     		LOGGER.error(e);
 	    	return false;
     	}
+    }
+    
+    public static ErpPaymentMethodI createGiftCardPaymentMethod(FDUserI user) throws FDResourceException {
+    	ErpPaymentMethodI paymentMethod = PaymentManager.createInstance(EnumPaymentMethodType.GIFTCARD);
+        paymentMethod.setName(user.getFirstName() + " "+ user.getLastName());
+        paymentMethod.setAccountNumber("1000");
+        paymentMethod.setAddress1("23-30 Borden Ave");
+        paymentMethod.setCity("Long Island City");
+        paymentMethod.setState("NY");
+        paymentMethod.setZipCode("11101");
+        paymentMethod.setCountry("US");
+    	return paymentMethod;
     }
 }

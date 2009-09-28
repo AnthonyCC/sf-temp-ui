@@ -275,4 +275,8 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	public void setIsTermsAccepted(boolean isTermsAccepted) {}
 	
 	public boolean getIsTermsAccepted() { return false; }
+	
+	public boolean isGiftCard() {
+		return this.getPaymentMethodType().equals(EnumPaymentMethodType.GIFTCARD);
+	}
 }

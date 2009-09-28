@@ -121,7 +121,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					if (result.isSuccess()) {
 						newSession();
 						EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
-						if("WEB".equals(this.serviceType)){
+						if("WEB".equals(this.serviceType.getName())){
 							this.createUser(this.serviceType, serviceResult.getAvailableServices());
 
 

@@ -1,0 +1,258 @@
+
+<script language="javascript">
+	function returnAll(formName){
+		var frmObj = document.forms[formName];
+		var frmFldsCnt = frmObj.elements.length;
+		for (var i = 0; i<frmFldsCnt;i++) {
+			var fldElement = frmObj.elements[i];
+			if (fldElement.name.substring(0,4) !="h_q_") continue;			
+			var newName = "ret_qty_" + fldElement.name.substring(4);			
+			frmObj[newName].value = fldElement.value; 
+		}
+	}
+		
+</script>
+
+<%@ page import="java.util.TreeMap" %>
+<%@ page import="com.freshdirect.affiliate.ErpAffiliate" %>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
+<%@ page import="com.freshdirect.customer.ErpComplaintLineModel" %>
+<%@ page import="com.freshdirect.customer.ErpDiscountLineModel" %>
+<%@ page import="com.freshdirect.fdstore.FDSalesUnit"%>
+<%@ page import="com.freshdirect.fdstore.customer.adapter.FDInvoiceAdapter"%>
+<%@ page import="com.freshdirect.fdstore.customer.WebOrderViewI"%>
+<%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionFactory" %>
+<%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionType" %>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+
+<%@ page import = "com.freshdirect.customer.EnumSaleStatus" %>
+<%@ page import ='com.freshdirect.fdstore.customer.*'%>
+<%@ page import ='com.freshdirect.fdstore.*'%>
+<%@ page import='com.freshdirect.customer.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
+<%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import="com.freshdirect.giftcard.*"%>
+<%@ page import='com.freshdirect.fdstore.giftcard.*' %>
+
+<%@ page import="java.text.*" %>
+<%@ page import='java.util.List.*' %>
+<%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	THIS INCLUDE REQUIRES:
+	- boolean showFeesSection
+	- boolean showEditOrderButtons
+	- FDCartI order
+	- Collection lineComplaints
+	- Collection deptComplaints
+	- Collection miscComplaints
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
+
+<%	
+    TreeMap allDeptsMap = new TreeMap();
+    boolean isSubmitOrderStep = request.getRequestURI().toLowerCase().indexOf("checkout/checkout_preview.jsp")!=-1?true:false;
+    boolean _forPrint = "print".equalsIgnoreCase(request.getParameter("for"));
+    String show = (request.getParameter("show")!=null && request.getParameter("show").equals("carton"))?"carton":"details";
+    boolean hasEstimatedItems = false;
+	boolean hasInvoice = false;
+	boolean hasReturn = false;
+	if (order.hasInvoice()) {
+		hasInvoice = true;
+		hasReturn = order.hasSettledReturn() || order.hasRefusedDelivery();
+	}
+%>
+    <div class="cust_sub_nav" style="width: 120px; <%=(show.equals("details"))?"background-color:orange;":"background-color:lightblue"%>"><a href="/main/order_details.jsp?orderId=<%=orderId%>&show=details<%=(_forPrint)?"&for=print":""%>">Details</a></div>
+    <%if ( (order.getCartonContents() != null) &&  (order.getCartonContents().size() > 0) ){ %>
+        <div class="cust_sub_nav" style="width: 120px; <%=(show.equals("carton"))?"background-color:orange;":"background-color:lightblue"%>"><a href="/main/order_details.jsp?orderId=<%=orderId%>&show=carton<%=(_forPrint)?"&for=print":""%>">Missing</a></div>
+    <%}%>
+<div class="sub_nav">&nbsp;</div>
+<br>
+
+<% if(show.equals("details")){%>
+
+<fd:GetOrder id='cart' saleId='<%= orderId %>'>
+<%
+    if (cart != null) {
+        // !!! REFACTOR: duplicates code from checkout pages
+    
+        
+        
+        
+       
+        boolean isSubmitted = cart.getOrderStatus().equals(EnumSaleStatus.SUBMITTED) || cart.getOrderStatus().equals(EnumSaleStatus.AUTHORIZED);
+%>
+<!-- error message handling here -->
+
+<% if (cart.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) {
+        String errorMsg= "Pending Order: Please contact us at "+user.getCustomerServiceContact()+" as soon as possible to reschedule delivery.";
+%>
+
+<% } %>
+
+<table width="100%" align="center" border="0" cellpadding="0" cellspacing="0">
+<tr>
+    <td class="text11">
+      <!--    <font class="title18">Order # <%= orderId %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font> &nbsp;&nbsp;&nbsp;<br>-->
+        <%-- Having trouble, send an e-mail to <A HREF="mailto:accounthelp@freshdirect.com">accounthelp@freshdirect.com</A> or call 1-866-2UFRESH.--%>
+    </td>
+    <%
+    boolean hasCredit = false;
+    Collection comp = cart.getComplaints();
+    if (comp != null) {
+            ErpComplaintModel c = null;
+            for (Iterator i=comp.iterator(); i.hasNext(); ) {
+                c = (ErpComplaintModel)i.next();
+
+                if (c != null && EnumComplaintStatus.APPROVED.equals(c.getStatus())){
+                    hasCredit = true;
+                }
+            }
+        }
+    if (hasCredit) { %>
+    <td align="right" class="text11"><i>Credit was issued for this order.</i></td>
+    <% } %>
+</tr>
+</table>
+<IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="8" border="0"><br>
+<IMG src="/media_stat/images/layout/ff9933.gif" width="100%" HEIGHT="1" border="0"><br>
+
+<IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="4" border="0"><br><FONT CLASS="space4pix"><br></FONT>
+
+<%  } %>
+<br>
+<% 
+//for display of recipient number
+int indx = 1;
+FDRecipientList recipients = cart.getGiftCardRecipients();
+%>
+
+ 
+<table width="100%" cellspacing="0" cellpadding="0" border="0" valign="middle" >
+		<tr>
+			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font color="#FF9933">#<%=orderId%></font></b></span><br /><br />
+			</td>
+		</tr>
+</table>
+
+<table  width="100%" class="gcYourActTableList1">
+    <tr>
+        <td colspan="15"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+    </tr>
+    <tr class="th" >
+        <td width="10%">Certificate #</td>
+        <td width="10%">Date Purchased</td>
+        <td width="10%">Gift Amount</td>
+        <td width="15%">Card Type</td>
+        <td width="15%">Recipient</td>
+        <td width="8%">Status</td>
+        <td width="250">&nbsp;</td>
+        <td width="8%">&nbsp;</td>
+        <td width="250">&nbsp;</td>
+        
+    </tr>
+    <%
+                DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
+                if(cart.isPending()) {
+                    ListIterator i = recipients.getRecipents().listIterator();
+                    while(i.hasNext()) {
+                        ErpRecipentModel erm = (ErpRecipentModel)i.next();
+			%>
+						<tr>
+							<td>&nbsp;</td>
+							<td><%= dateFormatter.format(cart.getDatePlaced()) %></td>
+							<td>$<%= erm.getAmount() %></td>    
+                            <%  
+                                String cardType = "";
+                                try {
+                                    cardType = ContentFactory.getInstance().getDomainValueById(erm.getTemplateId()).getLabel();
+                                }catch(Exception e){
+                                    cardType = "Unknown";
+                                }
+                            %>
+                            <td><%= cardType %></td>    
+
+							<td><%= erm.getRecipientName() %></td>
+							<td>In Process</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+			<%
+				indx++;
+			}
+            } else {
+                ErpGiftCardDlvConfirmModel model = cart.getGCDeliveryInfo();
+                ListIterator j = model.getDlvInfoTranactionList().listIterator();
+                while(j.hasNext()) {
+				ErpGCDlvInformationHolder recipient = (ErpGCDlvInformationHolder)j.next();
+                ErpRecipentModel recModel =  cart.getGCResendInfoFor(recipient.getGiftCardId());
+                if(recModel != null) {
+                    //Set the latest resend info.
+                    recipient.setRecepientModel(recModel);
+                }
+			%>
+            <tr>
+                <td><%= recipient.getCertificationNumber() != null ? recipient.getCertificationNumber() : "" %></td>
+                <td><%= dateFormatter.format(cart.getDatePlaced()) %></td>
+                <td>$<%= recipient.getRecepientModel().getAmount() %></td>    
+                <%  
+                    String cardType = "";
+                    try {
+                        cardType = ContentFactory.getInstance().getDomainValueById(recipient.getRecepientModel().getTemplateId()).getLabel();
+                    }catch(Exception e){
+                        cardType = "Unknown";
+                    }
+                %>
+                <td><%= cardType %></td>    
+
+                <td><%= recipient.getRecepientModel().getRecipientName() != null ? recipient.getRecepientModel().getRecipientName() : "" %></td>
+                <%
+                    String status = "";
+                    boolean isPending = false;
+                    if(recipient.getCertificationNumber() == null) {
+                        status = "In Process";
+                        isPending = true;
+                    }else{
+                        if(recipient.getRecepientModel().getDeliveryMode().equals(EnumGCDeliveryMode.PDF)) status = "Completed";
+                        else status = "Sent";
+                        FDGiftCardI gc =user.getGiftCardList().getGiftCard(recipient.getCertificationNumber());
+                        if( gc!= null && gc.getBalance() != recipient.getRecepientModel().getAmount()) status = "Redeemed";
+                    }
+                    
+                %>
+                <td><%= status %></td>
+                <% if(!isPending) { %>
+                    <td><span id="email<%= indx %>cont"><a href="#" id="email<%= indx %>" onClick="statusCheckPHEmail('email<%= indx %>', '<%= recipient.getCertificationNumber() %>', '<%= cart.getErpSalesId() %>'); return false;" class="resendLink" style="color: #639;"><%= status.equals("Completed") ? "Send" : "Resend" %> Email</a></span></td>
+                    <td><%--  <a href="/gift_card/postbacks/pdf_gen.jsp?saleId=<%= cart.getErpSalesId() %>&certNum=<%= recipient.getCertificationNumber() %>" > --%>View/Print<!-- </a>  --></td>
+                    <td><span id="emailCancel<%= indx %>cont"><a href="#" id="emailCancel<%= indx %>" onClick="statusCheckPHEmailCancel('emailCancel<%= indx %>', '<%= recipient.getCertificationNumber() %>', '<%= cart.getErpSalesId() %>'); return false;" class="resendCancelLink" style="color: #9F1010;">Send Cancellation</a></span></td>
+                <% } else { %>    
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                <% } %>
+            </tr>
+			<%
+				indx++;
+			}
+            }
+            %>            
+</table>
+<%--
+<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle" >
+		<tr>
+			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+		</tr>
+
+        <tr>
+            <td class="recipTotal">SUBTOTAL: <%=  recipients.getFormattedSubTotal() %></td>
+        </tr>
+</table>
+--%>
+<br/>
+</fd:GetOrder>
+
+
+	<%}%>
+<% if(show.equals("carton")){%>
+    <%@ include file="/includes/i_carton_details.jspf"%>
+<%}%>

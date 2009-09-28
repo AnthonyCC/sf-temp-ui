@@ -34,6 +34,7 @@ import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumPaymentType;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
@@ -277,10 +278,9 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 
 		//
 		// CHECK DUPLICATE ACCOUNT #
-		// 
-		if ("true".equalsIgnoreCase(ErpServicesProperties.getCheckForPaymentMethodFraud())) {
-
-			ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) order.getPaymentMethod();
+		//
+		ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) order.getPaymentMethod();
+		if ("true".equalsIgnoreCase(ErpServicesProperties.getCheckForPaymentMethodFraud()) && !paymentMethod.isGiftCard()) {
 			boolean dupCC = this.checkDuplicatePaymentMethodFraud(erpCustomerPk.getId(), paymentMethod);
 
 			if (dupCC) {
@@ -400,16 +400,25 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 			// no check, no problem :)
 			return ;
 		}
-		//
-		// ORDER TOTAL check (TOTAL > $450 OR TOTAL > $750)
-		//
-		checkOrderTotal(salePk,erpCustomerPk, order,true);
+		//Check if its first order using Gift card and total > 450.
 
-		postCheckMakeGoodLimits(salePk, erpCustomerPk, order, agentRole);
-		
 		Connection conn = null;
 		try {
 			conn = getConnection();
+		
+		int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(conn,erpCustomerPk.getId());
+		if(order.getAppliedGiftCardAmount() > 0.0 && orderCount == 0){
+			//Check fraud for first order using GC.
+			checkFirstOrderUsingGC(salePk, erpCustomerPk, order);
+		}else{
+			
+			//
+			// ORDER TOTAL check (TOTAL > $450 OR TOTAL > $750)
+			//
+			checkOrderTotal(salePk,erpCustomerPk, order,true);
+		}
+		postCheckMakeGoodLimits(salePk, erpCustomerPk, order, agentRole);
+		
 			//
 			// 3 ORDERS WITHIN 3 DAYS check
 			//
@@ -468,6 +477,55 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		}
 		return retval;
 	}
+	
+	/**
+	 * Checks for orders over acceptable threshhold. Creates a CRM case if order total > $750 
+	 * @return true if order total > $750 and not for CSR
+	 */
+	
+	public void postCheckGiftCardFraud(PrimaryKey salePk, PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) {
+		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
+			// no check, no problem :)
+			return ;
+		}
+		
+		checkGiftCardOrderTotal(salePk, erpCustomerPk, order, true);
+	}
+	/**
+	 * Checks for orders over $750 and not for CSR, create a crm case.
+	 */
+	private boolean checkGiftCardOrderTotal(PrimaryKey salePk,PrimaryKey erpCustomerPk, ErpAbstractOrderModel order,boolean isOkToCreateCase) {
+		boolean retval = false;
+		boolean createCase = false;
+
+		final boolean corporate = EnumDeliveryType.CORPORATE.equals(order.getDeliveryInfo().getDeliveryType());
+		final boolean csr = EnumTransactionSource.CUSTOMER_REP.equals(order.getTransactionSource());
+
+		if (order.getAmount() > ErpServicesProperties.getGiftCardOrderLimit() && !csr) {
+			createCase = true & isOkToCreateCase;
+			retval=true;
+		}
+
+		if (createCase) {
+
+			NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
+
+			CrmCaseSubject subject = CrmCaseSubject.getEnum(CrmCaseSubject.CODE_GC_ORDER_OVER_MAX);
+			String summary = subject.getDescription() + " because Gift Card order total = " + currencyFormatter.format(order.getAmount());
+			LOGGER.debug("Creating case " + summary);
+			String note =
+				"Gift Card Order total of "
+					+ currencyFormatter.format(order.getAmount())
+					+ " indicates possible fraud condition. Please investigate.";
+
+			CrmSystemCaseInfo info = new CrmSystemCaseInfo(erpCustomerPk,salePk, subject, summary);
+			info.setNote(note);
+			new ErpCreateCaseCommand(LOCATOR, info).execute();
+		}
+		return retval;
+	}
+
+	
 
 	/**
 	 * Checks for 3 orders placed within three days of current order
@@ -491,7 +549,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		LOGGER.debug("Found " + ordersInThreeDays + " orders");
 		*/
 		Date threeDaysAgo = DateUtil.addDays(DateUtil.truncate(new Date()), -3);
-		int ordersInThreeDays = ErpSaleInfoDAO.getOrderCountPast(conn, erpCustomerPk.getId(), threeDaysAgo);
+		int ordersInThreeDays = ErpSaleInfoDAO.getOrderCountPast(conn, erpCustomerPk.getId(), threeDaysAgo,EnumSaleType.REGULAR);
 		LOGGER.debug("Found " + ordersInThreeDays + " orders in past 3 days");
 		if (ordersInThreeDays >= 3) {
 			CrmSystemCaseInfo info =
@@ -504,5 +562,80 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		}
 
 	}
+	
+	
+	
+	public EnumFraudReason preCheckGiftCardFraud(PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole){
+		
 
+		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
+			// no check, no problem :)
+			LOGGER.info("Returning Null at start of preCheckOrderFraud");
+			return null;
+		}
+
+		LOGGER.info("Fraud check, order. customerPK=" + erpCustomerPk);
+
+		//
+		// CHECK DUPLICATE ACCOUNT #
+		// 
+		if ("true".equalsIgnoreCase(ErpServicesProperties.getCheckForPaymentMethodFraud())) {
+
+			ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) order.getPaymentMethod();
+			boolean dupCC = this.checkDuplicatePaymentMethodFraud(erpCustomerPk.getId(), paymentMethod);
+
+			if (dupCC) {
+				return EnumFraudReason.DUP_ACCOUNT_NUMBER;
+			}
+		}
+
+		final boolean csr = EnumTransactionSource.CUSTOMER_REP.equals(order.getTransactionSource());
+		//
+		// ORDER TOTAL check (TOTAL > $5000)
+		//		
+		if (order.getAmount() > ErpServicesProperties.getGiftCardStrictOrderLimit() && !csr) {
+			return EnumFraudReason.MAX_GC_ORDER_TOTAL;
+		}
+
+		try{
+		Date threeDaysAgo = DateUtil.addDays(DateUtil.truncate(new Date()), -1);
+		int ordersInOneDays = ErpSaleInfoDAO.getOrderCountPast(getConnection(), erpCustomerPk.getId(), threeDaysAgo,EnumSaleType.GIFTCARD);
+		LOGGER.debug("Found " + ordersInOneDays + " orders in past 24 hrs");
+		if(ordersInOneDays > ErpServicesProperties.getGiftCardOrderCountLimit() && !csr){
+			return EnumFraudReason.MAX_ORDER_COUNT_LIMIT;
+		}
+		} catch (SQLException ex) {
+			LOGGER.error("SQLException occurred", ex);
+			throw new EJBException(ex.getMessage());
+		}
+		return null;
+		
+	}
+
+	private void checkFirstOrderUsingGC(PrimaryKey salePk,PrimaryKey erpCustomerPk, ErpAbstractOrderModel order) throws SQLException {
+		//final boolean csr = EnumTransactionSource.CUSTOMER_REP.equals(order.getTransactionSource());
+		if (order.getDeliveryInfo().getDeliveryType().equals(EnumDeliveryType.PICKUP) ) {
+			LOGGER.debug("First Order placed using Gift Card scheduled for Pick up. Order Number : "+salePk);
+			CrmSystemCaseInfo info =
+				new CrmSystemCaseInfo(
+					erpCustomerPk,
+					CrmCaseSubject.getEnum(CrmCaseSubject.CODE_FIRST_ORDER_FOR_PICK_UP_USED_GC),
+					"First Order placed using Gift Card scheduled for Pick up. Order Number : "+salePk );
+			new ErpCreateCaseCommand(LOCATOR, info).execute();
+
+		}
+		if (order.getAmount() > 450 ) {
+			LOGGER.debug("First Order placed using Gift Card and Order Total over $450. Order Number : "+salePk);
+			CrmSystemCaseInfo info =
+				new CrmSystemCaseInfo(
+					erpCustomerPk,
+					CrmCaseSubject.getEnum(CrmCaseSubject.CODE_FIRST_ORDER_OVER_MAX_USED_GC),
+					"First Order placed using Gift Card and Order Total over $450. Order Number : "+salePk );
+			new ErpCreateCaseCommand(LOCATOR, info).execute();
+
+		}
+
+	}
+	
+	
 }

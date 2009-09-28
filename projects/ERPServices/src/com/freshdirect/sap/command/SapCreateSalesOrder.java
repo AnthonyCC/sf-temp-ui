@@ -81,7 +81,7 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 		this.invoke(bapi);
 
 		this.sapOrderNumber = ((BapiSalesOrderCreate) bapi).getSalesDocument();
-		if(EnumSaleType.SUBSCRIPTION.equals(saleType)) {
+		if(EnumSaleType.SUBSCRIPTION.equals(saleType) || EnumSaleType.GIFTCARD.equals(saleType) || EnumSaleType.DONATION.equals(saleType)) {
 			this.invoiceNumber=((BapiSalesOrderCreate) bapi).getInvoiceNumber();
 		}
 		if (this.sapOrderNumber == null) {
@@ -110,7 +110,7 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 				if(EnumSaleType.REGULAR.equals(saleType)){
 					return "ZOR";
 				}
-				else if(EnumSaleType.SUBSCRIPTION.equals(saleType)){
+				else if(EnumSaleType.SUBSCRIPTION.equals(saleType) || EnumSaleType.GIFTCARD.equals(saleType) || EnumSaleType.DONATION.equals(saleType)){
 					return "XOR";
 				}
 				else {

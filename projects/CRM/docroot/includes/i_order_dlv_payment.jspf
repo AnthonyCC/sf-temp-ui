@@ -1,6 +1,7 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.customer.ErpShippingInfo" %>
 <%@ page import="com.freshdirect.crm.CrmLateIssueModel,com.freshdirect.crm.CrmManager" %>
+<%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
 <%-- THIS FILE DEPENDS ON THE FOLLOWING VARIABLES:
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	- FDOrderI order
@@ -16,9 +17,62 @@
 	String fmtDlvDate = CCFormatter.formatDeliveryDate( order.getDeliveryReservation().getStartTime() );
 	String fmtDlvTime = CCFormatter.formatDeliveryTime( order.getDeliveryReservation().getStartTime() ) + " - " + CCFormatter.formatDeliveryTime( order.getDeliveryReservation().getEndTime() );
 	CrmLateIssueModel lateIssue = (order instanceof FDOrderI) ? CrmManager.getInstance().getRecentLateIssueForOrder(((FDOrderI)order).getErpSalesId()) : null;
-            
-	if (lateIssue!=null) {
+	double perishableBufferAmount = 0;
+    double gcSelectedBalance = user.getGiftcardBalance()- order.getTotalAppliedGCAmount();
+    double gcBufferAmount=0;
+    double ccBufferAmount=0;
+    if(order instanceof FDCartModel){
+    	perishableBufferAmount = FDCustomerManager.getPerishableBufferAmount((FDCartModel)order);
+    }
+    if(perishableBufferAmount > 0){
+    	if(order.getTotalAppliedGCAmount()> 0){
+    		if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())){
+        		/*if(gcSelectedBalance - perishableBufferAmount >=0){
+        			gcBufferAmount = perishableBufferAmount;
+        		}else{*/
+        			gcBufferAmount = gcSelectedBalance;
+        			ccBufferAmount = perishableBufferAmount - gcSelectedBalance;    			
+        		//}
+        	}
+    		else{
+    			gcBufferAmount = perishableBufferAmount;
+    		}
+    	}else{
+    		ccBufferAmount = perishableBufferAmount;
+    	}    	
+    }
+ %>   
+  <% if(order instanceof FDCartModel) { %>
+  
+	 <% if(ccBufferAmount >0 && gcBufferAmount > 0) { %>
+	<table>
+	<tr>
+		<td>
+		PLEASE NOTE: We hold a little extra to cover charges that may occur when we weigh your perishable items and fulfill your order. We guarantee that you'll always pay the true price for the actual weight of your products. We’ll release any unused balance when your order is processed. Learn about Estimated Price.
+
+
+		
+		</td>
+		</tr>
+		<tr></tr>
+	</table>
+	<% } %>
+	
+	<% } else if(!((FDOrderI)order).hasInvoice() && !EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType()) && order.getBufferAmt() >order.getCCPaymentAmount()){ %>
+	<table>
+	<tr>
+		<td>
+		PLEASE NOTE: We hold a little extra to cover charges that may occur when we weigh your perishable items and fulfill your order. We guarantee that you'll always pay the true price for the actual weight of your products. We’ll release any unused balance when your order is processed. Learn about Estimated Price.
+
+
+		
+		</td>
+		</tr><tr></tr>
+	</table>
+	<% } %>
+	<%if (lateIssue!=null) {
 %>
+
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail" style="padding: 1px;">
 	<tr class="inactive">
 		<td class="error">Late Report: <%=lateIssue.getDelayMinutes()%> minutes, <%=lateIssue.getComments()%></td>
@@ -31,7 +85,10 @@
     <% if(displayDeliveryInfo){%>
 		<td width="22%">DELIVERY TIME</td>
 		<td width="38%">DELIVERY ADDRESS</td>
-    <%}%>   
+    <%} else if (order instanceof FDOrderI && EnumSaleType.GIFTCARD.equals(((FDOrderI)order).getOrderType())) {%>
+        <td width="22%">
+		</td> 
+    <% } %>   
 		<td width="40%">PAYMENT INFORMATION</td>
 	</tr>
 	<tr valign="top">
@@ -75,13 +132,67 @@
 		<td>
 			<%@ include file="/includes/i_delivery_address_select.jspf"%>
 		</td>
+		<%} else if (order instanceof FDOrderI && EnumSaleType.GIFTCARD.equals(((FDOrderI)order).getOrderType())) { %>
+        <td style="padding-left: 8px;">
+        <b>Web Id</b>: <%=((FDOrderI)order).getErpSalesId()%><br>
+					<b>SAP Id</b>: <%=((FDOrderI)order).getSapOrderId()%><br>
+		</td>
         <%}%>
 		<td>
+		
 			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail" style="padding: 1px;">
+			
 				<tr>
+					<td width="35%">Order Total:</td>
+					<%if(order instanceof FDOrderI && ((FDOrderI)order).hasInvoice()){ %>
+					<td width="65%"><%= CCFormatter.formatCurrency(((FDOrderI)order).getInvoicedTotal()) %>*</td>
+					<% }else { %>
+					<td width="65%"><%= CCFormatter.formatCurrency(order.getTotal()) %>*</td>
+					<% } %>	
+				</tr>  
+				 <% if(order.getTotalAppliedGCAmount()> 0){ %> 
+	            
+	         	
+					<%if(order instanceof FDOrderI && ((FDOrderI)order).hasInvoice()){ %>
+					<td width="35%"> Gift Card Amount Applied:</td>	
+					<% }else { %>
+					<td width="35%"> Gift Card Amount to Be Applied:</td>	
+					<% } %>	           
+	           		<td width="65%"> <%= CCFormatter.formatCurrency(order.getTotalAppliedGCAmount()+ gcBufferAmount ) %>*</td>
+	           	</tr>
+	            
+	            <%if(order instanceof FDCartModel || (order instanceof FDOrderI && !(((FDOrderI)order).hasInvoice()))){%>
+				<tr>
+					<td width="35%"> Remaining Gift Card Balance:</td>
+	         	 <td width="65%"> 
+	            <% if(order instanceof FDCartModel) { %>
+	            
+	            	<%= CCFormatter.formatCurrency(user.getGiftcardsTotalBalance() - order.getTotalAppliedGCAmount()-gcBufferAmount) %>
+		          
+	            <% } else { %>
+	            <%= CCFormatter.formatCurrency(user.getGiftcardsTotalBalance()) %>
+	            <% } %>*
+	               
+        	    <% } %></td></tr><% } %>
+        	    <tr>
 					<td width="35%">Payment Method</td>
 					<td width="65%"><%= paymentMethod.getPaymentMethodType() %></td>
-				</tr>
+				</tr> 
+        	    <% if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())) { %> 
+        	    <% if(order.getTotalAppliedGCAmount()> 0){ %>     
+        	    <tr>
+					<td width="35%"> Amount to Be Charged to Your Account:</td>
+	            <td width="65%"> 
+	            <% if(order instanceof FDCartModel) { %>
+	            <%= CCFormatter.formatCurrency(order.getCCPaymentAmount()+ ccBufferAmount) %>*<BR>
+	            <% } else if(order instanceof FDOrderI && ((FDOrderI)order).hasInvoice()){ %>
+	             <%= CCFormatter.formatCurrency(order.getCCPaymentAmount()) %>
+	            <% } else { %>
+	            <%= CCFormatter.formatCurrency(order.getCCPaymentAmount()+ order.getBufferAmt()) %>*<BR>     
+	            <% } %></td></tr>
+	            <% } %>
+				  
+				
 				<tr>
 					<td>Name on account&nbsp;&nbsp;</td>
 					<td><%= paymentMethod.getName() %></td>
@@ -147,7 +258,7 @@
 <%	} %>
 			<tr><td colspan="2">&nbsp;</td></tr>
 			<tr><td colspan="2"><b>Note: Under no circumstance should payment method information be read to customer. If customer provides correct information to you it may be confirmed or denied.</b>
-			</td></tr>
+			</td></tr><% } %>
 			</table>
 		</td>
 	</tr>

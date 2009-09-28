@@ -9,9 +9,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import sun.security.x509.CertAndKeyGen;
+
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartI;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.giftcard.FDGiftCardI;
+import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
+import com.freshdirect.fdstore.giftcard.FDGiftCardModel;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
@@ -26,32 +32,69 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 
 	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		String action = request.getParameter("action");
-		if ("removeCode".equalsIgnoreCase(action)) {
-			HttpSession session = (HttpSession) pageContext.getSession();
-			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-			
-			PromotionI promo = user.getRedeemedPromotion();
-			if(promo != null){
-				//MNT - 144 Bug fix.
-				PromotionApplicatorI applicator = ((Promotion)promo).getApplicator();
-				if(applicator instanceof WaiveChargeApplicator){
-					WaiveChargeApplicator waiveChargeApplicator = (WaiveChargeApplicator)applicator;
-					if(waiveChargeApplicator.getChargeType() == EnumChargeType.DELIVERY){
-						/*
-						 * Then its a delivery promotion. So reset the isDlvPromoApplied flag
-						 * since the redemption code is removed.
-						 */
-						user.getShoppingCart().setDlvPromotionApplied(false);
+		try {
+			if ("removeCode".equalsIgnoreCase(action)) {
+				HttpSession session = (HttpSession) pageContext.getSession();
+				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+				
+				PromotionI promo = user.getRedeemedPromotion();
+				if(promo != null){
+					//MNT - 144 Bug fix.
+					PromotionApplicatorI applicator = ((Promotion)promo).getApplicator();
+					if(applicator instanceof WaiveChargeApplicator){
+						WaiveChargeApplicator waiveChargeApplicator = (WaiveChargeApplicator)applicator;
+						if(waiveChargeApplicator.getChargeType() == EnumChargeType.DELIVERY){
+							/*
+							 * Then its a delivery promotion. So reset the isDlvPromoApplied flag
+							 * since the redemption code is removed.
+							 */
+							user.getShoppingCart().setDlvPromotionApplied(false);
+						}
 					}
+					
+					user.setRedeemedPromotion(null);
+					
+					user.updateUserState();
+					session.setAttribute(SessionName.USER, user);
 				}
-				
-				user.setRedeemedPromotion(null);
-				
-				user.updateUserState();
-				session.setAttribute(SessionName.USER, user);
 			}
+			else if ("removeGiftCard".equalsIgnoreCase(action)) {
+				HttpSession session = (HttpSession) pageContext.getSession();
+				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+				
+				FDGiftCardInfoList giftCards = user.getGiftCardList();
+				if(giftCards != null){
+					giftCards.clearAllSelection();
+				}
+			}
+			else if ("applyGiftCard".equalsIgnoreCase(action)) {
+				String certNum = request.getParameter("certNum");
+				String value = request.getParameter("value");
+				HttpSession session = (HttpSession) pageContext.getSession();
+				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+				FDGiftCardInfoList giftCards = user.getGiftCardList();
+				if(certNum != null && certNum.length() > 0){
+					giftCards.setSelected(certNum, new Boolean(value).booleanValue());
+				}
+			}
+			else if ("deleteGiftCard".equalsIgnoreCase(action)) {
+				String certNum = request.getParameter("certNum");
+				String value = request.getParameter("value");
+				HttpSession session = (HttpSession) pageContext.getSession();
+				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+				FDGiftCardInfoList giftCards = user.getGiftCardList();
+				if(certNum != null && certNum.length() > 0){
+					
+					FDGiftCardModel model = (FDGiftCardModel)giftCards.getGiftCard(certNum);
+					FDCustomerManager.removePaymentMethod(AccountActivityUtil
+							.getActionInfo(pageContext.getSession()), model.getGiftCardModel());
+					//Remove it from user cache.
+					giftCards.remove(certNum);
+				}
 		}
-
+		}catch(FDResourceException fre){
+			throw new JspException(fre);
+		}
 		return true;
 	}
 

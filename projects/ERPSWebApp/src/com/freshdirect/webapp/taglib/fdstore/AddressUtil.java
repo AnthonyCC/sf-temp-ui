@@ -167,6 +167,15 @@ public class AddressUtil {
 		return stateAbbrevs.contains(state.toUpperCase());
 	}
 
+	public static boolean validateTriState(String state) {
+		return triStateAbbrevs.contains(state.toUpperCase());
+	}
+	private final static HashSet triStateAbbrevs = new HashSet();
+	static {
+		triStateAbbrevs.add("NJ");
+		triStateAbbrevs.add("CT");
+		triStateAbbrevs.add("NY");
+	}
 	private final static HashSet stateAbbrevs = new HashSet();
 	static {
 		stateAbbrevs.add("AL");

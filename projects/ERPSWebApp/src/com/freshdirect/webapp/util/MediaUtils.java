@@ -7,10 +7,10 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.Map;
 
-import com.freshdirect.cms.template.ITemplateRenderer;
-import com.freshdirect.cms.template.TemplateException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.TemplateRenderer;
+import com.freshdirect.framework.content.TemplateRenderer;
+import com.freshdirect.framework.template.ITemplateRenderer;
+import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.webapp.taglib.IncludeMediaTag;
 import com.freshdirect.webapp.template.TemplateContext;
 

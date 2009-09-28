@@ -579,7 +579,7 @@ public class FDEmailFactory {
 
 	}
 
-	private static class FDConfirmCreditEmail extends FDInfoEmail {
+	protected static class FDConfirmCreditEmail extends FDInfoEmail {
 		private ErpComplaintModel complaint;
 		private String saleId;
 
@@ -907,5 +907,4 @@ public class FDEmailFactory {
 		email.setSubject("We've credited your DeliveryPass.");
 		return email;
 	}
-
 }

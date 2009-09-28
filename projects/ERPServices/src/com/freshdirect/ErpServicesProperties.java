@@ -144,6 +144,21 @@ public class ErpServicesProperties {
 	
 	private final static String PROP_FUNCTION_COOLINFO = "sap.function.coolinfo";
 
+	
+	private final static String PROP_FD_GIVEX_TOKEN  = "payment.givex.fd.tokenId";
+	private final static String PROP_FD_GIVEX_USER  = "payment.givex.fd.user";
+	private final static String PROP_FD_GIVEX_USER_PASSWD  = "payment.givex.fd.user.passwd";
+	private final static String PROP_GIVEX_SERVER_URL  = "payment.givex.url";
+	private final static String PROP_GIVEX_SERVER_SEC_URL  = "payment.givex.backup.url";
+	private final static String PROP_GIVEX_TRAN_TIMEOUT  = "payment.givex.transaction.timeout";
+	private final static String PROP_GIVEX_NUM_ENCRYPTION_KEY = "givex.num.encryption.key";
+	private final static String PROP_GIFT_CARD_STRICT_ORDER_MAX = "giftcard.strict.order.max";
+	
+	private final static String PROP_GIFT_CARD_ORDER_COUNT = "giftcard.order.count";
+	private final static String PROP_GIFT_CARD_ORDER_MAX = "giftcard.order.max";
+	private final static String PROP_REGISTER_CRON_QUEUE = "register.cron.queue";
+	private final static String PROP_PRE_AUTHORIZE	= "payment.giftcard.preauthorize";
+	
 	static {
 		Properties defaults = new Properties();
 
@@ -246,6 +261,21 @@ public class ErpServicesProperties {
 		
 		defaults.put(PROP_FUNCTION_COOLINFO, "ZSDI_COUNTRY_ORIGIN");
 		
+		defaults.put(PROP_FD_GIVEX_TOKEN, "42bfc7aacd6eb4a0c7e911f923286337");
+		defaults.put(PROP_FD_GIVEX_USER, "10947");
+		defaults.put(PROP_FD_GIVEX_USER_PASSWD, "7368");
+		defaults.put(PROP_GIVEX_SERVER_URL, "https://dev-gapi.givex.com:50081/1.0/trans/");
+		defaults.put(PROP_GIVEX_SERVER_SEC_URL, "https://149.99.39.146:50081/1.0/trans/");
+		//defaults.put(PROP_GIVEX_SERVER_URL, "https://www.freshdirect.com/login/login.jsp");
+		//defaults.put(PROP_GIVEX_SERVER_SEC_URL, "https://www.freshdirect.com/");		
+		defaults.put(PROP_GIVEX_TRAN_TIMEOUT, "15");
+		defaults.put(PROP_GIVEX_NUM_ENCRYPTION_KEY, "5f4dcc3b5aa765d61d8327deb882cf99");
+		defaults.put(PROP_GIFT_CARD_STRICT_ORDER_MAX, "5000.00");
+		defaults.put(PROP_GIFT_CARD_ORDER_MAX, "750.00");
+		defaults.put(PROP_GIFT_CARD_ORDER_COUNT, "3");
+		defaults.put(PROP_REGISTER_CRON_QUEUE, "true");
+		defaults.put(PROP_PRE_AUTHORIZE, "true");
+
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
 	}
@@ -484,6 +514,10 @@ public class ErpServicesProperties {
 	public static boolean isUseQueue(){
 		return Boolean.valueOf(config.getProperty(PROP_CAPTURE_CRON_QUEUE)).booleanValue(); 
 	}
+
+	public static boolean isUseRegisterQueue(){
+		return Boolean.valueOf(config.getProperty(PROP_REGISTER_CRON_QUEUE)).booleanValue(); 
+	}
 	
 	public static String getSendCutoffEmail(){
 		return config.getProperty(PROP_SAP_SEND_CUTOFF_EMAIL);
@@ -584,4 +618,51 @@ public class ErpServicesProperties {
 		return config.getProperty(PROP_FUNCTION_COOLINFO);
 	}
 	
+	
+	public static String getFDGivexToken() {
+		return config.getProperty(PROP_FD_GIVEX_TOKEN);
+	}
+	
+	public static String getFDGivexUser() {
+		return config.getProperty(PROP_FD_GIVEX_USER);
+	}
+	
+	public static String getFDGivexUserPassword() {
+		return config.getProperty(PROP_FD_GIVEX_USER_PASSWD);
+	}
+
+	
+	public static String getGivexServerURL() {
+		return config.getProperty(PROP_GIVEX_SERVER_URL);
+	}
+
+	public static String getGivexServerSecondaryURL() {
+		return config.getProperty(PROP_GIVEX_SERVER_SEC_URL);
+	}
+
+	public static int getGivexTransactionTimeOut() {
+		return Integer.parseInt(config.getProperty(PROP_GIVEX_TRAN_TIMEOUT));
+	}
+	
+	public static String getGivexNumEncryptionKey(){
+		return config.getProperty(PROP_GIVEX_NUM_ENCRYPTION_KEY);
+	}
+	
+	public static double getGiftCardStrictOrderLimit() {
+		return Double.parseDouble(config.getProperty(PROP_GIFT_CARD_STRICT_ORDER_MAX));
+	}	
+	
+	public static double getGiftCardOrderLimit() {
+		return Double.parseDouble(config.getProperty(PROP_GIFT_CARD_ORDER_MAX));
+	}
+	
+	public static int getGiftCardOrderCountLimit() {
+		return Integer.parseInt(config.getProperty(PROP_GIFT_CARD_ORDER_COUNT));
+	}
+	
+	public static String getPreAuthorize() {
+		return config.getProperty(PROP_PRE_AUTHORIZE);
+	}
+	
+
 }

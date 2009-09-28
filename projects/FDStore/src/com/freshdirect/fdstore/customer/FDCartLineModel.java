@@ -189,4 +189,7 @@ public class FDCartLineModel extends AbstractCartLine {
 		}
 		return false;
 	}
+
+ 
+	
 }

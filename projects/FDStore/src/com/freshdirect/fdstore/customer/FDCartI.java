@@ -118,4 +118,11 @@ public interface FDCartI extends java.io.Serializable {
 	
 	public double getTotalLineItemsDiscountAmount();
 	
+	public double getBufferAmt();
+//	public void setBufferAmt(double bufferAmt);
+	
+	public double getTotalAppliedGCAmount();
+	
+	public double getCCPaymentAmount();
+	
 }

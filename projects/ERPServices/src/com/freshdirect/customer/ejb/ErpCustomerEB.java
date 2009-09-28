@@ -10,6 +10,8 @@
 package com.freshdirect.customer.ejb;
 
 import com.freshdirect.framework.core.*;
+import com.freshdirect.giftcard.ErpGiftCardI;
+import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.customer.*;
 
 import java.util.List;
@@ -58,6 +60,8 @@ public interface ErpCustomerEB extends EntityBeanRemoteI, ErpCustomerI {
 	public void addCustomerAlert(ErpCustomerAlertModel element) throws RemoteException;
 	
 	public boolean isOnAlert() throws RemoteException;
-
+	
+	public List getGiftCards() throws RemoteException;
+	
 }
 

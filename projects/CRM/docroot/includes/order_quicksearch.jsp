@@ -68,6 +68,16 @@
 							<input type="checkbox" name="any" onClick="javascript:toggleDate()"> Any
 						</td>
 					</tr>
+                    <tr>
+						<td>Gift Card</td>
+						<td colspan="4"><input type="text" name="giftCardNumber" value="<%= "null".equalsIgnoreCase(request.getParameter("giftCardNumber")) ? "" : request.getParameter("giftCardNumber") %>" class="input_text"></td>
+					</tr>
+                 <!--   
+                    <tr>
+						<td>Certificate Number</td>
+						<td colspan="4"><input type="text" name="certNumber" value="<%= "null".equalsIgnoreCase(request.getParameter("certNumber")) ? "" : request.getParameter("certNumber") %>" class="input_text"></td>
+					</tr>
+                  -->  
 					<tr><td colspan="5" align="center">
                                             <img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
                                             <input type="reset" value="CLEAR" class="clear"><input type="submit" value="SEARCH ORDER" class="submit">

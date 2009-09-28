@@ -98,4 +98,7 @@ public class ProfileModel extends ModelSupport {
 		return (householdType == null || householdType.length() != 1 || "0123456".indexOf(householdType) == -1) ? "unknown" : householdType;
 	}
 	
+	public boolean allowApplyGC() {
+		return null == (getAttribute("allow_apply_gc")) || "true".equalsIgnoreCase(getAttribute("allow_apply_gc"));
+	}
 }

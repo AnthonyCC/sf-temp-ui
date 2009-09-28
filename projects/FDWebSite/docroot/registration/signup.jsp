@@ -56,12 +56,12 @@ if(userx.isCorporateUser()){
 
 			String depotName = com.freshdirect.fdstore.FDDepotManager.getInstance().getInstance().getDepot(userx.getDepotCode()).getName();
 		%>	
-			<span class="title18">FreshDirect <%=depotName%> Depot Sign Up</span><br><span class="space4pix"><br></span>
+			<span class="title18">FreshDirect <%=depotName%> Depot Sign Up</span><br /><span class="space4pix"><br /></span>
 				Sign up now and get $<%=promoValue%> off your first order! Please note: This service is only available to current <%=depotName%> employees. To find out more about FreshDirect Depot service <a href="javascript:popup('/help/faq_index.jsp?show=delivery_depot','large')">click here</a>.
-			<br>
-			<br>       
+			<br />
+			<br />       
          <%}else{%>
-			<span class="title18">Sign Up</span><br><span class="space4pix"><br></span>
+			<span class="title18">Sign Up</span><br /><span class="space4pix"><br /></span>
 			<% if (userx.isInZone()) {
 					if (userx.isEligibleForSignupPromotion()) {
 			%>
@@ -72,11 +72,16 @@ if(userx.isCorporateUser()){
 			<% } else { %>
 				Sign up now and start getting better food at a better price. No credit card information is required until you place an order. Please note that your area is not within our <a href="javascript:popup('/help/delivery_zones.jsp','large')">current delivery zones</a>, so you will only be able to place an order for pickup.
 			<% } %>
-			<br><br>
-			<b>Already have a password?</b><br>
+			<br /><br />
+			<b>Already have a password?</b><br />
 		 <%}%>			 
-		<A HREF="<%=response.encodeURL("/login/login.jsp")%>">Log in now</A>.
-	
+		<a href="<%=response.encodeURL("/login/login.jsp")%>">Log in now</a>.
+
+		<% if (FDStoreProperties.isGiftCardEnabled()) { %>
+			<br /><br />
+			<b>Looking for Gift Cards?</b><br />
+			<a href="<%=FDStoreProperties.getGiftCardLandingUrl()%>">Click here</a>.
+		<% } %>
 	</td>
 </tr>
 </table>

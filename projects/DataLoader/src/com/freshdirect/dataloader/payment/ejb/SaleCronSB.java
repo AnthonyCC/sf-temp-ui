@@ -3,7 +3,7 @@ package com.freshdirect.dataloader.payment.ejb;
 import javax.ejb.*;
 import java.rmi.RemoteException;
 
-public interface SaleCronSB extends EJBObject{
+public interface SaleCronSB extends EJBObject{ 
 
 	public void authorizeSales(long timeout) throws RemoteException;
 
@@ -15,4 +15,9 @@ public interface SaleCronSB extends EJBObject{
 
 	public void cancelAuthorizationFailed() throws RemoteException;
 
+	public void registerGiftCards(long timeout) throws RemoteException;
+	
+	public void preAuthorizeSales(long timeout) throws RemoteException;
+	
+	public void postAuthSales(long timeout) throws RemoteException;
 }

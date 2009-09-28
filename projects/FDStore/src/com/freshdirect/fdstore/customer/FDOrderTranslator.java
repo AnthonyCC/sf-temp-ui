@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.customer.EnumWebServiceType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
@@ -71,7 +72,8 @@ public class FDOrderTranslator {
 	private static void translateOrder(FDCartModel cart, ErpAbstractOrderModel order, boolean skipModifyLines) throws FDResourceException {
 		try {
 			order.setPaymentMethod(cart.getPaymentMethod());
-			
+			//System.out.println("Selected gift cards "+cart.getSelectedGiftCards() != null ? cart.getSelectedGiftCards().size() : 0);
+			order.setSelectedGiftCards(cart.getSelectedGiftCards());
 			FDReservation deliveryReservation = cart.getDeliveryReservation();
 			ErpDeliveryInfoModel deliveryInfo = new ErpDeliveryInfoModel();
 			deliveryInfo.setDeliveryReservationId(deliveryReservation.getPK().getId());
@@ -105,7 +107,10 @@ public class FDOrderTranslator {
 				}
 			} else {
 				ErpAddressModel address = cart.getDeliveryAddress();
-				if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
+				if(EnumServiceType.WEB.equals(address.getServiceType())){
+					EnumWebServiceType webServiceType = address.getWebServiceType();
+					deliveryInfo.setDeliveryType(EnumDeliveryType.getDeliveryType(webServiceType.getName()));
+				} else if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
 					deliveryInfo.setDeliveryType(EnumDeliveryType.CORPORATE);
 				} else {
 					deliveryInfo.setDeliveryType(EnumDeliveryType.HOME);
@@ -171,6 +176,9 @@ public class FDOrderTranslator {
 			order.setDeliveryPassCount(cart.getDeliveryPassCount());
 			order.setDlvPassApplied(cart.isDlvPassApplied());
 			order.setDlvPromotionApplied(cart.isDlvPromotionApplied());
+			
+			order.setBufferAmt(cart.getBufferAmt());
+			
 		} catch (FDInvalidConfigurationException ex) {
 			throw new FDResourceException(ex, "Invalid configuration encountered");
 		}

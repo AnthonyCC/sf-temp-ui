@@ -33,20 +33,31 @@ String sPage = request.getParameter("successPage");
 		<%@ include file="/includes/i_login_field.jspf" %>
 		<br>
 		<% if (!isPopup) { %>
-		<%if(uri.indexOf("quickshop")== -1){%>
+			<%if(uri.indexOf("quickshop")== -1){%>
+
+				<font class="text13bold">Forgot your password?</FONT><BR>
+				<font class="text13">
+				<%if(uri.indexOf("main")> -1){%>
+						<A HREF="/login/forget_password_main.jsp">Click here for help</a>
+				<%}else{%>	
+						<A HREF="/login/forget_password.jsp">Click here for help</a>
+				<%}%>
+				</FONT>
+			<%}%>
 		
-		<font class="text13bold">Forgot your password?</FONT><BR>
-		<font class="text13">
-		<%if(uri.indexOf("main")> -1){%>
-				<A HREF="/login/forget_password_main.jsp">Click here for help</a>
-		<%}else{%>	
-				<A HREF="/login/forget_password.jsp">Click here for help</a>
-		<%}%>
-		</FONT>
-		<%}%>
-		<br><br>	
-			<font class="text13bold">New Customer?</FONT><BR>
-			<A HREF='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'><font class="text13">See if we deliver to your area</font></a>.<% } %><br><br>
+		<br><br>
+			<% if( null != request.getParameter("successPage")) { %>
+			<% if(request.getParameter("successPage").toLowerCase().indexOf("gift_card") > 0 ) { %>
+				<font class="text13bold">NEW CUSTOMER OR OUTSIDE OUR DELIVERY AREA?</FONT><BR>
+				<A HREF='<%= response.encodeURL("/gift_card/purchase/register_and_purchase.jsp") %>'><font class="text13"><b>Click here to continue</b></font></a>.<br><br></td>
+				<% } else if(request.getParameter("successPage").toLowerCase().indexOf("robin_hood") > 0 ){ %>        
+				<font class="text13bold">NEW CUSTOMER OR OUTSIDE OUR DELIVERY AREA?</FONT><BR>
+				<A HREF='<%= response.encodeURL("/robin_hood/register_purchase.jsp") %>'><font class="text13"><b>Click here to continue</b></font></a>.<br><br></td>
+				
+			<% } } else { %>        
+				<font class="text13bold">New Customer?</FONT><BR>
+                <A HREF='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'><font class="text13">See if we deliver to your area</font></a>.<% } %><br><br>
+		<% } %><br><br>
 			</td>
 		</tr>
 		</table>

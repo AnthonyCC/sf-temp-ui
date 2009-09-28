@@ -52,6 +52,8 @@ public class CaptureCronRunner {
 			SaleCronHome home = (SaleCronHome) ctx.lookup("freshdirect.dataloader.SaleCron");
 
 			SaleCronSB sb = home.create();
+			//First post auth sales for gift cards.
+			sb.postAuthSales(captureTimeout);
 			sb.captureSales(captureTimeout);
 			LOGGER.info("CaptureCron finished");
 		} catch (Exception e) {

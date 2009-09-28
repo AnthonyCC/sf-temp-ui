@@ -6,7 +6,19 @@
 	<tr>
 		<td>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
-			<img src="/media_stat/images/navigation/global_nav/bottom_nav<%= (FDStoreProperties.isWhatsGoodEnabled() ? "_09" : "" )%>.gif" width="745" height="21" alt="" border="0" usemap="#bottomlinks" />
+			<img src="/media_stat/images/navigation/global_nav/bottom_nav
+			<% 
+				/*
+					Changing to site feature
+					if(FDStoreProperties.isGiftCardEnabled()) { 
+				*/
+				if(user.isGiftCardsEnabled()) {
+			%>
+				_gc
+			<% } else { %>
+				<%= (FDStoreProperties.isWhatsGoodEnabled() ? "_09" : "" )%>
+			<% } %>
+			.gif" width="745" height="21" alt="" border="0" usemap="#bottomlinks" />
 		</td>
 	</tr>
 	<tr>
@@ -51,8 +63,31 @@
 
 
 
-<% if(FDStoreProperties.isWhatsGoodEnabled()) { %>
+	<% 
+		/*
+			Changing to site feature
+			if(FDStoreProperties.isGiftCardEnabled()) { 
+		*/
+		if(user.isGiftCardsEnabled()) {
+	%>
 	<map name="bottomlinks" id="bottomlinks">
+		<area shape="rect" coords="11,0,70,21" href="/department.jsp?deptId=about&amp;trk=bnav" alt="About Us">
+		<area shape="rect" coords="70,0,157,21" href="javascript:popup('/help/freshness.jsp','small')" alt="Our Guarantee">
+		<area shape="rect" coords="157,0,249,21" href="/department.jsp?deptId=cmty&amp;trk=bnav" alt="Our Community">
+		<area shape="rect" coords="249,0,303,21" href="/category.jsp?catId=picks_celeb&amp;trk=bnav" alt="Our Ads">
+		<area shape="rect" coords="303,0,382,21" href="/category.jsp?catId=about_test&amp;trk=bnav" alt="Testimonials">
+		<area shape="rect" coords="382,0,443,21" href="<%=FDStoreProperties.getCareerLink()%>" alt="Careers">
+		<area shape="rect" coords="443,0,505,21" href="/department.jsp?deptId=our_picks&amp;trk=bnav" alt="Our Picks" />
+		<area shape="rect" coords="505,0,582,21" href="/department.jsp?deptId=COS&amp;trk=bnav" alt="At the Office">
+		<%
+			//since the gift card url is dynamic, check for other query values before adding the trk attribute
+			boolean gcUrlHasOtherQueryVals = FDStoreProperties.getGiftCardLandingUrl().indexOf("?") > -1;
+		%>
+		<area shape="rect" coords="582,0,648,21" href="<%=FDStoreProperties.getGiftCardLandingUrl()%><%=(gcUrlHasOtherQueryVals)?"&":"?"%>trk=bnav" alt="Gift Cards">
+		<area shape="rect" coords="648,0,745,21" href="/newproducts.jsp?trk=bnav" alt="New Products">
+	</map>
+<% } else if(FDStoreProperties.isWhatsGoodEnabled()) { %>
+	<map name="bottomlinks">
 		<area shape="rect" coords="10,0,73,21" href="/department.jsp?deptId=about&amp;trk=bnav" alt="About Us" />
 		<area shape="rect" coords="74,0,168,21" href="/department.jsp?deptId=cmty&amp;trk=bnav" alt="Our Community" />
 		<area shape="rect" coords="169,0,233,21" href="/department.jsp?deptId=our_picks&amp;trk=bnav" alt="Our Picks" />
@@ -63,9 +98,7 @@
 		<area shape="rect" coords="550,0,608,21" href="<%=FDStoreProperties.getCareerLink()%>" alt="Careers" />
 		<area shape="rect" coords="636,0,745,21" href="/newproducts.jsp?trk=bnav" alt="New Products" />
 	</map>
-
-<% } else  { %>
-
+<% } else { %>
 	<map name="bottomlinks">
 		<area shape="rect" coords="11,0,78,21" href="/department.jsp?deptId=about&amp;trk=bnav" alt="About Us">
 		<area shape="rect" coords="79,0,172,21" href="/department.jsp?deptId=cmty&amp;trk=bnav" alt="Our Community">
@@ -76,7 +109,6 @@
 		<area shape="rect" coords="492,0,550,21" href="<%=FDStoreProperties.getCareerLink()%>" alt="Careers">
 		<area shape="rect" coords="636,0,745,21" href="/newproducts.jsp?trk=bnav" alt="New Products">
 	</map>
-
 <% } %>
 
 <%@ include file="/includes/net_insight/i_tag_footer.jspf" %>

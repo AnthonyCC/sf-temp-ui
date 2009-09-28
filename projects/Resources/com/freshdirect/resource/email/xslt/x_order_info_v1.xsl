@@ -45,14 +45,28 @@ ALTERNATE DELIVERY<xsl:text>
 ORDER TOTAL 
 $<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/>* 
 
+<xsl:if test="order/totalAppliedGCAmount >0">
+GIFT CARD AMOUNT TO BE APPLIED:
+$<xsl:value-of select='format-number(order/totalAppliedGCAmount, "###,##0.00", "USD")'/>*
+
+Remaining Gift Card Balance:
+$<xsl:value-of select='format-number(customer/userGiftCardsBalance, "###,##0.00", "USD")'/>*
+</xsl:if>
+
 <xsl:if test="order/paymentMethod/paymentType = 'M'">
 AMOUNT DUE: 
 $0.00 
 </xsl:if>
 
+<xsl:if test="order/paymentMethod/paymentMethodType != 'GC'">
+<xsl:if test="order/totalAppliedGCAmount >0">
+Amount to Be Charged to Your Account:		
+$<xsl:value-of select='format-number((order/total)-(order/totalAppliedGCAmount)+(order/bufferAmt), "###,##0.00", "USD")' />*
+</xsl:if>
 <xsl:if test="order/paymentMethod/paymentType != 'M'">
 <xsl:value-of select="order/paymentMethod/paymentMethodType"/>
 <xsl:call-template name="format-payment-method"><xsl:with-param name="paymentMethod" select="order/paymentMethod" /></xsl:call-template>
+</xsl:if>
 </xsl:if>
 ----------------------------------------
 CART DETAILS

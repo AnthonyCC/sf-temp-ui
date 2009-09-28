@@ -15,7 +15,9 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCreditCardModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.dataloader.autoorder.create.util.Card;
 import com.freshdirect.dataloader.autoorder.create.util.CardUtil;
 import com.freshdirect.dataloader.autoorder.create.util.IConstants;
@@ -125,7 +127,7 @@ public class CustomerConsumer implements IConsumer  {
             fdre.printStackTrace();	            
         } catch (ErpDuplicateUserIdException eduie) {
         	eduie.printStackTrace();	
-        }
+        } 
         
     }
 		

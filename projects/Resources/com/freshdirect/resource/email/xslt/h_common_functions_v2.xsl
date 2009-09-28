@@ -76,4 +76,15 @@
 	
 	</xsl:template>
 
+	<!-- BILLING ADDRESS TEMPLATE -->
+	<xsl:template name="format-billing-address">
+		<xsl:param name="billingAddress" />
+		
+		<xsl:value-of select="$billingAddress/address1"/><xsl:text> </xsl:text><xsl:if test="$billingAddress/apartment"><xsl:value-of select="$billingAddress/apartment"/></xsl:if><br/>
+		<xsl:if test="$billingAddress/address2 != ''"><xsl:value-of select="$billingAddress/address2"/><br/></xsl:if>
+		<xsl:value-of select="$billingAddress/city"/>,<xsl:text> </xsl:text><xsl:value-of select="$billingAddress/state"/><xsl:text> </xsl:text><xsl:value-of select="$billingAddress/zipCode"/><br/>
+		<br/>
+	
+	</xsl:template>
+
 </xsl:stylesheet>

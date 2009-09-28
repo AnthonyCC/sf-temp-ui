@@ -27,6 +27,7 @@ import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpComplaintException;
@@ -57,6 +58,7 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
@@ -71,6 +73,7 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.fdstore.customer.RegistrationResult;
+import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDCustomerList;
@@ -79,7 +82,13 @@ import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
+import com.freshdirect.giftcard.CardInUseException;
+import com.freshdirect.giftcard.CardOnHoldException;
+import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
+import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.giftcard.InvalidCardException;
 
 /**
  *
@@ -110,6 +119,16 @@ public interface FDCustomerManagerSB extends EJBObject {
 		boolean eligibleForPromotion,
 		FDSurveyResponse survey, EnumServiceType serviceType)
 		throws FDResourceException, ErpDuplicateUserIdException, RemoteException;
+	
+	public RegistrationResult register(
+			FDActionInfo info,
+			ErpCustomerModel erpCustomer,
+			FDCustomerModel fdCustomer,
+			String cookie,
+			boolean pickupOnly, 
+			boolean eligibleForPromotion,
+			FDSurveyResponse survey, EnumServiceType serviceType, boolean isGiftCardBuyer)
+			throws FDResourceException, ErpDuplicateUserIdException, RemoteException; 
     
     public FDUser createNewUser(String zipCode, EnumServiceType serviceType) throws FDResourceException, RemoteException;
     
@@ -276,6 +295,18 @@ public interface FDCustomerManagerSB extends EJBObject {
     // [APPREQ-369] store Cohort ID that belongs to user
     public void storeCohortName(FDUser user) throws FDResourceException, RemoteException;
     
+    public void storeSavedRecipients(FDUser user, List recipientList) throws FDResourceException, RemoteException;
+    
+    public void storeSavedRecipient(FDUser user, SavedRecipientModel srm) throws FDResourceException, RemoteException;
+    
+    public void updateSavedRecipient(FDUser user, SavedRecipientModel srm) throws FDResourceException, RemoteException;
+    
+    public void deleteSavedRecipients(FDUser user) throws FDResourceException, RemoteException;
+    
+    public void deleteSavedRecipient(String savedRecipientId) throws FDResourceException, RemoteException;
+    
+    public List loadSavedRecipients(FDUser user) throws FDResourceException, RemoteException;
+    
     public List getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException, RemoteException; 
 
 	public FDOrderI getOrder(FDIdentity identity, String saleId) throws FDResourceException, RemoteException;
@@ -321,6 +352,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 		ErpAuthorizationException,
 		ReservationException,
 		DeliveryPassException,
+		FDPaymentInadequateException,
+		ErpTransactionException,
 		RemoteException;
 
 	/**
@@ -353,6 +386,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 		ErpAuthorizationException,
 		ErpTransactionException,
 		DeliveryPassException,
+		FDPaymentInadequateException,		
 		RemoteException;
 
     /**
@@ -376,6 +410,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 		ErpAuthorizationException,
 		ErpTransactionException,
 		DeliveryPassException,
+		FDPaymentInadequateException,
 		RemoteException;
 
     /**
@@ -396,6 +431,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 		ErpFraudException,
 		ErpAuthorizationException,
 		ErpTransactionException,
+		FDPaymentInadequateException,
 		RemoteException;
 
     /**
@@ -563,7 +599,23 @@ public interface FDCustomerManagerSB extends EJBObject {
 		                             ErpFraudException,
 		                             //ReservationException,
 		                             DeliveryPassException,
+		                             FDPaymentInadequateException,
 		                             RemoteException;	
+
+	
+	public String placeGiftCardOrder( FDIdentity identity,
+            ErpCreateOrderModel createOrder,
+            Set usedPromotionCodes,
+            String rsvId,
+            boolean sendEmail,
+            CustomerRatingI cra,
+            CrmAgentRole agentRole,
+            EnumDlvPassStatus status,boolean isBulkOrder
+          ) throws FDResourceException,
+          ErpFraudException,
+          ErpAuthorizationException,
+          RemoteException;
+	
 
 	public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
 	throws ErpTransactionException, RemoteException;
@@ -591,5 +643,68 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 
 	public void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) throws RemoteException, FDResourceException;
+    
+    //For Gift Cards
+    public ErpGiftCardModel applyGiftCard(FDIdentity identity, String givexNum, FDActionInfo info) throws InvalidCardException, CardInUseException, CardOnHoldException, FDResourceException, RemoteException;
+    
+    /**
+     * Get all the Gift cards of the customer.
+     *
+     * @param identity the customer's identity reference
+     *
+     * @return collection of ErpPaymentMethodModel objects
+     * @throws FDResourceException if an error occured using remote resources
+     */
+    public Collection getGiftCards(FDIdentity identity) throws FDResourceException, RemoteException;
+    
+    public List verifyStatusAndBalance(List giftcards, boolean reloadBalance ) throws FDResourceException, RemoteException;
+    
+    public ErpGiftCardModel verifyStatusAndBalance(ErpGiftCardModel giftcard, boolean reloadBalance ) throws FDResourceException, RemoteException;
+    
+    public List getGiftCardRecepientsForCustomer(FDIdentity identity) throws FDResourceException, RemoteException;
+
+    public ErpGCDlvInformationHolder getRecipientDlvInfo(FDIdentity identity, String saleId, String certificationNum) throws FDResourceException, RemoteException;
+    
+    public boolean resendEmail(String saleId, String certificationNum, String resendEmailId, String recipName, String personMsg, EnumTransactionSource source) throws FDResourceException, RemoteException;
+    
+    public double getOutStandingBalance(ErpAbstractOrderModel order) throws FDResourceException, RemoteException;
+    
+    public void doEmail(FTLEmailI email) throws RemoteException, FDResourceException;
+    
+    public void preAuthorizeSales(String salesId) throws RemoteException, FDResourceException;
+    
+	public List getGiftCardOrdersForCustomer(FDIdentity identity) throws RemoteException, FDResourceException;
+
+	public Object getGiftCardRedemedOrders(FDIdentity identity, String certNum) throws RemoteException, FDResourceException;
+	
+	public Object getGiftCardRedemedOrders(String certNum) throws RemoteException, FDResourceException;
+
+	public List getDeletedGiftCardForCustomer(FDIdentity identity) throws RemoteException, FDResourceException;
+    
+    public List getGiftCardRecepientsForOrder(String saleId) throws FDResourceException, RemoteException;
+    
+    public ErpGiftCardModel validateAndGetGiftCardBalance(String givexNum) throws InvalidCardException, RemoteException;
+    
+    public void transferGiftCardBalance(FDIdentity identity,String fromGivexNum,String toGivexNum,double amount) throws RemoteException;
+    
+    public String[] sendGiftCardCancellationEmail(String saleId, String givexNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) throws RemoteException, FDResourceException;
+    
+    public String placeDonationOrder( FDIdentity identity,
+            ErpCreateOrderModel createOrder,
+            Set usedPromotionCodes,
+            String rsvId,
+            boolean sendEmail,
+            CustomerRatingI cra,
+            CrmAgentRole agentRole,
+            EnumDlvPassStatus status
+          ) throws RemoteException, FDResourceException,
+                   ErpFraudException,
+                   ErpAuthorizationException ;
+    
+    public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws RemoteException, FDResourceException;
+    
+    public Map getGiftCardRecepientsForOrders(List saleIds) throws RemoteException, FDResourceException ;
+    
+    public ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(String certNum) throws RemoteException,FDResourceException ;
 }
 

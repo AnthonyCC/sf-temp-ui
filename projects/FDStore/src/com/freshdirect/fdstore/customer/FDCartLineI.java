@@ -153,4 +153,5 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public void removeLineItemDiscount();
 	
 	public double getActualPrice();
+		
 }

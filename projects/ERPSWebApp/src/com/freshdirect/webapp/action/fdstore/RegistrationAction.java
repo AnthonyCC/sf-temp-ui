@@ -12,7 +12,9 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.EnumDeliveryStatus;
@@ -263,14 +265,16 @@ public class RegistrationAction extends WebActionSupport {
 		FDCustomerManager.storeUser(user.getUser());
 	}
 
-	private FDIdentity doRegistration(
+	protected FDIdentity doRegistration(
 		FDCustomerModel fdCustomer,
 		ErpCustomerModel erpCustomer,
 		FDSurveyResponse survey,
-		EnumServiceType serviceType) throws ErpDuplicateUserIdException, FDResourceException {
+		EnumServiceType serviceType) throws ErpDuplicateUserIdException,ErpDuplicatePaymentMethodException,
+		ErpPaymentMethodException,FDResourceException {
 
 		HttpSession session = this.getWebActionContext().getSession();
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		System.out.println("RegistrationAction: doRegistration() - user being registered...");
 		RegistrationResult regResult = FDCustomerManager.register(AccountActivityUtil.getActionInfo(session), erpCustomer,
 			fdCustomer, user.getCookie(), user.isPickupOnly(), user.isEligibleForSignupPromotion(), survey, serviceType);
 		FDIdentity identity = regResult.getIdentity();
@@ -280,12 +284,12 @@ public class RegistrationAction extends WebActionSupport {
 			this.setSuccessPage(this.fraudPage);
 			LOGGER.debug("successPage re-set to " + this.fraudPage);
 		}
-
+		System.out.println("RegistrationAction: doRegistration() " + identity);
 		return identity;
 
 	}
 	
-	private class ContactInfo {
+	class ContactInfo {
 
 		private String title;
 		private String firstName;
@@ -321,6 +325,7 @@ public class RegistrationAction extends WebActionSupport {
 			this.cellPhoneExt = NVL.apply(request.getParameter("cellphoneext"), "").trim();
 			this.department = NVL.apply(request.getParameter("workDepartment"), "").trim();
 			this.employeeId = NVL.apply(request.getParameter("employeeId"), "").trim();
+			System.out.println("RegistrationAction: ContactInfo: initialize()");
 
 		}
 
@@ -359,6 +364,7 @@ public class RegistrationAction extends WebActionSupport {
 					actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
 				}
 			}
+			System.out.println("RegistrationAction: ContactInfo: validate()");
 		}
 		
 		private boolean validatePhoneNumber(String phoneNumber){
@@ -379,11 +385,11 @@ public class RegistrationAction extends WebActionSupport {
 			customerInfo.setHomePhone(new PhoneNumber(this.homePhone, this.homePhoneExt));
 			customerInfo.setWorkDepartment(this.department);
 			customerInfo.setEmployeeId(this.employeeId);
-
+			System.out.println("RegistrationAction: ContactInfo: decorateCustomerInfo()");
 		}
 	}
 
-	private static class AccountInfo {
+	static class AccountInfo {
 		private String emailAddress;
 		private String repeatEmailAddress;
 		private String altEmailAddress;
@@ -425,6 +431,8 @@ public class RegistrationAction extends WebActionSupport {
 
 			this.deliveryInstructions = NVL.apply(request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()),
 				"none").trim();
+			
+			System.out.println("RegistrationAction: AccountInfo: initialize()");
 
 		}
 
@@ -450,6 +458,7 @@ public class RegistrationAction extends WebActionSupport {
 				.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
 
 			actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
+		System.out.println("RegistrationAction: AccountInfo: validate()");
 		}
 
 		public void decorateCustomerInfo(ErpCustomerInfoModel customerInfo) {
@@ -458,6 +467,7 @@ public class RegistrationAction extends WebActionSupport {
 			customerInfo.setAlternateEmail(altEmailAddress.trim());
 			customerInfo.setReceiveNewsletter(this.receiveNews);
 			customerInfo.setEmailPlaintext(this.plainTextEmail);
+			System.out.println("RegistrationAction: AccountInfo: decorateCustomerInfo()");
 		}
 
 		public ErpCustomerModel getErpCustomerModel() {
@@ -465,6 +475,7 @@ public class RegistrationAction extends WebActionSupport {
 			erpCustomer.setUserId(this.emailAddress);
 			erpCustomer.setPasswordHash(MD5Hasher.hash(this.password));
 			erpCustomer.setActive(true);
+			System.out.println("RegistrationAction: AccountInfo: getErpCustomerModel()" + erpCustomer);
 			return erpCustomer;
 		}
 

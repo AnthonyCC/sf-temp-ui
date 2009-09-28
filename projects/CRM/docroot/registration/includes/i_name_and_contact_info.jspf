@@ -1,0 +1,112 @@
+<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="register_header" style="padding: 3px; margin-bottom: 4px;">
+	<tr>
+		<td width="35%">&nbsp;&nbsp;Name &amp; Contact Info</td>
+		<td width="40%">&nbsp;&nbsp;Username &amp; Password</td>
+		<td width="25%">&nbsp;&nbsp;<% if (user.isDepotUser()) { %>Depot Info <span class="register_header_detail">*&nbsp;Required information</span><% } %></td>
+	</tr>
+</table>
+<table width="100%" cellpadding="2" cellspacing="0" border="0" align="center" class="register">
+	<tr valign="top">
+		<td width="35%">
+			<table width="99%" cellpadding="2" cellspacing="0" border="0" class="register">
+				<tr>
+					<td width="30%" align="right">Title:&nbsp;</td>
+					<td width="70%">
+						<select name="title">
+							<option value=""></option>
+							<option value="Mr." <%= "Mr.".equals(request.getParameter("title")) ? "selected" : "" %>>Mr.</option>
+							<option VALUE="Mrs." <%= "Mrs.".equals(request.getParameter("title")) ? "selected" : "" %>>Mrs.</option>
+							<option VALUE="Ms." <%= "Ms.".equals(request.getParameter("title")) ? "selected" : "" %>>Ms</option>
+							<option VALUE="Dr." <%= "Dr.".equals(request.getParameter("title")) ? "selected" : "" %>>Dr.</option>
+						</select>
+						<fd:ErrorHandler result='<%=result%>' name='title' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>
+					</td>
+				</tr>
+				<tr>
+					<td width="30%" align="right">*&nbsp;First:&nbsp;</td>
+					<td width="70%"><input type="text" size="15" name="first_name" onChange="updateNameFields(document.registration);" value="<%= request.getParameter("first_name") %>"><fd:ErrorHandler result='<%=result%>' name='dlvfirstname' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<tr>
+					<td width="30%" align="right">Middle:&nbsp;</td>
+					<td width="70%"><input type="text" size="15" name="middle_name" value="<%= request.getParameter("middle_name") %>" /></td>
+				</tr>
+				<tr>
+					<td width="30%" align="right">*&nbsp;Last:&nbsp;</td>
+					<td width="70%"><input type="text" size="15" name="last_name" onChange="updateNameFields(document.registration);" value="<%= request.getParameter("last_name") %>" /><fd:ErrorHandler result='<%=result%>' name='dlvlastname' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<tr>
+					<td width="30%" align="right">*&nbsp;Home&nbsp;#:&nbsp;</td>
+					<td width="70%"><input type="text" SIZE="10" name="homephone" onChange="updateNameFields(document.registration);" value="<%= request.getParameter("homephone") %>"> Ext.&nbsp;<input type="text" SIZE="5" name="homephoneext" value="<%= request.getParameter("homephoneext") %>"><fd:ErrorHandler result='<%=result%>' name='ext' id='errorMsg'><span class="error_detail"><%= errorMsg %></span><br /></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='dlvhomephone' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<tr>
+					<td width="30%" align="right"><% if (user.isDepotUser()) out.print("*&nbsp;"); %>Work&nbsp;#:&nbsp;</td>
+					<td width="70%"><input type="text" SIZE="10" name="busphone" value="<%= request.getParameter("busphone") %>"> Ext.&nbsp;<input type="text" SIZE="5" name="busphoneext" value="<%= request.getParameter("busphoneext") %>"><br /><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><span class="error_detail"><%= errorMsg %></span><br /></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='ext' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<tr>
+					<td width="30%" align="right">Cell&nbsp;#:&nbsp;</td>
+					<td width="70%"><input type="text" SIZE="10" name="cellphone" value="<%= request.getParameter("cellphone") %>"> Ext.&nbsp;<input type="text" SIZE="5" name="cellphoneext" value="<%= request.getParameter("cellphoneext") %>"></td>
+				</tr>
+				<tr>
+					<td width="30%" align="right">Alt.&nbsp;Email:&nbsp;</td>
+					<td width="70%"><input type="text" SIZE="15" name="alt_email" value="<%= request.getParameter("alt_email") %>"><fd:ErrorHandler result='<%=result%>' name='alt_email' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<%  if (user.isDepotUser()) { %>
+					<tr>
+						<td width="35%" align="right">*&nbsp;Dept/Division:&nbsp;</td>
+						<td width="65%"><input type="text" SIZE="15" name="workDepartment" value="<%=request.getParameter("workDepartment")%>"><fd:ErrorHandler result='<%=result%>' name='workDepartment' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+					</tr>
+					<%
+						com.freshdirect.delivery.depot.DlvDepotModel depot = FDDepotManager.getInstance().getDepot(user.getDepotCode());
+						if (depot.getRequireEmployeeId()) { %>
+							<tr>
+								<td width="35%" align="right">*&nbsp;Employee Id:&nbsp;</td>
+								<td width="65%"><input type="text" SIZE="15" name="employeeId" value="<%=request.getParameter("employeeId")%>"><fd:ErrorHandler result='<%=result%>' name='employeeId' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+							</tr>
+					<%
+						}
+					}
+				%>
+			</table>
+		</td>
+		<td width="40%">
+			<table width="99%" cellpadding="2" cellspacing="0" border="0" class="register">
+				<tr>
+					<td width="40%" align="right">* Username/Email Address:&nbsp;</td>
+					<td width="60%"><input type="text" SIZE="15" name="email" value="<%= request.getParameter(EnumUserInfoName.EMAIL.getCode()) %>"  onChange="updateRepeatEmail(document.registration);" /><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+					<input type="hidden" name="repeat_email" value="<%= request.getParameter("email") %>" />
+				</tr>
+				<tr>
+					<td width="40%" align="right">* New Password:&nbsp;</td>
+					<td width="60%"><INPUT SIZE="15" type="password" name="password" value="<%= request.getParameter("password") %>"><fd:ErrorHandler result='<%=result%>' name='password' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<tr>
+					<td width="40%" align="right">* Repeat New Password:&nbsp;<br /><br /></td>
+					<td width="60%"><INPUT SIZE="15" type="password" name="repeat_password" value="<%= request.getParameter("repeat_password") %>"><fd:ErrorHandler result='<%=result%>' name='repeat_password' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler><br /><font class="note"><i>Must be at least 4 characters. Case sensitive.</i></font><br /></td>
+				</tr>
+				<tr>
+					<td width="40%" align="right">Town of Birth or&nbsp;<br />Mother's Maiden Name:&nbsp;</td>
+					<td width="60%"><input type="text" SIZE="15" name="password_hint" value="<%= request.getParameter("password_hint") %>"><fd:ErrorHandler result='<%=result%>' name='password_hint' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<tr>
+					<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" alt="" /></td>
+				</tr>
+			</table>
+		</td>
+		<td width="25%">
+			<% if (user.isDepotUser()) { %>
+				<table width="99%" cellpadding="2" cellspacing="0" border="0" class="register">
+					<tr>
+						<td width="30%" align="right">Company:&nbsp;</td>
+						<td width="70%">
+							<fd:GetDepots id="depots">
+								<logic:iterate collection="<%= depots %>" id="depot" type="com.freshdirect.delivery.depot.DlvDepotModel">
+									<% if (depot.getDepotCode().equals(user.getDepotCode())) { out.print(depot.getName()); } %>
+								</logic:iterate>
+							</fd:GetDepots>
+						</td>
+					</tr>
+				</table>
+			<% } %>
+		</td>
+	</tr>
+</table>

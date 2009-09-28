@@ -69,8 +69,13 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
 
 <tr VALIGN="bottom">
 	<td WIDTH="7%" COLSPAN="2">&nbsp;</td>
-	<td WIDTH="32%" COLSPAN="3"><FONT CLASS="space2pix"><BR></FONT><b><%= _is_lastdept %></b><BR></td>
-	<td WIDTH="55%" COLSPAN="8" BGCOLOR=<%= IS_BGCOLOR %>><BR></td>
+    <% if(!isGiftCardOrder){ %>
+        <td WIDTH="32%" COLSPAN="3"><FONT CLASS="space2pix"><BR></FONT><b><%= _is_lastdept %></b><BR></td>
+        <td WIDTH="55%" COLSPAN="8" BGCOLOR=<%= IS_BGCOLOR %>><BR></td>
+    <%} else{ %>
+        <td WIDTH="32%" COLSPAN="6"><FONT CLASS="space2pix"><BR></FONT><b><%= _is_lastdept %></b><BR></td>
+        <td WIDTH="55%" COLSPAN="8" BGCOLOR=<%= bgcolor %>><BR></td>
+    <%} %>    
 </tr>
 <%
 		}
@@ -79,7 +84,7 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
         //
         double retQty = 0.0;
         double retAmount = 0.0;
-        double retAmountSum = 0.0;
+        double retAmountSum = 0.0;        
         for (Iterator it = _is_lineComplaints.iterator(); it.hasNext(); ) {
             ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
             if (_is_index == Integer.parseInt( line.getComplaintLineNumber() ) ) {
@@ -88,7 +93,7 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
             }
            	if ( line.getOrderLineId().equals(_is_orderline.getOrderLineId()) ) {
             	retAmountSum += line.getAmount();
-        	}
+        	}            
         }
 
 		String deptDesc=_is_lastdept;
@@ -123,7 +128,27 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
                 <div CLASS="text11rbold">&middot; <%= errorMsg %></div>
             </fd:ErrorHandler>
         </td>
-        <td WIDTH="9%"><%= _is_orderline.getUnitPrice() %></td>
+         <% if(isGiftCardOrder){ %>
+        <td WIDTH="2%" ALIGN="CENTER"> 
+        		<logic:iterate id="recipient" collection="<%= recipients %>" type="com.freshdirect.giftcard.ErpGCDlvInformationHolder">
+                   <% if(recipient.getRecepientModel().getOrderLineId().equalsIgnoreCase(_is_invoiceline.getOrderLineNumber())){ %>
+                   <%= recipient.getCertificationNumber() %><% } %>
+                </logic:iterate>
+        </td>
+        <td WIDTH="3%" ALIGN="LEFT"> 
+        		<logic:iterate id="recipient" collection="<%= recipients %>" type="com.freshdirect.giftcard.ErpGCDlvInformationHolder">
+                   <% if(recipient.getRecepientModel().getOrderLineId().equalsIgnoreCase(_is_invoiceline.getOrderLineNumber())){ %>
+                   <%= recipient.getMaskedGivexNum() %><% } %>
+                </logic:iterate>
+        </td>
+        <td WIDTH="2%" ALIGN="CENTER"> 
+        		<logic:iterate id="recipient" collection="<%= recipients %>" type="com.freshdirect.giftcard.ErpGCDlvInformationHolder">
+                   <% if(recipient.getRecepientModel().getOrderLineId().equalsIgnoreCase(_is_invoiceline.getOrderLineNumber())){ %>
+                   <%= recipient.getRecepientModel().getRecipientName() %><% } %>
+                </logic:iterate>
+        </td>
+          <% } %>      
+        <td WIDTH="9%" ALIGN="CENTER"><%= _is_orderline.getUnitPrice() %></td>
         <td WIDTH="7%" ALIGN="CENTER"><%= _is_invoiceline != null ? _is_invoiceline.getPrice(): _is_orderline.getPrice() %></td>
         <td WIDTH="3%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER">
 <%      if ( !_is_result.isSuccess() && (_is_result.hasError("ol_error_qty_"+_is_index) || _is_result.hasError("ol_error_"+_is_index)) ) { %><span CLASS="text8redbold">*</span><%  } %>
@@ -131,7 +156,7 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
         </td>
         <td WIDTH="4%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= _is_orderline.getSalesUnitDescription() %></td>
         <td WIDTH="7%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= CCFormatter.formatCurrency(retAmount) %></td>
-        <td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= CCFormatter.formatCurrency(_is_invoiceline != null ? _is_invoiceline.getPrice() - retAmountSum : _is_orderline.getPrice() - retAmountSum) %></td>
+        <td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= CCFormatter.formatCurrency(_is_invoiceline != null ? _is_invoiceline.getPrice() - retAmountSum: _is_orderline.getPrice() - retAmountSum) %></td>
 		<td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER">
         	<INPUT TYPE="TEXT" id="qty<%= rid %>" orderline="<%= _is_orderline.getOrderLineId() %>" NAME="ol_credit_qty" SIZE="4" cartonGroup="QI_<%= _is_cartonNumber %>" fullQuantity="<%= _is_the_quantity %>" value="<%= _is_form_returnQty == null ? "0" : _is_form_returnQty[_is_index] %>" onblur="setEditReturnQty(<%=_is_index%>)">
 		</td>
@@ -155,7 +180,7 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
         </td>
         <td WIDTH="8%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>">
             <SELECT name="ol_credit_method" class="pulldown_detail" cartonGroup="CM_<%= _is_cartonNumber %>">
-                <OPTION value="FDC" <%= ( _is_form_method != null && "FDC".equals(_is_form_method[_is_index]) ) ? "SELECTED" : "" %>>store</OPTION>
+                <OPTION value="FDC" <%= ( _is_form_method != null && "FDC".equals(_is_form_method[_is_index]) ) ? "SELECTED" : "" %>>store</OPTION>            
                 <OPTION value="CSH" <%= ( _is_form_method != null && "CSH".equals(_is_form_method[_is_index]) ) ? "SELECTED" : "" %>>cash back</OPTION>
             </SELECT>
         </td>

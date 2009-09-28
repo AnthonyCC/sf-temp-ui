@@ -28,6 +28,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.sap.command.SapSendSettlement;
@@ -181,6 +182,23 @@ public class SettlementLoaderUtil {
 		try {
 			ctx = getInitialContext();
 			return (ReconciliationHome) ctx.lookup("freshdirect.payment.Reconciliation");
+		} catch (NamingException ex) {
+			throw new EJBException(ex);
+		} finally {
+			try {
+				if (ctx != null)
+					ctx.close();
+			} catch (NamingException ne) {
+				LOGGER.debug(ne);
+			}
+		}
+	}
+
+	public static GiftCardManagerHome lookupGiftCardManagerHome() throws EJBException {
+		Context ctx = null;
+		try {
+			ctx = getInitialContext();
+			return (GiftCardManagerHome) ctx.lookup("freshdirect.erp.GiftCardManager");
 		} catch (NamingException ex) {
 			throw new EJBException(ex);
 		} finally {

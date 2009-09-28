@@ -1,0 +1,267 @@
+<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.giftcard.RecipientModel' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.customer.*' %>
+<%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
+<%@ page import="com.freshdirect.framework.webapp.*" %>
+<%@ page import="com.freshdirect.delivery.*" %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+
+<%!
+String[] checkGiftCardForm = {
+	EnumUserInfoName.GC_BUYER_NAME.getCode(), 
+	EnumUserInfoName.GC_RECIPIENT_NAME.getCode(),    
+	EnumUserInfoName.GC_BUYER_EMAIL.getCode(), 
+	EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode()
+};
+
+String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), EnumUserInfoName.DLV_CANT_GEOCODE.getCode()};
+%>
+
+<%
+FDUserI _user = (FDUserI) session.getAttribute(SessionName.USER);
+FDIdentity _identity = null;
+if (_user != null){
+	_identity = _user.getIdentity();
+}else {
+	throw new JspException("Missing Identity.");
+}
+
+RecipientModel recipModel = null;
+boolean editThisRecipId = false;
+String recipId = request.getParameter("recipId");
+
+String fldAmount = "";
+String fldAltAmount = "";
+String fldYourName = "";
+String fldYourEmail = "";
+String fldRecipientName = "";
+String fldRecipientEmail = "";
+String fldDeliveryMethod = "";
+String fldMessage = "";
+String fdTemplateId = "";
+
+// Add to recipient list button image
+String addEditButton = "<input type=\"image\" name=\"checkout_credit_card_edit\" src=\"/media_stat/images/giftcards/purchase/add_to_recip_list_btn.gif\" width=\"130\" height=\"25\" alt=\"ADD TO RECIPIENT LIST\" border=\"0\" id=\"checkout_credit_card_edit\" />";
+
+if (request.getParameter("gcTemplateId") !=null) {
+	fdTemplateId = request.getParameter("gcTemplateId");
+}
+
+if (recipId!=null && recipId.trim().length()>0) {
+    recipModel = _user.getRecipentList().getRecipientById(recipId);
+    if(recipModel != null) editThisRecipId = true;
+    
+}
+
+if (editThisRecipId) {
+    fldAmount = recipModel.getFormattedAmount();
+    fldAltAmount = recipModel.getFormattedAmount();
+    fldYourName = recipModel.getSenderName();
+    fldYourEmail = recipModel.getSenderEmail();
+    fldRecipientName = recipModel.getRecipientName();
+    fldRecipientEmail = recipModel.getRecipientEmail();
+    fdTemplateId = recipModel.getTemplateId();
+    fldDeliveryMethod = recipModel.getDeliveryMode().getName();
+    fldMessage = recipModel.getPersonalMessage();
+
+	// Add to recipient list button image
+	addEditButton = "<input type=\"image\" name=\"checkout_credit_card_edit\" src=\"/media_stat/images/giftcards/purchase/save_changes_btn.gif\" width=\"95\" height=\"25\" alt=\"SAVE CHANGES\" border=\"0\" id=\"checkout_credit_card_edit\" />";
+}
+
+    
+// get the stuff from off the fields in the request object
+if (request.getParameter(EnumUserInfoName.GC_BUYER_NAME.getCode()) !=null) {
+	fldYourName =  request.getParameter(EnumUserInfoName.GC_BUYER_NAME.getCode());
+}
+if (request.getParameter(EnumUserInfoName.GC_RECIPIENT_NAME.getCode()) !=null) {
+	fldRecipientName =  request.getParameter(EnumUserInfoName.GC_RECIPIENT_NAME.getCode());
+}
+if (request.getParameter(EnumUserInfoName.GC_BUYER_EMAIL.getCode()) !=null) {
+	fldYourEmail =  request.getParameter(EnumUserInfoName.GC_BUYER_EMAIL.getCode());
+}
+if (request.getParameter(EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode()) !=null) {
+	fldRecipientEmail =  request.getParameter(EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode());
+}
+if (request.getParameter("fldAmount") !=null) {
+	fldAmount =  request.getParameter("fldAmount");
+}
+if (request.getParameter("fldAltAmount") !=null) {
+	fldAltAmount =  request.getParameter("fldAltAmount");
+}
+if (request.getParameter(EnumUserInfoName.DLV_METHOD.getCode()) !=null) {
+		fldDeliveryMethod =  request.getParameter(EnumUserInfoName.DLV_METHOD.getCode());
+}
+if (request.getParameter("fldMessage") !=null) {
+	fldMessage =  request.getParameter("fldMessage");
+}
+
+
+	String value1 = "E"; //Email
+	String value2 = "P"; //PDF
+    String value1Selected = "";
+    String value2Selected = "";
+	if ("E".equals(fldDeliveryMethod)) {
+		value1Selected = "checked";
+	} else if("P".equals(fldDeliveryMethod)) {
+		value2Selected = "checked";
+	}
+%>
+
+<%
+	/*
+	 *	Call include to gather giftcard info from CMS
+	 */
+	
+	//set the options first
+	String deptId = "GC_testDept";
+	String catId = "GC_testCat";
+	String prodName = "GC_testProd";
+	
+	String mediaRoot = "/media/editorial/giftcards/";
+	String mediaStaticRoot = "/media_stat/images/giftcards/";
+	String gcDisplayType = "1"; //for a select box
+	String gcDisplayContainer = "gcDisplayContainer"; //id of div to use for display
+	String gcDisplayId = "gcDisplay"; //id of gc Display object
+	String gcDisplayTemplateContainerId = "gcTemplateId";
+%>
+<input type="hidden" id="gcTemplateId" name="gcTemplateId" value="<%= fdTemplateId %>">
+<%@ include file="/gift_card/purchase/includes/i_fetch_giftcard_info_from_cms.jspf" %>
+
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%" valign="middle">
+	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
+    <tr>
+        <td colspan="4"><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></td>
+    </tr>
+	</fd:ErrorHandler>
+    <tr>
+        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0" /></td>
+        <td align="right" class="text12">
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+				*&nbsp;Your&nbsp;Name 
+			</span>
+		</td>
+        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" width="15" height="1" border="0" /></td>
+        <td colspan="2">
+			<input type="text" maxlength="55" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
+			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>' id='errorMsg'>
+				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
+			</fd:ErrorHandler>
+		</td>
+        <td rowspan="10" width="350" align="center"><div id="gcDisplayContainer"><!--  --></div></td>
+        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
+    </tr>
+    <tr>
+        <td align="right" class="text12">
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+				*&nbsp;Your&nbsp;Email
+			</span>
+		</td>
+        <td colspan="2">
+			<input type="text" maxlength="80" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>" required="true" value="<%=fldYourEmail %>" />
+			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>' id='errorMsg'>
+				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
+			</fd:ErrorHandler>
+		</td>
+    </tr>
+    <tr>
+        <td align="right" class="text12">
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+				*&nbsp;Recipient's&nbsp;Name
+			</span>
+        </td>
+        <td colspan="2">
+			<input type="text" maxlength="55" class="text11" size="21" name="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" value="<%= fldRecipientName%>" /> 
+			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.GC_RECIPIENT_NAME.getCode()%>' id='errorMsg'>
+				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
+			</fd:ErrorHandler>
+        </td>
+    </tr>
+    <tr>
+    	<td align="right" class="text12">
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_METHOD.getCode()%>">  class="text11rbold"</fd:ErrorHandler>>
+				*&nbsp;Delivery&nbsp;Method
+			</span>
+    	</td>
+    	<td colspan="2">
+			<input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> /> Email
+			<input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" checked  />I'll Download a PDF and Print It.
+			<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_METHOD.getCode() %>' id='errorMsg'>
+				<br /><span class="text11rbold">&nbsp;<%=errorMsg%></span>
+			</fd:ErrorHandler>
+    	</td>
+    </tr>
+    <tr>
+        <td align="right" class="text12">
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+				Recipient's&nbsp;Email
+			</span>
+        </td>
+        <td colspan="2">
+			<input type="text" maxlength="80" size="21"  class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>" />
+			<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>' id='errorMsg'>
+				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
+			</fd:ErrorHandler>
+	</tr>
+	<tr>
+		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>>*&nbsp;Amount&nbsp;$</td>
+    	<td colspan="2">
+			<select class="text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
+			   <option value="" <%="".equalsIgnoreCase(fldAmount)?"selected":""%>> </option>	
+			   <option value="OTHER" <%=!"".equalsIgnoreCase(fldAmount)?"selected":""%>>OTHER</option>
+			   <option value="30.00" <%="30.00".equalsIgnoreCase(fldAmount)?"selected":""%>>30.00</option>		
+			   <option value="50.00" <%="50.00".equalsIgnoreCase(fldAmount)?"selected":""%>>50.00</option>
+			   <option value="100.00" <%="100.00".equalsIgnoreCase(fldAmount)?"selected":""%>>100.00</option>
+			   <option value="250.00" <%="250.00".equalsIgnoreCase(fldAmount)?"selected":""%>>250.00</option>
+			</select>
+			<input type="text" maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> />
+			<fd:ErrorHandler result='<%=result%>' name='fldAmount' id='errorMsg'>
+				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
+			</fd:ErrorHandler>
+			Enter amount (min. $20.00)
+		</td>
+	</tr>
+    <tr>
+		<td align="right" class="text12" width="150">
+			*&nbsp;Message<br />
+			Type a personalized message over the default.<br />
+			<br />
+			150 character max.
+		</td>
+		<td colspan="2">
+			<textarea rows="4" onkeypress="maxLen(this, 150);" cols="30" class="text11" name="fldMessage" id="fldMessage" value="<%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):"none"%>" onfocus="this.select();">I thought you'd like a gift of delicious food from FreshDirect.  Enjoy!</textarea>
+		</td>
+	</tr>
+</table>
+
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+<!--
+<table border="0" cellspacing="0" cellpadding="2" width="675">
+    <tr valign="top">
+        <td width="675" class="text10bold">
+			We deliver only to portions of New York and New Jersey.
+        </td>
+    </tr>
+    <tr>
+        <td>
+			<a href="javascript:popup('/help/faq_index.jsp?show=delivery#question7','large')">Click here if you know your recipient's address.</a>.
+        </td>
+    </tr>
+    <tr valign="middle">
+	    <td><img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" vspace="3"></td>
+	</tr>
+</table>
+-->
+<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+
+<table border="0" cellspacing="0" cellpadding="2" width="675">
+	<tr valign="top">
+		<td width="675" align="right">
+			<a href="/gift_card/purchase/add_giftcard.jsp"><img src="/media_stat/images/giftcards/purchase/clear_btn.gif" width="50" height="25" alt="CLEAR" border="0" /></a>
+			<input type="image" name="gcPreview" src="/media_stat/images/giftcards/purchase/preview_btn.gif" width="61" height="25" alt="PREVIEW" border="0" onclick="window['<%=gcDisplayId%>'].emailPreview(); return false;" />
+			<%= addEditButton %>
+		</td>
+	</tr>
+</table>

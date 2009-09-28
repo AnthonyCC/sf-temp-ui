@@ -770,6 +770,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>gcFraudPage</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>        
 	</tag>
 	<tag>
 		<name>AdjustAvailability</name>
@@ -1178,6 +1183,60 @@
 			<name>registrationType</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>GiftCardBuyerController</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.GiftCardBuyerControllerTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.GiftCardBuyerControllerTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>successPage</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>fraudPage</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>result</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>actionName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>registrationType</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>AddSavedRecipientController</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.AddSavedRecipientControllerTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.AddSavedRecipientControllerTagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>actionName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>successPage</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>resultName</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
@@ -2963,7 +3022,8 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	</tag>	<tag>
+	</tag>
+	<tag>
 		<name>WineFilter</name>
 		<tagclass>com.freshdirect.webapp.taglib.content.WineFilterTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.content.WineFilterTag$TagEI</teiclass>
@@ -3475,6 +3535,174 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
+
+   	<tag>
+		<name>GetGiftCardReceived</name>
+		<tagclass>com.freshdirect.webapp.taglib.giftcard.GetGiftCardReceivedTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.giftcard.GetGiftCardReceivedTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>showAll</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+   	<tag>
+		<name>GetGiftCardPurchased</name>
+		<tagclass>com.freshdirect.webapp.taglib.giftcard.GetGiftCardPurchasedTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.giftcard.GetGiftCardPurchasedTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>saleId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>  
+	<tag>
+		<name>GetRedeemedGiftCardUserInfo</name>
+		<tagclass>com.freshdirect.webapp.taglib.giftcard.GetRedeemedGiftCardUserInfoTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.giftcard.GetRedeemedGiftCardUserInfoTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>customerId</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>  
+	<tag>
+		<name>GetGiftCardUsedOrders</name>
+		<tagclass>com.freshdirect.webapp.taglib.giftcard.GetGiftCardUsedOrdersTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.giftcard.GetGiftCardUsedOrdersTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>certNum</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>  
+       	<tag>
+		<name>GetGiftCardRecipientDlvInfo</name>
+		<tagclass>com.freshdirect.webapp.taglib.giftcard.GetGiftCardRecipientDlvInfoTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.giftcard.GetGiftCardRecipientDlvInfoTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+   		<attribute>
+			<name>saleId</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>certificationNum</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>        
+	</tag>  
+    
+	<tag>
+		<name>GiftCardController</name>
+		<tagclass>com.freshdirect.webapp.taglib.giftcard.GiftCardControllerTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.giftcard.GiftCardControllerTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>successPage</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>result</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>actionName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+    <tag>
+		<name>GetRedemedGiftCardOrders</name>
+		<tagclass>com.freshdirect.webapp.taglib.giftcard.GetRedemedGiftCardOrdersTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.giftcard.GetRedemedGiftCardOrdersTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>  
+        <tag>
+		<name>GetDeletedGiftCard</name>
+		<tagclass>com.freshdirect.webapp.taglib.giftcard.GetDeletedGiftCardTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.giftcard.GetDeletedGiftCardTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>      
+    	<tag>
+		<name>CheckAddress</name>
+		<tagclass>com.freshdirect.webapp.taglib.giftcard.CheckAddressTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.giftcard.CheckAddressTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>result</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>RobinHoodController</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.RobinHoodControllerTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.RobinHoodControllerTagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>actionName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>successPage</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>resultName</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
 	<tag>
 		<name>GetSegmentMessage</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetSegmentMessageTag</tagclass>
@@ -3493,4 +3721,36 @@
 		</attribute>
 	</tag>
 	
+	<tag>
+		<name>DonationBuyerController</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.DonationBuyerControllerTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.DonationBuyerControllerTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>successPage</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>fraudPage</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>result</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>actionName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>registrationType</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>

@@ -1,7 +1,9 @@
 package com.freshdirect.payment.ejb;
 
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -34,6 +36,7 @@ import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
+import com.freshdirect.customer.ejb.ErpSaleInfoDAO;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -272,6 +275,8 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}
 	}
+	
+	
 	public List authorizeSaleRealtime(String saleId, EnumSaleType saleType) throws ErpAuthorizationException {
 
 		if(EnumSaleType.REGULAR.equals(saleType)) {
@@ -287,20 +292,58 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			cmd=new AuthorizationCommand(strategy.getOutstandingAuthorizations(), order.getRequestedDate(), saleEB.getAuthorizations().size());
 			cmd.execute();
 			List auths = cmd.getAuthorizations();
-			for (Iterator i = auths.iterator(); i.hasNext();) {
-				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
-				if (auth.isApproved()) {
-					saleEB.addAuthorization(auth);
-				} else {
-					logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
-					SessionContext ctx = getSessionContext();
-					ctx.setRollbackOnly();
-					throw new ErpAuthorizationException("There was a problem with the given payment method");
+			
+			if(EnumSaleType.SUBSCRIPTION==saleType)
+			{
+				for (Iterator i = auths.iterator(); i.hasNext();) {
+					ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
+					if (auth.isApproved()) {
+						saleEB.addAuthorization(auth);
+					} else {
+						logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
+						SessionContext ctx = getSessionContext();
+						ctx.setRollbackOnly();
+						throw new ErpAuthorizationException("There was a problem with the given payment method");
+					}
 				}
+			}else if(EnumSaleType.GIFTCARD==saleType || EnumSaleType.DONATION==saleType){
+				a:for (Iterator i = auths.iterator(); i.hasNext();) {
+					ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
+					if (auth.isApproved() && auth.hasAvsMatched()) {
+						saleEB.addAuthorization(auth);
+					} else {
+						if(auth.isApproved() && !auth.hasAvsMatched()){
+							
+							int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
+							if(count==0){
+								logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
+								SessionContext ctx = getSessionContext();
+								ctx.setRollbackOnly();
+								throw new ErpAuthorizationException("There was a problem with the given payment method Address Verification failed");
+							}else{
+								saleEB.addAuthorization(auth);
+								CrmSystemCaseInfo info =new CrmSystemCaseInfo(
+											sale.getCustomerPk(),
+										CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),
+										"Found Gift Card order with AVS Exception for saleId "+sale.getId());								
+								new ErpCreateCaseCommand(LOCATOR, info).execute();
+                                continue a;
+							}
+						}
+						logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
+						SessionContext ctx = getSessionContext();
+						ctx.setRollbackOnly();
+						throw new ErpAuthorizationException("There was a problem with the given payment method");
+					}
+				}				
 			}
 
 			return auths;
-		} catch (RemoteException e) {
+		}
+		catch (SQLException e) {
+			throw new EJBException(e);
+		}
+		catch (RemoteException e) {
 			throw new EJBException(e);
 		} catch (ErpTransactionException e) {
 			throw new EJBException(e);

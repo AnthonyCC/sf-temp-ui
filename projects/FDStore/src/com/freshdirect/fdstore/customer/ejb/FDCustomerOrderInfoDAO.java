@@ -31,8 +31,9 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.TextEncryptor;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
+import com.freshdirect.giftcard.ErpGiftCardUtil; 
 /**
  *
  *
@@ -52,15 +53,32 @@ class FDCustomerOrderInfoDAO {
 		+ "where s.id=sa.sale_id and s.id = scm.sale_id and sa.id=di.salesaction_id " 
 		+ "and s.customer_id = c.id and c.id = fc.erp_customer_id "
 		+ "and scm.max_date = sa.action_date ";
+	
+	
+	public static final String GIFT_CARD_ORDER_SERACH_QUERY=" select  /*+use_nl(di,sa,scm,s)*/ s.id, sa.requested_date, s.status, sa.amount, di.last_name, di.first_name, c.user_id, di.delivery_type, "+ 
+	" di.phone, di.alt_phone, s.stop_sequence, s.truck_number, s.wave_number, di.cutofftime, c.id as erp_id, fc.id as fd_id, "+  
+	"(select on_fd_account from cust.paymentinfo where salesaction_id = sa.id) as on_fd_account, "+ 
+	"(select p.profile_value from  cust.profile p where p.customer_id = fc.id and p.profile_name='VIPCustomer') as vip_cust, "+  
+	"(select p.profile_value from  cust.profile p where p.customer_id = fc.id and p.profile_name='ChefsTable') as chefs_table "+ 
+	"from cust.sale s, cust.sale_cro_mod_date scm, cust.salesaction sa, cust.deliveryinfo di, "+ 
+	" cust.customer c, cust.fdcustomer fc, CUST.APPLIED_GIFT_CARD agc "+     
+	" where s.id=sa.sale_id and s.id = scm.sale_id and sa.id=di.salesaction_id "+   
+	" and s.customer_id = c.id and c.id = fc.erp_customer_id "+ 
+	" and scm.max_date = sa.action_date "+
+	" and agc.SALESACTION_ID = sa.id "+ 
+	" and SA.ACTION_TYPE IN ('CRO','MOD') "+
+	" and SA.ACTION_DATE=S.CROMOD_DATE ";
+	
 
 	public static List findOrdersByCriteria(Connection conn, FDOrderSearchCriteria criteria) throws SQLException {
 		
 		CriteriaBuilder builder = new CriteriaBuilder();
+		boolean isGiftCardSearch=false;
 		
 		String value = criteria.getOrderNumber();
 		if (value != null) {
 			builder.addString("s.id", value);
-			return runOrderQuery(conn, builder);
+			return runOrderQuery(conn, builder,isGiftCardSearch);
 		}
 
 		java.util.Date d = criteria.getDeliveryDate();
@@ -107,12 +125,38 @@ class FDCustomerOrderInfoDAO {
 		if(criteria.isChefsTable()){
 			builder.addSql("(SELECT profile_value FROM cust.PROFILE WHERE customer_id=fc.id AND profile_name='ChefsTable') = ?", new Object[]{"1"});
 		}
-		return runOrderQuery(conn, builder);
+		
+		String gc_num=criteria.getGiftCardNumber();
+		//String cert_num=criteria.getCertificateNumber();
+		
+		
+		if(gc_num!=null && gc_num.trim().length()>0){
+			isGiftCardSearch=true;			
+			
+			if(gc_num.length()<16)
+				builder.addString("agc.certificate_num", gc_num);
+			else
+			    builder.addSql("agc.certificate_num=(select certificate_num from cust.gift_card where givex_num=?)", new Object[]{ErpGiftCardUtil.encryptGivexNum(gc_num)});
+					
+		}
+		/*else if(cert_num!=null && cert_num.trim().length()>0){
+			isGiftCardSearch=true;
+			builder.addString("agc.certificate_num", cert_num);			
+		} */
+		  
+		
+				
+		return runOrderQuery(conn, builder,isGiftCardSearch);
 	}
 
-	private static List runOrderQuery(Connection conn, CriteriaBuilder builder) throws SQLException {
+	private static List runOrderQuery(Connection conn, CriteriaBuilder builder,boolean isGiftCardSearch) throws SQLException {
+		PreparedStatement ps=null;
+		System.out.println("query :"+GIFT_CARD_ORDER_SERACH_QUERY + " and " + builder.getCriteria());
+		if(isGiftCardSearch)
+		   ps = conn.prepareStatement(GIFT_CARD_ORDER_SERACH_QUERY + " and " + builder.getCriteria());
+		else
+			ps = conn.prepareStatement(ORDER_SEARCH_QUERY + " and " + builder.getCriteria());
 		
-		PreparedStatement ps = conn.prepareStatement(ORDER_SEARCH_QUERY + " and " + builder.getCriteria());
 		Object[] obj = builder.getParams();
 		for(int i = 0; i < obj.length; i++) {
 			if(obj[i] instanceof java.util.Date){
@@ -204,11 +248,20 @@ class FDCustomerOrderInfoDAO {
 	}
 	
 	private static final String CUST_SEARCH_QUERY = 
+		/*
 		"select distinct c.id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, ci.cell_phone, "
 		+ "(select p.profile_value from cust.profile p where p.customer_id = fc.id and p.profile_name='VIPCustomer') VIP_CUST, "
 		+ "(select p.profile_value from cust.profile p where p.customer_id = fc.id and p.profile_name='ChefsTable') CHEFS_TABLE "
 		+ "from cust.customer c, cust.customerinfo ci, cust.fdcustomer fc, cust.address a "
 		+ "where c.id = ci.customer_id and c.id = fc.erp_customer_id and c.id = a.customer_id";
+		*/
+		//Removed  address to look up for GC customers also who doesn't have delivery address. 
+		
+		"select distinct c.id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, ci.cell_phone, "
+		+ "(select p.profile_value from cust.profile p where p.customer_id = fc.id and p.profile_name='VIPCustomer') VIP_CUST, "
+		+ "(select p.profile_value from cust.profile p where p.customer_id = fc.id and p.profile_name='ChefsTable') CHEFS_TABLE "
+		+ "from cust.customer c, cust.customerinfo ci, cust.fdcustomer fc "
+		+ "where c.id = ci.customer_id and c.id = fc.erp_customer_id";
 	
 	private static List customerSearch(Connection conn, CriteriaBuilder builder) throws SQLException {
 		String query = CUST_SEARCH_QUERY + " and " + builder.getCriteria();

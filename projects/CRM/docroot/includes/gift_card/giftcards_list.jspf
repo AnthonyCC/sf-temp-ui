@@ -1,0 +1,56 @@
+<%@ page import="java.text.*, java.util.*" %>
+<%@ page import="com.freshdirect.customer.*" %>
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<%@ page import="com.freshdirect.framework.webapp.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
+<%@ page import="com.freshdirect.delivery.restriction.OneTimeRestriction"%>
+<%@ page import="com.freshdirect.delivery.restriction.OneTimeReverseRestriction"%>
+<%@ page import="com.freshdirect.delivery.restriction.RecurringRestriction"%>
+<%@ page import="com.freshdirect.giftcard.*" %>
+
+
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="crm" prefix="crm" %>
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table1">
+	<tr>
+		<th>Gift card #</th>	
+		<th>&nbsp;</th>
+		<th>Order #</th>	
+		<th>&nbsp;</th>
+		<th>Purchased date</th>	
+		<th>&nbsp;</th>
+		<th>Purchaser</th>	
+		<th>&nbsp;</th>
+		<th>Recipient email</th>
+	</tr>
+	<%
+		List list=(List)request.getAttribute("GC_MODEL_LIST");
+		if(list==null) list=new ArrayList();
+	%>
+
+<logic:iterate id="giftCard" collection="<%= list %>" type="com.freshdirect.giftcard.ErpGCDlvInformationHolder" indexId="cnt">	
+<%
+	//ErpGCDlvInformationHolder giftCard=(ErpGCDlvInformationHolder) request.getAttribute("GC_MODEL");        
+	ErpRecipentModel model=null;
+	if(giftCard!= null) {
+		model=(ErpRecipentModel)giftCard.getRecepientModel();
+%>      
+	<tr <%if(cnt%2==0){%>class="list_odd_row"<%}%>>
+		<td><input type="hidden" name="custIds" value="<%= giftCard.getGiftCardId() %>" /><%= giftCard.getMaskedGivexNum() %></td>
+		<td>&nbsp;</td>
+		<td><a href="/main/order_details.jsp?orderId=<%= model.getSale_id() %>" class="gLink" style="color: #5EBB64;"><%= model.getSale_id() %></a></td>
+		<td>&nbsp;</td>
+		<td><%= giftCard.getPurchaseDate() %></td>
+		<td>&nbsp;</td>
+		<td><%= model.getSenderName() %></td>
+		<td>&nbsp;</td>
+		<td><%= model.getRecipientEmail() %></td>
+	</tr> 
+<% } else{ %>    
+	<tr><td><b> please select search criteria </b></td></tr>
+<% } %>	
+</logic:iterate>
+</table>

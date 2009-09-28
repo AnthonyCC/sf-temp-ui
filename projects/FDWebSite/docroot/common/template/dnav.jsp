@@ -10,6 +10,14 @@
 <head>
     <title><tmpl:get name='title'/></title>
     <%@ include file="/common/template/includes/metatags.jspf" %>
+	
+    <script src="/assets/javascript/prototype.js" type="text/javascript" language="javascript"></script>
+    <script src="/assets/javascript/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
+    <script  src="/assets/javascript/modalbox.js" type="text/javascript" language="javascript"></script>
+    <script  src="/assets/javascript/FD_GiftCards.js" type="text/javascript" language="javascript"></script>
+    <link rel="stylesheet" href="/assets/css/giftcards.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/modalbox.css" type="text/css">
+    
     <script language="javascript" src="/assets/javascript/common_javascript.js"></script>
      <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
      <%@ include file="/shared/template/includes/ccl.jspf" %>

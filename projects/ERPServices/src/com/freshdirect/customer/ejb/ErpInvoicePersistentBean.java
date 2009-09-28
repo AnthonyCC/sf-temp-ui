@@ -23,6 +23,7 @@ import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 
 
 /**
@@ -136,6 +137,9 @@ public class ErpInvoicePersistentBean extends ErpTransactionPersistentBean {
 		DiscountList pList = this.getDiscountLinePBList();
 		pList.create(conn);
 
+		AppliedGiftCardList agcList = this.getAppliedGiftCardList();
+		agcList.create(conn);
+		
 		this.unsetModified();
 		return this.getPK();
 	}
@@ -198,6 +202,11 @@ public class ErpInvoicePersistentBean extends ErpTransactionPersistentBean {
 		dList.setParentPK(this.getPK());
 		dList.load(conn);
 		this.model.setDiscounts(dList.getModelList());
+		
+		AppliedGiftCardList agcList = new AppliedGiftCardList();
+		agcList.setParentPK(this.getPK());
+		agcList.load(conn);
+		this.model.setAppliedGiftCards(agcList.getModelList());
 		
 		// FIXME compatibility code for old-style discounts
 		// if there's a header level discount not represented as discount, add as discountline 
@@ -277,6 +286,14 @@ public class ErpInvoicePersistentBean extends ErpTransactionPersistentBean {
 		return lst;
 	}
 
+	protected AppliedGiftCardList getAppliedGiftCardList() {
+		AppliedGiftCardList lst = new AppliedGiftCardList();
+		lst.setParentPK(this.getPK());
+		for(Iterator i = this.model.getAppliedGiftCards().iterator(); i.hasNext(); ){
+			lst.add(new ErpAppliedGiftCardPersistentBean((ErpAppliedGiftCardModel)i.next()));
+		}
+		return lst;
+	}
 	/**
 	 * Template method to create a concrete instance of ErpAbstractOrderModel.
 	 */
@@ -313,5 +330,11 @@ public class ErpInvoicePersistentBean extends ErpTransactionPersistentBean {
 		public void load(Connection conn) throws SQLException {
 			this.set(ErpDiscountLinePersistentBean.findByParent(conn, DiscountList.this.getParentPK()));
 		}
+	}
+	
+	private static class AppliedGiftCardList extends DependentPersistentBeanList {
+	    public void load(Connection conn) throws SQLException {
+			this.set(ErpAppliedGiftCardPersistentBean.findByParent(conn, (PrimaryKey) AppliedGiftCardList.this.getParentPK()));
+	    }
 	}
 }

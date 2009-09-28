@@ -716,6 +716,12 @@
 				<DestinationDef contentType="Recipe"/>
 			</RelationshipDef>
 			-->
+
+		<!-- Gift Card Types -->
+			   
+            <RelationshipDef name="GIFTCARD_TYPE" label="Gift Card Types" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	<!--

@@ -1,0 +1,92 @@
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<%
+	/* these values should be set in the page calling this include */
+
+	//department where the giftcard lives
+		String deptIdToUse = deptId;
+	//category where the giftcard lives
+		String catIdToUse = catId;
+	//product name
+		String prodNameToUse = prodName;
+
+
+	ContentNodeModel categoryRef = ContentFactory.getInstance().getContentNodeByName(catIdToUse);
+	ProductModel prodRef = ContentFactory.getInstance().getProductByName(catIdToUse, prodNameToUse);
+	List gcList = prodRef.getGiftcardType();
+
+
+	// root of dynamic media
+		String mediaRootToUse = mediaRoot;
+	// root of static media
+		String mediaStaticRootToUse = mediaStaticRoot;
+	// gcDisplayType should be the type of display to use
+	//	(see javascript file for more details)
+		String gcDisplayTypeToUse = gcDisplayType;
+
+	// This is used to set the initial giftcard displayed. If nothing
+	// is set (gcId is not used/invalid), this value is used.
+		int gcInitialCard = 0;
+	
+	// This is the ID of the gc display object
+		String gcDisplayIdToUse = gcDisplayId;
+	// This is the ID of the container element that will hold the gc Display object
+		String gcDisplayContainerToUse = gcDisplayContainer;
+	// This is the ID of the container element that will hold the template ID
+		String gcDisplayTemplateContainerIdToUse = gcDisplayTemplateContainerId;
+
+%>
+<fd:Department id='department' departmentId='<%= deptIdToUse %>'/>
+
+
+<script type="text/javascript">
+	function initGC() {
+		var cardArr = new Array;
+		var testArray = new Array;
+
+		<%
+			for(int i=0;i<gcList.size();i++) {
+				DomainValue gcType=(DomainValue)gcList.get(i);
+				%>
+				cardArr[<%=i%>]=Array(
+					<%=i%>,						// fdCard.index
+					'<%= gcType.getID() %>',	// fdCard.id
+					'<%= gcType.getLabel() %>',	// fdCard.displayName
+					true						// fdCard.preLoad
+				);
+				<%
+				//if this is the id we've passed, make it the initial card
+				if ((gcType.getID()).equals(fdTemplateId)) {
+					gcInitialCard = i;
+				}
+			}
+		%>
+		
+		initGiftcardDisplay('<%= gcDisplayIdToUse %>');
+			//media root
+				window['<%= gcDisplayIdToUse %>'].mediaRoot = '<%= mediaRootToUse %>';
+				window['<%= gcDisplayIdToUse %>'].mediaStaticRoot = '<%= mediaStaticRootToUse %>';
+
+         //set suffixes
+            window['<%= gcDisplayIdToUse %>'].left_img_suffix = '/car_l.jpg';
+            window['<%= gcDisplayIdToUse %>'].center_img_suffix = '/car_c.jpg';
+            window['<%= gcDisplayIdToUse %>'].right_img_suffix = '/car_r.jpg';
+
+          //send card array to display
+            window['<%= gcDisplayIdToUse %>'].addCardsArray(cardArr);
+
+			//set container to hold display (and set display type)
+				$('<%= gcDisplayContainerToUse %>').appendChild(window['<%= gcDisplayIdToUse %>'].setDisplayObjType(<%= gcDisplayTypeToUse %>));
+
+			//set card to display
+				window['<%= gcDisplayIdToUse %>'].chooseInitialCard(<%=gcInitialCard%>);
+
+			//set container ID for the giftcard ID
+				window['<%= gcDisplayIdToUse %>'].gcId_containerId = '<%= gcDisplayTemplateContainerIdToUse %>';
+
+			window['<%= gcDisplayIdToUse %>'].updateDisplay();
+	}
+	Event.observe(window, 'load', initGC);
+	
+</script>

@@ -32,9 +32,12 @@ public class EnumCardType extends ValuedEnum {
 	public final static EnumCardType AMEX = new EnumCardType(0, "AMEX", "AMEX", "003", "A","Amex", "AX", EnumPaymentMethodType.CREDITCARD);
 	public final static EnumCardType MC = new EnumCardType(1, "MC", "MC", "002", "M", "MasterCard", "MC", EnumPaymentMethodType.CREDITCARD);
 	public final static EnumCardType VISA = new EnumCardType(2, "VISA", "VISA", "001", "V", "Visa", "VI", EnumPaymentMethodType.CREDITCARD);
+	
 	public final static EnumCardType DISC = new EnumCardType(3, "DISC", "DISC", "004", "S", "Discover", "DI", EnumPaymentMethodType.CREDITCARD);
 	public final static EnumCardType ECP = new EnumCardType(4, "ECP", "ECP", "005", "C", "ECheck", "EC", EnumPaymentMethodType.ECHECK);
 	
+	public final static EnumCardType GCP = new EnumCardType(4, "GCP", "GIFT", "006", "C", "GiftCard", "GC", EnumPaymentMethodType.GIFTCARD);
+
 	private EnumCardType(int id, String fdName, String sapName, String paylinxId, String settlementCode, String displayName, String paymentechCode, EnumPaymentMethodType type) {
 		super(fdName, id);
 		this.sapName=sapName;
@@ -132,5 +135,4 @@ public class EnumCardType extends ValuedEnum {
 	public EnumPaymentMethodType getPaymentMethodType(){
 		return this.type;
 	}
-	
 }

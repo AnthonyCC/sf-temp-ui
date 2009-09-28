@@ -10,9 +10,7 @@
 		<td><img src="/media_stat/crm/images/clear.gif" width="12" height="1"></td>
 	</tr>
 </table>
-<%
-List queueOverview = CrmManager.getInstance().getQueueOverview();
-%>
+<% List queueOverview = CrmManager.getInstance().getQueueOverview(); %>
 <div style="height: 90%; border: 0px solid red; overflow-y: scroll;">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="home_monitor_content">
 	<logic:iterate id='qi' indexId='i' collection="<%= queueOverview %>" type="com.freshdirect.crm.CrmQueueInfo">

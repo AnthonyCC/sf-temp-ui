@@ -11,6 +11,10 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
 	String hamptonsDepotCode ="HAM";
 	String depotCode=null;
     String depotName = "";
+    double perishableBufferAmount = 0;
+    double gcSelectedBalance = user.getGiftcardBalance()- cart.getTotalAppliedGCAmount();
+    double gcBufferAmount=0;
+    double ccBufferAmount=0;
     
     if (cart instanceof FDOrderI) {
     	isDepotAddress = ((FDOrderI)cart).getDeliveryAddress() instanceof ErpDepotAddressModel ? true : false;
@@ -21,8 +25,31 @@ java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:
     	isDepotAddress = user.getShoppingCart().getDeliveryAddress() instanceof ErpDepotAddressModel ? true : false;
     	if (isDepotAddress) {
     		depotAddress = (ErpDepotAddressModel) user.getShoppingCart().getDeliveryAddress(); 
-    	}
+    	}    	
     }
+    if(cart instanceof FDCartModel){
+    	perishableBufferAmount = FDCustomerManager.getPerishableBufferAmount((FDCartModel)cart);
+    }
+    
+    if(perishableBufferAmount > 0){
+    	if(cart.getTotalAppliedGCAmount()> 0){
+    		if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())){
+        		/*if(gcSelectedBalance - perishableBufferAmount >=0){
+        			gcBufferAmount = perishableBufferAmount;
+        		}else{*/
+        			gcBufferAmount = gcSelectedBalance;
+        			ccBufferAmount = perishableBufferAmount - gcSelectedBalance;    			
+        		//}
+        	}
+    		else{
+    			gcBufferAmount = perishableBufferAmount;
+    		}
+    	}else{
+    		ccBufferAmount = perishableBufferAmount;
+    	}
+    	
+    }
+    
     
 	if (isDepotAddress && depotAddress!=null) {
 		if(depotAddress.isPickup()){
@@ -43,7 +70,8 @@ String pymtDetailWidth="693";
 if (isShowSmaller) pymtDetailWidth="630";
 String lineWidth = isShowSmaller?"290":"310";
 %>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=pymtDetailWidth%>">
+
+<%@page import="com.freshdirect.fdstore.customer.FDCartModel"%><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=pymtDetailWidth%>">
 <TR VALIGN="TOP">
     <TD WIDTH="290">
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="290">
@@ -133,7 +161,42 @@ String lineWidth = isShowSmaller?"290":"310";
             <b>Order Total:</b><BR>
             <font class="space4pix"><br></font>
             <%= currencyFormatter.format(cart.getTotal()) %>*<BR>
-            <BR>
+            <% if(cart.getTotalAppliedGCAmount()> 0){ %> 
+	            <BR>
+	            <font class="space4pix"><br></font>
+	            <FONT CLASS="text12">
+	            <b>Gift Card Amount to Be Applied:</b><BR>
+	            <font class="space4pix"><br></font>
+	            <%= currencyFormatter.format(cart.getTotalAppliedGCAmount()+ gcBufferAmount ) %>*<BR>
+	            
+	            <BR>
+	            <font class="space4pix"><br></font>
+	            <FONT CLASS="text12">
+	            <b>Remaining Gift Card Balance:</b><BR>
+	            <font class="space4pix"><br></font>
+	            <% if(cart instanceof FDCartModel) { %>
+	            
+	            	<%= currencyFormatter.format(user.getGiftcardsTotalBalance() - cart.getTotalAppliedGCAmount()-gcBufferAmount) %>
+		          
+	            <% } else { %>
+	            <%= currencyFormatter.format(user.getGiftcardsTotalBalance()) %>
+	            <% } %>*<BR>     
+	            <BR>      
+            <% } %>
+            <% if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())) { %> 
+            <% if(cart.getTotalAppliedGCAmount()> 0){ %>     
+	            <BR>
+	            <font class="space4pix"><br></font>
+	            <FONT CLASS="text12">
+	            <b>Amount to Be Charged to Your Account:</b><BR>
+	            <font class="space4pix"><br></font>
+	            <% if(cart instanceof FDCartModel) { %>
+	            <%= currencyFormatter.format(cart.getCCPaymentAmount()+ ccBufferAmount) %>*<BR>
+	            <% } else { %>
+	            <%= currencyFormatter.format(cart.getCCPaymentAmount()+ cart.getBufferAmt()) %>*<BR>     
+	            <% } %>
+            <% } %>     
+            <BR>  
 			<b><%=paymentMethod.getPaymentMethodType().getDescription()%>:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_3_choose.jsp">Modify</A><%}%><BR>
             <font class="space4pix"><br></font>
             <%= paymentMethod.getName()%><BR>
@@ -166,8 +229,8 @@ String lineWidth = isShowSmaller?"290":"310";
                 <%= paymentMethod.getBillingRef() %><br>
             <%
             }%>
-			
             </FONT>
+			<% } %>             
             </TD>
         </TR>
         </TABLE>

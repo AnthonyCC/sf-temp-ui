@@ -9,7 +9,7 @@
 <a name="top"></a>
 <table width="100%" cellpadding="6" cellspacing="0" border="0" class="main_nav">
 	<tr>
-		<td width="70%" style="padding-left: 0px;">
+		<td width="75%" style="padding-left: 0px;">
 			<a href="/main/clear_session.jsp" class="<%=pageURI.indexOf("/main/index.jsp") > -1?"main_nav_on":"main_nav_link"%>">Home</a>
             <% if(currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.EXC_CODE))) { %> 
                 <a href="javascript:javascript:popResize('http://reporting','715','940')" class="main_nav_link">Marketing Reports</a>
@@ -33,9 +33,10 @@
             <% } %> 
             <a href="/main/available_promotions.jsp" class="<%=pageURI.indexOf("/main/available_promotions.jsp") > -1 || pageURI.indexOf("/promotion/") > -1?"main_nav_on":"main_nav_link"%>">Promotions</a> 
             <a href="/main/information.jsp" class="<%=pageURI.indexOf("/main/information.jsp") > -1?"main_nav_on":"main_nav_link"%>">Maps</a> 
+            <a href="/gift_card/giftcard_landing.jsp" class="<%=pageURI.indexOf("/main/information.jsp") > -1?"main_nav_on":"main_nav_link"%>">GiftCard</a> 
             <a href="javascript:popResize('/kbit/index.jsp','715','940','kbit')" class="<%=pageURI.indexOf("/main/help.jsp") > -1?"main_nav_on":"main_nav_link"%>">Help</a>
 		</td>
-		<td width="30%" align="right">
+		<td width="25%" align="right">
 			<%=currentAgent.getRole().getName()%>: <b><%=currentAgent.getUserId()%></b>
 		&nbsp;&middot;&nbsp;
 		<a href="/main/logout.jsp">Logout</a>

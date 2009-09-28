@@ -63,6 +63,10 @@ public class EnumSaleStatus implements java.io.Serializable {
 	public final static EnumSaleStatus REFUSED_ORDER		= new EnumSaleStatus(25, "REF", "Refused Delivery", "Contact Customer Service", true);
 	public final static EnumSaleStatus REDELIVERY 			= new EnumSaleStatus(26, "RED", "Scheduled for Redelivery", "En-route", true);
 	public final static EnumSaleStatus INPROCESS_NO_AUTHORIZATION = new EnumSaleStatus(27, "PNA", "In process but no authorization", "In process", true);
+	public final static EnumSaleStatus EMAIL_PENDING = new EnumSaleStatus(28, "EPG", "Email Pending", "In Process", true);
+	public final static EnumSaleStatus REG_PENDING = new EnumSaleStatus(28, "RPG", "Registration Pending", "In Process", true);
+	public final static EnumSaleStatus POST_AUTH_PENDING = new EnumSaleStatus(29, "POG", "Post Auth Pending", "Completed", true); 
+	public final static EnumSaleStatus SETTLEMENT_PENDING = new EnumSaleStatus(30, "STP", "Settlement Pending", "In Process", true); 
 
 	private final int id;
 	private final String statusCode;

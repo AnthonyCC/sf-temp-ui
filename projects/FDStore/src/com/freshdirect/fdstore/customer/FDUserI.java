@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromotionI;
@@ -49,6 +50,8 @@ public interface FDUserI extends java.io.Serializable {
     public final static int CHEFS_TABLE_GETTING_CLOSE_COUNT = 5;
     public final static double CHEFS_TABLE_GETTING_CLOSE_TOTAL = 625.00;
 
+    public final static double MIN_GC_ORDER_AMOUNT = 20.00;
+    
 	public final static int GUEST = 0;              // anonymously cookied user who have not registered
 	public final static int RECOGNIZED = 1;         // cookied user who has registered and has a known identity
 	public final static int SIGNED_IN = 2;          // cookied user who has registered, has a known identity and is currently signed in
@@ -280,6 +283,8 @@ public interface FDUserI extends java.io.Serializable {
 
 	public boolean isProduceRatingEnabled();
 
+	public boolean isGiftCardsEnabled();
+
 	/* CCL */
 	public boolean isCCLEnabled();
 
@@ -362,4 +367,39 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean isPromoConflictResolutionApplied();
 
 	public void setPromoConflictResolutionApplied(boolean isPromoConflictResolutionApplied);
+	
+	public FDGiftCardInfoList getGiftCardList();
+	
+	public FDCartModel getGiftCart();
+	
+	public void setGiftCart(FDCartModel dcart);
+	
+	public FDRecipientList getRecipentList();
+	
+	public void setRecipientList(FDRecipientList r);
+	
+	public double getGiftcardBalance();
+	
+	public boolean isGCOrderMinimumMet();
+	
+	public double getGCMinimumOrderAmount();
+	
+	public void invalidateGiftCards();
+	
+	public FDBulkRecipientList getBulkRecipentList();
+	
+	
+	public void setBulkRecipientList(FDBulkRecipientList r);
+
+	public FDCartModel getDonationCart();
+	
+	public void setDonationCart(FDCartModel dcart);
+	
+	public Integer getDonationTotalQuantity();
+	
+	public void setDonationTotalQuantity(Integer donationTotalQuantity);
+	
+	public double getGiftcardsTotalBalance();
+	
+	public String getGCSenderName(String certNum, String custId);
 }

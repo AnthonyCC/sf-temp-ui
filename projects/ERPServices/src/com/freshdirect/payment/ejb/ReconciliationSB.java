@@ -38,4 +38,8 @@ public interface ReconciliationSB extends EJBObject {
 	public List loadReadyToSettleECPSales(List saleIds) throws RemoteException;
 
 	public boolean isSettlementFailedAfterSettled(String saleId) throws RemoteException;
+	
+	public List processGCSettlement(String saleId) throws RemoteException;
+	
+	public List processSettlementPendingOrders() throws RemoteException;
 }

@@ -40,6 +40,8 @@
     boolean isSubmitOrderStep = request.getRequestURI().toLowerCase().indexOf("checkout/checkout_preview.jsp")!=-1?true:false;
     boolean hasEstimatedItems = false;
     boolean firstRecipe = true;
+    
+    
 
     // FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 %>
@@ -178,6 +180,35 @@
             <td></td>
             <td></td>
 		</tr>
+	
+	<%--<% if(cart.getTotalAppliedGCAmount() > 0 ) { %>
+		<tr>
+		    <td colspan="4"></td>
+		    <TD colspan="2">
+			Gift Card Amount to Be Applied:
+		    </td>
+		    <td align="right"><%= CCFormatter.formatCurrency(cart.getTotalAppliedGCAmount()+gcBufferAmount) %></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		</tr>
+		<tr>
+		    <td colspan="4"></td>
+		    <TD colspan="2">
+			Remaining Gift Card Balance:
+		    </td>
+		    <td align="right"><% if(order instanceof FDCartModel) { %>
+	            
+	            	<%= CCFormatter.formatCurrency(user.getGiftcardsTotalBalance() - ((FDCartModel)order).getTotalAppliedGCAmount()-gcBufferAmount) %>
+		          
+	            <% } else { %>
+	            <%= CCFormatter.formatCurrency(user.getGiftcardsTotalBalance()) %>
+	            <% } %></td>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		</tr>
+	<% } %> --%>
 		
 		<tr>
             <td colspan="4"></td>

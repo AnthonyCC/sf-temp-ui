@@ -1,6 +1,7 @@
 <%@ page import='java.text.*, java.util.*' %>
 
 <%@ page import="com.freshdirect.customer.*" %>
+<%@ page import="com.freshdirect.giftcard.*" %>
 <%@ page import="com.freshdirect.crm.CrmAgentModel" %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
@@ -117,7 +118,37 @@
 					}
 				%>
 				<%=cardType%> last 4: <%=capture.getCcNumLast4()%> : Affiliate = <%= capture.getAffiliate()%>
+            <% } else if (txModel.getTransactionType().equals(EnumTransactionType.PREAUTH_GIFTCARD)) { 
+                ErpPreAuthGiftCardModel preAuth = (ErpPreAuthGiftCardModel) txModel;
+            %>
+				<%	
+                    String certNum = preAuth.getCertificateNum();
+                    String authCode = preAuth.getAuthCode();
+                    String status = preAuth.getGcTransactionStatus().getDescription();
+				%>
+				certNum: <%=certNum %> Auth Code: <%=authCode%> : Status = <%= status %>
+            <% } else if (txModel.getTransactionType().equals(EnumTransactionType.REVERSEAUTH_GIFTCARD)) { 
+                ErpReverseAuthGiftCardModel revAuth = (ErpReverseAuthGiftCardModel) txModel;
+            %>
+				<%	
+                    String certNum = revAuth.getCertificateNum();
+                    String authCode = revAuth.getAuthCode();
+                    String status = revAuth.getGcTransactionStatus().getDescription();
+				%>
+				certNum: <%=certNum %> Auth Code: <%=authCode%> : Status = <%= status %>
+            <% } else if (txModel.getTransactionType().equals(EnumTransactionType.POSTAUTH_GIFTCARD)) { 
+                ErpPostAuthGiftCardModel postAuth = (ErpPostAuthGiftCardModel) txModel;
+            %>
+				<%	
+                    String certNum = postAuth.getCertificateNum();
+                    String authCode = postAuth.getAuthCode();
+                    String status = postAuth.getGcTransactionStatus().getDescription();
+				%>
+				certNum: <%=certNum %> Auth Code: <%=authCode%> : Status = <%= status %>
             <% } %>
+
+
+
             </td>
         </tr>
 		<tr><td colspan="4" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>

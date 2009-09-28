@@ -116,7 +116,7 @@ session.setAttribute(SessionName.USER,null);
 			<div id="monitor_content" class="home_search_module_content" style="height: <%= isGuest?"35":"20"%>em; padding-top: 0px; padding-bottom: 0px;">
             <form name="order_search" method="POST" action="/main/order_search_results.jsp?search=<%=quickSearch?"quick":"advanced"%>">
 			<% if (searchErrorMsg != null && !searchErrorMsg.equals("") && "order".equalsIgnoreCase(searchType)) { %>
-				<span class="error">&raquo; <%= searchErrorMsg %></span><br>
+				<span class="error">&raquo; <%= searchErrorMsg %></span><br />
 			<% } %>
 			<input type="hidden" name="searchOrderSubmit" value="submit">
 				<% if (quickSearch) { %>
@@ -141,7 +141,7 @@ session.setAttribute(SessionName.USER,null);
                 <% if (!isGuest) { %>
                     <td align="right">
                         <a href="<%=hasCase?"/case/unlock.jsp?redirect=new_customer":"/registration/nw_cst_check_zone.jsp"%>" class="new">
-                            NEW CUSTOMER
+                            NEW&nbsp;CUSTOMER
                         </a>
                     </td>
                 <% } %>
@@ -150,7 +150,7 @@ session.setAttribute(SessionName.USER,null);
 			<div id="monitor_content" class="home_search_module_content" style="height: 20em; padding-top: 0px; padding-bottom: 0px;">
 			<form name="customer_search" method="POST" action="/main/customer_search_results.jsp">
 			<% if (searchErrorMsg != null && !searchErrorMsg.equals("") && "customer".equalsIgnoreCase(searchType)) { %>
-				<span class="error">&raquo; <%= searchErrorMsg %></span><br>
+				<span class="error">&raquo; <%= searchErrorMsg %></span><br />
 			<% } %>
 			<input type="hidden" name="customerSearchSubmit" value="submit">
 				<% if (quickSearch) { %>
@@ -180,7 +180,7 @@ session.setAttribute(SessionName.USER,null);
             </tr>
             </table>
 			<div id="monitor_content" class="home_search_module_content" style="height: 20em; padding-top: 0px; padding-bottom: 0px; overflow-y: scroll;">
-			<form name="check_address" method="POST"><span class="space4pix"><br><br></span>
+			<form name="check_address" method="POST"><span class="space4pix"><br /><br /></span>
 			<input type="hidden" name="checkAddressSubmit" value="addressCheck">
 				<jsp:include page='/includes/check_address.jsp'/>
 			</form>
@@ -192,7 +192,7 @@ session.setAttribute(SessionName.USER,null);
 		<div id="cutoff_report" class="home_module" style="width: 43%; float: left; border-top: none; border-bottom: 2px solid;">
 			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em;"><tr><td class="home_module_header_text">Orders by Cutoff Search</td></tr></table>
 			<div id="monitor_content" scrolling="no" class="home_search_module_content" style="height: 35em;  padding-top: 0px; padding-bottom: 0px;">
-			<form method="POST" name="searchByCutoff"><span class="space4pix"><br><br></span>
+			<form method="POST" name="searchByCutoff"><span class="space4pix"><br /><br /></span>
 				<jsp:include page='/includes/order_cutoff_search.jsp'/>
 			</form>
 			<table width="90%" cellpaddding="0" cellspacing="0" border="0" align="center">
@@ -210,9 +210,9 @@ session.setAttribute(SessionName.USER,null);
 			<td width="33%"></td>
 			</tr>
 			<tr>
-			<td colspan="3" style="padding-top:10px;"><u>If cutoff didn't happen:</u><br>
-			<strong>Wait 5 minutes for the email.</strong><br>If still not received, alert AppSupport, ERP & SA.  
-			<br><br>
+			<td colspan="3" style="padding-top:10px;"><u>If cutoff didn't happen:</u><br />
+			<strong>Wait 5 minutes for the email.</strong><br />If still not received, alert AppSupport, ERP & SA.  
+			<br /><br />
 			<u>If cutoff didn't happen and/or there are orders in:</u></td>
 			</tr>
 			<tr>
@@ -222,7 +222,7 @@ session.setAttribute(SessionName.USER,null);
 			</tr>
 			<tr>
 			<td colspan="3" style="padding-top:10px;"><strong>Wait 10 minutes and re-run cutoff report.</strong>
-			<br>If no change to order statuses observed, proceed with wave drop/extract and alert AppSupport, ERP & SA.</td>
+			<br />If no change to order statuses observed, proceed with wave drop/extract and alert AppSupport, ERP & SA.</td>
 			</tr>
 			</table>
             </div>
@@ -236,7 +236,7 @@ session.setAttribute(SessionName.USER,null);
 			<input type="hidden" name="summaryDate" id="summaryDate" value="<%=curSummaryDate%>">
             <div id="monitor_content" class="home_search_module_content" style="height: 35em;  padding-top: 10px; padding-bottom: 0px; text-align:center;">
                 Summary Date <input type="text" name="newSummaryDate" id="newSummaryDate" size="10" value="<%=curSummaryDate%>" disabled="true" onchange="setSummaryDate(this);"> &nbsp;<a href="#" id="trigger_sumDate" style="font-size: 9px;">>></a>
-                        <br><img src="/media_stat/crm/images/clear.gif" width="1" height="13"><br>
+                        <br /><img src="/media_stat/crm/images/clear.gif" width="1" height="13"><br />
                         <input type="submit" value="SUBMIT" class="submit" onClick="loadUrl();">
                 <script language="javascript"> 
                     function loadUrl(){
@@ -264,12 +264,50 @@ session.setAttribute(SessionName.USER,null);
         </div>
 		<% } %>
 
-<div class="separator"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"></div>
-		
+	<div class="separator"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"></div>
+
+	<div class="home_module" id="gift_card_search" style="width: 66%; float: left;border-right-width: 0px; border-bottom: 2px solid;">
+		<% if (searchErrorMsg != null && !searchErrorMsg.equals("") && "customer".equalsIgnoreCase(searchType)) { %>
+			<span class="error">&raquo; <%= searchErrorMsg %></span><br />
+		<% } %>
+		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; 0px;">
+		<form name="giftcard_search" id="giftcard_search" action="/gift_card/giftcard_landing.jsp">
+			<tr>
+				<td><span class="module_header_text">Gift Card Search</span></td>
+			</tr>
+		</table>
+		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="gcSearchModuleContent" style="height: 2.2em; 0px;">
+			<tr>
+				<td>Gift Card # : <input type="text" style="width: 140px;" class="input_text" name="gcNumber"/> <span class="gcCertFullNumbNote">certificate or full number</span></td>
+				<td>Recipient Email : <input type="text" style="width: 140px;" class="input_text" name="recEmail"/></td>
+				<td><input class="submit" type="submit" name="SEARCH" value="SEARCH GIFT CARD" />
+			</tr>
+		</form>
+		</table>
+	</div>
+
+	<div class="home_module" id="gift_card_balance_check" style="width: 33%; float: left; border-bottom: 2px solid;">
+		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; 0px;">
+			<tr>
+				<td><span class="module_header_text">Gift Card Balance Check</span></td>
+			</tr>
+		</table>
+		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="gcSearchModuleContent" style="height: 2.2em; 0px; text-align: center;">
+			<tr>
+                <td>Gift Card # : <input type="text" id='gcCheckBalanceBox_gcNumb' style="width: 150px;" class="input_text" name="gcNumber"/></td>
+                <td><div id="gcCheckBalanceBoxMsg">&nbsp;</div></td>
+				<td><input class="submit" type="button" name="chkBalance" onClick="checkBalance(); return false;" value="CHECK BALANCE" />
+			</tr>
+		</table>
+	</div>
+
+	<div class="separator"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"></div>
+
 <% if (!isGuest) { %>
 		<% String addtlMonitorParam = quickSearch ? "" : "search=advanced"; %>
 		
-		<div id="monitor" class="home_module" style="width: 99%; border-bottom: 2px solid; height: auto;">
+		<div id="monitor" class="home_module" style="width: 98%; border-bottom: 2px solid; height: auto;">
+            <crm:CrmCaseDownloadController actionName="downloadCases" agentPK="<%=currentAgent.getPK()%>" result="result">
             <crm:CrmCaseDownloadController actionName="downloadCases" agentPK="<%=currentAgent.getPK()%>" result="result">
 			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; <%=worklist?"padding: 0px;":""%>">
 			<tr>

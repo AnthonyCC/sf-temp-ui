@@ -16,6 +16,10 @@ public class EnumSaleType implements Serializable {
 	public final static EnumSaleType REGULAR= new EnumSaleType(0, "REG", "Regular order");
 
 	public final static EnumSaleType SUBSCRIPTION= new EnumSaleType(1, "SUB", "Subscription order");
+	
+	
+	public final static EnumSaleType DONATION = new EnumSaleType(3, "DON", "Donation order");
+	
 
     public final static EnumSaleType GIFTCARD= new EnumSaleType(2, "GCD", "GiftCard order");
         

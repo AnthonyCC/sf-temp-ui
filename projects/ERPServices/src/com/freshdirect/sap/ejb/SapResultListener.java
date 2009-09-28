@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
@@ -54,6 +55,11 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
+import com.freshdirect.giftcard.ejb.GCGatewayHome;
+import com.freshdirect.giftcard.ejb.GCGatewaySB;
+import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
+import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
+import com.freshdirect.giftcard.ejb.GiftCardPersistanceDAO;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -179,11 +185,19 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 				if (command instanceof SapCreateSalesOrder) {
 					saleEB.createOrderComplete(((SapCreateSalesOrder) command).getSapOrderNumber());
 					EnumSaleType saleType=((SapCreateSalesOrder) command).getSaleType();
-					if(EnumSaleType.SUBSCRIPTION.equals(saleType)) {
+					if(EnumSaleType.SUBSCRIPTION.equals(saleType) | EnumSaleType.DONATION.equals(saleType)) {
 						saleEB.cutoff();
 						addInvoice(saleEB,saleId,((SapCreateSalesOrder) command).getInvoiceNumber());
 						ErpDeliveryConfirmModel deliveryConfirmModel = new ErpDeliveryConfirmModel();
-						saleEB.addDeliveryConfirm(deliveryConfirmModel);					}
+						saleEB.addDeliveryConfirm(deliveryConfirmModel);					
+					}
+					if(EnumSaleType.GIFTCARD.equals(saleType)) {
+						saleEB.cutoff();
+						addInvoice(saleEB,saleId,((SapCreateSalesOrder) command).getInvoiceNumber());
+						//Send register message to register queue.
+						GCGatewaySB gateway = getGCGatewayHome().create();
+						gateway.sendRegisterGiftCard(saleId, saleEB.getCurrentOrder().getSubTotal());
+					}
 
 				} else if (command instanceof SapCancelSalesOrder) {
 					saleEB.cancelOrderComplete();
@@ -200,7 +214,6 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 					LOGGER.error("Unknown command " + command + " for sale " + saleId);
 
 				}
-
 			}
 
 		} catch (ObjectNotFoundException e) {
@@ -211,10 +224,14 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 			// we can't recover from this
 			LOGGER.error("ErpTransactionException occured for sale " + saleId, e);
 
+		} catch (CreateException e) {
+			throw new EJBException("CreateException occured processing sale " + saleId, e);
+
 		} catch (RemoteException e) {
 			throw new EJBException("RemoteException occured processing sale " + saleId, e);
 
-		} catch (FinderException e) {
+		} 
+		catch (FinderException e) {
 			throw new EJBException("FinderException occured processing sale " + saleId, e);
 
 		}
@@ -255,6 +272,23 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 	private ErpCustomerHome getErpCustomerHome() {
 		try {
 			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer", ErpCustomerHome.class);
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
+	}
+	
+	
+	private GiftCardManagerHome getGiftCardManagerHome() {
+		try {
+			return (GiftCardManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.GiftCardManager", GiftCardManagerHome.class);
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
+	}
+
+	private GCGatewayHome getGCGatewayHome() {
+		try {
+			return (GCGatewayHome) LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway", GCGatewayHome.class);
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

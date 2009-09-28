@@ -28,7 +28,7 @@
 		<td width="12%" align="center">Credits Issued?</td>
 	</tr>
 	<tr valign="top">
-        <td><% if(EnumSaleType.REGULAR.equals(summary.getOrderType())){%>Manual<%}else if(EnumSaleType.SUBSCRIPTION.equals(summary.getOrderType())){%>Automatic<%}%></td>
+        <td><% if(EnumSaleType.REGULAR.equals(summary.getOrderType())){%>Manual<%}else if(EnumSaleType.SUBSCRIPTION.equals(summary.getOrderType())){%>Automatic<%} else if(EnumSaleType.GIFTCARD.equals(summary.getOrderType())){%>Gift Card<% } %></td>
 		<td><% if(EnumSaleType.REGULAR.equals(summary.getOrderType())){%><%=CCFormatter.formatDeliveryDate(summary.getDeliveryDate())%><%}else{%>--<%}%></td>
 		<td><b><%=summary.getOrderStatus()%></b></td>
 		<td><%=CCFormatter.formatCurrency(summary.getOrderTotal())%></td>

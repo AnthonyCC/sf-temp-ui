@@ -33,6 +33,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
@@ -100,6 +101,8 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ErpGiftCardUtil;
+import com.freshdirect.giftcard.GiftCardApplicationStrategy;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
@@ -132,6 +135,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		return "com.freshdirect.customer.ejb.ErpCustomerManagerHome";
 	}
 
+	
+	public PrimaryKey createCustomer(ErpCustomerModel erpCustomer) throws ErpDuplicateUserIdException {
+		return createCustomer(erpCustomer, false);
+	}
+	
 	/**
 	 * Create an ErpCustomer and enqueue request in SAP.
 	 *
@@ -139,7 +147,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	 *
 	 * @return primary key assigned to ErpCustomer
 	 */
-	public PrimaryKey createCustomer(ErpCustomerModel erpCustomer) throws ErpDuplicateUserIdException {
+	public PrimaryKey createCustomer(ErpCustomerModel erpCustomer, boolean isGiftCardBuyer) throws ErpDuplicateUserIdException {
 		try {
 
 			LOGGER.info("Creating customer - start. userId=" + erpCustomer.getUserId());
@@ -147,7 +155,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpCustomerEB customerEB = this.getErpCustomerHome().create(erpCustomer);
 			PrimaryKey customerPK = customerEB.getPK();
 
-			this.enqueueCustomer(erpCustomer, customerPK);
+			this.enqueueCustomer(erpCustomer, customerPK, isGiftCardBuyer);
 
 			//this.doEmail( ErpEmailFactory.createSignupConfirmEmail(erpCustomer) );
 
@@ -166,13 +174,21 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 
 	}
-
+	
 	private void enqueueCustomer(ErpCustomerModel erpCustomer, PrimaryKey customerPK) {
+		enqueueCustomer(erpCustomer, customerPK, false);
+	}
+
+	private void enqueueCustomer(ErpCustomerModel erpCustomer, PrimaryKey customerPK, boolean isGiftCardBuyer) {
 		try {
 			// transform ErpCustomerModel into CustomerI
 			// send the ship-to addr as the bill-to
-			SapCustomerI customer =
-				new CustomerAdapter(false, erpCustomer, null, (ErpAddressModel) erpCustomer.getShipToAddresses().get(0));
+			SapCustomerI customer = null;
+			if(isGiftCardBuyer) {
+				customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
+			} else {
+				customer = new CustomerAdapter(false, erpCustomer, null, (ErpAddressModel) erpCustomer.getShipToAddresses().get(0));
+			}
 
 			SapGatewaySB sapSB = this.getSapGatewayHome().create();
 			sapSB.sendCreateCustomer(customerPK.getId(), customer);
@@ -183,7 +199,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (RemoteException ex) {
 			throw new EJBException(ex);
 		}
-	}
+	} 
 
 	/**
 	 * Creates sale object and enqueues order in SAP.
@@ -221,8 +237,12 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			//
 			// Do fraud check
 			//
-			preCheckOrderFraud(erpCustomerPk, order, agentRole);
-
+			
+			if(saleType==EnumSaleType.GIFTCARD){
+				preCheckGiftCardOrderFraud(erpCustomerPk, order, agentRole);
+			}else
+			   preCheckOrderFraud(erpCustomerPk, order, agentRole);
+			
 			//
 			// store order in ERPS and send message to SAP (via JMS)
 			//
@@ -230,10 +250,15 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			LOGGER.info("Placing order - store in ERPS. CustomerPK=" + erpCustomerPk);
 			ErpSaleEB saleEB = this.getErpSaleHome().create(erpCustomerPk, order, usedPromotionCodes, dlvPassId,saleType);
 			PrimaryKey salePK = saleEB.getPK();
+		
 			ErpAbstractOrderModel orderModel = saleEB.getCurrentOrder();
-			postCheckOrderFraud(salePK,erpCustomerPk, orderModel, agentRole);// perform 
-
-			if(EnumSaleType.REGULAR.equals(saleType)) {
+			if(saleType==EnumSaleType.GIFTCARD){
+				postCheckGiftCardFraud(salePK,erpCustomerPk, orderModel, agentRole);	
+			}else {
+				postCheckOrderFraud(salePK,erpCustomerPk, orderModel, agentRole);// perform				
+			}
+			
+			if(EnumSaleType.REGULAR.equals(saleType) || EnumSaleType.GIFTCARD.equals(saleType) ||  EnumSaleType.DONATION.equals(saleType)) {
 				SapOrderAdapter sapOrder = this.adaptOrder(erpCustomerPk, orderModel, rating);
 				SapGatewaySB sapSB = this.getSapGatewayHome().create();
 				sapOrder.setWebOrderNumber(salePK.getId());
@@ -431,6 +456,23 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 	}
 	
+
+	private void preCheckGiftCardOrderFraud(
+			PrimaryKey erpCustomerPk,
+			ErpAbstractOrderModel order,
+			CrmAgentRole agentRole) throws CreateException, RemoteException, ErpFraudException {
+			
+			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
+			EnumFraudReason fraud = fraudSB.preCheckGiftCardFraud(erpCustomerPk, order, agentRole);
+			if (fraud != null) {
+				SessionContext ctx = this.getSessionContext();
+				ctx.setRollbackOnly();
+				throw new ErpFraudException(fraud);
+			}			
+		}
+
+	
+	
 		private void preCheckOrderFraud(
 		PrimaryKey erpCustomerPk,
 		ErpAbstractOrderModel order,
@@ -461,7 +503,16 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		fraudSB.postCheckOrderFraud(salePk, erpCustomerPk, order, agentRole);
 	}
 
-
+	private void postCheckGiftCardFraud(
+			PrimaryKey salePk,
+			PrimaryKey erpCustomerPk,
+			ErpAbstractOrderModel order,
+			CrmAgentRole agentRole) throws CreateException, RemoteException {
+			
+			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
+			fraudSB.postCheckGiftCardFraud(salePk, erpCustomerPk, order, agentRole);
+	}
+	
 	public EnumPaymentResponse resubmitPayment(String saleId, ErpPaymentMethodI paymentMethod, Collection charges)
 		throws ErpTransactionException {
 		try {
@@ -674,10 +725,23 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpAbstractOrderModel order = eb.getCurrentOrder();
 			if(EnumPaymentType.MAKE_GOOD.equals(order.getPaymentMethod().getPaymentType())){
 				invoice.setAppliedCredits(Collections.EMPTY_LIST);
+				//Applied gift cards should also be set to empty list.
+				invoice.setAppliedGiftCards(Collections.EMPTY_LIST);
 			}else{
 				List appliedCredits = order.getAppliedCredits();
 				List invoicedCredits = invoice.getAppliedCredits();
 				this.reconcileInvoicedCredits(eb.getCustomerPk(), invoicedCredits, appliedCredits);
+				List appliedGiftCards = order.getAppliedGiftcards();
+				if(appliedGiftCards != null && appliedGiftCards.size() > 0) {
+					//Set the selected gift cards from the original order.
+					//ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(eb.getCustomerPk());
+					List selectedGiftCards = ErpGiftCardUtil.getGiftcardPaymentMethods(appliedGiftCards);
+					order.setSelectedGiftCards(selectedGiftCards);
+					//Re Generate Applied gift cards info.
+					GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, invoice);
+					strategy.generateAppliedGiftCardsInfo();
+					invoice.setAppliedGiftCards(strategy.getAppGiftCardInfo());
+				}
 			}
 			eb.addInvoice(invoice);
 			eb.updateShippingInfo(shippingInfo);
@@ -1704,15 +1768,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpGenerateInvoiceCommand command = new ErpGenerateInvoiceCommand();
 			ErpInvoiceModel newInvoice = command.generateNewInvoice(order, invoice, returnOrder);
 			
-			//System.out.println("invoice.getSubTotal() :"+invoice.getSubTotal());
-			//System.out.println("newInvoice.getSubTotal() :"+newInvoice.getSubTotal());
 			returnOrder.setSubTotal(invoice.getActualSubTotal() - newInvoice.getActualSubTotal());
 			returnOrder.setTax(invoice.getTax() - newInvoice.getTax());
-			//System.out.println("invoice.getActualSubTotal() :"+invoice.getActualSubTotal());
-			//System.out.println("newInvoice.getActualSubTotal() :"+newInvoice.getActualSubTotal());
 			returnOrder.setAmount(invoice.getAmount() - newInvoice.getAmount());
-
-			//System.out.println("returnOrder.getSubTotal():"+returnOrder.getSubTotal());
 			saleEB.addReturn(returnOrder);
 
 		} catch (RemoteException ex) {
@@ -1733,6 +1791,17 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpGenerateInvoiceCommand invoiceCommand = new ErpGenerateInvoiceCommand();
 			ErpInvoiceModel newInvoice = invoiceCommand.generateNewInvoice(order, invoice, returnOrder);			
 			this.reconcileInvoicedCredits(saleEB.getCustomerPk(), newInvoice.getAppliedCredits(), invoice.getAppliedCredits());
+			List appliedGiftCards = order.getAppliedGiftcards();
+			if(appliedGiftCards != null && appliedGiftCards.size() > 0) {
+				//Set the selected gift cards from the original order.
+				//ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(saleEB.getCustomerPk());
+				List selectedGiftCards = ErpGiftCardUtil.getGiftcardPaymentMethods(appliedGiftCards);
+				order.setSelectedGiftCards(selectedGiftCards);
+				//Re Generate Applied gift cards info.
+				GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, newInvoice);
+				strategy.generateAppliedGiftCardsInfo();
+				newInvoice.setAppliedGiftCards(strategy.getAppGiftCardInfo());
+			}
 			//System.out.println("newInvoice.getSubTotal():"+newInvoice.getSubTotal());
 			//System.out.println("newInvoice.getActualSubTotal():"+newInvoice.getActualSubTotal());
 			saleEB.addInvoice(newInvoice);
@@ -2420,4 +2489,18 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+
+		public double getOutStandingBalance(ErpAbstractOrderModel order){
+			//Generate Applied gift cards info.
+			GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
+			strategy.generateAppliedGiftCardsInfo();	
+			return strategy.getRemainingBalance();
+		}
+		
+		public double getPerishableBufferAmount(ErpAbstractOrderModel order){
+			//Generate Applied gift cards info.
+			GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
+			strategy.generateAppliedGiftCardsInfo();	
+			return strategy.getPerishableBufferAmount();
+		}
 }

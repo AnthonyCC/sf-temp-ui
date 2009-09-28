@@ -131,5 +131,7 @@ public interface SapOrderLineI extends Serializable {
 	 * @throws IllegalStateException if the ATP was not executed yet
 	 */
 	public List getInventories();
+	
+	public double getFixedPrice();
 
 }

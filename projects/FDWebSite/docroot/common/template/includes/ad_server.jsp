@@ -78,6 +78,8 @@
 				type = "pickup";
 			} else if (EnumServiceType.CORPORATE.equals(service)) {
 				type = "cos";
+			} else if (EnumServiceType.WEB.equals(service)) {
+				type = "web";
 			}
 
 			Date dlvDate = user.getOrderHistory().getLastOrderDlvDate();

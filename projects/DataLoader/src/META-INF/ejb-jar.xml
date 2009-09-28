@@ -111,6 +111,18 @@
 				<home>com.freshdirect.payment.ejb.PaymentHome</home>
 				<remote>com.freshdirect.payment.ejb.PaymentSB</remote>
 			</ejb-ref>
+			<ejb-ref>
+				<ejb-ref-name>ejb/GiftCardManager</ejb-ref-name>
+				<ejb-ref-type>Session</ejb-ref-type>
+				<home>com.freshdirect.giftcard.ejb.GiftCardManagerHome</home>
+				<remote>com.freshdirect.giftcard.ejb.GiftCardManagerSB</remote>
+			</ejb-ref>
+			<ejb-ref>
+                <ejb-ref-name>ejb/GCGateway</ejb-ref-name>
+                <ejb-ref-type>Session</ejb-ref-type>
+                <home>com.freshdirect.giftcard.ejb.GCGatewayHome</home>
+                <remote>com.freshdirect.giftcard.ejb.GCGatewaySB</remote>
+            </ejb-ref>  
 			<resource-ref>
 				<res-ref-name>jdbc/dbpool</res-ref-name>
 				<res-type>javax.sql.DataSource</res-type>

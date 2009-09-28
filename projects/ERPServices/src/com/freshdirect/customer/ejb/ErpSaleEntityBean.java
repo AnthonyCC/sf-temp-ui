@@ -29,25 +29,26 @@ import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCancelOrderModel;
 import com.freshdirect.customer.ErpCaptureModel;
 import com.freshdirect.customer.ErpCashbackModel;
+import com.freshdirect.customer.ErpChargeInvoiceModel;
+import com.freshdirect.customer.ErpChargeSettlementModel;
 import com.freshdirect.customer.ErpChargebackModel;
 import com.freshdirect.customer.ErpChargebackReversalModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCreateOrderModel;
-import com.freshdirect.customer.ErpInvoiceModel;
-import com.freshdirect.customer.ErpChargeInvoiceModel;
-import com.freshdirect.customer.ErpModifyOrderModel;
-import com.freshdirect.customer.ErpRedeliveryModel;
 import com.freshdirect.customer.ErpDeliveryConfirmModel;
+import com.freshdirect.customer.ErpFailedChargeSettlementModel;
+import com.freshdirect.customer.ErpFailedSettlementModel;
+import com.freshdirect.customer.ErpFundsRedepositModel;
+import com.freshdirect.customer.ErpInvoiceModel;
+import com.freshdirect.customer.ErpModifyOrderModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpRedeliveryModel;
 import com.freshdirect.customer.ErpResubmitPaymentModel;
 import com.freshdirect.customer.ErpReturnOrderModel;
 import com.freshdirect.customer.ErpReversalModel;
 import com.freshdirect.customer.ErpSaleI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSettlementModel;
-import com.freshdirect.customer.ErpFailedSettlementModel;
-import com.freshdirect.customer.ErpChargeSettlementModel;
-import com.freshdirect.customer.ErpFailedChargeSettlementModel;
-import com.freshdirect.customer.ErpFundsRedepositModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpTransactionModel;
@@ -57,6 +58,16 @@ import com.freshdirect.framework.core.EntityBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ErpGiftCardAuthModel;
+import com.freshdirect.giftcard.ErpGiftCardTransModel;
+import com.freshdirect.giftcard.ErpPostAuthGiftCardModel;
+import com.freshdirect.giftcard.ErpPreAuthGiftCardModel;
+import com.freshdirect.giftcard.ErpRegisterGiftCardModel;
+import com.freshdirect.giftcard.ErpReverseAuthGiftCardModel;
+import com.freshdirect.giftcard.ejb.ErpBalanceTransferPersistentBean;
+import com.freshdirect.giftcard.ejb.ErpPostAuthPersistentBean;
+import com.freshdirect.giftcard.ejb.ErpPreAuthPersistentBean;
+import com.freshdirect.giftcard.ejb.ErpReverseAuthPersistentBean;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 /**
@@ -116,6 +127,16 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 
+	public void forceSettlement() throws ErpTransactionException {
+		try{
+			this.model.forceSettlement();
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}
+	}
+	
 	public PrimaryKey ejbFindByPrimaryKey(PrimaryKey pk) throws ObjectNotFoundException, FinderException {
 		Connection conn = null;
 		try {
@@ -306,6 +327,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		ErpTransactionList txList = this.getTransactionPBList();
 		txList.create(conn);
 
+	
 		complaints.create(conn);
 		if(this.model.hasUsedPromotionCodes()==true) {
 			ErpPromotionDAO.insert(conn, this.getPK(), this.model.getUsedPromotionCodes());
@@ -333,15 +355,23 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		ErpTransactionList txList = new ErpTransactionList();
 		txList.setParentPK(this.getPK());
 		for(Iterator i = this.model.getTransactions().iterator(); i.hasNext(); ){
-			ErpTransactionModel m = (ErpTransactionModel) i.next();
-			ErpTransactionPersistentBean pb = ErpTransactionList.createPersistentBean(m.getTransactionType(), m.getPK(), this.getPK());
-			//Added as part of PERF-27 task.
-			m.setCustomerId(this.model.getCustomerPk().getId());
-			pb.setFromModel(m);
-			txList.add(pb);
+			ErpTransactionModel m = (ErpTransactionModel) i.next();			
+			if(m.getTransactionType().isUpdatable()) {
+				ErpUpdatableTransactionBean upb = ErpTransactionList.createUpdatablePersistentBean(m.getTransactionType(), m.getPK(), this.getPK());
+				m.setCustomerId(this.model.getCustomerPk().getId());
+				upb.setFromModel(m);
+				txList.add(upb);
+			} else {
+				ErpTransactionPersistentBean pb = ErpTransactionList.createPersistentBean(m.getTransactionType(), m.getPK(), this.getPK());
+				//Added as part of PERF-27 task.
+				m.setCustomerId(this.model.getCustomerPk().getId());
+				pb.setFromModel(m);
+				txList.add(pb);
+			}
 		}
 		return txList;
 	}
+
 
 	private ErpComplaintList buildComplaintPBList() {
 		ErpComplaintList compList = new ErpComplaintList();
@@ -382,6 +412,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		ErpTransactionList txList = new ErpTransactionList();
 		txList.setParentPK(this.getPK());
 		txList.load(conn);
+		
 
 		ErpComplaintList compList = new ErpComplaintList();
 		compList.setParentPK(this.getPK());
@@ -391,7 +422,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 		PrimaryKey oldPk = model.getPK();
 
-		List cartonInfo = ErpCartonsDAO.getCartonInfo(conn, this.getPK());
+		List cartonInfo = ErpCartonsDAO.getCartonInfo(conn, this.getPK());		
 		this.model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId,saleType);
 		this.model.setPK(oldPk);
 
@@ -453,6 +484,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			txList.store(conn);
 			this.updateCroModMaxDate(conn);
 		}
+	
 		if (complaints.isModified()) {
 			complaints.store(conn);
 		}
@@ -582,6 +614,22 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	}
 
 	/**
+	 * Cancel the order. The Gift Card Sale must be in ENROUTE status.
+	 * Status will be MODIFIED after this operation.
+	 *
+	 * @throws ErpTransactionException on violation of business transaction rules
+	 */
+	public void cancelGCOrder(ErpCancelOrderModel cancelOrder) throws ErpTransactionException {
+		try{
+			this.model.cancelGCOrder(cancelOrder);
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}
+	}
+	
+	/**
 	 * Notification that the cancel order is successfully completed in SAP.
 	 * Status will be CANCELED after this operation.
 	 *
@@ -606,6 +654,29 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			throw e;
 		}
 	}
+	
+	public void emailPending() throws ErpTransactionException{
+		try{
+			this.model.emailPending();
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}
+		
+	}
+
+	public void setGiftCardRegPending() throws ErpTransactionException{
+		try{
+			this.model.setGiftCardRegPending();
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}
+		
+	}	
+	
 
 	/**
 	 * Add the invoice coming from SAP. The Sale must be in the INPROCESS status.
@@ -706,14 +777,58 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel) throws ErpTransactionException {
 		try{
-			this.model.addDeliveryConfirm(deliveryConfirmModel);
-			this.setModified();
+			// If the order involves gift cards, do 'Post Auth', else proceed as usual.
+			if(null != this.getCurrentOrder().getAppliedGiftcards() && this.getCurrentOrder().getAppliedGiftcards().size() > 0) {
+				this.model.addDeliveryConfirm(deliveryConfirmModel,EnumSaleStatus.POST_AUTH_PENDING);
+				this.setModified();
+			}else{
+				this.model.addDeliveryConfirm(deliveryConfirmModel,EnumSaleStatus.CAPTURE_PENDING);
+				this.setModified();
+			}
 		}catch(ErpTransactionException e){
 			this.getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
+	
+	
+	
+	public void addRegisterGiftCard(ErpGiftCardTransModel registerGCModel) throws ErpTransactionException {
+		
+		try{
+			this.model.addRegisterGiftCard(registerGCModel);
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}		
+	}
+			
 
+	public void addGiftCardEmailInfo(ErpGiftCardTransModel emailGCModel) throws ErpTransactionException {
+		
+		try{			
+			this.model.addGiftCardEmailInfo(emailGCModel);
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}		
+	}
+	
+
+	public void addGiftCardDeliveryConfirm(ErpGiftCardTransModel registerGCModel) throws ErpTransactionException {
+		
+		try{
+			this.model.addGiftCardDlvConfirm(registerGCModel);
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}		
+	}
+	
+	
 	/**
 	 * Add an ErpComplaintModel to the list of complaints. The Sale must be in the COMPLETE status.
 	 *
@@ -796,6 +911,24 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			throw e;
 		}
 	}
+	
+	
+	/**
+	 * this will add an authorization to the sale
+	 *
+	 * @param ErpAuthorizationModel authorizationModel
+	 * @return void
+	 */
+	public void addGiftCardBalanceTransfer(ErpGiftCardTransModel authorizationModel) throws ErpTransactionException {
+		try{
+			this.model.addGCBalanceTransfer(authorizationModel);
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}
+	}
+	
 
 	public void addSettlement(ErpSettlementModel settlementModel) throws ErpTransactionException {
 		try{
@@ -875,7 +1008,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			this.getEntityContext().setRollbackOnly();
 			throw e;
 		}
-	}
+	}	
 
 	public void addCapture(ErpCaptureModel captureModel) throws ErpTransactionException {
 		try{
@@ -1058,6 +1191,110 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		return this.model.getIsSettlementFailedAfterSettled();
 	}
 
+	//For Gift Cards _ begin.
+	
+	public List getPendingGCAuthorizations(ErpPaymentMethodI pm) {
+		return this.model.getPendingGCAuthorizations(pm);
+	}
+	
+	public List getPendingGCReverseAuths(ErpPaymentMethodI pm) {
+		return this.model.getPendingGCReverseAuths(pm);
+	}
+
+	public List getValidGCAuthorizations(ErpPaymentMethodI pm){
+		return this.model.getValidGCAuthorizations(pm);
+	}
+	
+	
+	public List getPendingGCAuthorizations() {
+		return this.model.getPendingGCAuthorizations();
+	}
+	
+	public List getValidGCAuthorizations() {
+		return this.model.getValidGCAuthorizations();
+	}
+	
+	public List getValidGCPostAuthorizations() {
+		return this.model.getValidGCPostAuthorizations();
+	}
+	
+	public void addGCPreAuthorization(ErpPreAuthGiftCardModel auth) throws ErpTransactionException {
+		try {
+			this.model.addGCAuthorization(auth);
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}
+	}
+	public void addPostAuthorization(ErpPostAuthGiftCardModel postAuth) throws ErpTransactionException {
+		try {
+			this.model.addPostAuthorization(postAuth);
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}		
+	}
+	
+	public void addReverseGCPreAuthorization(ErpReverseAuthGiftCardModel rauth) throws ErpTransactionException {
+		try {
+			this.model.addReverseGCAuthorization(rauth);
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}
+
+	}
+	
+	public void cancelGCPreAuthorization(ErpPreAuthGiftCardModel auth) throws ErpTransactionException {
+		try {
+			this.model.cancelGCAuthorization(auth);
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}
+
+	}
+
+	public boolean hasValidPostAuth(ErpPaymentMethodI pm, String preAuthCode) {
+		return this.model.hasValidPostAuth(pm, preAuthCode);
+	}
+	
+	public void updateGCAuthorization(ErpGiftCardAuthModel auth) throws ErpTransactionException {
+		try {
+			this.model.updateGCAuthorization(auth);
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}
+	}
+	
+	public void markAsCapturePending() throws ErpTransactionException {
+		try {
+			this.model.markAsCapturePending();
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}		
+		
+	}
+	
+	public void markAsSettlementPending() throws ErpTransactionException {
+		try {
+			this.model.markAsSettlementPending();
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}			
+		
+	}
+	
 	private static class ErpTransactionList extends DependentPersistentBeanList {
 		public void load(Connection conn) throws SQLException {
 			PrimaryKey ppk = (PrimaryKey) ErpTransactionList.this.getParentPK();
@@ -1069,15 +1306,41 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			while (rs.next()) {
 				PrimaryKey txPk = new PrimaryKey(rs.getString("ID"));
 				EnumTransactionType txType = EnumTransactionType.getTransactionType(rs.getString("ACTION_TYPE"));
-				ErpTransactionPersistentBean txBean = createPersistentBean(txType, txPk, ppk);
-				txBean.setParentPK(ppk);
-				txBean.load(conn);
-				txList.add(txBean);
+				if(txType.isUpdatable()) {
+					ErpUpdatableTransactionBean updatableTxBean = createUpdatablePersistentBean(txType, txPk, ppk);
+					updatableTxBean.setParentPK(ppk);
+					updatableTxBean.load(conn);
+					txList.add(updatableTxBean);
+				} else {
+					ErpTransactionPersistentBean txBean = createPersistentBean(txType, txPk, ppk);
+					txBean.setParentPK(ppk);
+					txBean.load(conn);
+					txList.add(txBean);
+				}
 			}
 			rs.close();
 			ps.close();
 
 			ErpTransactionList.this.set(txList);
+		}
+		
+		public static ErpUpdatableTransactionBean createUpdatablePersistentBean(EnumTransactionType txType, PrimaryKey txPk, PrimaryKey ppk) throws SQLException{
+			//Added for Gift cards
+			if (EnumTransactionType.PREAUTH_GIFTCARD.equals(txType)) {
+				return new ErpPreAuthPersistentBean(txPk);
+			}
+			if (EnumTransactionType.REVERSEAUTH_GIFTCARD.equals(txType)) {
+				return new ErpReverseAuthPersistentBean(txPk);
+			}
+			if (EnumTransactionType.POSTAUTH_GIFTCARD.equals(txType)) {
+				return new ErpPostAuthPersistentBean(txPk);
+			}
+			if (EnumTransactionType.BALANCETRANSFER_GIFTCARD.equals(txType)) {
+				return new ErpBalanceTransferPersistentBean(txPk);
+			}
+			
+			
+			throw new SQLException("Unknown transaction type " + txType.getCode() + " encountered in sale " + ppk);
 		}
 
 		public static ErpTransactionPersistentBean createPersistentBean(EnumTransactionType txType, PrimaryKey txPk, PrimaryKey ppk) throws SQLException{
@@ -1150,7 +1413,15 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			if (EnumTransactionType.DELIVERY_CONFIRM.equals(txType)) {
 				return new ErpDeliveryConfirmPersistentBean(txPk);
 			}
-
+			if (EnumTransactionType.REGISTER_GIFTCARD.equals(txType)) {
+				return new ErpRegisterGCPersistentBean(txPk);
+			}
+			if (EnumTransactionType.EMAIL_GIFTCARD.equals(txType)) {
+				return new ErpEmailGiftCardPersistentBean(txPk);
+			}
+			if (EnumTransactionType.GIFTCARD_DLV_CONFIRM.equals(txType)) {
+				return new ErpGiftCardDlvConfirmPersistentBean(txPk);
+			}
 			throw new SQLException("Unknown transaction type " + txType.getCode() + " encountered in sale " + ppk);
 		}
 	}
@@ -1236,4 +1507,23 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 
+	public ErpRegisterGiftCardModel getRecentRegistration() {
+		return this.model.getRecentRegisteration();
+	}
+	
+	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel, EnumSaleStatus enumSaleStatus) throws ErpTransactionException{
+		try{
+			this.model.addDeliveryConfirm(deliveryConfirmModel,enumSaleStatus);			
+			this.setModified();
+			
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}
+	}
+	
+	/*public void addSettlementPending(ErpSettlementPendingModel erpSettlementPendingModel) throws ErpTransactionException{
+		this.model.addSettlementPending(erpSettlementPendingModel);
+		this.setModified();
+	}*/
 }

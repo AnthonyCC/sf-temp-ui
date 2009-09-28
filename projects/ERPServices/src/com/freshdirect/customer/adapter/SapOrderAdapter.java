@@ -46,6 +46,7 @@ import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.sap.SapChargeLineI;
@@ -559,6 +560,12 @@ public class SapOrderAdapter implements SapOrderI {
 		 */
 		public EnumATPRule getAtpRule() {
 			return this.fdProduct.getMaterial().getAtpRule();
+		}
+
+		public double getFixedPrice() {
+			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(orderLine.getSku().getSkuCode()))
+				return orderLine.getPrice();			
+			return 0;
 		}
 
 	}

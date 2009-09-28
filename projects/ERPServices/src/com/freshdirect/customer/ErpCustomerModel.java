@@ -13,9 +13,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.framework.collection.LocalObjectList;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.giftcard.ErpGiftCardI;
 
 /**
  * ErpCustomer model class.
@@ -40,6 +42,11 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	private LocalObjectList customerAlerts = new LocalObjectList();
 
 	private ErpCustomerInfoModel customerInfo;
+	
+	//This field is required to capture default bill to address entered for GC customers only.
+	//due to the fact GC customers do not require a delivery/ship to address. This is a 
+	//non-persistent field.
+	private ContactAddressModel sapBillToAddress;
 
 	private String userId;
 	private String passwordHash;
@@ -197,5 +204,11 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 
 	public boolean removeCustomerAlert(PrimaryKey pk) {
 	    return null != this.customerAlerts.removeByPK(pk);
+	}
+	public ContactAddressModel getSapBillToAddress() {
+		return sapBillToAddress;
+	}
+	public void setSapBillToAddress(ContactAddressModel sapBillToAddress) {
+		this.sapBillToAddress = sapBillToAddress;
 	}
 }

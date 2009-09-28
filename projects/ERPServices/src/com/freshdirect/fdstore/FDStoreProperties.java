@@ -268,14 +268,6 @@ public class FDStoreProperties {
 	//additional ratings 2009.06
 	private static final String PRODUCE_RATING_PREFIXES="fdstore.produceRatingPrefixes";
 	
-	// Gift Card
-	private static final String GIFT_CARD_ENABLED="fdstore.isGiftCardEnabled";
-	private static final String GIFT_CARD_LANDING_URL="fdstore.giftCardLandingUrl";
-	
-	// Robin Hood
-	private static final String ROBIN_HOOD_ENABLED="fdstore.isRobinHoodEnabled";
-	private static final String ROBIN_HOOD_LANDING_URL="fdstore.robinHoodLandingUrl";
-	
 	private static final String HPLETTER_MEDIA_ENABLED="fdstore.isHomePageMediaEnabled";
 
 	//Deals changes.
@@ -328,8 +320,14 @@ public class FDStoreProperties {
 	private static final String PROP_GC_MIN_AMOUNT = "fdstore.giftcard.minimum.amount";
 	private static final String PROP_GC_MAX_AMOUNT = "fdstore.giftcard.maximum.amount";
 	private final static String PROP_GIFT_CARD_RECIPIENT_MAX = "giftcard.recipient.max";
+	private static final String GIFT_CARD_ENABLED="fdstore.isGiftCardEnabled";
+	private static final String GIFT_CARD_LANDING_URL="fdstore.giftCardLandingUrl";
 	
+	// Robin Hood
+	private static final String ROBIN_HOOD_ENABLED="fdstore.isRobinHoodEnabled";
+	private static final String ROBIN_HOOD_LANDING_URL="fdstore.robinHoodLandingUrl";
 	private static final String PROP_ROBIN_HOOD_SKU_CODE = "fdstore.robinhood.skucode";
+	private static final String ROBIN_HOOD_STATUS = "fdstore.robinhood.status";
 	
 	private static final String PROP_ROUTING_PROVIDER_URL="fdstore.routing.providerURL";
 	
@@ -525,14 +523,6 @@ public class FDStoreProperties {
 		defaults.put(HP_LETTER_MEDIA_PATH1, "/media/editorial/home/letter/hp_letter_new.html");
 		defaults.put(HP_LETTER_MEDIA_PATH2, "/media/editorial/home/letter/hp_letter_customer.html");
 		defaults.put(HPLETTER_MEDIA_ENABLED, "true");
-		
-		// Gift Card
-		defaults.put(GIFT_CARD_ENABLED, "false");
-		defaults.put(GIFT_CARD_LANDING_URL, "/gift_card/purchase/landing.jsp");
-		
-		// Robin Hood
-		defaults.put(ROBIN_HOOD_ENABLED, "false");
-		defaults.put(ROBIN_HOOD_LANDING_URL, "/gift_card/purchase/landing.jsp");
 
 		//deals
 		defaults.put(DEALS_SKU_PREFIX,"GRO,FRO,SPE,DAI,HBA");
@@ -566,14 +556,24 @@ public class FDStoreProperties {
 		defaults.put(PROP_FDWHATSGOOD_ROWS, "");
 		
 		defaults.put(DYNAMIC_ROUTING_ENABLED, "true");
+
 		
+		// Gift Card
+		defaults.put(GIFT_CARD_ENABLED, "false");
+		defaults.put(GIFT_CARD_LANDING_URL, "/gift_card/purchase/landing.jsp");
 		defaults.put(PROP_GIFT_CARD_SKU_CODE, "MKT0074896");
-		defaults.put(PROP_ROBIN_HOOD_SKU_CODE, "MKT0075239");
 		defaults.put(PROP_GC_TEMPLATE_BASE_URL,"http://www.freshdirect.com/");		
 		defaults.put(PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH,"media/editorial/giftcards/");
 		defaults.put(PROP_GIFT_CARD_RECIPIENT_MAX, "10");	
 		defaults.put(PROP_GC_MIN_AMOUNT, "20");
 		defaults.put(PROP_GC_MAX_AMOUNT, "5000");
+		
+		// Robin Hood
+		defaults.put(ROBIN_HOOD_ENABLED, "false");
+		defaults.put(ROBIN_HOOD_LANDING_URL, "/robin_hood/landing.jsp");
+		defaults.put(PROP_ROBIN_HOOD_SKU_CODE, "MKT0075239");
+		defaults.put(ROBIN_HOOD_STATUS, "BUY");
+		
 		
 		defaults.put(CT_DELIVERY_CAPACITY_FILE_NAME, "ctprofile.xml");		
 		defaults.put(PR1_DELIVERY_CAPACITY_FILE_NAME, "pr1profile.xml");		
@@ -1117,6 +1117,12 @@ public class FDStoreProperties {
 	public static String getGiftCardLandingUrl() {
 		return get(GIFT_CARD_LANDING_URL);
 	}
+	public static String getGiftcardSkucode() {
+		return get(PROP_GIFT_CARD_SKU_CODE);
+	}
+	public static String getMediaGiftCardTemplatePath() {
+		return get(PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH);
+	}
 	
 	// Robin Hood
 	public static boolean isRobinHoodEnabled() {
@@ -1124,6 +1130,12 @@ public class FDStoreProperties {
 	}
 	public static String getRobinHoodLandingUrl() {
 		return get(ROBIN_HOOD_LANDING_URL);
+	}
+	public static String getRobinHoodSkucode() {
+		return get(PROP_ROBIN_HOOD_SKU_CODE);
+	}
+	public static String getRobinHoodStatus() {
+		return get(ROBIN_HOOD_STATUS);
 	}
 	
 	//deals
@@ -1248,17 +1260,7 @@ public class FDStoreProperties {
 		return get(PROP_FDWHATSGOOD_ROWS);
 	}
 	
-	public static String getGiftcardSkucode() {
-		return get(PROP_GIFT_CARD_SKU_CODE);
-	}
 	
-	public static String getRobinHoodSkucode() {
-		return get(PROP_ROBIN_HOOD_SKU_CODE);
-	}
-	
-	public static String getMediaGiftCardTemplatePath() {
-		return get(PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH);
-	}
 	/**
 	 * Used for testing, do not call from the App.
 	 * @param lastRefresh

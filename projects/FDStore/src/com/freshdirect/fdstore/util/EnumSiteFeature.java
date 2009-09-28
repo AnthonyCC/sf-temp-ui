@@ -41,6 +41,9 @@ public class EnumSiteFeature implements Serializable, Comparable {
     public final static EnumSiteFeature FEATURED_ITEMS = new EnumSiteFeature("FEATURED_ITEMS", true, "Featured Items");
     public final static EnumSiteFeature FAVORITES = new EnumSiteFeature("FAVORITES", true, "FreshDirect Favorites");
     public final static EnumSiteFeature CART_N_TABS = new EnumSiteFeature("CART_N_TABS", true, "Cart & Tabs");
+    
+    //gift cards
+	public final static EnumSiteFeature GIFT_CARDS = new EnumSiteFeature("giftCards");
 
 
     private static class Latch implements Serializable {

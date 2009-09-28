@@ -41,6 +41,7 @@ import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAuthorizationException;
@@ -58,12 +59,14 @@ import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderHistory;
+import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ErpSaleModel;
+import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpWebOrderHistory;
@@ -97,6 +100,7 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.TellAFriend;
 import com.freshdirect.fdstore.mail.TellAFriendProduct;
@@ -111,11 +115,18 @@ import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.xml.XSLTransformer;
+import com.freshdirect.giftcard.CardInUseException;
+import com.freshdirect.giftcard.CardOnHoldException;
+import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
+import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
@@ -163,11 +174,25 @@ public class FDCustomerManager {
 		FDSurveyResponse survey, EnumServiceType serviceType)
 		throws FDResourceException, ErpDuplicateUserIdException {
 
+		return register( info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey, serviceType, false);
+	}
+	
+	public static RegistrationResult register(
+			FDActionInfo info,
+			ErpCustomerModel erpCustomer,
+			FDCustomerModel fdCustomer,
+			String cookie,
+			boolean pickupOnly,
+			boolean eligibleForPromotion,
+			FDSurveyResponse survey, EnumServiceType serviceType, boolean isGiftCardBuyer)
+			throws FDResourceException, ErpDuplicateUserIdException {
+		
 		lookupManagerHome();
 
 		try {
+			System.out.println("FDCustomerManager: register() ");
 			FDCustomerManagerSB sb = managerHome.create();
-			return sb.register(info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey, serviceType);
+			return sb.register(info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey, serviceType, isGiftCardBuyer);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1079,6 +1104,110 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	/**
+	 * Store Saved Recipient List for gc purchase for the user
+	 * This list is saved for the customer but no gift cards have been purchased as yet for these recipients.
+	 * @param user
+	 * @throws FDResourceException
+	 */
+	public static void storeSavedRecipients(FDUser user, List recipientList) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.storeSavedRecipients(user, recipientList);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	/**
+	 * Store Saved Recipient for gc purchase for the user
+	 * This recipient is saved for the customer but no gift cards have been purchased as yet for this recipient.
+	 * @param user
+	 * @throws FDResourceException
+	 */
+	public static void storeSavedRecipient(FDUser user, SavedRecipientModel model) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.storeSavedRecipient(user, model);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static void updateSavedRecipient(FDUser user, SavedRecipientModel model) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.updateSavedRecipient(user, model);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static void deleteSavedRecipients(FDUser user) throws FDResourceException {
+		lookupManagerHome();
+		
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.deleteSavedRecipients(user);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static void deleteSavedRecipient(String savedRecipientId) throws FDResourceException {
+		lookupManagerHome();
+		
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.deleteSavedRecipient(savedRecipientId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static List loadSavedRecipients(FDUser user) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.loadSavedRecipients(user);
+		}catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 
 	public static List getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException {
 		lookupManagerHome();
@@ -1270,7 +1399,10 @@ public class FDCustomerManager {
 		Set appliedPromos,
 		boolean sendEmail,
 		CustomerRatingI cra,
-		EnumDlvPassStatus status) throws FDResourceException, ErpFraudException, ErpAuthorizationException, ReservationException,DeliveryPassException {
+		EnumDlvPassStatus status) throws FDResourceException, ErpFraudException, ErpAuthorizationException, ReservationException,
+		FDPaymentInadequateException,
+		ErpTransactionException,
+		DeliveryPassException {
 		
 		lookupManagerHome();
 
@@ -1280,6 +1412,7 @@ public class FDCustomerManager {
 				cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 			}
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
+			System.out.println("guft cards selected "+createOrder.getSelectedGiftCards());
 			createOrder.setTransactionSource(info.getSource());
 			createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
 
@@ -1338,7 +1471,9 @@ public class FDCustomerManager {
 		boolean sendEmail,
 		CustomerRatingI cra,
 		EnumDlvPassStatus status)
-		throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException,DeliveryPassException {
+		throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException,DeliveryPassException,
+		FDPaymentInadequateException
+		{
 		
 		lookupManagerHome();
 		try {
@@ -2160,7 +2295,9 @@ public class FDCustomerManager {
 			boolean sendEmail,
 			CustomerRatingI cra,
 			double additionalCharge)
-			throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException {
+			throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException,		
+			FDPaymentInadequateException
+			{
 			
 			lookupManagerHome();
 			try {
@@ -2584,7 +2721,8 @@ public class FDCustomerManager {
 			 									 EnumDlvPassStatus status ) throws FDResourceException, 
 			                               						  				   ErpFraudException, 
 			                               						  				   //ReservationException,
-			                               						  				   DeliveryPassException
+			                               						  				   DeliveryPassException,
+			                               						  				   FDPaymentInadequateException
 			                               						  				    {
 		lookupManagerHome();
 		String orderId="";
@@ -2621,6 +2759,75 @@ public class FDCustomerManager {
 			throw new FDResourceException(e, "Error talking to session bean");
 		}
 	}
+	
+	
+	public static String placeGiftCardOrder( FDActionInfo info,
+			 FDCartModel cart,
+			 Set appliedPromos,
+			 boolean sendEmail,
+			 CustomerRatingI cra,
+			 EnumDlvPassStatus status,
+			 List repList, boolean isBulkOrder) throws FDResourceException, 
+      						  				   ErpFraudException, 
+      						  				   ErpAuthorizationException
+      						  				    {
+				lookupManagerHome();
+				String orderId="";
+				try {
+					EnumPaymentType pt = cart.getPaymentMethod().getPaymentType();
+					if (EnumPaymentType.REGULAR.equals(pt) && cra.isOnFDAccount()) {
+						cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
+					}					
+					ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
+					createOrder.setRecepientsList(repList);
+					String custId=info.getIdentity().getErpCustomerPK();
+					updateOrderLineInRecipentModels(createOrder,repList,custId);
+					createOrder.setTransactionSource(info.getSource());
+					createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
+					//Clear all charges
+					createOrder.setCharges(new ArrayList());
+					FDCustomerManagerSB sb = managerHome.create();
+					
+					orderId=sb.placeGiftCardOrder( info.getIdentity(),
+								  createOrder,
+					            appliedPromos,
+					            cart.getDeliveryReservation().getPK().getId(),
+					            sendEmail,
+					            cra,
+					            info.getAgent() == null ? null : info.getAgent().getRole(),
+					            status,isBulkOrder);
+					//sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), orderId, EnumSaleType.GIFTCARD, cra);
+					return orderId;
+				} catch (CreateException ce) {
+				    invalidateManagerHome();
+					throw new FDResourceException(ce, "Error creating session bean");
+				} catch (RemoteException re) {
+					invalidateManagerHome();
+					throw new FDResourceException(re, "Error talking to session bean");
+				} /*catch (ErpSaleNotFoundException e) {
+					invalidateManagerHome();
+					throw new FDResourceException(e, "Error talking to session bean");
+				}*/
+}
+	
+
+    public static void updateOrderLineInRecipentModels(ErpCreateOrderModel model,List recipentList,String custId){
+    	List orderLines=model.getOrderLines();    	
+    	if(orderLines!=null && orderLines.size()>0){
+    		System.out.println("orderline size :"+orderLines.size());
+    		for(int i=0;i<orderLines.size();i++){
+    			ErpOrderLineModel lineModel=(ErpOrderLineModel)orderLines.get(i);
+    			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(lineModel.getSku().getSkuCode())){
+    			  ErpRecipentModel rModel=(ErpRecipentModel)recipentList.get(i);
+    			  rModel.setCustomerId(custId);
+    			  System.out.println("lineModel.getOrderLineNumber() :"+lineModel.getOrderLineNumber());
+    			  System.out.println("lineModel.getPrice() :"+lineModel.getPrice());
+    			  rModel.setOrderLineId(lineModel.getOrderLineNumber());
+    			}
+    			
+    		}	    		
+    	}
+    }
 	
 	public static FDUser getFDUser(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
 		   lookupManagerHome();
@@ -2794,4 +3001,364 @@ public class FDCustomerManager {
 			}	
 	    }
 
+		public static ErpGiftCardModel applyGiftCard(FDIdentity identity, String givexNum, FDActionInfo info) throws InvalidCardException, CardInUseException, 
+							CardOnHoldException, FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.applyGiftCard(identity, givexNum, info);
+
+			} catch (InvalidCardException ie) {
+				invalidateManagerHome();
+				throw ie;
+			} catch (CardInUseException ce) {
+				invalidateManagerHome();
+				throw ce;
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
+		
+		/**
+		 * Get all the payment methods of the customer.
+		 *
+		 * @param identity the customer's identity reference
+		 *
+		 * @return collection of ErpPaymentMethodModel objects
+		 * @throws FDResourceException if an error occured using remote resources
+		 */
+		public static FDGiftCardInfoList getGiftCards(FDIdentity identity) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return new FDGiftCardInfoList(sb.getGiftCards(identity));
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
+		public static ErpGiftCardModel verifyStatusAndBalance(ErpGiftCardModel model, boolean reloadBalance) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.verifyStatusAndBalance(model, reloadBalance);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
+		
+		public static List getGiftCardRecepientsForCustomer(FDIdentity identity) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getGiftCardRecepientsForCustomer(identity);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}			
+		}
+		
+		
+		public static Map getGiftCardRecepientsForOrders(List saleIds) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getGiftCardRecepientsForOrders(saleIds);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}			
+		}
+		
+		public static List getGiftCardOrdersForCustomer(FDIdentity identity) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getGiftCardOrdersForCustomer(identity);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}			
+		}
+
+		
+		
+		public static ErpGCDlvInformationHolder getRecipientDlvInfo(FDIdentity identity, String saleId, String certificationNum) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getRecipientDlvInfo(identity, saleId, certificationNum);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}				
+		}
+		
+		public static boolean resendEmail(String saleId, String certificationNum, String resendEmailId, String recipName, String personalMsg, EnumTransactionSource source) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.resendEmail(saleId, certificationNum, resendEmailId, recipName, personalMsg, source);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}		
+		}
+		
+		public static double getOutStandingBalance(FDCartModel cart) throws FDResourceException {
+			lookupManagerHome();
+			try {
+			    ErpAbstractOrderModel order = null;
+			    if(cart instanceof FDModifyCartModel) {
+			        order =  FDOrderTranslator.getErpCreateOrderModel(cart);
+			    } else {
+			        order =  FDOrderTranslator.getErpModifyOrderModel(cart);  
+			    }
+
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getOutStandingBalance(order);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}		
+		}
+		
+		
+		/**
+		 * Sending ftl based email.
+		 * @param email
+		 * @throws FDResourceException
+		 */
+		public static void doEmail(FTLEmailI email) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.doEmail(email);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
+
+		public static Object getGiftCardRedemedOrders(FDIdentity identity,
+				String certNum) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getGiftCardRedemedOrders(identity,certNum);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}			
+		}
+
+		public static Object getGiftCardRedemedOrders(String certNum) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getGiftCardRedemedOrders(certNum);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}			
+		}
+		
+		public static List getDeletedGiftCardsForCustomer(FDIdentity identity) throws FDResourceException {
+			// TODO Auto-generated method stub
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getDeletedGiftCardForCustomer(identity);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}			
+		}
+		
+		/**
+		 * 
+		 * @param customerId
+		 * @return
+		 * @throws FDResourceException
+		 */
+		public static List getGiftCardRecepientsForOrder(String saleId) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getGiftCardRecepientsForOrder(saleId);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}			
+		}
+		
+		public static ErpGiftCardModel validateAndGetGiftCardBalance(String givexNum) throws FDResourceException{
+			
+			try {				
+				
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.validateAndGetGiftCardBalance(givexNum);
+				
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			} catch(InvalidCardException ice){
+				throw new FDResourceException(ice);
+			}
+		}
+		
+		public static void transferGiftCardBalance(FDIdentity identity,String fromGivexNum,String toGivexNum,double amount) throws FDResourceException{
+			try {				
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.transferGiftCardBalance(identity, fromGivexNum, toGivexNum, amount);
+				
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			} 
+		}
+		
+		public static String[] sendGiftCardCancellationEmail(String saleId, String givexNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) throws FDResourceException{
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.sendGiftCardCancellationEmail(saleId, givexNum, toRecipient, toPurchaser, newRecipient, newRecipientEmail);				
+			} catch (RemoteException e) {
+				throw new FDResourceException(e);
+			} catch (CreateException e) {
+				throw new FDResourceException(e);
+			}
+		}
+		
+		public static double getPerishableBufferAmount(FDCartModel cart) throws FDResourceException {
+			lookupManagerHome();
+			try {
+			    ErpAbstractOrderModel order = null;
+			    if(cart instanceof FDModifyCartModel) {
+			        order =  FDOrderTranslator.getErpCreateOrderModel(cart);
+			    } else {
+			        order =  FDOrderTranslator.getErpModifyOrderModel(cart);  
+			    }
+
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getPerishableBufferAmount(order);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}		
+		}
+		
+		
+		public static String placeDonationOrder( FDActionInfo info,
+				 FDCartModel cart,
+				 Set appliedPromos,
+				 boolean sendEmail,
+				 CustomerRatingI cra,
+				 EnumDlvPassStatus status,
+				 boolean isBulkOrder) throws FDResourceException, 
+	      						  				   ErpFraudException, 
+	      						  				   ErpAuthorizationException
+	      						  				    {
+					lookupManagerHome();
+					String orderId="";
+					try {
+						EnumPaymentType pt = cart.getPaymentMethod().getPaymentType();
+						if (EnumPaymentType.REGULAR.equals(pt) && cra.isOnFDAccount()) {
+							cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
+						}					
+						ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
+//						createOrder.setRecepientsList(repList);
+						String custId=info.getIdentity().getErpCustomerPK();
+//						updateOrderLineInRecipentModels(createOrder,repList,custId);
+						createOrder.setTransactionSource(info.getSource());
+						createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
+						//Clear all charges
+						createOrder.setCharges(new ArrayList());
+						FDCustomerManagerSB sb = managerHome.create();
+						
+						orderId=sb.placeDonationOrder( info.getIdentity(),
+									  createOrder,
+						            appliedPromos,
+						            cart.getDeliveryReservation().getPK().getId(),
+						            sendEmail,
+						            cra,
+						            info.getAgent() == null ? null : info.getAgent().getRole(),
+						            status);
+						//sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), orderId, EnumSaleType.GIFTCARD, cra);
+						return orderId;
+					} catch (CreateException ce) {
+					    invalidateManagerHome();
+						throw new FDResourceException(ce, "Error creating session bean");
+					} catch (RemoteException re) {
+						invalidateManagerHome();
+						throw new FDResourceException(re, "Error talking to session bean");
+					} /*catch (ErpSaleNotFoundException e) {
+						invalidateManagerHome();
+						throw new FDResourceException(e, "Error talking to session bean");
+					}*/
+	}
+		
+		public static ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(String certNum) throws FDResourceException{
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.GetGiftCardRecipentByCertNum(certNum);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
 }

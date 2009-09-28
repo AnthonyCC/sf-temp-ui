@@ -18,7 +18,13 @@ String cancelPage = null;
 if(request.getRequestURI().toLowerCase().indexOf("checkout")>-1) {
     successPage = "/checkout/step_4_submit.jsp";
     cancelPage = "/checkout/step_3_choose.jsp";
-} else {
+} else if("true".equals(request.getParameter("gc"))) {
+    successPage = "/gift_card/purchase/purchase_giftcard.jsp";
+    cancelPage = successPage;
+} else if("true".equals(request.getParameter("rh"))) { //Robin Hood..
+	successPage = "/robin_hood/rh_submit_order.jsp";
+	cancelPage = successPage;
+}else {
     successPage = "/your_account/payment_information.jsp";
     cancelPage = successPage;
 }

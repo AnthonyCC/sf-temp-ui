@@ -10,6 +10,7 @@ import java.util.Date;
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpSettlementInfo;
+import com.freshdirect.giftcard.ErpGCSettlementInfo;
 
 public class SapFileBuilder implements SettlementBuilderI {
 
@@ -81,7 +82,50 @@ public class SapFileBuilder implements SettlementBuilderI {
 		
 		this.appendInfo(info);
 	}
-	
+	public void addGCChargeDetail(ErpGCSettlementInfo info, EnumCardType cardType) {
+		sb.append("D");
+
+		sb.append("\t");
+		sb.append(info.getInvoiceNumber());
+
+		sb.append("\t");		
+		sb.append(SETTLEMENT);
+		sb.append("\t");
+		sb.append( cardType.getSapName() );
+
+		sb.append("\t");
+		sb.append("USD");
+
+		sb.append("\t");
+		sb.append(Math.abs(info.getAmount()) );
+		
+		this.appendInfo(info);
+	}
+
+	public void addFailedGCSettlement(ErpGCSettlementInfo info, EnumCardType cardType) {
+		sb.append("D");
+
+		sb.append("\t");
+		sb.append(info.getInvoiceNumber());
+
+		sb.append("\t");		
+		//if post auth failed then set STF else STL
+		if(info.getAmount() >=0)
+			sb.append(SETTLEMENT_FAILED);
+		else
+			sb.append(SETTLEMENT);
+		sb.append("\t");
+		sb.append( cardType.getSapName() );
+
+		sb.append("\t");
+		sb.append("USD");
+
+		sb.append("\t");
+		sb.append(Math.abs(info.getAmount()) );
+		
+		this.appendInfo(info);
+	}
+
 	public void addFailedSettlement(ErpSettlementInfo info, double amount, EnumCardType cardType) {
 		sb.append("D");
 

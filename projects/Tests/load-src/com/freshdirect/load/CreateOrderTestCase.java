@@ -354,7 +354,10 @@ public class CreateOrderTestCase extends TestCase {
 					// quantity 1
 					//
 					quantity = 1;
+				}else{
+					quantity = 1;
 				}
+				
 
 				FDCartLineModel cartLine =
 					new FDCartLineModel(

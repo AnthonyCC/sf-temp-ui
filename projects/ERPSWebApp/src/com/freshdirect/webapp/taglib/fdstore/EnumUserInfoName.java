@@ -105,6 +105,19 @@ public class EnumUserInfoName implements Serializable {
 	// Site Access Update
 	public final static EnumUserInfoName DLV_CORP_ZIPCODE = new EnumUserInfoName(66, "corpZipcode", "Corporate Zip Code");
 	
+	// Gift Card Purchase
+	public final static EnumUserInfoName GC_BUYER_NAME = new EnumUserInfoName(65, "gcBuyerName", "Your Name");
+	public final static EnumUserInfoName GC_BUYER_EMAIL = new EnumUserInfoName(66, "gcBuyerEmail", "Your Email");
+	public final static EnumUserInfoName GC_RECIPIENT_NAME = new EnumUserInfoName(67, "gcRecipientName", "Recipient\'s Name");
+	public final static EnumUserInfoName GC_RECIPIENT_EMAIL = new EnumUserInfoName(68, "gcRecipientEmail", "Recipient\'s Email");
+	public final static EnumUserInfoName DLV_METHOD = new EnumUserInfoName(69, "deliveryMethod", "Delivery Method");
+	public final static EnumUserInfoName GC_MESSAGE = new EnumUserInfoName(70, "message", "Message");
+	public final static EnumUserInfoName GC_QUANTITY = new EnumUserInfoName(71, "quantity", "quantity");
+	
+	public final static EnumUserInfoName GC_ACCOUNT_FROM = new EnumUserInfoName(72, "fromGCAccount", "From GC Account");
+	public final static EnumUserInfoName GC_ACCOUNT_TO = new EnumUserInfoName(73, "toGCAccount", "To GC Account");
+	public final static EnumUserInfoName GC_AMOUNT = new EnumUserInfoName(74, "gcAmount", "GC Amount");
+	
 	private int id;
 	private String code;
 	private String description;

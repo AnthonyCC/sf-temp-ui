@@ -27,12 +27,13 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCaptureModel;
+import com.freshdirect.customer.ErpDeliveryConfirmModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.customer.ErpVoidCaptureModel;
-import com.freshdirect.customer.ErpDeliveryConfirmModel;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -40,9 +41,8 @@ import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.CaptureStrategy;
-import com.freshdirect.payment.PaylinxException;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.payment.PaylinxException;
 ;
 
 public class PaymentSessionBean extends SessionBeanSupport{
@@ -189,6 +189,18 @@ public class PaymentSessionBean extends SessionBeanSupport{
 					eb.addSettlement(this.getFDSettlement(capture));
 					utx.commit();
 				}
+			}
+			/*
+			 *  In the case of gro orders that requires GC payments only we put the order
+			 *  in Settlement Pending status for settlement reconcilation to pick it up.
+			 */			
+			if(!freeOrder && (null == requiredCaptures || requiredCaptures.isEmpty())){
+				//Update the status to 'SETTLEMENT_PENDING'- for GiftCard used only orders.
+				utx = this.getSessionContext().getUserTransaction();
+				utx.begin();
+				eb = erpSaleHome.findByPrimaryKey(new PrimaryKey(saleId));
+				eb.markAsSettlementPending();
+				utx.commit();
 			}
 			
 		}catch(PaylinxException e){

@@ -9,9 +9,16 @@
 <head>
     <title>/ FreshDirect CRM : <tmpl:get name='title'/> /</title>
 
+	<link href="/assets/css/giftcards.css" rel="stylesheet" type="text/css" />
+	<link href="/assets/css/modalbox.css" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
 	<link rel="stylesheet" href="/ccassets/css/case.css" type="text/css">
 	<link rel="stylesheet" href="/ccassets/javascript/jscalendar-1.0/calendar-system.css" type="text/css">
+         
+	<script src="/assets/javascript/prototype.js" type="text/javascript" language="javascript"></script>
+	<script src="/assets/javascript/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
+	<script  src="/assets/javascript/modalbox.js" type="text/javascript" language="javascript"></script>
+	<script  src="/assets/javascript/FD_GiftCards.js" type="text/javascript" language="javascript"></script>
 	<script language="JavaScript" src="/assets/javascript/common_javascript.js"></script>
 	<script language="JavaScript" src="/ccassets/javascript/callcenter_javascript.js"></script>
     <script type="text/javascript" src="/ccassets/javascript/jscalendar-1.0/calendar.js"></script>

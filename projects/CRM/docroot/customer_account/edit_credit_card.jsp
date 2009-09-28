@@ -24,7 +24,12 @@
 	    if (retPage == null) {
 	    	retPage = "/main/account_details.jsp";
 	    }
-    %>
+         if("true".equals(request.getParameter("gc"))) {
+            retPage = "/gift_card/purchase/purchase_giftcard.jsp";
+        }else if("true".equals(request.getParameter("gc_bulk"))) {
+            retPage = "/gift_card/purchase/purchase_bulk_giftcard.jsp";
+        }        
+        %>
 	<crm:GetFDUser id="user">
 		<crm:CrmGetPaymentMethod id="paymentMethod" paymentId="<%=paymentId%>" user="<%=user%>">
 			<crm:CrmPaymentMethodController paymentMethod="<%=paymentMethod%>" result="result" actionName="<%=actionName%>" successPage="<%=retPage%>">

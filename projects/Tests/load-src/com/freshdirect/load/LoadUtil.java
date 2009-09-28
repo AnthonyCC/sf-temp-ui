@@ -39,7 +39,10 @@ public class LoadUtil {
     
     private LoadUtil() {} 
 
-	private final static String DB_URL = "jdbc:oracle:thin:@db1.dev.nyc1.freshdirect.com:1521:DBDEV01";
+    
+    private final static String DB_URL="jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = nyc1dbcl01-vip01.nyc1.freshdirect.com)(PORT = 1521))(ADDRESS = (PROTOCOL = TCP)(HOST = nyc1dbcl01-vip02.nyc1.freshdirect.com)(PORT = 1521))(LOAD_BALANCE = yes)(CONNECT_DATA =(SERVER = DEDICATED)(SERVICE_NAME = devint)(FAILOVER_MODE =(TYPE = SELECT)(METHOD = BASIC)(RETRIES = 180)(DELAY = 5))))";
+    
+	//private final static String DB_URL = "jdbc:oracle:thin:@nyc1dbcl01-vip02.nyc1.freshdirect.com:1521:devint";
 	//private final static String DB_URL = "jdbc:oracle:thin:@db1.dev.nyc1.freshdirect.com:1521:DBINT01";
 	//private final static String DB_URL = "jdbc:oracle:thin:@db1.test.nyc1.freshdirect.com:1521:DBTST01"
 
@@ -144,13 +147,10 @@ public class LoadUtil {
     public static void doStoreWarmup() {
         if (warm) return;
         
-        try {
+        
 			new  Warmup().warmup();
 			warm = true;
-		} catch (FDResourceException e) {
-			warm = false;
-			e.printStackTrace();
-		}
+		 
         
         /*
         ContentFactory cf = ContentFactory.getInstance();

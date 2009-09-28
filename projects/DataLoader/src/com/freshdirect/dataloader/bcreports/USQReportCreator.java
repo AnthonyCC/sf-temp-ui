@@ -45,6 +45,7 @@ public class USQReportCreator extends DBReportCreator {
 			new CashbackReport(day, new File(f, "usqCashbackReport.tsv")).run(conn);
 			new ChargebackReport(day, new File(f, "usqChargebackReport.tsv")).run(conn);
 			new ReturnReport(day, new File(f, "usqReturnReport.tsv")).run(conn);
+			new AppliedGiftCardReport(day, new File(f, "usqAppliedGiftCardReport.tsv")).run(conn);
 		} finally {
 			if (conn != null) {
 				conn.close();
@@ -160,6 +161,55 @@ public class USQReportCreator extends DBReportCreator {
 			return lst;
 		}
 
+	}
+
+	private static class AppliedGiftCardReport extends SaleReport {
+		private double totalAppliedAmount = 0.0; 
+		public AppliedGiftCardReport(Date day, File file) {
+			super(day, file);
+		}
+
+		protected String getQuery() {
+			return "select di.first_name, di.last_name, si.id, si.requested_date, agc.certificate_num, agc.amount, sa.invoice_number  "
+			+ "from (select s.id, sa.requested_date, sa.id as salesaction_id from cust.salesaction sa, cust.sale s "
+			+ "	 where sa.requested_date = ? and sa.action_type in ('CRO', 'MOD') "
+			+ "	 and sa.action_date = (select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) "
+			+ "	 and sa.sale_id = s.id and s.status <> 'CAN') si, "
+			+ "cust.deliveryinfo di, cust.salesaction sa, cust.applied_gift_card agc "
+			+ "where di.salesaction_id = si.salesaction_id  "
+			+ "and si.id = sa.sale_id and sa.action_type = 'INV' and sa.action_date = (select min(action_date) from cust.salesaction where sale_id=si.id and action_type = 'INV') "
+			+ "and agc.salesaction_id = sa.id and agc.affiliate = 'USQ'";
+		}
+
+		protected Object[] getParams() {
+			return new Object[] { new java.sql.Date(day.getTime())};
+		}
+
+		protected void processRow(ResultSet rs) throws SQLException {
+			sb.append(rs.getString("FIRST_NAME")).append("\t");
+			sb.append(rs.getString("LAST_NAME")).append("\t");
+			sb.append(rs.getString("ID")).append("\t");
+			sb.append(SF.format(rs.getDate("REQUESTED_DATE"))).append("\t");
+			sb.append(rs.getString("CERTIFICATE_NUM")).append("\t");
+			sb.append(SF.format(rs.getDouble("AMOUNT"))).append("\t");
+			totalAppliedAmount += rs.getDouble("AMOUNT");
+			sb.append(rs.getString("INVOICE_NUMBER")).append("\n");
+		}
+
+		protected List getHeaders() {
+			List lst = new ArrayList();
+			lst.add("First Name");
+			lst.add("Last Name");
+			lst.add("Web Order Number");
+			lst.add("Delivery Date");			
+			lst.add("Certificate Number");
+			lst.add("Applied Amount");
+			lst.add("Invoice Number");
+			return lst;
+		}
+		protected String getFooter(){
+			return ("Total Applied Amount : "+NUMBER_FORMATTER.format(totalAppliedAmount));
+		}
 	}
 
 	private static abstract class RefundReport extends Report {

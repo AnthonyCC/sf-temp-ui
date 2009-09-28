@@ -5,41 +5,51 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 <table cellpadding="0" cellspacing="0" border="0">
 			    <tr>
 				    <td valign="middle"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/template/youraccount/youraccount_deptnav.gif" width="198" height="33" border="0" alt="YOUR ACCOUNT"></a></td>
-					<td><img src="/media_stat/images/layout/999966.gif" width="1" height="41" border="0" hspace="0" vspace="0" ALIGN="TOP"></td>
+					<td><img src="/media_stat/images/layout/999966.gif" width="1" height="51" border="0" hspace="0" vspace="0" ALIGN="TOP"></td>
 					<td class="text9_lh12" valign="top" style="padding-left:3px;">
-					    <a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a><br>
+					    <a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a><br />
 						<%if(user.isEligibleForPreReservation()){%>
-							<a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>">Reserve&nbsp;Delivery</a><br>
+							<a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>">Reserve&nbsp;Delivery</a><br />
 						<%}%>
 						<%if(user.isDlvPassActive() || user.isEligibleForDeliveryPass()){%>
-                            <a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">Unlimited&nbsp;DeliveryPass</a>
-						<%}%>
+                            <a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">Unlimited&nbsp;DeliveryPass</a><br />
+						<% } %>
+						<% 
+							/*
+								Changing to site feature
+								if(FDStoreProperties.isGiftCardEnabled()) { 
+							*/
+							if(user.isGiftCardsEnabled()) {
+						%>
+								<a href="<%=response.encodeURL("/your_account/giftcards.jsp")%>">Gift&nbsp;Cards</a><br />
+						<% } %>
                         
                         <%if(!user.isEligibleForPreReservation()){%>
-							<a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">Delivery&nbsp;Addresses</a><br>
+							<a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">Delivery&nbsp;Addresses</a><br />
 						<%}%>
 						                
 					</td>
-					<td style="padding-left:2px;"><img src="/media_stat/images/layout/999966.gif" width="1" height="41" border="0" hspace="0" vspace="0" ALIGN="TOP"></td>
+					<td style="padding-left:2px;"><img src="/media_stat/images/layout/999966.gif" width="1" height="51" border="0" hspace="0" vspace="0" align="top"></td>
 					<td class="text9_lh12" valign="top" style="padding-left:3px;">
 						<%if(user.isEligibleForPreReservation()){%>
-                        <a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">Delivery&nbsp;Addresses</a><br>
-						<a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment&nbsp;Options</a><br>
+                        <a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">Delivery&nbsp;Addresses</a><br />
+						<a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment&nbsp;Options</a><br />
                         <a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">User&nbsp;Name,&nbsp;Password&nbsp;&&nbsp;Contact&nbsp;Information</a>
 						<%}%>                        					                            
                          <%if(!user.isEligibleForPreReservation()){%>
-                            <a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment Options</a><br>
-                            <a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">User&nbsp;Name,&nbsp;Password&nbsp;&&nbsp;Contact&nbsp;Information</a><br>
+                            <a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment Options</a><br />
+                            <a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">User&nbsp;Name,&nbsp;Password&nbsp;&&nbsp;Contact&nbsp;Information</a><br />
 							<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's&nbsp;Picks&nbsp;Newsletter</a>
 						<%}%>
 					</td>
-					<td style="padding-left:2px;"><img src="/media_stat/images/layout/999966.gif" width="1" height="41" border="0" hspace="0" vspace="0" ALIGN="TOP"></td>
+					<td style="padding-left:2px;"><img src="/media_stat/images/layout/999966.gif" width="1" height="51" border="0" hspace="0" vspace="0" ALIGN="TOP"></td>
 					<td class="text9_lh12" valign="top" style="padding-left:3px; padding-right:3px;">
                     <%if(user.isEligibleForPreReservation()){%>
-							<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's&nbsp;Picks&nbsp;Newsletter</a><br>
+							<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's&nbsp;Picks&nbsp;Newsletter</a><br />
 					<%}%>                    
-                    <a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder&nbsp;Service</a><br>
+                    <a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder&nbsp;Service</a><br />
                     <a href="<%=response.encodeURL("/your_account/customer_profile_summary.jsp")%>">Your&nbsp;Profile</a>
+					               
 					</td>
 				</tr>
 				<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"></td></tr>
@@ -52,12 +62,12 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 				    <td valign="middle">&nbsp;&nbsp;&nbsp;&nbsp;<a href="/help/index.jsp"><img src="/media_stat/images/template/help/help_deptnav.gif"  border="0" alt="HELP"></a></td>
 					<td><img src="/media_stat/images/layout/999966.gif" width="1" height="22" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
 					<td class="text9_lh12">
-					    <a href="/help/contact_fd.jsp">Contact Us</a><br>
+					    <a href="/help/contact_fd.jsp">Contact Us</a><br />
 						<a href="/help/faq_home.jsp?page=faqHome">Frequently Asked Questions</a>
 					</td>
 					<td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="/media_stat/images/layout/999966.gif" width="1" height="22" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
 					<td class="text9_lh12">
-					    <a href="/help/privacy_policy.jsp">Privacy Policy</a><br>
+					    <a href="/help/privacy_policy.jsp">Privacy Policy</a><br />
 						<a href="/help/terms_of_service.jsp">Customer Agreement</a>
 					</td>
 				</tr>

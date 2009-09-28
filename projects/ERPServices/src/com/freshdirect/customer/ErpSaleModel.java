@@ -15,7 +15,17 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.giftcard.ErpEmailGiftCardModel;
+import com.freshdirect.giftcard.ErpGiftCardAuthModel;
+import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
+import com.freshdirect.giftcard.ErpGiftCardTransModel;
+import com.freshdirect.giftcard.ErpGiftCardTransactionModel;
+import com.freshdirect.giftcard.ErpPostAuthGiftCardModel;
+import com.freshdirect.giftcard.ErpPreAuthGiftCardModel;
+import com.freshdirect.giftcard.ErpRegisterGiftCardModel;
+import com.freshdirect.giftcard.ErpReverseAuthGiftCardModel;
 import com.freshdirect.payment.AuthorizationStrategy;
+import com.freshdirect.payment.EnumGiftCardTransactionStatus;
 
 /**
  * ErpSale model class.
@@ -251,8 +261,10 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	}
 
 	public ErpAbstractOrderModel getCurrentOrder() {
+		
 		ErpAbstractOrderModel lastOrder = null;
 		List txs = new ArrayList(this.transactions);
+	    //for(int i=0;i<txs.size();i++) System.out.println("ErpTransactionModel :"+((ErpTransactionModel)txs.get(i)).getTransactionDate());  
 		Collections.sort(txs, ErpTransactionI.TX_DATE_COMPARATOR);
 		for (Iterator i = txs.iterator(); i.hasNext();) {
 			Object o = i.next();
@@ -331,6 +343,16 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.status = EnumSaleStatus.MODIFIED_CANCELED;
 	}
 
+	public void cancelGCOrder(ErpCancelOrderModel cancelOrder) throws ErpTransactionException {
+		this.assertStatus(
+			new EnumSaleStatus[] {
+				EnumSaleStatus.ENROUTE});
+
+		this.usedPromotionCodes.clear();
+		this.transactions.add(cancelOrder);
+		this.status = EnumSaleStatus.MODIFIED_CANCELED;
+	}
+	
 	public void cancelOrderComplete() throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.MODIFIED_CANCELED, EnumSaleStatus.NOT_SUBMITTED });
 		this.status = EnumSaleStatus.CANCELED;
@@ -343,7 +365,12 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.transactions.add(invoiceModel);
 		if (this.status.equals(EnumSaleStatus.RETURNED)) {
 			if ((int) Math.round(invoiceModel.getAmount() * 100) > 0) {
-				this.status = EnumSaleStatus.CAPTURE_PENDING;
+				if(invoiceModel.getAppliedGiftCards().size() > 0){
+					//Gift card used on this order. set the status to POST AUTH Pending.
+					this.status =  EnumSaleStatus.POST_AUTH_PENDING;
+				} else {
+					this.status = EnumSaleStatus.CAPTURE_PENDING;			
+				}
 			} else {
 				this.status = EnumSaleStatus.SETTLED;
 			}
@@ -420,7 +447,9 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				EnumSaleStatus.SETTLED_RETURNED,
 				EnumSaleStatus.PENDING,
 				EnumSaleStatus.REDELIVERY,
-				EnumSaleStatus.CHARGEBACK });
+				EnumSaleStatus.CHARGEBACK,
+				EnumSaleStatus.POST_AUTH_PENDING,
+				EnumSaleStatus.SETTLEMENT_PENDING});
 
 		ErpInvoiceModel lastInvoice = null;
 		List txs = new ArrayList(this.transactions);
@@ -469,9 +498,62 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	}
 
 	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel) throws ErpTransactionException {
-		this.assertStatus(EnumSaleStatus.ENROUTE);
+		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.ENROUTE});	
 		this.transactions.add(deliveryConfirmModel);
+		if(this.getInvoice().getAppliedGiftCards().size() > 0){
+			//Gift card used on this order. set the status to POST AUTH Pending.
+			this.status =  EnumSaleStatus.POST_AUTH_PENDING;
+		} else {
+			this.status = EnumSaleStatus.CAPTURE_PENDING;			
+		}
+	}
+	
+	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel, EnumSaleStatus enumSaleStatus) throws ErpTransactionException {
+		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.ENROUTE});		
+		this.transactions.add(deliveryConfirmModel);
+		this.status = enumSaleStatus;
+	}
+	
+	public void addRegisterGiftCard(ErpGiftCardTransModel registerGCModel) throws ErpTransactionException {
+		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.AUTHORIZED, EnumSaleStatus.AVS_EXCEPTION, EnumSaleStatus.ENROUTE });
+		this.transactions.add(registerGCModel);
+		//this.status = EnumSaleStatus.CAPTURE_PENDING;
+	}
+	
+	public ErpRegisterGiftCardModel getRecentRegisteration() {
+		
+		ErpRegisterGiftCardModel regModel = null;
+		List txs = new ArrayList(this.transactions);
+	    //for(int i=0;i<txs.size();i++) System.out.println("ErpTransactionModel :"+((ErpTransactionModel)txs.get(i)).getTransactionDate());  
+		Collections.sort(txs, ErpTransactionI.TX_DATE_COMPARATOR);
+		for (Iterator i = txs.iterator(); i.hasNext();) {
+			Object o = i.next();
+			if (o instanceof ErpRegisterGiftCardModel) {
+				regModel = (ErpRegisterGiftCardModel) o;
+			}
+		}
+		return regModel;
+	}
+	
+	public void addGiftCardDlvConfirm(ErpGiftCardTransModel registerGCModel) throws ErpTransactionException {
+		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.AUTHORIZED, EnumSaleStatus.AVS_EXCEPTION, EnumSaleStatus.ENROUTE,EnumSaleStatus.EMAIL_PENDING });
+		this.transactions.add(registerGCModel);
 		this.status = EnumSaleStatus.CAPTURE_PENDING;
+	}
+	
+	public void addGiftCardEmailInfo(ErpGiftCardTransModel emailGCModel) throws ErpTransactionException {
+		//this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.AUTHORIZED, EnumSaleStatus.AVS_EXCEPTION, EnumSaleStatus.ENROUTE });
+		this.assertStatus(
+		new EnumSaleStatus[] {
+				EnumSaleStatus.EMAIL_PENDING,
+				EnumSaleStatus.PAYMENT_PENDING,
+				EnumSaleStatus.SETTLED,				
+				EnumSaleStatus.SETTLEMENT_FAILED,				
+				EnumSaleStatus.CAPTURE_PENDING,
+				EnumSaleStatus.CHARGEBACK
+		 });
+		this.transactions.add(emailGCModel);
+		//this.status = EnumSaleStatus.CAPTURE_PENDING;
 	}
 
 	public void addComplaint(ErpComplaintModel complaintModel) throws ErpTransactionException {
@@ -572,6 +654,46 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.transactions.add(model);
 	}
 
+	public void addPreAuthorization(ErpPreAuthGiftCardModel preAuth) throws ErpTransactionException {
+		this.assertStatus(
+
+				new EnumSaleStatus[] {
+				EnumSaleStatus.NEW,
+				EnumSaleStatus.SUBMITTED,
+				EnumSaleStatus.AUTHORIZATION_FAILED,
+				EnumSaleStatus.AUTHORIZED,
+				EnumSaleStatus.MODIFIED
+				//EnumSaleStatus.ENROUTE, //Enroute and Refused order is required in the case of renew auth < 48 hrs.
+				//EnumSaleStatus.REFUSED_ORDER
+				});
+		this.transactions.add(preAuth);
+		
+	}
+
+	public void addCancelPreAuthorization(ErpReverseAuthGiftCardModel cancelAuth) throws ErpTransactionException {
+		this.assertStatus(
+			new EnumSaleStatus[] {
+				EnumSaleStatus.NEW,
+				EnumSaleStatus.SUBMITTED,
+				EnumSaleStatus.AUTHORIZATION_FAILED,
+				EnumSaleStatus.AUTHORIZED,
+				EnumSaleStatus.MODIFIED
+				//EnumSaleStatus.ENROUTE, //Enroute and Refused order is required in the case of renew auth < 48 hrs.
+				//EnumSaleStatus.REFUSED_ORDER
+				});
+		this.transactions.add(cancelAuth);
+		
+	}
+
+	public void addPostAuthorization(ErpPostAuthGiftCardModel postAuth) throws ErpTransactionException {
+		this.assertStatus(
+			new EnumSaleStatus[] {
+				EnumSaleStatus.POST_AUTH_PENDING,
+				});
+		this.transactions.add(postAuth);
+		
+	}
+	
 	public void addAuthorization(ErpAuthorizationModel auth) throws ErpTransactionException {
 		this.assertStatus(
 			new EnumSaleStatus[] {
@@ -820,12 +942,34 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 	}
 
+	public void forceSettlement() throws ErpTransactionException {
+		this.assertStatus(
+			new EnumSaleStatus[] {
+					EnumSaleStatus.SETTLEMENT_PENDING
+			});
+
+		this.status = EnumSaleStatus.SETTLED;
+	}
+	
 	public void cutoff() throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.AUTHORIZED, EnumSaleStatus.AVS_EXCEPTION });
 		this.status = EnumSaleStatus.INPROCESS;
 	}
 
 
+	public void emailPending() throws ErpTransactionException {		
+		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.ENROUTE});
+		this.status = EnumSaleStatus.EMAIL_PENDING;
+	}
+
+
+	public void setGiftCardRegPending() throws ErpTransactionException {		
+		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.AUTHORIZED, EnumSaleStatus.AVS_EXCEPTION, EnumSaleStatus.ENROUTE });
+		this.status = EnumSaleStatus.REG_PENDING;
+	}
+
+	
+	
 	public PrimaryKey getCustomerPk() {
 		return this.customerPk;
 	}
@@ -882,6 +1026,266 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return Collections.unmodifiableList(auths);
 	}
 
+	public ErpGiftCardDlvConfirmModel getGCDeliveryConfirmation(){
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpGiftCardDlvConfirmModel) {
+				return (ErpGiftCardDlvConfirmModel)obj;
+			}
+		}
+		return null;
+		
+	}
+
+	public List getGCResendEmailTransaction(){
+		List resendTransactions = new ArrayList();
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpEmailGiftCardModel) {
+				resendTransactions.add(obj);
+			}
+		}
+		return Collections.unmodifiableList(resendTransactions);
+		
+	}
+	
+	public List getGCTransactions() {
+		List auths = new ArrayList();
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpPreAuthGiftCardModel ||
+					obj instanceof ErpReverseAuthGiftCardModel ||
+					obj instanceof ErpPostAuthGiftCardModel) {
+					auths.add(obj);
+			}
+		}
+		return Collections.unmodifiableList(auths);
+	}
+
+	public List getGCAuthorizations(ErpPaymentMethodI pm) {
+		List auths = new ArrayList();
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpPreAuthGiftCardModel) {
+				ErpPreAuthGiftCardModel auth = (ErpPreAuthGiftCardModel)obj;
+				if(auth.getCertificateNum().equals(pm.getCertificateNumber()))
+					auths.add(obj);
+			}
+		}
+		return Collections.unmodifiableList(auths);
+	}
+	
+	public List getGCReverseAuthorizations(ErpPaymentMethodI pm) {
+		List auths = new ArrayList();
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpReverseAuthGiftCardModel) {
+				ErpReverseAuthGiftCardModel rauth = (ErpReverseAuthGiftCardModel)obj;
+				if(rauth.getCertificateNum().equals(pm.getCertificateNumber()))
+					auths.add(obj);
+
+			}
+		}
+		return Collections.unmodifiableList(auths);
+	}
+	
+	private List getGCReversePreAuthcodes(ErpPaymentMethodI pm) {
+		List authCodes = new ArrayList();
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpReverseAuthGiftCardModel) {
+				ErpReverseAuthGiftCardModel rauth = (ErpReverseAuthGiftCardModel)obj;
+				if(rauth.getCertificateNum().equals(pm.getCertificateNumber()))
+					authCodes.add(rauth.getPreAuthCode());
+			}
+		}
+		return Collections.unmodifiableList(authCodes);
+	}
+
+	private List getGCReversePreAuthcodes() {
+		List authCodes = new ArrayList();
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpReverseAuthGiftCardModel) {
+				ErpReverseAuthGiftCardModel rauth = (ErpReverseAuthGiftCardModel)obj;
+				authCodes.add(rauth.getPreAuthCode());
+			}
+		}
+		return Collections.unmodifiableList(authCodes);
+	}
+	
+	public boolean hasValidPostAuth(ErpPaymentMethodI pm, String preAuthCode) {
+		List authCodes = new ArrayList();
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpPostAuthGiftCardModel) {
+				ErpPostAuthGiftCardModel pauth = (ErpPostAuthGiftCardModel)obj;
+				if(pauth.getCertificateNum().equals(pm.getCertificateNumber()) && pauth.getPreAuthCode().equals(preAuthCode))
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	public List getPendingGCAuthorizations(ErpPaymentMethodI pm) {
+		List pAuths = new ArrayList();
+		List auths = getGCAuthorizations(pm);
+		//List reverseAuthCodes = getGCReversePreAuthcodes(pm);
+		for (Iterator i = auths.iterator(); i.hasNext();) {
+			ErpPreAuthGiftCardModel auth = (ErpPreAuthGiftCardModel)i.next();
+			if(auth.getCertificateNum().equals(pm.getCertificateNumber()) //&& !reverseAuthCodes.contains(auth.getAuthCode()) 
+						&& auth.isPending()){
+				pAuths.add(auth);
+			}
+		}
+		return Collections.unmodifiableList(pAuths);
+	}
+	
+	public List getPendingGCAuthorizations() {
+		List pAuths = new ArrayList();
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpPreAuthGiftCardModel) {
+				ErpPreAuthGiftCardModel auth = (ErpPreAuthGiftCardModel)obj;
+				if(auth.isPending())
+					pAuths.add(obj);
+			}
+		}
+		return Collections.unmodifiableList(pAuths);
+		
+	}
+	public List getValidGCAuthorizations() {
+		List pAuths = new ArrayList();
+		List reverseAuthCodes = getGCReversePreAuthcodes();
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpPreAuthGiftCardModel) {
+				ErpPreAuthGiftCardModel auth = (ErpPreAuthGiftCardModel)obj;
+				if(!reverseAuthCodes.contains(auth.getAuthCode())&& !auth.isCancelled() && !auth.isDeclined())
+					pAuths.add(obj);
+			}
+		}
+		return Collections.unmodifiableList(pAuths);
+	}
+	public List getValidGCPostAuthorizations() {
+		List pAuths = new ArrayList();
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpPostAuthGiftCardModel) {
+				ErpPostAuthGiftCardModel pauth = (ErpPostAuthGiftCardModel)obj;
+				if(pauth.isApproved() || pauth.isDeclined())
+					pAuths.add(obj);
+			}
+		}
+		return Collections.unmodifiableList(pAuths);
+	}
+	public List getPendingGCReverseAuths(ErpPaymentMethodI pm) {
+		List rauths = new ArrayList();
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpReverseAuthGiftCardModel) {
+				ErpReverseAuthGiftCardModel rauth = (ErpReverseAuthGiftCardModel)obj;
+				if(rauth.getCertificateNum().equals(pm.getCertificateNumber()) && rauth.isPending())
+					rauths.add(obj);
+
+			}
+		}
+		return Collections.unmodifiableList(rauths);
+	}
+	
+	public List getValidGCAuthorizations(ErpPaymentMethodI pm) {
+		List vAuths = new ArrayList();
+		List auths = getGCAuthorizations(pm);
+		List reverseAuthCodes = getGCReversePreAuthcodes(pm);
+		for (Iterator i = auths.iterator(); i.hasNext();) {
+			ErpPreAuthGiftCardModel auth = (ErpPreAuthGiftCardModel)i.next();
+			if(auth.getCertificateNum().equals(pm.getCertificateNumber()) && !reverseAuthCodes.contains(auth.getAuthCode()) 
+						&& !auth.isCancelled() && !auth.isDeclined()){
+				vAuths.add(auth);
+			}
+		}
+		return Collections.unmodifiableList(vAuths);
+	}
+	
+	public void addGCAuthorization(ErpPreAuthGiftCardModel auth) throws ErpTransactionException{
+		this.assertStatus(
+				new EnumSaleStatus[] {
+					EnumSaleStatus.NEW,
+					EnumSaleStatus.SUBMITTED,
+					EnumSaleStatus.AUTHORIZED,
+					EnumSaleStatus.MODIFIED,
+					});
+		this.transactions.add(auth);
+	}
+	
+	
+	public void addGCBalanceTransfer(ErpGiftCardTransModel auth) throws ErpTransactionException{
+		this.assertStatus(
+				new EnumSaleStatus[] {					
+					EnumSaleStatus.SETTLED,
+					EnumSaleStatus.CAPTURE_PENDING,
+					EnumSaleStatus.PAYMENT_PENDING
+					});
+		this.transactions.add(auth);
+	}
+	
+	
+	public void cancelGCAuthorization(ErpPreAuthGiftCardModel auth) throws ErpTransactionException{
+		this.assertStatus(
+				new EnumSaleStatus[] {
+					EnumSaleStatus.NEW,
+					EnumSaleStatus.SUBMITTED,
+					EnumSaleStatus.AUTHORIZED,
+					EnumSaleStatus.MODIFIED,
+					EnumSaleStatus.MODIFIED_CANCELED,
+					EnumSaleStatus.CANCELED					
+					});
+		int i = this.transactions.indexOf(auth);
+		auth.setGcTransactionStatus(EnumGiftCardTransactionStatus.CANCEL);
+		this.transactions.set(i, auth);
+	}
+	
+	public void addReverseGCAuthorization(ErpReverseAuthGiftCardModel rauth) throws ErpTransactionException{
+		this.assertStatus(
+				new EnumSaleStatus[] {
+					EnumSaleStatus.NEW,
+					EnumSaleStatus.SUBMITTED,
+					EnumSaleStatus.AUTHORIZED,
+					EnumSaleStatus.MODIFIED,
+					EnumSaleStatus.MODIFIED_CANCELED,					
+					EnumSaleStatus.CANCELED,			
+					EnumSaleStatus.POST_AUTH_PENDING
+					});
+		this.transactions.add(rauth);
+	}
+	
+	public void updateGCAuthorization(ErpGiftCardAuthModel auth) throws ErpTransactionException{
+		this.assertStatus(
+				new EnumSaleStatus[] {
+					EnumSaleStatus.NEW,
+					EnumSaleStatus.SUBMITTED,
+					EnumSaleStatus.AUTHORIZED,
+					EnumSaleStatus.MODIFIED,
+					EnumSaleStatus.POST_AUTH_PENDING
+					});
+		
+		int i = this.transactions.indexOf(auth);
+		this.transactions.set(i, auth);
+	}
+
+	public void markAsCapturePending() throws ErpTransactionException {
+		this.assertStatus(EnumSaleStatus.POST_AUTH_PENDING);
+		this.status = EnumSaleStatus.CAPTURE_PENDING;
+	} 
+
+	/*
+	 * This method is only used in the case of gro orders that has gift payments only.
+	 */
+	public void markAsSettlementPending() throws ErpTransactionException {
+		this.assertStatus(EnumSaleStatus.PAYMENT_PENDING);
+		this.status = EnumSaleStatus.SETTLEMENT_PENDING;
+	}
+	
 	public List getFailedAuthorizations() {
 		List failedAuths = new ArrayList();
 		ErpAuthorizationModel authorization = null;

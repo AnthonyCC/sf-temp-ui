@@ -44,6 +44,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -59,6 +60,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.mail.ErpMailSender;
 
 public class DeliveryPassRenewalCron {
@@ -129,6 +131,10 @@ public class DeliveryPassRenewalCron {
 		} catch (DeliveryPassException e) {
 			LOGGER.warn(e);
 			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
+		} catch (FDPaymentInadequateException e) {
+			LOGGER.warn(e);
+			email(actionInfo.getIdentity().getErpCustomerPK(),e.toString());
+
 		}
 		return orderID;
 	}

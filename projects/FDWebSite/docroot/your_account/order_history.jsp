@@ -1,4 +1,5 @@
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
+<%@ page import="com.freshdirect.customer.EnumSaleType" %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.framework.webapp.*'%>
@@ -88,15 +89,45 @@ Please review your orders. To check the status of an order, click on the order n
 	</tr>
 	<% } orderNumber++; %>
 	<tr bgcolor="<%= (rowCounter++ % 2 == 0) ? "#FFFFFF" : "#EEEEEE" %>">
-		<td><a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>"><%= orderInfo.getErpSalesId() %></a></td>
+	
+	<%
+     String orderDetailsUrl = "";
+	 if(orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD)) { 
+        orderDetailsUrl = "/your_account/gc_order_details.jsp?orderId="+ orderInfo.getErpSalesId() ;
+     }else  if(orderInfo.getSaleType().equals(EnumSaleType.DONATION)) { 
+        orderDetailsUrl = "/your_account/rh_order_details.jsp?orderId="+ orderInfo.getErpSalesId() ;
+     }else {
+       orderDetailsUrl = "/your_account/order_details.jsp?orderId="+ orderInfo.getErpSalesId() ;
+     }
+    %>
+     
+	    <td><a href="<%= orderDetailsUrl %>"><%= orderInfo.getErpSalesId() %></a></td>
+	
 		<td class="text10"><%= dateFormatter.format( orderInfo.getRequestedDate() ) %></td>
-                <td class="text10"><%= orderInfo.getDeliveryType().getName() %></td>
+        <%
+            String deliveryType = "";
+            if(orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD)) {
+                deliveryType = "Gift Card";
+            } else {
+               deliveryType = orderInfo.getDeliveryType().getName();
+            }
+        %>
+                <td class="text10"><%= deliveryType %></td>
 		<td class="text10" align=right><%= currencyFormatter.format( orderInfo.getTotal() ) %>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 		<td></td>
-		<td><%= orderInfo.getOrderStatus().getDisplayName() %></td>
+        <%
+            String status = "";
+            if(orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD)) {
+                status = orderInfo.isPending() ? "In Process" : "Completed";
+            } else {
+                status = orderInfo.getOrderStatus().getDisplayName();
+            }
+            
+        %>
+		<td><%= status %></td>
 		<td>
-			<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>"><%= EnumSaleStatus.SUBMITTED.equals(orderInfo.getOrderStatus()) || EnumSaleStatus.AUTHORIZED.equals(orderInfo.getOrderStatus()) || EnumSaleStatus.AVS_EXCEPTION.equals(orderInfo.getOrderStatus()) ? "View/Modify" : "View" %></a>
-            <% if (!orderInfo.isPending()) { %>
+			<a href="<%= orderDetailsUrl %>"><%= EnumSaleStatus.SUBMITTED.equals(orderInfo.getOrderStatus()) || EnumSaleStatus.AUTHORIZED.equals(orderInfo.getOrderStatus()) || EnumSaleStatus.AVS_EXCEPTION.equals(orderInfo.getOrderStatus()) ? "View/Modify" : "View" %></a>
+            <% if (!orderInfo.isPending() && !orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD)) { %>
             | <a href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>">Shop From This Order</a>
             <% } %>
 		</td>

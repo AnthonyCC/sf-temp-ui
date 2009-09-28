@@ -1,0 +1,267 @@
+<%
+	// email resend box
+%>
+	<div class="gcResendBox">
+		<div style="text-align: left;" class="gcResendBoxContent" id="gcResendBox">
+			<img src="/media_stat/images/giftcards/your_account/resend_hdr.gif" width="169" height="16" alt="Resend Gift Card" />
+			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a>
+			<br />If your Recipient never received their Gift Card, you may resend it by clicking Resend Now. If there was an error in the Recipient's email address, or to use a new one, edit the email field.
+			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0"><br /><br />
+			<input type="hidden" id="gcSaleId" value=""/>
+			<input type="hidden" id="gcCertNum" value=""/>
+			<table border="0" cellspacing="0" cellpadding="4" width="100%">
+				<tr>
+					<td width="130" align="right">Recipient Name:</td>
+					<td><input id="gcResendRecipName" value="" /></td>
+				</tr>
+				<tr valign="middle">
+					<td width="130" align="right">Recipient Email (edit):</td>
+					<td><input id="gcResendRecipEmail" value="" /></td>
+				</tr>
+				<tr>
+					<td width="130" align="right">Amount:</td>
+					<td><span id="gcResendRecipAmount"><!--  --></span></td>
+				</tr>
+				<tr>
+					<td width="130" align="right">Personal Message:</td>
+					<td><textarea id="gcResendRecipMsg"></textarea></td>
+				</tr>
+				<tr>
+					<td width="150" align="right"><a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/clear_btn.gif" width="60" height="25" alt="CANCEL" border="0" /></a></td>
+					<td><a href="#" onclick="recipResendEmail(); return false;"><img src="/media_stat/images/giftcards/your_account/resend_now_btn.gif" width="85" height="25" alt="RESEND" border="0" /></a></td>
+				</tr>
+			</table>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+			PLEASE NOTE: You will NOT receive a confirmation email for resent email Gift Cards.<br /><br />
+			<div id="gcResendErr">&nbsp;</div>
+		</div>
+	</div>
+
+
+<%
+	// check address
+	/*
+		original text should be:
+			Do we deliver to your recipient? If you know their address, enter it below and find out.
+
+		returned text should be:
+
+			GOOD:
+				<div class="gcCheckAddressBoxGoodMsg"><span class="gcCheckAddressBoxOrange">Good news!</span> We deliver to the address below.</div>
+
+			NEED MORE:
+				<span class="gcCheckAddressBoxMsg"><br />Please enter the complete address.</span>
+
+			NO:
+				<span class="gcCheckAddressBoxMsg">Sorry, we don't currently deliver to this address.</span><br />
+				If this is a New York address, may we suggest our Pickup Window in Long Island City?
+	*/
+%>
+
+    <div class="gcCheckAddressBox">
+		<div style="text-align: left;" class="gcCheckAddressBoxContent" id="gcCheckAddressBox">
+			<img src="/media_stat/images/giftcards/your_account/check_address_hdr.gif" width="132" height="16" alt="Check An Address" style="float: left;" />
+			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a><br style="clear: both;" />
+			<div id="gcCheckAddressBoxErr">
+				<span id="gcCheckAddressBoxMsg">Sorry, we don't currently deliver to this address.<br />
+			If this is a New York address, may we suggest our Pickup Window in Long Island City?</span>
+			</div><br />
+			<img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0"><br /><br />
+			<table border="0" cellspacing="0" cellpadding="4" width="100%">
+				<tr>
+					<th width="130" align="right">Street Address 1:</th>
+					<td><input name="address1" id="address1" value="" /></td>
+				</tr>
+				<tr valign="middle">
+					<th width="130" align="right">Street Address 2:</th>
+					<td><input name = "address2" id="address2" value="" /></td>
+				</tr>
+				<tr>
+					<th width="130" align="right">City/Town:</th>
+					<td><input name="city" id="city" value="" /></td>
+				</tr>
+				<tr>
+					<th width="130" align="right">State:</th>
+					<td><input type="radio" name="state" id="stateNY" value="NY" checked /> New York <input type="radio" name="state" id="stateNJ" value="NJ"/> New Jersey</td>
+				</tr>
+				<tr>
+					<th width="130" align="right">ZIP Code:</th>
+					<td><input name="zipcode" id="zipcode" value="" /></td>
+				</tr>
+				<tr>
+					<td width="150" align="right"><a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/clear_btn.gif" width="60" height="25" alt="CANCEL" border="0" /></a></td>
+					<td><a href="#" onclick="checkAddress(); return false;"><img id ="checkAddrBtnImg" src="/media_stat/images/giftcards/your_account/chk_addr_btn.gif" width="102" height="25" alt="CHECK ADDRESS" border="0" /></a></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+
+<%
+	// check balance box CRM
+%>
+	<div class="gcCheckBalanceBox">
+		<div style="text-align: left;" class="gcCheckBalanceBoxContent" id="gcCheckBalanceBox">
+			<table border="0" cellspacing="0" cellpadding="4" width="100%">
+				<tr>
+					<th colspan="2">Check Gift Card Balance</td>
+					<th><a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/crm/images/x_trans.gif" width="16" height="16" alt="close" border="0" /></a></th>
+				</tr>
+				<tr>
+					<td class="bRight">Gift Card #</td>
+					<td><input type="text" id="gcCheckBalanceBox_gcNumb" value="" /><br /><span class="gcCertFullNumbNote">Full number only</span></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td><input type="button" class="submit" value="CHECK BALANCE" onClick="checkBalance(); return false;"/></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td colspan="3"><div id="gcCheckBalanceBoxMsg">&nbsp;</div></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+<%
+	// email resend box CRM
+	/* 
+		original text should be:
+			<table>
+				<tr class="gcResendCRMBox_recipLine">
+					<td><input type="checkbox" id="" />Original recipient</td>
+					<td><input type="text" id="" value="" /></td>
+				</tr>
+				<tr class="gcResendCRMBox_recipLine">
+					<td><input type="checkbox" id="" />Self</td>
+					<td><input type="text" id="" value="" /></td>
+				</tr>
+				<tr class="gcResendCRMBox_recipLine">
+					<td><input type="checkbox" id="" />New recipient</td>
+					<td><input type="text" id="" value="" /></td>
+				</tr>
+				<tr class="gcResendCRMBox_recipLine">
+					<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+				</tr>
+				<tr class="gcResendCRMBox_recipLine">
+					<td><input type="submit" class="submit" value="SEND EMAIL" /></td>
+					<td>Preview email</td>
+				</tr>
+			</table>
+
+
+		returned text should be:
+			<span>&nbsp;Email sent to:</span>
+			<table class="gcResendCRMBox_recipLine">
+				<tr><td>email1</td></tr>
+				<tr><td>email2</td></tr>
+				<tr><td>email3</td></tr>
+			</table>
+	*/
+%>
+
+	<div class="gcResendCRMBox">
+		<div style="text-align: left;" class="gcResendCRMBoxContent" id="gcResendCRMBox">
+			
+			<table border="0" cellspacing="0" cellpadding="4" width="100%">
+				<tr>
+					<th colspan="2">Resend Gift Card Email</td>
+					<th style="text-align: right;">
+						<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/crm/images/x_trans.gif" width="16" height="16" alt="close" border="0" /></a></td>
+				</tr>
+				<tr>
+					<td class="b10pt vBot" style="width: 90px;">&nbsp;Certificate #:</td>
+					<td class="b11pt"><span id="gcCertNumDisplay_gcResendCRMBox">&nbsp;</span></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<input type="hidden" id="gcSaleId_gcResendCRMBox" value="" />
+						<input type="hidden" id="gcCertNum_gcResendCRMBox" value="" />
+						<span id="gcResendRecipAmount_gcResendCRMBox" style="display: none; visibility: hidden;">&nbsp;</span>
+						<div id="gcResendCRMBoxErr">
+							<table>
+								<tr class="gcResendCRMBox_recipLine">
+									<td colspan="2"><input type="checkbox" id="gcIsPurchaser_gcResendCRMBox" checked />Purchaser</td>
+								</tr>
+								<tr class="gcResendCRMBox_recipLine">
+									<td colspan="2"><input type="checkbox" id="gcIsLastRecip_gcResendCRMBox" checked />Last&nbsp;Recipient</td>
+								</tr>
+								<tr class="gcResendCRMBox_recipLine">
+									<td align="right">Name:</td>
+									<td><input type="text" id="gcResendRecipName_gcResendCRMBox" value="" /></td>
+								</tr>
+								<tr class="gcResendCRMBox_recipLine">
+									<td align="right">Email:</td>
+									<td><input type="text" id="gcResendRecipEmail_gcResendCRMBox" value="" /></td>
+								</tr>
+								<tr class="gcResendCRMBox_recipLine">
+									<td align="right">Personal Message:</td>
+									<td><textarea id="gcResendRecipMsg_gcResendCRMBox"></textarea></td>
+								</tr>
+								<tr class="gcResendCRMBox_recipLine">
+									<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+								</tr>
+								<tr class="gcResendCRMBox_recipLine">
+									<td colspan="2"><input type="submit" class="submit" value="SEND EMAIL" onclick="recipResendEmailCRM(); return false;" /></td>
+								</tr>
+							</table>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+<%
+	// email resend cancellation box CRM
+%>
+
+	<div class="gcResendCRMCancelBox">
+		<div style="text-align: left;" class="gcResendCRMCancelBoxContent" id="gcResendCRMCancelBox">
+			
+			<table border="0" cellspacing="0" cellpadding="4" width="100%">
+				<tr>
+					<th colspan="2">Send Gift Card Cancellation Email</td>
+					<th style="text-align: right;"><a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/crm/images/x_trans.gif" width="16" height="16" alt="close" border="0" /></a></th>
+				</tr>
+				<tr>
+					<td class="b10pt vBot" style="width: 150px;">&nbsp;Certificate #:</td>
+					<td class="b11pt"><span id="gcCertNumDisplay_gcResendCRMCancelBox">&nbsp;</span></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<div>
+							<table>
+								<tr class="gcResendCRMCancelBox_recipLine">
+									<td><input type="checkbox" id="origRecpEmail_gcResendCRMCancelBox" value="" />Original recipient</td>
+									
+								</tr>
+								<tr class="gcResendCRMCancelBox_recipLine">
+									<td><input type="checkbox" id="selfEmail_gcResendCRMCancelBox" value="" />Self</td>
+									
+								</tr>
+								<tr class="gcResendCRMCancelBox_recipLine">
+									<td><input type="checkbox" id="newRecipient_gcResendCRMCancelBox" />New recipient</td>
+									<td><input type="text" id="newRecpEmail_gcResendCRMCancelBox" value="" /></td>
+								</tr>
+								<tr class="gcResendCRMCancelBox_recipLine">
+									<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+								</tr>
+								<tr class="gcResendCRMCancelBox_recipLine">
+									<td colspan="2"><input type="submit" class="submit" value="SEND CANCELLATION EMAIL" onclick="sendCancellation(); return false;"/></td>
+								</tr>
+							</table>
+							<input type="hidden" id="gcSaleId_gcResendCRMCancelBox" value="" />
+							<input type="hidden" id="gcGivexNum_gcResendCRMCancelBox" value="" />
+							<input type="hidden" id="gcCertNum_gcResendCRMCancelBox" value="" />
+							<input type="hidden" id="opStatus_gcResendCRMCancelBox" value="" />
+							<div id="gcResendCRMCancelBoxErr">&nbsp;</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>

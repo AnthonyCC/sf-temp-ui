@@ -17,6 +17,7 @@ import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.giftcard.ErpGiftCardUtil;
 
 
 /**
@@ -80,7 +81,7 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.PAYMENTINFO WHERE SALESACTION_ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.PAYMENTINFO WHERE SALESACTION_ID=? and CARD_TYPE <> 'GCP'");
 		ResultSet rs = null;
 		try {
 			ps.setString(1, parentPK.getId());
@@ -145,8 +146,7 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 			ps.setString(index++, this.model.getBankName());
 		} else {
 			ps.setNull(index++, Types.VARCHAR);			
-		}
-		
+		}			
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -205,12 +205,15 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		this.model.setAbaRouteNumber(rs.getString("ABA_ROUTE_NUMBER"));
 		this.model.setBankAccountType(EnumBankAccountType.getEnum(rs.getString("BANK_ACCOUNT_TYPE")));
 		this.model.setBankName(rs.getString("BANK_NAME"));
-
+		//if(paymentMethodType.equals(EnumPaymentMethodType.GIFTCARD)) {
+			//Set the certification number for gift card.
+			//model.setCertificateNumber(ErpGiftCardUtil.getCertificateNumber(rs.getString("ACCOUNT_NUMBER")));
+		//}
 		this.unsetModified();
 	}
 	
 	public PrimaryKey getPK(){
-	    return this.getParentPK();
+		return this.getParentPK();
 	}
 	
 	public void setPK(PrimaryKey pk) {

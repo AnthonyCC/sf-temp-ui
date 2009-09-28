@@ -66,6 +66,7 @@ import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintInfoModel;
+import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpCustomerAlertModel;
@@ -77,6 +78,7 @@ import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpFraudException;
+import com.freshdirect.customer.ErpGiftCardComplaintLineModel;
 import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderHistory;
@@ -103,7 +105,6 @@ import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
-import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
@@ -142,16 +143,19 @@ import com.freshdirect.fdstore.customer.FDCustomerSearchCriteria;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.fdstore.customer.ProfileAttributeName;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.RegistrationResult;
+import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
+import com.freshdirect.fdstore.mail.FDGiftCardEmailFactory;
 import com.freshdirect.fdstore.promotion.ejb.FDPromotionDAO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.request.FDProductRequestDAO;
@@ -161,11 +165,25 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.CardInUseException;
+import com.freshdirect.giftcard.CardOnHoldException;
+import com.freshdirect.giftcard.EnumGCDeliveryMode;
+import com.freshdirect.giftcard.EnumGiftCardFailureType;
+import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
+import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.giftcard.ErpGiftCardUtil;
+import com.freshdirect.giftcard.ErpRecipentModel;
+import com.freshdirect.giftcard.GiftCardApplicationStrategy;
+import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
+import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
+import com.freshdirect.giftcard.ejb.GiftCardPersistanceDAO;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -187,6 +205,19 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
+	public RegistrationResult register(
+			FDActionInfo info,
+			ErpCustomerModel erpCustomer,
+			FDCustomerModel fdCustomer,
+			String cookie,
+			boolean pickupOnly,
+			boolean eligibleForPromotion,
+			FDSurveyResponse survey,
+			EnumServiceType serviceType) throws FDResourceException, ErpDuplicateUserIdException {
+		
+		return register(info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey, serviceType, false);
+	}
+	
 	/**
 	 * Register and log in a new customer.
 	 *
@@ -209,7 +240,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		boolean pickupOnly,
 		boolean eligibleForPromotion,
 		FDSurveyResponse survey,
-		EnumServiceType serviceType) throws FDResourceException, ErpDuplicateUserIdException {
+		EnumServiceType serviceType,
+		boolean isGiftCardBuyer) throws FDResourceException, ErpDuplicateUserIdException {
 
 		Connection conn = null;
 		try {
@@ -217,12 +249,14 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			// do registration fraud check
 			//
 			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
-			Set fraudResults = fraudSB.checkRegistrationFraud(erpCustomer);
-
+			Set fraudResults = null;
+			if(!isGiftCardBuyer) {
+				fraudResults = fraudSB.checkRegistrationFraud(erpCustomer);
+			} 
 			erpCustomer.setActive(true);
 			ErpCustomerManagerSB erpCustomerManagerSB = this.getErpCustomerManagerHome().create();
 			LOGGER.debug("Creating customer in ERPS");
-			PrimaryKey pk = erpCustomerManagerSB.createCustomer(erpCustomer);
+			PrimaryKey pk = erpCustomerManagerSB.createCustomer(erpCustomer, isGiftCardBuyer);
 			LOGGER.debug("Created customer in ERPS");
 
 			String erpCustomerId = pk.getId();
@@ -259,7 +293,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			info.setIdentity(identity);
 			this.logActivity(info.createActivity(EnumAccountActivityType.CREATE_ACCOUNT));
 
-			if (!fraudResults.isEmpty()) {
+			if (null != fraudResults && !fraudResults.isEmpty()) {
 				info.setSource(EnumTransactionSource.SYSTEM);
 				StringBuffer fraudNote = new StringBuffer();
 				for (Iterator itrFr = fraudResults.iterator(); itrFr.hasNext();) {
@@ -278,7 +312,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				s.setAnswers(survey.getAnswers());
 				storeSurvey(s);
 			}
-
+			if(isGiftCardBuyer) {
+				return new RegistrationResult(identity);
+			}
 			return new RegistrationResult(identity, fraudResults.size() > 0);
 
 		} catch (java.sql.SQLException sqle) {
@@ -548,6 +584,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 		return dlvPassInfo;
 	}
+	
 	public FDUser recognize(String cookie) throws FDAuthenticationException, FDResourceException {
 
 		Connection conn = null;
@@ -770,8 +807,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	public FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException {
 		try {
-
-			ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getErpCustomerPK()));
+			String erpCustomerPK = identity.getErpCustomerPK();
+			ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(new PrimaryKey(erpCustomerPK));
 
 			FDUser fduser = this.recognize(identity);
 
@@ -1312,7 +1349,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
 		EnumDlvPassStatus status,
-		boolean pr1) throws FDResourceException, ErpFraudException, ErpAuthorizationException, ReservationException, DeliveryPassException {
+		boolean pr1) throws FDResourceException, ErpFraudException, ErpAuthorizationException, 
+		ReservationException, DeliveryPassException, FDPaymentInadequateException, ErpTransactionException,InvalidCardException {
 
 		PrimaryKey pk = null;
 		try {
@@ -1324,7 +1362,20 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				this.getSessionContext().setRollbackOnly();
 				throw new ReservationException(e.getMessage());
 			}
-
+			GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(createOrder, null);
+			strategy.generateAppliedGiftCardsInfo();
+			//Check if payment received is enough to process GC only orders.
+			if(createOrder.getSelectedGiftCards() != null && createOrder.getSelectedGiftCards().size() >0) {
+				//Generate Applied gift cards info.
+				
+				if(strategy.getRemainingBalance() > 0 && createOrder.getPaymentMethod().isGiftCard()){
+					//No CC or EC available on the account. Balance to be paid by other mode of payment
+					throw new FDPaymentInadequateException("Payment indequate. Please provide a different mode of payment.");
+				}
+				createOrder.setAppliedGiftcards(strategy.getAppGiftCardInfo());
+				
+			}			
+			createOrder.setBufferAmt(strategy.getPerishableBufferAmount());
 			//place order in SAP and ERP
 			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			String customerPk = identity.getErpCustomerPK();
@@ -1403,16 +1454,44 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 						
 			FDDeliveryManager.getInstance().commitReservation(reservationId,identity.getErpCustomerPK(), pk.getId(),createOrder.getDeliveryInfo().getDeliveryAddress(),pr1);
 
+			if(null != createOrder.getSelectedGiftCards() && createOrder.getSelectedGiftCards().size() > 0) {
+				//Verify status of gift cards being applied on this order.
+				List verifiedList = verifyStatusAndBalance(createOrder.getSelectedGiftCards(), false);
+				List badGiftCards = ErpGiftCardUtil.checkForBadGiftcards(verifiedList);
+				if(badGiftCards.size() > 0){
+					//Issues with gift cards
+					
+					//Send GC Authorization Email.
+					/*FDOrderI order = getOrder(pk.getId());
+					FDCustomerInfo custInfo = this.getCustomerInfo(identity);
+
+					int orderCount = getValidOrderCount(identity);
+					custInfo.setNumberOfOrders(orderCount);
+					Calendar cal = calculateCutOffTime(order); //To get the cutoff time for replacing the order.
+					this.doEmail(FDGiftCardEmailFactory.getInstance().createAuthorizationFailedEmail(custInfo, pk.getId(),
+							order.getDeliveryReservation().getStartTime(),
+							order.getDeliveryReservation().getEndTime(), cal.getTime()));*/
+					
+					//throw exception after sending the authorization failed email.
+					throw new InvalidCardException("Certificate Invalid");
+				}
+				//Initiate pre authorization.
+				GiftCardManagerSB gcSB = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				gcSB.initiatePreAuthorization(pk.getId());
+				
+				
+			}
 			//AUTH sale in CYBER SOURCE
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
 			paymentManager.authorizeSaleRealtime(pk.getId());
-
+			
 			if (sendEmail) {
 				FDOrderI order = getOrder(pk.getId());
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
 
 				int orderCount = getValidOrderCount(identity);
 				fdInfo.setNumberOfOrders(orderCount);
+				fdInfo.setUserGiftCardsBalance(calculateGiftCardsBalance(this.getGiftCards(identity)));
 
 				this.doEmail(FDEmailFactory.getInstance().createConfirmOrderEmail(fdInfo, order));
 			}
@@ -1613,6 +1692,11 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				
 				isRestored = FDDeliveryManager.getInstance().releaseReservation(reservationId,order.getDeliveryAddress());
 			}
+			if(null != order.getAppliedGiftCards() && order.getAppliedGiftCards().size() > 0) {	
+				//Cancel/Reverse GC pre authorization.
+				GiftCardManagerSB gcSB = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				gcSB.initiateCancelAuthorizations(saleId);
+			}
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.CANCEL_ORDER);
 			this.logActivity(rec);
 
@@ -1682,7 +1766,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
 		EnumDlvPassStatus status,
-		boolean pr1) throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException, DeliveryPassException {
+		boolean pr1) throws FDResourceException, ErpTransactionException, ErpFraudException, 
+		ErpAuthorizationException, DeliveryPassException, FDPaymentInadequateException, InvalidCardException {
 
 		try {
 			// !!! verify that the sale belongs to the customer
@@ -1697,6 +1782,19 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new ErpTransactionException(
 					"Customers may not modify orders in this state. Please contact Customer Service to continue.");
 			}
+			GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
+			strategy.generateAppliedGiftCardsInfo();
+			//Check if payment received is enough to process GC only orders.
+			if(order.getSelectedGiftCards() != null && order.getSelectedGiftCards().size() >0) {
+				//Generate Applied gift cards info.
+				
+				if(strategy.getRemainingBalance() > 0 && order.getPaymentMethod().isGiftCard()){
+					//No CC or EC available on the account. Balance to be paid by other mode of payment
+					throw new FDPaymentInadequateException("Payment indequate. Please provide a different mode of payment.");
+				}
+				order.setAppliedGiftcards(strategy.getAppGiftCardInfo());
+			}			
+			order.setBufferAmt(strategy.getPerishableBufferAmount());
 			//Modify order in SAP and ERP
 			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			sb.modifyOrder(saleId, order, usedPromotionCodes, cra, agentRole, true);
@@ -1809,7 +1907,26 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				//dlvSB.commitReservation(newReservationId, identity.getErpCustomerPK(), saleId);				
 				FDDeliveryManager.getInstance().commitReservation(newReservationId, identity.getErpCustomerPK(), saleId,order.getDeliveryInfo().getDeliveryAddress(),pr1);
 			}
-
+			if(order.getSelectedGiftCards() != null && order.getSelectedGiftCards().size() > 0) {
+				//Verify status of gift cards being applied on this order.
+				List verifiedList = verifyStatusAndBalance(order.getSelectedGiftCards(), false);
+				List badGiftCards = ErpGiftCardUtil.checkForBadGiftcards(verifiedList);
+				if(badGiftCards.size() > 0){
+					//Issues with gift cards
+					throw new InvalidCardException("Certificate Invalid");
+				}
+			}
+			GiftCardManagerSB gcSB = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+			gcSB.initiatePreAuthorization(saleId);
+			
+			/* else {
+				ErpAbstractOrderModel originalOrder = sb.getOrder(new PrimaryKey(saleId)).getCurrentOrder();
+				if(originalOrder.getAppliedGiftcards() != null && originalOrder.getAppliedGiftcards().size() > 0) {
+					//Original order GC was used. now removed. cancel the pre-auths on GC
+					GiftCardManagerSB gcSB = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+					gcSB.initiateCancelAuthorizations(saleId);
+				}
+			}*/
 			//authorize the sale
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
 			paymentManager.authorizeSaleRealtime(saleId);
@@ -2124,7 +2241,13 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				|| (alteredComplaint.getStatus().equals(EnumComplaintStatus.APPROVED) && (alteredComplaint.okToSendEmailOnCreate() || alteredComplaint
 					.okToSendEmailOnApproval()))) {
 				FDCustomerInfo fdInfo = getCustomerInfo(new FDIdentity(erpCustomerId, fdCustomerId));
-				this.doEmail(FDEmailFactory.getInstance().createConfirmCreditEmail(fdInfo, saleId, alteredComplaint));
+				FDOrderI order = getOrder(saleId);
+				if(null != order && EnumSaleType.GIFTCARD.equals(order.getOrderType())){
+					modifyGiftCardComplaint(saleId,order,alteredComplaint);
+					this.doEmail(FDGiftCardEmailFactory.getInstance().createConfirmCreditEmail(fdInfo, saleId, alteredComplaint));
+				}else{
+					this.doEmail(FDEmailFactory.getInstance().createConfirmCreditEmail(fdInfo, saleId, alteredComplaint));
+				}
 				alteredComplaint.getCustomerEmail().setMailSent(true);
 				sb.updateEmailSentFlag(alteredComplaint.getCustomerEmail());
 			}
@@ -2134,6 +2257,38 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re.getMessage());
 		}
 	}
+	
+	
+	/**
+	 * Adds a complaint to the user's list of complaints and begins the
+	 * associated credit issuing process
+	 *
+	 * @param ErpComplaintModel
+	 *            represents the complaint
+	 * @param String
+	 *            the PK of the sale to which the complaint is to be added
+	 * @throws ErpComplaintException
+	 *             if order was not in proper state to accept complaints
+	 */
+	public void storeCustomerRecipents(List recipentList, String saleId,String erpCustomerId)
+		throws FDResourceException
+		 {
+		Connection conn = null;
+
+		try {
+			conn = this.getConnection();			
+			GiftCardPersistanceDAO.storeRecipents(conn, erpCustomerId,saleId, recipentList);
+		} catch (Exception e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("error while saving customer request", e);
+			}
+		}	} 
 
 	private static final String PENDING_COMPLAINT_QUERY = "select c.id as complaint_id " +
 		"from cust.sale s, cust.complaint c " +
@@ -2657,8 +2812,120 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+	
+	public void storeSavedRecipients(FDUser user, List recipientList) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			SavedRecipientDAO.storeSavedRecipients(conn, user.getPrimaryKey(), recipientList);
 
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store saved recipient list for user");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle2) {
+					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.storeSavedRecipients()", sqle2);
+				}
+			}
+		}
+	}
+	
+	public void storeSavedRecipient(FDUser user, SavedRecipientModel model) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			SavedRecipientDAO.storeSavedRecipient(conn, user.getPrimaryKey(), model);
 
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store saved recipient  for user");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle2) {
+					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.storeSavedRecipients()", sqle2);
+				}
+			}
+		}
+	}
+	
+	public void updateSavedRecipient(FDUser user, SavedRecipientModel model) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			SavedRecipientDAO.updateSavedRecipient(conn, user.getPrimaryKey(), model);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store saved recipient  for user");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle2) {
+					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.storeSavedRecipients()", sqle2);
+				}
+			}
+		}
+	}
+	
+	public void deleteSavedRecipients(FDUser user) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			SavedRecipientDAO.deleteSavedRecipients(conn, user.getPrimaryKey());
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to delete saved recipient  for user");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle2) {
+					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.deleteSavedRecipients()", sqle2);
+				}
+			}
+		}
+	}
+	
+	public void deleteSavedRecipient(String savedRecipientId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			SavedRecipientDAO.deleteSavedRecipient(conn, savedRecipientId);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to delete saved recipient  for user");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle2) {
+					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.deleteSavedRecipients()", sqle2);
+				}
+			}
+		}
+	}
+	
+	public List loadSavedRecipients(FDUser user) throws FDResourceException {
+		Connection conn = null;
+		List list = null;
+		try {
+			conn = getConnection();
+			list = SavedRecipientDAO.loadSavedRecipients(conn, user.getPrimaryKey());
+		} catch(SQLException sqle) {
+			throw new FDResourceException(sqle, "unable to load saved recipient list");
+		} finally {
+			if( conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle) {
+					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.loadSavedRecipients()", sqle);
+				}
+			}
+		}
+		return list;
+	}
+	
 	public void setSignupPromotionEligibility(FDActionInfo info, boolean eligible) throws FDResourceException {
 		try {
 			FDCustomerEB fdCustomerEB = this.getFdCustomerHome().findByErpCustomerId(info.getIdentity().getErpCustomerPK());
@@ -2807,7 +3074,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(e);
 		}
 	}
-
+	
 	private void sendAuthFailedEmail(String saleID) throws FDResourceException {
 
 		try {
@@ -2815,9 +3082,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			FDCustomerEB fdCustomer = getFdCustomerHome().findByErpCustomerId(order.getCustomerId());
 			FDIdentity identity = new FDIdentity(order.getCustomerId(), fdCustomer.getPK().getId());
 			FDCustomerInfo custInfo = this.getCustomerInfo(identity);
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(order.getDeliveryReservation().getCutoffTime());
-			cal.add(Calendar.HOUR_OF_DAY, -1*ErpServicesProperties.getCancelOrdersB4Cutoff());
+			Calendar cal = calculateCutOffTime(order);
 			this.doEmail(FDEmailFactory.getInstance().createAuthorizationFailedEmail(custInfo, saleID,
 				order.getDeliveryReservation().getStartTime(),
 				order.getDeliveryReservation().getEndTime(), cal.getTime()));
@@ -2826,6 +3091,17 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (RemoteException e) {
 			throw new FDResourceException(e);
 		}
+	}
+
+	/**
+	 * @param order
+	 * @return
+	 */
+	private Calendar calculateCutOffTime(FDOrderI order) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(order.getDeliveryReservation().getCutoffTime());
+		cal.add(Calendar.HOUR_OF_DAY, -1*ErpServicesProperties.getCancelOrdersB4Cutoff());
+		return cal;
 	}
 	/*
 	 * Added for APPDEV-89 . Sending a seperate Auth failed email to auto renew DP customers.
@@ -2838,9 +3114,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			FDCustomerEB fdCustomer = getFdCustomerHome().findByErpCustomerId(order.getCustomerId());
 			FDIdentity identity = new FDIdentity(order.getCustomerId(), fdCustomer.getPK().getId());
 			FDCustomerInfo custInfo = this.getCustomerInfo(identity);
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(order.getDeliveryReservation().getCutoffTime());
-			cal.add(Calendar.HOUR_OF_DAY, -1*ErpServicesProperties.getCancelOrdersB4Cutoff());
+			Calendar cal = calculateCutOffTime(order);
 			this.doEmail(FDEmailFactory.getInstance().createARAuthorizationFailedEmail(custInfo, saleID,
 				order.getDeliveryReservation().getStartTime(),
 				order.getDeliveryReservation().getEndTime(), cal.getTime()));
@@ -3124,6 +3398,14 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
         }
     }
 
+   private GiftCardManagerHome getGiftCardGManagerHome() {
+       try {
+           return (GiftCardManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/GiftCardManager", GiftCardManagerHome.class);
+       } catch (NamingException e) {
+           throw new EJBException(e);
+       }
+   }
+   
 	public void createCase(CrmSystemCaseInfo caseInfo) throws FDResourceException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
@@ -3938,7 +4220,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				                      EnumDlvPassStatus status
 				                    ) throws FDResourceException,
 				                             ErpFraudException,
-				                             DeliveryPassException {
+				                             DeliveryPassException{
 
 				PrimaryKey pk = null;
 				try {
@@ -3975,6 +4257,79 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					throw new FDResourceException(re);
 				}
 			}
+			
+			
+			
+		    /**
+		     * Place an order (send msg to SAP, persist order).
+		     *
+		     * @param identity the customer's identity reference
+		     * @return String sale id
+		     * @throws FDResourceException if an error occured while accessing remote resources
+		     * @throws ErpAuthorizationException 
+		     */
+			public String placeGiftCardOrder( FDIdentity identity,
+				                      ErpCreateOrderModel createOrder,
+				                      Set usedPromotionCodes,
+				                      String rsvId,
+				                      boolean sendEmail,
+				                      CustomerRatingI cra,
+				                      CrmAgentRole agentRole,
+				                      EnumDlvPassStatus status,boolean isBulkOrder
+				                    ) throws FDResourceException,
+				                             ErpFraudException,
+				                             ErpAuthorizationException {
+
+				PrimaryKey pk = null;
+				try {
+					ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+					String customerPk = identity.getErpCustomerPK();
+					pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole,null,EnumSaleType.GIFTCARD);
+					System.out.println("Before calling findBYPrimaryKey $$$$$$$$$$$$$$$$");
+					ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(pk.getId()));
+					System.out.println("After calling findBYPrimaryKey $$$$$$$$$$$$$$$$");
+					// store giftcard recipent record  
+					//storeCustomerRecipents(recipentList, eb.getCurrentOrder().getId(), customerPk);
+					if (sendEmail) {
+						FDOrderI order = getOrder(pk.getId());
+						FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
+
+						int orderCount = getValidOrderCount(identity);
+						fdInfo.setNumberOfOrders(orderCount);
+						/*boolean isBulkOrder = false;
+						FDUser fdUser = recognize(identity);
+						FDBulkRecipientList bulkList = fdUser.getBulkRecipentList();
+						if(null!= bulkList && null !=bulkList.getRecipents()&& !bulkList.getRecipents().isEmpty()){
+							isBulkOrder = true;								
+						}
+						if(isBulkOrder){
+							this.doEmail(FDGiftCardEmailFactory.getInstance().createGiftCardBulkOrderConfirmationEmail(fdInfo, order, bulkList));
+						}else{*/
+							this.doEmail(FDGiftCardEmailFactory.getInstance().createGiftCardOrderConfirmationEmail(fdInfo, order, isBulkOrder));							
+//						}
+
+					}
+					
+					//AUTH sale in CYBER SOURCE
+					PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
+					paymentManager.authorizeSaleRealtime(pk.getId(),EnumSaleType.GIFTCARD);					
+
+					return pk.getId();
+
+				}catch (CreateException ce) {
+					LOGGER.warn("Cannot Create ErpCustomerManagerSessionBean", ce);
+					throw new FDResourceException(ce);					
+				}				                            				
+				  catch (FinderException re) {
+				  	throw new FDResourceException(re);
+				}
+				catch (RemoteException re) {
+					throw new FDResourceException(re);
+				}/*catch(FDAuthenticationException fdae){
+					throw new FDResourceException(fdae);
+				}*/
+			}
+
 
 
 			public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
@@ -4064,7 +4419,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 		private ErpSaleHome getErpSaleHome() {
 				try {
-					return (ErpSaleHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpSale", ErpSaleHome.class);
+					return (ErpSaleHome) LOCATOR.getRemoteHome("freshdirect.erp.Sale", ErpSaleHome.class);
 				} catch (NamingException e) {
 					throw new EJBException(e);
 				}
@@ -4201,4 +4556,505 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re);
 		}
 	}
+		
+		public ErpGiftCardModel applyGiftCard(FDIdentity identity, String givexNum,FDActionInfo info) throws InvalidCardException, CardInUseException, CardOnHoldException, FDResourceException {
+
+			try {
+				
+				//Check if this gift card is already  attached to a customer account.
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				ErpGiftCardModel giftCard = sb.validate(givexNum); 
+				//Clear Gift Card PK before adding to the customer Account.
+				giftCard.setPK(null);
+				ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getErpCustomerPK()));
+				
+				giftCard.setName(eb.getCustomerInfo().getFirstName()+" "+eb.getCustomerInfo().getLastName());
+				eb.addPaymentMethod(giftCard);
+				giftCard = sb.validateAndGetGiftCardBalance(givexNum); 
+				//Log the activity
+				this.logActivity(info.createActivity(EnumAccountActivityType.ADD_GIFT_CARD));
+				return giftCard;
+			} catch (InvalidCardException ie) {
+				//ie.printStackTrace();
+				//Log the activity
+				ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.GC_APPLY_FAILED, "Invalid Card number");
+				rec.setReason(EnumGiftCardFailureType.INVALID_GIFT_CERTIFICATE.getName());
+				this.logActivity(rec);
+				throw ie;
+			}catch (CardInUseException ce) {
+				//ce.printStackTrace();
+				//Log the activity
+				ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.GC_APPLY_FAILED, "Card In Use");
+				rec.setReason(EnumGiftCardFailureType.CARD_IN_USE.getName());
+				this.logActivity(rec);
+				throw ce;
+			}catch (FinderException fe) {
+				//fe.printStackTrace();
+				throw new FDResourceException(fe);
+			} catch (RemoteException re) {
+				//re.printStackTrace();
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				//ce.printStackTrace();
+				throw new FDResourceException(ce);
+			}
+		}
+		
+		public Collection getGiftCards(FDIdentity identity) throws FDResourceException {
+			try {
+				ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getErpCustomerPK()));
+				//return erpCustomerEB.getGiftCards();
+				List giftCards = erpCustomerEB.getGiftCards();
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				return verifyStatusAndBalance(giftCards, true);
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (FinderException ce) {
+				throw new FDResourceException(ce);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}
+		}
+		
+		public List verifyStatusAndBalance(List giftcards, boolean reloadBalance ) throws FDResourceException {
+			try {
+				
+				//Check if this gift card is already  attached to a customer account.
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				return sb.verifyStatusAndBalance(giftcards, reloadBalance);
+				//Log the activity
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}			
+		}
+		
+		public ErpGiftCardModel verifyStatusAndBalance(ErpGiftCardModel giftcard, boolean reloadBalance ) throws FDResourceException {
+			try {
+				
+				//Check if this gift card is already  attached to a customer account.
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				return sb.verifyStatusAndBalance(giftcard, reloadBalance);
+				//Log the activity
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}			
+		}
+		
+		public List getGiftCardRecepientsForCustomer(FDIdentity identity) throws FDResourceException {
+			try {
+				
+				//Check if this gift card is already  attached to a customer account.
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				return sb.getGiftCardRecepientsForCustomer(identity.getErpCustomerPK());
+				//Log the activity
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}			
+		}
+		
+		public Map getGiftCardRecepientsForOrders(List saleIds) throws FDResourceException {
+			try {
+				
+				//Check if this gift card is already  attached to a customer account.
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				return sb.getGiftCardRecepientsForOrders(saleIds);
+				//Log the activity
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}			
+		}
+		
+		public ErpGCDlvInformationHolder getRecipientDlvInfo(FDIdentity identity, String saleId, String certificationNum) throws FDResourceException {
+				FDOrderI order = getOrder(identity, saleId);
+				List gcDlvList = order.getGCDeliveryInfo().getDlvInfoTranactionList();
+				for(Iterator it=gcDlvList.iterator(); it.hasNext();) {
+					ErpGCDlvInformationHolder holder = (ErpGCDlvInformationHolder) it.next();
+					if(holder.getCertificationNumber().equals(certificationNum)){
+						return holder;
+					}
+				}
+				return null;
+		}
+		public boolean resendEmail(String saleId, String certificationNum, String resendEmailId, String recipName, String personMsg, EnumTransactionSource source) throws FDResourceException {
+			ErpGCDlvInformationHolder holder =  null;
+			FDOrderI order = getOrder(saleId);
+			List gcDlvList = order.getGCDeliveryInfo().getDlvInfoTranactionList();
+			for(Iterator it=gcDlvList.iterator(); it.hasNext();) {
+				holder = (ErpGCDlvInformationHolder) it.next();
+				if(holder.getCertificationNumber().equals(certificationNum)){
+					break;
+				}
+			}
+			if(holder == null) return false; //failure to resend
+			try {
+				if(holder != null){
+					ErpGCDlvInformationHolder newHolder = (ErpGCDlvInformationHolder)holder.deepCopy();
+					newHolder.getRecepientModel().setRecipientEmail(resendEmailId);
+					newHolder.getRecepientModel().setRecipientName(recipName);
+					newHolder.getRecepientModel().setPersonalMessage(personMsg);
+					newHolder.getRecepientModel().setDeliveryMode(EnumGCDeliveryMode.EMAIL);
+					List recipientList = new ArrayList();
+					recipientList.add(newHolder);
+					GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+					sb.resendGiftCard(saleId, recipientList, source);
+				}
+			}catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}
+			return true; //success
+		}		
+		
+		 public double getOutStandingBalance(ErpAbstractOrderModel order) throws FDResourceException {
+			try {
+				ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+				return sb.getOutStandingBalance(order);
+
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			}
+		}
+
+		public void preAuthorizeSales(String salesId) throws FDResourceException {
+
+			try {
+				GiftCardManagerSB sb = this.getGiftCardGManagerHome().create();
+				List errorList = sb.preAuthorizeSales(salesId);
+
+				if (errorList.size() > 0) {
+					//Send GC Authorization Email.
+					FDOrderI order = getOrder(salesId);
+					String custId = order.getCustomerId();
+					FDCustomerEB custEB = getFdCustomerHome().findByErpCustomerId(custId);
+					FDIdentity identity = new FDIdentity(custId, custEB.getPK().getId());
+					FDCustomerInfo custInfo = this.getCustomerInfo(identity);
+
+					int orderCount = getValidOrderCount(identity);
+					custInfo.setNumberOfOrders(orderCount);
+					Calendar cal = calculateCutOffTime(order); //To get the cutoff time for replacing the order.
+					this.doEmail(FDGiftCardEmailFactory.getInstance().createAuthorizationFailedEmail(custInfo, salesId,
+							order.getDeliveryReservation().getStartTime(),
+							order.getDeliveryReservation().getEndTime(), cal.getTime()));
+				}
+			} catch (RemoteException e) {
+				throw new FDResourceException(e);
+			} catch (CreateException e) {
+				throw new FDResourceException(e);
+			} catch(FinderException fe){
+				throw new FDResourceException(fe);
+			}
+		}
+
+		
+		public void doEmail(FTLEmailI email) throws FDResourceException {
+			try {
+				MailerGatewaySB mailer = getMailerHome().create();
+				mailer.enqueueEmail(email);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce, "Cannot create MailerGatewayBean");
+			} catch (RemoteException re) {
+				throw new FDResourceException(re, "Cannot talk to MailerGatewayBean");
+			}
+		}		
+		
+		
+		public List getGiftCardOrdersForCustomer(FDIdentity identity) throws FDResourceException{
+			
+			try {
+				
+				//Check if this gift card is already  attached to a customer account.
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				return sb.getGiftCardOrdersForCustomer(identity.getErpCustomerPK());
+				//Log the activity
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}			
+			
+		}
+		
+		
+		
+		public Object getGiftCardRedemedOrders(FDIdentity identity, String certNum) throws FDResourceException{
+			try {
+				
+				//Check if this gift card is already  attached to a customer account.
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				return sb.getGiftCardRedeemedOrders(identity.getErpCustomerPK(),certNum);
+				//Log the activity
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}	
+			
+		}
+		
+		public Object getGiftCardRedemedOrders(String certNum) throws FDResourceException{
+			try {
+				
+				//Check if this gift card is already  attached to a customer account.
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				return sb.getGiftCardRedeemedOrders(certNum);
+				//Log the activity
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}	
+			
+		}
+		
+		
+		public List getDeletedGiftCardForCustomer(FDIdentity identity) throws FDResourceException{
+			try {
+				
+				//Check if this gift card is already  attached to a customer account.
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				return sb.getAllDeletedGiftCard(identity.getErpCustomerPK());
+				//Log the activity
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}	
+			
+		}
+		
+		
+		public List getGiftCardRecepientsForOrder(String saleId) throws FDResourceException {
+			try {
+				
+				//Check if this gift card is already  attached to a customer account.
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				return sb.getGiftCardRecepientsForOrder(saleId);
+				//Log the activity
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}			
+		}
+		
+		
+		public ErpGiftCardModel validateAndGetGiftCardBalance(String givexNum) throws FDResourceException{
+			
+			try {				
+				
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				return sb.validateAndGetGiftCardBalance(givexNum);
+				
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			} catch(InvalidCardException ice){
+				throw new FDResourceException(ice);
+			}
+		}
+		
+		public void transferGiftCardBalance(FDIdentity identity,String fromGivexNum,String toGivexNum,double amount) throws FDResourceException{
+			try {				
+				
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				sb.transferGiftCardBalance(fromGivexNum, toGivexNum, amount);
+				
+				sendGiftCardBalanceTransferEmail(identity, fromGivexNum, sb);
+				
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}
+		}
+
+		/**
+		 * @param identity
+		 * @param fromGivexNum
+		 * @param sb
+		 * @throws RemoteException
+		 * @throws FDResourceException
+		 */
+		private void sendGiftCardBalanceTransferEmail(FDIdentity identity,
+				String fromGivexNum, GiftCardManagerSB sb)
+				throws RemoteException, FDResourceException {
+			ErpGCDlvInformationHolder erpGCDlvInformationHolder = sb.loadGiftCardRecipentByGivexNum(fromGivexNum);
+			
+			if(null != erpGCDlvInformationHolder){
+				FDCustomerInfo customer = this.getCustomerInfo(identity);
+		        ErpRecipentModel recipientModel = erpGCDlvInformationHolder.getRecepientModel();
+			    String recipientName = recipientModel.getRecipientName();						
+			    this.doEmail(FDGiftCardEmailFactory.getInstance().createGiftCardBalanceTransferEmail(customer, recipientName));
+			}
+		}
+		
+		private void modifyGiftCardComplaint(String saleId,FDOrderI order,ErpComplaintModel complaintModel)throws FDResourceException{
+			List recipients = getGiftCardRecepientsForOrder(saleId);
+			List gcComplaintLines = new ArrayList();
+			if(null != recipients){
+				
+				for (Iterator iterator = recipients.iterator(); iterator
+						.hasNext();) {
+					ErpGCDlvInformationHolder gcHolder = (ErpGCDlvInformationHolder) iterator.next();
+					ErpRecipentModel  recipientModel = gcHolder.getRecepientModel();
+					String orderLineNumber = recipientModel.getOrderLineId();
+					ErpOrderLineModel erpOrderLine = order.getOrderLineByNumber(orderLineNumber);
+					ErpComplaintLineModel erpComplaintLineModel = complaintModel.getComplaintLine(erpOrderLine.getPK().getId());
+					if(null != erpComplaintLineModel){
+						ErpGiftCardComplaintLineModel gcComplaintLine = new ErpGiftCardComplaintLineModel(erpComplaintLineModel);
+						gcComplaintLine.setCertificateNumber(gcHolder.getCertificationNumber());
+						gcComplaintLine.setTemplateId(recipientModel.getTemplateId());
+						gcComplaintLine.setGivexNumber(gcHolder.getGivexNum());
+						gcComplaintLines.add(gcComplaintLine);						
+					}
+					
+				}
+				complaintModel.setComplaintLines(gcComplaintLines);
+			}
+		}
+		
+		public String[] sendGiftCardCancellationEmail(String saleId, String givexNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) throws FDResourceException{
+			String[] sentEmailAddresses = null;
+			LOGGER.debug("Validating and sending the giftcard cancellation emails..");
+			try {
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				ErpGiftCardModel model = sb.validate(givexNum);
+				LOGGER.debug("GiftCard is not yet cancelled.");			
+
+			} catch (RemoteException e) {
+				throw new FDResourceException(e);
+			} catch (InvalidCardException e) {
+				throw new FDResourceException(e);
+			} catch (CardInUseException e) {
+				throw new FDResourceException(e);
+			} catch (CardOnHoldException e) {
+				LOGGER.debug(" Card is On Hold..so sending the gift card cancellation emails.");
+				System.out.println(e.getMessage());
+				try {
+					sentEmailAddresses = new String[]{"","",""};
+					FDOrderI order = getOrder(saleId);
+					String custId = order.getCustomerId();
+					FDCustomerEB custEB = getFdCustomerHome().findByErpCustomerId(custId);
+					FDIdentity identity = new FDIdentity(custId, custEB.getPK().getId());
+					FDCustomerInfo custInfo = this.getCustomerInfo(identity);
+
+					if(toPurchaser){
+						sentEmailAddresses[1]=custInfo.getEmailAddress();
+						this.doEmail(FDGiftCardEmailFactory.getInstance().createGiftCardCancellationPurchaserEmail(custInfo, order));
+					}
+					if(toRecipient){
+						ErpGCDlvInformationHolder gcDlvInfo = order.getGCDlvInformationHolder(givexNum);
+						sentEmailAddresses[0]=gcDlvInfo.getRecepientModel().getRecipientEmail();
+						this.doEmail(FDGiftCardEmailFactory.getInstance().createGiftCardCancellationRecipientEmail(custInfo,order.getGCDlvInformationHolder(givexNum)));
+					}
+					if(newRecipient && null != newRecipientEmail && !"".equalsIgnoreCase(newRecipientEmail.trim())){
+						sentEmailAddresses [2]=newRecipientEmail;
+						this.doEmail(FDGiftCardEmailFactory.getInstance().createGiftCardCancellationRecipientEmail(custInfo,order.getGCDlvInformationHolder(givexNum),newRecipientEmail));
+					}
+				} catch (RemoteException e1) {
+					throw new FDResourceException(e);
+				} catch (FinderException e1) {
+					throw new FDResourceException(e);
+				}
+			} catch (CreateException e) {
+				throw new FDResourceException(e);
+			} 
+			return sentEmailAddresses;
+		}
+		
+		
+		private double calculateGiftCardsBalance(Collection giftCards){
+			double balance = 0.0;
+			if(null != giftCards && !giftCards.isEmpty()){
+				for (Iterator iterator = giftCards.iterator(); iterator.hasNext();) {
+					ErpGiftCardModel erpGiftCardModel = (ErpGiftCardModel) iterator.next();
+					balance += erpGiftCardModel.getBalance();
+					
+				}
+			}
+			return balance;
+		}
+		
+		
+		public String placeDonationOrder( FDIdentity identity,
+                ErpCreateOrderModel createOrder,
+                Set usedPromotionCodes,
+                String rsvId,
+                boolean sendEmail,
+                CustomerRatingI cra,
+                CrmAgentRole agentRole,
+                EnumDlvPassStatus status
+              ) throws FDResourceException,
+                       ErpFraudException,
+                       ErpAuthorizationException {
+			PrimaryKey pk = null;
+			try {
+				ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+				String customerPk = identity.getErpCustomerPK();
+				pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole,null,EnumSaleType.DONATION);
+				ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(pk.getId()));
+				if (sendEmail) {
+					FDOrderI order = getOrder(pk.getId());
+					FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
+					int orderCount = getValidOrderCount(identity);
+					fdInfo.setNumberOfOrders(orderCount);
+					this.doEmail(FDGiftCardEmailFactory.getInstance().createRobinHoodOrderConfirmEmail(fdInfo, order));							
+//					}
+
+				}
+				
+				//AUTH sale in CYBER SOURCE
+				PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
+				paymentManager.authorizeSaleRealtime(pk.getId(),EnumSaleType.DONATION);					
+
+				return pk.getId();
+
+			}catch (CreateException ce) {
+				LOGGER.warn("Cannot Create ErpCustomerManagerSessionBean", ce);
+				throw new FDResourceException(ce);					
+			}				                            				
+			  catch (FinderException re) {
+			  	throw new FDResourceException(re);
+			}
+			catch (RemoteException re) {
+				throw new FDResourceException(re);
+			}
+		}
+		
+		public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws FDResourceException{
+			try {
+				ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+				return sb.getPerishableBufferAmount(order);
+
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			}
+		}
+		
+		public ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(String certNum) throws FDResourceException {
+			try {
+				
+				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+				return sb.loadGiftCardRecipentByCertNum(certNum);
+				//Log the activity
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}			
+		}
 }

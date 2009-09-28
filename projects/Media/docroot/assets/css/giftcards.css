@@ -1,0 +1,796 @@
+/* top-level container for giftcard display */
+div.container {
+	width: 770px;
+	text-align: center;
+}
+
+/* entire card display inside container */
+div.card_display {
+	width: 100%;
+	clear: left;
+}
+
+/* the individual card containers */
+div.card_left, div.card_center, div.card_right {
+	display: inline;
+}
+/* specific to center (single) card */
+div.card_center {
+	display: inline;
+	width: 332px;
+}
+/* specific to left-right (carousel) cards */
+div.card_left, div.card_right {
+	width: 120px;
+}
+
+/*
+	card controls:
+		left-right arrows for carousel
+		select box for select
+
+*/
+div.card_controls {
+	clear: left;
+}
+
+/* carousel specific */
+	/* 'Click arrows to scroll & preview card designs.' */
+	div.card_controls_msg {
+		width: auto;
+		color: #C5C5C5;
+		font-family: Verdana,Arial,sans-serif;
+		font-size: 9px;
+	}
+	/* 'Giftcard design: Design' */
+	div.card_controls_msg_type {
+		margin-bottom: 5px;
+		color: #333;
+	}
+	/* 'Design' */
+	div.card_controls_msg_type span {
+		font-size: 11px;
+	}
+	/* show now button */
+	div.card_shopNow {
+		clear: left;
+		margin: 20px 0;
+	}
+	/* Terms and conditions text */
+	div.card_TOC {
+		clear: left;
+		margin: 20px auto;
+		width: 320px;
+		color: #C5C5C5;
+		font-family: Verdana,Arial,sans-serif;
+		font-size: 9px;
+	}
+	div.card_TOC a {
+		font-weight: bold;
+	}
+
+/* remove borders for linked images */
+div.card_controls a, div.card_controls a img, div.card_shopNow a img, div.card_center a img {
+	text-decoration: none;
+	border-width: 0;
+	cursor: pointer;
+	padding: 0 3px;
+}
+/* select specific */
+	/* header container */
+	div.card_controls_header {
+		width: auto;
+		color: #888;
+		font-family: Verdana,Arial,sans-serif;
+		font-size: 20px;
+		font-weight: 900;
+	}
+	/* select box */
+	div.card_controls_select select {
+		width: 275px;
+	}
+	/* Footer Message 'Enter the information at left and select one of...' */
+	div.card_controls_footer {
+		margin: 20px auto;
+		width: 320px;
+		color: #C5C5C5;
+		font-family: Verdana,Arial,sans-serif;
+		font-size: 9px;
+	}
+
+/* generic clear */
+div.clear,p.clear,span.clear { clear: both; display: none; }
+
+
+/* recipient list */
+.recipTable {
+	width: 625px;
+}
+.recipRow  {
+	clear: both;
+	background-image:url('/media_stat/images/layout/dots.gif');
+	background-repeat:repeat-x;
+	height: 16px;
+}
+.recipRow div {
+	vertical-align: bottom;
+	overflow: hidden;
+	background-color: white;
+	font-weight: bold;
+	line-height: 14px;
+	height: 14px;
+}
+	/* number */
+		div.recipNumber {
+			float: left;
+			width: auto;
+			font-size: 10px;
+			text-align: right;
+			padding-right: 5px;
+		}
+	/* recip name */
+		div.recipName {
+			float: left;
+			width: auto;
+			padding-right: 10px;
+		}
+	/* links */
+		div.recipLinks {
+			float: right;
+			width: 125px;
+			text-align: center;
+		}
+		div.recipLinks a {
+			padding-right: 8px;
+		}
+	/* amount */
+		.recipAmount {
+			float: right;
+			width: 90px;
+			text-align: right;
+			font-size: 10px;
+		}
+	/* total */
+		.recipTotal {
+			font-size: 16px;
+			font-weight: bold;
+			text-align: right;
+		}
+		.sideHeader {
+			font-size: 14px;
+			font-weight: bold;
+		}
+		.topHeader {
+			font-size: 18px;
+			font-weight: bold;
+		}
+/* Top NAV */
+
+	table.GC_nav_table {
+		width: 745px;
+		background-color: #693;
+		padding: 0;
+		margin: 0;
+		border-collapse: collapse;
+		border: 0;
+	}
+	table.GC_nav_table td {
+		padding: 0;
+	}
+	td.GC_nav_corner, td.GC_nav_corner img {
+		width: 4px;
+		height: 4px;
+	}
+	td.GC_nav_corner_spacer {
+		width: 4px;
+		height: 28px;
+	}
+	.GC_nav_on {
+		background-color: #360;
+	}
+	td.GC_nav_spring_spacer {
+		width: 99%;
+	}
+	td.GC_nav_item img {
+		border: 0px;
+		padding: 3px;
+	}
+	td.GC_nav_item_xtraPad img {
+		padding-right: 8px;
+	}
+
+/* Your Account Table */
+
+	.gcYourActTableList {
+		width: 650px;
+		padding: 0;
+		margin: 0;
+		border-collapse: collapse;
+		border: 0;
+		vertical-align: middle;
+		text-align: left;
+	}
+	table.gcYourActTableList tr.th td {
+		background-color: #ccc;
+		font-weight: bold;
+		padding: 0;
+	}
+	
+	.gcYourActTableList {
+		width: 100%;
+		padding: 0;
+		margin: 0;
+		border-collapse: collapse;
+		border: 0;
+		vertical-align: middle;
+		text-align: left;
+	}
+	table.gcYourActTableList1 tr.th td {
+		background-color: #ccc;
+		font-weight: bold;
+		padding: 0;
+	}
+
+/* The resend box (not actually displayed) */
+
+	div.gcResendBox {
+		display: none;
+		visibility: hidden;
+		height: 0;
+		width: 0;
+		float: left;
+	}
+	div.gcResendBox div.gcResendBoxContent {
+		width: 390px;
+	}
+
+/* Check an Address box */
+	div.gcCheckAddressBox {
+		display: none;
+		visibility: hidden;
+		height: 0;
+		width: 0;
+		float: left;
+	}
+	div.gcCheckAddressBoxContent {
+		margin: 6px;
+	}
+	div.gcCheckAddressBox div.gcCheckAddressBoxContent {
+		width: 390px;
+	}
+	#gcCheckAddressBox_Street1, #gcCheckAddressBox_Street2, #gcCheckAddressBox_City {
+		width: 200px;
+	}
+	#gcCheckAddressBox_Zip {
+		width: 100px;
+	}
+
+/* resend for CRM */
+	div.gcResendCRMBox {
+		display: none;
+		visibility: hidden;
+		height: 0;
+		width: 0;
+		float: left;
+	}
+	div.gcResendCRMBox div.gcResendCRMBoxContent {
+		width: 300px;
+	}
+	div.gcResendCRMBoxContent td {
+		background-color: #D8B1D8;
+		padding: 5px 3px;
+		vertical-align: top;
+	}
+	div.gcResendCRMBoxContent td.vBot {
+		vertical-align: bottom;
+	}
+	div.gcResendCRMBoxContent .bRight {
+		text-align: right;
+		font-weight: bold;
+		vertical-align: bottom;
+	}
+	div.gcResendCRMBoxContent .b10pt {
+		font-size: 10pt;
+		font-weight: bold;
+	}
+	div.gcResendCRMBoxContent .b11pt {
+		font-size: 11pt;
+		font-weight: bold;
+	}
+	div.gcResendCRMBoxContent th {
+		background-color: #fff;
+		padding: 5px 5px;
+	}
+	#gcResendCRMBoxErr {
+		padding-left: 10px;
+	}
+	#gcResendCRMBoxErr span {
+		font-weight: bold;
+		margin-left: -10px;
+		padding-bottom: 3px;
+	}
+	div.gcResendCRMBoxContent .gcResendCRMBox_recipLine td {
+		padding: 0px 0px 0px 0px;
+		font-size: 9pt;
+	}
+
+
+/* re-send cancellation for CRM */
+	div.gcResendCRMCancelBox {
+		display: none;
+		visibility: hidden;
+		height: 0;
+		width: 0;
+		float: left;
+	}
+	div.gcResendCRMCancelBox div.gcResendCRMCancelBoxContent {
+		width: 300px;
+	}
+	div.gcResendCRMCancelBoxContent td {
+		background-color: #f66;
+		padding: 5px 3px;
+		vertical-align: top;
+	}
+	div.gcResendCRMCancelBoxContent td.vBot {
+		vertical-align: bottom;
+	}
+	div.gcResendCRMCancelBoxContent .bRight {
+		text-align: right;
+		font-weight: bold;
+		vertical-align: bottom;
+	}
+	div.gcResendCRMCancelBoxContent .b10pt {
+		font-size: 10pt;
+		font-weight: bold;
+	}
+	div.gcResendCRMCancelBoxContent .b11pt {
+		font-size: 11pt;
+		font-weight: bold;
+	}
+	div.gcResendCRMCancelBoxContent th {
+		background-color: #fff;
+		padding: 5px 5px;
+	}
+	#gcResendCRMCancelBoxErr {
+		padding-left: 10px;
+	}
+	#gcResendCRMCancelBoxErr span {
+		font-weight: bold;
+		margin-left: -10px;
+		padding-bottom: 3px;
+	}
+	div.gcResendCRMCancelBoxContent .gcResendCRMCancelBox_recipLine td {
+		padding: 0px 0px 0px 0px;
+		font-size: 9pt;
+	}
+
+/* check balance */
+
+	div.gcCheckBalanceBox {
+		display: none;
+		visibility: hidden;
+		height: 0;
+		width: 0;
+		float: left;
+	}
+	div.gcCheckBalanceBox div.gcCheckBalanceBoxContent {
+		width: 275px;
+	}
+	div.gcCheckBalanceBoxContent td {
+		background-color: #fc9;
+		padding: 5px 3px;
+		vertical-align: top;
+	}
+	div.gcCheckBalanceBoxContent .bRight {
+		text-align: right;
+		font-weight: bold;
+	}
+	div.gcCheckBalanceBoxContent th {
+		background-color: #fff;
+		padding: 5px 5px;
+	}
+	#gcCheckBalanceBoxErr {
+		text-align: center;
+		font-weight: bold;
+	}
+
+/* CRM styles */
+.gc_tableBody {
+	background-color: #fff;
+}
+.gcSearchModuleContent {
+	background-color: #FFCC99;
+	height:95%;
+	padding: 5px;
+	font-size: 10pt;
+	color: #000000;
+	overflow: auto;
+}
+.gcCertFullNumbNote {
+	color: #847B70;
+	font-style: italic;
+	font-size: 8pt;
+}
+.cust_gc_sub_nav {
+	float: left;
+	background-color: #b5cfff;
+	font-size: 9pt;
+	color: #000000;
+	margin-right: 4px;
+	padding: 4px;
+	padding-left: 4px;
+	padding-right: 4px;
+	text-align: center;
+	height: auto;
+}
+.cust_gc_sub_nav_on {
+	float: left;
+	background-color: #b5cfff;
+	font-size: 9pt;
+	color: #000000;
+	margin-right: 4px;
+	padding: 4px;
+	padding-left: 4px;
+	padding-right: 4px;
+	text-align: center;
+	height: auto;
+	background-color: #ffcf96;
+}
+.cust_nav_gc {
+	font-weight: bold;
+	padding: 2px 0px;
+	background-color: #feff9f;
+	border-bottom: 2px solid #666;
+}
+.cust_nav_gc_header {
+	float: left;
+	font-size: 13pt;
+	padding: 1px 0px 1px 3px;
+}
+.cust_nav_gc_header_text {
+	padding-top: 4px;
+}
+.cust_nav_gc_on {
+	background-color: #ffcf96;
+	color: #000000;
+	font-weight: bold;
+	font-size: 9pt;
+	padding: 1px;
+}
+.gc_colHeader {
+	background-color: #efefef;
+	color: #666;
+	font-weight: bold;
+}
+.gc_colHeader_i {
+	background-color: #fff;
+	color: #333;
+	font-weight: bold;
+	font-size: 11pt;
+	text-align: left;
+	padding-left: 10px;
+}
+
+.gc_balance {
+	width: 100px;
+	text-align: right;
+}
+.gc_colHeader .gc_balance {
+	width: 100px;
+	text-align: center;
+}
+
+.gc_table1 th, .gc_table2 th, .gc_table3 th {
+	text-align: left;
+}
+.gc_table1 td, .gc_table2 td, .gc_table3 td {
+	vertical-align: top;
+}
+.gc_table_footer table {
+	padding: 4px;
+	font-size: 9pt;
+}
+.gc_table_footer .button {
+	color: #fff;
+	font-weight: bold;
+	font-size: 8pt;
+	border-width: 0px;
+}
+.gc_table1 th {
+	background-color: #fc9;
+}
+.gc_table1_i .gc_colHeader {
+	color: #333;
+	background-color: #fc9;
+}
+.gc_table1footer {
+	border: 1px dashed #fc9;
+}
+.gc_table1footer .button {
+	background-color: #f60;
+}
+
+.gc_table2 th {
+	background-color: #6c9;
+}
+.gc_table2_i .gc_colHeader {
+	color: #333;
+	background-color: #cfc;
+}
+.gc_table2footer {
+	border: 1px dashed #6c9;
+}
+.gc_table2footer .button {
+	background-color: #096;
+}
+
+.gc_table3 th {
+	background-color: #c9c;
+}
+.gc_table3_i .gc_colHeader {
+	color: #333;
+	background-color: #c9c;
+}
+.gc_table3footer {
+	border: 1px dashed #939;
+}
+.gc_table3footer .button {
+	background-color: #939;
+}
+
+
+.gc_caseStatus {
+	font-size: 13pt;
+	width: 120px;
+}
+.gc_caseEnabled, .gc_caseDisabled {
+	width: 43%;
+	font-size: 9pt;
+}
+.gc_caseEnabled .button, .gc_caseDisabled .button {
+	color: #fff;
+	font-size: 8pt;
+	border-width: 0px;
+}
+.gc_caseEnabled .disabled, .gc_caseDisabled .disabled, #gcApplyCode.disabled {
+	color: #ccc;
+	font-style: italic;
+	border-width: 0px;
+}
+.gc_caseEnabled {
+	color: #fff;
+	background-color: #0c0;
+	border: 1px solid #360;
+}
+.gc_caseEnabled .button {
+	background-color: #900;
+}
+.gc_caseDisabled {
+	color: #fff;
+	background-color: #c00;
+	border: 1px solid #900;
+}
+.gc_caseDisabled .button {
+	background-color: #060;
+}
+
+
+
+a.gLink			{ font-size: 9pt; }
+a.gLink:link	{ color: #5EBB64; text-decoration: underline; }
+a.gLink:visited	{ color: #000000; text-decoration: underline; }
+a.gLink:active	{ color: #0066FF; text-decoration: underline; }
+a.gLink:hover	{ color: #009900; text-decoration: overline underline; }
+a.rLink			{ font-size: 9pt; }
+a.rLink:link	{ color: #900; text-decoration: underline; }
+a.rLink:visited	{ color: #000000; text-decoration: underline; }
+a.rLink:active	{ color: #0066FF; text-decoration: underline; }
+a.rLink:hover	{ color: #009900; text-decoration: overline underline; }
+a.bLink			{ font-size: 9pt; }
+a.bLink:link	{ color: #009; text-decoration: underline; }
+a.bLink:visited	{ color: #000000; text-decoration: underline; }
+a.bLink:active	{ color: #0066FF; text-decoration: underline; }
+a.bLink:hover	{ color: #009900; text-decoration: overline underline; }
+a.resendLink			{ font-size: 9pt; }
+a.resendLink:link		{ color: #639; text-decoration: underline; }
+a.resendLink:visited	{ color: #639; text-decoration: underline; }
+a.resendLink:active		{ color: #0066FF; text-decoration: underline; }
+a.resendLink:hover		{ color: #009900; text-decoration: overline underline; }
+a.resendCancelLink				{ font-size: 9pt; }
+a.resendCancelLink:link			{ color: #9F1010; text-decoration: underline; }
+a.resendCancelLink:visited		{ color: #9F1010; text-decoration: underline; }
+a.resendCancelLink:active		{ color: #0066FF; text-decoration: underline; }
+a.resendCancelLink:hover		{ color: #009900; text-decoration: overline underline; }
+a.statusLink			{ font-size: 9pt; }
+a.statusLink:link		{ color: #33c; text-decoration: underline; }
+a.statusLink:visited	{ color: #33c; text-decoration: underline; }
+a.statusLink:active		{ color: #0066FF; text-decoration: underline; }
+a.statusLink:hover		{ color: #009900; text-decoration: overline underline; }
+
+span.gcCheckAddressBoxMsg { font-weight: bold; }
+div.gcCheckAddressBoxGoodMsg {
+	text-align: center;
+	font-weight: bold;
+	font-size: 12pt;
+}
+span.gcCheckAddressBoxOrange { color: #f90; }
+
+
+/* recipient list CRM */
+.recipTableCRM {
+	width: 100%;
+}
+.recipTableCRM td {
+	font-size: 9pt;
+}
+.recipLinksCRM {
+	float: right;
+	text-align: center;
+	width: 150px;
+}
+.recipLinksCRM a {
+	padding-right: 8px;
+}
+.recipAmountTableCRM {
+	width: 95%;
+}
+
+
+	.gc_table1 th.pad {
+		width: auto;
+	}
+	/* number */
+		td.recipNumber {
+			text-align: right;
+			font-weight: bold;
+		}
+		th.recipNumber { text-align: center; }
+		th.recipNumber, th.recipNumberBulk { width: 25px; }
+		td.recipNumber, td.recipNumberBulk { width: 25px; }
+	/* recip name */
+		th.recipName { width: 170px; }
+		td.recipName { width: 170px; }
+	/* recip email */
+		th.recipEmail { width: 172px; }
+		td.recipEmail { width: 170px; }
+	/* recip from and email */
+		th.recipFrom, th.recipFromBulk, th.recipFromEmailBulk { width: 200px; }
+		td.recipFrom, td.recipFromBulk, td.recipFromEmailBulk { width: 200px; }
+	/* recip msg */
+		th.recipMsg { width: 327px; }
+		td.recipMsg { width: 325px; }
+	/* recip card template */
+		th.recipTemp, th.recipTempBulk { width: 152px; }
+		td.recipTemp, td.recipTempBulk { width: 150px; }
+	/* links */
+		th.recipLinks, td.recipLinks {
+			text-align: left;
+		}
+		th.recipLinks, th.recipLinksBulk { width: 160px; }
+		td.recipLinks, td.recipLinksBulk { width: 160px; }
+		th.recipLinks a, td.recipLinks a, td.recipLinksBulk a {
+			padding-right: 8px;
+		}
+	/* recip amount and quantity */
+		td.recipAmt, td.recipAmtBulk, td.recipAmtEaBulk {
+			text-align: right;
+		}
+		td.recipQtyBulk { text-align: center; }
+		th.recipAmt {
+			text-align: left;
+		}
+		th.recipAmt, td.recipAmt { width: 65px; }
+		th.recipAmtBulk, td.recipAmtBulk, th.recipAmtEaBulk, 
+		td.recipAmtEaBulk { width: 120px; }
+		th.recipQtyBulk, td.recipQtyBulk { width: 75px; }
+	/* total */
+		.recipTotalBULK, .recipTotalInfoBULK {
+			font-size: 16px;
+			font-weight: bold;
+		}
+		.recipTotalBULK {
+			text-align: right;
+		}
+		.sideHeader {
+			font-size: 14px;
+			font-weight: bold;
+		}
+		.topHeader {
+			font-size: 18px;
+			font-weight: bold;
+		}
+
+
+.bordBlack {
+	border: 1px solid #000;
+}
+.botBordLineBlack {
+	border-bottom: 1px solid #000;
+}
+.botBordLineOrange {
+	border-bottom: 1px solid #f90;
+}
+.gcRecipListContainerCRM {
+	height: 180px;
+	overflow-y: auto;
+	border: 1px solid #000;
+}
+
+.gcBulkPurchaseContainerCRM {
+	height: 630px;
+	overflow-y: auto;
+	border: 1px solid #000;
+}
+.gcStepOn {
+	font-size: 12pt;
+	font-weight: bold;
+}
+.gcStepOff {
+	font-size: 10pt;
+	font-weight: normal;
+}
+
+
+a.cust_gc_sub_nav_on:link      { color: #000000; text-decoration: none; }
+a.cust_gc_sub_nav_on:visited   { color: #000000; text-decoration: none; }
+a.cust_gc_sub_nav_on:active    { color: #000000; text-decoration: none; }
+a.cust_gc_sub_nav_on:hover     { color: #000000; text-decoration: none; }
+
+a.gcIcon:link img, a.gcIcon:visited img, a.gcIcon:active img, a.gcIcon:hover img {
+	border: 0px;
+	text-decoration: none;
+	color: transparent;
+}
+
+/* CRM Checkout */
+
+	.gc_CO_cont {
+		float: left;
+		background-color: transparent;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 18px;
+		height: 165px;
+	}
+	.gc_CO_title {
+		float: left;
+		font-weight: bold;
+		width: 16px;
+		text-align: center;
+		height: 163px;
+		border: 1px dashed #fff;
+		background-color: #f93;
+		cursor: pointer;
+	}
+	a.gc_CO_titleLink:link      { color: #fff; text-decoration: none; }
+	a.gc_CO_titleLink:visited   { color: #000000; text-decoration: none; }
+	a.gc_CO_titleLink:active    { color: #000000; text-decoration: none; }
+	a.gc_CO_titleLink:hover     { color: #ccc; text-decoration: none; }
+
+	.gc_CO_usersCards {
+		float: left;
+		position: relative;
+		top: 0;
+		width: 200px;
+		left: -250;
+		background-color: #fff;
+	}
+	.gc_CO_usersCardsContainer {
+		height: 90px; /* 90px == 5 rows */
+		overflow-y: auto;
+		border: 1px solid #000;
+	}
+
+/* RH contact preferences box */
+	div.rhContactPrefsBox {
+		display: none;
+		visibility: hidden;
+		height: 0;
+		width: 0;
+		float: left;
+	}
+	div.rhContactPrefsBox div.rhContactPrefsBoxContent {
+		width: 350px;
+		margin: 6px;
+	}

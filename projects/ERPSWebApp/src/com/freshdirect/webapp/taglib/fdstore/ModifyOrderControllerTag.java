@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +51,9 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -62,6 +65,9 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.fdstore.giftcard.FDGiftCardI;
+import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
+import com.freshdirect.fdstore.giftcard.FDGiftCardModel;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
@@ -71,6 +77,8 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
+import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.OrderPermissionsI;
 import com.freshdirect.webapp.util.OrderPermissionsImpl;
@@ -304,6 +312,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		user.invalidateCache();
         // make sure we're not using stale order history data.
 		user.invalidateOrderHistoryCache();
+		//invalidate gift cards.
+		user.invalidateGiftCards();
 		session.setAttribute( SessionName.USER, user );
 
 	}
@@ -326,7 +336,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			FDCartModel cart = new FDModifyCartModel(order);
 			cart.refreshAll();
 			currentUser.setShoppingCart( cart );
-			
+			//Reload gift card balance.
+			loadGiftCardsIntoCart(currentUser, order);
 			// resolve timeslot id based on delivery reservation id
 			FDReservation reservation = FDDeliveryManager.getInstance().getReservation( order.getDeliveryReservationId() );
 			cart.setDeliveryReservation(reservation);
@@ -354,7 +365,23 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		}
 	}
 
-
+	private void loadGiftCardsIntoCart(FDUserI user, FDOrderI originalOrder) {
+		FDGiftCardInfoList gcList = user.getGiftCardList();
+		//Clear any hold amounts.
+		gcList.clearAllHoldAmount();
+    	List appliedGiftCards = originalOrder.getAppliedGiftCards();
+    	if(appliedGiftCards != null && appliedGiftCards.size() > 0) {
+	    	for(Iterator it = appliedGiftCards.iterator(); it.hasNext();) {
+	    		ErpAppliedGiftCardModel agcmodel = (ErpAppliedGiftCardModel) it.next();
+	    		String certNum = agcmodel.getCertificateNum();
+	    		FDGiftCardI fg = gcList.getGiftCard(certNum);
+	    		if(fg != null) {
+	    			//Found. Gift card already validated. set hold amount = amount applied on this order.
+	    			fg.setHoldAmount(originalOrder.getAppliedAmount(certNum));
+	    		} 
+	    	}
+    	}
+	}
 	protected void returnOrder(HttpServletRequest request, ActionResult results) throws JspException {
 		HttpSession session = request.getSession();
 
@@ -396,6 +423,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			session.setAttribute( SessionName.USER, currentUser );
             //The previous recommendations of the current user need to be removed.
             session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+    		FDGiftCardInfoList gcList = currentUser.getGiftCardList();
+    		//Clear any hold amounts.
+    		gcList.clearAllHoldAmount();
+            
 		} catch (FDResourceException ex) {
 			LOGGER.warn("Error accessing resources", ex);
 			throw new JspException(ex.getMessage());
@@ -520,6 +551,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				LOGGER.warn("Authorization failed", ex);
 				results.addError(new ActionError("order_status", "Authorization failed."));
 		
+			} catch (FDPaymentInadequateException ex) {
+				LOGGER.error("Payment Inadequate to process the ReAuthorization", ex);
+				results.addError(new ActionError("payment_inadequate", SystemMessageList.MSG_PAYMENT_INADEQUATE));
+
 			} catch (ErpTransactionException ex) {
 				LOGGER.error("Current sale status incompatible with requested action", ex);
 				results.addError(new ActionError("order_status", "This current order status does not permit the requested action."));
@@ -619,6 +654,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				LOGGER.error("Error performing a Delivery pass operation. ", ex);
 				//There was delivery pass validation failure.
 				results.addError(new ActionError(ex.getMessage()));
+			} catch (FDPaymentInadequateException ex) {
+				LOGGER.error("Payment Inadequate to process the ReAuthorization", ex);
+				results.addError(new ActionError("payment_inadequate", SystemMessageList.MSG_PAYMENT_INADEQUATE));
+
 			} catch (ErpTransactionException ex) {
 				LOGGER.error("Current sale status incompatible with requested action", ex);
 				results.addError(new ActionError("order_status", "This current order status does not permit the requested action."));
@@ -848,6 +887,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			LOGGER.warn("Authorization failed", ex);
 			results.addError(new ActionError("order_status", "Authorization failed."));
 	
+		} catch (FDPaymentInadequateException ex) {
+			LOGGER.error("Payment Inadequate to process the ReAuthorization", ex);
+			results.addError(new ActionError("payment_inadequate", SystemMessageList.MSG_PAYMENT_INADEQUATE));
+
 		} catch (ErpTransactionException ex) {
 			LOGGER.error("Current sale status incompatible with requested action", ex);
 			results.addError(new ActionError("order_status", "This current order status does not permit the requested action."));

@@ -1,0 +1,142 @@
+<%
+	EnumServiceType selected = request.getParameter(AddressName.DLV_SERVICE_TYPE) != null
+		? EnumServiceType.getEnum(request.getParameter(AddressName.DLV_SERVICE_TYPE))
+		: (request.getRequestURI().indexOf("registration/nw_cst_web_enter_details.jsp") > -1)
+			? EnumServiceType.WEB
+			: EnumServiceType.HOME;
+%>
+
+<script language="JavaScript" type="text/javascript">
+	function toggleUseDelivery(formObj) {
+		if (formObj.useDelivery.checked == true) {
+			// sync the billing and delivery addresses
+			formObj.<%= AddressName.BIL_ADDRESS_1 %>.value = formObj.<%= AddressName.DLV_ADDRESS_1 %>.value;
+			formObj.<%= AddressName.BIL_ADDRESS_2 %>.value = formObj.<%= AddressName.DLV_ADDRESS_2 %>.value;
+			formObj.<%= AddressName.BIL_APARTMENT %>.value = formObj.<%= AddressName.DLV_APARTMENT %>.value;
+			formObj.<%= AddressName.BIL_CITY %>.value = formObj.<%= AddressName.DLV_CITY %>.value;
+			formObj.<%= AddressName.BIL_STATE %>.value = formObj.<%= AddressName.DLV_STATE %>.value;
+			formObj.<%= AddressName.BIL_ZIPCODE %>.value = formObj.<%= AddressName.DLV_ZIPCODE %>.value;
+			
+			// make the billing address fields read-only
+			formObj.<%= AddressName.BIL_ADDRESS_1 %>.readOnly = true;
+			formObj.<%= AddressName.BIL_ADDRESS_2 %>.readOnly = true;
+			formObj.<%= AddressName.BIL_APARTMENT %>.readOnly = true;
+			formObj.<%= AddressName.BIL_CITY %>.readOnly = true;
+			formObj.<%= AddressName.BIL_STATE %>.readOnly = true;
+			formObj.<%= AddressName.BIL_ZIPCODE %>.readOnly = true;
+		} else {
+			// make the billing address fields writeable
+			formObj.<%= AddressName.BIL_ADDRESS_1 %>.readOnly = false;
+			formObj.<%= AddressName.BIL_ADDRESS_2 %>.readOnly = false;
+			formObj.<%= AddressName.BIL_APARTMENT %>.readOnly = false;
+			formObj.<%= AddressName.BIL_CITY %>.readOnly = false;
+			formObj.<%= AddressName.BIL_STATE %>.readOnly = false;
+			formObj.<%= AddressName.BIL_ZIPCODE %>.readOnly = false;
+			
+			// make the billing address fields what's in the params if any
+			formObj.<%= AddressName.BIL_ADDRESS_1 %>.value = "<%= request.getParameter(AddressName.BIL_ADDRESS_1) %>";
+			formObj.<%= AddressName.BIL_ADDRESS_2 %>.value = "<%= request.getParameter(AddressName.BIL_ADDRESS_2) %>";
+			formObj.<%= AddressName.BIL_APARTMENT %>.value = "<%= request.getParameter(AddressName.BIL_APARTMENT) %>";
+			formObj.<%= AddressName.BIL_CITY %>.value = "<%= request.getParameter(AddressName.BIL_CITY) %>";
+			formObj.<%= AddressName.BIL_STATE %>.value = "<%= request.getParameter(AddressName.BIL_STATE) %>";
+			formObj.<%= AddressName.BIL_ZIPCODE %>.value = "<%= request.getParameter(AddressName.BIL_ZIPCODE) %>";
+		}
+	}
+
+	function updateNameFields(formObj) {
+		updateAddrNames(formObj);
+		updateCCName(formObj);
+		updateContactNum(formObj);
+	}
+	
+	function updateAddrNames(formObj) {
+		formObj.<%= AddressName.DLV_FIRST_NAME %>.value = formObj.first_name.value;
+		formObj.<%= AddressName.DLV_LAST_NAME %>.value = formObj.last_name.value;
+	}
+	
+	function updateCCName(formObj) {
+		var first_name = formObj.first_name.value;
+		var last_name = formObj.last_name.value;
+		formObj.<%= PaymentMethodName.ACCOUNT_HOLDER %>.value = first_name + ' ' + last_name;
+	}
+	
+	function updateContactNum(formObj) {
+		var phoneNum = formObj.homephone.value;
+		formObj.<%= AddressName.DLV_HOME_PHONE %>.value = phoneNum;
+	}
+	
+	function updateRepeatEmail(formObj) {
+		var email = formObj.email.value;
+		formObj.repeat_email.value = email;
+	}
+</script>
+
+<table width="100%" cellpadding="0" cellspacing="2" border="0" align="CENTER" class="sub_nav">
+	<tr valign="MIDDLE">
+		<td width="35%" class="sub_nav_title">&nbsp;Create New Customer: 2. Enter Details</td>
+		<td width="45%" class="error_detail">
+			<font class="space4pix"><br /></font>&nbsp;
+			<%= (result.isFailure() && !result.hasError("technical_difficulty") && !result.hasError("fraud")) ? "&raquo; The marked fields contain invalid or missing data. " : "" %>
+			<% if (result.isFailure()) { %><a href="#" onclick="var k=document.getElementById('detail-err-view');if(k){k.style.display = (k.style.display=='none'?'':'none');};return false;">(error list)</a><% } %>
+			<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="error_detail"><%= errorMsg %></span><br /></fd:ErrorHandler>
+			<fd:ErrorHandler result='<%=result%>' name='fraud' id='errorMsg'><span class="error_detail"><%= errorMsg %></span><br /></fd:ErrorHandler>
+		</td>
+		<td width="20%" align="RIGHT"><a href="<%= response.encodeURL("/registration/nw_cst_check_zone.jsp") %>" class="cancel">CANCEL</a> </td>
+		<td width="20%" align="right"><input type="submit" class="submit" value="CREATE ACCOUNT" /></td>
+	</tr>
+	<!-- detail error list view START -->
+	<%
+		if (result.isFailure()) {
+			Collection errs = result.getErrors();
+			Collection wrns = result.getWarnings();
+	%>
+	<tr id="detail-err-view" style="display:none">
+		<td style="width: 100%; border: 4px solid red; padding: 6px 6px" colspan="4">
+		<%
+			// iterate errors
+			if (errs.size() > 0) {
+		%>
+				<b>Errors:</b><br/>
+				<table border="0" width="100%">
+					<%
+						Iterator it = errs.iterator();
+						while (it.hasNext()) {
+							ActionError msg = (ActionError) it.next();
+					%>
+					<tr>
+						<td style="vertical-align: top; color: red"><%= msg.getType() %></td>
+						<td style="width:100%" nowrap><%= msg.getDescription() %></td>
+					</tr>
+					<% } %>
+				</table>
+		<% 
+			} // end of errors
+
+			// iterate warnings
+			if (wrns.size() > 0) {
+		%>
+				<b>Warnings:</b><br />
+				<table cellspacing="0" cellpadding="0" width="100%">
+				<%
+					Iterator it = wrns.iterator();
+					while (it.hasNext()) {
+						ActionWarning msg = (ActionWarning) it.next();
+				%>
+					<tr>
+						<td style="vertical-align: top; color: red"><%= msg.getType() %></td>
+						<td style="width:100%" nowrap><%= msg.getDescription() %></td>
+					</tr>
+				<%
+					}
+				%>
+				</table>
+		<%
+			} // end of warnings
+		%>
+		</td>
+	</tr>
+	<%
+		}
+	%>
+	<!-- detail error list view END -->
+</table>

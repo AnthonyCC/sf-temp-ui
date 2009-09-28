@@ -536,6 +536,13 @@
 							</CmsCustomField>
 						</fields>
 					</CmsSection>
+					<!-- Gift Card changes -->
+					<CmsSection>
+						<title>Gift Card Domains</title>
+						<fields>
+							<CmsField><attribute>GIFTCARD_TYPE</attribute></CmsField>
+						</fields>
+					</CmsSection>
 					<CmsSection>
 						<title>Composite Product</title>
 						<fields>

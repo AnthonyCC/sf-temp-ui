@@ -32,7 +32,6 @@
 <fd:GetOrder id='cart' saleId='<%= orderId %>'>
 <%
     if (cart != null) {
-
         // !!! REFACTOR: duplicates code from checkout pages
     
         StringBuffer custName = new StringBuffer(50);

@@ -1,3 +1,5 @@
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <tmpl:insert template='/common/template/no_site_nav.jsp'>
@@ -15,10 +17,17 @@
 		<font class="text13">
 				<A HREF="/login/forget_password_main.jsp">Click here for help</a>
 		</FONT>
-		<br><br>	
+		<br><br>
+		<% 
+		
+		if( null != request.getParameter("successPage") && request.getParameter("successPage").toLowerCase().indexOf("gift_card") > 0 && FDStoreProperties.isGiftCardEnabled() ) { %>
+			<font class="text13bold">NEW CUSTOMER OR OUTSIDE OUR DELIVERY AREA?</FONT><BR><BR>
+			<A HREF='<%= response.encodeURL("/gift_card/purchase/register_and_purchase.jsp") %>'><font class="text13"><b>Click here</b> to continue with gift card purchase</font></a>.<br><br></td>
+                <% } else { %>        
 			<font class="text13bold">New Customer?</FONT><BR>
 			<A HREF='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'><font class="text13">See if we deliver to your area</font></a>.<br><br></td>
-                        </tr>
+                <% } %>
+                </tr>
 </TABLE>
 </tmpl:put>
 </tmpl:insert>

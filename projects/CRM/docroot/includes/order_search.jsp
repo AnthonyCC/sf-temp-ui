@@ -80,6 +80,10 @@
 							<input type="checkbox" name="any" onClick="javascript:toggleDate(); flipCorporate();"> Any
 						</td>
 					</tr>
+                    <tr>
+						<td>Gift Card</td>
+						<td colspan="4"><input type="text" name="gcNumber" value="<%= "null".equalsIgnoreCase(request.getParameter("gcNumber")) ? "" : request.getParameter("gcNumber") %>" class="input_text"></td>
+					</tr>                    
 					<tr>
 						<td>Depot</td>
 						<td colspan="4">

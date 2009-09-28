@@ -43,13 +43,15 @@ String pageURI = request.getRequestURI();
     }
 
 	FDUserI tmplUser = (FDUserI) session.getAttribute( SessionName.USER );
-	FDCartModel tmplCart = (FDCartModel) tmplUser.getShoppingCart();
-	
-	if (tmplCart instanceof FDModifyCartModel && inViewCart) {
+	FDCartModel tmplCart = null;
+	if(tmplUser != null) {
+		tmplCart = (FDCartModel) tmplUser.getShoppingCart();
+	}
+	if (tmplCart != null && tmplCart instanceof FDModifyCartModel && inViewCart) {
 		modOrder = true;
-        color = "6699CC";
-        suffix = "_blue";
-		}
+        	color = "6699CC";
+        	suffix = "_blue";
+	}
 
 %>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 

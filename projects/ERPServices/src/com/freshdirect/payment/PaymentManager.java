@@ -20,6 +20,7 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.payment.ejb.CPMServerGateway;
 import com.freshdirect.payment.ejb.PaymentHome;
 import com.freshdirect.payment.ejb.PaymentSB;
@@ -169,8 +170,10 @@ public class PaymentManager {
 	public static ErpPaymentMethodI createInstance(String id, String customerId, EnumPaymentMethodType paymentMethodType) {
 
 		ErpPaymentMethodI paymentMethod = null;
-
-		if (EnumPaymentMethodType.ECHECK.equals(paymentMethodType)) {
+		if (EnumPaymentMethodType.GIFTCARD.equals(paymentMethodType)) {
+			paymentMethod = new ErpGiftCardModel();
+		}
+		else if (EnumPaymentMethodType.ECHECK.equals(paymentMethodType)) {
 			paymentMethod = new ErpECheckModel();
 		} else {
 			paymentMethod = new ErpCreditCardModel(); // default as of now    		

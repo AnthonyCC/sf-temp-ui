@@ -462,4 +462,19 @@ public class ErpComplaintModel extends ModelSupport {
 		// do aggregation
 		return deptSet.values();
 	}
+	
+	public ErpComplaintLineModel getComplaintLine(Integer orderlineId) {
+    	for(Iterator i = this.complaintLines.iterator(); i.hasNext(); ) {
+    		ErpComplaintLineModel cl = (ErpComplaintLineModel) i.next();
+    		if(!EnumComplaintLineType.ORDER_LINE.equals(cl.getType())) {
+    			continue;
+    		}
+    		
+    		if(cl.getOrderLineId() != null && Integer.parseInt(cl.getComplaintLineNumber())== (orderlineId)) {
+    			return cl;
+    		}
+    	}
+    	
+    	return null;
+    }
 }

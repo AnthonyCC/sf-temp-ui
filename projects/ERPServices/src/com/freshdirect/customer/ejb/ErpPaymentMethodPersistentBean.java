@@ -16,6 +16,7 @@ import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.giftcard.ErpGiftCardUtil;
 
 public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSupport {
 
@@ -98,59 +99,125 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 
 
 	public PrimaryKey create(Connection conn) throws SQLException {
+		System.out.println("Inside calling create ******************* ");
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		int index = 1;
-		ps.setString(index++, id);
-		ps.setString(index++, this.getParentPK().getId());
-		ps.setString(index++, model.getName());
-		ps.setString(index++, model.getAccountNumber());
-		if (model.getExpirationDate() != null) {
-			ps.setDate(index++, new java.sql.Date(model.getExpirationDate().getTime()));
-		} else {
-			ps.setNull(index++, Types.DATE);			
-		}
-		if (model.getCardType() != null) {
-			ps.setString(index++, model.getCardType().getFdName());
-		} else {
-			ps.setNull(index++, Types.VARCHAR);			
-		}
-		if (model.getPaymentMethodType() != null) {
-			ps.setString(index++, model.getPaymentMethodType().getName());
-		} else {
-			ps.setNull(index++, Types.VARCHAR);			
-		}
-		if (model.getAbaRouteNumber() != null) {
-			ps.setString(index++, model.getAbaRouteNumber());
-		} else {
-			ps.setNull(index++, Types.VARCHAR);			
-		}
-		if (model.getBankName() != null) {
-			ps.setString(index++, model.getBankName());
-		} else {
-			ps.setNull(index++, Types.VARCHAR);			
-		}
-		if (model.getBankAccountType() != null) {
-			ps.setString(index++, model.getBankAccountType().getName());
-		} else {
-			ps.setNull(index++, Types.VARCHAR);			
-		}
-		ps.setString(index++, model.getAddress1());
-		if (model.getAddress2() != null) {
-			ps.setString(index++, model.getAddress2());
-		} else {
-			ps.setNull(index++, Types.VARCHAR);			
-		}
-		if (model.getApartment() != null) {
-			ps.setString(index++, model.getApartment());
-		} else {
-			ps.setNull(index++, Types.VARCHAR);			
-		}
-		ps.setString(index++, model.getCity());
-		ps.setString(index++, model.getState());
-		ps.setString(index++, model.getZipCode());
-		ps.setString(index++, model.getCountry());
-	
+		/*
+		if(this.model.getPaymentMethodType().equals(EnumPaymentMethodType.GIFTCARD)) {
+			System.out.println("Inside calling GC create ******************* ");
+			ps.setString(index++, id);
+			ps.setString(index++, this.getParentPK().getId());
+			ps.setString(index++, "N/A");
+			ps.setString(index++, model.getAccountNumber());
+			if (model.getExpirationDate() != null) {
+				ps.setDate(index++, new java.sql.Date(model.getExpirationDate().getTime()));
+			} else {
+				ps.setNull(index++, Types.DATE);			
+			}
+			if (model.getCardType() != null) {
+				ps.setString(index++, model.getCardType().getFdName());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			if (model.getPaymentMethodType() != null) {
+				ps.setString(index++, model.getPaymentMethodType().getName());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			if (model.getAbaRouteNumber() != null) {
+				ps.setString(index++, model.getAbaRouteNumber());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			if (model.getBankName() != null) {
+				ps.setString(index++, model.getBankName());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			if (model.getBankAccountType() != null) {
+				ps.setString(index++, model.getBankAccountType().getName());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			ps.setString(index++, "N/A");
+			if (model.getAddress2() != null) {
+				ps.setString(index++, model.getAddress2());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			if (model.getApartment() != null) {
+				ps.setString(index++, model.getApartment());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			ps.setString(index++, "N/A");
+			ps.setString(index++, "N/A");
+			ps.setString(index++, "N/A");
+			ps.setString(index++, "N/A");
+
+		} else {*/
+			System.out.println("Inside calling non GC create ******************* ");
+			ps.setString(index++, id);
+			ps.setString(index++, this.getParentPK().getId());
+			ps.setString(index++, model.getName());
+			ps.setString(index++, model.getAccountNumber());
+			if (model.getExpirationDate() != null) {
+				ps.setDate(index++, new java.sql.Date(model.getExpirationDate().getTime()));
+			} else {
+				ps.setNull(index++, Types.DATE);			
+			}
+			if (model.getCardType() != null) {
+				ps.setString(index++, model.getCardType().getFdName());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			if (model.getPaymentMethodType() != null) {
+				ps.setString(index++, model.getPaymentMethodType().getName());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			if (model.getAbaRouteNumber() != null) {
+				ps.setString(index++, model.getAbaRouteNumber());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			if (model.getBankName() != null) {
+				ps.setString(index++, model.getBankName());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			if (model.getBankAccountType() != null) {
+				ps.setString(index++, model.getBankAccountType().getName());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			if (model.getAddress2() != null) {
+				ps.setString(index++, model.getAddress2());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			if (model.getApartment() != null) {
+				ps.setString(index++, model.getApartment());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);			
+			}
+			if(this.model.getPaymentMethodType().equals(EnumPaymentMethodType.GIFTCARD)) {
+				ps.setString(index++, "NA");
+				ps.setString(index++, "NA");
+				ps.setString(index++, "NA");
+				ps.setString(index++, "NA");
+				ps.setString(index++, "NA");
+				
+			} else {
+				ps.setString(index++, model.getAddress1());
+				ps.setString(index++, model.getCity());
+				ps.setString(index++, model.getState());
+				ps.setString(index++, model.getZipCode());
+				ps.setString(index++, model.getCountry());
+				
+			}
+		//}
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -193,6 +260,10 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				model.setCustomerId(rs.getString("CUSTOMER_ID"));
 				setParentPK(new PrimaryKey(model.getCustomerId()));
 				model.setPK(getPK());
+				if(paymentMethodType != null && paymentMethodType.equals(EnumPaymentMethodType.GIFTCARD)) {
+					//Set the certification number for gift card.
+					model.setCertificateNumber(ErpGiftCardUtil.getCertificateNumber(rs.getString("ACCOUNT_NUMBER")));
+				}
 			} else {
 				throw new SQLException("No such ErpPaymentMethod PK: " + this.getPK());
 			}
@@ -207,6 +278,11 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 	}
 
 	public void store(Connection conn) throws SQLException {
+		if(this.model.getPaymentMethodType().equals(EnumPaymentMethodType.GIFTCARD)) {
+			//Do Nothing. As There will not be any update to this model.
+			return;
+		}
+		
 		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PAYMENTMETHOD SET CUSTOMER_ID = ?, NAME = ?, ACCOUNT_NUMBER = ?, EXPIRATION_DATE = ?, CARD_TYPE = ?, PAYMENT_METHOD_TYPE=?, ABA_ROUTE_NUMBER=?, BANK_NAME=?, BANK_ACCOUNT_TYPE=?, ADDRESS1 = ?, ADDRESS2 = ?, APARTMENT = ?, CITY = ?, STATE = ?, ZIP_CODE = ?, COUNTRY = ? WHERE ID=?");
 		
 		try {

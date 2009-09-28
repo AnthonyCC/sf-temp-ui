@@ -31,6 +31,7 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
 	
 	private List appliedCredits = new ArrayList();
 	private List discounts = new ArrayList();
+	private List appliedGiftCards = new ArrayList();
 	
     public ErpInvoiceModel() {
 		super(EnumTransactionType.INVOICE);
@@ -152,6 +153,14 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
 					ErpInvoiceLineModel line2 = (ErpInvoiceLineModel) o2;
 					return line1.getOrderLineNumber().compareTo(line2.getOrderLineNumber());
 				}
-			}; 
+			};
+
+	public List getAppliedGiftCards() {
+		return appliedGiftCards;
+	}
+
+	public void setAppliedGiftCards(List appliedGiftCards) {
+		this.appliedGiftCards = appliedGiftCards;
+	} 
 }
 

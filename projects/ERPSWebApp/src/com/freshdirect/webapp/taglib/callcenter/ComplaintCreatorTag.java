@@ -12,6 +12,7 @@ package com.freshdirect.webapp.taglib.callcenter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ import com.freshdirect.customer.EnumSendCreditEmail;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
+import com.freshdirect.customer.ErpGiftCardComplaintLineModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.FDResourceException;
@@ -53,6 +55,7 @@ import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.CallcenterUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -302,7 +305,12 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             if (orderLineReason[i] == null || "".equals(orderLineReason[i])) continue;
 	            final String oID = this.orderLineId[i];
 	            ErpOrderLineModel orderline = order.getOrderLine(oID);
-            
+	        /*boolean isGiftCardOrder = (order.getSale().getType().getSaleType().equalsIgnoreCase("GCD"))?true:false;
+	        if(isGiftCardOrder){
+	          	line = new ErpGiftCardComplaintLineModel();
+	          	getGiftCardRecipients(this.orderId);
+	          	line.set
+	        }*/
             // Set up the Complaint Line Model with proper info
             //
             line.setType(EnumComplaintLineType.ORDER_LINE);
@@ -662,4 +670,28 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     private FDOrderI getOrder(String orderId) throws FDResourceException {
         return FDCustomerManager.getOrder(orderId);
     }   
+    
+   /* private List getGiftCardRecipients(String saleId) throws FDResourceException{
+    	List giftCardRecipients = FDCustomerManager.getGiftCardRecepientsForOrder(saleId);
+    	if(giftCardRecipients == null){
+			return Collections.EMPTY_LIST;
+		}		
+    	return giftCardRecipients;
+    }
+    
+    private String[] getGiftCardInfo(ErpOrderLineModel orderline) throws FDResourceException{
+    	List giftCardRecipients = getGiftCardRecipients(this.orderId);
+    	String[] giftCardInfo = new String[2];
+    	for (Iterator iterator = giftCardRecipients.iterator(); iterator
+				.hasNext();) {
+			ErpGCDlvInformationHolder erpGCDlvInformationHolder = (ErpGCDlvInformationHolder) iterator.next();
+			if(erpGCDlvInformationHolder.getRecepientModel().getOrderLineId().equalsIgnoreCase(orderline.getOrderLineNumber())){
+				giftCardInfo[0]= erpGCDlvInformationHolder.getCertificationNumber();
+				giftCardInfo[1]= erpGCDlvInformationHolder.getGivexNum();
+			}
+			
+		}
+    	return giftCardInfo;
+    	
+    }*/
 }

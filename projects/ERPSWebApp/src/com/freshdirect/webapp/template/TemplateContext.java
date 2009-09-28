@@ -27,25 +27,27 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeCategory;
 import com.freshdirect.fdstore.content.RecipeSubcategory;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.framework.content.BaseTemplateContext;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.JspMethods;
 
 /**
  * Collection of helper methods made available to templates.
  */
-public class TemplateContext {
+public class TemplateContext extends BaseTemplateContext{
 
 	private final static Image IMAGE_BLANK = new Image("/media_stat/images/layout/clear.gif", 1, 1);
 
 	//private static final Category LOGGER = Category.getInstance(TemplateContext.class);
 
-	private final Map parameters;
+//	private final Map parameters;
 	
 	/**
 	 * Create a template context with no rendering parameters.
 	 */
 	public TemplateContext() {
-		this(Collections.EMPTY_MAP);
+//		this(Collections.EMPTY_MAP);
+		super();
 	}
 	
 	/**
@@ -54,17 +56,18 @@ public class TemplateContext {
 	 * @param parameters map of optional rendering parameters (never null)
 	 */
 	public TemplateContext(Map parameters) {
-		this.parameters = Collections.unmodifiableMap(parameters);
+		//this.parameters = Collections.unmodifiableMap(parameters);
+		super(parameters);
 	}
 	
 	/**
 	 * Get optional rendering parameters.
 	 * 
 	 * @return parameter map (never null)
-	 */
+	 *//*
 	public Map getParameters() {
 		return this.parameters;
-	}
+	}*/
 	
 	/**
 	 * Get a relative URL to a contentnode.

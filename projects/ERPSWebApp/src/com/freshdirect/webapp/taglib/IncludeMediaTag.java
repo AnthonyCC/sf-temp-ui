@@ -2,20 +2,15 @@ package com.freshdirect.webapp.taglib;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.net.URL;
 import java.util.Map;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.template.TemplateException;
-import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.webapp.template.TemplateContext;
 import com.freshdirect.webapp.util.MediaUtils;
 
 public class IncludeMediaTag extends BodyTagSupport {

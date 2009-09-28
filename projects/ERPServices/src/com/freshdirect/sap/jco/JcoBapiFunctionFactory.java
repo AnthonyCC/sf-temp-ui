@@ -43,7 +43,14 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 		}
 		else if(EnumSaleType.SUBSCRIPTION.equals(saleType)) {
 			functionName="ZBAPI_SALESORDER_XOR_CREATE";
+		}
+		else if(EnumSaleType.GIFTCARD.equals(saleType)) {
+			functionName="ZBAPI_SALESORDER_XOR_CREATE";
 		} 
+		else if(EnumSaleType.DONATION.equals(saleType)) {
+			functionName="ZBAPI_SALESORDER_XOR_CREATE";
+		} 
+
 		else {
 			return new JcoBapiSalesOrderCreate();
 		}

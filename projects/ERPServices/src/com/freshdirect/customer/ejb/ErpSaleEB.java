@@ -17,11 +17,15 @@ import com.freshdirect.customer.ErpCashbackModel;
 import com.freshdirect.customer.ErpChargebackModel;
 import com.freshdirect.customer.ErpChargebackReversalModel;
 import com.freshdirect.customer.ErpComplaintModel;
+import com.freshdirect.giftcard.ErpGiftCardTransModel;
 import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpChargeInvoiceModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpRedeliveryModel;
 import com.freshdirect.customer.ErpDeliveryConfirmModel;
+import com.freshdirect.giftcard.ErpRegisterGiftCardModel;
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpResubmitPaymentModel;
 import com.freshdirect.customer.ErpReturnOrderModel;
 import com.freshdirect.customer.ErpReversalModel;
@@ -35,6 +39,10 @@ import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpVoidCaptureModel;
 import com.freshdirect.framework.core.EntityBeanRemoteI;
+import com.freshdirect.giftcard.ErpGiftCardAuthModel;
+import com.freshdirect.giftcard.ErpPostAuthGiftCardModel;
+import com.freshdirect.giftcard.ErpPreAuthGiftCardModel;
+import com.freshdirect.giftcard.ErpReverseAuthGiftCardModel;
 
 /**
  * ErpSale remote interface.
@@ -87,6 +95,8 @@ public interface ErpSaleEB extends EntityBeanRemoteI, ErpSaleI {
      */
     public void cancelOrder(ErpCancelOrderModel cancelOrder) throws ErpTransactionException, RemoteException;
 
+    public void cancelGCOrder(ErpCancelOrderModel cancelOrder) throws ErpTransactionException, RemoteException;
+    
     /**
      * Notification that the cancel order is successfully completed in SAP.
      * Status will be CANCELED after this operation.
@@ -101,6 +111,8 @@ public interface ErpSaleEB extends EntityBeanRemoteI, ErpSaleI {
 	 */
 	public void cutoff() throws ErpTransactionException, RemoteException;
 
+	public void emailPending() throws ErpTransactionException, RemoteException;
+	
 	/**
 	 * Add the invoice coming from SAP. The Sale must be in the INPROCESS status.
 	 * Status will be ENROUTE after this operation.
@@ -134,7 +146,8 @@ public interface ErpSaleEB extends EntityBeanRemoteI, ErpSaleI {
 	public void addCashback(ErpCashbackModel cashbackModel) throws ErpTransactionException, RemoteException;
 	
 	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel) throws ErpTransactionException, RemoteException;
-
+	
+	public void addRegisterGiftCard(ErpGiftCardTransModel registerGCModel) throws ErpTransactionException, RemoteException;
     /**
      * Get how the current order looks like. Returns the last create or change order transaction.
      */
@@ -169,6 +182,8 @@ public interface ErpSaleEB extends EntityBeanRemoteI, ErpSaleI {
 	public void addResubmitPayment(ErpResubmitPaymentModel model) throws ErpTransactionException, RemoteException;
 	
 	public void forcePaymentStatus() throws ErpTransactionException, RemoteException;
+	
+	public void forceSettlement() throws ErpTransactionException, RemoteException;
 	
 	public List getSettlements() throws ErpTransactionException, RemoteException;
 	
@@ -222,4 +237,48 @@ public interface ErpSaleEB extends EntityBeanRemoteI, ErpSaleI {
 	 * @throws RemoteException
 	 */
 	public void updateDeliveryPassId(String dlvPassId) throws RemoteException;
+	
+	public List getValidGCAuthorizations(ErpPaymentMethodI pm) throws RemoteException;
+	
+	public void addGCPreAuthorization(ErpPreAuthGiftCardModel auth) throws ErpTransactionException, RemoteException;
+	
+	
+	public void addGiftCardEmailInfo(ErpGiftCardTransModel emailGCModel) throws ErpTransactionException,RemoteException;
+	
+	
+	public void addGiftCardDeliveryConfirm(ErpGiftCardTransModel registerGCModel) throws ErpTransactionException,RemoteException;
+	
+	public void setGiftCardRegPending() throws ErpTransactionException,RemoteException;
+	
+	public void addReverseGCPreAuthorization(ErpReverseAuthGiftCardModel rauth) throws ErpTransactionException, RemoteException;
+	
+	public void cancelGCPreAuthorization(ErpPreAuthGiftCardModel auth) throws ErpTransactionException, RemoteException;
+	
+	public ErpRegisterGiftCardModel getRecentRegistration() throws RemoteException;
+	
+	public List getPendingGCAuthorizations(ErpPaymentMethodI pm) throws RemoteException;
+	
+	public List getPendingGCAuthorizations() throws RemoteException;
+	
+	public List getPendingGCReverseAuths(ErpPaymentMethodI pm) throws RemoteException;
+	
+	public void updateGCAuthorization(ErpGiftCardAuthModel auth) throws RemoteException;
+	
+	public void addPostAuthorization(ErpPostAuthGiftCardModel postAuth) throws ErpTransactionException, RemoteException;
+	
+	public void markAsCapturePending() throws ErpTransactionException, RemoteException;
+	
+	public void markAsSettlementPending() throws ErpTransactionException, RemoteException;
+	
+	public boolean hasValidPostAuth(ErpPaymentMethodI pm, String preAuthCode) throws RemoteException;
+	
+	public List getValidGCAuthorizations() throws RemoteException;
+	
+	public List getValidGCPostAuthorizations() throws RemoteException;
+	
+	public void addGiftCardBalanceTransfer(ErpGiftCardTransModel authorizationModel) throws ErpTransactionException, RemoteException;
+	
+	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel, EnumSaleStatus enumSaleStatus) throws ErpTransactionException, RemoteException;
+	
+//	public void addSettlementPending(ErpSettlementPendingModel erpSettlementPendingModel) throws ErpTransactionException, RemoteException;
 }

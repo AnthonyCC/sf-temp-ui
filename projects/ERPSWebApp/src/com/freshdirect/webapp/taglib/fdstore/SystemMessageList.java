@@ -129,6 +129,25 @@ public interface SystemMessageList {
 	// SORI MESSGAES
 	public final static String MSG_PROMOTION_APPLIED_VARY1 = "PLEASE NOTE: You are currently eligible for multiple promotional offers which cannot be combined. <BR>When you check out, we will automatically choose the offer that gives you the greatest discount";
 	public final static String MSG_PROMOTION_APPLIED_VARY2 = "PLEASE NOTE: You are currently eligible for multiple promotional offers which cannot be combined. We have applied the offer which gives you greater discount.";
+	//Gift cards
+	public final static String MSG_PAYMENT_INADEQUATE = "Payment Inadequate. Please provide a different mode of payment.";
+	public final static String MSG_IDENTIFY_RECIPIENT = "Unable to identify which recipient to change.";
+	public final static String MSG_CHECKOUT_RECIPIENT_EMPTY		= "Please add at least one recipient to your cart to continue checkout.";
+	public final static String ACCOUNT_LOCKED_FOR_GC		= "Due to multiple incorrect entries, gift card usage has been locked. Please contact Customer Service for further assistance {0}.";
+	public final static String APPLY_GC_WARNING		= "Sorry, One more incorrect entry may lock your account from adding gift cards. For Further Assistance, Please contact Customer Service {0}."; 
+	public final static String MSG_CHECKOUT_GC_ORDER_TOO_LARGE = "You have exceeded the maximum allowable gift card purchase. Please contact Customer Service for further assistance {0}";
+	public final static String MSG_CHECKOUT_GC_ORDER_COUNT = "You have exceeded the maximum allowable gift card purchase. Please contact Customer Service for further assistance {0}.";
+	public final static String MSG_CHECKOUT_RECIPIENTS_EMPTY = "Recipient List cannot be empty. Please add one or more recipients to Continue.";
+	public final static String MSG_GC_CC_INVALID = "The credit card number you provided is invalid, please double-check your account and enter the info again";
+	public final static String MSG_GC_SIGNUP_SUCCESS = "Account Successfully Created. You are currently logged in.";
+	public final static String MSG_CHECKOUT_GC_RECIPIENT_COUNT = "For your protection, FreshDirect will not accept more than {0} Gift Cards in a single order. Please call FreshDirect at {1} and a customer service representative will assist you in placing this order.";
+	public final static String APPLY_GC_WITH_ZERO_BALANCE = "The gift card number you entered has no remaining value.";
+	public final static String MSG_GC_IN_USE = "The gift card number you entered is associated with a different account. Please contact Customer Service for further assistance {0}.";
+	public final static String MSG_GC_ALREADY_ADDED = "The gift card number you entered has already been redeemed.";
+	public final static String MSG_GC_INVALID = "The gift card number you have entered is invalid. Please check the number and try again.";
+	public final static String MSG_GC_ON_HOLD = "The gift card number you entered is on hold. Please contact Customer Service for further assistance {0}.";
+	public final static String MSG_GC_MIN_AMOUNT = "Gift card orders require a minimum value of ${0} per card. Please contact Customer Service for further assistance {1}.";
+	public final static String MSG_GC_MAX_AMOUNT = " Gift card purchases are restricted to a maximum of ${0} per order. Please contact Customer Service for further assistance {1}.";
 	
 	
 }

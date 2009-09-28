@@ -10,6 +10,7 @@ import java.util.Date;
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpSettlementInfo;
+import com.freshdirect.giftcard.ErpGCSettlementInfo;
 
 /**
  * @author knadeem
@@ -31,5 +32,6 @@ public interface SettlementBuilderI {
 	public abstract void addChargebackReversal(ErpSettlementInfo info, double amount);
 	public abstract void addBounceCheckCharge(ErpSettlementInfo info, EnumCardType type, double amount);
 	public abstract void addPaymentRecharge(ErpSettlementInfo info, EnumCardType type, double amount);
-	
+	public abstract void addGCChargeDetail(ErpGCSettlementInfo info, EnumCardType cardType);
+	public void addFailedGCSettlement(ErpGCSettlementInfo info, EnumCardType cardType);
 }

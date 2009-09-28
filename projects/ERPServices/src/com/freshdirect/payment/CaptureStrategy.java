@@ -18,6 +18,7 @@ import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 
 public class CaptureStrategy extends PaymentStrategy {
 	
@@ -81,6 +82,16 @@ public class CaptureStrategy extends PaymentStrategy {
 			this.addDeduction(c.getAmount());
 		}
 				
+		//Apply GC Payments
+		for (Iterator i = invoice.getAppliedGiftCards().iterator(); i.hasNext();) {
+			ErpAppliedGiftCardModel agc = (ErpAppliedGiftCardModel) i.next();
+			if(usq.equals(agc.getAffiliate())) {
+				usqInfo.addGCPayment(agc.getAmount());
+			} else {
+				fdInfo.addGCPayment(agc.getAmount());
+			}
+		}
+		if(order.getPaymentMethod().isGiftCard()) return Collections.emptyMap();
 		
 		List fdAuths = this.sale.getApprovedAuthorizations(fdInfo.affiliate, order.getPaymentMethod());
 		List bcAuths = this.sale.getApprovedAuthorizations(bcInfo.affiliate, order.getPaymentMethod());

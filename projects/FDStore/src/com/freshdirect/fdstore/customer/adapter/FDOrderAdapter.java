@@ -14,6 +14,7 @@ package com.freshdirect.fdstore.customer.adapter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -63,7 +64,10 @@ import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.customer.FDBulkRecipientList;
+import com.freshdirect.fdstore.customer.FDBulkRecipientModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -71,6 +75,7 @@ import com.freshdirect.fdstore.customer.FDCartonDetail;
 import com.freshdirect.fdstore.customer.FDCartonInfo;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.WebOrderViewFactory;
 import com.freshdirect.fdstore.customer.WebOrderViewI;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
@@ -79,6 +84,13 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
+import com.freshdirect.giftcard.ErpEmailGiftCardModel;
+import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
+import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
+import com.freshdirect.giftcard.ErpGiftCardUtil;
+import com.freshdirect.giftcard.ErpRecipentModel;
+import com.freshdirect.giftcard.RecipientModel;
 
 public class FDOrderAdapter implements FDOrderI {
 	private static final long serialVersionUID = -7702575123652018830L;
@@ -113,7 +125,7 @@ public class FDOrderAdapter implements FDOrderI {
 	/** Adapt a sale */
 	protected void init(ErpSaleModel sale) {
 		this.sale = sale;
-
+		System.out.println("FDOrderAdapter : init ");
 		this.erpOrder = this.sale.getRecentOrderTransaction();
 
 		ErpDeliveryInfoModel delInfo = erpOrder.getDeliveryInfo();
@@ -178,7 +190,19 @@ public class FDOrderAdapter implements FDOrderI {
 
 			FDCartLineI cartLine;
 			cartLine = new FDCartLineModel(ol, firstInvoiceLine, lastInvoiceLine, returnLine);
-
+			//If gift card sku load the fixed frice into cartline.
+			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(ol.getSku().getSkuCode()) || FDStoreProperties.getRobinHoodSkucode().equalsIgnoreCase(ol.getSku().getSkuCode())){
+				cartLine.setFixedPrice(ol.getPrice());
+			}
+			System.out.println("ol.getSku().getSkuCode()"+ol.getSku().getSkuCode());
+			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(ol.getSku().getSkuCode())){
+			{
+				System.out.println("Setting the actual fixed price "+ol.getActualPrice());
+				cartLine.setFixedPrice(ol.getActualPrice());
+			}
+			      		
+		}
+			
 			try {
 				cartLine.refreshConfiguration();
 
@@ -1154,4 +1178,123 @@ public class FDOrderAdapter implements FDOrderI {
 		}
         return discountAmt;
 	}
+	
+	//Gift cards
+	public List getGiftcardPaymentMethods() {
+		return erpOrder.getSelectedGiftCards();
+	}
+	
+	public List getAppliedGiftCards() {
+		if(sale.hasInvoice()){
+			return sale.getLastInvoice().getAppliedGiftCards();
+		}
+		return erpOrder.getAppliedGiftcards();
+	}
+	
+	public double getTotalAppliedGCAmount(){
+		double amount = 0.0;
+		for(Iterator it = this.getAppliedGiftCards().iterator();it.hasNext();){
+			ErpAppliedGiftCardModel model = (ErpAppliedGiftCardModel)it.next();
+			double appamt = model.getAmount();//ErpGiftCardUtil.getAppliedAmount(model.getCertificateNum(), this.getAppliedGiftCards());
+			amount += appamt;
+		}
+		return amount;
+	}
+	
+	public double getCCPaymentAmount() {
+		if(sale.hasInvoice()){
+			return this.getInvoicedTotal() - this.getTotalAppliedGCAmount();
+		}
+		return this.getTotal() - this.getTotalAppliedGCAmount();
+	}
+	public double getAppliedAmount(String certificateNum){
+		return ErpGiftCardUtil.getAppliedAmount(certificateNum, this.getAppliedGiftCards());
+	}
+	
+	public FDRecipientList getGiftCardRecipients() {
+		return new FDRecipientList(erpOrder.getRecepientsList());
+	}
+
+	public ErpGiftCardDlvConfirmModel getGCDeliveryInfo() {
+		return sale.getGCDeliveryConfirmation();
+	}
+	
+	public ErpRecipentModel getGCResendInfoFor(String giftCardId) {
+		List resendTransactions = sale.getGCResendEmailTransaction();
+		if(resendTransactions != null){
+			for	(Iterator it = resendTransactions.iterator(); it.hasNext();){
+				ErpEmailGiftCardModel model = (ErpEmailGiftCardModel)it.next();
+				for	(Iterator j = model.getRecepientsTranactionList().iterator(); j.hasNext();){
+					ErpGCDlvInformationHolder holder = (ErpGCDlvInformationHolder)j.next();
+					if(holder.getGiftCardId().equals(giftCardId)){
+						return holder.getRecepientModel();
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	public FDBulkRecipientList getGiftCardBulkRecipients(){
+		List recipientList = erpOrder.getRecepientsList();
+		Collections.sort(recipientList, new ErpRecipientModelTemplateComparator());
+		FDBulkRecipientModel bulkModel = new FDBulkRecipientModel();
+		List recipients = new ArrayList();
+		FDRecipientList recpList = new FDRecipientList(recipients);
+		
+		
+		for (Iterator iterator = recipientList.iterator(); iterator.hasNext();) {
+			ErpRecipentModel erpRecipentModel = (ErpRecipentModel) iterator.next();
+			if( null ==bulkModel.getTemplateId() || (!bulkModel.getTemplateId().equals(erpRecipentModel.getTemplateId())) ||(bulkModel.getTemplateId().equals(erpRecipentModel.getTemplateId()) && bulkModel.getAmount()!= erpRecipentModel.getAmount())){
+				bulkModel = new FDBulkRecipientModel();
+				bulkModel.setQuantity("1");//Initial qty.
+				bulkModel.setAmount(erpRecipentModel.getAmount());
+				bulkModel.setTemplateId(erpRecipentModel.getTemplateId());
+				recipients.add(bulkModel);
+			}else{
+				Integer qty = Integer.parseInt(bulkModel.getQuantity());				
+				bulkModel.setQuantity((++qty).toString()); //Increase the qty by one.
+//				bulkModel.setAmount((bulkModel.getAmount()+erpRecipentModel.getAmount())); //Accumulating the amt for the sample template type.
+			}			
+		}
+		FDBulkRecipientList bulkList = new FDBulkRecipientList(recipients);	
+		return bulkList;
+	}
+	
+	private class ErpRecipientModelTemplateComparator implements Comparator<ErpRecipentModel>{
+
+		@Override
+		public int compare(ErpRecipentModel recp1, ErpRecipentModel recp2) {
+			if(recp1.getTemplateId().compareToIgnoreCase(recp2.getTemplateId())==0){
+				return Double.compare(recp1.getAmount(),recp2.getAmount());
+			}else{		
+				return recp1.getTemplateId().compareToIgnoreCase(recp2.getTemplateId());			
+			}
+		}
+		
+	}
+
+	public ErpOrderLineModel getOrderLineByNumber(String orderlineNumber) {
+		return this.erpOrder.getOrderLineByOrderLineNumber(orderlineNumber);
+	}
+	
+	public ErpGCDlvInformationHolder getGCDlvInformationHolder(String givexNumber){
+		ErpGiftCardDlvConfirmModel model = sale.getGCDeliveryConfirmation();
+		if(null != model){
+			List dlvInfoList = model.getDlvInfoTranactionList();
+			for (Iterator iterator = dlvInfoList.iterator(); iterator.hasNext();) {				
+				ErpGCDlvInformationHolder dlvInfoHolder = (ErpGCDlvInformationHolder) iterator.next();
+				if(null !=dlvInfoHolder.getGivexNum() && dlvInfoHolder.getGivexNum().equalsIgnoreCase(givexNumber)){
+					return dlvInfoHolder;
+				}
+				
+			}
+		}
+		return null;
+	}
+	
+	public double getBufferAmt() {
+		return this.erpOrder.getBufferAmt();
+	}
+	
 }

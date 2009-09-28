@@ -12,10 +12,10 @@ package com.freshdirect.mail.ejb;
 import javax.ejb.*;
 import java.rmi.RemoteException;
 
-import com.freshdirect.framework.mail.XMLEmailI;
+import com.freshdirect.framework.mail.EmailI;
+
 
 public interface MailerGatewaySB extends EJBObject {
 	
-	public void enqueueEmail(XMLEmailI email) throws RemoteException;
-
+	public void enqueueEmail(EmailI email) throws RemoteException;
 }

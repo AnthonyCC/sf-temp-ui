@@ -20,9 +20,11 @@ import com.freshdirect.customer.ErpDeliveryInfoModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 
 /**
  * ErpAbstractOrder persistent bean.
@@ -104,7 +106,7 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 	public PrimaryKey create(Connection conn) throws SQLException {
 		
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, PRICING_DATE, REQUESTED_DATE, SUB_TOTAL, TAX, CUST_SRVC_MESSAGE, MARKETING_MESSAGE,INITIATOR, GL_CODE, CUSTOMER_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, PRICING_DATE, REQUESTED_DATE, SUB_TOTAL, TAX, CUST_SRVC_MESSAGE, MARKETING_MESSAGE,INITIATOR, GL_CODE, CUSTOMER_ID, BUFFER_AMT) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
@@ -120,6 +122,7 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 		ps.setString(13, this.model.getTransactionInitiator());
 		ps.setString(14, this.model.getGlCode());
 		ps.setString(15, this.model.getCustomerId());
+		ps.setDouble(16, this.model.getBufferAmt());
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -141,7 +144,7 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 		diPB.setParentPK(this.getPK());
 		diPB.create( conn );
 
-		// create payment info
+		// create payment info. In case of gift card only order there will be a dummy payment info generated. 
 		ErpPaymentInfoPersistentBean piPB = new ErpPaymentInfoPersistentBean((ErpPaymentMethodModel)model.getPaymentMethod());
 		piPB.setParentPK(this.getPK());
 		piPB.create( conn );
@@ -157,13 +160,27 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 		// create discounts
 		DiscountList pList = this.getDiscountPBList();
 		pList.create(conn);
+		
+		// create receipents
+		RecepientsList rList = this.getRecepientsPBList();
+		rList.setParentPK(this.getPK());
+		rList.create(conn);
 
+		/*
+		// create gift card payment methods.
+		GiftCardPMList gcList = this.getGiftCardPMList();
+		gcList.create(conn);
+		*/
+		// create gift card payment methods.
+		AppliedGiftCardList agcList = this.getAppliedGiftCardList();
+		agcList.create(conn);
+		
 		this.unsetModified();
 		return this.getPK();
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, PRICING_DATE, REQUESTED_DATE, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, SUB_TOTAL, TAX, CUST_SRVC_MESSAGE, MARKETING_MESSAGE,INITIATOR, GL_CODE FROM CUST.SALESACTION WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, PRICING_DATE, REQUESTED_DATE, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, SUB_TOTAL, TAX, CUST_SRVC_MESSAGE, MARKETING_MESSAGE,INITIATOR, GL_CODE, BUFFER_AMT FROM CUST.SALESACTION WHERE ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -186,6 +203,7 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 		this.model.setMarketingMessage(rs.getString("MARKETING_MESSAGE"));
 		this.model.setTransactionInitiator(rs.getString("INITIATOR"));
 		this.model.setGlCode(rs.getString("GL_CODE"));
+		this.model.setBufferAmt(rs.getDouble("BUFFER_AMT"));
 		
 		// load children
 		OrderLineList oList = new OrderLineList();
@@ -222,7 +240,25 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 		pList.setParentPK(this.getPK());
 		pList.load(conn);
 		this.model.setDiscounts(pList.getModelList());
+		/*
+		// load Gift card Payment Methods.
+		GiftCardPMList gcList = new GiftCardPMList();
+		gcList.setParentPK(this.getPK());
+		gcList.load(conn);
+		this.model.setGiftcardPaymentMethods(gcList.getModelList());
+		*/
 
+		// load Receipents
+		RecepientsList rList = new RecepientsList();
+		rList.setParentPK(this.getPK());
+		rList.load(conn);
+		this.model.setRecepientsList(rList.getModelList());
+
+		// load Gift card Payment Methods.
+		AppliedGiftCardList agcList = new AppliedGiftCardList();
+		agcList.setParentPK(this.getPK());
+		agcList.load(conn);
+		this.model.setAppliedGiftcards(agcList.getModelList());
 		
 		// FIXME compatibility code for old-style discounts
 		// if there's a header level discount not represented as discount, add as discountline 
@@ -275,7 +311,42 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 		}
 		return lst;
 	}
-
+	
+	protected RecepientsList getRecepientsPBList() {
+		RecepientsList lst = new RecepientsList();
+		lst.setParentPK(this.getPK());
+		for(Iterator i = this.model.getRecepientsList().iterator(); i.hasNext(); ){
+			lst.add(new ErpGCRecipientPersitanceBean((ErpRecipentModel)i.next()));
+		}
+		return lst;
+	}
+	/*
+	protected GiftCardPMList getGiftCardPMList() {
+		GiftCardPMList lst = new GiftCardPMList();
+		System.out.println("Payment gift cards "+model.getGiftcardPaymentMethods().size());
+	//	System.out.println("Payment gift cards %%%%%%%%%% "+this.model.getGiftcardPaymentMethods().size());
+		lst.setParentPK(this.getPK());
+		if(null != this.model.getGiftcardPaymentMethods()) {
+			for(Iterator i = this.model.getGiftcardPaymentMethods().iterator(); i.hasNext(); ){
+				ErpPaymentMethodModel gcModel = (ErpPaymentMethodModel)i.next();
+				//clear PK before creation.
+				gcModel.setPK(null);
+				lst.add(new ErpGiftCardPaymentInfoPersistentBean(gcModel));
+			}
+		}
+		return lst;
+	}
+	*/
+	protected AppliedGiftCardList getAppliedGiftCardList() {
+		AppliedGiftCardList lst = new AppliedGiftCardList();
+		lst.setParentPK(this.getPK());
+		for(Iterator i = this.model.getAppliedGiftcards().iterator(); i.hasNext(); ){
+			lst.add(new ErpAppliedGiftCardPersistentBean((ErpAppliedGiftCardModel)i.next()));
+		}
+		return lst;
+	}
+	
+	
 	private static class OrderLineList extends DependentPersistentBeanList {
 	    public void load(Connection conn) throws SQLException {
 			this.set(ErpOrderLinePersistentBean.findByParent(conn, (PrimaryKey) OrderLineList.this.getParentPK()));
@@ -297,5 +368,23 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 		public void load(Connection conn) throws SQLException {
 			this.set(ErpDiscountLinePersistentBean.findByParent(conn, (PrimaryKey) DiscountList.this.getParentPK()));
 		}
+	}
+	
+	private static class RecepientsList extends DependentPersistentBeanList {
+		public void load(Connection conn) throws SQLException {
+			this.set(ErpGCRecipientPersitanceBean.findByParent(conn, (PrimaryKey) RecepientsList.this.getParentPK()));
+		}
+	}
+	/*
+	private static class GiftCardPMList extends DependentPersistentBeanList {
+	    public void load(Connection conn) throws SQLException {
+			this.set(ErpGiftCardPaymentInfoPersistentBean.findByParent(conn, (PrimaryKey) GiftCardPMList.this.getParentPK()));
+	    }
+	}
+	*/
+	private static class AppliedGiftCardList extends DependentPersistentBeanList {
+	    public void load(Connection conn) throws SQLException {
+			this.set(ErpAppliedGiftCardPersistentBean.findByParent(conn, (PrimaryKey) AppliedGiftCardList.this.getParentPK()));
+	    }
 	}
 }

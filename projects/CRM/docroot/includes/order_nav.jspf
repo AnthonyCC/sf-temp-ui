@@ -164,7 +164,14 @@ boolean hasCase = false;
 				<% } %>
 				<!-- issue credit button -->
 				<% if (!o_issue_credit && orderPermissions.allowComplaint()) { %>
+				<%
+					boolean isGiftCardOrder1 = (orderType.getSaleType().equalsIgnoreCase("GCD"))?true:false;
+					if(isGiftCardOrder1){					
+				%>
+					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>&view=dept" class="cust_sub_nav_text">Issue Credit</a></div>
+				<% } else { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Issue Credit</a></div>
+				<% } %>
 				<% } else if ( !o_approve_credit && nav_order.hasCreditIssued() == 2 ) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/approve_credit.jsp?orderId=<%= nav_orderId %>&complaintId=<%= nav_complaintId %>" class="cust_sub_nav_text"><%=(currentAgent.isSupervisor() || currentAgent.isMonitor()) ? "Approve Credit" : currentAgent.isCSR() ? "Deny Credit" : ""%></a></div>
 				<% } %>

@@ -28,6 +28,8 @@ import javax.ejb.ObjectNotFoundException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpCreditCardModel;
+import com.freshdirect.customer.ErpECheckModel;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpCustomerI;
@@ -35,6 +37,7 @@ import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpPaymentMethodTransactionModel;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.core.EntityBeanSupport;
@@ -42,6 +45,8 @@ import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.customer.ErpCustomerAlertModel;
 
 /**
@@ -329,9 +334,12 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		if (this.shipToAddress.isModified()) {
 			this.shipToAddress.store( conn );
 		}
+		System.out.println("Before calling store ******************* ");
 		if(this.paymentMethodList.isModified()){
+			System.out.println("Inside store ******************* ");
 			this.paymentMethodList.store(conn);
 		}
+		System.out.println("After calling store ******************* ");
 		if (this.customerInfo.isModified()) {
 			this.customerInfo.store( conn );
 		}
@@ -628,7 +636,29 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 	}
 
 	public List getPaymentMethods() throws RemoteException {
-		return this.paymentMethodList.getModelList();
+		List pmList = this.paymentMethodList.getModelList();
+		for(Iterator it=pmList.iterator(); it.hasNext();){
+			ErpPaymentMethodModel model = (ErpPaymentMethodModel) it.next();
+			if(model instanceof ErpGiftCardModel) {
+				//Remove gift cards before sending.
+				it.remove();
+			}
+		}
+		return pmList;
+	}
+	
+	public List getGiftCards() throws RemoteException {
+		List pmList = this.paymentMethodList.getModelList();
+		System.out.println("Pm List before contains "+pmList);
+		for(Iterator it=pmList.iterator(); it.hasNext();){
+			ErpPaymentMethodModel model = (ErpPaymentMethodModel) it.next();
+			if(model instanceof ErpCreditCardModel || model instanceof ErpECheckModel) {
+				//Remove credit cards and Echecks before sending.
+				it.remove();
+			}
+		}
+		System.out.println("Pm List after contains "+pmList);
+		return pmList;
 	}
 
 	public void addPaymentMethod(ErpPaymentMethodI element) throws RemoteException {

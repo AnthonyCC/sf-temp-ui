@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.customer.EnumPaymentType;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpAuthorizationModel;
@@ -18,6 +19,9 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
+
+import java.util.Collections;
 
 public class AuthorizationStrategy extends PaymentStrategy {
 
@@ -72,7 +76,9 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		
 		
 		if (fdAuthInfo.getSubtotal() <= 0 && bcAuthInfo.getSubtotal() <= 0 && usqAuthInfo.getSubtotal() <= 0) {
-			throw new FDRuntimeException("Order with not orderlines");
+			//  new gift card changes 
+			if(!this.sale.getType().equals(EnumSaleType.GIFTCARD) && !this.sale.getType().equals(EnumSaleType.DONATION))
+			    throw new FDRuntimeException("Order with not orderlines");
 		}
 
 		for (Iterator i = order.getCharges().iterator(); i.hasNext();) {
@@ -94,6 +100,16 @@ public class AuthorizationStrategy extends PaymentStrategy {
 			this.addDeduction(c.getAmount());
 		}
 		
+		//Apply GC Payments
+		for (Iterator i = order.getAppliedGiftcards().iterator(); i.hasNext();) {
+			ErpAppliedGiftCardModel agc = (ErpAppliedGiftCardModel) i.next();
+			if(usq.equals(agc.getAffiliate())) {
+				usqAuthInfo.addGCPayment(agc.getAmount());
+			} else {
+				fdAuthInfo.addGCPayment(agc.getAmount());
+			}
+		}
+		
 		return this.getOutstandingAuthorizations(order.getPaymentMethod());
 	}
 	
@@ -108,7 +124,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 	}
 
 	private List getOutstandingAuthorizations(ErpPaymentMethodI pm) {
-
+		if(pm.isGiftCard()) return Collections.emptyList();
 		this.fdAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.fdAuthInfo.affiliate, pm));
 		this.bcAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.bcAuthInfo.affiliate, pm));
 		this.usqAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.usqAuthInfo.affiliate, pm));

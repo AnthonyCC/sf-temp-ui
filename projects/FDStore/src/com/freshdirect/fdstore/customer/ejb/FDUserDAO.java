@@ -24,6 +24,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -31,7 +32,9 @@ import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.NVL;
@@ -165,6 +168,10 @@ public class FDUserDAO {
 			FDCartModel cart = new FDCartModel();
 			cart.addOrderLines(convertToCartLines(FDCartLineDAO.loadCartLines(conn, user.getPK())));
 			user.setShoppingCart(cart);
+			//Load GC recipients if any. 
+			List recipients = SavedRecipientDAO.loadSavedRecipients(conn, user.getPK().getId());
+			FDRecipientList repList = new FDRecipientList(recipients);
+			user.setRecipientList(repList);
 		}
 		rs.close();
 		ps.close();
@@ -191,6 +198,10 @@ public class FDUserDAO {
 			FDCartModel cart = new FDCartModel();
 			cart.addOrderLines(convertToCartLines(FDCartLineDAO.loadCartLines(conn, user.getPK())));
 			user.setShoppingCart(cart);
+			//Load GC recipients if any. 
+			List recipients = SavedRecipientDAO.loadSavedRecipients(conn, user.getPK().getId());
+			FDRecipientList repList = new FDRecipientList(recipients);
+			user.setRecipientList(repList);
 		}
 
 		rs.close();
@@ -344,6 +355,10 @@ public class FDUserDAO {
 		}
 		
 		FDCartLineDAO.storeCartLines(conn, user.getPK(), erpOrderLine);
+		//Store GC Recipient List if any.
+		if(user.getRecipentList() != null){
+			SavedRecipientDAO.storeSavedRecipients(conn, user.getPK().getId(), user.getRecipentList().getRecipents());
+		}
 	}
 	
 	

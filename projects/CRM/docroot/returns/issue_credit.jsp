@@ -48,14 +48,14 @@ boolean isClassicView = "dept".equalsIgnoreCase(request.getParameter("view"));
     ErpPaymentMethodI paymentMethod = order.getPaymentMethod();
     Collection appliedCredits = order.hasInvoice() ? order.getActualAppliedCredits() : order.getAppliedCredits(); 
     String action = NVL.apply(request.getParameter("actionName"), "submit");
-    
+    boolean isGiftCardOrder = (order.getSale().getType().getSaleType().equalsIgnoreCase("GCD"))?true:false;    
     final boolean noFreeGrouping = order.getComplaintGroupingFashion() != FDOrderAdapter.IC_FREE2GROUP;
     if (noFreeGrouping) {
         // it is already decided so ignore / override URL parameter value
     	isClassicView = order.getComplaintGroupingFashion() == FDOrderAdapter.IC_GROUP_BY_DEPTS;
     }
 %>
-
+<fd:GetGiftCardPurchased id="recipients" saleId='<%= orderId %>'>
 <fd:ComplaintGrabber order="<%= order %>" complaints="complaints" lineComplaints="lineComplaints" deptComplaints="deptComplaints" miscComplaints="miscComplaints" fullComplaints="fullComplaints" restockComplaints="restockComplaints" retrieveApproved="true">
 <fd:CreateComplaint result="createComplaintResult" newComplaint="newComplaint" emailPreview="emailPreview">
 <fd:IssueCredits action="<%=action%>" result='issueCreditResult' successPage='<%= "issue_credit_confirm.jsp?orderId=" + orderId %>' complaintModel='<%= newComplaint %>'>
@@ -227,10 +227,20 @@ var OL_PRICES = {};
 <input type="hidden" name="actionName" value="submit">
 <TABLE id="tbl_order_detail" "WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" class="order_detail">
     <tr class="list_header">
+    	<% if(isGiftCardOrder){ %>
+        <td WIDTH="6%" COLSPAN="2" class="list_header_detail"><b>Order Qty.</b></td>
+        <td WIDTH="20%" class="list_header_detail"><b>Name</b></td>
+        <td WIDTH="7%" class="list_header_detail"><b>Certificate Number</b></td>
+        <td WIDTH="8%" class="list_header_detail"><b>Givex Number</b></td>
+        <td WIDTH="9%" class="list_header_detail"><b>Recipient Name</b></td>
+        <td WIDTH="6%" class="list_header_detail"><b>Price</b></td>
+        <td WIDTH="6%" class="list_header_detail"><b>Orig. Total</b></td>
+        <%} else{ %>    
         <td WIDTH="7%" COLSPAN="2" class="list_header_detail"><b>Order Qty.</b></td>
         <td WIDTH="23%" class="list_header_detail"><b>Name</b></td>
         <td WIDTH="9%" class="list_header_detail"><b>Price</b></td>
         <td WIDTH="7%" class="list_header_detail"><b>Orig. Total</b></td>
+        <%} %>
         <td WIDTH="7%" COLSPAN="2" class="list_header_detail"><b>Prev. Qty. Returned</b></td>
         <td WIDTH="7%" ALIGN="CENTER" class="list_header_detail"><b>Prev. Credit</b></td>
         <td WIDTH="5%" ALIGN="CENTER" class="list_header_detail"><b>Current Total</b></td>
@@ -240,6 +250,7 @@ var OL_PRICES = {};
         <td WIDTH="5%" ALIGN="CENTER" class="list_header_detail"><b>Credit Amt</b></td>
     </tr>
     <tr VALIGN="bottom">
+    <% if(!isGiftCardOrder){ %>    
         <td COLSPAN="5"><span style="font-weight: bold;"><%= isClassicView ? "PRODUCTS" : "CARTONS" %></span></td>
         <td COLSPAN="7"><b>1. Enter product credits here:</b></td>
         <td ALIGN="RIGHT" style="white-space: nowrap; text-align: right;">
@@ -260,6 +271,10 @@ var OL_PRICES = {};
 %>			<a href="<%= request.getRequestURI() %>?orderId=<%= orderId %>&view=dept" onclick="return checkFormDirty();">Order by Departments</a>
 <%		}
 	} %>
+    <%} else{ %>
+        <td WIDTH="45%" COLSPAN="8"><FONT CLASS="space2pix"><BR></FONT><b>PRODUCTS</b><BR></td>
+        <td WIDTH="50%" COLSPAN="7"><b>1. Enter product credits here:</b></td>
+        <%} %>
 			<INPUT TYPE="submit" class="submit" value="update" onclick="preventCreditIssue()">
         </td>
     </tr>
@@ -369,8 +384,13 @@ var OL_PRICES = {};
     </tr>
     <%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ BEGIN DEPT TOTALS/CREDITS HEADER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
     <tr VALIGN="bottom">
+     <% if(!isGiftCardOrder){ %>    
         <td WIDTH="45%" COLSPAN="5"><FONT CLASS="space2pix"><BR></FONT><b>DEPARTMENTS</b><BR></td>
         <td WIDTH="50%" COLSPAN="7"><b>2. Enter department credits here:</b></td>
+     <%} else{ %>
+     	<td WIDTH="45%" COLSPAN="8"><FONT CLASS="space2pix"><BR></FONT><b>DEPARTMENTS</b><BR></td>
+        <td WIDTH="50%" COLSPAN="7"><b>2. Enter department credits here:</b></td>
+     <%} %>        
         <td WIDTH="5%" ALIGN="RIGHT">&nbsp;</td>
     </tr>
     <tr>
@@ -384,7 +404,11 @@ var OL_PRICES = {};
 <%      boolean goodwillErr = ( !result.isSuccess() && result.hasError("misc_error_0") ) ? true : false; %>
     <tr VALIGN="bottom" <%= (goodwillErr) ? "BGCOLOR='" + errorLineColor + "'" : "" %>>
         <td COLSPAN="2"><BR></td>
+         <% if(!isGiftCardOrder){ %>        
         <td COLSPAN="3"><FONT CLASS="space2pix"><BR></FONT><b>Goodwill</b><BR></td>
+        <%} else { %>
+        <td COLSPAN="6"><FONT CLASS="space2pix"><BR></FONT><b>Goodwill</b><BR></td>
+        <%} %>        
         <td BGCOLOR="<%= (goodwillErr) ? errorLineColor : bgcolor %>" ALIGN="CENTER"><% if (goodwillErr) { %><FONT CLASS="text8redbold">*</font><% } %><BR></td>
         <td BGCOLOR="<%= (goodwillErr) ? errorLineColor : bgcolor %>" ALIGN="CENTER"><BR></td>
         <td BGCOLOR="<%= (goodwillErr) ? errorLineColor : bgcolor %>" ALIGN="CENTER">&nbsp;</td>
@@ -413,7 +437,11 @@ var OL_PRICES = {};
 <%      boolean transportationErr = ( !result.isSuccess() && result.hasError("misc_error_1") ) ? true : false; %>
     <tr VALIGN="bottom" <%= (transportationErr) ? "BGCOLOR='" + errorLineColor + "'" : "" %>>
         <td COLSPAN="2"><BR></td>
+        <% if(!isGiftCardOrder){ %>        
         <td COLSPAN="3"><FONT CLASS="space2pix"><BR></FONT><b>Transportation</b><BR></td>
+        <%} else { %>
+         <td COLSPAN="6"><FONT CLASS="space2pix"><BR></FONT><b>Transportation</b><BR></td>
+         <% } %>
         <td BGCOLOR="<%= (transportationErr) ? errorLineColor : bgcolor %>" ALIGN="CENTER"><%   if (transportationErr) { %><FONT CLASS="text8redbold">*</font><% } %><BR></td>
         <td BGCOLOR="<%= (transportationErr) ? errorLineColor : bgcolor %>" ALIGN="CENTER"><BR></td>
         <td BGCOLOR="<%= (transportationErr) ? errorLineColor : bgcolor %>" ALIGN="CENTER">&nbsp;</td>
@@ -442,7 +470,11 @@ var OL_PRICES = {};
 <%      boolean extraItemErr = ( !result.isSuccess() && result.hasError("misc_error_2") ) ? true : false; %>
     <tr VALIGN="bottom" <%= (extraItemErr) ? "BGCOLOR='" + errorLineColor + "'" : "" %>>
         <td COLSPAN="2"><BR></td>
+         <% if(!isGiftCardOrder){ %>        
         <td COLSPAN="3"><FONT CLASS="space2pix"><BR></FONT><b>Extra Item</b><BR></td>
+         <%} else { %>
+         <td COLSPAN="6"><FONT CLASS="space2pix"><BR></FONT><b>Extra Item</b><BR></td>
+         <% } %>        
         <td BGCOLOR="<%= (extraItemErr) ? errorLineColor : bgcolor %>" ALIGN="CENTER"><%    if (extraItemErr) { %><FONT CLASS="text8redbold">*</font><% } %><BR></td>
         <td BGCOLOR="<%= (extraItemErr) ? errorLineColor : bgcolor %>" ALIGN="CENTER"><BR></td>
         <td BGCOLOR="<%= (extraItemErr) ? errorLineColor : bgcolor %>" ALIGN="CENTER">&nbsp;</td>
@@ -470,10 +502,17 @@ var OL_PRICES = {};
     <%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ END DEPT TOTALS/CREDITS LINES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ BEGIN ORDER TOTALS SECTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
+<% if(!isGiftCardOrder){ %>
     <tr>
         <td WIDTH="100%" COLSPAN="13"><hr class="gray1px"></td>
     </tr>
     <tr><td colspan="13">
+    <% } else { %>
+    <tr>
+        <td WIDTH="100%" COLSPAN="16"><hr class="gray1px"></td>
+    </tr>
+    <tr><td colspan="16">
+    <% } %>    
     <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail">
 <%      double allCreditsTotal = 0.0; %>
     <logic:iterate id="complaint" collection="<%= complaints %>" type="com.freshdirect.customer.ErpComplaintModel">
@@ -615,18 +654,30 @@ var OL_PRICES = {};
     <%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ END ORDER TOTALS SECTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
 </td></tr>
     <tr VALIGN="bottom">
+    <% if(!isGiftCardOrder){ %>
         <td COLSPAN="5"><BR></td>
+       <% } else { %>   
+        <td COLSPAN="8"><BR></td>
+       <% } %>        
         <td COLSPAN="8"><FONT CLASS="space2pix"><BR></FONT><b>3. Enter credit notes here:</b><BR><FONT CLASS="space2pix"><BR></FONT></td>
     </tr>
     <tr>
         <td></td>
+        <% if(!isGiftCardOrder){ %>
         <td COLSPAN="4"><b>Note:</b> If total credit amount is over $<%= ErpServicesProperties.getCreditAutoApproveAmount()%>, supervisor approval will be required.<br>Store credit and cashbacks will not be processed until supervisor has reviewed and approved credit.</td>
+        <% } else { %>   
+          <td COLSPAN="7"><b>Note:</b> If total credit amount is over $<%= ErpServicesProperties.getCreditAutoApproveAmount()%>, supervisor approval will be required.<br>Store credit and cashbacks will not be processed until supervisor has reviewed and approved credit.</td>
+          <% } %>
         <td BGCOLOR=<%= bgcolor %> COLSPAN="8">
             <textarea cols="30" rows="5" name="description" wrap="virtual"><%= request.getParameter("description") %></TEXTAREA><BR><fd:ErrorHandler result='<%=result%>' name='credit_description' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
         </td>
     </tr>
     <tr VALIGN="bottom">
+         <% if(!isGiftCardOrder){ %>
         <td COLSPAN="5"><BR></td>
+         <% } else { %>   
+         <td COLSPAN="8"><BR></td>
+          <% } %>        
         <td COLSPAN="8"><FONT CLASS="space2pix"><BR></FONT>
         <% if (emailPreview==null || emailPreview.getXslPath()==null) { %>
         <b>4. Select email option and notification time:</b>
@@ -637,7 +688,11 @@ var OL_PRICES = {};
     </tr>
     <tr>
         <td></td>
+         <% if(!isGiftCardOrder){ %>        
         <td COLSPAN="4"></td>
+        <% } else { %>  
+        <td COLSPAN="7"></td>
+        <% } %>        
         <td BGCOLOR=<%= bgcolor %> COLSPAN="8">
         <% if (emailPreview==null || emailPreview.getXslPath()==null) { %>
         <%@ include file="/includes/i_credit_email_options.jspf" %>
@@ -647,13 +702,21 @@ var OL_PRICES = {};
         </td>
     </tr>
     <tr VALIGN="bottom">
-        <td COLSPAN="5"><fd:ErrorHandler result='<%=result%>' name='payment_method_type' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler><BR></td>
+        <% if(!isGiftCardOrder){ %>
+         <td COLSPAN="5">
+        <% } else { %>  
+        <td COLSPAN="8">
+        <% } %><fd:ErrorHandler result='<%=result%>' name='payment_method_type' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler><BR></td>
         <td COLSPAN="8"><FONT CLASS="space2pix"><BR></FONT><b>5. Select payment method for charge back OR mailing address for check:</b><BR><FONT CLASS="space2pix"><BR></FONT></td>
     </tr>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ BEGIN CREDIT NOTES SECTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
 <tr>
-    <td colspan="5"></td>
+    <% if(!isGiftCardOrder){ %>
+         <td COLSPAN="5">
+        <% } else { %>  
+        <td COLSPAN="8">
+        <% } %></td>
     <td COLSPAN="8" BGCOLOR=<%= bgcolor %>>
 <TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" class="order_detail">
 <tr VALIGN="TOP">
@@ -705,7 +768,11 @@ if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
 </TABLE>
 </td></tr>
 <tr VALIGN="middle">
-	<td colspan="5"></td>
+	<% if(!isGiftCardOrder){ %>
+         <td COLSPAN="5">
+        <% } else { %>  
+        <td COLSPAN="8">
+        <% } %></td>
 	<td colspan="8">
 		<b>6. Initiate Credit Processing:</b> <button id="process-button" class="submit">PROCESS CREDIT</button>
 	</td>
@@ -928,5 +995,6 @@ for (int k=0; k<CASEINFO_FIELDS.length; k++) {
 </fd:IssueCredits>
 </fd:CreateComplaint>
 </fd:ComplaintGrabber>
+</fd:GetGiftCardPurchased>
 </fd:GetOrder>
 </tmpl:insert>

@@ -21,6 +21,8 @@ public class SiteFeatureHelper {
 			return FDStoreProperties.IsProduceRatingEnabled() || feature.isEnabled(user);
 		} else if (EnumSiteFeature.NEW_SEARCH.equals(feature)) {
 			return FDStoreProperties.isSmartSearchEnabled() || feature.isEnabled(user);
+		} else if (EnumSiteFeature.GIFT_CARDS.equals(feature)) {
+			return FDStoreProperties.isGiftCardEnabled() || feature.isEnabled(user);
 		}
 
 		return feature.isEnabled(user);

@@ -212,8 +212,17 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	      				<%
 	      				for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
 	      				     FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
-	      				     
-	      				     if (orderInfo.isPending() && orderInfo.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER) {
+                            String ordDeliveryType = orderInfo.getDeliveryType().toString();
+                            //gift cards
+                            String gcCodePersonal = EnumDeliveryType.GIFT_CARD_PERSONAL.getCode();
+                            String gcCodeCorporate = EnumDeliveryType.GIFT_CARD_CORPORATE.getCode();
+                            //robin hood
+                            String donatePersonal = EnumDeliveryType.DONATION_INDIVIDUAL.getCode();
+                            String donateCorporate = EnumDeliveryType.DONATION_BUSINESS.getCode();	      				     
+	      				     if (orderInfo.isPending() && orderInfo.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER 
+                            && (!(ordDeliveryType).equals(gcCodePersonal) && !(ordDeliveryType).equals(gcCodeCorporate))
+                            && (!(ordDeliveryType).equals(donatePersonal) && !(ordDeliveryType).equals(donateCorporate))          
+                            ){                            
 	      				%>
 	      				       <tr><td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
 	      					<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td></tr>
@@ -365,7 +374,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 			<% } %>
 			<%-- END PROMO 2--%>
 		</td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"  alt=""></td>
 	  </tr>
 	  
 	  
@@ -375,11 +384,11 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	  <%-- BOTTOM CORNERS for both left and right panels, comment out for showAltHome --%>
 	  <tr> 
 		<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6"></td>
-		<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+		<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"  alt=""></td>
 		<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
-		<td height="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+		<td height="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"  alt=""></td>
 		<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6"></td>
-		<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+		<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"  alt=""></td>
 		<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
 	  </tr>
 	  <%-- SPACERS --%>

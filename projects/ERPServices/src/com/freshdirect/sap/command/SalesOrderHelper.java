@@ -182,7 +182,12 @@ class SalesOrderHelper {
 				// 1 cent per 100 units
 				this.bapi.addCondition(PosexUtil.getPosexInt(i), "PR00", 0.01, "USD", 100.0, mp.getPricingUnit());
 			} else {
-				this.bapi.addCondition(PosexUtil.getPosexInt(i), "PR00", mp.getPrice(), "USD", 1.0, mp.getPricingUnit());
+				if(orderLine.getFixedPrice()>0){
+					System.out.println("Setting 50$ fixed price giftcard charges "+orderLine.getFixedPrice());
+					this.bapi.addCondition(PosexUtil.getPosexInt(i), "PR00", orderLine.getFixedPrice(), "USD", 1.0, mp.getPricingUnit());
+				}else{
+				 this.bapi.addCondition(PosexUtil.getPosexInt(i), "PR00", mp.getPrice(), "USD", 1.0, mp.getPricingUnit());
+				}
 			}
 
 			// tax

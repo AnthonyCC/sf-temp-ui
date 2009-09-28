@@ -7,6 +7,7 @@ import javax.ejb.CreateException;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpSettlementModel;
+import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.reconciliation.detail.CCDetailOne;
 import com.freshdirect.payment.reconciliation.detail.CCDetailTwo;

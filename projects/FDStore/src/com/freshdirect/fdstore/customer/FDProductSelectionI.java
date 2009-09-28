@@ -50,6 +50,10 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	public void setConfiguration(FDConfigurableI configuration);	
 
 	public void setQuantity(double quantity);
+	
+	public void setFixedPrice(double price);
+	
+	public double getFixedPrice();
 
 	public void setSalesUnit(String salesUnit);
 	

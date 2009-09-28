@@ -1,0 +1,50 @@
+<% 
+//for display of recipient number
+int indx = 1;
+List recipients = cart.getGiftCardRecipients();
+%>
+
+ 
+<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		<tr>
+			<td><span class="title18"><b>RECIPIENT LIST FOR ORDER <font color="#FF9933">#<%=orderNumber%></font></b></span><br /><br />
+				<a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>">
+            <span class="title12"><b>View this order (and download printable PDFs of your gifts) in Your Account.</b></span></a>
+			</td>
+		</tr>
+</table>
+
+<table class="recipTable">
+		<tr>
+			<td><div class="recipAmount">Amount</div></td>
+		</tr>
+            <%
+                //See if Gift card is already delivered.
+                if(cart.getGCDeliveryInfo()) {
+            %>
+            <%            
+                } else {
+            %>
+			<%
+			ListIterator i = recipients.listIterator();
+			while(i.hasNext()) {
+				ErpRecipentModel erm = (ErpRecipentModel)i.next();
+			%>
+		<tr>
+			<td>
+				<div class="recipRow" id="<%=erm.getSale_id()%>Row">
+					<div class="recipNumber" id="<%=erm.getSale_id()%>Number"><%= indx %>.&nbsp;</div>
+					<div class="recipName" id="<%=erm.getSale_id()%>Name"><%= erm.getRecipientName()%></div>
+
+					<div class="recipAmount" id="<%=erm.getSale_id()%>Amount">$<%= erm.getFormattedAmount() %></div>
+
+					
+				</div>
+			<td>
+		</tr>
+			<%
+				indx++;
+			}
+			%>
+
+</table>

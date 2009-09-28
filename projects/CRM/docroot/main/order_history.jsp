@@ -65,7 +65,7 @@
 	
 	<tr valign="top" <%= counter.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %> style="cursor: pointer; padding: 2px;" onClick="document.location='/main/order_details.jsp?orderId=<%= order.getErpSalesId() %>'">
 		<td width="7%" class='<%= styleClassName %>'><a class="key"><%= order.getErpSalesId() %></a></td>
-		<td width="3%" class='<%= styleClassName %>'><% if(EnumSaleType.REGULAR.equals(order.getSaleType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(order.getSaleType())){%><Font color="red">A</Font><%}%>&nbsp;</td>
+		<td width="3%" class='<%= styleClassName %>'><% if(EnumSaleType.REGULAR.equals(order.getSaleType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(order.getSaleType())){%><Font color="red">A</Font>&nbsp;<% }else if(EnumSaleType.GIFTCARD.equals(order.getSaleType())){%><Font color="orange">G</Font><%}%>&nbsp;</td>
 		<td width="8%" class='<%= styleClassName %>'><% if(EnumSaleType.REGULAR.equals(order.getSaleType())){%><%= CCFormatter.formatDate(order.getRequestedDate()) %><%}else {}%>&nbsp;</td>
 		<td width="8%" class='<%= styleClassName %>'><span class="log_info"><%= order.getSaleStatus().getName() %></span></td>
 		<td width="7%" align="center" class='<%= styleClassName %>'><%= CCFormatter.formatCurrency(order.getTotal()) %></td>

@@ -15,7 +15,16 @@
 <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Credit Card</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
-<fd:PaymentMethodController actionName='editPaymentMethod' result='result' successPage='/your_account/payment_information.jsp'>
+<%
+String successRedirect = "/your_account/payment_information.jsp";
+if("true".equals(request.getParameter("gc"))) {
+	successRedirect = "/gift_card/purchase/purchase_giftcard.jsp";
+}else if("true".equals(request.getParameter("rh"))) { //Robin Hood..
+	successRedirect = "/robin_hood/rh_submit_order.jsp";
+}
+%>
+
+<fd:PaymentMethodController actionName='editPaymentMethod' result='result' successPage='<%=successRedirect%>'>
 
 <fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentMethodForm%>'>
 <% String errorMsg= SystemMessageList.MSG_MISSING_INFO; %>	

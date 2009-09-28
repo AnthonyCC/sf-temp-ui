@@ -127,6 +127,11 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 */
 	private final List ymalSets = new ArrayList();
 	
+	/**
+	 * Gift Card changes
+	 * */
+	private final List giftcardTypes=new ArrayList();
+	
 	public ProductModelImpl(ContentKey cKey) {
 		super(cKey);
 	}
@@ -1577,5 +1582,10 @@ inner:
       
        return rating;
 
+	}
+
+	public List getGiftcardType() {
+		ContentNodeModelUtil.refreshModels(this, "GIFTCARD_TYPE", giftcardTypes, false);
+		return new ArrayList(giftcardTypes);		
 	}
 }

@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +35,7 @@ import com.freshdirect.customer.ErpChargebackReversalModel;
 import com.freshdirect.customer.ErpFailedChargeSettlementModel;
 import com.freshdirect.customer.ErpFailedSettlementModel;
 import com.freshdirect.customer.ErpFundsRedepositModel;
+import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSettlementInfo;
@@ -48,6 +50,9 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
+import com.freshdirect.giftcard.ErpGCSettlementInfo;
+import com.freshdirect.giftcard.ErpPostAuthGiftCardModel;
 import com.freshdirect.payment.EFTTransaction;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.model.ErpSettlementSummaryModel;
@@ -124,8 +129,17 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 			info.setId(settlement.getPK() != null ? settlement.getPK().getId() : "");
 		}
 		
-		info.setTransactionCount(refund || settlementFail || cbk || cbr || chargeSettlement ? 1 : sale.getNumberOfCaptures());
-		info.setSplitTransaction(refund || settlementFail || cbk || cbr || chargeSettlement ? false : sale.hasSplitTransaction());
+		//info.setTransactionCount(refund || settlementFail || cbk || cbr || chargeSettlement ? 1 : sale.getNumberOfCaptures());
+		//info.setSplitTransaction(refund || settlementFail || cbk || cbr || chargeSettlement ? false : sale.hasSplitTransaction());
+		//Modified based on Gift cards.
+		List invoicedGiftCards = sale.getLastInvoice().getAppliedGiftCards();
+		if(null != invoicedGiftCards && invoicedGiftCards.size()> 0){
+			info.setTransactionCount(sale.getNumberOfCaptures()+ invoicedGiftCards.size());
+		} else {
+			info.setTransactionCount(sale.getNumberOfCaptures());
+		}
+		info.setSplitTransaction(info.getTransactionCount() > 1);
+		
 		info.setChargeSettlement(chargeSettlement);
 		
 		return info;
@@ -798,5 +812,105 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 		txn.setAuthCode(rs.getString("AUTH_CODE"));
 		txn.setAccountNumber(rs.getString("ACCOUNT_NUMBER"));
 		return txn;
+	}
+	/**
+	 * This method generates SettlementInfo for GC orders.
+	 * @param saleId
+	 * @return
+	 */
+	public List processGCSettlement(String saleId) {
+		List settlementInfos = new ArrayList();
+		try{
+			
+			/*if (!"true".equalsIgnoreCase(ErpServicesProperties.getPr eAuthorize())) {
+				return errorList;
+			}	*/		
+			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));		
+			List validPostAuths = saleEB.getValidGCPostAuthorizations();
+			if(validPostAuths == null || validPostAuths.size() == 0){
+				return Collections.EMPTY_LIST;
+			}
+			ErpInvoiceModel erpInvoiceModel = saleEB.getInvoice();
+			List invoicedGiftCards = erpInvoiceModel.getAppliedGiftCards();
+			if(null == invoicedGiftCards || invoicedGiftCards.size() == 0){
+				throw new ErpTransactionException("Applied gift cards for the given Invoice Number cannot be null. Invoice PK : "+erpInvoiceModel.getPK().getId());
+			}
+			ErpSaleModel sale = (ErpSaleModel) saleEB.getModel();
+			for(Iterator it = validPostAuths.iterator(); it.hasNext();){
+				//for each valid post auth generate settlement info model.
+				ErpPostAuthGiftCardModel pModel = (ErpPostAuthGiftCardModel)it.next();
+				for(Iterator iter = invoicedGiftCards.iterator(); iter.hasNext();) {
+					ErpAppliedGiftCardModel agcModel = (ErpAppliedGiftCardModel) iter.next();
+					if(agcModel.getCertificateNum().equals(pModel.getCertificateNum())){
+						ErpGCSettlementInfo info = new ErpGCSettlementInfo(erpInvoiceModel.getInvoiceNumber(), agcModel.getAffiliate());
+					
+						info.setId(pModel.getPK() != null ? pModel.getPK().getId() : "");
+						info.setTransactionCount(sale.getNumberOfCaptures()+ invoicedGiftCards.size());
+						info.setSplitTransaction(info.getTransactionCount() > 1);
+						info.setChargeSettlement(false);
+						info.setAmount(agcModel.getAmount());
+						info.setPostAuthFailed(pModel.isDeclined() ? true : false);
+						settlementInfos.add(info);
+
+					}
+				}
+				
+			}
+			EnumSaleStatus status = saleEB.getStatus();
+			if(EnumSaleStatus.SETTLEMENT_PENDING.equals(status)) {
+				saleEB.forceSettlement();
+			}
+			
+		}catch (FinderException fe) {
+			LOGGER.warn("FinderExceptin while trying to locate Sale Entity Bean", fe);
+			throw new EJBException(fe);
+		}catch(ErpTransactionException ete){
+			LOGGER.warn("ErpTransactionException while trying to talk to Sale Entity Bean", ete);
+			throw new EJBException(ete);
+		}catch (RemoteException re) {
+			LOGGER.warn("RemoteException while trying to talk to Sale Entity Bean", re);
+			throw new EJBException(re);
+		}
+		return settlementInfos;
+	}
+	
+	private static final String GET_SETTLEMENT_PENDING_ORDERS = "SELECT ID FROM CUST.SALE WHERE STATUS = 'STP'";
+	
+	public List processSettlementPendingOrders() {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List settlementInfos = new ArrayList<ErpGCSettlementInfo>();
+		try{
+			LOGGER.debug("Processing Settlement Pending orders.");
+			conn = this.getConnection();
+			ps = conn.prepareStatement(GET_SETTLEMENT_PENDING_ORDERS);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				String saleId = rs.getString("ID");
+				settlementInfos.addAll(processGCSettlement(saleId));
+			}
+		}catch(SQLException e){
+			LOGGER.debug("SQLException: ", e);
+			throw new EJBException("SQLException: ", e);
+		}finally{
+			try{
+				if(rs != null){
+					rs.close();
+					rs = null;
+				}
+				if(ps != null){
+					ps.close();
+					ps = null;
+				}
+				if(conn != null){
+					conn.close();
+					conn = null;
+				}
+			}catch(SQLException se){
+				LOGGER.warn("Exception while trying to cleanup: ", se);
+			}
+		}
+		return settlementInfos;
 	}
 }

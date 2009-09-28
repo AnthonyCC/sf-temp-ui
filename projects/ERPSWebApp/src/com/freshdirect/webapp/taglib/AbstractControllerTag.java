@@ -9,6 +9,9 @@
 package com.freshdirect.webapp.taglib;
 
 import java.io.*;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
@@ -105,6 +108,20 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 		}
 	}
 
+	protected void forward(String destination) throws JspException {
+		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+		try {
+			 RequestDispatcher dispatcher = request.getRequestDispatcher(destination);
+			 if (dispatcher != null)
+		         dispatcher.forward(request, response);
+			 
+		} catch (ServletException se) {
+			throw new JspException(se.getMessage());
+		} catch (IOException ioe) {
+			throw new JspException(ioe.getMessage());
+		}
+	}
 	/**
 	 * @return false to SKIP_BODY without redirect
 	 */

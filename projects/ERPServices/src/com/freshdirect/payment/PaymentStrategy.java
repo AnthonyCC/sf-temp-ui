@@ -29,7 +29,9 @@ public abstract class PaymentStrategy implements Serializable {
 		private double deductionAmount;
 		private double chargeAmount;
 		private double perishableBufferAmount;
-
+		//Payment made through Gift cards.
+		private double gcPaymentAmount;
+		
 		public PaymentInfo(String saleId, ErpAffiliate affiliate) {
 			this.saleId = saleId;
 			this.affiliate = affiliate;
@@ -40,6 +42,7 @@ public abstract class PaymentStrategy implements Serializable {
 			this.deductionAmount = 0.0;
 			this.chargeAmount = 0.0;
 			this.perishableBufferAmount = 0.0;
+			this.gcPaymentAmount = 0.0;
 		}
 
 		public ErpAffiliate getAffiliate() {
@@ -65,6 +68,10 @@ public abstract class PaymentStrategy implements Serializable {
 			return MathUtil.roundDecimal(deduction - appliedAmount);
 		}
 
+		public void addGCPayment(double payment) {			
+			this.gcPaymentAmount = MathUtil.roundDecimal(this.gcPaymentAmount + payment);
+		}
+		
 		public void addOrderline(ErpOrderLineModel line) {
 			double price = line.getPrice();
 			this.subtotal = MathUtil.roundDecimal(this.subtotal + price);
@@ -98,6 +105,7 @@ public abstract class PaymentStrategy implements Serializable {
 			this.tax = MathUtil.roundDecimal(this.tax + info.tax);
 			this.depositValue = MathUtil.roundDecimal(this.depositValue + info.depositValue);
 			this.perishableBufferAmount = MathUtil.roundDecimal(this.perishableBufferAmount + info.perishableBufferAmount);
+			this.gcPaymentAmount = MathUtil.roundDecimal(this.gcPaymentAmount + info.gcPaymentAmount);
 		}
 
 		public double getAmount() {
@@ -114,9 +122,15 @@ public abstract class PaymentStrategy implements Serializable {
 			amount = MathUtil.roundDecimal(amount + this.tax);
 			//add deposit value
 			amount = MathUtil.roundDecimal(amount + this.depositValue);
-
+			//apply GC payment
+			amount = MathUtil.roundDecimal(amount - this.gcPaymentAmount);
+			
 			return amount;
-		}								
+		}
+		
+		public double getPerishableBufferAmount(){
+			return this.perishableBufferAmount;
+		}
 
 	}
 

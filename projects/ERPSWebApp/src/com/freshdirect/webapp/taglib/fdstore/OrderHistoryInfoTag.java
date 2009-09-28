@@ -47,6 +47,11 @@ public class OrderHistoryInfoTag extends AbstractGetterTag {
 		//FDOrderHistory history = FDCustomerManager.getOrderHistoryInfo(user.getIdentity());		
 		FDOrderHistory history = (FDOrderHistory) user.getOrderHistory();
 		List orderHistoryInfo = new ArrayList(history.getFDOrderInfos(EnumSaleType.REGULAR));
+		//Add gift cards orders too.
+		orderHistoryInfo.addAll(history.getFDOrderInfos(EnumSaleType.GIFTCARD));
+		
+		//ADD Donation Orders too-for Robin Hood.
+		orderHistoryInfo.addAll(history.getFDOrderInfos(EnumSaleType.DONATION));
 
 		Collections.sort(orderHistoryInfo, ORDER_COMPARATOR);
 

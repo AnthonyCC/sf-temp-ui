@@ -616,4 +616,9 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public List getCountryOfOrigin() throws FDResourceException{
 		return getProduct().getCountryOfOrigin();
 	}
+	
+	//Gift Card changes
+	public List getGiftcardType(){
+		return getProduct().getGiftcardType();
+	}
 }

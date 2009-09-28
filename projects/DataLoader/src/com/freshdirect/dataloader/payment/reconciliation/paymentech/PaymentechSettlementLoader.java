@@ -28,6 +28,7 @@ import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.Paym
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers.PaymentechPDEParser;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.sap.ejb.SapException;
 

@@ -105,6 +105,34 @@
         </reference-descriptor>
         <jndi-name>freshdirect.erp.CustomerManager</jndi-name>
     </weblogic-enterprise-bean>
+    
+      <weblogic-enterprise-bean>
+        <ejb-name>GiftCardManager</ejb-name>
+        <stateless-session-descriptor>
+            <pool>
+                <max-beans-in-free-pool>50</max-beans-in-free-pool>
+                <initial-beans-in-free-pool>10</initial-beans-in-free-pool>
+            </pool>
+            <stateless-clustering></stateless-clustering>
+        </stateless-session-descriptor>
+        <transaction-descriptor></transaction-descriptor>
+        <reference-descriptor>
+            <resource-description>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <jndi-name>fddatasource</jndi-name>
+            </resource-description>
+            <ejb-reference-description>
+                <ejb-ref-name>ejb/ErpSale</ejb-ref-name>
+                <jndi-name>freshdirect.erp.Sale</jndi-name>
+            </ejb-reference-description>
+            <ejb-reference-description>
+                <ejb-ref-name>ejb/ErpCustomer</ejb-ref-name>
+                <jndi-name>freshdirect.erp.Customer</jndi-name>
+            </ejb-reference-description>            
+        </reference-descriptor>
+        <jndi-name>freshdirect.erp.GiftCardManager</jndi-name>
+    </weblogic-enterprise-bean>
+    
 
     <weblogic-enterprise-bean>
         <ejb-name>ErpInventoryManager</ejb-name>
@@ -167,6 +195,28 @@
         <jndi-name>freshdirect.sap.Gateway</jndi-name>
     </weblogic-enterprise-bean>
     
+    <weblogic-enterprise-bean>
+        <ejb-name>GCGateway</ejb-name>
+        <stateless-session-descriptor>
+            <pool>
+                <max-beans-in-free-pool>50</max-beans-in-free-pool>
+                <initial-beans-in-free-pool>10</initial-beans-in-free-pool>
+            </pool>
+            <stateless-clustering></stateless-clustering>
+        </stateless-session-descriptor>
+        <transaction-descriptor></transaction-descriptor>
+        <reference-descriptor>
+            <resource-description>
+                <res-ref-name>jms/QueueFactory</res-ref-name>
+                <jndi-name>queueFactory</jndi-name>
+            </resource-description>
+            <resource-env-description>
+                <res-env-ref-name>jms/Queue</res-env-ref-name>
+                <jndi-name>./registerQueue</jndi-name>
+            </resource-env-description>
+        </reference-descriptor>
+        <jndi-name>freshdirect.giftcard.Gateway</jndi-name>
+    </weblogic-enterprise-bean>
     
     
     <weblogic-enterprise-bean>
@@ -732,10 +782,32 @@
                 <ejb-ref-name>ejb/CrmManager</ejb-ref-name>
                 <jndi-name>freshdirect.crm.Manager</jndi-name>
             </ejb-reference-description>
+	        <ejb-reference-description>
+                <ejb-ref-name>ejb/GCGateway</ejb-ref-name>
+                <jndi-name>freshdirect.giftcard.Gateway</jndi-name>
+            </ejb-reference-description>
         </reference-descriptor>
-
         <jndi-name>freshdirect.sap.ResultListener</jndi-name>
     </weblogic-enterprise-bean>
+
+    <weblogic-enterprise-bean>
+        <ejb-name>GCRegisterListener</ejb-name>
+        <message-driven-descriptor>
+            <pool>
+                <max-beans-in-free-pool>5</max-beans-in-free-pool>
+                <initial-beans-in-free-pool>2</initial-beans-in-free-pool>
+            </pool>
+            <destination-jndi-name>registerQueue</destination-jndi-name>
+        </message-driven-descriptor>
+        <reference-descriptor>
+            <ejb-reference-description>
+                <ejb-ref-name>ejb/GiftCardManager</ejb-ref-name>
+                <jndi-name>freshdirect.erp.GiftCardManager</jndi-name>
+            </ejb-reference-description>
+        </reference-descriptor>
+        <jndi-name>freshdirect.giftcard.RegisterListener</jndi-name>
+    </weblogic-enterprise-bean>
+
 
     <weblogic-enterprise-bean>
         <ejb-name>MailMessageListener</ejb-name>
@@ -1014,6 +1086,14 @@
     <transaction-isolation>
         <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
         <method>
+            <ejb-name>GCGateway</ejb-name>
+            <method-intf>Remote</method-intf>
+            <method-name>*</method-name>
+        </method>
+    </transaction-isolation>    
+    <transaction-isolation>
+        <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+        <method>
             <ejb-name>PaymentGateway</ejb-name>
             <method-intf>Remote</method-intf>
             <method-name>*</method-name>
@@ -1239,4 +1319,12 @@
             <method-name>*</method-name>
         </method>
     </transaction-isolation>    
+    <transaction-isolation>
+        <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+        <method>
+            <ejb-name>GiftCardManager</ejb-name>
+            <method-intf>Remote</method-intf>
+            <method-name>*</method-name>
+        </method>
+    </transaction-isolation>     
 </weblogic-ejb-jar>

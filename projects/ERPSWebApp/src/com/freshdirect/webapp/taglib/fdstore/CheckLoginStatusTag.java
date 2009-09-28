@@ -132,7 +132,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
         
         if ((user == null) || (user.getLevel() == FDSessionUser.GUEST && !guestAllowed) || (user.getLevel() == FDSessionUser.RECOGNIZED && !recognizedAllowed)
-                || (user.isNotServiceable() && !user.isDepotUser() && !guestAllowed)) {
+                || (user.isNotServiceable() && user.getLevel() != FDSessionUser.SIGNED_IN && !user.isDepotUser() && !guestAllowed)) {
             //
             // redirect, unless this is a request from a friendly robot we want
             // to let in

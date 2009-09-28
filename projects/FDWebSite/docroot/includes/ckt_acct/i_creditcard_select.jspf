@@ -22,7 +22,7 @@
     	selectedPaymPKId = "new";
     }
     else if (selectedPaymPKId==null ) {
-        if(_cart.getPaymentMethod() != null && !(_cart instanceof FDModifyCartModel)) {
+        if(_cart.getPaymentMethod() != null && !(_cart instanceof FDModifyCartModel) && null != ((ErpPaymentMethodModel)_cart.getPaymentMethod()).getPK()) {
             selectedPaymPKId = ((ErpPaymentMethodModel)_cart.getPaymentMethod()).getPK().getId();
         } else {
 			selectedPaymPKId = FDCustomerManager.getDefaultPaymentMethodPK(_user.getIdentity());
@@ -30,9 +30,16 @@
     }
 
     boolean showRadioButtons = false;
-    if (request.getRequestURI().toLowerCase().indexOf("your_account")>-1) {
-        editPage = "/your_account/edit_creditcard.jsp";
-    }else {
+    
+    if ((request.getRequestURI().toLowerCase().indexOf("your_account")>-1)) { 
+    	editPage = "/your_account/edit_creditcard.jsp";
+    } else if ((request.getRequestURI().toLowerCase().indexOf("gift_card")>-1))  {
+        editPage = "/your_account/edit_creditcard.jsp?gc=true";
+        showRadioButtons = true;
+    } else if ((request.getRequestURI().toLowerCase().indexOf("robin_hood")>-1))  {
+        editPage = "/your_account/edit_creditcard.jsp?rh=true";
+        showRadioButtons = true;
+    } else {
         editPage = "/checkout/step_3_card_edit.jsp";
         showRadioButtons=true;
     }
@@ -107,7 +114,12 @@
 		<%=paymentM.getCity()%>, <%=paymentM.getState()%> <%=paymentM.getZipCode()%><BR>
 		<BR>
 		</font> 
-		<A HREF="<%=editPage%>?paymentId=<%=paymentPKId%>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="Edit" BORDER="0"></A>&nbsp;
+		<% if(editPage.indexOf("?")>-1) { %>
+			<A HREF="<%=editPage%>&paymentId=<%=paymentPKId%>">
+		<% } else { %>
+			<A HREF="<%=editPage%>?paymentId=<%=paymentPKId%>">
+		<% } %>
+		<IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="Edit" BORDER="0"></A>&nbsp;
 <%      if (numCreditCards>1) { %>
 <input name="delete_cc" type="IMAGE" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="Delete" BORDER="0" onClick="javascript:setDeletePaymentId(this.form,'<%=paymentPKId%>');setActionName(this.form,'deletePaymentMethod')">
 <%      }%>

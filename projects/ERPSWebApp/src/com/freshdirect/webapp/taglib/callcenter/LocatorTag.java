@@ -65,10 +65,13 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 		try {
 			if (request.getMethod().equals("POST")) {
 				if(this.criteria.isBlank()){
+					System.out.println("trying to locate the blank");
 					searchResults = Collections.EMPTY_LIST;
 				} else if (this.criteria instanceof FDCustomerSearchCriteria) {
+					System.out.println("trying to locate the customers");
 					searchResults = doLocateCustomers((FDCustomerSearchCriteria) this.criteria);
 				} else if (this.criteria instanceof FDOrderSearchCriteria) {
+					System.out.println("trying to locate the orders");
 					searchResults = doLocateOrders((FDOrderSearchCriteria) this.criteria);
 				} else {
 					//

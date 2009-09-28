@@ -94,7 +94,13 @@
 				<ejb-ref-type>Session</ejb-ref-type>
 				<home>com.freshdirect.deliverypass.ejb.DlvPassManagerHome</home>
 				<remote> com.freshdirect.deliverypass.ejb.DlvPassManagerSB</remote>
-			</ejb-ref>				
+			</ejb-ref>
+			<ejb-ref>
+				<ejb-ref-name>ejb/GiftCardManager</ejb-ref-name>
+				<ejb-ref-type>Session</ejb-ref-type>
+				<home>com.freshdirect.giftcard.ejb.GiftCardManagerHome</home>
+				<remote> com.freshdirect.giftcard.ejb.GiftCardManagerSB</remote>
+			</ejb-ref>							
 			<resource-ref>
 				<res-ref-name>jdbc/dbpool</res-ref-name>
 				<res-type>javax.sql.DataSource</res-type>

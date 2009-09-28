@@ -16,6 +16,7 @@ boolean broken_accounts = snav_pageURI.indexOf("broken_acct_list") > -1;
 
 boolean acct_lookup = snav_pageURI.indexOf("acct_lookup") > -1;
 boolean canned_text = snav_pageURI.indexOf("canned_text") > -1;
+boolean connect = snav_pageURI.indexOf("connect") > -1;
 %>
 <crm:GetCurrentAgent id='currentAgent'>
 <div class="sup_nav_bg">
@@ -33,5 +34,6 @@ boolean canned_text = snav_pageURI.indexOf("canned_text") > -1;
 <a href="/supervisor/broken_acct_list.jsp?method=GET" class="<%=broken_accounts?"sup_nav_on":"sup_nav"%>">Broken Accounts</a>
 <a href="javascript:pop('/supervisor/acct_lookup.jsp', '500', '580')" class="<%=acct_lookup?"sup_nav_on":"sup_nav"%>">Acct. Lookup</a>
 <a href="/supervisor/canned_text.jsp" class="<%=canned_text?"sup_nav_on":"sup_nav"%>">Canned Text</a>
+<a href="/supervisor/connect.jsp" class="<%=connect?"sup_nav_on":"sup_nav"%>">Givex Admin</a>
 </div>
 </crm:GetCurrentAgent>

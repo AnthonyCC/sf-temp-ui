@@ -19,6 +19,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.autoorder.create.util.DateUtil;
 import com.freshdirect.dataloader.autoorder.create.util.IConstants;
 import com.freshdirect.dataloader.autoorder.create.util.ResourceUtil;
@@ -43,6 +44,7 @@ import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -101,7 +103,11 @@ public class OrderConsumer implements IConsumer {
 			FDCustomerManager.placeOrder(actionInfo, cart,(Set)new HashSet(), false, rating, EnumDlvPassStatus.NONE);
 		} catch (FDResourceException fdre) {
 			fdre.printStackTrace();
-		} catch (ErpFraudException efe) {
+		} catch (ErpTransactionException te) {
+			te.printStackTrace();
+		} catch (FDPaymentInadequateException pe) {
+			pe.printStackTrace();
+		}catch (ErpFraudException efe) {
 			efe.printStackTrace();
 		} catch (ErpAuthorizationException eae) {
 			eae.printStackTrace();

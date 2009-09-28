@@ -129,6 +129,14 @@
 				<ejb-ref-name>ejb/Payment</ejb-ref-name>
 				<jndi-name>freshdirect.payment.Payment</jndi-name>
 			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/GiftCardManager</ejb-ref-name>
+				<jndi-name>freshdirect.erp.GiftCardManager</jndi-name>
+			</ejb-reference-description>			
+	        <ejb-reference-description>
+                <ejb-ref-name>ejb/GCGateway</ejb-ref-name>
+                <jndi-name>freshdirect.giftcard.Gateway</jndi-name>
+            </ejb-reference-description>			
 		</reference-descriptor>
 		<jndi-name>freshdirect.dataloader.SaleCron</jndi-name>
 	</weblogic-enterprise-bean>

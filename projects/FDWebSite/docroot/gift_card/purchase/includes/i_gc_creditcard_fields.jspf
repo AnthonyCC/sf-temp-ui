@@ -1,0 +1,232 @@
+<%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*' %>
+<%@ page import ='com.freshdirect.fdstore.customer.*'%>
+<%@ page import ='com.freshdirect.fdstore.promotion.*'%>
+<%@ page import='java.util.*'%>
+<%@ page import='com.freshdirect.customer.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.framework.webapp.*' %>
+
+<%!
+String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration", EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode()};
+String[] checkErrorType = {"technical_difficulty", "payment_method_fraud"};
+%>
+
+
+<%
+String successPage = "/gift_card/purchase/purchase_giftcard.jsp";
+String cancelPage = successPage;
+
+
+
+boolean isValidPaymentId = false;
+String ccNameOnCard = "";
+String ccAddress1 = "";
+String ccAddress2 = "";
+String ccApartment = "";
+String ccCity = "";
+String ccState = "";
+String ccCountry = "";
+String ccCardType = "";
+String ccZipCode = "";
+String ccAccountNumber = "";
+String ccExpireMonth = "";
+String ccExpireYear = "";
+Date ccExpireDate = null;
+String custFname = null;
+String custLname = null;
+
+    if(sessionuser.getInvalidPaymentMethod() != null) {
+        //Redirected from signup page due to invalid credit card.
+        ErpPaymentMethodI pm = (ErpPaymentMethodI) sessionuser.getInvalidPaymentMethod();
+        ccNameOnCard = pm.getName() != null ? pm.getName() : "";
+        ccCardType = pm.getCardType() != null ? pm.getCardType().getDisplayName() : "";
+        ccAccountNumber = pm.getAccountNumber() != null ? pm.getAccountNumber() : "";
+        if(pm.getExpirationDate() != null){
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(pm.getExpirationDate());
+            ccExpireMonth =  String.valueOf(cal.get(Calendar.MONTH));
+            ccExpireYear = String.valueOf(cal.get(Calendar.YEAR));
+        }    
+        ccAddress1 = pm.getAddress1() != null ? pm.getAddress1() : "";
+        ccAddress2 = pm.getAddress2() != null ? pm.getAddress2() : "";
+        ccApartment = pm.getApartment() != null ? pm.getApartment() : "";
+        ccCity = pm.getCity() != null ? pm.getCity() : "";
+        ccState = pm.getState() != null ? pm.getState() : "";
+        ccZipCode = pm.getZipCode() != null ? pm.getZipCode() : "";
+        //clear info from session.
+        sessionuser.setInvalidPaymentMethod(null);
+    } else {
+        System.out.println("I am in else");
+        //get the fields from the request, if the request field is not empty
+        if (request.getParameter(PaymentMethodName.ACCOUNT_HOLDER)!=null) { 
+            ccNameOnCard = request.getParameter(PaymentMethodName.ACCOUNT_HOLDER);
+        }
+        if (request.getParameter(PaymentMethodName.CARD_BRAND)!=null) { 
+            ccCardType = request.getParameter(PaymentMethodName.CARD_BRAND);
+        }
+        if (request.getParameter(PaymentMethodName.ACCOUNT_NUMBER)!=null) { 
+            ccAccountNumber = request.getParameter(PaymentMethodName.ACCOUNT_NUMBER);
+        }
+        if (request.getParameter(PaymentMethodName.CARD_EXP_MONTH) !=null) { 
+            ccExpireMonth = request.getParameter(PaymentMethodName.CARD_EXP_MONTH);
+        }
+        if (request.getParameter(PaymentMethodName.CARD_EXP_YEAR)!=null) { 
+            ccExpireYear = request.getParameter(PaymentMethodName.CARD_EXP_YEAR);
+        }
+        if (request.getParameter(EnumUserInfoName.BIL_ADDRESS_1.getCode())!=null) { 
+            ccAddress1 = request.getParameter(EnumUserInfoName.BIL_ADDRESS_1.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.BIL_ADDRESS_2.getCode())!=null) { 
+            ccAddress2 = request.getParameter(EnumUserInfoName.BIL_ADDRESS_2.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.BIL_APARTMENT.getCode())!=null) { 
+            ccApartment =request.getParameter(EnumUserInfoName.BIL_APARTMENT.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.BIL_CITY.getCode())!=null) { 
+            ccCity = request.getParameter(EnumUserInfoName.BIL_CITY.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.BIL_STATE.getCode())!=null) { 
+            ccState = request.getParameter(EnumUserInfoName.BIL_STATE.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode())!=null) { 
+            ccZipCode = request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode());
+        }
+    }
+%>
+
+    <%-- error system messages happen here --%>
+    <fd:ErrorHandler result='<%=result%>' name='matching_addresses' id='errorMsg'>
+		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
+    </fd:ErrorHandler>
+    
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+	<TR VALIGN="TOP">
+	<TD WIDTH="693"><img src="/media_stat/images/navigation/credit_card_details.gif"
+WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
+<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
+</TR></TABLE>
+<br>
+
+<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
+<TR VALIGN="MIDDLE">
+	<TD WIDTH="15" ROWSPAN="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="13" HEIGHT="1" BORDER="0"></TD>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Name on Card&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="565"><input class="text11" maxlength="50" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" required="true" value="<%=ccNameOnCard%>"> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
+</TR>
+<TR VALIGN="MIDDLE">
+	<TD WIDTH="105"><BR></TD>
+	<TD WIDTH="565" CLASS="text12">Please enter name exactly as it appears on card.<BR><FONT CLASS="space4pix"><BR></FONT></TD>
+</TR>
+<TR>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Card Type&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="565">
+		<SELECT class="text11" name="<%=PaymentMethodName.CARD_BRAND%>" required="true">
+		<OPTION value="">Choose a credit card</OPTION>
+		<%
+		
+		java.util.List ccTypes = com.freshdirect.common.customer.EnumCardType.getCardTypes();
+		for(Iterator ccItr = ccTypes.iterator();ccItr.hasNext();) { 
+		    EnumCardType ccType = (EnumCardType)ccItr.next();
+		%>
+		<OPTION <%=ccType.getFdName().equals(ccCardType)?"selected":""%> value="<%=ccType.getFdName()%>"><%=ccType.getDisplayName()%>
+		<%}%>
+		</select> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CARD_BRAND%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	</td>
+</tr>
+<TR>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Card Number&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="565" CLASS="text12">
+		<input class="text11" maxlength="25" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>" required="true" value="<%=ccAccountNumber%>"> 
+	</TD>
+</TR>
+
+<TR VALIGN="TOP">
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"></TD>
+	<TD WIDTH="565" CLASS="text12">
+		 <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_NUMBER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		<BR><FONT CLASS="space4pix"><BR></FONT>
+	</TD>
+</TR>
+
+<tr>
+	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Expires&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'></span></fd:ErrorHandler></TD>
+	<TD WIDTH="565">
+	<%
+	String tCcExpireMonth="";
+	if(ccExpireMonth.length() == 2){
+		tCcExpireMonth = ccExpireMonth;
+	}
+	else if(ccExpireMonth.indexOf("0")<1){
+		tCcExpireMonth = "0"+ccExpireMonth;
+		}
+	%>
+	<SELECT class="text11" name="<%=PaymentMethodName.CARD_EXP_MONTH%>" required="true">
+	<OPTION value="">Choose a month</OPTION>
+	<% for (int mnth = 1;mnth<13;mnth++) { String strMonth = mnth<10?"0"+mnth:""+mnth; %>
+	<OPTION <%= (strMonth+"").equals(tCcExpireMonth)?"selected":"" %>  VALUE="<%=strMonth%>"><%=strMonth%></OPTION>
+	<% } %>
+	</SELECT>&nbsp;&nbsp;
+	<SELECT class="text11" name="<%=PaymentMethodName.CARD_EXP_YEAR%>" required="true">
+	<OPTION value="">Choose a year</OPTION>
+	<% int startYear = Calendar.getInstance().get(Calendar.YEAR);
+	   int endYear = startYear+15;
+	   for (int yr = startYear;yr < endYear; yr++) { %>
+	<OPTION <%= (yr+"").equals(ccExpireYear)?"selected":""%> VALUE="<%=yr %>"><%=yr %></OPTION>
+	<% } %>
+	</SELECT> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	</TD>
+</tr>
+
+</TABLE>
+<br><br>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+<TR VALIGN="TOP">
+	<TD WIDTH="693">
+		<img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="206" HEIGHT="9" border="0" alt="BILLING ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
+		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" vspace="3"><BR>
+
+		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br></TD></TR>
+</TABLE>
+<font class="space4pix"><br></font>
+
+<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
+	<TR VALIGN="MIDDLE">
+	    <TD WIDTH="660" ALIGN="RIGHT" colspan="2" CLASS="text12"> <fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	    </TD>
+	</TR>
+
+	<TR VALIGN="MIDDLE">
+	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*Street Address&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"></span></fd:ErrorHandler>
+	    </TD>
+		<TD WIDTH="565"><input type="text" maxlength="50" SIZE="21" class="text11" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" required="true" value = "<%=ccAddress1%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>Apt./Floor Number&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"></span></fd:ErrorHandler><input type="text" maxlength="10" size="4" class="text11" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>">
+		</TD>
+	</TR>
+	<TR VALIGN="MIDDLE">
+	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12">Address Line 2&nbsp;&nbsp;
+	    </TD>
+	    <TD WIDTH="565"><input type="text" maxlength="50" SIZE="21" class="text11" name="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>"  value = "<%=ccAddress2%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	    </TD>
+	</TR>
+	<TR VALIGN="MIDDLE">
+	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*City&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>"></span></fd:ErrorHandler>
+	    </TD>
+	    <TD WIDTH="565"><input type="text" class="text11" SIZE="21" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>" required="true" value = "<%=ccCity%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	    </TD>
+	</TR>
+	<TR VALIGN="MIDDLE">
+	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*State&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"></span></fd:ErrorHandler>
+	    </TD>
+	    <TD WIDTH="565">
+ 	    		<input size="3" class="text11" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>" required="true" value = "<%=ccState%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+ 	      		<%-- sometimes an input field???
+				  input class="text11" name="stateName" required="true" size="3" value="NY"--%>
+ 		 &nbsp;&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*Zip/Postal Code<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"></span></fd:ErrorHandler>&nbsp;&nbsp;<input type="text" maxlength="5" class="text11" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" required="true" size="6"  value = "<%=ccZipCode%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+ 	    </TD>
+	</TR>
+	<TR VALIGN="MIDDLE">
+	    <TD WIDTH="660" ALIGN="RIGHT" colspan="2" CLASS="text12"> <fd:ErrorHandler result='<%=result%>' name='address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	    </TD>
+	</TR>
+</TABLE>

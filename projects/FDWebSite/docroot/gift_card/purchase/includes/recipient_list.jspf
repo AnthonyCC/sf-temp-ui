@@ -1,0 +1,117 @@
+<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.FDRecipientList' %>
+<%@ page import='com.freshdirect.customer.*' %>
+<%@ page import='java.util.List' %>
+<%@ page import='java.util.ListIterator' %>
+<%@ page import='com.freshdirect.webapp.util.*' %>
+
+<%
+//for display of recipient number
+int indx = 1;
+String gcStr = (String)request.getAttribute("giftcard");
+boolean isConfirm=false;
+if("true".equalsIgnoreCase(gcStr)){
+    isConfirm=true;
+}
+
+FDUserI giftUser = (FDUserI)session.getAttribute(SessionName.USER);
+
+FDRecipientList recipList = giftUser.getRecipentList();
+if(recipList != null) {
+	List recipients =  recipList.getRecipents();
+	if(!recipients.isEmpty()) {
+		if (isConfirm) {
+			//we're on payment info page
+		%>
+		<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle">
+			<tr>
+				<td><img src="/media_stat/images/giftcards/purchase/gc_review_recip_list.gif" width="176" height="13" alt="Review Your Recipient List" /><br /><br />
+					Check the names and amounts of your gifts below.
+				</td>
+			</tr>
+		</table>
+		<%
+		}else{
+			//we're on gift & recipient options page
+		%>
+		<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle">
+			<tr>
+				<td><img src="/media_stat/images/giftcards/purchase/recip_list.gif" width="120" height="21" alt="Recipient List" /><br /><br />
+					Check the names and amounts for your giftcards below. <strong>Click the link by the recipient names to see how their Email Gift Card will appear in their Inbox!</strong> If you need to make changes, you may alter the amount here or click the Edit link to change personal info.
+				</td>
+			</tr>
+		</table>
+		<% } %>
+
+		<table class="recipTable">
+			<tr>
+				<td><div class="recipAmount right">Amount</div></td>
+			</tr>
+				<%
+				ListIterator i = recipients.listIterator();
+				while(i.hasNext()) {
+					SavedRecipientModel srm = (SavedRecipientModel)i.next();
+				%>
+			<tr>
+				<td>
+					<div class="recipRow" id="<%=srm.getRandomId()%>Row">
+						<div class="recipNumber" id="<%=srm.getRandomId()%>Number"><%= indx %>.&nbsp;</div>
+						<div class="recipName" id="<%=srm.getRandomId()%>Name"><%= srm.getRecipientName()%></div>
+
+						<div class="recipAmount" id="<%=srm.getRandomId()%>Amount">$<%= srm.getFormattedAmount() %></div>
+
+						<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_giftcard.jsp?recipId=<%=srm.getRandomId()%>">Edit</a><a href="<%= request.getRequestURI() %>?deleteId=<%=srm.getRandomId()%>">Delete</a></div>
+					</div>
+				</td>
+			</tr>
+				<%
+					indx++;
+				}
+				%>
+
+		</table>
+
+		<table width="623" cellspacing="0" cellpadding="0" border="0" valign="middle">
+			<tr>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+			</tr>
+		<%
+		if (isConfirm) {
+			//we're on payment info page
+		%>
+			<tr>
+				<td class="right">Subtotal: $<%= recipList.getFormattedSubTotal() %></td>
+			</tr>
+			<% 
+               if(null != giftUser && null != giftUser.getGiftCart() && null != giftUser.getIdentity()) {
+	                FDCustomerCreditUtil.applyCustomerCredit(giftUser.getGiftCart(), giftUser.getIdentity());
+	            
+	                if ( null != giftUser.getGiftCart() && giftUser.getGiftCart().getCustomerCreditsValue() > 0 ) { %>
+	    			<tr>
+	    				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+	    			</tr>
+	    			<tr>
+	    				<td class="right" class="recipAmount">FreshDirect Store Credit: $<%=  currencyFormatter.format(giftUser.getGiftCart().getCustomerCreditsValue())%></td>
+	    			</tr>
+	    			<%  } %>
+	    			<tr>
+	    				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+	    			</tr>
+	    			<tr>
+	    				<td class="recipTotal">TOTAL: <%=  currencyFormatter.format(giftUser.getGiftCart().getTotal()) %></td>
+	    			</tr>
+	    		<%
+	    		}
+	
+		}else{
+			//we're on gift & recipient options page
+		%>
+			<tr>
+				<td class="recipTotal">SUBTOTAL:  $<%= recipList.getFormattedSubTotal() %></td>
+			</tr>
+		<% } %>
+		</table>
+		<%
+	}
+}
+		%>

@@ -106,6 +106,7 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 	<br>
 	<fd:IncludeMedia name="/media/editorial/site_access/other_service_location.html" />
 	<a href="<%=successPage%>"><img src="/media_stat/images/template/site_access/zipfail_button_shop_pickup.gif" border="0" width="214" height="41" vspace="20"></a>
+    <%@ include file="/site_access/includes/i_check_for_includes.jspf" %>
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="15"><br>
 	<img src="/media_stat/images/layout/cccccc.gif" width="541" height="1"><br>								
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br>			

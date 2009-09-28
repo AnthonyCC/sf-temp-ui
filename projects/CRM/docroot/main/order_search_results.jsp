@@ -21,11 +21,15 @@
     boolean quickSearch = NVL.apply(request.getParameter("search"), "").equalsIgnoreCase("quick");
     boolean sortReversed = "true".equalsIgnoreCase(request.getParameter("reverse"));
     
+    System.out.println("gcNumber :"+request.getParameter("gcNumber"));
+    
     FDOrderSearchCriteria sc = new FDOrderSearchCriteria();
     sc.setFirstName(NVL.apply(request.getParameter("firstName"), "").trim());
     sc.setLastName(NVL.apply(request.getParameter("lastName"), "").trim());
     sc.setEmail(NVL.apply(request.getParameter("email"), "").trim());
     sc.setPhone(NVL.apply(request.getParameter("phone"), "").trim());
+    sc.setGiftCardNumber(NVL.apply(request.getParameter("giftCardNumber"), "").trim());
+    //sc.setCertificateNumber(NVL.apply(request.getParameter("certNumber"), "").trim());
     sc.setOrderNumber(NVL.apply(request.getParameter("orderNumber"), "").trim());
     sc.setDepotLocationId(request.getParameter("depotLocationId"));
     sc.setCorporate("true".equalsIgnoreCase(request.getParameter("corporate")));

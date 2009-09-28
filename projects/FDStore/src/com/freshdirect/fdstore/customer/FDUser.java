@@ -54,6 +54,9 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.adapter.PromoVariantHelper;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.giftcard.FDGiftCardI;
+import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
+import com.freshdirect.fdstore.giftcard.FDGiftCardModel;
 import com.freshdirect.fdstore.lists.CclUtils;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
@@ -72,7 +75,11 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.SiteFeatureHelper;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
+import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -95,7 +102,12 @@ public class FDUser extends ModelSupport implements FDUserI {
     private AddressModel address;
     private FDReservation reservation;
     private FDCartModel shoppingCart = new FDCartModel();
-
+    
+    //Creating a dummy cart for gift card processing.
+    private FDCartModel dummyCart = new FDCartModel();
+    private FDRecipientList recipientList;
+    private FDBulkRecipientList bulkRecipientList;
+    
     private SignupDiscountRule signupDiscountRule;
     private boolean promotionAddressMismatch = false;
 	private String redeemedPromotionCode;
@@ -152,8 +164,15 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	private boolean isPostPromoConflictEnabled;
 	private boolean isPromoConflictResolutionApplied;
-
-
+	
+	private FDGiftCardInfoList cachedGiftCards;
+	
+	//Create a dummy cart for Donation Orders.
+	private FDCartModel donationCart = new FDCartModel();
+	private Integer donationTotalQuantity = 0;
+	
+	private Map cachedRecipientInfo = null;
+	
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
 	}
@@ -729,11 +748,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public String getMarketingPromoPath() throws FDResourceException {
 		// marketingPromo path is in the form of "campaign_campaign2_segment"
-		// a valid marketing promo value is in the form of "mktg_deli_default"
+		// a valid marketing promo value is in the form of "mktg_deli_default"		
 		String mktgPromo = getMarketingPromo();
-		// if the first two digits of this value is a number it is not a deli campaign but a segment value APPDEV-484
-		if(mktgPromo.equals("false") || mktgPromo.length() < 3 || StringUtils.isNumeric(mktgPromo.substring(0,3)))
-			return "false";
+		if(mktgPromo.equals("false"))
+			return mktgPromo;
 
 		StringTokenizer st = new StringTokenizer(mktgPromo, "_");
 		int countTokens = st.countTokens();
@@ -1238,6 +1256,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public boolean isProduceRatingEnabled() {
 		return SiteFeatureHelper.isEnabled(EnumSiteFeature.RATING, this);
 	}
+	
+	public boolean isGiftCardsEnabled() {
+		return SiteFeatureHelper.isEnabled(EnumSiteFeature.GIFT_CARDS, this);
+	}
 
 
 	public boolean isCCLEnabled() {
@@ -1344,6 +1366,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.cohortName = VariantSelectorFactory.getCohortName(getPrimaryKey());
 		FDCustomerManager.storeCohortName(this);
 	}
+	
 	public int getTotalCartSkuQuantity(String args[]){
 		Collection c = Arrays.asList(args);
 		Set argSet = new HashSet(c);
@@ -1437,5 +1460,177 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.isPromoConflictResolutionApplied = isPromoConflictResolutionApplied;
 	}
 
+	public FDGiftCardInfoList getGiftCardList() {
+		if (getLevel() == FDUserI.GUEST) {
+			// We don't have an identity 
+			return null;
+		}
+		if (cachedGiftCards == null) {
+			try {
+				cachedGiftCards = FDCustomerManager.getGiftCards(identity);
+//				getGCRecipientInfo();
+				
+			} catch (Exception e) {
+				throw new FDRuntimeException(e);
+			}
+		}
+		return cachedGiftCards;
+	}
+
+	private void getGCRecipientInfo() throws FDResourceException {
+		if(null != cachedGiftCards && null != cachedGiftCards.getGiftcards() && !cachedGiftCards.getGiftcards().isEmpty()){
+			List saleIds = new ArrayList();
+			for (Iterator iterator = cachedGiftCards.getGiftcards().iterator(); iterator
+					.hasNext();) {
+				FDGiftCardModel lFDGiftCardModel = (FDGiftCardModel) iterator.next();
+				if(!saleIds.contains(lFDGiftCardModel.getGiftCardModel().getPurchaseSaleId())){
+					saleIds.add(lFDGiftCardModel.getGiftCardModel().getPurchaseSaleId());
+				}
+				
+			}
+			if(!saleIds.isEmpty()){
+				//Get the recipient info for all these distinct saleIds.
+				cachedRecipientInfo = FDCustomerManager.getGiftCardRecepientsForOrders(saleIds);
+			}
+		}
+	}
+	
+	public String getGCSenderName(String certNum, String saleId){
+		if (getLevel() == FDUserI.GUEST) {
+			// We don't have an identity 
+			return null;
+		}
+		List recipientList = null;
+		ErpGCDlvInformationHolder holder = null;
+		try {
+			if(null == cachedRecipientInfo){
+//				getGCRecipientInfo();
+				cachedRecipientInfo = new HashMap();
+			}
+			/*if(null !=cachedRecipientInfo){
+				if(cachedRecipientInfo.containsKey(saleId)){
+					 recipientList = (List)cachedRecipientInfo.get(saleId);
+				}else{
+					recipientList = FDCustomerManager.getGiftCardRecepientsForOrder(saleId);
+					cachedRecipientInfo.put(saleId, recipientList);				
+				}
+				
+				if(null != recipientList && !recipientList.isEmpty()){
+					for (Iterator iterator = recipientList.iterator(); iterator
+							.hasNext();) {
+						ErpGCDlvInformationHolder holder = (ErpGCDlvInformationHolder) iterator.next();
+						if(holder.getCertificationNumber().equalsIgnoreCase(certNum)){
+							return holder.getRecepientModel().getSenderName();
+						}
+						
+					}
+				}
+			}*/
+			if(null !=cachedRecipientInfo){
+				if(cachedRecipientInfo.containsKey(certNum)){
+					 holder = (ErpGCDlvInformationHolder)cachedRecipientInfo.get(certNum);
+				}else{
+					holder = FDCustomerManager.GetGiftCardRecipentByCertNum(certNum);
+					cachedRecipientInfo.put(certNum, holder);				
+				}
+				if(null != holder){
+					return holder.getRecepientModel().getSenderName();
+				}
+			}
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}
+		return null;
+	}
+	
+	public void invalidateGiftCards() {
+		this.cachedGiftCards = null;
+	}
+	
+	public double getGiftcardBalance() {
+		if(this.getGiftCardList() == null) return 0.0;
+		if(this.getShoppingCart() instanceof FDModifyCartModel) {
+			return this.getGiftCardList().getTotalBalance();
+		} else {
+			//Clear all hold amounts.
+			if(null!=this.getGiftCardList()){
+				this.getGiftCardList().clearAllHoldAmount();
+				return this.getGiftCardList().getTotalBalance();
+			}
+			return 0;
+		}
+	}
+	
+	public FDCartModel getGiftCart() {
+		return this.dummyCart;
+	}
+	
+	public void setGiftCart(FDCartModel dcart) {
+		this.dummyCart = dcart;
+	}
+	
+	public FDRecipientList getRecipentList(){
+		if( null == this.recipientList) {
+			this.recipientList = new FDRecipientList();
+		}
+		return this.recipientList;
+	}
+	
+	public void setRecipientList(FDRecipientList r) {
+		this.recipientList = r;
+	}
+	
+    public boolean isGCOrderMinimumMet() {
+		double subTotal = this.getRecipentList().getSubtotal();
+		return subTotal >= this.getMinimumOrderAmount();
+    }
+    
+    public double getGCMinimumOrderAmount() {
+		return MIN_GC_ORDER_AMOUNT;
+	}
+    
+
+	public FDBulkRecipientList getBulkRecipentList(){
+		if( null == this.bulkRecipientList) {
+			this.bulkRecipientList = new FDBulkRecipientList();
+		}
+		return this.bulkRecipientList;
+	}
+	
+	public void setBulkRecipientList(FDBulkRecipientList r) {
+		this.bulkRecipientList = r;
+	}
+    
+	public Integer getDonationTotalQuantity(){
+		return donationTotalQuantity;
+	}
+	
+	public void setDonationTotalQuantity(Integer donationTotalQuantity){
+		this.donationTotalQuantity = donationTotalQuantity;
+	}
+
+	
+	public FDCartModel getDonationCart() {		
+		return donationCart;
+	}
+
+	
+	public void setDonationCart(FDCartModel dcart) {
+		this.donationCart = dcart;		
+	}
+
+	public double getGiftcardsTotalBalance(){
+		if(this.getGiftCardList() == null) return 0.0;
+		if(this.getShoppingCart() instanceof FDModifyCartModel) {
+			return this.getGiftCardList().getGiftcardsTotalBalance();
+		} else {
+			//Clear all hold amounts.
+			if(null!=this.getGiftCardList()){
+				this.getGiftCardList().clearAllHoldAmount();
+				return this.getGiftCardList().getGiftcardsTotalBalance();
+			}
+			return 0;
+		}
+	}
 }
 

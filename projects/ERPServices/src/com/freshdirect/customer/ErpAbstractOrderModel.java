@@ -9,6 +9,8 @@ import java.util.TreeSet;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
+import com.freshdirect.giftcard.ErpRecipentModel;
 
 /**
  * @stereotype fd-model
@@ -37,6 +39,8 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	
 	//This attribute flag is to denote whether a delivery promotion was applied to this cart.
 	private boolean dlvPromotionApplied;
+	
+	private double bufferAmt;
 
     /**
      * @associates <{ErpAppliedCreditModel}>
@@ -44,6 +48,7 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
      * @clientCardinality 1
      * @supplierCardinality 0..*
      */
+	//List of ErpGiftCardI
     private List appliedCredits;
 
     /**
@@ -56,12 +61,30 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 
 	private List discounts = null;
 
+    public List getRecepientsList() {
+		return recepientsList;
+	}
+
+	//List of Gift cards used for this order. Not persisted
+	private List selectedGiftCards;
+	
+	//usage details for each gift card applied on this order.
+	private List appliedGiftcards;
+	
+	public void setRecepientsList(List recepientsList) {
+		this.recepientsList = recepientsList;
+	}
+
+	private List recepientsList=null;
 
 	public ErpAbstractOrderModel(EnumTransactionType transType) {
         super(transType);
 		appliedCredits = new ArrayList();
 		charges = new ArrayList();
 		discounts = new ArrayList();
+		selectedGiftCards =  new ArrayList();
+		appliedGiftcards = new ArrayList();
+		recepientsList = new ArrayList();
     }
 
 	public void set(ErpAbstractOrderModel order, boolean isNewObject) {
@@ -73,7 +96,7 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 			this.setDeliveryInfo(order.getDeliveryInfo());
 			this.setDiscounts(order.getDiscounts());
 			this.setMarketingMessage(order.getMarketingMessage());
-			this.setOrderLines(order.getOrderLines());
+			this.setOrderLines(order.getOrderLines());			
 			this.setPaymentMethod(order.getPaymentMethod());
 			this.setPK(order.getPK());
 			this.setPricingDate(order.getPricingDate());
@@ -83,14 +106,19 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 			this.setTransactionDate(order.getTransactionDate());
 			this.setTransactionInitiator(order.getTransactionInitiator());
 			this.setTransactionSource(order.getTransactionSource());
+			this.setRecepientsList(order.getRecepientsList());
+			this.setSelectedGiftCards(order.getSelectedGiftCards());
+			this.setAppliedGiftcards(order.getAppliedGiftcards());
+			this.setBufferAmt(order.getBufferAmt());
 			if (isNewObject) {
 				clearPK();
 			}
+
 		}
 	}
 	
 	private void clearPK () {
-
+		System.out.println("clear PK called $$$$$$$$$$$$$$$ ");
 		setPK(null);
 
 		// null out all charge line primary keys
@@ -128,6 +156,37 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 			while (iter.hasNext()) {
 				ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
 				discountLine.setPK(null);
+			}
+		}
+		
+		// null out all receipents
+		List recepients = getRecepientsList();
+		if (recepients != null && recepients.size() > 0) {
+			Iterator iter = recepients.iterator();
+			while (iter.hasNext()) {
+				ErpRecipentModel recepientsLine = (ErpRecipentModel) iter.next();
+				recepientsLine.setPK(null);
+			}
+		}
+		/*
+		System.out.println("getGiftcardPaymentMethods in ab model "+ getGiftcardPaymentMethods().size());
+		// null out all used gift cards primary keys
+		List gcPMList = getGiftcardPaymentMethods();
+		if (gcPMList != null && gcPMList.size() > 0) {
+			Iterator iter = gcPMList.iterator();
+			while (iter.hasNext()) {
+				ErpPaymentMethodModel gc = (ErpPaymentMethodModel) iter.next();
+				gc.setPK(null);
+			}
+		}
+		*/
+		// null out all applied credit primary keys
+		List appliedGiftcards = getAppliedGiftcards();
+		if (appliedGiftcards != null && appliedGiftcards.size() > 0) {
+			Iterator iter = appliedGiftcards.iterator();
+			while (iter.hasNext()) {
+				ErpAppliedGiftCardModel gc = (ErpAppliedGiftCardModel) iter.next();
+				gc.setPK(null);
 			}
 		}
 
@@ -215,7 +274,9 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 
         // add up orderline prices
         for (Iterator i=this.orderLines.iterator(); i.hasNext(); ) {
-			amount += ((ErpOrderLineModel)i.next()).getPrice();
+        	double price = ((ErpOrderLineModel)i.next()).getPrice();
+			System.out.println("Amount $$$$$$$$$$$$ "+price);
+			amount += price;
         }
 
         // subtract credits
@@ -340,5 +401,56 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 
 	public void setDlvPromotionApplied(boolean dlvPromotionApplied) {
 		this.dlvPromotionApplied = dlvPromotionApplied;
+	}
+
+	public List getSelectedGiftCards() {
+		return selectedGiftCards;
+	}
+
+	public void setSelectedGiftCards(List selectedGiftCards) {
+		this.selectedGiftCards = selectedGiftCards;
+	}
+
+	public List getAppliedGiftcards() {
+		return appliedGiftcards;
+	}
+
+	public void setAppliedGiftcards(List appliedGiftcards) {
+		this.appliedGiftcards = appliedGiftcards;
+	}
+	
+	public double getAppliedGiftCardAmount() {
+		double amount = 0.0;
+        for (Iterator i=this.appliedGiftcards.iterator(); i.hasNext(); ) {
+        	ErpAppliedGiftCardModel curr = (ErpAppliedGiftCardModel)i.next();
+        	amount += curr.getAmount();
+        }
+		return amount;
+	}
+	
+	public ErpOrderLineModel getOrderLineByOrderLineNumber(String id){
+		ErpOrderLineModel foundLine = null;
+		for(Iterator i = this.orderLines.iterator(); i.hasNext(); ){
+			ErpOrderLineModel ol = (ErpOrderLineModel) i.next();
+			if(ol.getOrderLineNumber().equals(id)){
+				foundLine = ol;
+				break;
+			}
+		}
+		return foundLine;
+	}
+
+	/**
+	 * @return the bufferAmt
+	 */
+	public double getBufferAmt() {
+		return bufferAmt;
+	}
+
+	/**
+	 * @param bufferAmt the bufferAmt to set
+	 */
+	public void setBufferAmt(double bufferAmt) {
+		this.bufferAmt = bufferAmt;
 	}
 }

@@ -67,7 +67,8 @@ public class SaleCronRunner {
 				LOGGER.debug("Sending report for " + cal.getTime() + "...");
 				CallCenterServices.emailCutoffTimeReport(cal.getTime());
 			}
-
+			//First Pre auth gift card.
+			sb.preAuthorizeSales(authTimeout);
 			sb.authorizeSales(authTimeout);
 			// remved the following task, create a new cron job for it.
 			//sb.captureSales(captureTimeout); 

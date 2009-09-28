@@ -14,6 +14,7 @@ import java.util.Date;
 import com.freshdirect.common.address.AddressI;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.giftcard.EnumGiftCardStatus;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -93,6 +94,22 @@ public interface ErpPaymentMethodI extends AddressI {
 	public void setIsTermsAccepted(boolean isTermsAccepted);
 	
 	public boolean getIsTermsAccepted();
+	
+	public String getCertificateNumber() ;
+
+	public void setCertificateNumber(String certificateNumber) ;
+
+	public double getBalance() ;
+
+	public void setBalance(double balance) ;
+
+	public EnumGiftCardStatus getStatus();
+
+	public void setStatus(EnumGiftCardStatus status);
+	
+	public boolean isRedeemable();
+	
+	public boolean isGiftCard();
 	
 }
 

@@ -75,7 +75,10 @@ public class EnumAccountActivityType implements java.io.Serializable {
     public final static EnumAccountActivityType AUTORENEW_DP_FLAG_ON				= new EnumAccountActivityType(40, "DP AR ON", "AutoRenew DP flag turned ON");
     public final static EnumAccountActivityType AUTORENEW_DP_FLAG_OFF				= new EnumAccountActivityType(41, "DP AR OFF", "AutoRenew DP flag turned OFF");
     public final static EnumAccountActivityType VIEW_CC_ECHECK				= new EnumAccountActivityType(39, "View CC/ECHECK", "View cc/echeck account number");
-
+    public final static EnumAccountActivityType ADD_GIFT_CARD				= new EnumAccountActivityType(40, "AddGiftCard", "Add Gift Card");
+    public final static EnumAccountActivityType GC_APPLY_FAILED				= new EnumAccountActivityType(41, "GCApplyFailed", "GC Apply Failed");
+    public final static EnumAccountActivityType REMOVE_GIFT_CARD				= new EnumAccountActivityType(42, "RemoveGiftCard", "Remove Gift Card");
+    
     private EnumAccountActivityType(int id, String code, String name) {
         this.id = id;
         this.code = code;

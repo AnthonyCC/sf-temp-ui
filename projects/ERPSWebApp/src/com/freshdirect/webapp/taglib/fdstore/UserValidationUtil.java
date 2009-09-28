@@ -30,6 +30,17 @@ public class UserValidationUtil {
 		}
 		return true;
 	}
+	
+	public static boolean validateRecipientNotEmpty(HttpServletRequest request, ActionResult result) {
+		HttpSession session = request.getSession();
+		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+		if (user.getRecipentList().size() == 0) {
+			result.addError(new ActionError("order_minimum", SystemMessageList.MSG_CHECKOUT_RECIPIENT_EMPTY));
+			return false;
+		}
+		return true;
+	}
+
 	public static boolean validateContainsDlvPassOnly(HttpServletRequest request, ActionResult result) {
 		//Check to see if cart contains only delivery pass.
 		HttpSession session = request.getSession();
@@ -80,5 +91,41 @@ public class UserValidationUtil {
 		}
 
 		return true;			
+	}
+	
+	public static boolean validateRecipientListEmpty(HttpServletRequest request, ActionResult result) throws FDResourceException {
+		
+		HttpSession session = request.getSession();
+		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+	   
+		if (user.getRecipentList().size() == 0) {
+			result.addError(
+				new ActionError(
+					"recipients_empty",
+						SystemMessageList.MSG_CHECKOUT_RECIPIENTS_EMPTY));
+
+			return true;
+
+		}
+
+		return false;			
+	}
+	
+	public static boolean validateBulkRecipientListEmpty(HttpServletRequest request, ActionResult result) throws FDResourceException {
+		
+		HttpSession session = request.getSession();
+		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+	   
+		if (user.getBulkRecipentList().size() == 0) {
+			result.addError(
+				new ActionError(
+					"recipients_empty",
+						SystemMessageList.MSG_CHECKOUT_RECIPIENTS_EMPTY));
+
+			return true;
+
+		}
+
+		return false;			
 	}
 }

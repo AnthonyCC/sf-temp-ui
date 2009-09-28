@@ -53,5 +53,9 @@ public interface ErpFraudPreventionSB extends EJBObject {
 	 public boolean checkPhoneFraud(String erpCustomerId, Collection phones) throws RemoteException;
 
 	 public boolean checkDuplicatePaymentMethodFraud(String erpCustomerId, ErpPaymentMethodI card) throws RemoteException;
+	 
+	 public EnumFraudReason preCheckGiftCardFraud(PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) throws RemoteException;
+	 
+	 public void postCheckGiftCardFraud(PrimaryKey salePk, PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) throws RemoteException;
 
 }

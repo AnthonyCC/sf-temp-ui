@@ -24,4 +24,11 @@ public interface MailName {
     public final static String FROM_ADDRESS 		= "emailFromAddress";
     public final static String FROM_ADDRESS_NAME 	= "emailFromAddressName";
     public final static String ORDER_HISTORY 		= "orderHistory";
+    
+    public final static String GC_FTL_PATH 		= "gcFtlPath";
+    public final static String FTL_PARAMETERS 		= "ftlParameters";
+    public final static String IS_FTL 		= "IS_FTL";
+    
+    public final static String GC_RECIPIENT_EMAIL = "gcRecipientEmail";
+    
 } // class MailName

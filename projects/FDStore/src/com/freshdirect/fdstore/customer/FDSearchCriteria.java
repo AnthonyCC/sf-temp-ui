@@ -18,6 +18,8 @@ public class FDSearchCriteria implements Serializable {
 
 	protected String orderNumber = null;
 	protected String depotCode = null;
+	protected String gcNumber=null;
+	protected String certNumber=null;
 	
 	protected boolean quickSearch;
 
@@ -61,6 +63,24 @@ public class FDSearchCriteria implements Serializable {
 			this.email = email;
 		}
 	}
+	
+	public void setGiftCardNumber(String gcNumber){
+		this.gcNumber=gcNumber;
+	}
+		
+	
+	public String getGiftCardNumber(){
+		return this.gcNumber;
+	}
+	
+	public String getCertificateNumber(){
+		return this.certNumber;
+	}
+	
+	
+	public void setCertificateNumber(String certNum){
+		this.certNumber=certNum;
+	}
 
 	public String getPhone() {
 		return this.phone;
@@ -98,7 +118,10 @@ public class FDSearchCriteria implements Serializable {
 			&& this.email == null
 			&& this.phone == null
 			&& this.orderNumber == null
-			&& this.depotCode == null;
+			&& this.depotCode == null 
+			&& this.certNumber == null
+			&& this.gcNumber == null;
+		
 	}
 
 	public String getCriteria() throws FDResourceException {

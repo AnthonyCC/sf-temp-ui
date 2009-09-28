@@ -1,0 +1,160 @@
+<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="register_header" style="padding: 3px; margin-bottom: 8px;"><tr><td>&nbsp;&nbsp;Payment Information: <span class="register_header_detail">(Optional)</span></td></tr></table>
+
+
+<table width="35%" cellpadding="2" cellspacing="0" border="0" class="register">
+	<tr><td align="left" colspan="2"><span class="module_header_text">Credit Card</span><br /></td></tr>
+	<tr>
+		<td width="35%" align="right">* Name on card:&nbsp;&nbsp;</td>
+		<td width="65%"><input type="text" SIZE="20" name="<%= PaymentMethodName.ACCOUNT_HOLDER %>" value="<%= request.getParameter(PaymentMethodName.ACCOUNT_HOLDER) %>"><fd:ErrorHandler result='<%=result%>' name='<%= PaymentMethodName.ACCOUNT_HOLDER %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+	</tr>
+	<tr>
+		<td width="35%" align="right">* Card type:&nbsp;&nbsp;</td>
+		<td width="65%">
+			<select name="<%= PaymentMethodName.CARD_BRAND %>">
+			<%
+				java.util.List ccTypes = com.freshdirect.common.customer.EnumCardType.getCardTypes();
+				for (Iterator ccItr = ccTypes.iterator(); ccItr.hasNext(); ) {
+					EnumCardType ccType = (EnumCardType)ccItr.next();
+			%>
+				<option value="<%=ccType.getFdName()%>" <%= ( ccType.getFdName().equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_BRAND) ) ) ? "SELECTED" : " " %>><%=ccType.getFdName()%></option>
+			<% } %>
+			</select>
+			<fd:ErrorHandler result='<%=result%>' name='<%= PaymentMethodName.CARD_BRAND %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>
+		</td>
+	</tr>
+	<tr>
+		<td width="35%" align="right">* Card number:&nbsp;&nbsp;</td>
+		<td width="65%"><input type="text" SIZE="20" name="<%= PaymentMethodName.ACCOUNT_NUMBER %>" value="<%= request.getParameter(PaymentMethodName.ACCOUNT_NUMBER) %>"><fd:ErrorHandler result='<%=result%>' name='<%= PaymentMethodName.ACCOUNT_NUMBER %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span><br /></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='payment_method_fraud' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+	</tr>
+	<tr>
+		<td width="35%" align="right">* Expires:&nbsp;&nbsp;</td>
+		<td width="65%">
+			<select name="<%= PaymentMethodName.CARD_EXP_MONTH %>">
+				<option value="">Choose a month</option>
+				<option value="01" <%= ( "01".equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_EXP_MONTH) ) ) ? "SELECTED" : "" %>>January</option>
+				<option value="02" <%= ( "02".equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_EXP_MONTH) ) ) ? "SELECTED" : "" %>>February</option>
+				<option value="03" <%= ( "03".equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_EXP_MONTH) ) ) ? "SELECTED" : "" %>>March</option>
+				<option value="04" <%= ( "04".equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_EXP_MONTH) ) ) ? "SELECTED" : "" %>>April</option>
+				<option value="05" <%= ( "05".equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_EXP_MONTH) ) ) ? "SELECTED" : "" %>>May</option>
+				<option value="06" <%= ( "06".equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_EXP_MONTH) ) ) ? "SELECTED" : "" %>>June</option>
+				<option value="07" <%= ( "07".equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_EXP_MONTH) ) ) ? "SELECTED" : "" %>>July</option>
+				<option value="08" <%= ( "08".equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_EXP_MONTH) ) ) ? "SELECTED" : "" %>>August</option>
+				<option value="09" <%= ( "09".equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_EXP_MONTH) ) ) ? "SELECTED" : "" %>>September</option>
+				<option value="10" <%= ( "10".equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_EXP_MONTH) ) ) ? "SELECTED" : "" %>>October</option>
+				<option value="11" <%= ( "11".equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_EXP_MONTH) ) ) ? "SELECTED" : "" %>>November</option>
+				<option value="12" <%= ( "12".equalsIgnoreCase( request.getParameter(PaymentMethodName.CARD_EXP_MONTH) ) ) ? "SELECTED" : "" %>>December</option>
+			</select>&nbsp;/&nbsp;
+			<select name="<%= PaymentMethodName.CARD_EXP_YEAR %>">
+				<option value="">Choose a year</option>
+				<%
+					int startYear = Calendar.getInstance().get(Calendar.YEAR);
+					int endYear = startYear+10;
+					for (int yr = startYear; yr < endYear; yr++) {
+				%>
+					<option VALUE="<%= yr %>" <%= ( (""+yr).equalsIgnoreCase( request.getParameter( PaymentMethodName.CARD_EXP_YEAR) ) ) ? "SELECTED" : "nbsp" %>><%= yr %></option>
+				<% } %>
+			</select>
+			<fd:ErrorHandler result='<%=result%>' name='expiration' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>
+		</td>
+	</tr>
+	<tr>
+		<td width="35%" align="RIGHT"><b>Billing Address</b>&nbsp;&nbsp;</td>
+		<td width="65%"><input type="checkbox" name="useDelivery" onClick="toggleUseDelivery(document.registration)" <%= request.getParameter("useDelivery") == null ? "" : "checked" %>>Use delivery address</td>
+	</tr>
+	<tr>
+		<td width="35%" align="right">* Address line 1:&nbsp;&nbsp;</td>
+		<td width="65%"><input type="text" readOnly="false" SIZE="20" name="<%= AddressName.BIL_ADDRESS_1 %>" value="<%= request.getParameter(AddressName.BIL_ADDRESS_1) %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.BIL_ADDRESS_1 %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+	</tr>
+	<tr>
+		<td width="35%" align="right">Address line 2:&nbsp;&nbsp;</td>
+		<td width="65%"><input type="text" readOnly="false" SIZE="20" name="<%= AddressName.BIL_ADDRESS_2 %>" value="<%= request.getParameter(AddressName.BIL_ADDRESS_2) %>"></td>
+	</tr>
+	<tr>
+		<td width="35%" align="right">Apt./Floor:&nbsp;&nbsp;</td>
+		<td width="65%"><input type="text" readOnly="false" SIZE="6" name="<%= AddressName.BIL_APARTMENT %>" value="<%= request.getParameter(AddressName.BIL_APARTMENT) %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.BIL_APARTMENT %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+	</tr>
+	<tr>
+		<td width="35%" align="right">* City:&nbsp;&nbsp;</td>
+		<td width="65%"><input type="text" readOnly="false" SIZE="20" name="<%= AddressName.BIL_CITY %>" value="<%= request.getParameter(AddressName.BIL_CITY) %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.BIL_CITY %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+	</tr>
+	<tr>
+		<td width="35%" align="right">* State:&nbsp;&nbsp;</td>
+		<td width="65%"><input type="text" readOnly="false" size="2" name="<%= AddressName.BIL_STATE %>" value="NY"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.BIL_STATE %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;* Zip <input type="text" SIZE="6" name="<%= AddressName.BIL_ZIPCODE %>" value="<%= request.getParameter(AddressName.BIL_ZIPCODE) %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.BIL_ZIPCODE %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+	</tr>
+</table>
+
+<% //CHECKING ACCT ADD %>
+<% if (false) { // turn off for now  %>
+	<div style="width: 40%; float: left;">
+	<table width="90%" cellpadding="1" cellspacing="0" border="0" class="register">
+		<tr>
+			<td colspan="2"><span class="module_header_text" style="padding: 0px;">Checking Account</span><br />
+				Addition of this method upon registration is limited to:<br />
+				- Corporate customers<br />
+				- VIP/Special Interest customers<br />
+				<textarea rows="4" style="width: 350px;" wrap="virtual">Agreement text Agreement textAgreement text Agreement text Agreement text Agreement text Agreement text Agreement text</textarea>
+				<br />
+				<input type="checkbox" name="checking_account_terms_agreement"> <b>I have read these terms clearly to the customer and<br />customer has verbally agreed to them.</b><span class="space4pix"><br /><br /></span>
+			</td>
+		</tr>
+		<tr>
+			<td width="35%" align="right">* Name on account:</td>
+			<td width="65%">&nbsp;&nbsp;<input type="text" SIZE="20" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" value="<%= request.getParameter(PaymentMethodName.ACCOUNT_HOLDER) %>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+		</tr>
+		<tr valign="top">
+			<td width="35%" align="right">* Account type:</td>
+			<td width="65%">
+			<%
+				Iterator iter = EnumBankAccountType.iterator();
+				while (iter.hasNext()) {
+					EnumBankAccountType bankAccountType = (EnumBankAccountType) iter.next();
+			%>
+					<input type="radio" name="<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>" value="<%=bankAccountType.getName()%>" <%=(bankAccountType.getName().equals(request.getParameter(PaymentMethodName.BANK_ACCOUNT_TYPE))) ? "CHECKED" : ""%> /><%=bankAccountType.getDescription()%>
+					<br />
+			<% 		
+				} 
+			%>
+				<fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>
+			</td>
+		</tr>
+		<tr>
+			<td width="35%" align="right">* Account number:</td>
+			<td width="65%">&nbsp;&nbsp;<input type="text" SIZE="20" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>" value="<%=request.getParameter(PaymentMethodName.ACCOUNT_NUMBER)%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_NUMBER%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span><br /></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='credit_card_fraud' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+		</tr>
+		<tr>
+			<td width="35%" align="right">* Routing/Transit number:</td>
+			<td width="65%">&nbsp;&nbsp;<input type="text" SIZE="20" name="<%=PaymentMethodName.ABA_ROUTE_NUMBER%>" value="<%= request.getParameter(PaymentMethodName.ABA_ROUTE_NUMBER) %>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ABA_ROUTE_NUMBER%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span><br /></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='credit_card_fraud' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+		</tr>
+		<tr>
+			<td width="35%" align="right">* Bank name:</td>
+			<td width="65%">&nbsp;&nbsp;<input type="text" SIZE="20" name="<%=PaymentMethodName.BANK_NAME%>" value="<%= request.getParameter(PaymentMethodName.BANK_NAME) %>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.BANK_NAME%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span><br /></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='credit_card_fraud' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+		</tr>
+		<tr>
+			<td width="35%" align="right"><b>Bank account address</b></td>
+			<td width="65%">&nbsp;&nbsp;<input type="checkbox" name="useDelivery" onClick="toggleUseDelivery(document.registration)" <%= request.getParameter("useDelivery") == null ? "" : "checked" %>>Use delivery address</td>
+		</tr>
+		<tr>
+			<td width="35%" align="right">* Address line 1:</td>
+			<td width="65%">&nbsp;&nbsp;<input type="text" readOnly="false" SIZE="20" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.BIL_ADDRESS_1.getCode())%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+		</tr>
+		<tr>
+			<td width="35%" align="right">Address line 2:</td>
+			<td width="65%">&nbsp;&nbsp;<input type="text" readOnly="false" SIZE="20" name="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.BIL_ADDRESS_2.getCode())%>"></td>
+		</tr>
+		<tr>
+			<td width="35%" align="right">Apt./Floor:</td>
+			<td width="65%">&nbsp;&nbsp;<input type="text" readOnly="false" SIZE="6" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.BIL_APARTMENT.getCode())%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+		</tr>
+		<tr>
+			<td width="35%" align="right">* City:</td>
+			<td width="65%">&nbsp;&nbsp;<input type="text" readOnly="false" SIZE="20" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.BIL_CITY.getCode())%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_CITY.getCode()%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+		</tr>
+		<tr>
+			<td width="35%" align="right">* State:</td>
+			<td width="65%">&nbsp;&nbsp;<input type="text" readOnly="false" size="2" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.BIL_STATE.getCode())%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;* Zip <input type="text" SIZE="6" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode())%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+		</tr>
+	</table>
+	<br />
+	</div>
+<% } %>
+<% //CHECKING ACCT ADD !! REMOVE DISPLAY STYLE !! %>

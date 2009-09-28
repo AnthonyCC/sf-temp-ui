@@ -25,6 +25,8 @@ import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.detail.DetailParser;
 import com.freshdirect.dataloader.payment.reconciliation.summary.SummaryParser;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
+import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.sap.command.SapSendSettlement;
@@ -192,7 +194,6 @@ public class SettlementLoader {
 		throws IOException, RemoteException, EJBException, CreateException {
 
 		ReconciliationSB reconSB = this.lookupReconciliationHome().create();
-
 		SapFileBuilder builder = new SapFileBuilder();
 
 		LOGGER.info("starting to load summary file");
@@ -239,7 +240,7 @@ public class SettlementLoader {
 			}
 		}
 	}
-
+	
 	/** 
 	 * helper method to find the naming context for locating objects on a server
 	 * 

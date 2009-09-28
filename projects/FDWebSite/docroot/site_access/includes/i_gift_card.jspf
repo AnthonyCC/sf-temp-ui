@@ -1,0 +1,16 @@
+<div>
+	<table>
+		<tr>
+			<td><a href="<%=FDStoreProperties.getGiftCardLandingUrl()%>"><img src="/media_stat/images/template/site_access/buy_gc_zip.gif" width="121" height="16" border="0" alt="Buy Gift Cards" /></a></td>
+		</tr>
+		<tr>
+			<td>Even if you're outside our delivery zone, you can purchase Gift Cards for your friends in our New York and New Jersey service area.<br /><br /></td>
+		</tr>
+		<tr>
+			<td><a href="<%=FDStoreProperties.getGiftCardLandingUrl()%>">Click here for details.</a></td>
+		</tr>
+		<tr>
+			<td><a href="<%=FDStoreProperties.getGiftCardLandingUrl()%>"><img src="/media_stat/images/template/site_access/shopnow_zip.gif" width="118" height="34" border="0" alt="SHOP NOW" /></a></td>
+		</tr>
+	</table>
+</div>

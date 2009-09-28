@@ -56,7 +56,10 @@ public abstract class DBReportCreator {
 			}
 			rs.close();
 			ps.close();
-
+			if(getFooter() != null && getFooter().length() > 0) {
+				sb.append(getFooter());
+				sb.append("\n");
+			}
 			this.write();
 		}
 
@@ -72,6 +75,9 @@ public abstract class DBReportCreator {
 		protected abstract String getQuery();
 		protected abstract Object[] getParams();
 		protected abstract List getHeaders();
+		protected String getFooter(){
+			return null;
+		}
 
 	}
 

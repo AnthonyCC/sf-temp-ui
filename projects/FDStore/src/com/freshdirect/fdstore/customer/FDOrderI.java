@@ -19,8 +19,13 @@ import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpComplaintModel;
+import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.EnumSaleType;
+import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
+import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
+import com.freshdirect.giftcard.ErpGiftCardUtil;
+import com.freshdirect.giftcard.ErpRecipentModel;
 
 /**
  * FDOrder interface
@@ -153,5 +158,25 @@ public interface FDOrderI extends FDCartI {
 	public EnumSaleType getOrderType();
 	
 	public String getRedeemedSampleDescription();
+
+	//Gift cards
+	public List getGiftcardPaymentMethods() ;
 	
+	public List getAppliedGiftCards() ;
+	
+	public double getAppliedAmount(String certificateNum);
+	
+	public FDRecipientList getGiftCardRecipients();
+	
+	public ErpGiftCardDlvConfirmModel getGCDeliveryInfo();
+	
+	public ErpRecipentModel getGCResendInfoFor(String giftCardId);
+	
+	public double getTotalAppliedGCAmount();
+	
+	public double getCCPaymentAmount();
+	
+	public ErpOrderLineModel getOrderLineByNumber(String orderlineNumber);
+	
+	public ErpGCDlvInformationHolder getGCDlvInformationHolder(String givexNumber);
 }

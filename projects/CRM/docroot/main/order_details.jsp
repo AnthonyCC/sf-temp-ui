@@ -48,6 +48,8 @@
     // Get DELIVERY ADDRESS info, PAYMENT info, APPLIED CREDIT info
     ErpAddressModel dlvAddress = order.getDeliveryAddress();
     ErpPaymentMethodI paymentMethod = order.getPaymentMethod();
+    FDOrderAdapter orderAdapter = (FDOrderAdapter) order;
+    boolean isGiftCardOrder = (orderAdapter.getSale().getType().getSaleType().equalsIgnoreCase("GCD"))?true:false;
 %>
 
 <tmpl:put name='content' direct='true'>
@@ -67,6 +69,7 @@
 
 <fd:ComplaintGrabber order="<%= order %>" complaints="complaints" lineComplaints="lineComplaints" deptComplaints="deptComplaints" miscComplaints="miscComplaints" fullComplaints="fullComplaints" restockComplaints="restockComplaints" retrieveApproved="true" retrievePending="false" retrieveRejected="false">
 
+
 <%	boolean isNotSubmitted = EnumSaleStatus.NOT_SUBMITTED.equals( order.getOrderStatus() ); %>
 <% boolean resubmitted = "resubmitted".equalsIgnoreCase(request.getParameter("status")); %>
 <% if (isNotSubmitted) { %>
@@ -85,7 +88,7 @@
 	boolean showAddressButtons = false;
 	boolean showDeleteButtons = false;
     boolean displayDeliveryInfo = true;
-    if(EnumSaleType.SUBSCRIPTION.equals(order.getOrderType()))
+    if(EnumSaleType.SUBSCRIPTION.equals(order.getOrderType())|| EnumSaleType.GIFTCARD.equals(order.getOrderType()) || EnumSaleType.DONATION.equals(order.getOrderType()))
             displayDeliveryInfo = false;
 %>
 <div class="content_<%=forPrint?"fixed":"scroll"%>" style="height:72%;">
@@ -94,9 +97,11 @@
 	<%	boolean showEditOrderButtons = false;
 		boolean showFeesSection = true;
 		boolean cartMode = false; %>
-	
+	<%if(!isGiftCardOrder) {%>
 	<%@ include file="/includes/i_cart_details.jspf"%>
-	
+	<%}else{ %>
+	<%@ include file="/includes/i_gc_cart_details.jspf"%>
+	<%} %>
 	<%-- ^^^^^^^^^^^^^^^^^^^^^^^ BEGIN ORDER NOTES SECTION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ --%>
 	<table width="100%" cellpadding="2" cellspacing="0" border="0" class="list_header">
 		<tr>
@@ -132,3 +137,5 @@
 </tmpl:put>
 
 </tmpl:insert>
+<% // include file that has all the popup dialog sources %>
+	<%@ include file="/gift_card/postbacks/dialogs.jspf" %>

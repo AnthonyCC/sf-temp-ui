@@ -116,7 +116,7 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 				throw new JspException(fdre.getMessage());
 			}
 
-			if ("POST".equalsIgnoreCase(request.getMethod())) {
+			
 
 				if (ACTION_APPROVE.equals(this.action)) {
 					//
@@ -154,7 +154,8 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 						LOGGER.warn("CrmAuthorizationException: could not approve complaint.", ex);
 						actionResult.addError(new ActionError("technical_difficulty", ex.getMessage()));
 					}
-				} else if (ACTION_REJECT.equals(this.action)) {
+				} else if ("POST".equalsIgnoreCase(request.getMethod())) { 
+					if (ACTION_REJECT.equals(this.action)) {
 					//
 					// This is a SUPERVISOR rejection request
 					//

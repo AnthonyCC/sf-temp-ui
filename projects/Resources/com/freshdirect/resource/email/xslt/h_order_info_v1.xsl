@@ -65,18 +65,36 @@
 			<b>ORDER TOTAL</b><br/>
 			$<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/>*<br/>
 			<br/>
-			
+
+			<xsl:if test="order/totalAppliedGCAmount >0">
+			<b>GIFT CARD AMOUNT TO BE APPLIED:</b><br/>
+			$<xsl:value-of select='format-number(order/totalAppliedGCAmount, "###,##0.00", "USD")'/>*<br/>
+			<br/>
+
+			<b>REMAINING GIFT CARD BALANCE:</b><br/>
+			$<xsl:value-of select='format-number(customer/userGiftCardsBalance, "###,##0.00", "USD")'/>*<br/>
+			<br/>
+			</xsl:if>
+
 			<xsl:if test="order/paymentMethod/paymentType = 'M'">
 			<b>AMOUNT DUE:</b><br/>
 			$0.00<br/><br/>
 			</xsl:if>
-			
-			<xsl:if test="order/paymentMethod/paymentType != 'M'">
-			<b><xsl:value-of select="order/paymentMethod/paymentMethodType"/></b><br/>
-			<xsl:call-template name="format-payment-method"><xsl:with-param name="paymentMethod" select="order/paymentMethod" /></xsl:call-template><br/>
-			<br/>
+
+			<xsl:if test='order/paymentMethod/paymentMethodType != "GC"'>
+				<xsl:if test="order/totalAppliedGCAmount >0">
+				<b>Amount to Be Charged to Your Account:</b><br/>		
+				$<xsl:value-of select='format-number((order/total)-(order/totalAppliedGCAmount)+(order/bufferAmt), "###,##0.00", "USD")' />*<br/>
+				</xsl:if>
+
+				<br/>
+				<xsl:if test="order/paymentMethod/paymentType != 'M'">
+				<b><xsl:value-of select="order/paymentMethod/paymentMethodType"/></b><br/>
+				<xsl:call-template name="format-payment-method"><xsl:with-param name="paymentMethod" select="order/paymentMethod" /></xsl:call-template><br/>
+				<br/>
+				</xsl:if>
+				
 			</xsl:if>
-			
 			</font>
 		</td>
 		<td width="2%"></td>

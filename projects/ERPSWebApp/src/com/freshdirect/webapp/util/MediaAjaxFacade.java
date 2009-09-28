@@ -9,9 +9,9 @@ import java.net.URL;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.template.TemplateException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 

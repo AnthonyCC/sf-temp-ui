@@ -47,6 +47,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartI;
@@ -253,6 +254,9 @@ public class CrmSubscriptionControllerTag extends AbstractControllerTag {
 				results.addError(new ActionError("delivery_pass_error","Error performing a Delivery pass operation. "+ex.getMessage()));
 			} catch (ErpFraudException e) {
 				LOGGER.error("FDResourceException while attempting to place subscription order.", e);
+				results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
+			} catch (FDPaymentInadequateException pe) {
+				LOGGER.error("Exception while attempting to place subscription order.", pe);
 				results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
 			}
 		

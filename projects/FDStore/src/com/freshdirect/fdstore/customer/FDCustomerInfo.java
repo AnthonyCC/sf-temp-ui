@@ -33,6 +33,7 @@ public class FDCustomerInfo implements java.io.Serializable{
     private PhoneNumber cellPhone;
     private boolean chefsTable;
     private String customerServiceContact;
+    private double userGiftCardsBalance;
 	
 	public FDCustomerInfo(String firstName, String lastName){
 		this.firstName = firstName;
@@ -181,5 +182,19 @@ public class FDCustomerInfo implements java.io.Serializable{
 
 	public void setCustomerServiceContact(String customerServiceContact) {
 		this.customerServiceContact = customerServiceContact;
+	}
+
+	/**
+	 * @return the userGiftCardsBalance
+	 */
+	public double getUserGiftCardsBalance() {
+		return userGiftCardsBalance;
+	}
+
+	/**
+	 * @param userGiftCardsBalance the userGiftCardsBalance to set
+	 */
+	public void setUserGiftCardsBalance(double userGiftCardsBalance) {
+		this.userGiftCardsBalance = userGiftCardsBalance;
 	}
 }

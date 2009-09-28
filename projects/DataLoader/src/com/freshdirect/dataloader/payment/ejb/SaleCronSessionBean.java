@@ -34,6 +34,10 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ejb.GCGatewayHome;
+import com.freshdirect.giftcard.ejb.GCGatewaySB;
+import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
+import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.payment.command.Capture;
 import com.freshdirect.payment.command.PaymentCommandI;
 import com.freshdirect.payment.ejb.PaymentGatewayHome;
@@ -54,6 +58,14 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			+ "from cust.salesaction za where za.action_type in ('CRO','MOD') and za.sale_id=s.id) and di.SALESACTION_ID=sa.ID and di.starttime > sysdate - 1 and di.starttime<SYSDATE+2";
 
 
+	private final static String QUERY_PRE_AUTH_NEEDED =
+		"select s.id from cust.sale s, cust.salesaction sa, cust.deliveryinfo di " 
+		+ "where s.status in ('AUT','SUB','AVE')and s.type='REG' and sa.customer_id = s.customer_id and " 
+		+ "sa.sale_id=s.id and sa.sale_id = (select distinct sale_id from cust.salesaction sa1, cust.gift_card_trans gct where sa1.sale_id = s.id " 
+		+ "and sa1.id = gct.salesaction_id and gct.tran_status='P' and gct.tran_type IN ('PRE', 'REV-PRE') and customer_id = s.customer_id and action_type = 'PAG') " 
+		+ "and sa.action_type in ('CRO','MOD') "
+		+ "and sa.action_date=s.cromod_date and di.SALESACTION_ID=sa.ID and di.starttime > sysdate - 1 and di.starttime<SYSDATE+2";
+
 	private final static String QUERY_AUTH_NEEDED_SUBSCRIPTIONS=
 		"SELECT S.ID,S.CUSTOMER_ID FROM CUST.SALE S,CUST.SALESACTION SA WHERE S.CROMOD_DATE BETWEEN (SYSDATE-5) AND (SYSDATE-1/48) AND "+
 	    "S.ID=SA.SALE_ID AND "+
@@ -68,19 +80,47 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private final static String QUERY_SALE_IN_CPG_STATUS =
 		"select distinct s.id from cust.sale s, cust.salesaction sa where s.status = ? "
 			+ "and sa.sale_id=s.id and (sa.action_type='RET' or(sa.action_type='DLC' "
-			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=?))";
+			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=?) " 
+			+ "or(sa.action_type='GCD' "
+			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=?))";
+
+
+	private final static String QUERY_SALE_IN_RPG_STATUS =
+			"select s.id, sa.sub_total from cust.sale s, cust.salesaction sa where sa.customer_id = s.customer_id and" +
+			" sa.sale_id = s.id and s.type = 'GCD' and s.status = 'RPG' and sa.action_type = 'CRO'";
 
 	private final static String QUERY_SALE_AND_IDENTITY_BY_STATUS =
 		"select s.id as sale_id, s.customer_id as erpcustomer_id, fc.id as fdcustomer_id "
 			+ "from cust.sale s, cust.fdcustomer fc "
 			+ "where s.customer_id = fc.erp_customer_id and s.status = ? ";
 
-	private final static String LOCK_AUF_SALES =
+/*	Old query before GC
+ 	private final static String LOCK_AUF_SALES =
 		"update cust.sale set status = ? where status = ? "
 			+ "and exists (select s.id from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
 			+ "where sale.id = s.id and s.type='REG' and sa.sale_id=s.id and sa.action_type in ('CRO','MOD')  "
 			+ "and sa.action_date=(select max(action_date) from cust.salesaction za where za.action_type in ('CRO','MOD') and za.sale_id=s.id) "
 			+ "and di.salesaction_id=sa.id and di.starttime > sysdate - 1 and (di.cutofftime - sysdate) * 24 <= ?)";
+			
+*/
+	//New Query modified for GC. This query puts sale status to LOC for sale with either status = AUF
+	//or has one or more GC Pre AUTH failed.
+	
+	private final static String LOCK_AUF_SALES =
+		"update cust.sale set status = ? where (status = ? or exists ( "+
+		"	   select s.id from cust.sale s, cust.salesaction sa, cust.gift_card_trans gt "+
+		"	   where  "+
+		"	   sale.id = s.id and s.type = 'REG' and s.status in ('AUT','SUB') and sa.sale_id=s.id and gt.salesaction_id=sa.id  "+
+		"	   and sa.action_type='PAG'and gt.certificate_num in (select distinct ag.certificate_num from cust.salesaction sa1, cust.applied_gift_card ag "+
+		"	   where  sa1.sale_id=s.id and ag.salesaction_id=sa1.id "+
+		"	   and sa1.action_type in ('CRO','MOD') and sa1.action_date = s.cromod_date) "+
+		"	   and sa.action_date = (select max(action_date) from cust.salesaction za, cust.gift_card_trans zgt where   "+
+		"	   za.sale_id=s.id and za.ID = zgt.salesaction_id and za.action_type in ('PAG') and zgt.certificate_num = gt.certificate_num) "+
+		"	   and gt.tran_status = 'F')) "+
+		"and exists (select s.id from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "+
+		"where sale.id = s.id and s.type='REG' and sa.sale_id=s.id and sa.action_type in ('CRO','MOD')   "+
+		"and sa.action_date=(select max(action_date) from cust.salesaction za where za.action_type in ('CRO','MOD') and za.sale_id=s.id)  "+
+		"and di.salesaction_id=sa.id and di.starttime > sysdate - 1 and (di.cutofftime - sysdate) * 24 <= ?) ";
 
 	/**
 	 * update sales past cutoff
@@ -170,7 +210,78 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	public void preAuthorizeSales(long timeout) {
+		Connection con = null;
+		List saleIds = new ArrayList();
 
+		UserTransaction utx = null;
+		try {
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			con = this.getConnection();
+			PreparedStatement ps = con.prepareStatement(QUERY_PRE_AUTH_NEEDED);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				saleIds.add(rs.getString(1));
+			}
+
+			rs.close();
+			ps.close();
+
+			utx.commit();
+
+		} catch (Exception e) {
+			LOGGER.warn(e);
+			try {
+				utx.rollback();
+			} catch (SystemException se) {
+				LOGGER.warn("Error while trying to rollback transaction", se);
+			}
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("SQLException while cleaning up", se);
+			}
+		}
+		FDCustomerManagerSB sb = this.getFDCustomerManagerSB();
+		if (saleIds.size() > 0) {
+			long startTime = System.currentTimeMillis();
+			for (Iterator i = saleIds.iterator(); i.hasNext();) {
+				if (System.currentTimeMillis() - startTime > timeout) {
+					LOGGER.warn("Authorization process was running longer than" + timeout / 60 / 1000);
+					break;
+				}
+				utx = null;
+				try {
+					utx = this.getSessionContext().getUserTransaction();
+					utx.begin();
+
+					String saleId = (String) i.next();
+					LOGGER.info("Going to authorize: " + saleId);
+					sb.preAuthorizeSales(saleId);
+					utx.commit();
+
+				} catch (Exception e) {
+					LOGGER.warn("Exception occured during authorization", e);
+					if (utx != null)
+						try {
+							utx.rollback();
+						} catch (SystemException se) {
+							LOGGER.warn("Error while trying to rollback transaction", se);
+						}
+					// just keep going :)
+				}
+			}
+		}
+	}
+
+	
 	public void authorizeSubscriptions(long timeout) {
 		Connection con = null;
 		List saleIds = new ArrayList();
@@ -271,6 +382,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		PreparedStatement ps = conn.prepareStatement(QUERY_SALE_IN_CPG_STATUS);
 		ps.setString(1, status.getStatusCode());
 		ps.setInt(2, ErpServicesProperties.getWaitingTimeAfterConfirm());
+		ps.setInt(3, ErpServicesProperties.getWaitingTimeAfterConfirm());
 		//LOGGER.info("waiting time after confirm:"+ErpServicesProperties.getWaitingTimeAfterConfirm());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
@@ -281,6 +393,18 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		return saleIds;
 	}
 
+
+	private Map querySalesInStatusRPG(Connection conn) throws SQLException {
+		//saleId -> FDIdentity
+		Map sales = new HashMap();
+		PreparedStatement ps = conn.prepareStatement(QUERY_SALE_IN_RPG_STATUS);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			sales.put(rs.getString("SALE_ID"), new Double(rs.getDouble("SUB_TOTAL")));
+		}
+		return sales;
+	}
+	
 	private Map querySaleAndIdentityByStatus(Connection conn, EnumSaleStatus status) throws SQLException {
 		//saleId -> FDIdentity
 		Map sales = new HashMap();
@@ -485,6 +609,155 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 
 	}
 
+	public void postAuthSales(long timeout) {
+
+		Connection con = null;
+		UserTransaction utx = null;
+
+		List saleIds;
+
+		try {
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			con = this.getConnection();
+
+			saleIds = this.querySalesInStatusCPG(con, EnumSaleStatus.POST_AUTH_PENDING);
+
+			utx.commit();
+		} catch (Exception e) {
+			LOGGER.warn(e);
+			try {
+				utx.rollback();
+			} catch (SystemException se) {
+				LOGGER.warn("Error while trying to rollback transaction", se);
+			}
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
+		}
+		long startTime = System.currentTimeMillis();
+
+		GiftCardManagerSB gsb = this.getGiftCardManagerSB();
+ 
+		//LOGGER.info("********** use queue:"+ErpServicesProperties.isUseQueue());
+		for (int i = 0, size = saleIds.size(); i < size; i++) {
+
+			if (System.currentTimeMillis() - startTime > timeout) {
+				LOGGER.warn("Capture Authorization process was running longer than" + timeout / 60 / 1000);
+				break;
+			}
+
+			utx = null;
+			try {
+				utx = this.getSessionContext().getUserTransaction();
+				utx.begin();
+				gsb.postAuthorizeSales((String) saleIds.get(i));
+				LOGGER.info("*******do post authorize transaction for order:"+saleIds.get(i));
+
+				utx.commit();
+			} catch (Exception e) {
+				LOGGER.warn("Exception occured during Post Auth", e);
+				if (utx != null) {
+					try {
+						utx.rollback();
+					} catch (SystemException se) {
+						LOGGER.warn("Error while trying to rollback transaction", se);
+					}
+					// just keep going :)
+				}
+			}
+		}
+
+	}
+
+	public void registerGiftCards(long timeout) {
+		Connection con = null;
+		UserTransaction utx = null;
+
+		Map saleIds;
+
+		try {
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			con = this.getConnection();
+
+			saleIds = this.querySalesInStatusRPG(con);
+
+			utx.commit();
+		} catch (Exception e) {
+			LOGGER.warn(e);
+			try {
+				utx.rollback();
+			} catch (SystemException se) {
+				LOGGER.warn("Error while trying to rollback transaction", se);
+			}
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
+		}
+		long startTime = System.currentTimeMillis();
+
+		GCGatewaySB gsb = null;
+		GiftCardManagerSB gmb = null;
+		PaymentCommandI command = null;
+		boolean useQueue = ErpServicesProperties.isUseRegisterQueue();
+		if(useQueue){
+			gsb = this.getGCGatewaySB();
+		}else{
+			gmb = this.getGiftCardManagerSB();
+		}
+		//LOGGER.info("********** use queue:"+ErpServicesProperties.isUseQueue());
+		for (Iterator i = saleIds.keySet().iterator(); i.hasNext();) {
+
+			if (System.currentTimeMillis() - startTime > timeout) {
+				LOGGER.warn("Gift Card Register transaction was running longer than" + timeout / 60 / 1000);
+				break;
+			}
+
+			utx = null;
+			try {
+				utx = this.getSessionContext().getUserTransaction();
+				utx.begin();
+				String saleId = (String) i.next();
+				Double subTotal = (Double) saleIds.get(saleId);
+				if(useQueue){
+					gsb.sendRegisterGiftCard(saleId, subTotal.doubleValue());
+					LOGGER.info("*******sending message to register Queue for order:"+saleIds.get(i));
+				}else{
+					gmb.registerGiftCard(saleId, subTotal.doubleValue());
+					LOGGER.info("*******do register transaction for order:"+saleIds.get(i));
+				}
+
+				utx.commit();
+			} catch (Exception e) {
+				LOGGER.warn("Exception occured during register", e);
+				if (utx != null) {
+					try {
+						utx.rollback();
+					} catch (SystemException se) {
+						LOGGER.warn("Error while trying to rollback transaction", se);
+					}
+					// just keep going :)
+				}
+			}
+		}
+		
+	}
+	
 	private static FDIdentity getFDIdentity(String erpCustomerID) {
 		return new FDIdentity(erpCustomerID,null);
 	}
@@ -521,6 +794,34 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private PaymentGatewaySB getPaymentGatewaySB() {
 		try {
 			PaymentGatewayHome home = (PaymentGatewayHome)LOCATOR.getRemoteHome(DlvProperties.getPaymentGatewayHome(), PaymentGatewayHome.class);
+			return home.create();
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}catch (CreateException e){
+			throw new EJBException(e);
+		}catch(RemoteException e){
+			throw new EJBException(e);
+		}
+	}
+	
+	private GCGatewaySB getGCGatewaySB() {
+		try {
+			GCGatewayHome home = (GCGatewayHome)LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway", GCGatewayHome.class);
+			return home.create();
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}catch (CreateException e){
+			throw new EJBException(e);
+		}catch(RemoteException e){
+			throw new EJBException(e);
+		}
+	}
+	
+	private GiftCardManagerSB getGiftCardManagerSB() {
+		try {
+			GiftCardManagerHome home = (GiftCardManagerHome) LOCATOR.getRemoteHome(
+				"java:comp/env/ejb/GiftCardManager",
+				GiftCardManagerHome.class);
 			return home.create();
 		} catch (NamingException e) {
 			throw new EJBException(e);

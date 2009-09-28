@@ -1,7 +1,10 @@
 package com.freshdirect.dataloader.payment.reconciliation.paymentech;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.ejb.CreateException;
 
@@ -14,6 +17,8 @@ import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ErpGCSettlementInfo;
+import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.model.EnumSummaryDetailType;
 import com.freshdirect.payment.model.ErpSettlementInvoiceModel;
@@ -35,6 +40,10 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	private double netDeductions;
 	private int adjustmentCount;
 	private double adjustmentAmount;
+	//GC net sales.
+	private double gcNetSales;
+	//Failed GC settlements
+	private List failedGCSettlements = new ArrayList<ErpGCSettlementInfo>();
 	
 	private ErpSettlementSummaryModel settlementSummary;
 	
@@ -134,10 +143,43 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		}else{
 			this.builder.addChargeDetail(info, refund, Math.abs(chargeAmount), ccType);
 		} 
-		
+		//Process Gift card settlements.
+		List gcSettlementInfos = this.reconciliationSB.processGCSettlement(saleId);
+		appendGCSettlements(gcSettlementInfos);
+	}
+
+	private void appendGCSettlements(List gcSettlementInfos) {
+		if(gcSettlementInfos.size() > 0){
+			for(Iterator iter = gcSettlementInfos.iterator() ; iter.hasNext();){
+				ErpGCSettlementInfo gcInfo = (ErpGCSettlementInfo) iter.next();
+				if(gcInfo.isPostAuthFailed())
+					failedGCSettlements.add(gcInfo);
+				else {
+					this.builder.addGCChargeDetail(gcInfo, EnumCardType.GCP);
+					addGCNetSales(gcInfo);
+				}
+			}
+		}
+	}
+
+	private void appendFailedGCSettlements(List gcSettlementInfos) {
+		if(gcSettlementInfos.size() > 0){
+			for(Iterator iter = gcSettlementInfos.iterator() ; iter.hasNext();){
+				ErpGCSettlementInfo gcInfo = (ErpGCSettlementInfo) iter.next();
+				this.builder.addFailedGCSettlement(gcInfo, EnumCardType.GCP);
+			}
+		}
+	}
+	
+	private void addGCNetSales(ErpGCSettlementInfo gcInfo) {
+		if(!gcInfo.isPostAuthFailed())
+			gcNetSales += gcInfo.getAmount();
 	}
 	
 	public void process(DFREnd end) throws RemoteException {
+		//Before adding header process settlement pending orders(Orders Paid with GC only).
+		List gcSettlementInfos = this.reconciliationSB.processSettlementPendingOrders();
+		appendGCSettlements(gcSettlementInfos);
 		double netDeposit = this.netSales - Math.abs(this.netDeductions);
 		this.settlementSummary.setBatchNumber(this.batchNumber);
 		this.settlementSummary.setNetSaleAmount(netDeposit);
@@ -145,6 +187,8 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		this.settlementSummary.setAdjustmentAmount(this.adjustmentAmount);
 		this.builder.addHeader(this.batchDate, this.batchNumber, (Math.round(netDeposit * 100)) / 100.0);
 		this.reconciliationSB.addSettlementSummary(this.settlementSummary);
+		//After adding header append failed GC settlements.
+		appendFailedGCSettlements(failedGCSettlements);
 	}
 
 }

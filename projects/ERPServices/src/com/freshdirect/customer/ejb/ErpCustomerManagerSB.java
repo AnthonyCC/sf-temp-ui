@@ -26,6 +26,7 @@ import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAdjustmentModel;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintInfoModel;
@@ -70,6 +71,8 @@ public interface ErpCustomerManagerSB extends EJBObject {
      * @return primary key assigned to ErpCustomer
      */
     public PrimaryKey createCustomer(ErpCustomerModel erpCustomer) throws ErpDuplicateUserIdException, RemoteException;
+    
+    public PrimaryKey createCustomer(ErpCustomerModel erpCustomer, boolean isGiftCardBuyer) throws ErpDuplicateUserIdException, RemoteException;
     
     /**
      * Creates sale object and enqueues order in SAP.
@@ -267,4 +270,8 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public void sendCreateOrderToSAP(String erpCustomerID, String saleID,EnumSaleType saleType, CustomerRatingI rating) throws RemoteException, ErpSaleNotFoundException;
 
 	public void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) throws RemoteException;
+
+    public double getOutStandingBalance(ErpAbstractOrderModel order) throws RemoteException;
+    
+    public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws RemoteException;
 }

@@ -1,0 +1,218 @@
+<%
+
+	String dlvFirstName = request.getParameter(AddressName.DLV_FIRST_NAME);
+	String dlvLastName = request.getParameter(AddressName.DLV_LAST_NAME);
+
+	AddressModel adr = user.getAddress();
+	String fldAddress1 = adr.getAddress1();
+	if (request.getParameter(AddressName.DLV_ADDRESS_1) != null)
+		fldAddress1 = request.getParameter(AddressName.DLV_ADDRESS_1);
+	String fldAddress2 = adr.getAddress2();
+	if (request.getParameter(AddressName.DLV_ADDRESS_2) != null)
+		fldAddress2 = request.getParameter(AddressName.DLV_ADDRESS_2);
+	String fldApartment = adr.getApartment();
+	if (request.getParameter(AddressName.DLV_APARTMENT) != null)
+		fldApartment = request.getParameter(AddressName.DLV_APARTMENT);
+	String fldCity = adr.getCity();
+	if (request.getParameter(AddressName.DLV_CITY) != null)
+		fldCity = request.getParameter(AddressName.DLV_CITY);
+	String fldZipCode = adr.getZipCode();
+	if (request.getParameter(AddressName.DLV_ZIPCODE) != null)
+		fldZipCode = request.getParameter(AddressName.DLV_ZIPCODE);
+	String fldState = adr.getState();
+	if (request.getParameter(AddressName.DLV_STATE) != null)
+		fldState = request.getParameter(AddressName.DLV_STATE);
+		String fldCompanyName = adr.getCompanyName();
+	if (request.getParameter(AddressName.DLV_COMPANY_NAME) != null)
+		fldCompanyName = NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "");
+%>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="register_header" style="padding: 3px; margin-bottom: 8px;">
+	<tr><td>&nbsp;&nbsp;Delivery Address <span class="register_header_detail"><%= EnumServiceType.WEB.equals(selected) ? "(Optional)" : "*&nbsp;Required information" %></span></td></tr>
+</table>
+
+<fd:ErrorHandler result='<%=result%>' name='<%=AddressName.DLV_ADDRESS_SUGGEST%>' id='errorMsg'>
+	<%
+		String addressMessage = "";
+		ArrayList suggestions = null; // a holder for suggested addresses if the original address is not unique
+		FDDeliveryManager dlvManager = FDDeliveryManager.getInstance();
+		EnumAddressVerificationResult addressResult = null;
+		AddressModel address = new AddressModel();
+
+		address.setAddress1(fldAddress1);
+		address.setAddress2(fldAddress2);
+		address.setApartment(fldApartment);
+		address.setCity(fldCity);
+		address.setState(fldState);
+		address.setZipCode(fldZipCode);
+
+		suggestions = dlvManager.findSuggestionsForAmbiguousAddress(address);
+	%>
+	<script>
+		function fillAddress(arg_address, arg_apt){
+			document.forms['address'].<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>.value = arg_address;
+		}
+	</script>
+	
+	<table border="0" cellspacing="1" cellpadding="0">
+		<tr valign="middle">
+			<td colspan="4" class="error_detail">
+				<%= addressMessage = result.getError(EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode()).getDescription() %>
+
+				<%  if (suggestions != null) {  %>
+					<table border="0" cellspacing="0" cellpadding="0">
+						<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
+						<%
+							for (Iterator sIter = suggestions.iterator(); sIter.hasNext(); ) {
+								AddressModel suggestion = (AddressModel) sIter.next();
+						%>
+								<tr>
+									<td class="error_detail">
+										<img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0" /><a href="javascript:fillAddress('<%= suggestion.getAddress1() %>', '<% if (!"".equals(suggestion.getApartment())) { %> <%= suggestion.getApartment() %> <%}%>' )"><%= suggestion.getAddress1() %> <% if ( suggestion.getApartment() != null && !"".equals(suggestion.getApartment())) { %>Apt # <%= suggestion.getApartment() %><% } %></a>
+									</td>
+								</tr>
+						<% } %>
+					</table>
+				<% } %>
+			</td>
+		</tr>
+	</table>
+	<br />
+</fd:ErrorHandler>
+
+<fd:ErrorHandler result='<%=result%>' name='<%=AddressName.DLV_NOT_IN_ZONE%>' id='errorMsg'>
+	<table width="98%" cellpadding="0" cellspacing="0" border="0" align="center">
+	<tr valign="middle">
+		<td colspan="4" class="error_detail">
+			<%= SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS %>
+		</td>
+	</tr>
+	</table>
+</fd:ErrorHandler>
+
+<table width="80%" cellpadding="2" cellspacing="0" border="0" class="register">
+	<tr valign="top">
+		<td width="40%">
+			<table width="100%" cellpadding="2" cellspacing="0" border="0" class="register">
+				<tr>
+					<td valign="top" align="right">Address Type:&nbsp;&nbsp;</td>
+					<td colspan='2'>
+						<%
+							// remove HOME/COS for now...
+							if (!EnumServiceType.WEB.equals(selected)) {
+						%>
+								<input type="radio" name="<%=AddressName.DLV_SERVICE_TYPE%>" value="<%=EnumServiceType.HOME.getName()%>" <%= EnumServiceType.HOME.equals(selected) ? "CHECKED" : "" %>>&nbsp;&nbsp;Residential<br />
+								<input type="radio" name="<%=AddressName.DLV_SERVICE_TYPE%>" value="<%=EnumServiceType.CORPORATE.getName()%>" <%= EnumServiceType.CORPORATE.equals(selected) ? "CHECKED" : "" %>>&nbsp;&nbsp;Commercial<br />
+						<%
+							}else{
+						%>
+							<input type="radio" name="<%=AddressName.DLV_SERVICE_TYPE%>" value="<%=EnumServiceType.WEB.getName()%>" <%= EnumServiceType.WEB.equals(selected) ? "CHECKED" : "" %>>&nbsp;&nbsp;WEB<br />
+						<% } %>
+						<fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_SERVICE_TYPE%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
+					</td>
+				</tr>
+				<tr>
+					<td width="35%" align="right">* First Name:&nbsp;</td>
+					<td width="65%" colspan="3"><input type="text" SIZE="15" name="<%= AddressName.DLV_FIRST_NAME %>" value="<%= dlvFirstName %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.DLV_FIRST_NAME %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<tr>
+					<td width="35%" align="right">* Last Name:&nbsp;</td>
+					<td width="65%" colspan="3"><input type="text" SIZE="15" name="<%= AddressName.DLV_LAST_NAME %>" value="<%= dlvLastName %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.DLV_LAST_NAME %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+								<tr>
+					<td width="35%" align="right">Company Name:&nbsp;</td>
+					<td width="65%" colspan="3"><input type="text" SIZE="15" name="<%= AddressName.DLV_COMPANY_NAME %>" value="<%= fldCompanyName %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.DLV_COMPANY_NAME %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<tr>
+					<td width="35%" align="right">* Address Line 1:&nbsp;</td>
+					<td width="65%" colspan="3"><input type="text" SIZE="15" name="<%= AddressName.DLV_ADDRESS_1 %>" value="<%= fldAddress1 %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.DLV_ADDRESS_1 %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<tr>
+					<td width="35%" align="right">Address Line 2:&nbsp;</td>
+					<td width="65%" colspan="3"><input type="text" SIZE="10" name="<%= AddressName.DLV_ADDRESS_2 %>" value="<%= fldAddress2 %>"></td>
+				</tr>
+				<tr>
+					<td width="35%" align="right">Apt./Floor:&nbsp;</td>
+					<td width="65%" colspan="3"><input type="text" SIZE="5" name="<%= AddressName.DLV_APARTMENT %>" value="<%= fldApartment %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.DLV_APARTMENT %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<tr>
+					<td width="35%" align="right">* City:&nbsp;</td>
+					<td width="65%" colspan="3"><input type="text" SIZE="10" name="<%= AddressName.DLV_CITY %>" value="<%= fldCity %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.DLV_CITY %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<tr>
+					<td width="35%" align="right">* State:&nbsp;</td>
+					<td width="65%">
+					<select class="pulldown" name="<%=AddressName.DLV_STATE%>">
+						<option value="NY" <%="NY".equalsIgnoreCase(fldState) ? "selected" : "" %>>NY</option>
+						<option value="NJ" <%="NJ".equalsIgnoreCase(fldState) ? "selected" : "" %>>NJ</option>
+						<option value="CT" <%="CT".equalsIgnoreCase(fldState) ? "selected" : "" %>>CT</option>
+					</select>
+					&nbsp;&nbsp;&nbsp;* Zip <input type="text" SIZE="5" name="<%= AddressName.DLV_ZIPCODE %>" value="<%= fldZipCode %>"><br /><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.DLV_ZIPCODE %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+				</tr>
+				<tr>
+					<td width="35%" align="right">* Contact #:&nbsp;</td>
+					<td width="65%" colspan="3"><input type="text" SIZE="15" name="<%= AddressName.DLV_HOME_PHONE %>" value="<%=request.getParameter(AddressName.DLV_HOME_PHONE)%>"></td>
+				</tr>
+			</table>
+		</td>
+		<td width="40%">
+			<input type="hidden" name="country" value="US" />&nbsp;
+			<% if (!user.isDepotUser()) { %>
+				<table width="93%" cellpadding="0" cellspacing="0" border="0" align="center" class="register">
+					<tr>
+						<td>Special Delivery instructions (optional):<br />
+						<textarea rows="4" cols="30" wrap="virtual" name="<%= AddressName.DLV_DELIVERY_INSTRUCTIONS %>"><%= request.getParameter(AddressName.DLV_DELIVERY_INSTRUCTIONS) %></textarea></td>
+					</tr>
+					<tr>
+						<td><br />Alternate Delivery</td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="<%=AddressName.DLV_ALTERNATE_DELIVERY%>" value="<%=EnumDeliverySetting.NONE.getDeliveryCode()%>" <%=EnumDeliverySetting.NONE.equals(request.getParameter(AddressName.DLV_ALTERNATE_DELIVERY)) || !EnumDeliverySetting.DOORMAN.equals(request.getParameter(AddressName.DLV_ALTERNATE_DELIVERY)) ? "checked" : ""%>> None</td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="<%=AddressName.DLV_ALTERNATE_DELIVERY%>" value="<%=EnumDeliverySetting.DOORMAN.getDeliveryCode()%>" <%=EnumDeliverySetting.DOORMAN.equals(request.getParameter(AddressName.DLV_ALTERNATE_DELIVERY)) ? "checked" : ""%>> Doorman</td>
+					</tr>
+				</table>
+			<% } %>
+		</td>
+	</tr>
+</table>
+
+<% if (user.isDepotUser()) { %>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="register_header" style="padding: 3px; margin-bottom: 8px;"><tr><td>&nbsp;&nbsp;Depot Delivery Address</td></tr></table>
+	
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="register">
+		<tr valign="top">
+			<td width="2%"></td>
+			<fd:GetDepotLocations id='locations' depotCode='<%=user.getDepotCode()%>'>
+				<% Date now = new Date(); %>
+				<logic:iterate id="location" collection="<%= locations %>" type="com.freshdirect.delivery.depot.DlvLocationModel" indexId="count">
+					<%  
+						boolean checkedAddress = ("DEPOT_"+location.getPK().getId()).equalsIgnoreCase(request.getParameter("selectAddressList"));
+						//
+						// skip locations that aren't ready yet or have expired    
+						//
+						if (now.before(location.getStartDate()) || now.after(location.getEndDate())) continue;
+					%>
+					<td>
+						<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="register">
+							<tr>
+								<td width="5%" align="right" valign="top"><input type="radio" name="selectAddressList" class="radio" value="DEPOT_<%=location.getPK().getId()%>" <%=checkedAddress?"checked":"" %>>&nbsp;</td>
+								<td valign="top" width="95%">
+									<font class="text12bold"><%=location.getFacility()%></font><br />
+									<%=location.getAddress().getAddress1()%><br />
+									<% if(location.getAddress().getAddress2()!= null ){%>
+										<%=location.getAddress().getAddress2()%><br />
+									<%}%>
+									<%=location.getAddress().getCity()%> <%=location.getAddress().getState()%>, <%=location.getAddress().getZipCode()%><br />
+									<br />
+									<%=location.getInstructions()%><br />
+								</td>
+							</tr>
+						</table>
+					</td>
+				</logic:iterate>
+			</fd:GetDepotLocations>
+		</tr>
+	</table>
+<% } %>

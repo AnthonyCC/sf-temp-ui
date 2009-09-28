@@ -61,7 +61,11 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
+import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.giftcard.ErpGiftCardUtil;
 
 /**
  * FDShoppingCart model class.
@@ -97,7 +101,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 				///order by Department and then by product.
 			FDCartLineI cartLine1 = (FDCartLineI) o1;
 			FDCartLineI cartLine2 = (FDCartLineI) o2;
-			int retValue = cartLine1.getDepartmentDesc().compareTo(cartLine2.getDepartmentDesc());
+			int retValue = 0;
+			if(null != cartLine1.getDepartmentDesc() && null != cartLine2.getDepartmentDesc()){
+			retValue = cartLine1.getDepartmentDesc().compareTo(cartLine2.getDepartmentDesc());			
 			if (cartLine1.getDepartmentDesc().compareTo(cartLine2.getDepartmentDesc()) == 0) {
 				retValue = cartLine1.getDescription().compareTo(cartLine2.getDescription());
 				if (retValue == 0) {
@@ -110,6 +116,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 						}
 					}
 				}
+			}
 			}
 			return retValue;
 		}
@@ -169,6 +176,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	private int discountAppliedCount=0;
 	
+	//Selected gift cards
+	private List selectedGiftCards = null;
+	
+	private double bufferAmt = 0.0;
 	
 	public boolean isDlvPassApplied() {
 		return dlvPassApplied;
@@ -449,7 +460,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
 			
 			FDCartLineI cartLineModel=(FDCartLineI) i.next();
-			System.out.println("**************cartLineModel:"+cartLineModel.getDiscountAmount());
 			subTotal += MathUtil.roundDecimal(cartLineModel.getPrice());
 			// add the discount amount for reporting
 			subTotal += MathUtil.roundDecimal(cartLineModel.getDiscountAmount());
@@ -783,6 +793,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			creditAmount += MathUtil.roundDecimal(creditModel.getAmount());
 		}
 		return MathUtil.roundDecimal(creditAmount);
+	}
+	
+	public String getFormattedCustomerCreditsValue() {
+		return FormatterUtil.formatToTwoDecimal(getCustomerCreditsValue());
 	}
 
 	public DlvZoneInfoModel getZoneInfo() {
@@ -1244,4 +1258,37 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return true;
 	}
 
+	public List getSelectedGiftCards() {
+		return selectedGiftCards;
+	}
+
+	public void setSelectedGiftCards(List selectedGiftCards) {
+		this.selectedGiftCards = selectedGiftCards;
+	}
+
+	public double getTotalAppliedGCAmount(){
+		double gcBal = 0.0;		
+		if(this.getSelectedGiftCards() != null && this.getSelectedGiftCards().size() > 0){
+			for(Iterator it = this.getSelectedGiftCards().iterator();it.hasNext();){
+				ErpGiftCardModel model = (ErpGiftCardModel)it.next();
+				gcBal += model.getBalance();
+			}
+		}
+		return Math.min(gcBal, this.getTotal());
+	}
+	
+	public double getCCPaymentAmount() {
+		return this.getTotal() - this.getTotalAppliedGCAmount();
+	}
+	
+	public double getBufferAmt() {
+		return bufferAmt;
+	}
+
+	/**
+	 * @param bufferAmt the bufferAmt to set
+	 */
+	public void setBufferAmt(double bufferAmt) {
+		this.bufferAmt = bufferAmt;
+	}
 }

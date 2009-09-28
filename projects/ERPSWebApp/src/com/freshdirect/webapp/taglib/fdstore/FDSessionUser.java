@@ -25,6 +25,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
@@ -34,16 +35,20 @@ import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
+import com.freshdirect.fdstore.customer.FDBulkRecipientList;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
+import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.FDPromotionVisitor;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
@@ -80,7 +85,20 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private String sessionId = null;
 
 	private String tabSiteFeature = null;
+	
+	//No. of Gift Card apply attempts     
+	private int gcRetryCount = 0;
+	
+	private String lastSenderName = null;
+	private String lastSenderEmail = null;
+	//Invalid Payment Method on Signup.
+	
+	private ErpPaymentMethodI invalidPaymentMethod;
+	private boolean gcSignupError;
+	private String gcFraudReason;
+	
 
+	
     public FDSessionUser(FDUser user, HttpSession session) {
         super();
         this.user = user;
@@ -690,6 +708,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return user.getAssignedCustomerParam(promoId);
 	}
 
+	public boolean isGiftCardsEnabled() {
+		return this.user.isGiftCardsEnabled();
+	}
+	
 	public boolean isCCLEnabled() {
 		return this.user.isCCLEnabled();
 	}
@@ -765,6 +787,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.user.setCohortName(cohortName);
 	}
 
+
 	public int getTotalCartSkuQuantity(String[] args) {
 		return user.getTotalCartSkuQuantity(args);
 	}
@@ -832,7 +855,127 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		// TODO Auto-generated method stub
 		user.setPromoConflictResolutionApplied(isPromoConflictResolutionApplied);
 	}
+	
+	public FDGiftCardInfoList getGiftCardList() {
+		return user.getGiftCardList();
+	}
+	
+	public FDCartModel getGiftCart() {
+		return this.user.getGiftCart();
+	}
+	
+	public FDRecipientList getRecipentList(){
+		return this.user.getRecipentList();
+	}
+	
+	public void setRecipientList(FDRecipientList r){
+		this.user.setRecipientList(r);
+	}
+	
+	public void setGiftCart(FDCartModel dcart) {
+		this.user.setGiftCart(dcart);
+	}
+	
+	public double getGiftcardBalance() {
+		return this.user.getGiftcardBalance();
+	}
+	
+	public boolean isGCOrderMinimumMet() {
+		return this.user.isGCOrderMinimumMet();
+	}
+	
+	public double getGCMinimumOrderAmount() {
+		return this.user.getGCMinimumOrderAmount();
+	}
+	
+	public void invalidateGiftCards() {
+		this.user.invalidateGiftCards();
+	}
+	
+	public FDBulkRecipientList getBulkRecipentList(){
+		 return user.getBulkRecipentList();  
+	}
+	
+	public void setBulkRecipientList(FDBulkRecipientList r) {
+		user.setBulkRecipientList(r);
+	}
+	
+	 public int getGCRetryCount(){
+         return this.gcRetryCount;
+   }
 
+   public void incrementGCRetryCount(){
+         this.gcRetryCount++;
+   }
+  
+   public void resetGCRetryCount(){
+         this.gcRetryCount = 0;
+   }
+		
 
+	public ErpPaymentMethodI getInvalidPaymentMethod() {
+		return invalidPaymentMethod;
+	}
+
+	public void setInvalidPaymentMethod(ErpPaymentMethodI invalidPaymentMethod) {
+		this.invalidPaymentMethod = invalidPaymentMethod;
+	}
+
+	public boolean isGCSignupError() {
+		return gcSignupError;
+	}
+
+	public void setGCSignupError(boolean gcSignupError) {
+		this.gcSignupError = gcSignupError;
+	}
+
+	public String getGcFraudReason() {
+		return gcFraudReason;
+	}
+
+	public void setGcFraudReason(String gcFraudReason) {
+		this.gcFraudReason = gcFraudReason;
+	}
+
+	public String getLastSenderName() {
+		return lastSenderName;
+	}
+
+	public void setLastSenderName(String lastSenderName) {
+		this.lastSenderName = lastSenderName;
+	}
+
+	public String getLastSenderEmail() {
+		return lastSenderEmail;
+	}
+
+	public void setLastSenderEmail(String lastSenderEmail) {
+		this.lastSenderEmail = lastSenderEmail;
+	}
+	
+	public Integer getDonationTotalQuantity(){
+		return this.user.getDonationTotalQuantity();
+	}
+	
+	public void setDonationTotalQuantity(Integer donationTotalQuantity){
+		this.user.setDonationTotalQuantity(donationTotalQuantity);
+	}
+	
+	public FDCartModel getDonationCart() {		
+		return this.user.getDonationCart();
+	}
+
+	
+	public void setDonationCart(FDCartModel dcart) {
+		this.user.setDonationCart(dcart);
+	}
+
+	public double getGiftcardsTotalBalance() {
+		return this.user.getGiftcardsTotalBalance();
+	}
+	
+	public String getGCSenderName(String certNum, String custId){
+		return this.user.getGCSenderName(certNum, custId);
+	}
 }
 

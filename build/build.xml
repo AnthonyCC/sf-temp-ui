@@ -44,6 +44,11 @@
 		<pathelement location="${weblogic.home}/server/lib/weblogic.jar"/>
 		<pathelement location="${weblogic.home}/server/lib/wlclient.jar"/>
 		<pathelement location="${weblogic.home}/server/lib/CR189281_debug.jar"/>
+        <pathelement location="${weblogic.home}/server/lib/webserviceclient.jar"/>
+        <pathelement location="${weblogic.home}/server/lib/webserviceclient+ssl.jar"/>
+        <pathelement location="${weblogic.home}/server/lib/webservices.jar"/>
+        
+        
 	</path>
 
 	<path id="common.classpath">
@@ -77,6 +82,9 @@
 		<pathelement location="${thirdparty.home}/jsonrpc-1.0.jar"/>
 		<pathelement location="${thirdparty.home}/bsh-2.0b4.jar"/>
 		<pathelement location="${thirdparty.home}/jxl.jar"/>
+        <pathelement location="${thirdparty.home}/jasypt-1.5.jar"/>
+        <pathelement location="${thirdparty.home}/iText-2.0.8.jar"/>
+        <pathelement location="${thirdparty.home}/core-renderer.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -1198,6 +1206,9 @@
 					<include name="freemarker-2.3.8.jar"/>
 					<include name="jsonrpc-1.0.jar"/>
 					<include name="bsh-2.0b4.jar"/>
+                    <include name="jasypt-1.5.jar"/>
+                    <include name="core-renderer.jar"/>
+                    <include name="iText-2.0.8.jar"/>
 					<!-- additional -->
 					
 					
@@ -1294,7 +1305,9 @@
 					<include name="batik-1.5-fop-0.20-5.jar"/>
 					<include name="avalon-framework-4.0.jar"/>
 					<include name="fop-0.20.5.jar"/>
-					<include name="itext-1.3.jar"/>
+					<include name="iText-2.0.8.jar"/>
+					<include name="antlr-2.7.5H3.jar"/>                    
+					<include name="antlr-2.7.5H3.jar"/>
 					<include name="antlr-2.7.5H3.jar"/>
 					<include name="asm.jar"/>
 					<include name="asm-attrs.jar"/>
@@ -1344,6 +1357,7 @@
 			<pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${thirdparty.home}/sapjco.jar"/>
 			<pathelement location="${thirdparty.home}/lcc.jar"/>
+            <pathelement location="${thirdparty.home}/givexclient.jar"/>
 		</path>
 
 		<makeEjbProject
@@ -2128,6 +2142,7 @@
 			<lib>
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
+                <include name="givexclient.jar"/>
 				<include name="lucene-core-2.2.0.jar"/>
 				<include name="lucene-queries-2.2.0.jar"/>
 				<include name="lucene-spellchecker-2.2.0.jar"/>
@@ -2157,6 +2172,7 @@
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
 				<include name="lucene-core-2.2.0.jar"/>
+                <include name="givexclient.jar"/>                
 				<include name="lucene-queries-2.2.0.jar"/>
 				<include name="lucene-spellchecker-2.2.0.jar"/>
 			</lib>
@@ -2210,6 +2226,7 @@
 			<lib>
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
+                <include name="givexclient.jar"/>                
 				<include name="oscache.jar"/>
 				<include name="struts.jar"/>
 				<include name="poi-3.0-rc4-20070503.jar"/>
@@ -2345,6 +2362,7 @@
 				<include name="struts.jar"/>
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
+                <include name="givexclient.jar"/>                
 				<include name="poi-3.0-rc4-20070503.jar"/>
 
 				<include name="tapestry-4.0.2.jar"/>
@@ -2415,6 +2433,7 @@
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
+            <zipfileset src="${thirdparty.home}/givexclient.jar" excludes="META-INF/*"/>
 			<!-- hivemind -->
 			<zipfileset src="${thirdparty.home}/hivemind-1.1.1.jar"/>
 			<zipfileset src="${thirdparty.home}/hivemind-lib-1.1.1.jar" excludes="META-INF/*"/>

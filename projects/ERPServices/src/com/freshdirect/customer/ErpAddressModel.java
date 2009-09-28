@@ -10,6 +10,7 @@
 package com.freshdirect.customer;
 
 import com.freshdirect.common.address.*;
+import com.freshdirect.common.customer.EnumWebServiceType;
 
 /**
  * ErpAddress model class.
@@ -40,8 +41,15 @@ public class ErpAddressModel extends ContactAddressModel {
 
 	private String unattendedDeliveryInstructions;
 	
+	//For Robin Hood - Donation.
+	private String charityName;
 	
+	private String companyName;
+	
+	private boolean optInForDonation;
 
+	//This field is used for storing specific service type when service type is WEB.
+	private EnumWebServiceType webServiceType;
 	/**
 	 * Default constructor.
 	 */
@@ -224,6 +232,56 @@ public class ErpAddressModel extends ContactAddressModel {
 			}
 		};
 
+	}
+
+	/**
+	 * @return the charityName
+	 */
+	public String getCharityName() {
+		return charityName;
+	}
+
+	/**
+	 * @param charityName the charityName to set
+	 */
+	public void setCharityName(String charityName) {
+		this.charityName = charityName;
+	}
+
+	/**
+	 * @return the companyName
+	 */
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	/**
+	 * @param companyName the companyName to set
+	 */
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	/**
+	 * @return the optInStatus
+	 */
+	public boolean isOptInForDonation() {
+		return optInForDonation;
+	}
+
+	/**
+	 * @param optInStatus the optInStatus to set
+	 */
+	public void setOptInForDonation(boolean optInForDonation) {
+		this.optInForDonation = optInForDonation;
+	}
+
+	public EnumWebServiceType getWebServiceType() {
+		return webServiceType;
+	}
+
+	public void setWebServiceType(EnumWebServiceType webServiceType) {
+		this.webServiceType = webServiceType;
 	}
 
 }

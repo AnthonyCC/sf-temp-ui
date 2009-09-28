@@ -9,6 +9,8 @@ package com.freshdirect.customer;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.freshdirect.common.customer.EnumServiceType;
+
 /**
  *
  * @author  jmccarter
@@ -22,6 +24,14 @@ public class EnumDeliveryType implements java.io.Serializable {
 	public final static EnumDeliveryType DEPOT = new EnumDeliveryType(1, "D", "Depot Delivery", "002");
 	public final static EnumDeliveryType PICKUP = new EnumDeliveryType(2, "P", "Pickup", "002");
 	public final static EnumDeliveryType CORPORATE = new EnumDeliveryType(3, "C", "Corporate Delivery", "004");
+	//Added for Gift cards.
+	public static final EnumDeliveryType GIFT_CARD_PERSONAL = new EnumDeliveryType(4, "GP", "Personal Delivery", "003");
+	public static final EnumDeliveryType GIFT_CARD_CORPORATE = new EnumDeliveryType(5, "GC", "Professional Delivery", "004");
+	
+	//Added for Robin Hood - Donation..
+	public static final EnumDeliveryType DONATION_INDIVIDUAL = new EnumDeliveryType(6, "DI", "Personal Delivery", "003");
+	public static final EnumDeliveryType DONATION_BUSINESS = new EnumDeliveryType(7, "DB", "Professional Delivery", "004");
+
 
 	private final int id;
 	private final String code;

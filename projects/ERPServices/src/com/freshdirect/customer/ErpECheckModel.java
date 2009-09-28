@@ -1,6 +1,7 @@
 package com.freshdirect.customer;
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.giftcard.EnumGiftCardStatus;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -42,4 +43,19 @@ public class ErpECheckModel extends ErpPaymentMethodModel {
 	
 	public boolean getIsTermsAccepted() { return isTermsAccepted; }
 	
+	//Only applicable to Gift card - Begin
+	public String getCertificateNumber() {return null;}
+
+	public void setCertificateNumber(String certificateNumber) { }
+
+	public double getBalance() { return 0.0; }
+
+	public void setBalance(double balance) { }
+
+	public EnumGiftCardStatus getStatus() { return null; }
+
+	public void setStatus(EnumGiftCardStatus status) { }
+	
+	public boolean isRedeemable(){ return false; }
+	//Only applicable to Gift card - End
 }

@@ -1,0 +1,37 @@
+<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.customer.*' %>
+<%@ page import='java.util.List' %>
+<%@ page import='java.util.ListIterator' %>
+<%@ page import='com.freshdirect.webapp.util.*' %>
+
+<%
+	FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
+	Integer totalQuantity = user.getDonationTotalQuantity();
+	double totalPrice = totalQuantity * productInfo.getDefaultPrice();
+%>
+<table width="680" cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td align="left">
+			<table cellpadding="0" cellspacing="0" border="0" > 
+				<tr>
+					<td class="text11bold"><%= totalQuantity %></td>
+					<td style="padding-left:30px;" class="text11bold">Robin Hood Holiday Meal for Eight	</td>
+				</tr>
+			</table>
+		</td>	
+		<td align="right" style="padding-left:4px;" class="text11"><%= JspMethods.currencyFormatter.format( totalPrice ) %></td>
+	</tr>
+	<tr>
+		<td align="center" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0" /></td>
+	</tr>
+	<tr>
+		<td align="center" colspan="2"><img style="margin: 2px 0;" width="690" height="1" border="0" src="/media_stat/images/layout/cccccc.gif" /><br /></td>
+	</tr>
+	<tr>
+		<td align="center" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" border="0" /></td>
+	</tr>
+	<tr>
+		<td align="right" colspan="2" style="padding-left:4px;" class="text13bold">TOTAL: <%= JspMethods.currencyFormatter.format( totalPrice ) %></td>
+	</tr>
+</table>
+

@@ -567,13 +567,14 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 	}
 	
 	// get order number for a customer during specific past time.
-	private static final String orderCountPastQuery = "select count(*) from cust.sale s, cust.salesaction sa where s.customer_id =? and s.id= sa.sale_id and s.type='REG' and sa.action_type='CRO' and sa.action_date> ?";
+	private static final String orderCountPastQuery = "select count(*) from cust.sale s, cust.salesaction sa where s.customer_id =? and s.id= sa.sale_id and s.type=? and sa.action_type='CRO' and sa.action_date> ?";
 	
-	public static int getOrderCountPast(Connection conn, String erpCustomerId, Date day) throws SQLException {
+	public static int getOrderCountPast(Connection conn, String erpCustomerId, Date day,EnumSaleType type) throws SQLException {
 		int orderCount =0;
 		PreparedStatement ps = conn.prepareStatement(orderCountPastQuery);
 		ps.setString(1, erpCustomerId);
-		ps.setDate(2, new java.sql.Date(day.getTime()));
+		ps.setString(2, type.getName());
+		ps.setDate(3, new java.sql.Date(day.getTime()));
 		ResultSet rs = ps.executeQuery();
 		while(rs.next()){
 			orderCount = rs.getInt(1);	
@@ -702,5 +703,21 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 		ps.close();
 		LOGGER.info("*****run get WEB order history info query");
 		return extendedInfos;
+	}
+	
+	private static final String QUERY_ORDER_HISTORY_FOR_CUST="select count(*) from cust.sale s  where s.customer_id =? and s.status<>'CAN'";
+	
+	public static int getPreviousOrderHistory(Connection conn, String erpCustomerId) throws SQLException{
+		int orderCount =0;
+		PreparedStatement ps = conn.prepareStatement(QUERY_ORDER_HISTORY_FOR_CUST);
+		ps.setString(1, erpCustomerId);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()){
+			orderCount = rs.getInt(1);	
+		}
+		rs.close();
+		ps.close();
+		
+		return orderCount;
 	}
 }

@@ -438,6 +438,14 @@ FDIdentity identity = user.getIdentity();
 		<td colspan="1"><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
 		<td colspan="2"></td>
 	</tr>
+    <% if (user.getGiftcardBalance() > 0) { %>
+    <tr valign="top" style="background-color: #FF9933;line-height: 20px;">
+        <td colspan="3" align="right" style="color: white;font-size: 13px;"><b>Gift Card Balance</b>:</td>
+        <td colspan="1" align="right" style="color: white;font-size: 13px;"><b><%= CCFormatter.formatCurrency(user.getGiftcardBalance()) %></b></td>
+        <td colspan="1"></td>
+        <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeGiftCard" class="note">Remove</a></td>
+	</tr>
+    <%}%>        
 	<%
     if (isRedemptionApplied && redemptionPromo.isHeaderDiscount()) {
         if (request.getAttribute("redeem_override_msg") != null) {
@@ -545,7 +553,12 @@ FDIdentity identity = user.getIdentity();
 	%>
 		</td>
 	</tr>
-	
+    <tr>
+    
+			<td colspan="3" align="right"><b><BR>To redeem a Gift Card, </b><a href="/your_account/giftcards.jsp">click here</a></td>
+            <td colspan="2" align="right"></td>
+            <td colspan="2" align="right"></td>
+	</tr>
 	<% 
 	if (user!=null && user.getIdentity() !=null) {
 	    %><fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'><%

@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 
-import com.freshdirect.cms.template.TemplateException;
+import com.freshdirect.framework.template.TemplateException;
+
+
 
 /**
  * Helper to include additional media in template files

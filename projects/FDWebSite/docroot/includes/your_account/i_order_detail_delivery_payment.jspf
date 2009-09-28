@@ -1,6 +1,7 @@
 <%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
 <%@ page import='com.freshdirect.customer.EnumUnattendedDeliveryFlag' %>
 <%@ page import='com.freshdirect.framework.util.NVL' %>
+<%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
 
 <%
     boolean showModify=true;
@@ -88,28 +89,62 @@
             <%}else{%>
                 <%= currencyFormatter.format(cart.getTotal()) %>*<br>
             <%}%>
-            <BR>
-            <b><%=paymentMethod.getPaymentMethodType().getDescription()%>:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_3_choose.jsp">Modify</A><%}%><BR>
+            <br/>         
+            <% if(cart.getTotalAppliedGCAmount()> 0){ %> 
+	            <BR>
+	            <font class="space4pix"><br></font>
+	            <FONT CLASS="text12">
+	             <%if(cart.hasInvoice()){%>
+	            <b>Gift Card Amount Applied:</b><BR>
+	             <% }else { %>
+	             <b>Gift Card Amount to Be Applied:</b><BR>
+	             <% } %>
+	            <font class="space4pix"><br></font>
+	           
+	            <%= currencyFormatter.format(cart.getTotalAppliedGCAmount()) %>*<BR>           
+	           
+            <% } %>
+            <% if(!EnumPaymentMethodType.GIFTCARD.equals(paymentMethod.getPaymentMethodType())) { %> 
+            <% if(cart.getTotalAppliedGCAmount()> 0){ %>     
+	            <BR>
+	            <font class="space4pix"><br></font>
+	            <FONT CLASS="text12">
+	            <%if(cart.hasInvoice()){%>
+	             <b>Amount Charged to Your Account:</b><BR>
+	            <font class="space4pix"><br></font>	            
+	            <%= currencyFormatter.format(cart.getInvoicedTotal()- cart.getTotalAppliedGCAmount()) %>*<BR>
+	           	 
+	            <% }else { %>
+	            <b>Amount to Be Charged to Your Account:</b><BR>
+	            <font class="space4pix"><br></font>	            
+	            <%= currencyFormatter.format(cart.getCCPaymentAmount()+ cart.getBufferAmt()) %>*<BR>
+	            <% } %>
+	                      
+            <% } %>     
+            <BR>  
+			<b><%=paymentMethod.getPaymentMethodType().getDescription()%>:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_3_choose.jsp">Modify</A><%}%><BR>
             <font class="space4pix"><br></font>
-            <%= paymentMethod.getName() %><BR>
+            <%= paymentMethod.getName()%><BR>
             <%= paymentMethod.getCardType() %> - <%= paymentMethod.getMaskedAccountNumber() %><br>
-            <BR>
+            <BR>            
             <b>Billing Address:</b><BR>
             <font class="space4pix"><br></font>
             <%= paymentMethod.getName() %><BR>
             <%= paymentMethod.getAddress1() %><% if(paymentMethod.getApartment()!=null && paymentMethod.getApartment().trim().length()>0) { %>, Apt. <%=paymentMethod.getApartment()%><% } %><BR>
             <% if(paymentMethod.getAddress2()!=null && paymentMethod.getAddress2().trim().length()>0) { %>
             <%=paymentMethod.getAddress2()%><BR>
-            <%}%>
+            <%} %>
             <%= paymentMethod.getCity() %>, <%= paymentMethod.getState() %> <%= paymentMethod.getZipCode() %><BR>
             <BR>
             <%
             if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){%>
-            <b>Billing Reference/Client Code:</b><BR>
-            <font class="space4pix"><br></font>
-            <%= paymentMethod.getBillingRef() %>
+                <b>Billing Reference/Client Code:</b><BR>
+                <font class="space4pix"><br></font>
+                <%= paymentMethod.getBillingRef() %><br>
             <%
             }%>
+            </FONT>
+			<% } %>           
             </FONT>
             </TD>
         </TR>

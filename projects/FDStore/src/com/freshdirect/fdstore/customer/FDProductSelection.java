@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductRef;
@@ -45,6 +46,7 @@ public class FDProductSelection implements FDProductSelectionI {
 	private SaleStatisticsI statistics;
 	private String customerListLineId;
 	private boolean invalidConfig = false;
+	private double fixedPrice;
 
 	public FDProductSelection(FDSku sku, ProductRef productRef, FDConfigurableI configuration) {
 		this(sku, productRef, configuration, null);
@@ -415,11 +417,20 @@ public class FDProductSelection implements FDProductSelectionI {
 
 	protected void performPricing() {
 		try {
-			this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount());
-			this.orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue());
-			this.orderLine.setDiscountAmount(price.getPromotionValue());
-			//this.orderLine.setTaxRate(price.getTaxRate());
-			//this.orderLine.setDepositValue(price.getDepositValue());
+			System.out.println("inside performPricing :"+this.getSkuCode());
+			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(this.getSkuCode()) || FDStoreProperties.getRobinHoodSkucode().equalsIgnoreCase(this.getSkuCode())){
+				System.out.println("Setting the fixed price :"+this.getFixedPrice());
+				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount());
+				this.orderLine.setPrice(this.getFixedPrice());
+				this.orderLine.setDiscountAmount(0);
+			}else
+			{
+				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount());
+				this.orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue());
+				this.orderLine.setDiscountAmount(price.getPromotionValue());
+				//this.orderLine.setTaxRate(price.getTaxRate());
+				//this.orderLine.setDepositValue(price.getDepositValue());
+			}	
 
 		} catch (PricingException e) {
 			throw new FDRuntimeException(e, "PricingException occured on "+getSkuCode() + " - " + getConfiguration());
@@ -514,6 +525,14 @@ public class FDProductSelection implements FDProductSelectionI {
 	
 	public void setDiscountFlag(boolean discountApplied){
 		this.orderLine.setDiscountFlag(discountApplied);
+	}
+
+	public double getFixedPrice() {
+		return this.fixedPrice;
+	}
+
+	public void setFixedPrice(double price) {
+		this.fixedPrice=price;
 	}
 	
 }
