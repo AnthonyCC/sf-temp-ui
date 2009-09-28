@@ -592,12 +592,7 @@ public class DispatchPlanUtil {
 		//for all non bullpen dispatches
 		if(!TransStringUtil.isEmpty(command.getZoneName()))	
 	    {		
-			//do not do any status if no employees assigned
-			if("Y".equalsIgnoreCase(command.getOpen())) 
-			{
-				command.setDispatchStatus(EnumStatus.NoStatus);
-				return ;
-			}
+			
 			//decide the dispatch status after dispatch;
 			if(!TransStringUtil.isEmpty(command.getDispatchTime()))
 			{
@@ -646,6 +641,13 @@ public class DispatchPlanUtil {
 				else
 				{
 					return;
+				}
+				
+				//do not do any status if no employees assigned
+				if("Y".equalsIgnoreCase(command.getOpen())) 
+				{
+					//command.setDispatchStatus(EnumStatus.NoStatus);
+					return ;
 				}
 				
 				//Packet status
