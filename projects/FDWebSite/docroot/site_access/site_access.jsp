@@ -92,7 +92,10 @@ request.setAttribute("listPos", "CategoryNote");
 	}
 	//String actionURI = "/site_access/site_access.jsp";
 	String actionURI = request.getRequestURI()+"?siteAccessPage="+siteAccessPage+"&successPage="+successPage;
-	
+
+	if (request.getParameter("newRequest") == null) {
+		response.sendRedirect(response.encodeRedirectURL("/site_access/site_access_lite.jsp?successPage="+successPage));
+	}
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -187,6 +190,7 @@ request.setAttribute("listPos", "CategoryNote");
 								<form name="site_access_corp" method="post" onsubmit="return validate();">
 									<input type="hidden" name="successPage" value="<%= successPage %>">
 									<input type="hidden" name="siteAccessPage" value="<%= siteAccessPage %>">
+									<input type="hidden" name="newRequest" value="pass" />
 									<tr>
 										<td align="center" colspan="5"><img src="/media/editorial/site_access/images/zipcheck_side.gif" width="179" height="163"></td>
 									</tr>
@@ -252,6 +256,7 @@ request.setAttribute("listPos", "CategoryNote");
 									<form name="site_access_gc" id="site_access_gc" method="post" action="/site_access/site_access.jsp">
 									<input type="hidden" name="successPage" value="<%= successPage %>">
 									<input type="hidden" name="serviceType" value="<%= EnumServiceType.WEB.getName()%>">
+									<input type="hidden" name="newRequest" value="pass">
 									<tr>
 										<td align="center" colspan="5"><img src="/media/editorial/site_access/images/giftcards_side.gif" width="179" height="52"></td>
 									</tr>
