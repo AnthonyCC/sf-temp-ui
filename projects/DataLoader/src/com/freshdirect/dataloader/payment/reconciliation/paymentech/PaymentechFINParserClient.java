@@ -3,8 +3,10 @@ package com.freshdirect.dataloader.payment.reconciliation.paymentech;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 
@@ -44,6 +46,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	private double gcNetSales;
 	//Failed GC settlements
 	private List failedGCSettlements = new ArrayList<ErpGCSettlementInfo>();
+	private Set<String> processedSaleIds = new HashSet<String>();
 	
 	private ErpSettlementSummaryModel settlementSummary;
 	
@@ -143,9 +146,12 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		}else{
 			this.builder.addChargeDetail(info, refund, Math.abs(chargeAmount), ccType);
 		} 
-		//Process Gift card settlements.
-		List gcSettlementInfos = this.reconciliationSB.processGCSettlement(saleId);
-		appendGCSettlements(gcSettlementInfos);
+		if(!processedSaleIds.contains(saleId)){
+			//Process Gift card settlements only if that is sale is not processed.
+			List gcSettlementInfos = this.reconciliationSB.processGCSettlement(saleId);
+			appendGCSettlements(gcSettlementInfos);
+			processedSaleIds.add(saleId);
+		}
 	}
 
 	private void appendGCSettlements(List gcSettlementInfos) {

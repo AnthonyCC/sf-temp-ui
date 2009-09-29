@@ -779,7 +779,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 				}else {
 					ErpPreAuthGiftCardModel existingAuth = (ErpPreAuthGiftCardModel) validAuths.get(0);
 					double authAmount = existingAuth.getAmount();
-					if(Math.round(authAmount - appliedAmount) == 0.0){
+					if(Math.round(authAmount - appliedAmount) != 0.0){
 						//Cancel/Reverse the existing pre-auth. Create a new pre-auth.
 
 						if(existingAuth.isPending()){

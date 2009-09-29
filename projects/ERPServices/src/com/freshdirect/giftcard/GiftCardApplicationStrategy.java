@@ -67,26 +67,42 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 //		if (fdAppInfo.getSubtotal() <= 0 && usqAppInfo.getSubtotal() <= 0) {
 //			throw new FDRuntimeException("Order with not orderlines");
 //		}
-
-		for (Iterator i = order.getCharges().iterator(); i.hasNext();) {
-			ErpChargeLineModel cl = (ErpChargeLineModel) i.next();
-			fdAppInfo.addCharge(cl);
+		if (inv != null) {
+			for (Iterator i = inv.getCharges().iterator(); i.hasNext();) {
+				ErpChargeLineModel cl = (ErpChargeLineModel) i.next();
+				fdAppInfo.addCharge(cl);
+			}
+		} else {
+			for (Iterator i = order.getCharges().iterator(); i.hasNext();) {
+				ErpChargeLineModel cl = (ErpChargeLineModel) i.next();
+				fdAppInfo.addCharge(cl);
+			}
 		}
 					
-		
-		List discounts = order.getDiscounts();
+		List discounts = null;
+		if(inv != null){
+			discounts = inv.getDiscounts();
+		} else {
+			discounts = order.getDiscounts();
+		}
 		if (discounts != null && !discounts.isEmpty()) {
 			for (Iterator i = discounts.iterator(); i.hasNext();) {
 				ErpDiscountLineModel d = (ErpDiscountLineModel) i.next();
 				this.addDeduction(d.getDiscount().getAmount());
 			}
 		}
-		
-		for (Iterator i = order.getAppliedCredits().iterator(); i.hasNext();) {
-			ErpAppliedCreditModel c = (ErpAppliedCreditModel) i.next();
-			this.addDeduction(c.getAmount());
+		if(inv != null){
+			for (Iterator i = inv.getAppliedCredits().iterator(); i.hasNext();) {
+				ErpAppliedCreditModel c = (ErpAppliedCreditModel) i.next();
+				this.addDeduction(c.getAmount());
+			}
+		} else {
+			for (Iterator i = order.getAppliedCredits().iterator(); i.hasNext();) {
+				ErpAppliedCreditModel c = (ErpAppliedCreditModel) i.next();
+				this.addDeduction(c.getAmount());
+			}
 		}
-		
+
 		List gcPaymentMethods = order.getSelectedGiftCards();
 		if(null != gcPaymentMethods) {
 			for(Iterator it = gcPaymentMethods.iterator(); it.hasNext();){
