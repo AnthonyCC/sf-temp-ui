@@ -1,3 +1,4 @@
+<%@ page import='com.freshdirect.customer.EnumDeliveryType' %>
 <%//build order navigation
 	StringBuffer orderNav = new StringBuffer();
 	DateFormat nav_dateFormatter = new SimpleDateFormat("MM/dd/yy");
@@ -15,47 +16,55 @@
 		int count = 0;
 			for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
 				FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
-					if (!orderInfo.isPending()) {
-						++count;
-						if (hasSelected) {
-							isSelected = selectedOrder.equals(orderInfo.getErpSalesId());
-						}
-						orderNav.append("<tr><td class=\"" + style + "\">");
-						if (!isSelected) {
-							orderNav.append("<a href=\"/quickshop/shop_from_order.jsp?orderId=");
-							orderNav.append(orderInfo.getErpSalesId());
-							orderNav.append("\">");
-						}
-						orderNav.append("<b>");
-						orderNav.append(nav_dateFormatter.format(orderInfo.getRequestedDate()));
-						if (showDetails) {
-							orderNav.append("</b>");
-							if (!isSelected) {
-								orderNav.append("</a>");
+					if (
+							!EnumDeliveryType.GIFT_CARD_PERSONAL.toString().equalsIgnoreCase(orderInfo.getDeliveryType().toString()) &&
+							!EnumDeliveryType.GIFT_CARD_CORPORATE.toString().equalsIgnoreCase(orderInfo.getDeliveryType().toString()) &&
+							!EnumDeliveryType.DONATION_INDIVIDUAL.toString().equalsIgnoreCase(orderInfo.getDeliveryType().toString()) &&
+							!EnumDeliveryType.DONATION_BUSINESS.toString().equalsIgnoreCase(orderInfo.getDeliveryType().toString())
+						) {
+						if (!orderInfo.isPending()) {
+							++count;
+							if (hasSelected) {
+								isSelected = selectedOrder.equals(orderInfo.getErpSalesId());
 							}
-							orderNav.append("</td><td class=\"" + style + "\">");
+							orderNav.append("<tr><td class=\"" + style + "\">");
 							if (!isSelected) {
 								orderNav.append("<a href=\"/quickshop/shop_from_order.jsp?orderId=");
 								orderNav.append(orderInfo.getErpSalesId());
 								orderNav.append("\">");
 							}
-							orderNav.append("&nbsp;&nbsp;&nbsp;<b>");
-							orderNav.append(nav_dayFormatter.format(orderInfo.getRequestedDate()));
-							orderNav.append(" (");
-							orderNav.append(nav_currencyFormatter.format(orderInfo.getTotal()));
-							orderNav.append(")");
-						}
-						orderNav.append("</b>");
-						if (!isSelected) {
-							orderNav.append("</a>");
-						}
-						orderNav.append("</td></tr><tr><td");
-						if (!hasSelected) {
-							orderNav.append(" colspan=\"2\"");
-						}
-						orderNav.append("><img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"2\" border=\"0\"></td></tr>");
-						if ( hasSelected && selectedOrder.equals(orderInfo.getErpSalesId())) {
-							currentOrder = nav_dateFormatter.format(orderInfo.getRequestedDate());
+							orderNav.append("<b>");
+							orderNav.append(nav_dateFormatter.format(orderInfo.getRequestedDate()));
+							if (showDetails) {
+								orderNav.append("</b>");
+								if (!isSelected) {
+									orderNav.append("</a>");
+								}
+								orderNav.append("</td><td class=\"" + style + "\">");
+								if (!isSelected) {
+									orderNav.append("<a href=\"/quickshop/shop_from_order.jsp?orderId=");
+									orderNav.append(orderInfo.getErpSalesId());
+									orderNav.append("\">");
+								}
+								orderNav.append("&nbsp;&nbsp;&nbsp;<b>");
+								orderNav.append(nav_dayFormatter.format(orderInfo.getRequestedDate()));
+								orderNav.append(" (");
+								orderNav.append(nav_currencyFormatter.format(orderInfo.getTotal()));
+								//orderNav.append(orderInfo.getDeliveryType());
+								orderNav.append(")");
+							}
+							orderNav.append("</b>");
+							if (!isSelected) {
+								orderNav.append("</a>");
+							}
+							orderNav.append("</td></tr><tr><td");
+							if (!hasSelected) {
+								orderNav.append(" colspan=\"2\"");
+							}
+							orderNav.append("><img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"2\" border=\"0\"></td></tr>");
+							if ( hasSelected && selectedOrder.equals(orderInfo.getErpSalesId())) {
+								currentOrder = nav_dateFormatter.format(orderInfo.getRequestedDate());
+							}
 						}
 					}
 				if (count >= 15 && request.getRequestURI().indexOf("/quickshop/previous_orders.jsp") < 0) {
