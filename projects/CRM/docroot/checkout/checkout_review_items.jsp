@@ -41,7 +41,7 @@
 		String redemptionCode = request.getParameter("redemptionCode");
 		String giftCardCode = request.getParameter("giftCardCode");
 		String actionName = "updateQuantities";
-		if(request.getMethod().equalsIgnoreCase("POST") && "nextPage".equals(request.getParameter("action"))){
+		if(request.getMethod().equalsIgnoreCase("POST") && (("nextPage".equals(request.getParameter("action1"))))){
 			actionName="nextPage";
 		}
 
@@ -57,8 +57,7 @@
 
 		//Reset the DCPD eligiblity map to re-calculate the promo if in case promotion was modified.
 		user.getDCPDPromoProductCache().clear();
-	%>
-
+	%>	
 	<fd:FDShoppingCart id='cart' result='result' action='<%= actionName%>'>
 	<fd:RedemptionCodeController actionName="<%=actionName%>" result="redemptionResult">
 
@@ -197,6 +196,7 @@
 			<form name="viewcart" method="post" style="margin: 0px; padding: 0px;">
 				<input type="hidden" name="cartLineRemove" value="-1" />
 				<input type="hidden" name="action" value="updateQuantities" />
+				<input type="hidden" name="action1" value="" />
 
 				<% if(makegood) { %>
 					<input type="hidden" name="makeGoodOrder" value="true" />
@@ -832,8 +832,8 @@
 	    setSubmitAction("removeCartLine");
     	return true;
 	}
-	function nextPage(){
-	    setSubmitAction("nextPage");
+	function nextPage(){		
+	    setSubmitAction("nextPage");	 
     	document.viewcart.submit();
 	}
 
@@ -843,7 +843,7 @@
 	}
 
 	function setSubmitAction(action){
-    	document.viewcart["action"].value = action;
+    	document.viewcart["action1"].value = action;
 	}
 	setSubmitAction("nothing");
 
