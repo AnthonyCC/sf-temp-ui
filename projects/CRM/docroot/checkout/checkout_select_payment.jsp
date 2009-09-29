@@ -108,7 +108,18 @@
     
     	boolean hasRestrictedAccount = false;
 	String methodChecked = "";
-	boolean selectedPaymentMethodExists = false;    
+	boolean selectedPaymentMethodExists = false;   
+	
+	FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
+	boolean isPaymentRequired = true;
+	if(cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0) {
+    	double outStandingBalance = FDCustomerManager.getOutStandingBalance(cart);
+    	if(outStandingBalance <= 0.0) {
+        		isPaymentRequired = false;
+        	} else{
+        		actionName = "setPaymentMethod";
+        	}
+	}  
 %>
 <fd:CheckoutController actionName="<%=actionName%>" result="result" successPage="<%= successPage%>">
 <%
@@ -119,14 +130,7 @@
          * another mode of payment is needed.
     	*/    
     
-    	FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
-    	boolean isPaymentRequired = true;
-    	if(cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0) {
-        	double outStandingBalance = FDCustomerManager.getOutStandingBalance(cart);
-        	if(outStandingBalance <= 0.0) {
-            		isPaymentRequired = false;
-            	} 
-    	}  
+    	
     	
 
     	double perishableBufferAmount = 0;

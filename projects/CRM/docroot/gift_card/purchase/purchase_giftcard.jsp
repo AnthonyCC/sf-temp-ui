@@ -59,6 +59,9 @@
 
 		<%
 			String actionName =  request.getParameter("actionName"); 
+			if(null == actionName || "".equals(actionName)){
+				actionName = "gc_submitGiftCardOrder";
+			}
 			FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );
 			request.setAttribute("giftcard", "true");
 			UserUtil.initializeGiftCart(user);
@@ -66,7 +69,7 @@
 
 		<%@ include file="/gift_card/purchase/includes/recipient_list.jsp" %>
     
-		<fd:CheckoutController actionName="gc_submitGiftCardOrder" result="result" successPage="/gift_card/purchase/receipt.jsp">
+		<fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="/gift_card/purchase/receipt.jsp">
 					<!-- error message handling here -->
 					<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 						<tr>

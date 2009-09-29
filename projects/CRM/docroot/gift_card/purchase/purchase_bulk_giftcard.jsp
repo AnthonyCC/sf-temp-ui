@@ -68,7 +68,7 @@
 					UserUtil.initializeBulkGiftCart(user);
 				%>
 
-				<fd:CheckoutController actionName="gc_submitGiftCardBulkOrder" result="result" successPage="/gift_card/purchase/receipt.jsp">
+				<fd:CheckoutController actionName="gc_submitGiftCardBulkOrder" result="result" successPage="/gift_card/purchase/receipt.jsp" ccdProblemPage="/gift_card/purchase/purchase_bulk_giftcard.jsp">
 						<!-- error message handling here -->
 						<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 							<tr>
