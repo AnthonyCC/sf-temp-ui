@@ -58,7 +58,7 @@ AMOUNT DUE:
 $0.00 
 </xsl:if>
 
-<xsl:if test="order/paymentMethod/paymentMethodType != 'GC'">
+<xsl:if test="order/paymentMethod/paymentMethodType != 'Gift-Card'">
 <xsl:if test="order/totalAppliedGCAmount >0">
 Amount to Be Charged to Your Account:		
 $<xsl:value-of select='format-number((order/total)-(order/totalAppliedGCAmount)+(order/bufferAmt), "###,##0.00", "USD")' />*

@@ -30,6 +30,12 @@ DELIVERY INSTRUCTIONS
 ORDER TOTAL 
 $<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/>  
 
+<xsl:if test="order/totalAppliedGCAmount >0">
+GIFT CARD AMOUNT APPLIED:
+$<xsl:value-of select='format-number(order/totalAppliedGCAmount, "###,##0.00", "USD")'/>*
+
+</xsl:if>
+
 <xsl:if test="order/paymentMethod/paymentType = 'M'">
 <xsl:text>
 </xsl:text>
@@ -37,9 +43,15 @@ AMOUNT DUE:
 $0.00
 </xsl:if>
 
+<xsl:if test="order/paymentMethod/paymentMethodType != 'Gift-Card'">
+<xsl:if test="order/totalAppliedGCAmount >0">
+Amount Charged to Your Account:		
+$<xsl:value-of select='format-number((order/invoicedTotal)-(order/totalAppliedGCAmount), "###,##0.00", "USD")' />*
+</xsl:if>
 <xsl:if test="order/paymentMethod/paymentType != 'M'">
 <xsl:value-of select="order/paymentMethod/paymentMethodType"/>
 <xsl:call-template name="format-payment-method"><xsl:with-param name="paymentMethod" select="order/paymentMethod" /></xsl:call-template>
+</xsl:if>
 </xsl:if>
 ---
 FRESHDIRECT TIPPING POLICY
