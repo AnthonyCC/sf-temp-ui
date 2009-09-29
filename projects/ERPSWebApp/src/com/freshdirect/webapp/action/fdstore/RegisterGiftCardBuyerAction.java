@@ -152,6 +152,9 @@ public class RegisterGiftCardBuyerAction extends RegistrationAction {
 					this.setSuccessPage("/main/account_details.jsp?cc=no");
 				}
 			}
+			if (actionResult.isSuccess()) {
+				user.isLoggedIn(true);
+			}
 		
 			//Set the
 			return SUCCESS;

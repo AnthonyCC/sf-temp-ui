@@ -12,7 +12,6 @@
 <%@ page import='com.freshdirect.payment.*' %>
 <%@ page import='com.freshdirect.payment.fraud.*' %>
 <%@ page import='java.text.MessageFormat' %>
-
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -101,9 +100,34 @@
     */    
     FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
     FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
+    
+    double gcSelectedBalance = user.getGiftcardBalance()- cart.getTotalAppliedGCAmount();
+    double gcBufferAmount=0;
+    double ccBufferAmount=0;
+    double perishableBufferAmount = 0.0;
+    double outStandingBalance = FDCustomerManager.getOutStandingBalance(cart);     
+    perishableBufferAmount = FDCustomerManager.getPerishableBufferAmount((FDCartModel)cart);
+    if(perishableBufferAmount > 0){
+    	if(cart.getTotalAppliedGCAmount()> 0){
+    		if(outStandingBalance >0){
+        		/*if(gcSelectedBalance - perishableBufferAmount >=0){
+        			gcBufferAmount = perishableBufferAmount;
+        		}else{*/
+        			gcBufferAmount = gcSelectedBalance;
+        			ccBufferAmount = perishableBufferAmount - gcSelectedBalance;    			
+        		//}
+        	}
+    		else{
+    			gcBufferAmount = perishableBufferAmount;
+    		}
+    	}else{
+    		ccBufferAmount = perishableBufferAmount;
+    	}    	
+    }
+    
     boolean isPaymentRequired = true;
     if(cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0) {
-        double outStandingBalance = FDCustomerManager.getOutStandingBalance(cart);
+          
         if(outStandingBalance <= 0.0) {
             isPaymentRequired = false;
 %>
@@ -195,7 +219,7 @@ if(isPaymentRequired) {
 			<%@ include file="/includes/i_error_messages.jspf" %>	
 	<% } %>
 	<%
-		if(cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0) {
+		if(cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0 && gcBufferAmount >0 && ccBufferAmount > 0) {
 	%>
 		<div style="width: 685px; text-align: left;"><strong>PLEASE NOTE: A BACKUP PAYMENT METHOD IS REQUIRED FOR THIS ORDER.</strong> Because your Estimated Total is close to the balance of the Gift Card you entered, we require a second form of payment. This is to cover changes in price that may occur when we weigh your perishable items and fulfill your order. We guarantee that you'll always pay the true price for the actual weight of your products. <a href="javascript:popup('/help/estimated_price.jsp','small')">Learn about Estimated Totals</a>.</div>
 		<br />

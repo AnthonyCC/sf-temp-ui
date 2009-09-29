@@ -66,7 +66,7 @@ int idx = 0;
             <TD WIDTH="290" COLSPAN="2"><span class="title18"><b>PLEASE NOTE:</b></span><BR>
             It may take up to <b>TWO HOURS OR MORE</b> to activate your Gift Cards.  Thank you for your patience.<BR><BR>
             We will send <b>confirmation to you via email</b> once your newly purchased Gift Cards are active.<br><br>
-            <a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>">
+            <a href="<%=response.encodeURL("/your_account/gc_order_details.jsp?orderId="+orderNumber)%>">
             View this order (and download printable PDFs of your gifts) in Your Account.</a></TD>
         </TR>
         <TR VALIGN="TOP">
