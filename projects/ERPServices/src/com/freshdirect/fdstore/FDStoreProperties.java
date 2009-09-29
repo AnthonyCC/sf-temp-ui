@@ -566,7 +566,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_GC_LANDING_URL, "/gift_card/purchase/landing.jsp");
 		defaults.put(PROP_GIFT_CARD_SKU_CODE, "MKT0074896");
 		defaults.put(PROP_GC_TEMPLATE_BASE_URL,"http://www.freshdirect.com/");		
-		defaults.put(PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH,"media/editorial/giftcards/");
+		defaults.put(PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH,"/media/editorial/giftcards/");
 		defaults.put(PROP_GIFT_CARD_RECIPIENT_MAX, "10");	
 		defaults.put(PROP_GC_MIN_AMOUNT, "20");
 		defaults.put(PROP_GC_MAX_AMOUNT, "5000");
