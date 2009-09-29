@@ -77,11 +77,11 @@ Please review your orders. To check the status of an order, click on the order n
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
-<TABLE WIDTH="675" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0">
+<TABLE WIDTH="690" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0">
 	<tr>
 		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="75">Order #</td>
 		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="135">&nbsp;&nbsp;&nbsp;&nbsp;Delivery Date</td>
-                <td class="text10bold" bgcolor="#DDDDDD" WIDTH="135">Delivery Type</td>
+                <td class="text10bold" bgcolor="#DDDDDD" WIDTH="180">Delivery Type</td>
 		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="75" align="right">Order Total</td>
 		<td bgcolor="#DDDDDD"><img src="/media_stat/images/layout/clear.gif" width="40" height="1" alt="" border="0"></td>
 		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="90">Order Status</td>
@@ -108,7 +108,9 @@ Please review your orders. To check the status of an order, click on the order n
             String deliveryType = "";
             if(orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD)) {
                 deliveryType = "Gift Card";
-            } else {
+            } else if(orderInfo.getSaleType().equals(EnumSaleType.DONATION)) {
+                deliveryType = "Robin Hood Donation";
+            }else {
                deliveryType = orderInfo.getDeliveryType().getName();
             }
         %>
