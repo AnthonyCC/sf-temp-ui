@@ -259,7 +259,12 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 			} else if ("deletePaymentMethod".equalsIgnoreCase(action)) {
 				performDeletePaymentMethod(request, result);
-				this.setSuccessPage("/gift_card/purchase/purchase_giftcard.jsp");
+				if ((request.getRequestURI().toLowerCase().indexOf("gift_card")>-1)){
+					this.setSuccessPage("/gift_card/purchase/purchase_giftcard.jsp");	
+				}else if ((request.getRequestURI().toLowerCase().indexOf("robin_hood")>-1))  {
+					this.setSuccessPage("/robin_hood/rh_submit_order.jsp");
+				}
+				
 				
 			} else if ("setDeliveryAddressAndPayment".equalsIgnoreCase(action)) {
 				performSetDeliveryAddressAndPayment(request, result);

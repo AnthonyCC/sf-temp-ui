@@ -175,6 +175,9 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
             	//FDCustomerManager.deleteSavedRecipient(request.getParameter("deleteId"));
             } 
         }
+       /* if(null !=actionName && !"".equals(actionName) && !actionName.equalsIgnoreCase("checkout")&& result.isSuccess()){
+        	fs_user.saveCart();
+        }*/
         //
         // place the result as a scripting variable in the page
         //
@@ -227,7 +230,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
         	}
         }
     	
-    	if((fldAmount==null || "".equals(fldAmount)) && ( fldAltAmount==null || "".equals(fldAltAmount))) {
+    	if((fldAmount==null || "".equals(fldAmount) || "OTHER".equalsIgnoreCase(fldAmount)) && ( fldAltAmount==null || "".equals(fldAltAmount))) {
             result.addError(new ActionError("fldAmount", "Invalid or missing amount"));
         }else {
         	if(fldAltAmount != null && fldAltAmount.length() > 0) {
