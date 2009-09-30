@@ -80,7 +80,7 @@ Please review your orders. To check the status of an order, click on the order n
 <TABLE WIDTH="690" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0">
 	<tr>
 		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="75">Order #</td>
-		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="135">&nbsp;&nbsp;&nbsp;&nbsp;Delivery Date</td>
+		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="175">&nbsp;&nbsp;&nbsp;&nbsp;Delivery Date</td>
                 <td class="text10bold" bgcolor="#DDDDDD" WIDTH="180">Delivery Type</td>
 		<td class="text10bold" bgcolor="#DDDDDD" WIDTH="75" align="right">Order Total</td>
 		<td bgcolor="#DDDDDD"><img src="/media_stat/images/layout/clear.gif" width="40" height="1" alt="" border="0"></td>
