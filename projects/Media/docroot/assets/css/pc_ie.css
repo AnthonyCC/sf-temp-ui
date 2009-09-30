@@ -636,9 +636,9 @@ a.tab:active	{ color : #845286; }
 					Apple Pricing - APPDEV-209
 **********************************************************/
  
-.aboutDisplaySalesUnit        { padding-top:2px; font-size: 11px; font-style: italic; font-weight: normal; font-family: Arial, sans-serif; color: #777777;}
-.aboutDisplaySalesUnitCat     { padding-top:2px; line-height:12px; font-size: 11px; font-style: italic; font-weight: normal; font-family: Arial, sans-serif; color: #777777;}
-.aboutDisplaySalesUnitProd    { padding-top:5px; font-size: 11px; font-style: italic; font-weight: normal; font-family: Arial, sans-serif; color: #777777;}
+.aboutDisplaySalesUnit        { padding-top:2px; font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #6B6B6B;}
+.aboutDisplaySalesUnitCat     { padding-top:2px; line-height:12px; font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #6B6B6B;}
+.aboutDisplaySalesUnitProd    { padding-top:5px; font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #6B6B6B;}
 
 /* GC-RH */
 .siteAccessInc table { text-align: center; }
