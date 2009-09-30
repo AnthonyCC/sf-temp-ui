@@ -24,7 +24,7 @@ FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER );
 request.setAttribute("donation", "true");
 UserUtil.initializeCartForDonationOrder(user);
 %>
-<fd:CheckoutController actionName="rh_submitDonationOrder" result="result" successPage="/robin_hood/rh_receipt.jsp" ccdProblemPage="/robin_hood/rh_submit_order.jsp?ccerror=true">
+<fd:CheckoutController actionName="rh_submitDonationOrder" result="result" successPage="/robin_hood/rh_receipt.jsp" ccdProblemPage="/robinhood/rh_submit_order.jsp?ccerror=true">
         
 <%
 	if (user.getFailedAuthorizations() > 0) { 
@@ -40,13 +40,17 @@ UserUtil.initializeCartForDonationOrder(user);
 			<span class="title18">Choose Payment Information</span><br />
 			Please select a payment option.
 		</td>
-		<td width="60" valign="middle" align="right" class="text10bold">
+		<td width="675" align="right" colspan="2">
+			<input type="image" name="submit_bot" id="submit_bot" src="/media_stat/images/giftcards/purchase/gc_submit_order.gif" width="90" height="25"  hspace="4" vspace="4" alt="submit order" border="0">
+		</td>
+		
+		<!--<td width="60" valign="middle" align="right" class="text10bold">
 			<input type="image" vspace="2" border="0" alt="CONTINUE TO CHECKOUT" src="/media_stat/images/buttons/continue_orange.gif" name="submit_top_text" />
 		</td>
 		<td width="35" valign="middle" align="RIGHT">
 			<input type="image" vspace="2" border="0" alt="GO" src="/media_stat/images/buttons/checkout_arrow.gif" name="submit_top_img" />
-		</td>
-	</tr>
+		</td>-->
+	  </tr>
 	<tr>
 		<td colspan="3" style="padding: 2px;">
 			<img style="margin: 2px 0;" width="690" height="1" border="0" src="/media_stat/images/layout/ff9933.gif" /><br />
