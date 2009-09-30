@@ -1699,7 +1699,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			} else if(reservation.getStatusCode() == 10) {
 				_reservation = doReserveEx(reservation, address, timeslot);
 				if( _reservation != null && _reservation.isReserved()) {
-					doConfirmEx(reservation, address, reservation.getRoutingOrderId());
+					doConfirmEx(reservation, address,  reservation.getRoutingOrderId()==null?reservation.getOrderId():reservation.getRoutingOrderId());
 				}
 			}
 		} else {
