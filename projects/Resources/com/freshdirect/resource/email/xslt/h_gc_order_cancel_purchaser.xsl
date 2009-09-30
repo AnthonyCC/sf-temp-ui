@@ -45,6 +45,7 @@
 							<p>Sincerly,<br/>
 							FreshDirect Customer Service
 							</p>
+							<p><b> To view the FreshDirect Gift Cards Terms and Conditions, <a href="http://www.freshdirect.com/media/editorial/giftcards/media_includes/terms_and_conditions.html">Please click here</a>.</b></p>
 
 							<p><xsl:call-template name="h_footer_v1"/></p>
 

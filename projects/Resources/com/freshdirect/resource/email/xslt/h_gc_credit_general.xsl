@@ -129,7 +129,7 @@
                           </xsl:if>
 						<p>FreshDirect<br/>									
 						<xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Group</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose></p>
-                                                <p><b> To view the FreshDirect Gift Cards Terms and Conditions, <a href="http://www.freshdirect.com/your_account/manage_account.jsp">Please click here</a>.</b></p>
+                                                <p><b> To view the FreshDirect Gift Cards Terms and Conditions, <a href="http://www.freshdirect.com/media/editorial/giftcards/media_includes/terms_and_conditions.html">Please click here</a>.</b></p>
 						<p><xsl:call-template name="h_footer_v1"/></p>
 
 					</td>

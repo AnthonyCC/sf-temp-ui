@@ -41,6 +41,7 @@
 
 									<p>FreshDirect<br/>									
 									<xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Group</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose></p>
+																<p><b> To view the FreshDirect Gift Cards Terms and Conditions, <a href="http://www.freshdirect.com/media/editorial/giftcards/media_includes/terms_and_conditions.html">Please click here</a>.</b></p>
 </font>
 									<br/><br/>							
 								<p><xsl:call-template name="h_gc_order_info_v1"/></p>
