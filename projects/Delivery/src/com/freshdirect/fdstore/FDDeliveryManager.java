@@ -606,7 +606,7 @@ public class FDDeliveryManager {
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(rsvId);
 				//if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))
-					RoutingUtil.getInstance().sendCommitReservationRequest(reservation, address, oldReserve.getOrderId());
+					RoutingUtil.getInstance().sendCommitReservationRequest(reservation, address, oldReserve.getRoutingOrderId());
 			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);

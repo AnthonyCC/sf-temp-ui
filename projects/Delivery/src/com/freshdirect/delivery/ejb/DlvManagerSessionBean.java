@@ -340,7 +340,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				type,
 				addressId,
 				timeslotModel.getBaseDate(),
-				timeslotModel.getZoneCode(),null,false);
+				timeslotModel.getZoneCode(),null,false,null);
 
 			return rsv;
 		} catch (SQLException se) {
@@ -361,7 +361,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static final String RESERVATION_BY_ID="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION,R.IN_UPS FROM DLV.RESERVATION R, "+
+	private static final String RESERVATION_BY_ID="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION,R.IN_UPS, R.ROUTING_ORDER_ID FROM DLV.RESERVATION R, "+
                                                    " DLV.TIMESLOT T, DLV.ZONE Z WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND R.ID=?";
 	
 	private DlvReservationModel getReservation(Connection con, String rsvId) throws SQLException {
@@ -379,7 +379,8 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			.getString("CUSTOMER_ID"), rs.getInt("STATUS_CODE"), rs.getTimestamp("EXPIRATION_DATETIME"), rs
 			.getString("TIMESLOT_ID"), rs.getString("ZONE_ID"), EnumReservationType.getEnum(rs.getString("TYPE")), rs
 			.getString("ADDRESS_ID"),rs.getDate("BASE_DATE"),rs.getString("ZONE_CODE"),RoutingActivityType.getEnum(rs.getString("UNASSIGNED_ACTION")),
-			"X".equalsIgnoreCase(rs.getString("IN_UPS"))?true:false);
+			"X".equalsIgnoreCase(rs.getString("IN_UPS"))?true:false,
+			rs.getString("ROUTING_ORDER_ID"));
 
 		rs.close();
 		ps.close();
@@ -1698,7 +1699,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			} else if(reservation.getStatusCode() == 10) {
 				_reservation = doReserveEx(reservation, address, timeslot);
 				if( _reservation != null && _reservation.isReserved()) {
-					doConfirmEx(reservation, address, reservation.getOrderId());
+					doConfirmEx(reservation, address, reservation.getRoutingOrderId());
 				}
 			}
 		} else {
@@ -1715,7 +1716,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		IDeliverySlot reservedSlot=null;
 		
 		RoutingUtil util=RoutingUtil.getInstance();
-		IOrderModel order=util.getOrderModel(address, reservation.getOrderId());
+		IOrderModel order=util.getOrderModel(address, reservation.getRoutingOrderId()==null?reservation.getOrderId():reservation.getRoutingOrderId());
 		IDeliveryReservation _reservation=null;
 		try {
 			
@@ -1742,7 +1743,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			LOGGER.debug(reservation);
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);
 		}
-		setUPSIndicator(reservation.getId());
+		setUPSIndicator(reservation.getId(),order.getOrderNumber());
 		return _reservation;
 	}
 	
@@ -1758,13 +1759,16 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			if(reservation.getStatusCode() == 10) {
 				doConfirmEx(reservation, address, previousOrderId);
 			} else if(reservation.getStatusCode() == 15 || reservation.getStatusCode() == 20) {
-				clearUnassignedInfo(reservation.getId());
-			} else if(reservation.getStatusCode() == 10) {
 				doReleaseReservationEx(reservation, address);
-			}
+				//clearUnassignedInfo(reservation.getId());
+			} /*else if(reservation.getStatusCode() == 10) {
+				doReleaseReservationEx(reservation, address);
+			}*/
 		} else if (reservation.getUnassignedActivityType()==null){
 			doConfirmEx(reservation, address, previousOrderId);
-		}		
+		}	else if (RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
+			doReleaseReservationEx(reservation, address);
+		}
 	}
 	
 	private void doConfirmEx(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) {
@@ -1835,7 +1839,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			LOGGER.debug(reservation);
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.CANCEL_TIMESLOT);
 		}
-		setUPSIndicator(reservation.getId());
+		//setUPSIndicator(reservation.getId());
 	}
 	
 	public void setUnassignedInfo(String reservationId,RoutingActivityType activity ) {
@@ -1859,11 +1863,11 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 
 	}
-	public void setUPSIndicator(String reservationId ) {
+	public void setUPSIndicator(String reservationId, String orderNum ) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			DlvManagerDAO.setInUPS(conn, reservationId);
+			DlvManagerDAO.setInUPS(conn, reservationId,orderNum );
 
 		} catch (SQLException e) {
 			LOGGER.warn("SQLException in DlvManagerDAO.setUPSIndicator() call ", e);
@@ -2050,7 +2054,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		
 		
 		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
-		orderModel.setOrderNumber(reservation.getOrderId());
+		orderModel.setOrderNumber( reservation.getOrderId());
 		routingService.schedulerCancelOrder(orderModel);
 		//LOGGER.info("schedulerCancelOrder():: releaseReservationEx:"+"SUCCESS");
 		
