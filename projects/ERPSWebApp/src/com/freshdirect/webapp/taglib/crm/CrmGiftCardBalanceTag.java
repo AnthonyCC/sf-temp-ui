@@ -38,6 +38,9 @@ public class CrmGiftCardBalanceTag extends AbstractControllerTag {
 			if(null == givexNum || "".equals(givexNum)){
 				actionResult.addError(true, "givexNum", SystemMessageList.MSG_REQUIRED);
 				return true;
+			}else if(givexNum.length()<16){
+				actionResult.addError(true, "fullGivexNum", SystemMessageList.MSG_REQUIRED);
+				return true;
 			}
 			try {
 				GiftCardManagerHome home= getGiftCardManagerHome();        		        		        	

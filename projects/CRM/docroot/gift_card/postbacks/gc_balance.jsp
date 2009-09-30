@@ -28,7 +28,9 @@
                 if(result.getError("givexNum") != null) {
                     //Missing Info.
                     json.put("message", "<span style=\"color: FF0000;\"><b>Givex Number is required.</b></span>");
-                } else if(result.getError("invalidCard") != null) {
+                } else if(result.getError("fullGivexNum")!=null){
+                	json.put("message", "<span style=\"color: FF0000;\"><b>Full Givex Number is required.</b></span>");
+                }else if(result.getError("invalidCard") != null) {                
                     json.put("message", "<span style=\"color: FF0000;\"><b>"+result.getError("invalidCard").getDescription()+"</b></span>");
                 }else if(result.getError("technicalDifficulty") != null) {
                     json.put("message", "<span style=\"color: FF0000;\"><b>Sorry, we''re experiencing technical difficulties. Please try again later.</b></span>");

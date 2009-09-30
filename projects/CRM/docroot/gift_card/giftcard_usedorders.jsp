@@ -16,7 +16,10 @@
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
-<fd:GetRedemedGiftCardOrders id='orders'>
+<%
+String certNum = request.getParameter("certNum");
+%>
+<fd:GetRedemedGiftCardOrders id='orders' certNum="<%=certNum %>">
 	<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table1">
 		<!-- <tr>
 			<td colspan="4" class="gc_colHeader">Recent Orders with Gift Card Purchase</td>
