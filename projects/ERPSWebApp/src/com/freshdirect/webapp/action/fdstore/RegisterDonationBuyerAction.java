@@ -148,6 +148,11 @@ public class RegisterDonationBuyerAction extends RegistrationAction {
 			}*/
 		
 			//Set the
+			
+			if (actionResult.isSuccess()) {
+				user.isLoggedIn(true);
+			}
+		
 			return SUCCESS;
 		
 	}
