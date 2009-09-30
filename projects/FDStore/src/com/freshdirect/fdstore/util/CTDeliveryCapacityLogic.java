@@ -81,7 +81,6 @@ public class CTDeliveryCapacityLogic
 				while (true) {
 					try {
 						CTProfileConfig r = (CTProfileConfig) in.readObject();
-						r.config();
 						CONFIG.add(r);
 					} catch (EOFException e) {
 						break;
@@ -325,35 +324,6 @@ class CTProfileConfig implements Comparable
 	private String defaultZoneCapacityCondition;
 	private int defaultZoneCapacityValue;
 	
-	//after loading do config
-	private Date startDateConfig;
-	private Date endDateConfig;
-	
-	public void config()
-	{
-		try {
-			startDateConfig= CTDeliveryCapacityLogic.MONTH_DATE_YEAR_FORMATTER.parse(startDate);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		try {
-			endDateConfig= CTDeliveryCapacityLogic.MONTH_DATE_YEAR_FORMATTER.parse(endDate);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		if(profiles!=null)
-		{
-			for(Profile p:profiles)
-			{
-				p.config();
-			}
-		}
-	}
-	
 	public int getMin() {
 		return min;
 	}
@@ -383,11 +353,23 @@ class CTProfileConfig implements Comparable
 		}
 	}
 	public Date getStartDate() {
-		return startDateConfig;
+		try {
+			return CTDeliveryCapacityLogic.MONTH_DATE_YEAR_FORMATTER.parse(startDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public Date getEndDate() {
-		return endDateConfig;
+		try {
+			return CTDeliveryCapacityLogic.MONTH_DATE_YEAR_FORMATTER.parse(endDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	
@@ -454,9 +436,7 @@ class CTProfileConfig implements Comparable
 class Profile
 {
 	String name;
-	private String value;
-	private List<String> values;
-	
+	private String value;	
 	public String getName() 
 	{
 		return name;
@@ -465,11 +445,6 @@ class Profile
 		this.name = name;
 	}
 	public List<String> getValue() {
-		return values;
-	}
-	
-	public void config()
-	{
 		if(value!=null)
 		{
 			String[] bcc = value.split(",");
@@ -479,9 +454,11 @@ class Profile
 	 			if (addr.length() != 0)
 	 				bccs.add(addr);
 	 		}
-	 		values=bccs;
+			return bccs;
 		}
+		return null;
 	}
+	
 	
 }
 
