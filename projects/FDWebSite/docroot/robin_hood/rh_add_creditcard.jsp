@@ -12,7 +12,7 @@
     <tmpl:put name='content' direct='true'>
 <%
 String success_page = "rh_submit_order.jsp";
-request.setAttribute("giftcard", "true");
+request.setAttribute("donation", "true");
 FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER);
 %>
 

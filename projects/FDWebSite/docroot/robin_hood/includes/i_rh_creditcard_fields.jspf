@@ -14,7 +14,7 @@ String[] checkErrorType = {"technical_difficulty", "payment_method_fraud"};
 
 
 <%
-String successPage = "/gift_card/purchase/purchase_giftcard.jsp";
+String successPage = "/robin_hood/rh_submit_order.jsp";
 String cancelPage = successPage;
 
 
