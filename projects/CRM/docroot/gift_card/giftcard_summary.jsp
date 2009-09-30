@@ -182,7 +182,7 @@ function gcNumberSubmit(){
 								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 								<td colspan="4">
 									<% if (orders.size()>5) {%>
-										<a href="#" class="gLink" style="color: #5EBB64;">More &gt;&gt;</a>
+										<a href="/main/order_history.jsp" class="gLink" style="color: #5EBB64;">More &gt;&gt;</a>
 									<% }else{ %>
 										&nbsp;
 									<% } %>
@@ -236,11 +236,11 @@ function gcNumberSubmit(){
 					</td>
 					<td width="33%" class="gc_table_footer">
 						<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table3footer">
-						<form name="giftcard_search1"  action="/gift_card/giftcard_landing.jsp"><!-- /main/order_search_results.jsp?search=quick -->
+						<form name="giftcard_search1" id="giftcard_search1" action="/gift_card/giftcard_landing.jsp"><!-- /main/order_search_results.jsp?search=quick -->
 							<tr valign="middle">
 								<td align="center">
 									Search Order with Gift Card:&nbsp;<input type="text" style="width: 150px;" name="gcNumber"  value="<%= "null".equalsIgnoreCase(request.getParameter("giftCardNumber")) ? "" : request.getParameter("giftCardNumber") %>" />&nbsp;&nbsp;&nbsp;                                      
-                                    <input type="button" name="" value="SEARCH" class="button" onclick="javascript:gcNumberSubmit();" />
+                                    <input type="button" name="SEARCH1" value="SEARCH" class="button" onclick="javascript:gcNumberSubmit();;" />
                                     
 								</td>
 							</tr>
