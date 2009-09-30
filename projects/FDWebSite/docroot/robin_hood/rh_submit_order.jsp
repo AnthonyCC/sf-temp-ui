@@ -24,7 +24,7 @@ FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER );
 request.setAttribute("donation", "true");
 UserUtil.initializeCartForDonationOrder(user);
 %>
-<fd:CheckoutController actionName="rh_submitDonationOrder" result="result" successPage="/robin_hood/rh_receipt.jsp" ccdProblemPage="/robinhood/rh_submit_order.jsp?ccerror=true">
+<fd:CheckoutController actionName="rh_submitDonationOrder" result="result" successPage="/robin_hood/rh_receipt.jsp" ccdProblemPage="/robin_hood/rh_submit_order.jsp?ccerror=true">
         
 <%
 	if (user.getFailedAuthorizations() > 0) { 
