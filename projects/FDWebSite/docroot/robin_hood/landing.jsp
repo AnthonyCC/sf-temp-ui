@@ -63,9 +63,7 @@
 									qty = parseFloat(document.rh_form.quantity.value) + delta;
 									if (isNaN(qty) || qty < 1) {
 										qty = 1;
-									} else if (qty >= 99) {
-										qty = 99;
-									}
+									} 
 									qty = Math.floor( (qty-1.0)/1.0 )*1.0  + 1.0;
 									document.rh_form.quantity.value = qty;
 									document.rh_form.total_price.value = formatCurrency(qty * <%=productInfo.getDefaultPrice()%>);
