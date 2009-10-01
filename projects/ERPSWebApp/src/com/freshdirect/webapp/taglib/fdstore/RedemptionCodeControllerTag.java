@@ -83,9 +83,10 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 				HttpSession session = (HttpSession) pageContext.getSession();
 				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				FDGiftCardInfoList giftCards = user.getGiftCardList();
+				FDGiftCardInfoList giftCards1 = FDCustomerManager.getGiftCards(user.getIdentity());
 				if(certNum != null && certNum.length() > 0){
 					
-					FDGiftCardModel model = (FDGiftCardModel)giftCards.getGiftCard(certNum);
+					FDGiftCardModel model = (FDGiftCardModel)giftCards1.getGiftCard(certNum);
 					FDCustomerManager.removePaymentMethod(AccountActivityUtil
 							.getActionInfo(pageContext.getSession()), model.getGiftCardModel());
 					//Remove it from user cache.
