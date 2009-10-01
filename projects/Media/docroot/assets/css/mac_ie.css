@@ -28,7 +28,7 @@ A.list		    { line-height: 12px; }
 
 .greybox		{ color: #333333; background: #EEEEEE; font-size: 9px; font-family: Verdana, Arial, sans-serif; }
 
-.price 						{ font-size: 11px; font-weight: bold; color:#555555; line-height: 16px;  font-family: Tahoma,Arial, sans-serif;}
+.price 						{ font-size: 11px; font-weight: bold; color:#555555; line-height: 16px;  font-family: Tahoma, Arial, sans-serif;}
 .groceryProductLinePrice 	{ font-size: 12px; font-weight: bold; color:#555555; font-family: Arial, sans-serif;}
 .favoritePrice  			{ font-size: 11px; font-weight: bold; color:#333333; line-height: 16px; font-family: Tahoma, Arial, sans-serif;}
 .productPageSinglePrice  	{ font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
@@ -631,8 +631,8 @@ a.tab:active	{ color : #845286; }
 					Apple Pricing - APPDEV-209
 **********************************************************/
  
-.aboutDisplaySalesUnit        { padding-top:2px; font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #6B6B6B;}
-.aboutDisplaySalesUnitCat     { padding-top:2px; line-height:12px; font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #6B6B6B;}
+.aboutDisplaySalesUnit        { padding-top:2px; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, sans-serif; color: #6B6B6B;}
+.aboutDisplaySalesUnitCat     { padding-top:2px; line-height:12px; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, sans-serif; color: #6B6B6B;}
 .aboutDisplaySalesUnitProd    { padding-top:5px; font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #6B6B6B;}
 
 /* GC-RH */
