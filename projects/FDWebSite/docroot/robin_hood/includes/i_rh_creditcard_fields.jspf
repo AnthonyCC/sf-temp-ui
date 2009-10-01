@@ -102,16 +102,12 @@ String custLname = null;
 
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
 	<TR VALIGN="TOP">
-		<TD WIDTH="693"><img
-			src="/media_stat/images/giftcards/payment_method/payment_information.gif"
-			WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<FONT
-			CLASS="text12">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1"
-			BORDER="0" VSPACE="3"><BR>
-		</TD>
-	</TR>
-</TABLE>
+	<TD WIDTH="693"><img src="/media_stat/images/navigation/credit_card_details.gif"
+		WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
+		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
+	</TR></TABLE>
 <br>
+
 
 <TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="MIDDLE">
@@ -185,26 +181,21 @@ String custLname = null;
 
 </TABLE>
 <br><br>
-<!--<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
 <TR VALIGN="TOP">
 	<TD WIDTH="693">
 		<img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="206" HEIGHT="9" border="0" alt="BILLING ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" vspace="3"><BR>
-
-		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br></TD></TR>
+		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" vspace="3"><BR><br>
+		<font class="text12">Please enter billing address as it appears on your credit card statement.</font><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" border="0" width="1" height="4"><br>
+		</TD>
+</TR>
 </TABLE>
+
+<!--<font class="space4pix"><br></font>
 -->
-<font class="space4pix"><br></font>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="683">
-	<TR>
-		<TD WIDTH="320" class="text11">
-		   Please enter the billing address as it appears on your credit card statement.<br />
-		   We will confirm your tax-deductible donation by sending a letter to the address you	enter.<br />
-		   (You may opt of sharing your contact information with Robin hood below).<br />	
-		 </TD>
-       </TR>
 
-</TABLE>
+
 <br /><TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
 			<TR VALIGN="MIDDLE">
 				<TD WIDTH="660" ALIGN="RIGHT" colspan="2" CLASS="text12"><fd:ErrorHandler
