@@ -33,6 +33,19 @@ public class GiftCardUtil {
 		return success;
 	}
 	
+	public static boolean resendEmail(HttpServletRequest request, String saleId, String certificationNum, String resendEmailId, String recipName, String personalMsg,boolean toPurchaser, boolean toLastRecipient) {
+		boolean success = false;
+		try{
+			FDActionInfo actionInfo = AccountActivityUtil.getActionInfo(request.getSession());
+			FDCustomerManager.resendEmail(saleId, certificationNum, resendEmailId, recipName, personalMsg,toPurchaser, toLastRecipient, actionInfo.getSource());
+			success = true;
+		}catch(FDResourceException fe){
+			LOGGER.debug(fe);
+		}
+		return success;
+	}
+	
+	
 	public static String[] sendGiftCardCancellationEmail(HttpServletRequest request, String saleId, String givexNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) {
 		String[] sentEmailAddresses = null;
 //		sentEmailAddresses= new String[]{"abc","",""};

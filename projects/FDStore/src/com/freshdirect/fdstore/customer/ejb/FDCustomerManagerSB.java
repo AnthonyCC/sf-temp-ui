@@ -667,6 +667,8 @@ public interface FDCustomerManagerSB extends EJBObject {
     
     public boolean resendEmail(String saleId, String certificationNum, String resendEmailId, String recipName, String personMsg, EnumTransactionSource source) throws FDResourceException, RemoteException;
     
+    public boolean resendEmail(String saleId, String certificationNum, String resendEmailId, String recipName, String personMsg, boolean toPurchaser, boolean toLastRecipient, EnumTransactionSource source) throws FDResourceException, RemoteException;
+    
     public double getOutStandingBalance(ErpAbstractOrderModel order) throws FDResourceException, RemoteException;
     
     public void doEmail(FTLEmailI email) throws RemoteException, FDResourceException;

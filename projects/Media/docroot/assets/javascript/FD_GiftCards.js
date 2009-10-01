@@ -963,23 +963,23 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 
 	function sendCancellation(){
 		
-		if(!(document.getElementById('origRecp_gcResendCRMCancelBox').checked) && !(document.getElementById('self_gcResendCRMCancelBox').checked) && !(document.getElementById('newRecipient_gcResendCRMCancelBox').checked)){
+		if(!(document.getElementById('origRecpEmail_gcResendCRMCancelBox').checked) && !(document.getElementById('selfEmail_gcResendCRMCancelBox').checked) && !(document.getElementById('newRecipient_gcResendCRMCancelBox').checked)){
 			$('gcResendCRMCancelBoxErr').innerHTML = '<span class="error">Select atleast one option to send cancellation email.</span>';
 				
-		}else if(document.getElementById('newRecipient_gcResendCRMCancelBox').checked && (null == $('newRecipientAddr_gcResendCRMCancelBox').value || $('newRecipientAddr_gcResendCRMCancelBox').value.trim() == '')){
+		}else if(document.getElementById('newRecipient_gcResendCRMCancelBox').checked && (null == $('newRecpEmail_gcResendCRMCancelBox').value || $('newRecpEmail_gcResendCRMCancelBox').value.trim() == '')){
 			$('sendCancelErr_gcResendCRMCancelBox').innerHTML = '<span class="error">Enter email address for New recipient.</span>';
 			
-		}else{
+		}else{			
 			new Ajax.Request('/gift_card/postbacks/resend.jsp', {
 				parameters: {
 					isSendCancellationEmail: true,
 					gcSaleId: $('gcSaleId_gcResendCRMCancelBox').value,
 					gcCertNum: $('gcCertNum_gcResendCRMCancelBox').value,
 					gcGivexNum: $('gcGivexNum_gcResendCRMCancelBox').value,
-					origRecp: $('origRecp_gcResendCRMCancelBox').checked,
-					self: $('self_gcResendCRMCancelBox').checked,
+					origRecp: $('origRecpEmail_gcResendCRMCancelBox').checked,
+					self: $('selfEmail_gcResendCRMCancelBox').checked,
 					newRecipient: $('newRecipient_gcResendCRMCancelBox').checked,
-					newRecipientAddr: $('newRecipientAddr_gcResendCRMCancelBox').value
+					newRecipientAddr: $('newRecpEmail_gcResendCRMCancelBox').value
 				   
 				},
 				onSuccess: function(transport) {

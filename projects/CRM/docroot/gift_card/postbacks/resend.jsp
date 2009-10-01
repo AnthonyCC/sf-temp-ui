@@ -63,15 +63,24 @@
             String resendEmailId = request.getParameter("gcRecipEmail");
             String recipName = request.getParameter("gcRecipName");
             String persMessage = request.getParameter("gcMessage");
-
-		boolean success = GiftCardUtil.resendEmail(request, saleId, certNum, resendEmailId, recipName, persMessage);
-        JSONObject json = new JSONObject();
-        if(success) {
-		    //if we return anything, it will de displayed in the overlay (can be html)
-            json.put("returnMsg", "<b<span style=\"color: #f00;\">Gift Card resent successfully.</span></b>");
-        } else {
-            json.put("returnMsg", "<b><span style=\"color: #f00;\">Unable to process your request. Please contact customer service.</span></b");
-        }
+            boolean toPurchaser = "true".equals((String)request.getParameter("gcIsPurchaser"))?true:false;
+            boolean toLastRecipient = "true".equals((String)request.getParameter("gcIsLastRecip"))?true:false;            
+            JSONObject json = new JSONObject();
+            if(!toPurchaser && !toLastRecipient){
+            	json.put("returnMsg", "<b<span style=\"color: #f00;\">Please select atleast one to send gift card email.</span></b>");
+            	
+            }else{
+				boolean success = GiftCardUtil.resendEmail(request, saleId, certNum, resendEmailId, recipName, persMessage,toPurchaser,toLastRecipient);
+		        
+		        if(success) {
+				    //if we return anything, it will de displayed in the overlay (can be html)
+		            json.put("returnMsg", "<b<span style=\"color: #f00;\">Gift Card resent successfully.</span></b>");
+		            json.put("opStatus","ok");
+		        } else {
+		            json.put("returnMsg", "<b><span style=\"color: #f00;\">Unable to process your request. Please contact customer service.</span></b");
+		            json.put("opStatus","error");
+		        }
+            }
 		%>  <%=json.toString()%>
 		<%
 	}

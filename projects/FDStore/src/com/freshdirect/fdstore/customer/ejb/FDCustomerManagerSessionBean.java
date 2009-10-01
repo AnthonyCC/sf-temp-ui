@@ -4714,6 +4714,57 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			return true; //success
 		}		
 		
+		public boolean resendEmail(String saleId, String certificationNum, String resendEmailId, String recipName, String personMsg,boolean toPurchaser, boolean toLastRecipient, EnumTransactionSource source) throws FDResourceException {
+			ErpGCDlvInformationHolder holder =  null;
+			FDOrderI order = getOrder(saleId);
+			List gcDlvList = order.getGCDeliveryInfo().getDlvInfoTranactionList();
+			for(Iterator it=gcDlvList.iterator(); it.hasNext();) {
+				holder = (ErpGCDlvInformationHolder) it.next();
+				if(holder.getCertificationNumber().equals(certificationNum)){
+					break;
+				}
+			}
+			if(holder == null) return false; //failure to resend
+			try {
+				if(holder != null){
+					List recipientList = new ArrayList();
+					if(toPurchaser){						
+						String custId = order.getCustomerId();
+						FDCustomerEB custEB = getFdCustomerHome().findByErpCustomerId(custId);
+						FDIdentity identity = new FDIdentity(custId, custEB.getPK().getId());
+						FDCustomerInfo custInfo = this.getCustomerInfo(identity);
+						ErpGCDlvInformationHolder purchaserHolder = (ErpGCDlvInformationHolder)holder.deepCopy();
+						purchaserHolder.getRecepientModel().setRecipientEmail(custInfo.getEmailAddress());
+						purchaserHolder.getRecepientModel().setRecipientName(custInfo.getLastName());
+						purchaserHolder.getRecepientModel().setDeliveryMode(EnumGCDeliveryMode.EMAIL);
+						recipientList.add(purchaserHolder);					
+					}
+						
+					if(toLastRecipient){
+						ErpGCDlvInformationHolder newHolder = (ErpGCDlvInformationHolder)holder.deepCopy();
+						newHolder.getRecepientModel().setRecipientEmail(resendEmailId);
+						newHolder.getRecepientModel().setRecipientName(recipName);
+						newHolder.getRecepientModel().setPersonalMessage(personMsg);
+						newHolder.getRecepientModel().setDeliveryMode(EnumGCDeliveryMode.EMAIL);
+						recipientList.add(newHolder);
+					}
+					if(recipientList.isEmpty()){
+						return false; //No recipients to send.
+					}else{
+						GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+						sb.resendGiftCard(saleId, recipientList, source);
+					}
+				}
+			}catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}catch (FinderException fe) {
+				throw new FDResourceException(fe);
+			}
+			return true; //success
+		}
+		
 		 public double getOutStandingBalance(ErpAbstractOrderModel order) throws FDResourceException {
 			try {
 				ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();

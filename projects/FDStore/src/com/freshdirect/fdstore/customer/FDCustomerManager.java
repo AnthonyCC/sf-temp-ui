@@ -3132,6 +3132,20 @@ public class FDCustomerManager {
 			}		
 		}
 		
+		public static boolean resendEmail(String saleId, String certificationNum, String resendEmailId, String recipName, String personalMsg,boolean toPurchaser, boolean toLastRecipient, EnumTransactionSource source) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.resendEmail(saleId, certificationNum, resendEmailId, recipName, personalMsg, toPurchaser, toLastRecipient, source);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}		
+		}
+		
 		public static double getOutStandingBalance(FDCartModel cart) throws FDResourceException {
 			lookupManagerHome();
 			try {
