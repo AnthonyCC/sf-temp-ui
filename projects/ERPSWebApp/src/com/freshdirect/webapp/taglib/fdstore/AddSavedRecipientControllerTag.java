@@ -81,6 +81,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
         HttpSession session = pageContext.getSession();
         FDSessionUser fs_user = (FDSessionUser)session.getAttribute(USER);
         user = fs_user.getUser();
+        boolean isCartChanged = false;
 
         //
         // perform any actions requested by the user if the request was a POST
@@ -100,6 +101,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
                     	//Set the last entered sender name and sender email to request.
                         fs_user.setLastSenderName(fldYourName);
                     	fs_user.setLastSenderEmail(fldYourEmail);
+                    	isCartChanged = true;
                     }
                 } else if ("editSavedRecipient".equalsIgnoreCase(actionName)) {
                     getFormData(request, result);
@@ -122,6 +124,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
 	                		} else {
 	                			//update recipient
 	                			user.getRecipentList().setRecipient(repIndex, srm);
+	                			isCartChanged = true;
 	                		}
                 		}
                     	//FDCustomerManager.updateSavedRecipient(user, srm);
@@ -169,15 +172,16 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
             		} else {
             			//remove recipient
             			user.getRecipentList().removeRecipient(repIndex);
+            			isCartChanged = true;
             		}
         		}
 
             	//FDCustomerManager.deleteSavedRecipient(request.getParameter("deleteId"));
             } 
         }
-       /* if(null !=actionName && !"".equals(actionName) && !actionName.equalsIgnoreCase("checkout")&& result.isSuccess()){
+        if(isCartChanged){
         	fs_user.saveCart();
-        }*/
+        }
         //
         // place the result as a scripting variable in the page
         //

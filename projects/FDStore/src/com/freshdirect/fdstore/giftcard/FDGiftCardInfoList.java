@@ -110,6 +110,7 @@ public class FDGiftCardInfoList implements Serializable {
 			FDGiftCardI gc = (FDGiftCardI) it.next();
 			if(gc.getCertificateNumber().equals(certificationNum)){
 				it.remove();
+				break;
 			}
 		}
 	}

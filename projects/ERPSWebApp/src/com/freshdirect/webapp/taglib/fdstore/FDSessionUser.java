@@ -213,7 +213,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		//
 		// don't save users that don't have a primary key
 		//
-		if (this.user.isAnonymous()) return false;
+//		if (this.user.isAnonymous()) return false;
 		//
 		// don't save carts in modify mode
 		//
@@ -224,7 +224,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		//  anonymous and in our delivery area,
 		//  anonymous and will be in our delivery area within a year
 		//
-		if (this.getLevel() >= RECOGNIZED || this.isInZone()) {
+		if (this.getLevel() >= GUEST || this.isInZone()) {
 			return true;
 		}
 		return false;
