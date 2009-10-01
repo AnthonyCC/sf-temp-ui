@@ -157,9 +157,9 @@ StringBuffer buffer = new StringBuffer(
 <!-- ===================================== -->
 <!-- ============ Cart & tabs ============ -->
 <!-- ===================================== -->
-<%--
+
 <%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
---%>
+
 
 <BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>

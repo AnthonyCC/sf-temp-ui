@@ -19,6 +19,7 @@ import java.sql.Date;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -416,12 +417,13 @@ public class GiftCardPersistanceDAO {
 		return tranList;
 	}
 
-	private static final String GC_VALID_PRE_AUTHS = "select ID, TRAN_TYPE, TRANS_AMOUNT FROM CUST.GIFT_CARD_TRANS WHERE TRAN_TYPE IN ('PRE') AND TRAN_STATUS IN ('P','S') AND CERTIFICATE_NUM = ? "+
-													"and AUTH_CODE NOT IN (SELECT PRE_AUTH_CODE FROM CUST.GIFT_CARD_TRANS WHERE TRAN_TYPE IN ('REV-PRE', 'POST') AND CERTIFICATE_NUM = ? AND TRAN_STATUS <> 'F')";
+	private static final String GC_VALID_PRE_AUTHS = "select ID, TRAN_TYPE, TRANS_AMOUNT FROM CUST.GIFT_CARD_TRANS WHERE TRAN_TYPE IN ('PRE') AND TRAN_STATUS IN ('P','S') AND CERTIFICATE_NUM = ? ";
+	private static final String GC_VALID_REVERSE_AUTHS = "SELECT PRE_AUTH_CODE FROM CUST.GIFT_CARD_TRANS WHERE TRAN_TYPE IN ('REV-PRE', 'POST') AND CERTIFICATE_NUM = ? AND TRAN_STATUS <> 'F'";
 
 	public static List loadValidPreAuths(Connection conn, String givexNum)
 			throws SQLException {
-		List tranList = new ArrayList();
+		List preList = new ArrayList();
+		List revList = new ArrayList();
 		// ErpGiftCardModel giftCardModel = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -429,18 +431,34 @@ public class GiftCardPersistanceDAO {
 			ps = conn.prepareStatement(GC_VALID_PRE_AUTHS);
 			//ps.setString(1, ErpGiftCardUtil.encryptGivexNum(givexNum));
 			ps.setString(1, ErpGiftCardUtil.getCertificateNumber(givexNum));
-			ps.setString(2, ErpGiftCardUtil.getCertificateNumber(givexNum));
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				ErpGiftCardAuthModel giftCardTranModel = new ErpPreAuthGiftCardModel();
+				ErpPreAuthGiftCardModel giftCardTranModel = new ErpPreAuthGiftCardModel();
 				PrimaryKey pk = new PrimaryKey(rs.getString("ID"));
 				giftCardTranModel.setPK(pk);
 				giftCardTranModel
 						.setGCTransactionType(EnumGiftCardTransactionType
 								.getEnum((rs.getString("TRAN_TYPE"))));
 				giftCardTranModel.setAmount(rs.getDouble("TRANS_AMOUNT"));
-				tranList.add(giftCardTranModel);
+				preList.add(giftCardTranModel);
 			}
+			rs.close();
+			ps.close();
+			ps = conn.prepareStatement(GC_VALID_REVERSE_AUTHS);
+			ps.setString(1, ErpGiftCardUtil.getCertificateNumber(givexNum));
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				String preAuthCode = rs.getString("PRE_AUTH_CODE");
+				revList.add(preAuthCode);
+			}
+			for (Iterator it = preList.iterator(); it.hasNext();) {
+				ErpPreAuthGiftCardModel giftCardTranModel = (ErpPreAuthGiftCardModel)it.next();
+				if(revList.contains(giftCardTranModel.getAuthCode())) {
+					//Pre-auth has been reversed. ignore it.
+					it.remove();
+				}
+			}
+			
 		} catch (SQLException se) {
 			throw se;
 		} finally {
@@ -449,7 +467,7 @@ public class GiftCardPersistanceDAO {
 			if (ps != null)
 				ps.close();
 		}
-		return tranList;
+		return preList;
 	}
 	
 	private static final String GC_RECIPENT_EMAIL_INSERT = "INSERT INTO CUST.GIFT_CARD_DELIVERY_INFO(ID, GIFT_CARD_ID,RECIPENT_ID,DELIVERY_MODE,EMAIIL_SENT) VALUES(?,?,?,?,?)";

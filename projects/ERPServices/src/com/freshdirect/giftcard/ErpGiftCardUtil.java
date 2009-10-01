@@ -50,6 +50,15 @@ public class ErpGiftCardUtil {
 		return appliedAmount;
 	}
 	
+	public static double getTotalAppliedAmount(List appliedGiftCards) {
+		double appliedAmount = 0.0;
+		for(Iterator it = appliedGiftCards.iterator(); it.hasNext();) {
+			ErpAppliedGiftCardModel model = (ErpAppliedGiftCardModel) it.next();
+				appliedAmount += model.getAmount();
+		}
+		return appliedAmount;
+	}
+	
 	public static List getGiftcardPaymentMethods(List appliedGiftCards) {
 		Map pmMap = new HashMap();
 		System.out.println("Applied gift cards "+appliedGiftCards.size());

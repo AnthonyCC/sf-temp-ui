@@ -361,18 +361,25 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public void addInvoice(ErpInvoiceModel invoiceModel) throws ErpTransactionException {
 
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.INPROCESS, EnumSaleStatus.RETURNED });
-
+		
 		this.transactions.add(invoiceModel);
 		if (this.status.equals(EnumSaleStatus.RETURNED)) {
+			ErpAbstractOrderModel orderModel = this.getCurrentOrder();
 			if ((int) Math.round(invoiceModel.getAmount() * 100) > 0) {
-				if(invoiceModel.getAppliedGiftCards().size() > 0){
+				if(orderModel.getAppliedGiftcards().size() > 0){
 					//Gift card used on this order. set the status to POST AUTH Pending.
 					this.status =  EnumSaleStatus.POST_AUTH_PENDING;
 				} else {
 					this.status = EnumSaleStatus.CAPTURE_PENDING;			
 				}
 			} else {
-				this.status = EnumSaleStatus.SETTLED;
+				if(orderModel.getAppliedGiftcards().size() > 0){
+					//Gift card used on this order. set the status to POST AUTH Pending.
+					//so auths get reversed.
+					this.status =  EnumSaleStatus.POST_AUTH_PENDING;
+				} else {
+					this.status = EnumSaleStatus.SETTLED;			
+				}
 			}
 		} else {
 			this.status = EnumSaleStatus.ENROUTE;
@@ -500,7 +507,8 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel) throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.ENROUTE});	
 		this.transactions.add(deliveryConfirmModel);
-		if(this.getInvoice().getAppliedGiftCards().size() > 0){
+		ErpAbstractOrderModel orderModel = this.getCurrentOrder();
+		if(orderModel.getAppliedGiftcards().size() > 0){
 			//Gift card used on this order. set the status to POST AUTH Pending.
 			this.status =  EnumSaleStatus.POST_AUTH_PENDING;
 		} else {
@@ -1240,6 +1248,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 					EnumSaleStatus.MODIFIED_CANCELED,
 					EnumSaleStatus.CANCELED					
 					});
+		auth.setPostedTime(new Date());
 		int i = this.transactions.indexOf(auth);
 		auth.setGcTransactionStatus(EnumGiftCardTransactionStatus.CANCEL);
 		this.transactions.set(i, auth);
@@ -1266,9 +1275,10 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 					EnumSaleStatus.SUBMITTED,
 					EnumSaleStatus.AUTHORIZED,
 					EnumSaleStatus.MODIFIED,
+					EnumSaleStatus.CANCELED,
 					EnumSaleStatus.POST_AUTH_PENDING
 					});
-		
+		auth.setPostedTime(new Date());
 		int i = this.transactions.indexOf(auth);
 		this.transactions.set(i, auth);
 	}

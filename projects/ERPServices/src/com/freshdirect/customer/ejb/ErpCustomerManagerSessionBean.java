@@ -1139,9 +1139,16 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					throw new ErpComplaintException("Store credit can only be approved once the has been delivered to the customer.");
 				}
 				//Cannot issue cashback that is more than the amount we actually charged for.
-
 				double invoiceAmount = ((int) Math.round(saleModel.getLastInvoice().getAmount() * 100)) / 100.0;
+				List invoicedGiftCards = saleModel.getLastInvoice().getAppliedGiftCards();
+				if(invoicedGiftCards != null && invoicedGiftCards.size() > 0){
+					//Gift cards applied on the order. substract applied gift card amount from invoice amount.
+					double appliedInvGCamount = ErpGiftCardUtil.getTotalAppliedAmount(invoicedGiftCards);
+					invoiceAmount -= appliedInvGCamount;
+				}
+				
 				double cashBackAmount = ((int) Math.round(pendingComplaint.getCashBackAmount() * 100)) / 100.0;
+				
 				if (cashBackAmount > invoiceAmount) {
 					this.getSessionContext().setRollbackOnly();
 					throw new ErpComplaintException("Cashback amount cannot be more than the invoice amount.");

@@ -35,6 +35,15 @@ public class ErpGiftCardAuthModel extends ErpGiftCardTransModel {
 		this.tranModel.setActionTime(actionTime);
 	}
 
+	public Date getPostedTime() {
+		return this.tranModel.getPostedTime();
+	}
+
+	public void setPostedTime(Date postedTime) {
+		this.tranModel.setPostedTime(postedTime);
+	}
+
+	
 	public String getErrorMsg() {
 		return this.tranModel.getErrorMsg();
 	}
@@ -72,7 +81,8 @@ public class ErpGiftCardAuthModel extends ErpGiftCardTransModel {
     public ErpGiftCardAuthModel(EnumTransactionType txType) {
 		super(txType);
 		this.tranModel = new ErpGiftCardTransactionModel();
-		this.tranModel.setActionTime(new Date());		
+		this.tranModel.setActionTime(new Date());
+		this.tranModel.setPostedTime(new Date());		
     }
     
     

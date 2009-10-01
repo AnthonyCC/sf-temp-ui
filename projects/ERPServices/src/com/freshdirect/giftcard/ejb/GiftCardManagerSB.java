@@ -38,6 +38,8 @@ public interface GiftCardManagerSB extends EJBObject {
 	
 	public List preAuthorizeSales(String saleId) throws RemoteException;
 	
+	public List reversePreAuthForCancelOrders(String saleId) throws RemoteException;
+	
 	public void postAuthorizeSales(String saleId) throws RemoteException;
 	
 	public List getGiftCardModel(GenericSearchCriteria resvCriteria) throws  RemoteException;

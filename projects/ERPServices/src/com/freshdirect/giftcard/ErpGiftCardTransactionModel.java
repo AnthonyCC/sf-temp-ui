@@ -14,6 +14,7 @@ public class ErpGiftCardTransactionModel extends ModelSupport {
 	private String certificateNumber;
 	private String preAuthCode;
 	private Date actionTime;
+	private Date postedTime;
 	private double transactionAmount;
     private String securityCode;
 	private EnumGiftCardTransactionType  giftCardTransactionType;
@@ -115,6 +116,14 @@ public class ErpGiftCardTransactionModel extends ModelSupport {
 
 	public void setReferenceId(String referenceId) {
 		this.referenceId = referenceId;
+	}
+
+	public Date getPostedTime() {
+		return postedTime;
+	}
+
+	public void setPostedTime(Date postedTime) {
+		this.postedTime = postedTime;
 	}
 
     

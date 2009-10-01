@@ -129,7 +129,7 @@ public class ErpPostAuthPersistentBean extends ErpGiftCardTranPersistentBean {
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String salesactionId = super.create(conn, this.model).getId();
 		
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.GIFT_CARD_TRANS (ID, SALESACTION_ID, TRAN_TYPE, TRAN_STATUS, AUTH_CODE, PRE_AUTH_CODE, ERROR_MSG, TRANS_AMOUNT, CERTIFICATE_NUM, POST_DATE_TIME, REFERENCE_ID) values (?,?,?,?,?,?,?,?,?,SYSDATE,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.GIFT_CARD_TRANS (ID, SALESACTION_ID, TRAN_TYPE, TRAN_STATUS, AUTH_CODE, PRE_AUTH_CODE, ERROR_MSG, TRANS_AMOUNT, CERTIFICATE_NUM, CREATE_DATE_TIME, REFERENCE_ID,POST_DATE_TIME) values (?,?,?,?,?,?,?,?,?,SYSDATE,?,SYSDATE)");
 		String id = this.getNextId(conn, "CUST");
 		int index = 1;
 		ps.setString(index++, id);
@@ -145,8 +145,10 @@ public class ErpPostAuthPersistentBean extends ErpGiftCardTranPersistentBean {
 		ps.setString(index++, this.model.getErrorMsg());
 		ps.setDouble(index++, this.model.getAmount());
 		ps.setString(index++, this.model.getCertificateNum());
-		//ps.setTimestamp(index++, new java.sql.Timestamp(model.getActionTime().getTime()));		
+		//ps.setTimestamp(index++, new java.sql.Timestamp(model.getActionTime().getTime()));
 		ps.setString(index++, this.model.getReferenceId());
+		//ps.setTimestamp(index++, new java.sql.Timestamp(model.getPostedTime().getTime()));		
+
 				
 		try{
 			if(ps.executeUpdate() != 1 ){
@@ -171,7 +173,7 @@ public class ErpPostAuthPersistentBean extends ErpGiftCardTranPersistentBean {
 	 */
 	public void load(Connection conn) throws SQLException {
 		super.load(conn, this.model);
-		PreparedStatement ps = conn.prepareStatement("SELECT TRAN_TYPE, TRAN_STATUS, AUTH_CODE, PRE_AUTH_CODE, TRANS_AMOUNT, ERROR_MSG, CERTIFICATE_NUM FROM CUST.GIFT_CARD_TRANS WHERE SALESACTION_ID = ? ");
+		PreparedStatement ps = conn.prepareStatement("SELECT TRAN_TYPE, TRAN_STATUS, AUTH_CODE, PRE_AUTH_CODE, TRANS_AMOUNT, ERROR_MSG, CERTIFICATE_NUM, REFERENCE_ID, CREATE_DATE_TIME, POST_DATE_TIME FROM CUST.GIFT_CARD_TRANS WHERE SALESACTION_ID = ? ");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -182,6 +184,10 @@ public class ErpPostAuthPersistentBean extends ErpGiftCardTranPersistentBean {
 			this.model.setCertificateNum(rs.getString("CERTIFICATE_NUM"));
 			this.model.setErrorMsg(rs.getString("ERROR_MSG"));
 			this.model.setAmount(rs.getDouble("TRANS_AMOUNT"));
+			this.model.setReferenceId(rs.getString("REFERENCE_ID"));
+			this.model.setActionTime(rs.getTimestamp("CREATE_DATE_TIME"));
+			this.model.setPostedTime(rs.getTimestamp("POST_DATE_TIME"));
+			
 		} else {
 			throw new SQLException("No such ErpInvoice PK: " + this.getPK());
 		}
@@ -194,12 +200,12 @@ public class ErpPostAuthPersistentBean extends ErpGiftCardTranPersistentBean {
 
     public void store(Connection conn) throws SQLException {
 		super.load(conn, this.model);
-		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.GIFT_CARD_TRANS SET TRAN_STATUS = ?, AUTH_CODE = ?, ERROR_MSG = ?, POST_DATE_TIME = SYSDATE WHERE SALESACTION_ID = ? ");
+		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.GIFT_CARD_TRANS SET TRAN_STATUS = ?, AUTH_CODE = ?, ERROR_MSG = ?, POST_DATE_TIME = ? WHERE SALESACTION_ID = ? ");
 		int index = 1;
 		ps.setString(index++, this.model.getGcTransactionStatus().getName());
 		ps.setString(index++, this.model.getAuthCode());
 		ps.setString(index++, this.model.getErrorMsg());
-		//ps.setTimestamp(index++, new java.sql.Timestamp(model.getActionTime().getTime()));		
+		ps.setTimestamp(index++, new java.sql.Timestamp(model.getPostedTime().getTime()));		
 		ps.setString(index, this.getPK().getId());
 		
 		if (ps.executeUpdate() != 1) {

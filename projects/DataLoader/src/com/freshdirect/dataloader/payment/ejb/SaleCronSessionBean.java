@@ -66,6 +66,13 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		+ "and sa.action_type in ('CRO','MOD') "
 		+ "and sa.action_date=s.cromod_date and di.SALESACTION_ID=sa.ID and di.starttime > sysdate - 1 and di.starttime<SYSDATE+2";
 
+	private final static String QUERY_REVERSE_AUTH_NEEDED =
+		"select s.id from cust.sale s, cust.salesaction sa "  
+		+ "where s.status in ('CAN')and s.type='REG' and sa.customer_id = s.customer_id and "  
+		+ "sa.sale_id=s.id and sa.sale_id = (select distinct sale_id from cust.salesaction sa1, cust.gift_card_trans gct where "
+		+ "sa1.sale_id = s.id  and sa1.id = gct.salesaction_id and gct.tran_status='P' and gct.tran_type = 'REV-PRE' and customer_id = s.customer_id and action_type = 'RAG') "  
+		+ "and sa.action_type in ('CAO') and sa.ACTION_DATE > (sysdate - 8) "; //Just to be safe we are looking for past 8 days of cancelled orders.
+	
 	private final static String QUERY_AUTH_NEEDED_SUBSCRIPTIONS=
 		"SELECT S.ID,S.CUSTOMER_ID FROM CUST.SALE S,CUST.SALESACTION SA WHERE S.CROMOD_DATE BETWEEN (SYSDATE-5) AND (SYSDATE-1/48) AND "+
 	    "S.ID=SA.SALE_ID AND "+
@@ -280,7 +287,79 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+	/*
+	 * clearing pending reverse auths due to cancelled orders.  
+	 */
+	public void reverseAuthorizeSales(long timeout) {
+		Connection con = null;
+		List saleIds = new ArrayList();
 
+		UserTransaction utx = null;
+		try {
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			con = this.getConnection();
+			PreparedStatement ps = con.prepareStatement(QUERY_REVERSE_AUTH_NEEDED);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				saleIds.add(rs.getString(1));
+			}
+
+			rs.close();
+			ps.close();
+
+			utx.commit();
+
+		} catch (Exception e) {
+			LOGGER.warn(e);
+			try {
+				utx.rollback();
+			} catch (SystemException se) {
+				LOGGER.warn("Error while trying to rollback transaction", se);
+			}
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("SQLException while cleaning up", se);
+			}
+		}
+		GiftCardManagerSB sb = this.getGiftCardManagerSB();
+		if (saleIds.size() > 0) {
+			long startTime = System.currentTimeMillis();
+			for (Iterator i = saleIds.iterator(); i.hasNext();) {
+				if (System.currentTimeMillis() - startTime > timeout) {
+					LOGGER.warn("Reverse Authorization process was running longer than" + timeout / 60 / 1000);
+					break;
+				}
+				utx = null;
+				try {
+					utx = this.getSessionContext().getUserTransaction();
+					utx.begin();
+
+					String saleId = (String) i.next();
+					LOGGER.info("Going to reverse authorize: " + saleId);
+					sb.reversePreAuthForCancelOrders(saleId);
+					utx.commit();
+
+				} catch (Exception e) {
+					LOGGER.warn("Exception occured during reverse authorization", e);
+					if (utx != null)
+						try {
+							utx.rollback();
+						} catch (SystemException se) {
+							LOGGER.warn("Error while trying to rollback transaction", se);
+						}
+					// just keep going :)
+				}
+			}
+		}
+	}
 	
 	public void authorizeSubscriptions(long timeout) {
 		Connection con = null;

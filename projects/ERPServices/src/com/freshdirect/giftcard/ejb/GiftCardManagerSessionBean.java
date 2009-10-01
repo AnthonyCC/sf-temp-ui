@@ -459,7 +459,10 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 			try {
 				conn = getConnection();				
 				giftCard = GiftCardPersistanceDAO.loadGiftCardModel(conn, givexNum);
-				
+				if(giftCard == null){
+					//GC doesn't exist on FD side.
+					throw new InvalidCardException("Invalid Gift Certificate Number.");
+				}
 				ErpGiftCardModel gcModel = new ErpGiftCardModel();
 				gcModel.setAccountNumber(givexNum);
 				GivexResponseModel response = GivexServerGateway.getBalance(gcModel);
@@ -780,7 +783,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 					ErpPreAuthGiftCardModel existingAuth = (ErpPreAuthGiftCardModel) validAuths.get(0);
 					double authAmount = existingAuth.getAmount();
 					if(Math.round(authAmount - appliedAmount) != 0.0){
-						//Cancel/Reverse the existing pre-auth. Create a new pre-auth.
+						//Cancel/Reverse the existing pre-auth if applied amount has changed. Create a new pre-auth.
 
 						if(existingAuth.isPending()){
 							//cancel the auth.
@@ -829,7 +832,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 		
 	}
 
-	public void initiateCancelAuthorizations(String saleId) throws ErpTransactionException{
+	public void initiateCancelAuthorizations(String saleId) throws ErpTransactionException {
 		try{
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpAbstractOrderModel order = saleEB.getCurrentOrder();
@@ -890,7 +893,6 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 		return model;		
 	}
 	
-
 	public List preAuthorizeSales(String saleId) {
 		List errorList = new ArrayList();
 		try{
@@ -921,6 +923,8 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 																	rauth.getReferenceId());
 						rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
 						rauth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
+						//Reset the error message.
+						rauth.setErrorMsg("");
 					}catch(GivexException ge){
 						if(ge.getErrorCode() > 0){
 							rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.FAILURE);
@@ -936,12 +940,18 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 				//If pre auth is found for this gift card then post pre auth to Givex.
 				List pAuths = saleEB.getPendingGCAuthorizations(pm);
 				if(pAuths == null || pAuths.size() == 0) continue;
+				//Check if there are any reverse auth pending for this certificate foe this order. If yes then do not proceed
+				//with pre-auth unless reverse-auth is cleared.
+				rAuths = saleEB.getPendingGCReverseAuths(pm);
+				if(rAuths != null && rAuths.size() > 0) continue;
 				ErpPreAuthGiftCardModel auth = (ErpPreAuthGiftCardModel) pAuths.get(0);
 				GivexResponseModel rspModel = null;
 				try{
 					rspModel = GivexServerGateway.preAuthGiftCard(pm, auth.getAmount(), auth.getReferenceId());
 					auth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
 					auth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
+					//Reset the error message.
+					auth.setErrorMsg("");
 				}catch(GivexException ge){
 					if(ge.getErrorCode() > 0){
 						auth.setGcTransactionStatus(EnumGiftCardTransactionStatus.FAILURE);
@@ -966,6 +976,51 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 		return errorList;
 	}
 
+	public List reversePreAuthForCancelOrders(String saleId) {
+		List errorList = new ArrayList();
+		try{
+			
+			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+			ErpAbstractOrderModel order = saleEB.getCurrentOrder();
+			//ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(saleEB.getCustomerPk()));
+			List giftCardList = ErpGiftCardUtil.getGiftcardPaymentMethods(order.getAppliedGiftcards());
+			for(Iterator it = giftCardList.iterator(); it.hasNext();){
+				ErpPaymentMethodI pm = (ErpPaymentMethodI) it.next();
+				List rAuths = saleEB.getPendingGCReverseAuths(pm);
+				if(rAuths != null && rAuths.size() > 0) {
+					//If reverse auth is found for this gift card then post cancel pre auth to Givex.
+					ErpReverseAuthGiftCardModel rauth = (ErpReverseAuthGiftCardModel) rAuths.get(0);
+					GivexResponseModel rspModel = null;
+					try{
+						rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
+																	rauth.getReferenceId());
+						rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
+						//Reset the error message.
+						rauth.setErrorMsg("");
+						rauth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
+					}catch(GivexException ge){
+						if(ge.getErrorCode() > 0){
+							rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.FAILURE);
+							//rauth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
+							errorList.add(rauth);
+						} else {
+							//System failed to connect to Givex. Leave the status in pending.
+						}
+						rauth.setErrorMsg(ge.getMessage());
+					} 	
+					saleEB.updateGCAuthorization(rauth);
+				} 
+			}
+		}catch (FinderException fe) {
+			LOGGER.warn("FinderExceptin while trying to locate Sale Entity Bean", fe);
+			throw new EJBException(fe);
+		} catch (RemoteException re) {
+			LOGGER.warn("RemoteException while trying to talk to Sale Entity Bean", re);
+			throw new EJBException(re);
+		}
+		return errorList;
+	}
+	
 	private void updateBalance(String saleId, ErpPaymentMethodI pm) {
 		Connection conn = null;
 		try{
@@ -1367,6 +1422,8 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 			rspModel = GivexServerGateway.postAuthGiftCard(pm, postAuthAmt, new Long(auth.getAuthCode()).longValue(), referenceId);
 			postAuth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
 			postAuth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
+			//Reset the error message.
+			postAuth.setErrorMsg("");			
 		}catch(GivexException ge){
 			if(ge.getErrorCode() > 0){
 				postAuth.setGcTransactionStatus(EnumGiftCardTransactionStatus.FAILURE);
@@ -1397,6 +1454,8 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 			
 			rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
 			rauth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
+			//Reset the error message.
+			rauth.setErrorMsg("");			
 		}catch(GivexException ge){
 			if(ge.getErrorCode() > 0){
 				rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.FAILURE);

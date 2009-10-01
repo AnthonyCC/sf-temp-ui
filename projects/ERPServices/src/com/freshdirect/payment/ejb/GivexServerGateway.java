@@ -133,7 +133,7 @@ public class GivexServerGateway {
 		try {
 			res = paymentService.registerCard(id,amount,reference);
 		} catch(RemoteException e){
-             EnumGivexErrorType errorType=getGivexErrorType(e.getMessage()); 
+             EnumGivexErrorType errorType=EnumGivexErrorType.getErrorTypeFromMessage(e.getMessage()); 
              LOGGER.debug("Error Type :"+errorType);
              
              if(EnumGivexErrorType.ERROR_TIME_OUT==errorType){
@@ -143,7 +143,7 @@ public class GivexServerGateway {
             	 rev.setId(id);
             	 rev.setReference(reference);
             	 TransPortType_Stub port= (TransPortType_Stub)(transport_type);            	 
-            	 port._setProperty("weblogic.webservice.rpc.timeoutecss", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
+            	 port._setProperty("weblogic.webservice.rpc.timeoutsecs", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
             	 paymentService.setTransportType(port);
             	 ReversalResponse resp;
 				try {
@@ -372,23 +372,14 @@ public class GivexServerGateway {
 	
 	
 	public static void main(String args[]) throws FDResourceException, IOException{
-	/*
-		ErpGiftCardModel pm=new ErpGiftCardModel();
 		
-		GivexResponseModel model=registerCard(pm,50,"8462");
-		
-		System.out.println("model.getCertBalance() :"+model.getCertBalance());
-		System.out.println("model.getGivexNumber() :"+model.getGivexNumber());
-		System.out.println("model.getAuthCode() :"+model.getAuthCode());
-*/
-		
-		ErpGiftCardModel pm=new ErpGiftCardModel();
-		pm.setAccountNumber("60362839415161461387");
 		try{
-			System.out.println("model.getCertBalance() initial :"+getBalance(pm).getCertBalance());
-			//GivexResponseModel model= preAuthGiftCard(pm, 25.00,"461387");
-			GivexResponseModel model= postAuthGiftCard(pm, 25.00, 548160, "461387");
-			System.out.println("model.getCertBalance() :"+getBalance(pm).getCertBalance());
+			GivexResponseModel response = registerCard(5.0, "timeOutTest2");
+			System.out.println("New Card Number "+response.getGivexNumber());
+			System.out.println("Auth Code: "+response.getAuthCode());
+			ErpGiftCardModel pm = new ErpGiftCardModel();
+			pm.setAccountNumber(response.getGivexNumber());
+			System.out.println("Balance on new Card "+getBalance(pm).getCertBalance());			
 		}catch(GivexException ge) {
 			System.out.println("Error code "+ge.getErrorCode());
 			System.out.println("Error Message "+ge.getMessage());
@@ -396,19 +387,6 @@ public class GivexServerGateway {
 			System.out.println("Exception Caught $$$$$$$$$$$$$$$$ ");
 			ex.printStackTrace();
 		}
-		
-		/*
-		GivexResponseModel model= preAuthGiftCard(pm, 10.00,"8452");
-			
-		System.out.println("model.getCertBalance() :"+getBalance(pm).getCertBalance());
-		System.out.println("model.getGivexNumber() :"+model.getGivexNumber());
-		System.out.println("model.getAuthCode() :"+model.getAuthCode());
-		
-		GivexResponseModel model1= postAuthGiftCard(pm, 10.00, model.getAuthCode(),"8453");
-		
-		System.out.println("model.getCertBalance()1 :"+model1.getCertBalance());
-		System.out.println("model.getGivexNumber()1 :"+model1.getGivexNumber());						
-		*/
 	}
 
 }

@@ -18,6 +18,8 @@ public interface SaleCronSB extends EJBObject{
 	public void registerGiftCards(long timeout) throws RemoteException;
 	
 	public void preAuthorizeSales(long timeout) throws RemoteException;
+
+	public void reverseAuthorizeSales(long timeout)throws RemoteException;
 	
 	public void postAuthSales(long timeout) throws RemoteException;
 }
