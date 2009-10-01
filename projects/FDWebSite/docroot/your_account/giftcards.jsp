@@ -135,7 +135,7 @@
                         <logic:iterate id="giftcard" collection="<%= giftcards %>" type="com.freshdirect.fdstore.giftcard.FDGiftCardModel">
 						<tr>
 							<td><%= giftcard.getCertificateNumber() %></td>
-							<td><%= DateUtil.formatDate(new Date()) %></td>
+							<td><%= DateUtil.formatDate(giftcard.getGiftCardModel().getPurchaseDate()) %></td>
 							<td><%= user.getGCSenderName(giftcard.getCertificateNumber(),giftcard.getPurchaseSaleId()) %></td>
 							<td>$<%= giftcard.getFormattedOrigAmount() %></td>
 							<td>$<%= giftcard.getFormattedBalance() %></td>

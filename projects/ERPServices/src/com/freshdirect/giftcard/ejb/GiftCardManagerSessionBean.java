@@ -674,6 +674,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 			ErpGiftCardModel gc = GiftCardPersistanceDAO.loadGiftCardModel(conn, giftcard.getAccountNumber());
 			giftcard.setBalance(gc.getBalance());
 			giftcard.setOriginalAmount(gc.getOriginalAmount());
+			giftcard.setPurchaseDate(gc.getPurchaseDate());
 			List validPreAuths = getValidPreAuths(conn, giftcard);
 			if(giftcard.getBalance() <= 0 && validPreAuths.size() == 0) {
 				//Ignore zero balance gift card that has no any pending auths.				
