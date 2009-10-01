@@ -621,13 +621,14 @@ public class FDDeliveryManager {
 	public boolean releaseReservation(String rsvId, ContactAddressModel address) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			 boolean status=sb.releaseReservation(rsvId);
-			 if(FDStoreProperties.isDynamicRoutingEnabled()) {
-					DlvReservationModel reservation=sb.getReservation(rsvId);
-					//if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType()))
-						RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
+			 boolean isRestored=sb.releaseReservation(rsvId);
+			 
+			 if(FDStoreProperties.isDynamicRoutingEnabled()&& !isRestored) {
+				DlvReservationModel reservation=sb.getReservation(rsvId);
+				RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
+				
 			 }
-			 return status;
+			 return isRestored;
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {

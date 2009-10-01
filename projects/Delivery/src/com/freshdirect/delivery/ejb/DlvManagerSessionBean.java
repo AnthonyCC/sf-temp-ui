@@ -1743,7 +1743,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			LOGGER.debug(reservation);
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);
 		}
-		setUPSIndicator(reservation.getId(),order.getOrderNumber());
+		setRoutingIndicator(reservation.getId(),order.getOrderNumber());
 		return _reservation;
 	}
 	
@@ -1819,7 +1819,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			return ;		
 		
 		RoutingUtil util=RoutingUtil.getInstance();
-		IOrderModel order= util.getOrderModel(address,reservation.getOrderId());
+		IOrderModel order= util.getOrderModel(address,reservation.getRoutingOrderId()==null?reservation.getOrderId():reservation.getRoutingOrderId());
 		try {
 			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
 			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
@@ -1863,7 +1863,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 
 	}
-	public void setUPSIndicator(String reservationId, String orderNum ) {
+	public void setRoutingIndicator(String reservationId, String orderNum ) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -2039,12 +2039,17 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		boolean isUpdated = true;
 		if(orderModel.getOrderNumber() != null && !orderModel.getOrderNumber().equalsIgnoreCase(previousOrderId)) {
 			isUpdated=routingService.schedulerUpdateOrder(orderModel, previousOrderId);
+			
 			LOGGER.debug("routingService.schedulerUpdateOrder() :"+isUpdated);
 			
 		}		
 		
-		if(!isUpdated) 
+		if(!isUpdated) {
 			throw new RoutingServiceException(null, IIssue.PROCESS_UPDATE_UNSUCCESSFUL);
+		}
+		else {
+			this.setRoutingIndicator(reservation.getId(), orderModel.getOrderNumber());
+		}
 		routingService.schedulerConfirmOrder(orderModel);
 		//LOGGER.info("schedulerConfirmOrder():: commitReservationEx:"+"SUCCESS");
 
