@@ -49,7 +49,35 @@
 %>
 
 </head>
-<body onload="<%= request.getAttribute("bodyOnLoad")%>" onunload="<%= request.getAttribute("bodyOnUnload")%>" >
+<body onload="<%= request.getAttribute("bodyOnLoad")%>" onunload="<%= request.getAttribute("bodyOnUnload")%>" >	
+	<%
+		FDUserI userGC = (FDUserI)session.getAttribute(SessionName.USER);
+		if(userGC != null) {
+			request.setAttribute("listPos", "SystemMessage");
+
+			if (FDStoreProperties.isAdServerEnabled()) { %>
+				<script type="text/javascript">
+				OAS_AD('SystemMessage');
+				</script>
+			<% } else { %>
+			<fd:GetSiteAnnouncements id="announcments" user="<%=userGC%>">
+			
+				<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
+					<table width="745" cellpadding="0" cellspacing="0" border="0">
+						<tr align="center">
+							<td>
+								<font class="text12rbold"><%=ann.getHeader()%></font><br>
+								<%=ann.getCopy()%>
+								<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+							</td>
+						</tr>
+						<tr bgcolor="#999966"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+					</table><br>
+				</logic:iterate>
+			</fd:GetSiteAnnouncements><%
+			}
+		}
+	%>
 	<center>
 	<%
 		boolean modOrder = false;
