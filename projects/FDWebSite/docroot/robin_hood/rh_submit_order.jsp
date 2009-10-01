@@ -18,13 +18,17 @@
 	<tmpl:put name='content' direct='true'>
 
 <%
-String actionName = "";// request.getParameter("actionName"); 
+String actionName = request.getParameter("actionName"); 
+if(null == actionName || "".equals(actionName)){
+	actionName = "rh_submitDonationOrder";
+}
+
 java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER );
 request.setAttribute("donation", "true");
 UserUtil.initializeCartForDonationOrder(user);
 %>
-<fd:CheckoutController actionName="rh_submitDonationOrder" result="result" successPage="/robin_hood/rh_receipt.jsp" ccdProblemPage="/robin_hood/rh_submit_order.jsp?ccerror=true">
+<fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="/robin_hood/rh_receipt.jsp" ccdProblemPage="/robin_hood/rh_submit_order.jsp?ccerror=true">
         
 <%
 	if (user.getFailedAuthorizations() > 0) { 
@@ -144,7 +148,7 @@ boolean isCheckEligible = false;
 		</tr>
 		<tr>
 	    	<td><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">
-    	</td>
+    	</td></tr>
 		<tr>
 			<td align="right">
 			<b>NO, I want my gift to Robin Hood to be anonymous.</b><br/>
