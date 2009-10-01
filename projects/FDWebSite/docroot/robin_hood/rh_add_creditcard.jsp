@@ -61,14 +61,31 @@ sessionuser.setGCSignupError(false);
 } %>	
  
 
-<table WIDTH="690" cellspacing="0" cellpadding="0" border="0">
-<form method="post">
-<tr>
-<td class="text11" WIDTH="675">
-<font class="title18">Add Credit Card</font><br>
-</td>
-</tr>
+
+<form method="post" style="padding: 0px; margin: 0px;">
+<table width="690" cellspacing="0" cellpadding="0" border="0">
+		<tr>
+			<td class="text11" WIDTH="675">
+				<img src="/media_stat/images/giftcards/payment_method/add_a_credit_card_hdr.gif" WIDTH="164" HEIGHT="21" border="0" alt="ADD CREDIT CARD">
+			</td><BR>
+		</tr>
+		<tr>
+			<td class="text11" WIDTH="675">
+				Please enter new credit card information. <BR> 
+				<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
+			</td>
+		</tr>
 </table>
+
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+	<tr>	
+		<td width="693" CLASS="text12">
+			To learn more about our <font class="text11bold">Security Policies</font>, 
+			<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>.
+		</td>
+	</tr>
+</TABLE>
+<br><br>
 <%@ include file="/robin_hood/includes/i_rh_creditcard_fields.jspf" %>
 
 
@@ -78,10 +95,44 @@ sessionuser.setGCSignupError(false);
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
 	<TR VALIGN="TOP">
-	<TD WIDTH="675" ALIGN="RIGHT"><a href="<%=success_page%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="54" HEIGHT="16"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a><input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="84" HEIGHT="16" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0"></TD>
+	<TD WIDTH="675" ALIGN="RIGHT">
+	<a href="<%=success_page%>">
+		<img src="/media_stat/images/buttons/cancel.gif" WIDTH="54" HEIGHT="16"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0">
+	</a>
+	<input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="84" HEIGHT="16" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0"></TD>
 </TR>
 </TABLE>
 <br>
+
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+	<tr>	
+		<td width="693" class="text12">
+			 <font class="text11bold">Having Problems checking out?</font>
+		</td> 
+	</tr>
+	<tr>
+		<td width="693" CLASS="text12">
+			Please call us at 1-856-511-1240, Monday through Thursday 5:30 a.m. to 12 <BR>
+			a.m., Friday from 5:30 a.m. to 11 p.m., Saturday from 7:30 a.m. to 8 p.m., <BR>
+			and Sunday from 7:30 a.m. to 12 a.m. <BR>
+			If you need to disconnect from the Internet, please <a href="/login/logout.jsp">Log Out</a> first.
+		</td>
+	</tr>
+	
+	<tr>
+		<td width="693" CLASS="text12">
+		    &nbsp;<BR>
+		    &nbsp;<BR>
+		    &nbsp;<BR>
+		    &nbsp;<BR>
+		    &nbsp;<BR>
+		    &nbsp;<BR>
+		</td>
+	</tr>
+
+</TABLE>
+
+
 <%--<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="TOP"><TD WIDTH="640"><%@ include file="/includes/i_footer_account.jspf"%></TD></TR>
 </TABLE>--%>
