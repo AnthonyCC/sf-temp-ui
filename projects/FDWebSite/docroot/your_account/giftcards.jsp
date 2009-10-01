@@ -24,8 +24,8 @@
 			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a>
 			<br />If your Recipient never received their Gift Card, you may resend it by clicking Resend Now. If there was an error in the Recipient's email address, or to use a new one, edit the email field.
 			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0"><br /><br />
-			<input type="hidden" id="gcSaleId" value=""/>
-			<input type="hidden" id="gcCertNum" value=""/>
+			<input type="hidden" id="gcSaleId" value="" />
+			<input type="hidden" id="gcCertNum" value="" />
 			<table border="0" cellspacing="0" cellpadding="4" width="100%">
 				<tr>
 					<td width="130" align="right">Recipient Name:</td>
@@ -98,7 +98,7 @@
 			</tr>
 			<tr>
 				<td align="center">
-					To apply a new Gift Card balance to your currentorder, enter the code from the card above and click 'Apply'.<br />
+					To apply a new Gift Card balance to your current order, enter the code from the card above and click 'Apply'.<br />
 					The Gift Card will then appear in Your Cart. Enjoy your free food!
 				</td>
 			</tr>

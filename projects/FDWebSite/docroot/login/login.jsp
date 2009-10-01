@@ -49,10 +49,10 @@ String sPage = request.getParameter("successPage");
 			<% if( null != request.getParameter("successPage")) { %>
 			<% if(request.getParameter("successPage").toLowerCase().indexOf("gift_card") > 0 ) { %>
 				<font class="text13bold">NEW CUSTOMER OR OUTSIDE OUR DELIVERY AREA?</FONT><BR>
-				<A HREF='<%= response.encodeURL("/gift_card/purchase/register_and_purchase.jsp") %>'><font class="text13"><b>Click here to continue</b></font></a>.<br><br></td>
+				<A HREF='<%= response.encodeURL("/gift_card/purchase/register_and_purchase.jsp") %>'><font class="text13"><b>Click here to continue</b></font></a><br><br></td>
 				<% } else if(request.getParameter("successPage").toLowerCase().indexOf("robin_hood") > 0 ){ %>        
 				<font class="text13bold">NEW CUSTOMER OR OUTSIDE OUR DELIVERY AREA?</FONT><BR>
-				<A HREF='<%= response.encodeURL("/robin_hood/register_purchase.jsp") %>'><font class="text13"><b>Click here to continue</b></font></a>.<br><br></td>
+				<A HREF='<%= response.encodeURL("/robin_hood/register_purchase.jsp") %>'><font class="text13"><b>Click here to continue</b></font></a><br><br></td>
 				
 			<% } } else { %>        
 				<font class="text13bold">New Customer?</FONT><BR>

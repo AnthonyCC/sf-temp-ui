@@ -189,18 +189,22 @@ if (request.getParameter("fldMessage") !=null) {
 			</span>
     	</td>
     	<td colspan="2">
-			<input type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> />Email
-			<input type="radio" tabIndex="5"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %> />I'll Download a PDF and Print It.
+			<table border="0" cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td width="30%" valign="top"><input type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> onclick="$('gcRecipientEmail').disabled=false;" />Email</td>
+					<td width="70%"><input type="radio" tabIndex="5"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %> onclick="$('gcRecipientEmail').disabled=true;" />I'll Download a PDF and Print It.</td>
+				</tr>
+			</table>
     	</td>
     </tr>
     <tr>
         <td align="right" class="text12">
-			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
+			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler> >
 				*&nbsp;Recipient's&nbsp;Email
 			</span>
         </td>
         <td colspan="2">
-			<input type="text" maxlength="80" tabIndex="6"  size="21" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>" />
+			<input type="text" maxlength="80" tabIndex="6"  size="21" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>" <%="P".equals(fldDeliveryMethod)?"disabled=\"true\"":""%> />
 	</td>
 	</tr>
 	<tr>
@@ -231,6 +235,7 @@ if (request.getParameter("fldMessage") !=null) {
 	</tr>
 </table>
 
+
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
 
 <table border="0" cellspacing="0" cellpadding="2" width="675">
@@ -241,7 +246,7 @@ if (request.getParameter("fldMessage") !=null) {
     </tr>
     <tr>
         <td>
-			<a href="#" onClick="checkAddrShow(); return false;">Click here if you know your recipient's address</a>.
+			<a href="#" onClick="checkAddrShow(); return false;">Click here to check if we deliver to your recipient's address</a>.
         </td>
     </tr>
     <tr valign="middle">

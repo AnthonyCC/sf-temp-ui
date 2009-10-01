@@ -2,14 +2,17 @@
  *
  *	Javascript library for display of Fresh Direct Giftcards.
  *
- *	Last Edit: 2009.09.28_03.07.12.PM
  *	--------------------------------------------------------------------------*/
 
 
 /* Test : Debug Functions ----------------------------------------------------*/
 
 var global_gcDebug = false;
+var global_gcLog = true;
+var lastEdit = '2009.09.30_06.40.33.PM';
 var lastLog;
+
+gcLog('Last Edit: '+lastEdit);
 
 function formatCurrency(num) {
 	num = num.toString().replace(/\$|\,/g,'');
@@ -52,7 +55,7 @@ function gcLog(logMsg) {
 	lastLog = logMsg;
 	var time = new Date();
 	var timeNow = time.getHours()+":"+time.getMinutes()+":"+time.getSeconds()+"."+time.getMilliseconds();
-	if (global_gcDebug && window.console) {	console.log(timeNow+' Log: '+this.lastLog); }
+	if ((global_gcDebug||global_gcLog) && window.console) {	console.log(timeNow+' Log: '+this.lastLog); }
 }
 
 function sI(l,u){var n=(Math.floor(Math.random()*u));if (n<l){n=sI(l,u);}return n;}function dM(){return Boolean(Math.floor(Math.random()*2));}
@@ -602,7 +605,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 						isPdfPreview: $('deliveryMethodPdf').checked,
 						gcId: $('gcTemplateId').value,
 						gcAmount: tempAmount,
-						gcRedempCode: 'xxxxFAKE',
+						gcRedempCode: 'xxxxx',
 						gcFor: $('gcRecipientName').value,
 						gcFrom: $('gcBuyerName').value,
 						gcMessage: ($('fldMessage').value).slice(0, this.personalMsgLen)
@@ -815,14 +818,28 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 			},
 			onComplete: function(transport) {
 				gcLog('recipResendFetch onComplete ');
-				//alert(transport.responseText);
-				resendShow(transport.responseText);
+				//resendShow(transport.responseText);
+				resendShowTemp(transport.responseText);
 			}
 		});
 
 		gcLog('recipResendFetch e '+saleId+' '+certNum);
 	}
 
+
+
+	function resendShowTemp(JSONstring) {
+		gcLog('resendShow test1 ');
+		$('gcResendRecipAmount').innerHTML = 'test';
+		gcLog('resendShow test2 ');
+		try {
+			Modalbox.show($('gcResendRecipAmount').innerHTML);
+		}
+		catch(e) {
+			for (var i in e) gcLog('Err '+i + ' = ' + e[i]);
+		}
+		gcLog('resendShow test3 ');
+	}
 	function resendShow(JSONstring) {
 		gcLog('resendShow s ');
 		gcLog('resendShow s '+JSONstring);
@@ -919,7 +936,6 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				overlayOpacity: .85,
 				overlayClose: false,
 				width: 300,
-				height: '',
 				transitions: false,
 				autoFocusing: false,
 				centered: true,
@@ -966,7 +982,6 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 			overlayOpacity: .85,
 			overlayClose: false,
 			width: 300,
-			height: '',
 			transitions: false,
 			autoFocusing: false,
 			centered: true,
@@ -1024,7 +1039,6 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 			overlayOpacity: .85,
 			overlayClose: false,
 			width: 300,
-			height: '',
 			transitions: false,
 			autoFocusing: false,
 			centered: true,
@@ -1255,7 +1269,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				if (arrObj.status == 'done') {
 					gcLog('removing '+arrObj.id);
 					scObjArr.splice(scObjArr.indexOf(arrObj.id), 1);
-					gcLog(scObjArr.length);
+					gcLog('scObjArr '+scObjArr.length);
 				}else if (arrObj.status == 'init') {
 					gcLog('checked '+arrObj.id+' : '+arrObj.status);
 					//kick off stat check
