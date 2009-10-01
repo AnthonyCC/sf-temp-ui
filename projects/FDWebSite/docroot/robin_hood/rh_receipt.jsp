@@ -240,7 +240,7 @@ int idx = 0;
 		
 	<tr>
 		
-			<td class="text11bold" align="center"><%= cartLine.getOrderedQuantity() %>/<%= cartLine.getDeliveredQuantity() %></td>
+			<td class="text11bold" align="center"><%= cartLine.getOrderedQuantity() %>/<%= cartLine.getOrderedQuantity() %></td>
 			<td style="padding-left:30px;" class="text11bold" align="center">Robin Hood Holiday Meal for Eight	</td>
 			<td></td>
 			<td align="center"><%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %></td>
