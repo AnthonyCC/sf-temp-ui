@@ -118,7 +118,7 @@ public class USQReportCreator extends DBReportCreator {
 		public SettlementReport(Date day, File file) {
 			super(day, file);
 		}
-
+		/*
 		protected String getQuery() {
 			return "select di.first_name, di.last_name, si.id, si.requested_date, "
 				+ "(select upc from erps.material where version=ol.version and sap_id=ol.material_number) UPC, "
@@ -136,7 +136,25 @@ public class USQReportCreator extends DBReportCreator {
 				+ "and si.id = sa.sale_id and sa.action_type = 'INV' and sa.action_date = (select max(action_date) from cust.salesaction where sale_id=si.id and action_type = 'INV') "
 				+ "and il.salesaction_id = sa.id and ol.affiliate = 'USQ' and ol.orderline_number = il.orderline_number ";
 		}
-
+	*/
+		//Modified query to accomodate GC only orders that were settled with GCs.
+		protected String getQuery() {
+			return "select di.first_name, di.last_name, si.id, si.requested_date, "
+				+ "(select upc from erps.material where version=ol.version and sap_id=ol.material_number) UPC, "
+				+ "ol.material_number, ol.description, il.actual_quantity, "
+				+ "(select default_price from erps.product where version=ol.version and sku_code=ol.sku_code) UNIT_PRICE, "
+				+ "il.line_tax, il.actual_price as price, (il.actual_price + il.line_tax)  as total "
+				+ "from (select s.id, sa.requested_date, sa.id as salesaction_id "
+				+ "from cust.salesaction sa, cust.sale s, "
+				+ "(select distinct sale_id from cust.salesaction x, cust.sale y where y.id= x.sale_id and y.status = 'STL' and x.action_type IN ('STL','POG') and x.action_date between ? and ? ) stl "
+				+ "where stl.sale_id = s.id and sa.action_type in ('CRO', 'MOD') "
+				+ "and sa.action_date = (select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) "
+				+ "and sa.sale_id = s.id and s.status <> 'CAN') si, "
+				+ "cust.deliveryinfo di, cust.orderline ol, cust.salesaction sa, cust.invoiceline il "
+				+ "where di.salesaction_id = si.salesaction_id and si.salesaction_id = ol.salesaction_id "
+				+ "and si.id = sa.sale_id and sa.action_type = 'INV' and sa.action_date = (select max(action_date) from cust.salesaction where sale_id=si.id and action_type = 'INV') "
+				+ "and il.salesaction_id = sa.id and ol.affiliate = 'USQ' and ol.orderline_number = il.orderline_number ";
+		}
 		protected Object[] getParams() {
 			Object[] params = new Object[2];
 			params[0] = new java.sql.Date(day.getTime());

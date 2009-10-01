@@ -959,6 +959,15 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.status = EnumSaleStatus.SETTLED;
 	}
 	
+	public void forceSettlementFailed() throws ErpTransactionException {
+		this.assertStatus(
+			new EnumSaleStatus[] {
+					EnumSaleStatus.SETTLEMENT_PENDING
+			});
+
+		this.status = EnumSaleStatus.SETTLEMENT_FAILED;
+	}
+	
 	public void cutoff() throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.AUTHORIZED, EnumSaleStatus.AVS_EXCEPTION });
 		this.status = EnumSaleStatus.INPROCESS;

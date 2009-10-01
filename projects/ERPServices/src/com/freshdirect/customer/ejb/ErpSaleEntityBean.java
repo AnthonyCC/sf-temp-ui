@@ -137,6 +137,16 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 	
+	public void forceSettlementFailed() throws ErpTransactionException {
+		try{
+			this.model.forceSettlementFailed();
+			this.setModified();
+		}catch(ErpTransactionException e){
+			this.getEntityContext().setRollbackOnly();
+			throw e;
+		}
+	}
+
 	public PrimaryKey ejbFindByPrimaryKey(PrimaryKey pk) throws ObjectNotFoundException, FinderException {
 		Connection conn = null;
 		try {

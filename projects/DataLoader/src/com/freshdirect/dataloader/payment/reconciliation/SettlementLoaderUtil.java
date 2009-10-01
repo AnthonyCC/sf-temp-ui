@@ -38,7 +38,7 @@ public class SettlementLoaderUtil {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(SettlementLoaderUtil.class);
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static final String [] VALID_PDE_TOKENS = {"RPDE0017D",  "RPDE0018D", "RPDE0020", "RPDE0022"};
 	private static final String [] VALID_FIN_TOKENS = {"RACT0010"};
 
@@ -82,15 +82,19 @@ public class SettlementLoaderUtil {
 			System.out.println("Please select atleast one action to perform [f][b][m]");
 			printHelpMessage();
 		}
-
-		if (ftp) {
-			uploadFileToSap(fileName);
-		}
-		if (bapi) {
-			callSettlementBapi(fileName);
-		}
-		if (mask) {
-			maskFile(fileName);
+		try{
+			if (ftp) {
+				uploadFileToSap(fileName);
+			}
+			if (bapi) {
+				callSettlementBapi(fileName);
+			}
+			if (mask) {
+				maskFile(fileName);
+			}
+		}catch(Exception exp) {
+			exp.printStackTrace();
+			throw exp;
 		}
 
 	}

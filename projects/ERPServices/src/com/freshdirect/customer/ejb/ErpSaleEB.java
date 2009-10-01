@@ -185,6 +185,8 @@ public interface ErpSaleEB extends EntityBeanRemoteI, ErpSaleI {
 	
 	public void forceSettlement() throws ErpTransactionException, RemoteException;
 	
+	public void forceSettlementFailed() throws ErpTransactionException, RemoteException;
+	
 	public List getSettlements() throws ErpTransactionException, RemoteException;
 	
 	public List getAdjustments() throws ErpTransactionException, RemoteException;

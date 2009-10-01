@@ -820,6 +820,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 	 */
 	public List processGCSettlement(String saleId) {
 		List settlementInfos = new ArrayList();
+		boolean settlementFailed = false;
 		try{
 			
 			/*if (!"true".equalsIgnoreCase(ErpServicesProperties.getPr eAuthorize())) {
@@ -851,6 +852,9 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 						info.setAmount(agcModel.getAmount());
 						info.setPostAuthFailed(pModel.isDeclined() ? true : false);
 						settlementInfos.add(info);
+						if(info.isPostAuthFailed()){
+							settlementFailed = true;
+						}
 
 					}
 				}
@@ -858,7 +862,10 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 			}
 			EnumSaleStatus status = saleEB.getStatus();
 			if(EnumSaleStatus.SETTLEMENT_PENDING.equals(status)) {
-				saleEB.forceSettlement();
+				if(!settlementFailed)
+					saleEB.forceSettlement();
+				else
+					saleEB.forceSettlementFailed();
 			}
 			
 		}catch (FinderException fe) {
