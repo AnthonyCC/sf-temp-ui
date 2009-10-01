@@ -12,10 +12,14 @@
 <table width="680" cellspacing="0" cellpadding="0" border="0">
 	<tr>
 		<td align="left">
-			<table cellpadding="0" cellspacing="0" border="0" > 
+			<table cellpadding="0" cellspacing="0" border="0" align="left"> 
 				<tr>
+					<td>  </td>	
 					<td class="text11bold"><%= totalQuantity %></td>
-					<td style="padding-left:30px;" class="text11bold">Robin Hood Holiday Meal for Eight	</td>
+					
+					<td style="padding-left:30px;">
+					    <span class="text11bold">Robin Hood</span> Holiday Meal for Eight (<%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %>)	
+					</td>
 				</tr>
 			</table>
 		</td>	
