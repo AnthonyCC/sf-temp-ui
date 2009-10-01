@@ -8,8 +8,8 @@
 /* Test : Debug Functions ----------------------------------------------------*/
 
 var global_gcDebug = false;
-var global_gcLog = true;
-var lastEdit = '2009.09.30_06.40.33.PM';
+var global_gcLog = false;
+var lastEdit = '2009.10.01_10.51.30.AM';
 var lastLog;
 
 gcLog('Last Edit: '+lastEdit);
@@ -474,6 +474,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				this.err('2 Cannot set gcId_containerId ('+this.gcId_containerId+')');
 				this.err('2 Cannot set gcId_containerId to value ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
 			}
+			return true;
 		}
 
 		this.setDisplayObjType = function(type) {
@@ -683,6 +684,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 			tempAmount=(tempAmount).replace(/\$/g, '');
 
 			if (global_gcDebug) { titleString = 'debug: '+params.gcId; }
+			var gcRedempCodeTemp = 'xxxxx';
 
 			Modalbox.show('/gift_card/postbacks/preview.jsp', {
 				params: {
@@ -690,7 +692,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 					isPdfPreview: isPdfPreview, //delivery type here
 					gcId: params.gcId,
 					gcAmount: tempAmount,
-					gcRedempCode: params.gcRedempCode,
+					gcRedempCode: gcRedempCodeTemp,
 					gcFor: params.gcFor,
 					gcFrom: params.gcFrom,
 					gcMessage: params.gcMessage
@@ -808,8 +810,6 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 	function recipResendFetch(saleId, certNum) {
 		var titleString = '';
 
-		gcLog('recipResendFetch s '+saleId+' '+certNum);
-
 		new Ajax.Request('/gift_card/postbacks/resend.jsp', {
 			parameters: {
 				isResendFetch: true,
@@ -817,39 +817,17 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				certNum: certNum
 			},
 			onComplete: function(transport) {
-				gcLog('recipResendFetch onComplete ');
-				//resendShow(transport.responseText);
-				resendShowTemp(transport.responseText);
+				resendShow(transport.responseText);
 			}
 		});
 
-		gcLog('recipResendFetch e '+saleId+' '+certNum);
 	}
 
-
-
-	function resendShowTemp(JSONstring) {
-		gcLog('resendShow test1 ');
-		$('gcResendRecipAmount').innerHTML = 'test';
-		gcLog('resendShow test2 ');
-		try {
-			Modalbox.show($('gcResendRecipAmount').innerHTML);
-		}
-		catch(e) {
-			for (var i in e) gcLog('Err '+i + ' = ' + e[i]);
-		}
-		gcLog('resendShow test3 ');
-	}
 	function resendShow(JSONstring) {
-		gcLog('resendShow s ');
-		gcLog('resendShow s '+JSONstring);
 			
-		var params = JSONstring.evalJSON(true);
-		gcLog('resendShow s2 ');
-		
+		var params = JSONstring.evalJSON(true);		
 		
 		if (params.status != "error") {
-			gcLog('resendShow ma1');
 			//stick values into overlay html		
 			$('gcResendRecipName').value = params.gcRecipName;
 			$('gcResendRecipEmail').value = params.gcRecipEmail;
@@ -858,12 +836,8 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 			$('gcSaleId').value = params.gcSaleId;
 			$('gcCertNum').value = params.gcCertNum;
 
-			gcLog('resendShow m1');
-
 			Modalbox.show($('gcResendBox'), {
 				loadingString: 'Loading Preview...',
-				closeValue: '<img src="/media_stat/images/giftcards/your_account/close.gif" border="0" alt="" />',
-				closeString: 'Close Preview',
 				title: '',
 				overlayOpacity: .85,
 				overlayClose: false,
@@ -874,12 +848,9 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				afterLoad: function() { window.scrollTo(0,0); },
 				afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			})
-		
-			gcLog('resendShow m2');
 
 		}
-		
-		gcLog('resendShow e');
+
 	}
 	/* recip resend email web */
 	function recipResendEmail() {
