@@ -180,7 +180,7 @@ int idx = 0;
 		
 	<tr>
 			<td align="left" class="text11bold" bgcolor="#DDDDDD" colspan="6">
-			<img src="/media_stat/images/donation/robinhood/landing/color_swatch_F0F0E7.gif" width="1" height="8" border="0"  /> FRESHDIRECT
+			<img src="/media_stat/images/donation/robinhood/landing/color_swatch_F0F0E7.gif" width="0" height="8" border="0"  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FRESHDIRECT
 			</td>
 	</tr>
 		<tr>
@@ -189,7 +189,7 @@ int idx = 0;
 		
 	<tr>
 		
-			<td class="text11bold" align="center"><%= cartLine.getOrderedQuantity() %>/<%= cartLine.getDeliveredQuantity() %></td>
+			<td class="text11bold" align="center"><%= cartLine.getOrderedQuantity() %>/<%= cartLine.getOrderedQuantity() %></td>
 			<td style="padding-left:30px;" class="text11bold" align="center">Robin Hood Holiday Meal for Eight	</td>
 			<td></td>
 			<td align="center"><%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %></td>
@@ -200,10 +200,8 @@ int idx = 0;
 
 	</tr>
 	<tr>
-				<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+			<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 	</tr>
-	
-
 </table> 
 
 <table width="680" cellspacing="0" cellpadding="0" border="0" valign="middle" >
@@ -214,9 +212,9 @@ int idx = 0;
 		</tr>
 		
         <tr>
-			<td colspan="4" >&nbsp;</td>
-		<td align="right" class="orderTotal" colspan="2">
-		<b>ORDER TOTAL:  <%= JspMethods.currencyFormatter.format( cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal()) %>  </b></td>
+		<td colspan="4" >&nbsp;</td>
+		<td align="right" class="orderTotal" colspan="6">
+		<b>ORDER TOTAL:  <%= JspMethods.currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal()) %>  </b></td>
         </tr>
 </table>
 
