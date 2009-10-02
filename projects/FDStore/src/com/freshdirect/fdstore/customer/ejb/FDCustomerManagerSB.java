@@ -689,7 +689,7 @@ public interface FDCustomerManagerSB extends EJBObject {
     
     public void transferGiftCardBalance(FDIdentity identity,String fromGivexNum,String toGivexNum,double amount) throws RemoteException;
     
-    public String[] sendGiftCardCancellationEmail(String saleId, String givexNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) throws RemoteException, FDResourceException;
+    public String[] sendGiftCardCancellationEmail(String saleId, String certNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) throws RemoteException, FDResourceException;
     
     public String placeDonationOrder( FDIdentity identity,
             ErpCreateOrderModel createOrder,

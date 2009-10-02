@@ -169,6 +169,7 @@ import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.CardInUseException;
@@ -4976,12 +4977,21 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 		
-		public String[] sendGiftCardCancellationEmail(String saleId, String givexNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) throws FDResourceException{
+		public String[] sendGiftCardCancellationEmail(String saleId, String certNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) throws FDResourceException{
 			String[] sentEmailAddresses = null;
+			String givexNum =null;
 			LOGGER.debug("Validating and sending the giftcard cancellation emails..");
 			try {
 				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
-				ErpGiftCardModel model = sb.validate(givexNum);
+				GenericSearchCriteria criteria=new GenericSearchCriteria(com.freshdirect.framework.util.EnumSearchType.GIFTCARD_SEARCH);
+				criteria.setCriteriaMap("certNum", certNum);
+				List list = sb.getGiftCardModel(criteria);
+				if(null != list && !list.isEmpty()){
+					ErpGCDlvInformationHolder holder = (ErpGCDlvInformationHolder)list.get(0);
+					givexNum = holder.getGivexNum();
+					ErpGiftCardModel model = sb.validate(givexNum);
+				}
+//				ErpGiftCardModel model = sb.validate(givexNum);
 				LOGGER.debug("GiftCard is not yet cancelled.");			
 
 			} catch (RemoteException e) {

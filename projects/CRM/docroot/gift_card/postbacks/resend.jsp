@@ -94,12 +94,12 @@
 		boolean isnewRecipient = "true".equals((String)request.getParameter("newRecipient"))?true:false;
 		String newRecipientAddr = request.getParameter("newRecipientAddr");	
 		boolean success= true;
-		String[] emailAddrs = GiftCardUtil.sendGiftCardCancellationEmail(request,saleId,givexNum,isOrigRecp,isSelf,isnewRecipient,newRecipientAddr);
+		String[] emailAddrs = GiftCardUtil.sendGiftCardCancellationEmail(request,saleId,certNum,isOrigRecp,isSelf,isnewRecipient,newRecipientAddr);
 		 JSONObject json = new JSONObject();
 		 System.out.println("");
 	        if(null != emailAddrs && emailAddrs.length > 0) {
 			    //if we return anything, it will de displayed in the overlay (can be html)
-	            //json.put("returnMsg", "<b<span style=\"color: #f00;\">Gift Card Cancellation mails sent successfully.</span></b>");
+	            json.put("returnMsg", "<b<span style=\"color: #f00;\">Gift Card Cancellation mails sent successfully.</span></b>");
 			    json.put("opStatus","ok");
 			    json.put("gcCertNum",certNum);
 			    json.put("origRecpEmail",emailAddrs[0]);

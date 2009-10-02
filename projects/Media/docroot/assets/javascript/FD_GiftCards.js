@@ -984,13 +984,11 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				},
 				onSuccess: function(transport) {
 					//display returned messages
-					var params = transport.responseText.evalJSON(true);	
-					if(params.opStatus=="error"){
+					var params = transport.responseText.evalJSON(true);					
+					
 						$('gcResendCRMCancelBoxErr').innerHTML = params.returnMsg;
 						$('opStatus_gcResendCRMCancelBox').value = params.opStatus;
-					}else{
-						sendCancellationSuccess(params.gcCertNum,params.origRecpEmail,params.selfEmail,params.newRecpEmail);
-					}
+					
 					
 				}
 			});
@@ -999,8 +997,9 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 
 	function sendCancellationSuccess(certificateNum, origRecpEmail, selfEmail, newRecpEmail){
 		
+		
 		$('origRecpEmail_gcResendCRMCancelBox').innerHTML = origRecpEmail;
-		$('gcCertNumber2_gcResendCRMCancelBox').innerHTML = certificateNum;     
+		$('gcCertNum_gcResendCRMCancelBox').innerHTML = certificateNum;     
 		$('selfEmail_gcResendCRMCancelBox').innerHTML = selfEmail;
 		$('newRecpEmail_gcResendCRMCancelBox').innerHTML = newRecpEmail;
 		

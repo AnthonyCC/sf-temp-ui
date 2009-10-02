@@ -46,11 +46,11 @@ public class GiftCardUtil {
 	}
 	
 	
-	public static String[] sendGiftCardCancellationEmail(HttpServletRequest request, String saleId, String givexNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) {
+	public static String[] sendGiftCardCancellationEmail(HttpServletRequest request, String saleId, String certNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) {
 		String[] sentEmailAddresses = null;
 //		sentEmailAddresses= new String[]{"abc","",""};
 		try{		
-			sentEmailAddresses= FDCustomerManager.sendGiftCardCancellationEmail(saleId, givexNum, toRecipient, toPurchaser, newRecipient, newRecipientEmail);
+			sentEmailAddresses= FDCustomerManager.sendGiftCardCancellationEmail(saleId, certNum, toRecipient, toPurchaser, newRecipient, newRecipientEmail);
 			
 		}catch(FDResourceException fe){
 			LOGGER.debug(fe);

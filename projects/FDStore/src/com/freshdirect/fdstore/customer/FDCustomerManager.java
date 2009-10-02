@@ -3280,10 +3280,10 @@ public class FDCustomerManager {
 			} 
 		}
 		
-		public static String[] sendGiftCardCancellationEmail(String saleId, String givexNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) throws FDResourceException{
+		public static String[] sendGiftCardCancellationEmail(String saleId, String certNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) throws FDResourceException{
 			try {
 				FDCustomerManagerSB sb = managerHome.create();
-				return sb.sendGiftCardCancellationEmail(saleId, givexNum, toRecipient, toPurchaser, newRecipient, newRecipientEmail);				
+				return sb.sendGiftCardCancellationEmail(saleId, certNum, toRecipient, toPurchaser, newRecipient, newRecipientEmail);				
 			} catch (RemoteException e) {
 				throw new FDResourceException(e);
 			} catch (CreateException e) {
