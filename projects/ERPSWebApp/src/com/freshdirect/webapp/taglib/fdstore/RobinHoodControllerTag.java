@@ -67,7 +67,7 @@ public class RobinHoodControllerTag extends com.freshdirect.framework.webapp.Bod
 
 	        HttpSession session = pageContext.getSession();
 	        FDSessionUser fs_user = (FDSessionUser)session.getAttribute(USER);
-	        FDCartI cart = fs_user.getShoppingCart();
+	        FDCartI cart = fs_user.getDonationCart();
 	        user = fs_user.getUser();
 	        
 	        if (("POST".equalsIgnoreCase(request.getMethod()))) {
