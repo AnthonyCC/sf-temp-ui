@@ -230,8 +230,8 @@ int idx = 0;
 		</tr>
 		
 	<tr>
-			<td align="center" class="text11bold">
-			<img src="/media_stat/images/donation/robinhood/landing/color_swatch_F0F0E7.gif" width="1" height="8" border="0" /> FRESHDIRECT
+			<td align="left" class="text11bold" bgcolor="#DDDDDD" colspan="6">
+			<img src="/media_stat/images/donation/robinhood/landing/color_swatch_F0F0E7.gif" width="1" height="8" border="0"  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FRESHDIRECT
 			</td>
 	</tr>
 		<tr>
@@ -245,7 +245,7 @@ int idx = 0;
 			<td></td>
 			<td align="center"><%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %></td>
 			<td></td>
-			<td  align="center"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %>
+			<td align="center"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %>
 		
 		
 
@@ -261,16 +261,14 @@ int idx = 0;
 		<tr>
 			<td ><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 			<td></td>			<td></td>			<td></td>			<td></td>			<td></td>
-
 		</tr>
 		
         <tr>
-			<td colspan="4"></td>
-		<td align="right" class="text11bold" >
-		ORDER TOTAL:
-		</td>
-        <td  align="right"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %>
+			<td colspan="4">&nbsp;</td>
+			<td align="right" class="orderTotal" colspan="2">
+			<b>ORDER TOTAL:</b>&nbsp;&nbsp;<%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %></td>
         </tr>
+        
 </table>
 
 </fd:GetOrder>
