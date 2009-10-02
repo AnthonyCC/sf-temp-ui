@@ -218,7 +218,7 @@ System.out.println("d");
 
 <% System.out.println("h"); %>
 <% // Donator Payment Info %>
-<fd:CheckoutController actionName="rh_onestep_submitDonationOrder" result="result" successPage="/robin_hood/rh_receipt.jsp" ccdProblemPage="/gift_card/purchase/includes/gc_add_creditcard.jsp">
+<fd:CheckoutController actionName="rh_onestep_submitDonationOrder" result="result" successPage="/robin_hood/rh_receipt.jsp" ccdProblemPage="/robin_hood/rh_add_creditcard.jsp">
 <fd:ErrorHandler result='<%=result%>' field='<%=checkGiftCardBuyerForm%>'>
 	<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>
 	<%@ include file="/includes/i_error_messages.jspf" %>	
