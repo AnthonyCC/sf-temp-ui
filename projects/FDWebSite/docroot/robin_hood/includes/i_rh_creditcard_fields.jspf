@@ -181,7 +181,7 @@ String custLname = null;
 
 </TABLE>
 <br><br>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="695">
 <TR VALIGN="TOP">
 	<TD WIDTH="693">
 		<img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="206" HEIGHT="9" border="0" alt="BILLING ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
