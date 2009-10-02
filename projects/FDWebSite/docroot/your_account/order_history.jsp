@@ -128,10 +128,12 @@ Please review your orders. To check the status of an order, click on the order n
         %>
 		<td><%= status %></td>
 		<td>
-			<a href="<%= orderDetailsUrl %>"><%= EnumSaleStatus.SUBMITTED.equals(orderInfo.getOrderStatus()) || EnumSaleStatus.AUTHORIZED.equals(orderInfo.getOrderStatus()) || EnumSaleStatus.AVS_EXCEPTION.equals(orderInfo.getOrderStatus()) ? "View/Modify" : "View" %></a>
-            <% if (!orderInfo.isPending() && !orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD)) { %>
+			<a href="<%= orderDetailsUrl %>"><%= (EnumSaleStatus.SUBMITTED.equals(orderInfo.getOrderStatus()) || EnumSaleStatus.AUTHORIZED.equals(orderInfo.getOrderStatus()) || EnumSaleStatus.AVS_EXCEPTION.equals(orderInfo.getOrderStatus())) && !orderInfo.getSaleType().equals(EnumSaleType.DONATION) ? "View/Modify" : "View" %></a>
+            <% if (!orderInfo.isPending() && !orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD)&& !orderInfo.getSaleType().equals(EnumSaleType.DONATION)) { %>
             | <a href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>">Shop From This Order</a>
             <% } %>
+           
+           
 		</td>
 	</tr>
 	</logic:iterate>
