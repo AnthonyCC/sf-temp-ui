@@ -95,7 +95,7 @@
 	String step3_img_r = "/media_stat/images/donation/robinhood/nav/nav_confirm_on.gif";
 
 	// setup links to each step (used for step check)
-	String step0_link = "NEVER IN A URL";//rhLanding;
+	String step0_link = rhLanding;
 	String step1_link = rhLanding;
 	String step2_link = "/robin_hood/rh_submit_order.jsp";
 		String step2b_link = "/robin_hood/register_purchase.jsp"; // step 2 has three pages
@@ -124,13 +124,13 @@
 	
 	// as we pass each step, we make it a link and allow mouse overs
 	/* 
-		ROBIN HOOD DOES NOT HAVE STEP ZERO
+		ROBIN HOOD HAS TO HAVE STEP ZERO FOR DOING MULTIPLE ORDERS */
 
 		if ( step > 0 ) {
 			// this setup is extra complicated because of the rounded corners
 			step0_disp = "<a href=\""+response.encodeURL(step0_link)+"\"" + "onMouseOver=\"swapImage('"+step0_id+"','" + step0_img_r + "');swapImage('gc_nav_topLf','/media_stat/images/donation/robinhood/nav/nav_corner_top_lf_on.gif');swapImage('gc_nav_botLf','/media_stat/images/donation/robinhood/nav/nav_corner_bot_lf_on.gif');$w('td_step0_1 td_step0_2').each(function(n) {$(n).style.backgroundColor='#360';});\" onMouseOut=\"swapImage('"+step0_id+"','" + step0_img + "');swapImage('gc_nav_topLf','/media_stat/images/donation/robinhood/nav/nav_corner_top_lf_off.gif');swapImage('gc_nav_botLf','/media_stat/images/donation/robinhood/nav/nav_corner_bot_lf_off.gif');$w('td_step0_1 td_step0_2').each(function(n) {$(n).style.backgroundColor='#693';});\"" + "><img src=\""+step0_img+"\" "+step0_attribs+" /></a>";
 		}
-	*/
+	
 	if ( step > 1 ) {
 		step1_disp = "<a href=\""+response.encodeURL(step1_link)+"\"" + "onMouseOver=\"swapImage('"+step1_id+"','" + step1_img_r + "');$('td_step1').style.backgroundColor='#360';\" onMouseOut=\"swapImage('"+step1_id+"','" + step1_img + "');$('td_step1').style.backgroundColor='#693';\"" + "><img src=\""+step1_img+"\" "+step1_attribs+" /></a>";
 	}

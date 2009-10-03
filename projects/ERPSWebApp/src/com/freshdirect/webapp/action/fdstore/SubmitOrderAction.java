@@ -897,12 +897,11 @@ public class SubmitOrderAction extends WebActionSupport {
 			if(rsv != null && rsv.getPK().equals(cart.getDeliveryReservation().getPK())){
 			    user.setReservation(null);
 			}
-			//Clear Recipient List
-			user.setRecipientList(new FDRecipientList());
-			user.setBulkRecipientList(new FDBulkRecipientList());
+			
 			user.setRedeemedPromotion(null);
 			//CLear the fake delivery address.
-			user.getGiftCart().setDeliveryAddress(null);
+			user.getDonationCart().setDeliveryAddress(null);
+			user.getDonationCart().setOrderLines(Collections.EMPTY_LIST);
 			
 			user.invalidateCache();
 	        // make sure we're not using stale order history data.

@@ -1,5 +1,6 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import ='com.freshdirect.fdstore.customer.*'%>
@@ -19,7 +20,7 @@
 			String action_name ="checkout";
 			
 			FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
-
+			ProductModel productModel = ContentFactory.getInstance().getProduct(FDStoreProperties.getRobinHoodSkucode());
 			/*
 				check robin hood status to show appropriate messaging
 					"BUY" which is available to buy (DEFAULT)
@@ -97,7 +98,7 @@
 													
 
 											<td width="12" align="right"><a href="javascript:chgQty(1.0);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty(-1.0);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
-											<td style="padding-left:4px;" class="text11bold">Robin Hood Holiday Meal for Eight</td>
+											<td style="padding-left:4px;" class="text11bold"><%=productModel.getFullName() %></td>
 										</tr>
 									</table>		
 								</td>	
