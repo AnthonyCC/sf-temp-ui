@@ -126,8 +126,8 @@ int idx = 0;
 				<td style="padding: 2px;" width="70" align="right" valign="bottom"><%=JspMethods.currencyFormatter.format(totalPrice)%></td>
 			</tr>
 			<tr>
-				<td colspan="2" style="padding: 2px;" align="left">
-					<span class="text13bold">TOTAL:</span> &nbsp;<%=JspMethods.currencyFormatter.format(totalPrice)%></td>
+				<td colspan="2" style="padding: 2px;" align="left" class="text13bold">
+					<span>TOTAL:</span> &nbsp;<%=JspMethods.currencyFormatter.format(totalPrice)%></td>
 				<td style="padding: 2px;" width="70" align="left" class="text13bold"></td>
 			</tr>
 			<tr>
