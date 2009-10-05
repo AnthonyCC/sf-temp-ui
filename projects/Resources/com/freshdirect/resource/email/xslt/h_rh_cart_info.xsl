@@ -8,23 +8,25 @@
 	<xsl:template name="h_rh_cart_info">
 		<br/>
 
-<table width="680" cellspacing="0" cellpadding="0" border="0">
+<img src="/media_stat/images/layout/cccccc.gif" width="693" height="1"/><br/>
+
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
 
 	<tr>
-			<td class="text11bold" align="center">Quantity<br/> Order/Delivered</td>
+			<td class="text11bold" align="center">&nbsp;Quantity<br/></td>
 			<td></td>
-			<td class="text11bold" align="center">Final<br/>Weight</td>
+			<td></td>
 			<td class="text11bold" align="center">Unit<br/>Price</td>
-			<td class="text11bold" align="center">Options<br/>Price</td>
+			<td></td>
 			<td class="text11bold" align="center">Final<br/>Price</td>
 	</tr>
 		<tr>
 			<td><img src="/images/clear.gif" width="1" height="1" border="0" alt="" /></td>
 		</tr>
 		
-	<tr>
-			<td align="center" class="text11bold">
-			<img src="/media_stat/images/donation/robinhood/landing/color_swatch_F0F0E7.gif" width="1" height="8" border="0" /> FRESHDIRECT
+	<tr align="left">
+			<td class="text11bold" bgcolor="#dddddd" colspan="6">
+			<img src="/media_stat/images/donation/robinhood/landing/color_swatch_F0F0E7.gif" width="1" height="8" border="0" /> <b> &nbsp;&nbsp;&nbsp;FRESHDIRECT</b>
 			</td>
 	</tr>
 		<tr>
@@ -34,10 +36,10 @@
 		<xsl:for-each select="orderLines/orderLines">
 	<tr>
 		
-			<td class="text11bold" align="center"><xsl:value-of select="orderedQuantity"/>/<xsl:value-of select="deliveredQuantity"/></td>
+			<td class="text11bold" align="center"><xsl:value-of select="orderedQuantity"/></td>
 			<td style="padding-left:30px;" class="text11bold" align="center">Robin Hood Holiday Meal for Eight	</td>
 			<td></td>
-			<td align="center">$75.00/ea</td>
+			<td align="center">$/ea</td>
 			<td></td>
 			<td  align="center"  style="padding-left:4px;" class="text11bold">$<xsl:value-of select='format-number(price, "###,##0.00", "USD")'/></td>
 		
@@ -51,20 +53,19 @@
 
 </table> 
 
-<table width="680" cellspacing="0" cellpadding="0" border="0" valign="middle" >
+<table width="320" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td ><img src="/images/clear.gif" width="1" height="1" border="0" alt="" /></td>
-			<td></td>			<td></td>			<td></td>			<td></td>			<td></td>
+			<td></td>	<td></td>	<td></td>	<td></td>	<td></td>
 
 		</tr>
 		
         <tr>
-			<td colspan="4"></td>
-		<td align="right" class="text11bold" >
-		ORDER TOTAL:
+		<td colspan="4"></td>
+		<td align="right" colspan="2">
+		<b>ORDER TOTAL:</b><b>$<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/> </b>&nbsp;&nbsp;&nbsp;
 		</td>
-        <td  align="right"  style="padding-left:4px;" class="text11bold">$<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/></td>
-        </tr>
+         </tr>
 </table>
 </xsl:template>
 
