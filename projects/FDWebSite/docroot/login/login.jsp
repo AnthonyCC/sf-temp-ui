@@ -6,7 +6,7 @@ String template = "/common/template/no_nav.jsp";
 	//diff nav for popup login
 	//if ("popup".equals( request.getParameter("type") ))
 boolean isPopup = false;
-String sPage = request.getParameter("successPage").toLowerCase();
+String sPage = (request.getParameter("successPage")!=null)?request.getParameter("successPage").toLowerCase():null;
 	if (sPage != null) {
 		if (sPage.indexOf("type=popup") != -1){
 			template = "/common/template/large_pop.jsp";
