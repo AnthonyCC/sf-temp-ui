@@ -120,16 +120,16 @@ int idx = 0;
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" style="padding: 2px;" align="right" valign="bottom">
+				<td colspan="2" style="padding: 2px;" align="left" valign="bottom">
 					<span class="text11bold">Robin Hood</span>&nbsp;Donation Subtotal&nbsp;(<%=totalQuantity%>&nbsp;Meals):
 				</td>
 				<td style="padding: 2px;" width="70" align="right" valign="bottom"><%=JspMethods.currencyFormatter.format(totalPrice)%></td>
 			</tr>
 			<tr>
-				<td colspan="2" style="padding: 2px;" align="right">
+				<td colspan="2" style="padding: 2px;" align="left">
 					<span class="text13bold">TOTAL:
 				</td>
-				<td style="padding: 2px;" width="70" align="right" class="text13bold"><%=JspMethods.currencyFormatter.format(totalPrice)%></td>
+				<td style="padding: 2px;" width="70" align="left" class="text13bold"><%=JspMethods.currencyFormatter.format(totalPrice)%></td>
 			</tr>
 			<tr>
 				<td colspan="3" style="padding: 2px;">
@@ -217,12 +217,12 @@ int idx = 0;
 
 <table width="680" cellspacing="0" cellpadding="0" border="0">
 
-	<tr>
-			<td class="text11bold" align="center">Quantity<br/> Order/Delivered</td>
+	<tr align="center">
+			<td class="text11bold" align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quantity<br/></td>
 			<td></td>
-			<td class="text11bold" align="center">Final<br/>Weight</td>
+			<td></td>
 			<td class="text11bold" align="center">Unit<br/>Price</td>
-			<td class="text11bold" align="center">Options<br/>Price</td>
+			<td></td>
 			<td class="text11bold" align="center">Final<br/>Price</td>
 	</tr>
 		<tr>
@@ -240,7 +240,7 @@ int idx = 0;
 		
 	<tr>
 		
-			<td class="text11bold" align="center"><%= cartLine.getOrderedQuantity() %>/<%= cartLine.getOrderedQuantity() %></td>
+			<td class="text11bold" align="center"><%= cartLine.getOrderedQuantity() %></td>
 			<td style="padding-left:30px;" class="text11bold" align="center">Robin Hood Holiday Meal for Eight	</td>
 			<td></td>
 			<td align="center"><%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %></td>
@@ -265,8 +265,8 @@ int idx = 0;
 		
         <tr>
 			<td colspan="4">&nbsp;</td>
-			<td align="right" class="orderTotal" colspan="2">
-			<b>ORDER TOTAL:</b>&nbsp;&nbsp;<%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %></td>
+			<td width="680" align="right" class="orderTotal" colspan="2">
+			<b>ORDER TOTAL:&nbsp;<%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %> &nbsp;&nbsp;&nbsp;</b></td>
         </tr>
         
 </table>
