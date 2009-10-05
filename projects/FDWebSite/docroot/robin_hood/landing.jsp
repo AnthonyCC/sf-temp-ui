@@ -28,6 +28,7 @@
 					"OUT" is sold out
 			*/
 			String rhStatus = FDStoreProperties.getRobinHoodStatus();
+			EnumAvailabilityStatus availabilityStatus = productInfo.getAvailabilityStatus();
 			FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 			FDCartModel cart = user.getDonationCart();
 			
@@ -45,14 +46,17 @@
 			</tr>
 
 		<%
-			if ("OUT".equalsIgnoreCase(rhStatus)) {
+			//if ("OUT".equalsIgnoreCase(rhStatus)) {
+				if (EnumAvailabilityStatus.DISCONTINUED.equals(availabilityStatus)) {
+				
 				//show soldout page
 		%>
 			<tr>
 				<td align="center"><fd:IncludeMedia name="/media/editorial/robin_hood/landing_sold_out.html" /></td>
 			</tr>
 		<%
-			} else if ("OOS".equalsIgnoreCase(rhStatus)) {
+			//} else if ("OOS".equalsIgnoreCase(rhStatus)) {
+				} else if (EnumAvailabilityStatus.TEMP_UNAV.equals(availabilityStatus)) {
 				//show out of stock page
 		%>
 			<tr>
