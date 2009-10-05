@@ -240,6 +240,8 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			
 			if(saleType==EnumSaleType.GIFTCARD){
 				preCheckGiftCardOrderFraud(erpCustomerPk, order, agentRole);
+			}else if(saleType==EnumSaleType.DONATION){
+				preCheckDonationFraud(erpCustomerPk, order, agentRole);
 			}else
 			   preCheckOrderFraud(erpCustomerPk, order, agentRole);
 			
@@ -254,7 +256,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpAbstractOrderModel orderModel = saleEB.getCurrentOrder();
 			if(saleType==EnumSaleType.GIFTCARD){
 				postCheckGiftCardFraud(salePK,erpCustomerPk, orderModel, agentRole);	
-			}else {
+			}else if(saleType==EnumSaleType.DONATION){
+				postCheckDonationFraud(salePK,erpCustomerPk, orderModel, agentRole);
+			}
+			else {
 				postCheckOrderFraud(salePK,erpCustomerPk, orderModel, agentRole);// perform				
 			}
 			
@@ -472,6 +477,19 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 
 	
+	private void preCheckDonationFraud(
+			PrimaryKey erpCustomerPk,
+			ErpAbstractOrderModel order,
+			CrmAgentRole agentRole) throws CreateException, RemoteException, ErpFraudException {
+			
+			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
+			EnumFraudReason fraud = fraudSB.preCheckDonationFraud(erpCustomerPk, order, agentRole);
+			if (fraud != null) {
+				SessionContext ctx = this.getSessionContext();
+				ctx.setRollbackOnly();
+				throw new ErpFraudException(fraud);
+			}			
+		}
 	
 		private void preCheckOrderFraud(
 		PrimaryKey erpCustomerPk,
@@ -511,6 +529,16 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			
 			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
 			fraudSB.postCheckGiftCardFraud(salePk, erpCustomerPk, order, agentRole);
+	}
+	
+	private void postCheckDonationFraud(
+			PrimaryKey salePk,
+			PrimaryKey erpCustomerPk,
+			ErpAbstractOrderModel order,
+			CrmAgentRole agentRole) throws CreateException, RemoteException {
+			
+			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
+			fraudSB.postCheckDonationFraud(salePk, erpCustomerPk, order, agentRole);
 	}
 	
 	public EnumPaymentResponse resubmitPayment(String saleId, ErpPaymentMethodI paymentMethod, Collection charges)

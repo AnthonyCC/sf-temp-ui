@@ -57,5 +57,9 @@ public interface ErpFraudPreventionSB extends EJBObject {
 	 public EnumFraudReason preCheckGiftCardFraud(PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) throws RemoteException;
 	 
 	 public void postCheckGiftCardFraud(PrimaryKey salePk, PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) throws RemoteException;
+	 
+	 public EnumFraudReason preCheckDonationFraud(PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) throws RemoteException;
+	 
+	 public void postCheckDonationFraud(PrimaryKey salePk, PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) throws RemoteException;
 
 }

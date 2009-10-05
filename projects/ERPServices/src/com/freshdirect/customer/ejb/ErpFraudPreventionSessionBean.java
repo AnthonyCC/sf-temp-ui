@@ -637,5 +637,40 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 
 	}
 	
+
+	public EnumFraudReason preCheckDonationFraud(PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole){
+		
+
+		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
+			// no check, no problem :)
+			LOGGER.info("Returning Null at start of preCheckOrderFraud");
+			return null;
+		}
+
+		LOGGER.info("Fraud check, order. customerPK=" + erpCustomerPk);
+
+		//
+		// CHECK DUPLICATE ACCOUNT #
+		// 
+		if ("true".equalsIgnoreCase(ErpServicesProperties.getCheckForPaymentMethodFraud())) {
+
+			ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) order.getPaymentMethod();
+			boolean dupCC = this.checkDuplicatePaymentMethodFraud(erpCustomerPk.getId(), paymentMethod);
+
+			if (dupCC) {
+				return EnumFraudReason.DUP_ACCOUNT_NUMBER;
+			}
+		}
+		return null;
+		
+	}
 	
+	public void postCheckDonationFraud(PrimaryKey salePk, PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CrmAgentRole agentRole) {
+		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
+			// no check, no problem :)
+			return ;
+		}
+		//TODO: Any checks required or not like 3 day limit etc. 
+		
+	}
 }

@@ -89,11 +89,11 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		"INSERT INTO CUST.DELIVERYINFO (SALESACTION_ID, RESERVATION_ID, STARTTIME, ENDTIME, CUTOFFTIME, ZONE, DEPOTLOCATION_ID," +
 		" FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP, COUNTRY, PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS," +
 		"SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME, ALT_LAST_NAME, ALT_APARTMENT, ALT_PHONE, ALT_PHONE_EXT, DELIVERY_TYPE," +
-		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME,OPTIN_IND) " +
+		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME) " +
         " values (?,?,?,?,?,?,?,?,?,?,REPLACE(REPLACE(UPPER(?),'-'),' '),?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')')," +
         "' '),'-'),'.'),?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.')," +
         "?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?," +
-        "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?,?)";
+        "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?)";
 		
 	public PrimaryKey create(Connection conn) throws SQLException {
 		//String id = this.getNextId(conn);
@@ -159,7 +159,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setString(32, unattendedDeliveryInstructions);
 		ps.setString(33, address.getCharityName());
 		ps.setString(34, address.getCompanyName());
-		ps.setString(35, address.isOptInForDonation()?"Y":"N");
+//		ps.setString(35, address.isOptInForDonation()?"Y":"N");
 
         
 		
