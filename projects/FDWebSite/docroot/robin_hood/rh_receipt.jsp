@@ -127,9 +127,8 @@ int idx = 0;
 			</tr>
 			<tr>
 				<td colspan="2" style="padding: 2px;" align="left">
-					<span class="text13bold">TOTAL:
-				</td>
-				<td style="padding: 2px;" width="70" align="left" class="text13bold"><%=JspMethods.currencyFormatter.format(totalPrice)%></td>
+					<span class="text13bold">TOTAL:</span> &nbsp;<%=JspMethods.currencyFormatter.format(totalPrice)%></td>
+				<td style="padding: 2px;" width="70" align="left" class="text13bold"></td>
 			</tr>
 			<tr>
 				<td colspan="3" style="padding: 2px;">
@@ -266,7 +265,7 @@ int idx = 0;
         <tr>
 			<td colspan="4">&nbsp;</td>
 			<td width="680" align="right" class="orderTotal" colspan="2">
-			<b>ORDER TOTAL:&nbsp;<%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %> &nbsp;&nbsp;&nbsp;</b></td>
+			<b>ORDER TOTAL:&nbsp;<%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %> &nbsp;&nbsp;&nbsp;&nbsp;</b></td>
         </tr>
         
 </table>
