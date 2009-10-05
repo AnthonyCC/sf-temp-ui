@@ -86,9 +86,9 @@ int idx = 0;
 			</tr>
 			<tr>
 				<td colspan="2" style="padding: 2px;" align="left">
-					<span class="text13bold">TOTAL:
+					<span class="text13bold">TOTAL:</span>&nbsp;<%= JspMethods.currencyFormatter.format( cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal() ) %>
 				</td>
-				<td style="padding: 2px;" width="70" align="left" class="text13bold"><%= JspMethods.currencyFormatter.format( cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal() ) %></td>
+				<td style="padding: 2px;" width="70" align="left" class="text13bold"></td>
 			</tr>
 			<tr>
 				<td colspan="3" style="padding: 2px;">
