@@ -1,14 +1,21 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <% 
 String template = "/common/template/no_nav.jsp";
 	//diff nav for popup login
 	//if ("popup".equals( request.getParameter("type") ))
 boolean isPopup = false;
-String sPage = request.getParameter("successPage");
-	if (sPage != null && sPage.indexOf("type=popup") != -1){
-	template = "/common/template/large_pop.jsp";
-	isPopup = true;
+String sPage = request.getParameter("successPage").toLowerCase();
+	if (sPage != null) {
+		if (sPage.indexOf("type=popup") != -1){
+			template = "/common/template/large_pop.jsp";
+			isPopup = true;
+		}else if ( sPage.indexOf("gift_card") > 0 && FDStoreProperties.isGiftCardEnabled() ) {
+			template = "/common/template/giftcard.jsp";
+		}else if ( sPage.indexOf("robin_hood") > 0 && FDStoreProperties.isRobinHoodEnabled() ) {
+			template = "/common/template/robinhood.jsp";
+		}
 	}
 %>
 <fd:CheckLoginStatus/>
@@ -47,16 +54,19 @@ String sPage = request.getParameter("successPage");
 		
 		<br><br>
 			<% if( null != request.getParameter("successPage")) { %>
-			<% if(request.getParameter("successPage").toLowerCase().indexOf("gift_card") > 0 ) { %>
-				<font class="text13bold">NEW CUSTOMER OR OUTSIDE OUR DELIVERY AREA?</FONT><BR>
-				<A HREF='<%= response.encodeURL("/gift_card/purchase/register_and_purchase.jsp") %>'><font class="text13"><b>Click here to continue</b></font></a><br><br></td>
+				<% if(request.getParameter("successPage").toLowerCase().indexOf("gift_card") > 0 ) { %>
+					<font class="text13bold">NEW TO FRESHDIRECT?</FONT><BR>
+					<A HREF='<%= response.encodeURL("/gift_card/purchase/register_and_purchase.jsp") %>'><font class="text13"><b>Click here to continue</b></font></a><br><br></td>
 				<% } else if(request.getParameter("successPage").toLowerCase().indexOf("robin_hood") > 0 ){ %>        
-				<font class="text13bold">NEW CUSTOMER OR OUTSIDE OUR DELIVERY AREA?</FONT><BR>
-				<A HREF='<%= response.encodeURL("/robin_hood/register_purchase.jsp") %>'><font class="text13"><b>Click here to continue</b></font></a><br><br></td>
-				
-			<% } } else { %>        
+					<font class="text13bold">NEW TO FRESHDIRECT?</FONT><BR>
+					<A HREF='<%= response.encodeURL("/robin_hood/register_purchase.jsp") %>'><font class="text13"><b>Click here to continue</b></font></a><br><br></td>
+					
+				<% }else{ %>
+					<font class="text13bold">New Customer?</FONT><BR>
+						<A HREF='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'><font class="text13">See if we deliver to your area</font></a>.<% } %>
+			<%} else { %>        
 				<font class="text13bold">New Customer?</FONT><BR>
-                <A HREF='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'><font class="text13">See if we deliver to your area</font></a>.<% } %><br><br>
+				<A HREF='<%= response.encodeURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp") %>'><font class="text13">See if we deliver to your area</font></a>.<% } %>
 		<% } %><br><br>
 			</td>
 		</tr>

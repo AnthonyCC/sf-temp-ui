@@ -21,7 +21,7 @@
 		<% 
 		
 		if( null != request.getParameter("successPage") && request.getParameter("successPage").toLowerCase().indexOf("gift_card") > 0 && FDStoreProperties.isGiftCardEnabled() ) { %>
-			<font class="text13bold">NEW CUSTOMER OR OUTSIDE OUR DELIVERY AREA?</FONT><BR><BR>
+			<font class="text13bold">NEW TO FRESHDIRECT?</FONT><BR><BR>
 			<A HREF='<%= response.encodeURL("/gift_card/purchase/register_and_purchase.jsp") %>'><font class="text13"><b>Click here</b> to continue with gift card purchase</font></a>.<br><br></td>
                 <% } else { %>        
 			<font class="text13bold">New Customer?</FONT><BR>
