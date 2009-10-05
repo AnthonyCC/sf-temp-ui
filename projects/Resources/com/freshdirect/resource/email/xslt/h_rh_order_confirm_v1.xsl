@@ -33,13 +33,14 @@
 
 									<br/>							
 								<p><xsl:call-template name="h_rh_order_info"/></p>
-							<p><font face="verdana, arial, sans-serif" size="1" color="black">NOTE: If this email does not print out clearly, please go to <a href="https://www.freshdirect.com/your_account/order_history.jsp">https://www.freshdirect.com/your_account/order_history.jsp</a> for a printer-friendly version of your order details.</font></p>
-							<p><xsl:call-template name="h_rh_cart_info"/></p>
+							        <p><xsl:call-template name="h_rh_cart_info"/></p>
 
 								<xsl:if test="order/paymentMethod/paymentType = 'M'">
 								<br/>
 								<b>Please note that you are not being charged for this order. The amount displayed above, as well as your account with FreshDirect, will reflect a zero balance within the next 48 hours.</b>
 								</xsl:if>
+							
+							<p><font face="verdana, arial, sans-serif" size="1" color="black">NOTE: If this email does not print out clearly, please go to <a href="https://www.freshdirect.com/your_account/order_history.jsp">https://www.freshdirect.com/your_account/order_history.jsp</a> <br/> for a printer-friendly version of your order details.</font></p>
 							<p><xsl:call-template name="h_footer_v1"/></p>
 
 						</td>
