@@ -98,7 +98,7 @@
 													
 
 											<td width="12" align="right"><a href="javascript:chgQty(1.0);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty(-1.0);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
-											<td style="padding-left:4px;" class="text11bold"><%=productModel.getFullName() %></td>
+											<td style="padding-left:4px;" class="text11bold"><a href="javascript:popup('/media/editorial/robin_hood/landing_about_meal.html','large')"><%=productModel.getFullName() %></a></td>
 										</tr>
 									</table>		
 								</td>	
