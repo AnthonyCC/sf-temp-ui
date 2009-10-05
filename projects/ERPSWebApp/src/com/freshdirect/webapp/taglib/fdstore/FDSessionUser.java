@@ -91,6 +91,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	
 	private String lastSenderName = null;
 	private String lastSenderEmail = null;
+	
+	private boolean lastRecipAdded;
+	
 	//Invalid Payment Method on Signup.
 	
 	private ErpPaymentMethodI invalidPaymentMethod;
@@ -951,6 +954,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	public void setLastSenderEmail(String lastSenderEmail) {
 		this.lastSenderEmail = lastSenderEmail;
+	}
+	
+	public boolean isLastRecipAdded() {
+		return lastRecipAdded;
+	}
+
+	public void setLastRecipAdded(boolean lastRecipAdded) {
+		this.lastRecipAdded = lastRecipAdded;
 	}
 	
 	public Integer getDonationTotalQuantity(){

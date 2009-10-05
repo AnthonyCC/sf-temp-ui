@@ -29,6 +29,7 @@ import com.freshdirect.webapp.util.JspMethods;
 public class AddSavedRecipientControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName {
 
 	private static Category LOGGER = LoggerFactory.getInstance(AddSavedRecipientControllerTag.class);
+	private String gcAddCardPage = "/gift_card/purchase/add_giftcard.jsp";
 	private String gcSubmitOrderPage = "/gift_card/purchase/purchase_giftcard.jsp";
 	
 	FDUser user = null;
@@ -82,6 +83,9 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
         FDSessionUser fs_user = (FDSessionUser)session.getAttribute(USER);
         user = fs_user.getUser();
         boolean isCartChanged = false;
+        
+        LOGGER.debug("setLastRecipAdded false: ");
+    	fs_user.setLastRecipAdded(false);
 
         //
         // perform any actions requested by the user if the request was a POST
@@ -94,7 +98,9 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
             	if ("addSavedRecipient".equalsIgnoreCase(actionName) ) {
                     getFormData(request, result);
                     result = validateGiftCard(request, result);
+                    
                     if(result.getErrors().isEmpty()) {
+                        LOGGER.debug("inside addSavedRecipient successPage: "+successPage);
                         SavedRecipientModel srm = populateSavedRecipient();
                         //FDCustomerManager.storeSavedRecipient(user, srm);
                         user.getRecipentList().addRecipient(srm);
@@ -102,6 +108,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
                         fs_user.setLastSenderName(fldYourName);
                     	fs_user.setLastSenderEmail(fldYourEmail);
                     	isCartChanged = true;
+                    	fs_user.setLastRecipAdded(true);
                     }
                 } else if ("editSavedRecipient".equalsIgnoreCase(actionName)) {
                     getFormData(request, result);
@@ -125,6 +132,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
 	                			//update recipient
 	                			user.getRecipentList().setRecipient(repIndex, srm);
 	                			isCartChanged = true;
+	                			fs_user.setLastRecipAdded(true);
 	                		}
                 		}
                     	//FDCustomerManager.updateSavedRecipient(user, srm);
@@ -132,6 +140,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
                 } else if("checkout".equalsIgnoreCase(actionName)) {
                 	UserValidationUtil.validateRecipientListEmpty(request, result);
                 	setSuccessPage(gcSubmitOrderPage);
+                	fs_user.setLastRecipAdded(false);
                 }
                 	
             } catch (FDResourceException ex) {
@@ -141,6 +150,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
             //
             // redirect to success page if an action was successfully performed and a success page was defined
             //
+
             if (result.getErrors().isEmpty() && (successPage != null)) {
                 LOGGER.debug("Success, redirecting to: "+successPage);
                 HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
@@ -156,6 +166,13 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
                 }
             }
         } else  if (("GET".equalsIgnoreCase(request.getMethod()))) {
+
+            LOGGER.debug("GET dump request: ");
+            JspMethods.dumpRequest(request);
+            
+            LOGGER.debug("setSuccessPage null: ");
+        	setSuccessPage(null);
+            
         	if("deleteSavedRecipient".equalsIgnoreCase(actionName)) {
             	String repId = request.getParameter("deleteId");
         		if (repId == null) {
@@ -173,11 +190,34 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
             			//remove recipient
             			user.getRecipentList().removeRecipient(repIndex);
             			isCartChanged = true;
+                    	fs_user.setLastRecipAdded(true);
+		                setSuccessPage(gcAddCardPage);
             		}
         		}
 
             	//FDCustomerManager.deleteSavedRecipient(request.getParameter("deleteId"));
-            } 
+            }
+        	
+
+            //
+            // redirect to success page if an action was successfully performed and a success page was defined
+            //
+
+            if (result.getErrors().isEmpty() && (successPage != null)) {
+                LOGGER.debug("Success GET, redirecting to: "+successPage);
+                HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+                try {
+                    response.sendRedirect(response.encodeRedirectURL(successPage));
+                    JspWriter writer = pageContext.getOut();
+                    writer.close();
+                } catch (IOException ioe) {
+                    //
+                    // if there was a problem redirecting, continue and evaluate/skip tag body as usual
+                    //
+                    LOGGER.warn("IOException during redirect", ioe);
+                }
+            }
+        	
         }
         if(isCartChanged){
         	fs_user.saveCart();

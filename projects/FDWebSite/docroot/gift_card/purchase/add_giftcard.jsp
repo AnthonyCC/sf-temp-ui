@@ -68,10 +68,12 @@
 		<fd:AddSavedRecipientController actionName='<%=action_name%>' resultName='result' successPage='/gift_card/purchase/add_giftcard.jsp'>
             <%
                FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER);
-            if(sessionuser.getGiftCart().getDeliveryAddress()!=null) {
-                 UserValidationUtil.validateRecipientListEmpty(request, result); 
-                 sessionuser.getGiftCart().setDeliveryAddress(null);
+			if (sessionuser.getGiftCart().getDeliveryAddress()!=null) {
+				UserValidationUtil.validateRecipientListEmpty(request, result); 
+				sessionuser.getGiftCart().setDeliveryAddress(null);
+				
              }
+				FDRecipientList recipListContinue = sessionuser.getRecipentList();
              %>
             <fd:ErrorHandler result='<%=result%>' name='gc_amount_minimum' id='errorMsg'>
                <%@ include file="/includes/i_error_messages.jspf" %>
@@ -91,6 +93,46 @@
 				<%@ include file="/includes/i_error_messages.jspf" %>
 			</fd:ErrorHandler>
 
+			<%
+				if(sessionuser.isLastRecipAdded() && (recipListContinue != null && recipListContinue.size() > 0)) {
+				
+				String infoMsg = SystemMessageList.MSG_GC_ADD_RECIP_SUCCESS;
+			%>
+					
+				<table width="100%" cellspacing="0" cellpadding="0" border="0">
+				<tr>
+					<td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+					<td rowspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
+					<td colspan="2" bgcolor="#FF9900"><img src="/media_stat/images/layout/ff9900.gif" width="1" height="1"></td>
+					<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
+					<td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+				</tr>
+				<tr>
+					<td rowspan="3" bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
+					<td bgcolor="#ffffff"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+				</tr>
+				<tr>
+					<td width="18" bgcolor="#FF9900"><img src="/media_stat/images/template/system_msgs/check_FF9900.gif" width="18" height="22" border="0" alt="check"></td>
+					<td class="text11orbold" width="100%" bgcolor="#ffffff">
+							<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
+								<%=infoMsg%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
+					</td>
+					<td bgcolor="#ffffff"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+					<td bgcolor="#ff9900"><img src="/media_stat/images/layout/ff9900.gif" width="1" height="1"></td>
+				</tr>
+				<tr>
+					<td rowspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
+					<td bgcolor="#ffffff"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+					<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
+				</tr>
+				<tr>
+					<td colspan="2" bgcolor="#FF9900"><img src="/media_stat/images/layout/ff9900.gif" width="1" height="1"></td>
+				</tr>
+				</table>
+				<br />
+			<%
+				}
+			%>
 
 			<table width="690" cellspacing="0" cellpadding="0" border="0">
 				<tr>
@@ -99,7 +141,14 @@
 						Provide your recipients' personal info and details of your gift.
 					</td>
 					<td width="99">
-						<input type="image" onClick='javascript:setCheckOut();' name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
+						&nbsp;
+						<%
+							//only show continue if user has recips in list
+
+							if(recipListContinue != null && recipListContinue.size() > 0) {
+						%>
+							<input type="image" onClick="return pendGC();" name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
+						<% } %>
 					</td>
 				</tr>
 				<tr>
@@ -134,17 +183,16 @@
 			<tr>
 				<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 			</tr>
-			<tr>
-				<td align="right">
-					When all of your gift card information is set, click 'Continue' to <br />
-					confirm it and choose a payment method.
-				</td>
-				<td width="20"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" /></td>
-			</tr>
 			<tr valign="top">
 				<td align="right" colspan="2">
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
-                    <input type="image" onClick='javascript:setCheckOut();' name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
+					&nbsp;
+					<%
+						//only show continue if user has recips in list
+						if(recipListContinue != null && recipListContinue.size() > 0) {
+					%>
+						<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+						<input type="image" onClick="return pendGC();" name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
+					<% } %>
 				</td>
 			</tr>
 		</table>

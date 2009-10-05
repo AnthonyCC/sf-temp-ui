@@ -69,7 +69,13 @@
 			</tr>
 		</table>
 		<br /><img src="/media_stat/images/layout/cccccc.gif" width="675" height="1" border="0"><br /><br />
-        <fd:GiftCardController actionName='applyGiftCard' result='result' successPage='/your_account/giftcards.jsp'>
+		<%
+			String sPage = "/your_account/giftcards.jsp";
+			if (request.getParameter("trk") != null) {
+				if ( "cart".equalsIgnoreCase(request.getParameter("trk")) ) { sPage = "/checkout/view_cart.jsp"; }
+			}
+		%>
+        <fd:GiftCardController actionName='applyGiftCard' result='result' successPage='<%=sPage%>'>
             <fd:ErrorHandler result="<%=result%>" name="account_locked" id="errorMsg">
                 <%@ include file="/includes/i_error_messages.jspf" %>   
             </fd:ErrorHandler>

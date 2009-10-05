@@ -148,6 +148,7 @@ public interface SystemMessageList {
 	public final static String MSG_GC_ON_HOLD = "The gift card number you entered is on hold. Please contact Customer Service for further assistance {0}.";
 	public final static String MSG_GC_MIN_AMOUNT = "Gift card orders require a minimum value of ${0} per card. Please contact Customer Service for further assistance {1}.";
 	public final static String MSG_GC_MAX_AMOUNT = " Gift card purchases are restricted to a maximum of ${0} per order. Please contact Customer Service for further assistance {1}.";
+	public final static String MSG_GC_ADD_RECIP_SUCCESS = "Your recipient list has been updated. You may enter the details for another gift or place your order by clicking the \"Continue\" button.";
 	
 	
 }

@@ -18,7 +18,7 @@
 
 <table width="745" border="0" cellpadding="0" cellspacing="0">
 	<tr>
-		<td valign="bottom">
+		<td valign="bottom" width="182">
 			<% if (user != null) {
 				// ads are enabled
 				if (FDStoreProperties.isAdServerEnabled()) {
@@ -53,6 +53,20 @@
 			<% } %>
 	    </td>
 		<td valign="bottom" align="right">
+			<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %>
+				<a href="/your_account/manage_account.jsp"><img src='<%= "/media_stat/images/navigation/global_nav/global_hdr_ct_"+user.getChefsTableInduction().substring(0,4)+".gif"%>' width="256" height="10" alt="CLICK HERE FOR EXCLUSIVE CHEF'S TABLE OFFERS" vspace="0" border="0"></a><br>
+			<% } else if (user.isDlvPassActive()) { %>
+				<a href="/your_account/delivery_pass.jsp"><img src="/media_stat/images/navigation/global_nav/global_hdr_dp.gif" width="217" height="10" alt="CLICK HERE FOR DETAILS"  vspace="0" border="0"></a><br>
+			<% } %>
+			
+			<% if (user.getLevel() == FDUserI.SIGNED_IN) { %>
+				<a href="/login/logout.jsp"><b>Click here to log out</b></a>
+			<% } else if (user.getLevel() == FDUserI.RECOGNIZED) { %>
+				<a href="/login/login.jsp"><b>Click here to log in</b></a>
+			<% } else {	%>
+				<b>New customer?</b> <a href="/registration/signup.jsp">Sign Up</a><img src="/media_stat/images/layout/clear.gif" width="25" height="1" hspace="2" vspace="3" alt=""><b>Current customer?</b> <a href="/login/login.jsp">Log In</a>
+			<% } %>
+			<br /><br />
 			<img src="/media_stat/images/donation/robinhood/nav/way_to_give.gif" height="24" width="315" alt="Worthy Cause. Easy Way To Give." />
 		</td>
 	</tr>
@@ -95,7 +109,9 @@
 	String step3_img_r = "/media_stat/images/donation/robinhood/nav/nav_confirm_on.gif";
 
 	// setup links to each step (used for step check)
+	String step0_link = "NEVER IN A URL";//rhLanding;
 	String step0_link = rhLanding;
+	String step0b_link = "login/login.jsp";
 	String step1_link = rhLanding;
 	String step2_link = "/robin_hood/rh_submit_order.jsp";
 		String step2b_link = "/robin_hood/register_purchase.jsp"; // step 2 has three pages
@@ -111,6 +127,7 @@
 	// based on the current step (via jsp name in URI) set the appropriate image for the steps
 	String globalUri = request.getRequestURI().toLowerCase();
 	if (globalUri.indexOf(step0_link) > -1) { step = 0; }
+	if (globalUri.indexOf(step0b_link) > -1) { step = 0; }
 	if (globalUri.indexOf(step1_link) > -1) { step = 1; }
 	if (globalUri.indexOf(step2_link) > -1) { step = 2; }
 		if (globalUri.indexOf(step2b_link) > -1) { step = 2; }

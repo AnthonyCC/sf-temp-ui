@@ -155,7 +155,7 @@ if (request.getParameter("fldMessage") !=null) {
 				*&nbsp;Your&nbsp;Name 
 			</span>
 		</td>
-        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" width="15" height="1" border="0" /></td>
+        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" /></td>
         <td colspan="2">
 			<input type="text" maxlength="55" tabIndex="1" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
 	</td>
@@ -191,8 +191,14 @@ if (request.getParameter("fldMessage") !=null) {
     	<td colspan="2">
 			<table border="0" cellpadding="0" cellspacing="0" width="100%">
 				<tr>
-					<td width="30%" valign="top"><input type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> onclick="$('gcRecipientEmail').disabled=false;" />Email</td>
-					<td width="70%"><input type="radio" tabIndex="5"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %> onclick="$('gcRecipientEmail').disabled=true;" />I'll Download a PDF and Print It.</td>
+					<td width="15">
+						<input type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> onclick="$('gcRecipientEmail').disabled=false;" />
+    				</td>
+					<td width="25%">Email</td>
+					<td width="15">
+						<input type="radio" tabIndex="5"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %> onclick="$('gcRecipientEmail').disabled=true;" />
+					</td>
+					<td width="70%">I'll Download a PDF and Print It.</td>
 				</tr>
 			</table>
     	</td>
@@ -210,16 +216,29 @@ if (request.getParameter("fldMessage") !=null) {
 	<tr>
 		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>>*&nbsp;Amount&nbsp;$</td>
     	<td colspan="2">
-			<select tabIndex="7"  class="text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
-			   <option value="" <%="".equalsIgnoreCase(fldAmount)?"selected":""%>> </option>	
-			   <option value="OTHER" <%=!"".equalsIgnoreCase(fldAmount)?"selected":""%>>OTHER</option>
-			   <option value="30.00" <%="30.00".equalsIgnoreCase(fldAmount)?"selected":""%>>30.00</option>		
-			   <option value="50.00" <%="50.00".equalsIgnoreCase(fldAmount)?"selected":""%>>50.00</option>
-			   <option value="100.00" <%="100.00".equalsIgnoreCase(fldAmount)?"selected":""%>>100.00</option>
-			   <option value="250.00" <%="250.00".equalsIgnoreCase(fldAmount)?"selected":""%>>250.00</option>
-			</select>
-			<input type="text" tabIndex="8"  maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> />
-			Enter amount (min. $20.00)
+			<table>
+				<tr>
+					<td width="65">
+						<select tabIndex="7"  class="text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
+						   <option value="" <%="".equalsIgnoreCase(fldAmount)?"selected":""%>> </option>
+						   <option value="OTHER" <%=!"".equalsIgnoreCase(fldAmount)?"selected":""%>>OTHER</option>
+						   <option value="30.00" <%="30.00".equalsIgnoreCase(fldAmount)?"selected":""%>>30.00</option>
+						   <option value="50.00" <%="50.00".equalsIgnoreCase(fldAmount)?"selected":""%>>50.00</option>
+						   <option value="100.00" <%="100.00".equalsIgnoreCase(fldAmount)?"selected":""%>>100.00</option>
+						   <option value="250.00" <%="250.00".equalsIgnoreCase(fldAmount)?"selected":""%>>250.00</option>
+						</select>
+					</td>
+					<td>
+						<input type="text" tabIndex="8"  maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> />
+					</td>
+					<td>
+						Enter amount (min. $20.00)
+					</td>
+				</tr>
+			</table>
+			
+			
+			
 		</td>
 	</tr>
     <tr>
@@ -268,8 +287,6 @@ if (request.getParameter("fldMessage") !=null) {
 
 <table border="0" cellspacing="1" cellpadding="0" width="675">
 <tr valign="MIDDLE">
-    <td></td>
     <td><img src="/media_stat/images/layout/clear.gif" width="105" height="1" border="0"></td>
-    <td></td>
 </tr>
 </table>

@@ -230,7 +230,7 @@ request.setAttribute("listPos", "CategoryNote");
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
 											<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= corpZipcode %>' name="corpZipcode" required="true" tabindex="1"><br>
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
-											<input type="image" src="/media_stat/images/template/site_access/go.gif" width="39" height="21" name="site_access_home_go" border="0" value="Check My Area" alt="GO" hspace="4" tabindex="2"><br>
+											<input type="image" src="/media_stat/images/template/site_access/go.gif" width="27" height="16" name="site_access_home_go" border="0" value="Check My Area" alt="GO" hspace="4" tabindex="2"><br>
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
 											<img src="/media_stat/images/template/site_access/truck_zipcheck.jpg"  width="111" height="80" ><br>
 											<img src="/media_stat/images/layout/999966.gif" width="70%" height="2" vspace="10"><br>
@@ -278,7 +278,7 @@ request.setAttribute("listPos", "CategoryNote");
 											<% } %>
 											To get started, please<br /> Enter your zip code:<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><input class="text11" type="text" size="13" style="width: 122px" value="<%= zipcode%>" maxlength="5" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" id="gc_<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" required="true" tabindex="3"></form><br />
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br />
-											<input type="image" src="/media_stat/images/template/site_access/go.gif" width="39" height="21" name="site_access_gc_go" border="0" value="Check My Area" alt="GO" tabindex="4" onclick="gcValidate();" />
+											<input type="image" src="/media_stat/images/template/site_access/go.gif" width="27" height="16" name="site_access_gc_go" border="0" value="Check My Area" alt="GO" tabindex="4" onclick="gcValidate();" />
 										</td>
 									</tr>
 										<td rowspan="2" colspan="2" valign="bottom"><img src="/media_stat/images/layout/qs_bottom_lft_crnr_purp.gif" width="7" height="8"></td>

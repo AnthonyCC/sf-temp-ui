@@ -9,7 +9,7 @@
 
 var global_gcDebug = false;
 var global_gcLog = false;
-var lastEdit = '2009.10.01_10.51.30.AM';
+var lastEdit = '2009.10.05_07.18.10.PM';
 var lastLog;
 
 gcLog('Last Edit: '+lastEdit);
@@ -622,7 +622,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 					height: 800,
 					transitions: false,
 					autoFocusing: false,
-					centered:true,
+					centered: true,
 					afterLoad: function() { window.scrollTo(0,0); },
 					afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 				});
@@ -1292,4 +1292,38 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				$('rhContactPrefsBoxErr').innerHTML =  transport.responseText;
 			}
 		});
+	}
+
+/*	GC pending GC check
+ *	---------------------------------*/
+	function pendGC() {
+		showPopUp = false;
+		if ($('gcRecipientName').value!='') {showPopUp=true;}
+		if ($('deliveryMethodEmail').checked) {showPopUp=true;}
+		if ($('deliveryMethodPdf').checked) {showPopUp=true;}
+		if ($('gcRecipientEmail').value!='') {showPopUp=true;}
+		if ($('fldAltAmount').value!='') {showPopUp=true;}
+		if (!$('fldAltAmount').disabled) {showPopUp=true;}
+		if (showPopUp) {
+			var popUp='<div style="text-align: left;" class="pendGCPop" id="pendGCPop"><span>Save this Gift Card?</span><a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a><br style="clear: both;" /><br /><br />Please save it to your Recipient List, then click "Go to Checkout."<br /><br />If you don\'t want to save the card, please click Clear before you check out.<br /><br />Close this popup to make more changes.<br /><br /><div style="text-align: center;"><a href="#" onclick="Modalbox.hide(); return false;">Close</a></div></div>';
+
+			
+			Modalbox.show(popUp, {
+				loadingString: 'Loading Preview...',
+				title: '',
+				overlayOpacity: .85,
+				overlayClose: false,
+				width: 250,
+				transitions: false,
+				autoFocusing: false,
+				centered: true,
+				afterLoad: function() { window.scrollTo(0,0); },
+				afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+			});
+			
+			return false;
+		}else{
+			setCheckOut();
+			return true;
+		}
 	}

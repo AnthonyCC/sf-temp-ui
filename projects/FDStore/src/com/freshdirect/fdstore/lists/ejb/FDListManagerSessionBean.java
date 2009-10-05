@@ -12,6 +12,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -54,6 +55,14 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 			for (Iterator i = list.getLineItems().iterator(); i.hasNext();) {
 				FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) i.next();
 				try {
+					if(item.getSkuCode().equals(FDStoreProperties.getGiftcardSkucode())){
+						i.remove();
+						continue;
+					}
+					if(item.getSkuCode().equals(FDStoreProperties.getRobinHoodSkucode())){
+						i.remove();
+						continue;
+					}
 					if (item.getDeleted() == null)
 						retList.add(item.convertToSelection());
 				} catch (FDSkuNotFoundException e) {

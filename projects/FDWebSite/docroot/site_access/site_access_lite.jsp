@@ -54,7 +54,7 @@ request.setAttribute("listPos", "CategoryNote");
 	}
 	System.out.println("siteAccessPage: " + siteAccessPage);
 	System.out.println(request.getRequestURI());
-	String actionURI = "/site_access/site_access_lite.jsp?successPage="+successPage;
+	String actionURI = "/site_access/site_access_lite.jsp?successPage="+URLEncoder.encode(successPage);
 	
 %>	
 
@@ -90,7 +90,7 @@ request.setAttribute("listPos", "CategoryNote");
 			return true;
 		}
 	</script>
-	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20" onLoad="window.document.site_access_home.<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>.focus();">
+	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20" onLoad="window.document.site_access_corp.<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>.focus();">
 		
 	<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
@@ -160,7 +160,7 @@ request.setAttribute("listPos", "CategoryNote");
 												<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
 												<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= corpZipcode %>' name="corpZipcode" required="true" tabindex="1"><br>
 												<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
-												<input type="image" src="/media_stat/images/template/site_access/go.gif" width="39" height="21" name="site_access_home_go" border="0" value="Check My Area" alt="GO" hspace="4" tabindex="2"><br>
+												<input type="image" src="/media_stat/images/template/site_access/go.gif" width="27" height="16" name="site_access_home_go" border="0" value="Check My Area" alt="GO" hspace="4" tabindex="2"><br>
 												<img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br>	
 											</td>
 										</tr>
@@ -214,7 +214,7 @@ request.setAttribute("listPos", "CategoryNote");
 					</tr>
 					<tr valign="middle">
 						<td colspan="3" align="center" class="text10">
-							To get started, please<br /> Enter your zip code:<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><input class="text11" type="text" size="13" style="width: 122px" value="<%= zipcode%>" maxlength="5" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" required="true" tabindex="3"><br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br /><input type="image" src="/media_stat/images/template/site_access/go.gif" width="39" height="21" name="site_access_gc_go" border="0" value="Check My Area" alt="GO" tabindex="4">
+							To get started, please<br /> Enter your zip code:<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><input class="text11" type="text" size="13" style="width: 122px" value="<%= zipcode%>" maxlength="5" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" required="true" tabindex="3"><br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br /><input type="image" src="/media_stat/images/template/site_access/go.gif" width="27" height="16" name="site_access_gc_go" border="0" value="Check My Area" alt="GO" tabindex="4">
 						</td>
 					</tr>
 						<td rowspan="2" colspan="2" valign="bottom"><img src="/media_stat/images/layout/qs_bottom_lft_crnr_purp.gif" width="7" height="8"></td>

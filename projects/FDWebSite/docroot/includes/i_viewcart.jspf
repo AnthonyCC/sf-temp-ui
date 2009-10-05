@@ -555,9 +555,7 @@ FDIdentity identity = user.getIdentity();
 	</tr>
     <tr>
     
-			<td colspan="3" align="right"><b><BR>To redeem a Gift Card, </b><a href="/your_account/giftcards.jsp">click here</a></td>
-            <td colspan="2" align="right"></td>
-            <td colspan="2" align="right"></td>
+			<td colspan="7" align="right" class="text13bold"><% if (user.isGiftCardsEnabled()) { %><br /><span style="color: #900;">*NEW</span> <a href="/your_account/giftcards.jsp?trk=cart">Have a FreshDirect Gift Card? Enter it here.</a><br /><br /><% }else{ %> &nbsp; <% } %></td>
 	</tr>
 	<% 
 	if (user!=null && user.getIdentity() !=null) {

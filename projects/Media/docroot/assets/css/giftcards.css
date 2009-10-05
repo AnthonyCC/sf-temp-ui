@@ -794,3 +794,14 @@ a.gcIcon:link img, a.gcIcon:visited img, a.gcIcon:active img, a.gcIcon:hover img
 		width: 350px;
 		margin: 6px;
 	}
+
+input[disabled]#gcRecipientEmail, input[readonly]#gcRecipientEmail {
+	background-color: #eee;
+}
+div.pendGCPop {
+	padding: 4px;
+}
+div.pendGCPop span {
+	font-weight: bold;
+	font-size: 15px;
+}

@@ -16,7 +16,7 @@
 
 <table width="745" border="0" cellpadding="0" cellspacing="0">
 	<tr>
-		<td valign="bottom">
+		<td valign="bottom" width="182">
 			<% if (user != null) {
 				// ads are enabled
 				if (FDStoreProperties.isAdServerEnabled()) {
@@ -50,6 +50,21 @@
 				<a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO" /></a>
 			<% } %>
 	    </td>
+		<td valign="bottom" align="right">
+			<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %>
+				<a href="/your_account/manage_account.jsp"><img src='<%= "/media_stat/images/navigation/global_nav/global_hdr_ct_"+user.getChefsTableInduction().substring(0,4)+".gif"%>' width="256" height="10" alt="CLICK HERE FOR EXCLUSIVE CHEF'S TABLE OFFERS" vspace="0" border="0"></a><br>
+			<% } else if (user.isDlvPassActive()) { %>
+				<a href="/your_account/delivery_pass.jsp"><img src="/media_stat/images/navigation/global_nav/global_hdr_dp.gif" width="217" height="10" alt="CLICK HERE FOR DETAILS"  vspace="0" border="0"></a><br>
+			<% } %>
+			
+			<% if (user.getLevel() == FDUserI.SIGNED_IN) { %>
+				<a href="/login/logout.jsp"><b>Click here to log out</b></a>
+			<% } else if (user.getLevel() == FDUserI.RECOGNIZED) { %>
+				<a href="/login/login.jsp"><b>Click here to log in</b></a>
+			<% } else {	%>
+				<b>New customer?</b> <a href="/registration/signup.jsp">Sign Up</a><img src="/media_stat/images/layout/clear.gif" width="25" height="1" hspace="2" vspace="3" alt=""><b>Current customer?</b> <a href="/login/login.jsp">Log In</a>
+			<% } %>
+		</td>
 	</tr>
 </table>
 
