@@ -163,7 +163,7 @@ if (isValidPaymentId) {
 	<%-- IF NO PAYMENT METHOD YET, FIRST TIME, DEFAULTED TO STEP # CARD ADD, SHOW CHECK PROMO
 	// may want to change nesting order..
 	--%>
-<% if (((FDUserI)session.getAttribute(SessionName.USER)).isCheckEligible()) {%>
+<% if (((FDUserI)session.getAttribute(SessionName.USER)).isCheckEligible() && !"true".equals(request.getParameter("rh")) && !"true".equals(request.getParameter("gc"))) {%>
 			<%@ include file="/includes/your_account/checkacct_promo.jspf"%><br><br>
 <% } %>
 <%-- IF NO PAYMENT METHOD YET, FIRST TIME, DEFAULTED HERE, SHOW CHECK PROMO--%>

@@ -96,9 +96,10 @@ public class LoginControllerTag extends AbstractControllerTag {
                 
                 if ((currentLines > 0) && (loginLines > 0)) {
                     // keep the current cart in the session and send them to the merge cart page
-                    
-                    session.setAttribute(SessionName.CURRENT_CART, currentUser.getShoppingCart());
-                    this.setSuccessPage( mergePage + "?successPage=" + URLEncoder.encode( this.getSuccessPage() ) );
+                    if(null !=this.getSuccessPage() && !this.getSuccessPage().contains("/robin_hood") && !this.getSuccessPage().contains("/gift_card")){
+	                    session.setAttribute(SessionName.CURRENT_CART, currentUser.getShoppingCart());
+	                    this.setSuccessPage( mergePage + "?successPage=" + URLEncoder.encode( this.getSuccessPage() ) );
+                    }
                     
                 } else if ((currentLines > 0) && (loginLines == 0)) {
                     // keep current cart
