@@ -17,8 +17,7 @@ FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER
 %>
 
 <fd:PaymentMethodController actionName='addPaymentMethod' result='result' successPage='<%=success_page%>'>
-<% 
-
+<%
     if(sessionuser.isGCSignupError()) {
        
 %>    
@@ -59,8 +58,13 @@ FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER
 //clear info from session.
 sessionuser.setGCSignupError(false);
 } %>	
- 
-
+<fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentMethodForm%>'>
+<% String errorMsg= SystemMessageList.MSG_MISSING_INFO; %>	
+	<%@ include file="/includes/i_error_messages.jspf" %>
+</fd:ErrorHandler> 
+<fd:ErrorHandler result='<%=result%>' name='payment_method_fraud' id='errorMsg'>
+    <%@ include file="/includes/i_error_messages.jspf" %>	
+</fd:ErrorHandler>   
 
 <form method="post" style="padding: 0px; margin: 0px;">
 <table width="690" cellspacing="0" cellpadding="0" border="0">

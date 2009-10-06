@@ -804,13 +804,21 @@ public class SubmitOrderAction extends WebActionSupport {
 
 	}
 	
-	private  String doDonationOrderExecute() throws FDResourceException {
+	private  String doDonationOrderExecute() throws FDResourceException, IOException {
 		HttpSession session = this.getWebActionContext().getSession();
 		HttpServletRequest request = this.getWebActionContext().getRequest();
 						
 
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		FDCartModel cart = user.getDonationCart();
+		if(null !=cart.getOrderLines() && cart.getOrderLines().size()>0){
+			String strQty = cart.getOrderLine(0).getOrderedQuantity();
+			if("0".equals(strQty)){
+				HttpServletResponse response = this.getWebActionContext().getResponse();				
+				response.sendRedirect("/robin_hood/landing.jsp");				
+				return NONE;
+			}
+		}
 		String optinInd = request.getParameter("optinInd");
 		boolean optIn = false;
 		if(null != optinInd && !"".equals(optinInd)){

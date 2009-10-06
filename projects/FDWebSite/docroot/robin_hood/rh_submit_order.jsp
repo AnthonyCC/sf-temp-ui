@@ -32,8 +32,9 @@ UserUtil.initializeCartForDonationOrder(user);
         
 <%
 	if (user.getFailedAuthorizations() > 0) { 
-		String errorMsg = "<span class=\"text12\">There was a problem with the credit card you selected.<br />Please choose or add a new payment method.<br /><br />If you have tried this and are still experiencing problems, please do not attempt to submit your information again but contact us as soon as possible at" + user.getCustomerServiceContact() + ". A customer service representative will help you to complete your order.</span>";
+		String errorMsg = "<span class=\"text12\">There was a problem with the credit card you selected.<br />Please choose or add a new payment method.<br /></span>";
 	%>
+	<%@ include file="/includes/i_error_messages.jspf" %>
 		
 <% } %>
 	<br />	
