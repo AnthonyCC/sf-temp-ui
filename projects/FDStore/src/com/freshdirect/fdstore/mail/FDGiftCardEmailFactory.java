@@ -8,6 +8,10 @@ import java.util.Map;
 
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProductInfo;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
@@ -161,8 +165,23 @@ public class FDGiftCardEmailFactory extends FDEmailFactory{
 		
 	}
 	
-	public XMLEmailI createRobinHoodOrderConfirmEmail(FDCustomerInfo customer, FDOrderI order){
-		FDTransactionalEmail email = new FDTransactionalEmail(customer, order);		
+	public XMLEmailI createRobinHoodOrderConfirmEmail(FDCustomerInfo customer, final FDOrderI order){
+		
+		FDTransactionalEmail email = new FDTransactionalEmail(customer, order){
+			protected void decorateMap(Map map) {
+				super.decorateMap(map);
+				map.put("qty", order.getOrderLine(0).getOrderedQuantity());
+				try {
+					FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
+					map.put("defaultPrice",productInfo.getDefaultPrice());
+					map.put("defaultPriceUnit",productInfo.getDefaultPriceUnit().toLowerCase());					
+				} catch (FDResourceException e) {
+					e.printStackTrace();
+				} catch (FDSkuNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+		};		
 		email.setXslPath("h_rh_order_confirm_v1.xsl", "x_rh_order_confirm_v1.xsl");		
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		email.setSubject("Thank you for giving to Robin Hood and helping New Yorkers in need.");

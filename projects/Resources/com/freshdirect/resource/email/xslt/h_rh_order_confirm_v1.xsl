@@ -29,7 +29,7 @@
 						<td>
 							<!-- FIRST ORDER TEXT -->
 
-									<p><b><font color="#FF9933">ORDER INFORMATION </font>FOR ORDER NUMBER <xsl:value-of select="order/erpSalesId"/></b>,</p>
+									<p><b><font color="#FF9933">ORDER INFORMATION </font>FOR ORDER NUMBER <xsl:value-of select="order/erpSalesId"/></b></p>
 
 									<br/>							
 								<p><xsl:call-template name="h_rh_order_info"/></p>

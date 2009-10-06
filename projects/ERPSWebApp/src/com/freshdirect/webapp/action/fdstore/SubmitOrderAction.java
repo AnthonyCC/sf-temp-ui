@@ -814,11 +814,8 @@ public class SubmitOrderAction extends WebActionSupport {
 		String optinInd = request.getParameter("optinInd");
 		boolean optIn = false;
 		if(null != optinInd && !"".equals(optinInd)){
-			if(optinInd.equalsIgnoreCase("optin")){
-				cart.getDeliveryAddress().setOptInForDonation(true);
+			if(optinInd.equalsIgnoreCase("optin")){				
 				optIn = true;
-			}else{
-				cart.getDeliveryAddress().setOptInForDonation(false);
 			}
 		}else{
 			//TODO: show error message
@@ -871,16 +868,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
 			
 			boolean modifying = false;
-			EnumDlvPassStatus status = user.getDeliveryPassStatus();
-			/*if(isBulkOrder){
-				List repList = convertSavedToErpRecipienntModel(user.getBulkRecipentList().getFDRecipentsList().getRecipents());
-				// new order -> place it
-				orderNumber = FDCustomerManager.placeGiftCardOrder(AccountActivityUtil.getActionInfo(session), cart, Collections.EMPTY_SET, sendEmail,cra,status,repList,isBulkOrder );			
-			} else {
-				List repList = convertSavedToErpRecipienntModel(user.getRecipentList().getRecipents());
-				// new order -> place it
-				orderNumber = FDCustomerManager.placeGiftCardOrder(AccountActivityUtil.getActionInfo(session), cart, Collections.EMPTY_SET, sendEmail,cra,status,repList,isBulkOrder );			
-			}*/
+			EnumDlvPassStatus status = user.getDeliveryPassStatus();		
 
 			orderNumber = FDCustomerManager.placeDonationOrder(AccountActivityUtil.getActionInfo(session), cart, Collections.EMPTY_SET, sendEmail,cra,status,optIn );
 			
@@ -929,7 +917,9 @@ public class SubmitOrderAction extends WebActionSupport {
 				
 			LOGGER.warn("FRAUD CHECK FAILED", ex);
 			String fraudReason = "";
-			if (EnumFraudReason.MAX_GC_ORDER_TOTAL.equals(ex.getFraudReason())) {
+			fraudReason = formatPhoneMsg(SystemMessageList.MSG_CHECKOUT_GENERIC_FRAUD);
+			this.addError("fraud_check_failed", fraudReason);
+			/*if (EnumFraudReason.MAX_GC_ORDER_TOTAL.equals(ex.getFraudReason())) {
 				fraudReason = formatGCOrderMaxMsg(SystemMessageList.MSG_CHECKOUT_GC_ORDER_TOO_LARGE);
 				this.addError("gc_order_amount_fraud", fraudReason);
 			}else if (EnumFraudReason.MAX_ORDER_COUNT_LIMIT.equals(ex.getFraudReason())) {
@@ -945,7 +935,7 @@ public class SubmitOrderAction extends WebActionSupport {
 					fraudReason = formatPhoneMsg(SystemMessageList.MSG_CHECKOUT_GENERIC_FRAUD);
 					this.addError("fraud_check_failed", fraudReason);
 				}
-			}
+			}*/
 			/*if(oneStep) {
 				user.setGCSignupError(true);
 				user.setGcFraudReason(fraudReason);

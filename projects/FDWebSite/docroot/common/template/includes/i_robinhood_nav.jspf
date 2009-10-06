@@ -13,7 +13,7 @@
 <%
 	//Donation -Robin Hood top nav
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-	String rhLanding = FDStoreProperties.getRobinHoodLandingUrl();
+	String rhLanding1 = FDStoreProperties.getRobinHoodLandingUrl();
 %>
 
 <table width="745" border="0" cellpadding="0" cellspacing="0">
@@ -109,10 +109,10 @@
 	String step3_img_r = "/media_stat/images/donation/robinhood/nav/nav_confirm_on.gif";
 
 	// setup links to each step (used for step check)
-	String step0_link = "NEVER IN A URL";//rhLanding;
-	String step0_link = rhLanding;
+	
+	String step0_link = rhLanding1;
 	String step0b_link = "login/login.jsp";
-	String step1_link = rhLanding;
+	String step1_link = rhLanding1;
 	String step2_link = "/robin_hood/rh_submit_order.jsp";
 		String step2b_link = "/robin_hood/register_purchase.jsp"; // step 2 has three pages
 		String step2c_link = "/robin_hood/rh_add_creditcard.jsp"; // step 2 has three pages

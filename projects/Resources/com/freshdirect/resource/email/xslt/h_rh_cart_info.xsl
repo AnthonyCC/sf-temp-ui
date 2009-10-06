@@ -13,12 +13,12 @@
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 
 	<tr>
-			<td class="text11bold" align="center">&nbsp;Quantity<br/></td>
+			<td class="text11bold" align="center"><b>&nbsp;Quantity</b><br/></td>
 			<td></td>
 			<td></td>
-			<td class="text11bold" align="center">Unit<br/>Price</td>
+			<td class="text11bold" align="center"><b>Unit<br/>Price</b></td>
 			<td></td>
-			<td class="text11bold" align="center">Final<br/>Price</td>
+			<td class="text11bold" align="center"><b>Final<br/>Price</b></td>
 	</tr>
 		<tr>
 			<td><img src="/images/clear.gif" width="1" height="1" border="0" alt="" /></td>
@@ -32,6 +32,8 @@
 		<tr>
 			<td><img src="/images/clear.gif" width="1" height="1" border="0" alt="" /></td>
 		</tr>
+		<xsl:variable name="defaultPrice1" select="defaultPrice" /> 
+		<xsl:variable name="defaultPriceUnit1" select="defaultPriceUnit" /> 
 		<xsl:for-each select="order/orderViews/orderViews">
 		<xsl:for-each select="orderLines/orderLines">
 	<tr>
@@ -39,7 +41,7 @@
 			<td class="text11bold" align="center"><xsl:value-of select="orderedQuantity"/></td>
 			<td style="padding-left:30px;" class="text11bold" align="center">Robin Hood Holiday Meal for Eight	</td>
 			<td></td>
-			<td align="center">$/ea</td>
+			<td align="center">$<xsl:value-of select='format-number($defaultPrice1, "###,##0.00", "USD")' />/<xsl:value-of select="$defaultPriceUnit1"/></td>
 			<td></td>
 			<td  align="center"  style="padding-left:4px;" class="text11bold">$<xsl:value-of select='format-number(price, "###,##0.00", "USD")'/></td>
 		
@@ -49,24 +51,17 @@
 	<tr>
 				<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 	</tr>
-	
+	 <tr>
+		<td align="center" colspan="4" ></td>
+		<td align="center"><b>ORDER TOTAL:&nbsp;&nbsp;</b></td>
+		<td align="center" >
+		<b>$<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/> </b>
+		</td>
+         </tr>
 
 </table> 
 
-<table width="320" cellspacing="0" cellpadding="0" border="0">
-		<tr>
-			<td ><img src="/images/clear.gif" width="1" height="1" border="0" alt="" /></td>
-			<td></td>	<td></td>	<td></td>	<td></td>	<td></td>
 
-		</tr>
-		
-        <tr>
-		<td colspan="4"></td>
-		<td align="right" colspan="2">
-		<b>ORDER TOTAL:</b><b>$<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/> </b>&nbsp;&nbsp;&nbsp;
-		</td>
-         </tr>
-</table>
 </xsl:template>
 
 </xsl:stylesheet>

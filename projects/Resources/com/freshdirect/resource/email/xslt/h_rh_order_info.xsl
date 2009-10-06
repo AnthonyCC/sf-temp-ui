@@ -13,7 +13,7 @@
 
 <TR valign="top">
 <TD width="320">
-		<table cellpadding="0" cellspacing="0" width="320">
+		<table cellpadding="0" cellspacing="0" width="320"><font face="verdana, arial, sans-serif" size="1" color="black"> 
 			<tr>
 			<td colspan="3" style="padding: 2px;" align="left">
 				<img src="/media_stat/images/donation/robinhood/robin_hood_logo_sm.gif" height="23" width="130" alt="Robin Hood" /><br />
@@ -28,7 +28,7 @@
 
 
 			<tr>
-			<td colspan="2" style="padding: 2px;" align="left" valign="bottom" > <b>Robin Hood</b> &nbsp;Donation Subtotal&nbsp; ( <xsl:value-of select="order/orderedQuantity"/> :Meals):
+			<td colspan="2" style="padding: 2px;" align="left" valign="bottom" > <b>Robin Hood</b> &nbsp;Donation Subtotal&nbsp; ( <xsl:value-of select="qty"/> Meals):
 			        </td>
 				
 				
@@ -60,11 +60,11 @@
 			</table>
 			</td>
 			</tr>
-		 </table>
+		</font> </table>
 </TD>
 
 <TD align="CENTER" width="40" valign="top">
-    	 	<img src="/media_stat/images/layout/cccccc.gif" width="1" height="280" /><br />
+    	 	<img src="/images/cccccc.gif" width="1" height="280" /><br />
 </TD>
 
 <TD width="300"><font face="verdana, arial, sans-serif" size="1" color="black"> 
@@ -72,11 +72,15 @@
 			<b>PAYMENT INFO</b><br/>
 			<table width="100%">
 			<tr>
-			<td width="100%" bgcolor="#CCCCCC"><img src="/images/clear.gif" width="1" height="1" border="0" alt="" /></td>
+			<td><table cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+		<td width="100%" bgcolor="#CCCCCC"><img src="/images/clear.gif" width="1" height="1" border="0" alt="" /></td>
+	</tr>
+</table></td>
 			</tr>
 			</table><br/>
 			<b>Order Total:</b><br/>
-			$<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/>*<br/>
+			$<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/><br/>
 			<br/>
 			
 	
