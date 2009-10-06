@@ -116,6 +116,7 @@
 	String step2_link = "/robin_hood/rh_submit_order.jsp";
 		String step2b_link = "/robin_hood/register_purchase.jsp"; // step 2 has three pages
 		String step2c_link = "/robin_hood/rh_add_creditcard.jsp"; // step 2 has three pages
+		String step2d_link = "/your_account/edit_creditcard.jsp"; // step 2 has four pages
 	String step3_link = "/robin_hood/rh_receipt.jsp";
 
 	// setup display (just the images by default)
@@ -132,6 +133,7 @@
 	if (globalUri.indexOf(step2_link) > -1) { step = 2; }
 		if (globalUri.indexOf(step2b_link) > -1) { step = 2; }
 		if (globalUri.indexOf(step2c_link) > -1) { step = 2; }
+		if (globalUri.indexOf(step2d_link) > -1) { step = 2; }
 	if (globalUri.indexOf(step3_link) > -1) { step = 3; }
 
 	if ( step == 0 ) { step0_disp = "<img src=\""+step0_img_r+"\" "+step0_attribs+" />"; }

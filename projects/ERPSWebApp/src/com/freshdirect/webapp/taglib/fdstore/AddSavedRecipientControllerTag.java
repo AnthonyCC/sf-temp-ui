@@ -93,6 +93,9 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
         if (("POST".equalsIgnoreCase(request.getMethod()))) {
 
             JspMethods.dumpRequest(request);
+            
+            LOGGER.debug("setSuccessPage null: ");
+        	setSuccessPage(null);
 
             try {
             	if ("addSavedRecipient".equalsIgnoreCase(actionName) ) {

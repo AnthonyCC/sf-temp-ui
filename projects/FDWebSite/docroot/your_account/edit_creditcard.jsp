@@ -10,8 +10,24 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(); %>
+
+
+
+<% 
+String template = "/common/template/no_nav.jsp";
+
+String gcPage = (request.getParameter("gc")!=null)?request.getParameter("gc").toLowerCase():null;
+	if (gcPage != null && ("true".equals(gcPage) && FDStoreProperties.isGiftCardEnabled())) {
+			template = "/common/template/giftcard.jsp";
+	}
+String rhPage = (request.getParameter("rh")!=null)?request.getParameter("rh").toLowerCase():null;
+	if (rhPage != null && ("true".equals(rhPage) && FDStoreProperties.isRobinHoodEnabled())) {
+			template = "/common/template/robinhood.jsp";
+	}
+%>
+
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
-<tmpl:insert template='/common/template/dnav.jsp'>
+<tmpl:insert template='<%=template%>'>
 <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Credit Card</tmpl:put>
 <tmpl:put name='content' direct='true'>
 

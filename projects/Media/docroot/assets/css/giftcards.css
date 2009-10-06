@@ -38,8 +38,8 @@ div.card_controls {
 	/* 'Click arrows to scroll & preview card designs.' */
 	div.card_controls_msg {
 		width: auto;
-		color: #C5C5C5;
-		font-family: Verdana,Arial,sans-serif;
+		color: #999;
+		font-family: Verdana, Arial, sans-serif;
 		font-size: 9px;
 	}
 	/* 'Giftcard design: Design' */
@@ -61,8 +61,8 @@ div.card_controls {
 		clear: left;
 		margin: 20px auto;
 		width: 320px;
-		color: #C5C5C5;
-		font-family: Verdana,Arial,sans-serif;
+		color: #999;
+		font-family: Verdana, Arial, sans-serif;
 		font-size: 9px;
 	}
 	div.card_TOC a {
@@ -804,4 +804,8 @@ div.pendGCPop {
 div.pendGCPop span {
 	font-weight: bold;
 	font-size: 15px;
+}
+
+table.gcTable td {
+	padding: 3px 0px;
 }

@@ -9,7 +9,7 @@
 
 var global_gcDebug = false;
 var global_gcLog = false;
-var lastEdit = '2009.10.05_07.18.10.PM';
+var lastEdit = '2009.10.06_03.10.08.PM';
 var lastLog;
 
 gcLog('Last Edit: '+lastEdit);
@@ -439,8 +439,12 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 					$(this.gcId_containerId).value = this.cards[this.display[1]].id;
 					this.log('gcId_containerId ('+this.gcId_containerId+') = ('+this.cards[this.display[1]].id+')');
 				}else{
-					this.err('Cannot set gcId_containerId ('+this.gcId_containerId+')');
-					this.err('Cannot set gcId_containerId to value ('+this.cards[this.display[1]].id+')');
+					try{
+						this.err('Cannot set gcId_containerId ('+this.gcId_containerId+')');
+						this.err('Cannot set gcId_containerId to value ('+this.cards[this.display[1]].id+')');
+					}catch(e) {
+						this.err('err in selectCard err');
+					}
 				}
 				
 				return false;
@@ -460,8 +464,10 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				this.curSelectedIndex = $(this.selectBoxId).selectedIndex;
 					this.log('selectCard inside IF '+this.curSelectedIndex);
 				// change src to match selection
-				$(imgContainerId).src = this.mediaRoot+$(this.selectBoxId)[this.curSelectedIndex].value+this.center_img_suffix;
-				$(imgContainerId).alt = $(this.selectBoxId)[this.curSelectedIndex].innerHTML;
+				if ($(imgContainerId)) {
+					$(imgContainerId).src = this.mediaRoot+$(this.selectBoxId)[this.curSelectedIndex].value+this.center_img_suffix;
+					$(imgContainerId).alt = $(this.selectBoxId)[this.curSelectedIndex].innerHTML;
+				}
 
 				if ( this.loaded <= 1 ) { this.loaded++; } // keeps us from re-requesting images on every change
 			}
@@ -498,7 +504,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 
 					this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
 						Builder.node( 'div', { className: 'card_center' }, [
-							Builder.node( 'img', { src: '', width: '332', height: '213', alt: 'c', id: this.refId+this.center_img_containerId } )
+							Builder.node( 'img', { src: '', alt: 'c', id: this.refId+this.center_img_containerId } )
 						]),
 						Builder.node( 'div', { className: 'card_controls' }, [
 							Builder.node( 'div', { className: 'card_controls_header' }, [
@@ -518,20 +524,20 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				case 2: // Card Example with Carousel
 					this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
 						Builder.node( 'div', { className: 'card_left' }, [
-							Builder.node( 'img', { src: '', width: '120', height: '213', alt: 'l', id: this.left_img_containerId } )
+							Builder.node( 'img', { src: '', alt: 'l', id: this.left_img_containerId } )
 						]), 
 						Builder.node( 'div', { className: 'card_center' }, [
 							Builder.node( 'a', { href: '#', onClick: '$(\''+this.partOfForm+'\').submit();return false;' }, [
-								Builder.node( 'img', { src: '', width: '332', height: '213', alt: 'c', id: this.center_img_containerId } )
+								Builder.node( 'img', { src: '', alt: 'c', id: this.center_img_containerId } )
 							])
 						]), 
 						Builder.node( 'div', { className: 'card_right' }, [
-							Builder.node( 'img', { src: '', width: '120', height: '213', alt: 'r', id: this.right_img_containerId } )
+							Builder.node( 'img', { src: '', alt: 'r', id: this.right_img_containerId } )
 						]),
 
 						Builder.node( 'div', { className: 'card_controls' }, [
 							Builder.node('div', { className: 'card_controls_msg_type' }, [
-								'Gift Card design:', Builder.node( 'span', { id: this.curCard_containerId } )
+								'Gift Card design: ', Builder.node( 'span', { id: this.curCard_containerId } )
 							]),
 
 							Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].rotate(\'LEFT\'); return false;', id: this.refId+'card_control_left' }, [
@@ -553,7 +559,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				default:
 					this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
 						Builder.node( 'div', { className: 'card_center' }, [
-							Builder.node( 'img', { src: '', width: '332', height: '213', alt: 'c', id: this.center_img_containerId } )
+							Builder.node( 'img', { src: '', alt: 'c', id: this.center_img_containerId } )
 						])
 					]);
 			}

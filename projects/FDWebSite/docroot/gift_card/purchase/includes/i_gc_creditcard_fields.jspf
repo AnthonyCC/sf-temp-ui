@@ -185,7 +185,7 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 	<TD WIDTH="693">
 		<img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="206" HEIGHT="9" border="0" alt="BILLING ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
 		<IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" vspace="3"><BR>
-
+		<font class="text12">Please enter billing address as it appears on your credit card statement.</font>
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br></TD></TR>
 </TABLE>
 <font class="space4pix"><br></font>

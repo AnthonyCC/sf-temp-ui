@@ -142,7 +142,7 @@ if (request.getParameter("fldMessage") !=null) {
 <%@ include file="/gift_card/purchase/includes/i_fetch_giftcard_info_from_cms.jspf" %>
 
 
-<table border="0" cellspacing="0" cellpadding="0" width="100%" valign="middle">
+<table border="0" cellspacing="0" cellpadding="0" width="100%" valign="middle" class="gcTable">
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
     <tr>
         <td colspan="4"><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></td>
@@ -192,11 +192,11 @@ if (request.getParameter("fldMessage") !=null) {
 			<table border="0" cellpadding="0" cellspacing="0" width="100%">
 				<tr>
 					<td width="15">
-						<input type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> onclick="$('gcRecipientEmail').disabled=false;" />
+						<input type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
     				</td>
 					<td width="25%">Email</td>
 					<td width="15">
-						<input type="radio" tabIndex="5"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %> onclick="$('gcRecipientEmail').disabled=true;" />
+						<input type="radio" tabIndex="5"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %> onclick="$('gcRecipientEmail').disabled=true; $('recipEmailStar').innerHTML='';" />
 					</td>
 					<td width="70%">I'll Download a PDF and Print It.</td>
 				</tr>
@@ -206,7 +206,7 @@ if (request.getParameter("fldMessage") !=null) {
     <tr>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler> >
-				*&nbsp;Recipient's&nbsp;Email
+				<span id="recipEmailStar"><%="P".equals(fldDeliveryMethod)?"":"*"%></span>&nbsp;Recipient's&nbsp;Email
 			</span>
         </td>
         <td colspan="2">
