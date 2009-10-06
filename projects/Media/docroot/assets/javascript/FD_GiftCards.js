@@ -508,7 +508,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 						]),
 						Builder.node( 'div', { className: 'card_controls' }, [
 							Builder.node( 'div', { className: 'card_controls_header' }, [
-								Builder.node( 'img', { src: this.mediaStaticRoot+'purchase/choose_design.gif', width: '165', height: '16', alt: 'Choose Design', id: 'gcChooseDesign_img' } )
+								Builder.node( 'img', { src: this.mediaStaticRoot+'purchase/choose_design.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } )
 						
 							]),
 							Builder.node( 'div', { className: 'card_controls_select' }, [
@@ -541,11 +541,11 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 							]),
 
 							Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].rotate(\'LEFT\'); return false;', id: this.refId+'card_control_left' }, [
-								Builder.node('img', { src: this.mediaStaticRoot+'landing/control_arrow_l.gif', width: '25', height: '29', alt: 'scroll left' } )
+								Builder.node('img', { src: this.mediaStaticRoot+'landing/control_arrow_l.gif', alt: 'scroll left' } )
 							]),
 
 							Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].rotate(\'RIGHT\'); return false;', id: this.refId+'card_control_right' }, [
-								Builder.node('img', { src: this.mediaStaticRoot+'landing/control_arrow_r.gif', width: '25', height: '29', alt: 'scroll right' } )
+								Builder.node('img', { src: this.mediaStaticRoot+'landing/control_arrow_r.gif', alt: 'scroll right' } )
 							]),
 
 							Builder.node( 'div', { className: 'card_controls_msg' }, [

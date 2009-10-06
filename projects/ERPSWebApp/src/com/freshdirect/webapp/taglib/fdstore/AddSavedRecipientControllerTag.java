@@ -84,18 +84,18 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
         user = fs_user.getUser();
         boolean isCartChanged = false;
         
-        LOGGER.debug("setLastRecipAdded false: ");
-    	fs_user.setLastRecipAdded(false);
 
         //
         // perform any actions requested by the user if the request was a POST
         //
         if (("POST".equalsIgnoreCase(request.getMethod()))) {
 
+            LOGGER.debug("POST dumpRequest: ============");
             JspMethods.dumpRequest(request);
+            LOGGER.debug("POST dumpRequest: ============");
             
-            LOGGER.debug("setSuccessPage null: ");
-        	setSuccessPage(null);
+            //LOGGER.debug("setSuccessPage null: ");
+        	//setSuccessPage(null);
 
             try {
             	if ("addSavedRecipient".equalsIgnoreCase(actionName) ) {
@@ -170,8 +170,9 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
             }
         } else  if (("GET".equalsIgnoreCase(request.getMethod()))) {
 
-            LOGGER.debug("GET dump request: ");
+            LOGGER.debug("GET dumpRequest: ============");
             JspMethods.dumpRequest(request);
+            LOGGER.debug("GET dumpRequest: ============");
             
             LOGGER.debug("setSuccessPage null: ");
         	setSuccessPage(null);

@@ -17,11 +17,11 @@ div.card_left, div.card_center, div.card_right {
 /* specific to center (single) card */
 div.card_center {
 	display: inline;
-	width: 332px;
+	width: 290px;
 }
 /* specific to left-right (carousel) cards */
 div.card_left, div.card_right {
-	width: 120px;
+	width: 150px;
 }
 
 /*
@@ -68,6 +68,11 @@ div.card_controls {
 	div.card_TOC a {
 		font-weight: bold;
 	}
+	/* landing : left-right scroll arrows */
+	a#card_control_left img, a#card_control_right img {
+		 width: 25px;
+		 height: 29px;
+	}
 
 /* remove borders for linked images */
 div.card_controls a, div.card_controls a img, div.card_shopNow a img, div.card_center a img {
@@ -89,13 +94,18 @@ div.card_controls a, div.card_controls a img, div.card_shopNow a img, div.card_c
 	div.card_controls_select select {
 		width: 275px;
 	}
-	/* Footer Message 'Enter the information at left and select one of...' */
+	/* Footer Message */
 	div.card_controls_footer {
 		margin: 20px auto;
 		width: 320px;
 		color: #C5C5C5;
 		font-family: Verdana,Arial,sans-serif;
 		font-size: 9px;
+	}
+	/* choose card design header image */
+	#gcChooseDesign_img {
+		height: 16px;
+		width: 165px;
 	}
 
 /* generic clear */
@@ -809,3 +819,5 @@ div.pendGCPop span {
 table.gcTable td {
 	padding: 3px 0px;
 }
+
+

@@ -34,7 +34,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 <%
 //--------OAS Page Variables-----------------------
         request.setAttribute("sitePage", "www.freshdirect.com/gift_card/purchase/receipt.jsp");
-        request.setAttribute("listPos", "ReceiptTop,ReceiptBotLeft,ReceiptBotRight,SystemMessage,CategoryNote");
+        request.setAttribute("listPos", "ReceiptTop,ReceiptBotLeft,ReceiptBotRight,SystemMessage,HPLeftTop");
 %>
 <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 
@@ -199,8 +199,31 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
 		</tr>
 
         <tr>
-            <td class="recipTotal">TOTAL: <%=  recipients.getFormattedSubTotal() %></td>
+            <td class="recipTotal">TOTAL: $<%=  recipients.getFormattedSubTotal() %></td>
         </tr>
+<% if (FDStoreProperties.isAdServerEnabled()) { %>
+<tr><td><br><br></td></tr>
+<tr><td bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
+<tr><td>
+<table width="630" cellpadding="0" cellspacing="0">
+<tr><td width="50%" style="border-right: solid 1px #CCCCCC; padding-right: 10px;" align="center">
+<SCRIPT LANGUAGE=JavaScript>
+		<!--
+		OAS_AD('ReceiptBotLeft');
+		//-->
+</SCRIPT>
+</td>
+<td width="50%" style="padding-left: 10px;" align="center">
+<SCRIPT LANGUAGE=JavaScript>
+		<!--
+		OAS_AD('ReceiptBotRight');
+		//-->
+</SCRIPT>
+</td>		
+</table><br>
+</td></tr>
+<% } %>
 </table>
 
 </fd:GetOrder>

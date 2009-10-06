@@ -92,10 +92,11 @@
 			<fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
 				<%@ include file="/includes/i_error_messages.jspf" %>
 			</fd:ErrorHandler>
-
 			<%
 				if(sessionuser.isLastRecipAdded() && (recipListContinue != null && recipListContinue.size() > 0)) {
 				
+				if (("GET".equalsIgnoreCase(request.getMethod())) && !"deleteSavedRecipient".equalsIgnoreCase(action_name)) {sessionuser.setLastRecipAdded(false);}
+
 				String infoMsg = SystemMessageList.MSG_GC_ADD_RECIP_SUCCESS;
 			%>
 					
