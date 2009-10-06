@@ -523,7 +523,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	}
 	
 	public void addRegisterGiftCard(ErpGiftCardTransModel registerGCModel) throws ErpTransactionException {
-		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.AUTHORIZED, EnumSaleStatus.AVS_EXCEPTION, EnumSaleStatus.ENROUTE });
+		this.assertStatus(new EnumSaleStatus[] {EnumSaleStatus.ENROUTE, EnumSaleStatus.REG_PENDING });
 		this.transactions.add(registerGCModel);
 		//this.status = EnumSaleStatus.CAPTURE_PENDING;
 	}
@@ -975,7 +975,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 
 	public void emailPending() throws ErpTransactionException {		
-		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.ENROUTE});
+		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.ENROUTE, EnumSaleStatus.REG_PENDING});
 		this.status = EnumSaleStatus.EMAIL_PENDING;
 	}
 

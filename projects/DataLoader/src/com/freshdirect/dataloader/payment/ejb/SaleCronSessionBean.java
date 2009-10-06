@@ -479,7 +479,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		PreparedStatement ps = conn.prepareStatement(QUERY_SALE_IN_RPG_STATUS);
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			sales.put(rs.getString("SALE_ID"), new Double(rs.getDouble("SUB_TOTAL")));
+			sales.put(rs.getString("ID"), new Double(rs.getDouble("SUB_TOTAL")));
 		}
 		return sales;
 	}

@@ -273,7 +273,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_GIFT_CARD_STRICT_ORDER_MAX, "5000.00");
 		defaults.put(PROP_GIFT_CARD_ORDER_MAX, "750.00");
 		defaults.put(PROP_GIFT_CARD_ORDER_COUNT, "3");
-		defaults.put(PROP_REGISTER_CRON_QUEUE, "true");
+		defaults.put(PROP_REGISTER_CRON_QUEUE, "false");
 		defaults.put(PROP_PRE_AUTHORIZE, "true");
 
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);

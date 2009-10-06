@@ -4286,9 +4286,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 					String customerPk = identity.getErpCustomerPK();
 					pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole,null,EnumSaleType.GIFTCARD);
-					System.out.println("Before calling findBYPrimaryKey $$$$$$$$$$$$$$$$");
 					ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(pk.getId()));
-					System.out.println("After calling findBYPrimaryKey $$$$$$$$$$$$$$$$");
 					// store giftcard recipent record  
 					//storeCustomerRecipents(recipentList, eb.getCurrentOrder().getId(), customerPk);
 					if (sendEmail) {

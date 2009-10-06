@@ -374,11 +374,11 @@ public class GivexServerGateway {
 	public static void main(String args[]) throws FDResourceException, IOException{
 		
 		try{
-			GivexResponseModel response = registerCard(5.0, "timeOutTest2");
-			System.out.println("New Card Number "+response.getGivexNumber());
-			System.out.println("Auth Code: "+response.getAuthCode());
+			//GivexResponseModel response = registerCard(5.0, "timeOutTest2");
+			//System.out.println("New Card Number "+response.getGivexNumber());
+			//System.out.println("Auth Code: "+response.getAuthCode());
 			ErpGiftCardModel pm = new ErpGiftCardModel();
-			pm.setAccountNumber(response.getGivexNumber());
+			pm.setAccountNumber("60362847331161464760");
 			System.out.println("Balance on new Card "+getBalance(pm).getCertBalance());			
 		}catch(GivexException ge) {
 			System.out.println("Error code "+ge.getErrorCode());

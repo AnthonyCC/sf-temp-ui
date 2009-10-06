@@ -1289,15 +1289,18 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 				return errorList;
 			}	*/		
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));			
-			/*	If there is any pending pre-auths, reverse all the other pre-auths.
-            	List pendingAuths = saleEB.getPendingGCAuthorizations(pm);
-            	Instead of doing per PM just do this at sale level. If there are pending auths then exit the code.
-            	wait till auth is processed.
-            */	
-            List pendingAuths = saleEB.getPendingGCAuthorizations(); // This method has to be added to saleEB.
+			/* 
+			 * If there are pending auths then retry posting pending pre auths.
+			 * If successful proceed else return and retry later.
+			 * 
+             */	
+            List pendingAuths = saleEB.getPendingGCAuthorizations(); 
             if (null !=pendingAuths && !pendingAuths.isEmpty()) {
-                //reverseAuthAllGiftCards(errorList, saleEB, giftCardList);
-                return ;
+            	preAuthorizeSales(saleId);
+            	pendingAuths = saleEB.getPendingGCAuthorizations();
+            	//If there are pending auths still 
+            	if(null !=pendingAuths && !pendingAuths.isEmpty())
+            		return;
             }            
             
 			ErpAbstractOrderModel order = saleEB.getCurrentOrder();

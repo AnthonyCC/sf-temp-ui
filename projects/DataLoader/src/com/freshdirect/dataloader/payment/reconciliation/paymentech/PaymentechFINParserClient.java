@@ -161,9 +161,9 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 				if(gcInfo.isPostAuthFailed())
 					failedGCSettlements.add(gcInfo);
 				else {
-					this.builder.addGCChargeDetail(gcInfo, EnumCardType.GCP);
 					addGCNetSales(gcInfo);
 				}
+				this.builder.addGCChargeDetail(gcInfo, EnumCardType.GCP);
 			}
 		}
 	}
