@@ -16,7 +16,7 @@
 		<table cellpadding="0" cellspacing="0" width="320"><font face="verdana, arial, sans-serif" size="1" color="black"> 
 			<tr>
 			<td colspan="3" style="padding: 2px;" align="left">
-				<img src="/media_stat/images/donation/robinhood/robin_hood_logo_sm.gif" height="23" width="130" alt="Robin Hood" /><br />
+				<img src="http://www.freshdirect.com/media_stat/images/donation/robinhood/robin_hood_logo_sm.gif" height="23" width="130" alt="Robin Hood" /><br />
 				</td>
 			</tr>
 			<tr>
@@ -63,20 +63,26 @@
 		</font> </table>
 </TD>
 
-<TD align="CENTER" width="40" valign="top">
+<TD align="CENTER" bgcolor="#CCCCCC" width="1" valign="top">
     	 	<img src="/images/cccccc.gif" width="1" height="280" /><br />
 </TD>
 
-<TD width="300"><font face="verdana, arial, sans-serif" size="1" color="black"> 
+<td valign="top" align="CENTER" width="25">
+	<img height="280" width="1" src="/images/clear.gif"/>
+<br/>
+</td>
+
+<TD><font face="verdana, arial, sans-serif" size="1" color="black"> 
 
 			<b>PAYMENT INFO</b><br/>
 			<table width="100%">
 			<tr>
 			<td><table cellpadding="0" cellspacing="0" width="100%">
-	<tr>
+		<tr>
 		<td width="100%" bgcolor="#CCCCCC"><img src="/images/clear.gif" width="1" height="1" border="0" alt="" /></td>
-	</tr>
-</table></td>
+		</tr>
+		</table>
+	</td>
 			</tr>
 			</table><br/>
 			<b>Order Total:</b><br/>
@@ -97,7 +103,7 @@
 			</font>
 </TD>		
 <td width="2%"></td>
-<td width="30%" valign="top"></td>
+
 </TR>
 </TABLE>
 
