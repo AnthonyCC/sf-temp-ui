@@ -93,8 +93,8 @@
 											<td class="text11">
 												<form name="rh_form" id="rh_form" method="post">
 													<input type="hidden" id="rhCost" name="rhCost" value="75">
-													<% if(null !=cartLine){ %>
-													<input type="text" class="text11" size="4" name="quantity" value="<%=cartLine.getOrderedQuantity() %>" onChange="javascript:chgQty(0);" onBlur="javascript:chgQty(0);"></td>
+													<% if(null !=cartLine && !cartLine.getOrderedQuantity().equals("0")){ %>
+													<input type="text" class="text11" size="4" name="quantity" value="<%=cartLine.getOrderedQuantity()%>" onChange="javascript:chgQty(0);" onBlur="javascript:chgQty(0);"></td>
 													<%} else{ %>
 													<input type="text" class="text11" size="4" name="quantity" value="1" onChange="javascript:chgQty(0);" onBlur="javascript:chgQty(0);"></td>
 													<%} %>
@@ -117,7 +117,7 @@
 							<tr><td colspan="2"><img src="/media_stat/images/layout/333333.gif" width="100%" height="1" border="0" vspace="10"></td></tr>
 							<tr>
 								<td align="right" class="text11bold">Total Price:</td>
-								<% if(null !=cartLine){ %>
+								<% if(null !=cartLine && !cartLine.getOrderedQuantity().equals("0")){ %>
 								<td align="right"><input type="text" id="total_price" name="total_price" class="text11" size="8" value="<%= JspMethods.currencyFormatter.format( cartLine.getFixedPrice() ) %>"/></td>
 								<%} else{ %>
 								<td align="right"><input type="text" id="total_price" name="total_price" class="text11" size="8" value="<%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>"/></td>
@@ -141,6 +141,9 @@
 		<%
 			}
 		%>
+			<tr>
+				<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+			</tr>
 			<tr>
 				<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 			</tr>
