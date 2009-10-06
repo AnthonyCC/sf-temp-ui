@@ -28,7 +28,7 @@
 
 
 			<tr>
-			<td colspan="2" style="padding: 2px;" align="left" valign="bottom" > <b>Robin Hood</b> &nbsp;Donation Subtotal&nbsp; ( <xsl:value-of select="qty"/> Meals):
+			<td colspan="2" style="padding: 2px;" align="left" valign="bottom" > <b><xsl:value-of select="productFullName" /></b> Subtotal&nbsp; ( <xsl:value-of select="qty"/> Meals):
 			        </td>
 				
 				

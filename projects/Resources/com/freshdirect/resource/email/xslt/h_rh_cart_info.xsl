@@ -36,12 +36,13 @@
 
 		<xsl:variable name="defaultPrice1" select="defaultPrice" /> 
 		<xsl:variable name="defaultPriceUnit1" select="defaultPriceUnit" /> 
+		<xsl:variable name="productFullName" select="productFullName" /> 
 		<xsl:for-each select="order/orderViews/orderViews">
 		<xsl:for-each select="orderLines/orderLines">
 	<tr>
 		
 			<td class="text11bold" align="center"><xsl:value-of select="orderedQuantity"/></td>
-			<td style="padding-left:30px;" class="text11bold" align="center">Robin Hood Holiday Meal for Eight	</td>
+			<td style="padding-left:30px;" class="text11bold" align="center"> <b><xsl:value-of select="$productFullName" /></b>	</td>
 			<td></td>
 			<td align="center">$<xsl:value-of select='format-number($defaultPrice1, "###,##0.00", "USD")' />/<xsl:value-of select="$defaultPriceUnit1"/></td>
 			<td></td>

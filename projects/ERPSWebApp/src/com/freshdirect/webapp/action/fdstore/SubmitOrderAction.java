@@ -859,7 +859,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				
 		
 		boolean sendEmail = true;
-		FDCustomerCreditUtil.applyCustomerCredit(cart,user.getIdentity());
+//		FDCustomerCreditUtil.applyCustomerCredit(cart,user.getIdentity());
 		
 		FDUser fdUser = user.getUser();
 		try {

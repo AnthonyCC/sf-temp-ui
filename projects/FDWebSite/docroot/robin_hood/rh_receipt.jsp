@@ -38,15 +38,16 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDIdentity identity  = user.getIdentity();
 FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
+ProductModel productModel = ContentFactory.getInstance().getProduct(FDStoreProperties.getRobinHoodSkucode());
 Integer totalQuantity = user.getDonationTotalQuantity();
-	double totalPrice = totalQuantity * productInfo.getDefaultPrice();
+	
 
 String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 %>
 <fd:GetOrder id='cart' saleId='<%=orderNumber%>'>
 
 <%ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();
-
+double totalPrice = cart.getSubTotal();
 String pymtDetailWidth="630";
 
 String lineWidth = "290";
@@ -121,7 +122,7 @@ int idx = 0;
 			</tr>
 			<tr>
 				<td colspan="2" style="padding: 2px;" align="left" valign="bottom">
-					<span class="text11bold">Robin Hood</span>&nbsp;Donation Subtotal&nbsp;(<%=totalQuantity%>&nbsp;Meals):
+					<b><%=productModel.getFullName() %></b> Subtotal&nbsp;(<%=totalQuantity%>&nbsp;Meals):
 				</td>
 				<td style="padding: 2px;" width="70" align="right" valign="bottom"><%=JspMethods.currencyFormatter.format(totalPrice)%></td>
 			</tr>
@@ -240,7 +241,7 @@ int idx = 0;
 	<tr>
 		
 			<td class="text11bold" align="center"><%= cartLine.getOrderedQuantity() %></td>
-			<td style="padding-left:30px;" class="text11bold" align="center">Robin Hood Holiday Meal for Eight	</td>
+			<td style="padding-left:30px;" class="text11bold" align="center"><%=productModel.getFullName() %></td>
 			<td></td>
 			<td align="center"><%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %></td>
 			<td></td>

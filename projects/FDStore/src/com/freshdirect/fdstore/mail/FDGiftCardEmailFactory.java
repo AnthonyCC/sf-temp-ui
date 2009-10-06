@@ -7,12 +7,13 @@ import java.util.Date;
 import java.util.Map;
 
 import com.freshdirect.customer.ErpComplaintModel;
-import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.framework.mail.EmailAddress;
@@ -173,8 +174,10 @@ public class FDGiftCardEmailFactory extends FDEmailFactory{
 				map.put("qty", order.getOrderLine(0).getOrderedQuantity());
 				try {
 					FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
+					ProductModel productModel = ContentFactory.getInstance().getProduct(FDStoreProperties.getRobinHoodSkucode());
 					map.put("defaultPrice",productInfo.getDefaultPrice());
-					map.put("defaultPriceUnit",productInfo.getDefaultPriceUnit().toLowerCase());					
+					map.put("defaultPriceUnit",productInfo.getDefaultPriceUnit().toLowerCase());
+					map.put("productFullName", productModel.getFullName());
 				} catch (FDResourceException e) {
 					e.printStackTrace();
 				} catch (FDSkuNotFoundException e) {

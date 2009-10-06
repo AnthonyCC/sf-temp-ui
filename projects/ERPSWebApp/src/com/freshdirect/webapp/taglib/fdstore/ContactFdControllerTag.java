@@ -140,8 +140,8 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			new Selection(CrmCaseSubject.CODE_PRODUCT, "Product Feedback"),
 			new Selection(CrmCaseSubject.CODE_SERVICE_AVAILABILITY, "Delivery Areas"),
 			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
-			new Selection(CrmCaseSubject.CODE_CORPORATE_INFO , "Corporate/Commercial Services")/*,
-			new Selection(CrmCaseSubject.CODE_GIFT_CARD_INFO , "Gift Cards")*/
+			new Selection(CrmCaseSubject.CODE_CORPORATE_INFO , "Corporate/Commercial Services")	,
+			new Selection(CrmCaseSubject.CODE_GIFT_CARD_INFO , "Gift Cards")
 			};
 
 	private static class ContactForm implements WebFormI {

@@ -39,6 +39,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDIdentity identity  = user.getIdentity();
 FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
+ProductModel productModel = ContentFactory.getInstance().getProduct(FDStoreProperties.getRobinHoodSkucode());
 Integer totalQuantity = user.getDonationTotalQuantity();
 
 
@@ -80,7 +81,7 @@ int idx = 0;
 			</tr>
 			<tr>
 				<td colspan="2" style="padding: 2px;" align="left" valign="bottom">
-					<span class="text11bold">Robin Hood</span>&nbsp;Donation Subtotal&nbsp;(<%=totalQuantity%>&nbsp;Meals):
+					<b><%=productModel.getFullName() %></b> Subtotal&nbsp;(<%=totalQuantity%>&nbsp;Meals):
 				</td>
 				<td style="padding: 2px;" width="70" align="right" valign="bottom"><%= JspMethods.currencyFormatter.format( cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal() ) %></td>
 			</tr>
@@ -190,7 +191,7 @@ int idx = 0;
 	<tr>
 		
 			<td class="text11bold" align="center"><%= cartLine.getOrderedQuantity() %></td>
-			<td style="padding-left:30px;" class="text11bold" align="center">Robin Hood Holiday Meal for Eight	</td>
+			<td style="padding-left:30px;" class="text11bold" align="center"><b><%=productModel.getFullName() %></b>	</td>
 			<td></td>
 			<td align="center"><%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %></td>
 			<td></td>

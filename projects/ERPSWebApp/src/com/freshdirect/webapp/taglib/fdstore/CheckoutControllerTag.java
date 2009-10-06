@@ -1137,6 +1137,9 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	}
 
 	private void applyCustomerCredits() throws FDResourceException {
+		if(this.getActionName().equalsIgnoreCase("rh_onestep_submitDonationOrder")||this.getActionName().equalsIgnoreCase("rh_submitDonationOrder")){//Store credits should not be applied for Robin Hood.
+			return;
+		}
 		FDIdentity identity = getIdentity();
 		FDCartModel cart = getCart();
 		FDCustomerCreditUtil.applyCustomerCredit(cart, identity);

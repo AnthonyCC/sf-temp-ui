@@ -3,9 +3,11 @@
 <%@ page import='java.util.List' %>
 <%@ page import='java.util.ListIterator' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 
 <%
 	FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
+	ProductModel productModel = ContentFactory.getInstance().getProduct(FDStoreProperties.getRobinHoodSkucode());
 	Integer totalQuantity = user.getDonationTotalQuantity();
 	double totalPrice = totalQuantity * productInfo.getDefaultPrice();
 %>
@@ -18,7 +20,7 @@
 					<td class="text11bold"><%= totalQuantity %></td>
 					
 					<td style="padding-left:30px;">
-					    <span class="text11bold">Robin Hood</span> Holiday Meal for Eight (<%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %>)	
+					   <b> <%=productModel.getFullName() %></b> (<%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %>)	
 					</td>
 				</tr>
 			</table>

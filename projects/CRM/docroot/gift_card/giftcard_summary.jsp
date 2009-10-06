@@ -83,13 +83,14 @@ function gcNumberSubmit(){
 						<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table1">
 							<tr>
 								<th width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></th>
-								<th colspan="3">Gift Cards Added To Account</th>
+								<th colspan="4">Gift Cards Added To Account</th>
 							</tr>
 							<tr class="gc_colHeader">
 								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 								<td width="85">Certificate #</td>
 								<td class="gc_balance">Balance</td>
 								<td class="gc_options">Options</td>
+								<td >Status</td>
 							</tr>
 							<logic:iterate id="giftcard" collection="<%= giftcards %>" type="com.freshdirect.fdstore.giftcard.FDGiftCardModel" indexId="counter1">
 								<%
@@ -100,6 +101,7 @@ function gcNumberSubmit(){
 										<td><%= giftcard.getCertificateNumber() %></td>
 										<td class="gc_balance">$<%= giftcard.getFormattedBalance() %>&nbsp;&nbsp;</td>
 										<td><% if(hasCustomerCase){ %> <a href="<%= request.getRequestURI() %>?action=deleteGiftCard&certNum=<%= giftcard.getCertificateNumber() %>&value=true" class="rLink">remove</a><% } else { %> remove <% } %></td>
+										<td><%= (giftcard.isRedeemable()&& giftcard.getBalance()>0)?"Active":(giftcard.isRedeemable()?"Redeemed":"Cancelled")%></td>
 									</tr>
 								<% } %>
 							</logic:iterate>
