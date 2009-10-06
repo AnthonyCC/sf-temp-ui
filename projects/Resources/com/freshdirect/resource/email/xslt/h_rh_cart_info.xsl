@@ -31,7 +31,9 @@
 	</tr>
 		<tr>
 			<td><img src="/images/clear.gif" width="1" height="1" border="0" alt="" /></td>
+
 		</tr>
+
 		<xsl:variable name="defaultPrice1" select="defaultPrice" /> 
 		<xsl:variable name="defaultPriceUnit1" select="defaultPriceUnit" /> 
 		<xsl:for-each select="order/orderViews/orderViews">
