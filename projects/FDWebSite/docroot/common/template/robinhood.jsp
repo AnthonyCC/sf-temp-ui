@@ -140,6 +140,7 @@
 				&nbsp;<a href="/help/terms_of_service.jsp">Customer Agreement</a>
 				&nbsp;<font color="#999999">|</font>
 				&nbsp;<a href="/help/aol_note.jsp">A note on images for AOL users</a>
+				<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt="" />
 			</td>
 		</tr>
 	</table>
