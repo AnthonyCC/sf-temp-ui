@@ -222,7 +222,7 @@ int idx = 0;
 <table width="680" cellspacing="0" cellpadding="0" border="0">
 
 	<tr align="center">
-			<td class="text11bold" align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quantity<br/></td>
+			<td class="text11bold" align="center">&nbsp;&nbsp;&nbsp;&nbsp;Quantity<br/></td>
 			<td></td>
 			<td></td>
 			<td class="text11bold" align="center">Unit<br/>Price</td>
@@ -261,15 +261,21 @@ int idx = 0;
 
 </table> 
 
-<table width="680" cellspacing="0" cellpadding="0" border="0" valign="middle" >
-		<tr>
+<table width="680" cellspacing="0" cellpadding="0" border="0">
+	<tr>
 			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 		</tr>
+	<tr>
+		    <td colspan="4"><img height="1" width="170" src="/media_stat/images/layout/clear.gif"/></td>
+			<td align="right" class="orderTotal" colspan="2">
+			<b>ORDER TOTAL:&nbsp;<%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+    </tr>
+
+</table>
+
+<table width="680" cellspacing="0" cellpadding="0" border="0">
 		
-        <tr>
-			<td width="680" align="right" class="orderTotal">
-			<b>ORDER TOTAL:&nbsp;<%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %> &nbsp;&nbsp;&nbsp;&nbsp;</b></td>
-        </tr>
+		
         <% if (FDStoreProperties.isAdServerEnabled()) { %>
 			<tr><td><br><br></td></tr>
 			<tr><td bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
