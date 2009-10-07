@@ -131,4 +131,4 @@ if (catId != null){
 		<area shape="rect" coords="697,22,734,44" href="/department.jsp?deptId=usq&amp;trk=gnav" alt="USQ" />
 	</map>
 
-	<% } %>
+	
