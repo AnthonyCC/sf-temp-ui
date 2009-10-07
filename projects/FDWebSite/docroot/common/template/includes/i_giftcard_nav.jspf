@@ -62,7 +62,7 @@
 			<% } else if (user.getLevel() == FDUserI.RECOGNIZED) { %>
 				<a href="/login/login.jsp"><b>Click here to log in</b></a>
 			<% } else {	%>
-				<b>New customer?</b> <a href="/registration/signup.jsp">Sign Up</a><img src="/media_stat/images/layout/clear.gif" width="25" height="1" hspace="2" vspace="3" alt=""><b>Current customer?</b> <a href="/login/login.jsp">Log In</a>
+				<b>New customer?</b> <a href="/gift_card/purchase/register_and_purchase.jsp">Sign Up</a><img src="/media_stat/images/layout/clear.gif" width="25" height="1" hspace="2" vspace="3" alt=""><b>Current customer?</b> <a href="/login/login.jsp">Log In</a>
 			<% } %>
 		</td>
 	</tr>
