@@ -219,7 +219,7 @@
 								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 								<td><a href="javascript:showHint2('<%= giftcard.getCertificateNumber() %>')">  <%= giftcard.getCertificateNumber() %></a></td>
 								<td>$<%= giftcard.getBalance() %></td>							
-								<td>$<%= giftcard.getPurchaseSaleId() %></td>							
+								<td><%= giftcard.getPurchaseSaleId() %></td>							
 							</tr>
 							</logic:iterate>
 						</table>
