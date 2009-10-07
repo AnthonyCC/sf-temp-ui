@@ -199,6 +199,16 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					}
 				} else if ("rh_onestep_submitDonationOrder".equalsIgnoreCase(action)){
 					if(result.isSuccess()) { 
+						String optinInd = request.getParameter("optinInd");
+						boolean optIn = false;
+						if(null != optinInd && !"".equals(optinInd)){
+							if(optinInd.equalsIgnoreCase("optin")){				
+								optIn = true;
+							}
+						}else{
+							result.addError(new ActionError("Opt_in_required", SystemMessageList.MSG_RH_OPTIN_REQUIRED));
+//							return true;
+						}
 						performAddAndSetPaymentMethod(request, result);
 						if(result.getError("payment_method_fraud") != null){
 							currentUser.setGCSignupError(true);

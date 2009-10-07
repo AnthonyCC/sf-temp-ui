@@ -63,7 +63,15 @@ function gcNumberSubmit(){
 								</td>
 								<td style="width: 70px;">
 									<% if (hasCustomerCase) { %>
-										<fd:GiftCardController actionName='setAllowGCUsage' result='result' successPage='/gift_card/giftcard_summary.jsp'>
+									<%
+										String actionName="";
+									String successPage = null;
+										if(null !=request.getParameter("allowGCUsageTRUE") || null != request.getParameter("allowGCUsageFALSE")){
+											actionName ="setAllowGCUsage";
+											successPage = "/gift_card/giftcard_summary.jsp";
+										}
+										%>
+										<fd:GiftCardController actionName='<%=actionName%>' result='result' successPage='<%=successPage%>'>
 											<form method="post" style="padding:0px;margin:0px;">
 												<input type="submit" class="button" name="<%= (allowGCUsage)?"allowGCUsageFALSE":"allowGCUsageTRUE" %>" value="<%= (allowGCUsage)?"DISABLE":"ENABLE" %>" />
 											</form>
@@ -207,13 +215,32 @@ function gcNumberSubmit(){
 
 				<tr>
 					<td width="33%" class="gc_table_footer">
-						<fd:GiftCardController actionName='applyGiftCard' result='result'>
-							<fd:ErrorHandler result='<%=result%>' name='invalid_card' id='errorMsg'>
-								<%@ include file="/includes/i_error_messages.jspf" %>   
-							</fd:ErrorHandler>
-							<fd:ErrorHandler result="<%=result%>" name="card_in_use" id="errorMsg">
-								<%@ include file="/includes/i_error_messages.jspf" %>   
-							</fd:ErrorHandler>
+					<%
+					String actionName="";
+					if(null !=request.getParameter("gcApplyCode")){
+						actionName ="applyGiftCard";
+					}
+					%>
+						<fd:GiftCardController actionName='<%=actionName%>' result='result'>
+						
+							<fd:ErrorHandler result="<%=result%>" name="account_locked" id="errorMsg">
+				                <%@ include file="/includes/i_error_messages.jspf" %>   
+				            </fd:ErrorHandler>
+				            <fd:ErrorHandler result="<%=result%>" name="apply_gc_warning" id="errorMsg">
+				                <%@ include file="/includes/i_error_messages.jspf" %>   
+				            </fd:ErrorHandler>            
+				            <fd:ErrorHandler result='<%=result%>' name='invalid_card' id='errorMsg'>
+				                <%@ include file="/includes/i_error_messages.jspf" %>   
+				            </fd:ErrorHandler>
+				            <fd:ErrorHandler result="<%=result%>" name="card_in_use" id="errorMsg">
+				                <%@ include file="/includes/i_error_messages.jspf" %>   
+				            </fd:ErrorHandler>
+				            <fd:ErrorHandler result="<%=result%>" name="card_on_hold" id="errorMsg">
+				                <%@ include file="/includes/i_error_messages.jspf" %>   
+				            </fd:ErrorHandler>
+				            <fd:ErrorHandler result="<%=result%>" name="card_zero_balance" id="errorMsg">
+				                <%@ include file="/includes/i_error_messages.jspf" %>   
+				            </fd:ErrorHandler>
 							<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table1footer">
 								<tr valign="middle">
 									<td align="center">

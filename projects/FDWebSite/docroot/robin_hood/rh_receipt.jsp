@@ -126,9 +126,9 @@ int idx = 0;
 			</tr>
 			<tr>
 				<td colspan="2" style="padding: 2px;" align="left" valign="bottom">
-					<b><%=productModel.getFullName() %></b> Subtotal&nbsp;(<%=totalQuantity%>&nbsp;Meals):
+					<b><%=productModel.getFullName() %></b> Subtotal&nbsp;(<%=cartLine.getOrderedQuantity()%>&nbsp;Meals):
 				</td>
-				<td style="padding: 2px;" width="70" align="right" valign="bottom"><%=JspMethods.currencyFormatter.format(totalPrice)%></td>
+				<td style="padding: 2px;" width="70" align="right" valign="bottom"><%=JspMethods.currencyFormatter.format(cart.getSubTotal())%></td>
 			</tr>
 			<tr>
 				<td colspan="2" style="padding: 2px;" align="left" class="text13bold">

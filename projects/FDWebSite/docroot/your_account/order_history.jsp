@@ -119,7 +119,7 @@ Please review your orders. To check the status of an order, click on the order n
 		<td></td>
         <%
             String status = "";
-            if(orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD)) {
+            if(orderInfo.getSaleType().equals(EnumSaleType.GIFTCARD) || orderInfo.getSaleType().equals(EnumSaleType.DONATION)) {
                 status = orderInfo.isPending() ? "In Process" : "Completed";
             } else {
                 status = orderInfo.getOrderStatus().getDisplayName();

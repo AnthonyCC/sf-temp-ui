@@ -124,6 +124,8 @@ public class GiftCardControllerTag extends AbstractControllerTag{
 						actionResult.addError(new ActionError("card_in_use", formatMessage(SystemMessageList.MSG_GC_IN_USE)));
 					}
 				}
+				}else{
+					actionResult.addError(new ActionError("invalid_card", SystemMessageList.MSG_GC_INVALID));					
 				}
 			}
 		}catch (FDResourceException e) {

@@ -4,6 +4,7 @@
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import='com.freshdirect.payment.*' %>
 <%@ page import='com.freshdirect.payment.fraud.*' %>
+<%@ page import='com.freshdirect.framework.webapp.*' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -30,6 +31,9 @@ UserUtil.initializeCartForDonationOrder(user);
 %>
 <fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="/robin_hood/rh_receipt.jsp" ccdProblemPage="/robin_hood/rh_submit_order.jsp?ccerror=true">
         
+        <fd:ErrorHandler result='<%=result%>' name='fraud_check_failed' id='errorMsg'>
+			<%@ include file="/includes/i_error_messages.jspf" %>	
+		</fd:ErrorHandler>
 <%
 	if (user.getFailedAuthorizations() > 0) { 
 		String errorMsg = "<span class=\"text12\">There was a problem with the credit card you selected.<br />Please choose or add a new payment method.<br /></span>";
@@ -78,7 +82,9 @@ UserUtil.initializeCartForDonationOrder(user);
 	</tr>
 </table>
 
-
+<% ActionResult resultCheckOut = result;
+result = null;
+%>
 <fd:PaymentMethodController actionName='<%=actionName%>' result='result'>
 <%
 
@@ -136,7 +142,10 @@ boolean isCheckEligible = false;
 	</table>
 		<br />
 		<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0"><br />
-		<font class="space4pix"><br /><br /></font>
+		<font class="space4pix"><br /><br /></font>		
+		<fd:ErrorHandler result='<%=resultCheckOut%>' name='Opt_in_required' id='errorMsg'>
+			<%@ include file="/includes/i_error_messages.jspf" %>	
+		</fd:ErrorHandler>
 		<table border="0" cellspacing="0" cellpadding="2" width="675">
 		<tr>
 			<td align="right">
@@ -144,7 +153,7 @@ boolean isCheckEligible = false;
 				Leave checked in order to receive a one-time e-mail from Robin Hood acknowledging your gift.
 			</td>
 			<td>
-				<input type="radio" name="optinInd" id="optin" value="optin" checked />
+				<input type="radio" name="optinInd" id="optin" value="optin"  />
 			</td>
 		</tr>
 		<tr>

@@ -266,6 +266,9 @@ System.out.println("d");
 	</tr>
 </table>
 <br />
+<fd:ErrorHandler result='<%=result%>' name='Opt_in_required' id='errorMsg'>
+	<%@ include file="/includes/i_error_messages.jspf" %>	
+</fd:ErrorHandler>
 <table border="0" cellspacing="0" cellpadding="2" width="675">
 	<tr>
 		<td align="right"><b>YES, I understand that I am making a charitable contribution to Robin Hood.</b><br/>

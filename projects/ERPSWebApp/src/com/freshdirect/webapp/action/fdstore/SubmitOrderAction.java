@@ -826,7 +826,8 @@ public class SubmitOrderAction extends WebActionSupport {
 				optIn = true;
 			}
 		}else{
-			//TODO: show error message
+			this.addError("Opt_in_required", SystemMessageList.MSG_RH_OPTIN_REQUIRED);
+			return SUCCESS;
 		}
 		//FDReservation reservation = cart.getDeliveryReservation();
 		
