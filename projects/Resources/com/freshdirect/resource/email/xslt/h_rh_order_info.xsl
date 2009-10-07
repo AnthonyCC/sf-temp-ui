@@ -13,7 +13,7 @@
 
 <TR valign="top">
 <TD width="320">
-		<table cellpadding="0" cellspacing="0" width="320"><font face="verdana, arial, sans-serif" size="1" color="black"> 
+		<table cellpadding="0" cellspacing="0" width="320">
 			<tr>
 			<td colspan="3" style="padding: 2px;" align="left">
 				<img src="http://www.freshdirect.com/media_stat/images/donation/robinhood/robin_hood_logo_sm.gif" height="23" width="130" alt="Robin Hood" /><br />
@@ -28,16 +28,15 @@
 
 
 			<tr>
-			<td colspan="2" style="padding: 2px;" align="left" valign="bottom" > <b><xsl:value-of select="productFullName" /></b> Subtotal&nbsp; ( <xsl:value-of select="qty"/> Meals):
-			        </td>
-				
-				
-				<td style="padding: 2px;" width="70" align="right" valign="bottom"> $<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/></td>
+				<td colspan="2" style="padding: 2px;" align="left" valign="bottom" ><font face="verdana, arial, sans-serif" size="1" color="black">  <b><xsl:value-of select="productFullName" /></b> Subtotal&nbsp; ( <xsl:value-of select="qty"/> Meals):
+					 </font> </td>
+				<td style="padding: 2px;" width="70" align="left" valign="bottom"><font face="verdana, arial, sans-serif" size="1" color="black"> &nbsp; $<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/> </font> </td>
 			</tr>
+			
 			<tr>
-				<td colspan="2" style="padding9/29/2009: 2px;" align="left">
-					<b>TOTAL: &nbsp; $<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/> </b> 
-				</td>
+				<td colspan="2" style="padding9/29/2009: 2px;" align="left"><font face="verdana, arial, sans-serif" size="1" color="black">
+					<b>&nbsp;TOTAL: &nbsp; $<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/> </b> 
+				</font></td>
 				
 			</tr>
 			<tr>
@@ -52,17 +51,21 @@
 			<td>
 			<table cellpadding="0" cellspacing="0" border="0" width="320">
 			<tr VALIGN="TOP">
-				<td WIDTH="320" COLSPAN="2">
+				<td WIDTH="320" COLSPAN="2"><font face="verdana, arial, sans-serif" size="1" color="black">
 			        Thank you for your donation to Robin Hood. Your gift will help feed New York City's hungry families during the holiday season.<br /><br/>
 				You may view this donation in <a href="http://freshdirect.com/your_account/order_history.jsp"> Your Orders.</a><br/><br/>
-				</td>
+				</font></td>
 			</tr>
 			</table>
 			</td>
 			</tr>
-		</font> </table>
+		 </table>
 </TD>
 
+<td valign="top" align="CENTER" width="25">
+	<img height="280" width="1" src="/images/clear.gif"/>
+<br/>
+</td>
 <TD align="CENTER" bgcolor="#CCCCCC" width="1" valign="top">
     	 	<img src="/images/cccccc.gif" width="1" height="280" /><br />
 </TD>
@@ -95,7 +98,7 @@
 			<xsl:call-template name="format-payment-method"><xsl:with-param name="paymentMethod" select="order/paymentMethod" /></xsl:call-template><br/>
 			<br/>
 			</xsl:if>
-			<b>BILLING ADDRESS</b><br/>
+			<b>Billing Address:</b><br/>
 			<xsl:value-of select="order/paymentMethod/name"/><font><xsl:text> </xsl:text></font><br/>
 			<xsl:call-template name="format-billing-address"><xsl:with-param name="billingAddress" select="order/paymentMethod" /></xsl:call-template><br/>
 			<br/>
