@@ -118,7 +118,7 @@
 			<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_tableBody">
 				<tr>
 					<td width="50%" class="gc_table_footer">
-						<fd:GiftCardController actionName='applyGiftCard' result='result' successPage='/your_account/giftcards.jsp'>
+						<fd:GiftCardController actionName='applyGiftCard' result='result' successPage='/gift_card/giftcard_addused.jsp'>
 							<fd:ErrorHandler result='<%=result%>' name='invalid_card' id='errorMsg'>
 								<%@ include file="/includes/i_error_messages.jspf" %>   
 							</fd:ErrorHandler>
