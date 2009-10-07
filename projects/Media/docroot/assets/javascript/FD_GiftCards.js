@@ -9,7 +9,7 @@
 
 var global_gcDebug = false;
 var global_gcLog = false;
-var lastEdit = '2009.10.06_03.10.08.PM';
+var lastEdit = '2009.10.07_01.45.24.PM';
 var lastLog;
 
 gcLog('Last Edit: '+lastEdit);
@@ -972,8 +972,8 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 		if(!(document.getElementById('origRecpEmail_gcResendCRMCancelBox').checked) && !(document.getElementById('selfEmail_gcResendCRMCancelBox').checked) && !(document.getElementById('newRecipient_gcResendCRMCancelBox').checked)){
 			$('gcResendCRMCancelBoxErr').innerHTML = '<span class="error">Select atleast one option to send cancellation email.</span>';
 				
-		}else if(document.getElementById('newRecipient_gcResendCRMCancelBox').checked && (null == $('newRecpEmail_gcResendCRMCancelBox').value || $('newRecpEmail_gcResendCRMCancelBox').value.trim() == '')){
-			$('sendCancelErr_gcResendCRMCancelBox').innerHTML = '<span class="error">Enter email address for New recipient.</span>';
+		}else if(document.getElementById('newRecipient_gcResendCRMCancelBox').checked && $('newRecpEmail_gcResendCRMCancelBox').value == ''){
+			$('gcResendCRMCancelBoxErr').innerHTML = '<span class="error">Enter email address for New recipient.</span>';
 			
 		}else{			
 			new Ajax.Request('/gift_card/postbacks/resend.jsp', {

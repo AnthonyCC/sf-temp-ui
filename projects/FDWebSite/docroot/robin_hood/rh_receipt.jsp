@@ -31,7 +31,11 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
     <tmpl:put name='content' direct='true'>
 
 
-
+<%
+//--------OAS Page Variables-----------------------
+        request.setAttribute("sitePage", "www.freshdirect.com/robin_hood/rh_receipt.jsp");
+        request.setAttribute("listPos", "ReceiptBotLeft,ReceiptBotRight,SystemMessage");
+%>
 <%
 
 
@@ -259,16 +263,36 @@ int idx = 0;
 
 <table width="680" cellspacing="0" cellpadding="0" border="0" valign="middle" >
 		<tr>
-			<td ><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
-			<td></td>			<td></td>			<td></td>			<td></td>			<td></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 		</tr>
 		
         <tr>
-			<td colspan="4">&nbsp;</td>
-			<td width="680" align="right" class="orderTotal" colspan="2">
+			<td width="680" align="right" class="orderTotal">
 			<b>ORDER TOTAL:&nbsp;<%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %> &nbsp;&nbsp;&nbsp;&nbsp;</b></td>
         </tr>
-        
+        <% if (FDStoreProperties.isAdServerEnabled()) { %>
+			<tr><td><br><br></td></tr>
+			<tr><td bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+			<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
+			<tr><td>
+			<table width="630" cellpadding="0" cellspacing="0">
+			<tr><td width="50%" style="border-right: solid 1px #CCCCCC; padding-right: 10px;" align="center">
+			<SCRIPT LANGUAGE=JavaScript>
+					<!--
+					OAS_AD('ReceiptBotLeft');
+					//-->
+			</SCRIPT>
+			</td>
+			<td width="50%" style="padding-left: 10px;" align="center">
+			<SCRIPT LANGUAGE=JavaScript>
+					<!--
+					OAS_AD('ReceiptBotRight');
+					//-->
+			</SCRIPT>
+			</td>		
+			</table><br>
+			</td></tr>
+		<% } %>
 </table>
 
 </fd:GetOrder>

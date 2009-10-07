@@ -34,10 +34,8 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 <%
 //--------OAS Page Variables-----------------------
         request.setAttribute("sitePage", "www.freshdirect.com/gift_card/purchase/receipt.jsp");
-        request.setAttribute("listPos", "ReceiptTop,ReceiptBotLeft,ReceiptBotRight,SystemMessage,HPLeftTop");
+        request.setAttribute("listPos", "ReceiptBotLeft,ReceiptBotRight,SystemMessage");
 %>
-<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
-
 <%
 
 
