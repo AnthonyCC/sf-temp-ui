@@ -211,12 +211,14 @@ int idx = 0;
 			<td></td>			<td></td>			<td></td>			<td></td>			<td></td>
 
 		</tr>
-		
-        <tr>
-		<td colspan="4" >&nbsp;</td>
-		<td align="right" class="orderTotal" colspan="6" width="680">
-		<b>ORDER TOTAL:  <%= JspMethods.currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal()) %> &nbsp;&nbsp;&nbsp;&nbsp;  </b></td>
+		 <tr>
+			<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="170" height="1" /></td>
+			<td class="orderTotal" colspan="2" width="" align="right">
+			<b>ORDER TOTAL:  <%= JspMethods.currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal()) %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </b></td>
         </tr>
+        
+		
+        
 </table>
 
 </fd:GetOrder>
