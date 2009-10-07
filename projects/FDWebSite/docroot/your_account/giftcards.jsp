@@ -144,7 +144,7 @@
 							<td><%= DateUtil.formatDate(giftcard.getGiftCardModel().getPurchaseDate()) %></td>
 							<td><%= user.getGCSenderName(giftcard.getCertificateNumber(),giftcard.getPurchaseSaleId()) %></td>
 							<td>$<%= giftcard.getFormattedOrigAmount() %></td>
-							<td>$<%= giftcard.getFormattedBalance() %></td>
+							<td><% if(giftcard.isRedeemable()){ %>$<%= giftcard.getFormattedBalance() %><% } %></td>
 							<td><% if(giftcard.isRedeemable() && giftcard.getBalance() > 0) { if(!giftcard.isSelected()) {%>
                                 <a href="<%= request.getRequestURI() %>?action=applyGiftCard&certNum=<%= giftcard.getCertificateNumber() %>&value=true" class="note">Apply to the order</a>
                                 <% } else {%>

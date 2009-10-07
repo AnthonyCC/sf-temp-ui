@@ -116,6 +116,10 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		return 0.0;
 	}
 	
+	public int getTotalRegularOrderCount(){
+		return 0;
+	}
+	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("ErpWebOrderHistory version $$$$$$$$$$$$$$$$$$$"+"\n");

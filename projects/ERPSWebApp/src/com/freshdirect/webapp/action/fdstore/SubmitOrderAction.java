@@ -308,7 +308,10 @@ public class SubmitOrderAction extends WebActionSupport {
 			user.invalidateCache();
 	        // make sure we're not using stale order history data.
 			user.invalidateOrderHistoryCache();
-			//Now store the user to update the service_Type			
+			//Now store the user to update the service_Type		
+			if(user.getTotalRegularOrderCount()<=0){
+				user.setSelectedServiceType(EnumServiceType.PICKUP);
+			}
 			FDCustomerManager.storeUser(fdUser);
 			session.setAttribute(SessionName.USER, user);
 			
@@ -903,7 +906,10 @@ public class SubmitOrderAction extends WebActionSupport {
 			user.invalidateCache();
 	        // make sure we're not using stale order history data.
 			user.invalidateOrderHistoryCache();
-			//Now store the user to update the service_Type			
+			//Now store the user to update the service_Type	
+			if(user.getTotalRegularOrderCount()<=0){
+				user.setSelectedServiceType(EnumServiceType.PICKUP);
+			}
 			FDCustomerManager.storeUser(fdUser);
 			session.setAttribute(SessionName.USER, user);
 			

@@ -107,7 +107,7 @@ function gcNumberSubmit(){
 									<tr valign="top" <%if(counterTmp.intValue()%2==0){%>class="list_odd_row"<%}%>>
 										<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 										<td><%= giftcard.getCertificateNumber() %></td>
-										<td>$<%= giftcard.getFormattedBalance() %></td>
+										<td><% if(giftcard.isRedeemable()){ %>$<%= giftcard.getFormattedBalance() %><% } %></td>
                                         <td><% if(giftcard.isRedeemable() && giftcard.getBalance() > 0) {%>
                                             Active
                                         <%

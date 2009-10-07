@@ -988,5 +988,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public String getGCSenderName(String certNum, String custId){
 		return this.user.getGCSenderName(certNum, custId);
 	}
+	
+	public int getTotalRegularOrderCount() throws FDResourceException {
+    	return this.user.getTotalRegularOrderCount();
+    }
 }
 

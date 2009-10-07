@@ -842,11 +842,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 
 	public boolean isCheckEligible()  {
-		if (checkEligible == null) {
+		return true;
+		/*if (checkEligible == null) {
 			EligibilityCalculator calc = new EligibilityCalculator("ECHECK");
 			checkEligible = new Boolean(calc.isEligible(new FDRulesContextImpl(this)));
 		}
-		return checkEligible.booleanValue();
+		return checkEligible.booleanValue();*/
     }
 
 	public Collection getPaymentMethods() {
@@ -1632,5 +1633,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return 0;
 		}
 	}
+	
+	 public int getTotalRegularOrderCount() throws FDResourceException {
+	        return this.getOrderHistory().getTotalRegularOrderCount();
+	    }
 }
 

@@ -182,7 +182,7 @@
 							<tr valign="top" <%if(counterTmp.intValue()%2==0){%>class="list_odd_row"<%}%>>
 								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 								<td><a href="javascript:showHint('<%= giftcard.getCertificateNumber() %>')">  <%= giftcard.getCertificateNumber() %></a></td>
-                                <td class="gc_balance">$<%= giftcard.getFormattedBalance() %>&nbsp;&nbsp;</td>
+                                <td class="gc_balance"><% if(giftcard.isRedeemable()){ %>$<%= giftcard.getFormattedBalance() %>&nbsp;&nbsp;<% } %></td>
                                 <td><% if(giftcard.isRedeemable() && giftcard.getBalance() > 0) {%>
                                     Active
                                 <%

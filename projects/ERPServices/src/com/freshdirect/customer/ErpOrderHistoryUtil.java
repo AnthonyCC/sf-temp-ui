@@ -281,4 +281,18 @@ public class ErpOrderHistoryUtil {
 		return filteredOrders;
 	}
 
+	
+	public static int getTotalRegularOrderCount(Collection erpSaleInfos){
+		int intCount = 0;
+		if(erpSaleInfos != null) {
+			for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
+				ErpSaleInfo saleInfo = (ErpSaleInfo) i.next(); 			
+				Date deliveryDate = saleInfo.getRequestedDate();
+				if (saleInfo.getSaleType().equals(EnumSaleType.REGULAR)) {
+					intCount++;
+				}
+			}
+		}
+		return intCount;
+	}
 }
