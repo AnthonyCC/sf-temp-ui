@@ -36,29 +36,27 @@
 </table>
 <table width="690" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td colspan="3" style="padding: 2px;" align="right">
+		<td style="padding: 2px;" align="right">
 			<img src="/media_stat/images/donation/robinhood/robin_hood_logo_sm.gif" height="23" width="130" alt="Robin Hood" /><br />
 		</td>
 	</tr>
 	<tr>
-		<td colspan="3" style="padding: 2px;">
+		<td style="padding: 2px;">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2" style="padding: 2px;" align="right">
+		<td style="padding: 2px;" align="right">
 			<span class="text11bold">Robin Hood</span> Donation Subtotal (<%=totalQuantity%> Meals):
+			<%=JspMethods.currencyFormatter.format(totalPrice)%>
 		</td>
-		<td style="padding: 2px;" width="100" align="right"><%=JspMethods.currencyFormatter.format(totalPrice)%></td>
 	</tr>
 	<tr>
-		<td colspan="2" style="padding: 2px;" align="right">
-			<span class="text13bold">TOTAL:
-		</td>
-		<td style="padding: 2px;" width="100" align="right" class="text13bold"><%=JspMethods.currencyFormatter.format(totalPrice)%></td>
+		<td style="padding: 2px;" align="right">
+			<span class="text13bold">TOTAL:	<%=JspMethods.currencyFormatter.format(totalPrice)%></td>
 	</tr>
 	<tr>
-		<td colspan="3" style="padding: 2px;">
+		<td style="padding: 2px;">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0" alt="" /><br />
 		</td>
 	</tr>
