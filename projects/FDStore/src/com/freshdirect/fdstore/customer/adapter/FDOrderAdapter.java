@@ -194,14 +194,6 @@ public class FDOrderAdapter implements FDOrderI {
 			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(ol.getSku().getSkuCode()) || FDStoreProperties.getRobinHoodSkucode().equalsIgnoreCase(ol.getSku().getSkuCode())){
 				cartLine.setFixedPrice(ol.getPrice());
 			}
-			System.out.println("ol.getSku().getSkuCode()"+ol.getSku().getSkuCode());
-			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(ol.getSku().getSkuCode())){
-			{
-				System.out.println("Setting the actual fixed price "+ol.getActualPrice());
-				cartLine.setFixedPrice(ol.getActualPrice());
-			}
-			      		
-		}
 			
 			try {
 				cartLine.refreshConfiguration();

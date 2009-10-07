@@ -31,6 +31,7 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
+import javax.mail.MessagingException;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
@@ -185,6 +186,7 @@ import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.giftcard.ejb.GiftCardPersistanceDAO;
+import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -4311,10 +4313,18 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					
 					//AUTH sale in CYBER SOURCE
 					PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
-					paymentManager.authorizeSaleRealtime(pk.getId(),EnumSaleType.GIFTCARD);					
-
+					List auths = paymentManager.authorizeSaleRealtime(pk.getId(),EnumSaleType.GIFTCARD);
+					if(auths != null && auths.size() > 0){
+						//Only when it has a valid auth.
+						ErpCustomerManagerSB erpCMsb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+						erpCMsb.sendCreateOrderToSAP(customerPk,  pk.getId(), EnumSaleType.GIFTCARD, cra);
+					}
+					
 					return pk.getId();
 
+				}catch (ErpSaleNotFoundException se) {
+					LOGGER.warn("Unable to locate Order ", se);
+					throw new FDResourceException(se);					
 				}catch (CreateException ce) {
 					LOGGER.warn("Cannot Create ErpCustomerManagerSessionBean", ce);
 					throw new FDResourceException(ce);					
@@ -5080,10 +5090,19 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				
 				//AUTH sale in CYBER SOURCE
 				PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
-				paymentManager.authorizeSaleRealtime(pk.getId(),EnumSaleType.DONATION);					
+				List auths = paymentManager.authorizeSaleRealtime(pk.getId(),EnumSaleType.DONATION);
+				if(auths != null || auths.size() > 0){
+					//Only when it has a valid auth.
+					ErpCustomerManagerSB erpCMsb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+					erpCMsb.sendCreateOrderToSAP(customerPk,  pk.getId(), EnumSaleType.DONATION, cra);
+				}
+					
 
 				return pk.getId();
 
+			}catch (ErpSaleNotFoundException se) {
+				LOGGER.warn("Unable to locate Order ", se);
+				throw new FDResourceException(se);					
 			}catch (CreateException ce) {
 				LOGGER.warn("Cannot Create ErpCustomerManagerSessionBean", ce);
 				throw new FDResourceException(ce);					
@@ -5110,6 +5129,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 		
+
 		public ErpGCDlvInformationHolder GetGiftCardRecipentByCertNum(String certNum) throws FDResourceException {
 			try {
 				

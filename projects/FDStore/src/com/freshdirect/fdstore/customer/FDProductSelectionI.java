@@ -216,7 +216,4 @@ public interface FDProductSelectionI extends FDConfigurableI {
 		}
 
 	};
-	
-	
-	
 }

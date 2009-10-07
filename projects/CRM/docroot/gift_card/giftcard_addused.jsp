@@ -171,6 +171,7 @@
 								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 								<td width="85">Certificate #</td>
 								<td width="80">Balance</td>
+                                <td  width="85">Status</td>                                
 								<td>Options</td>
 								<td>Purchased</td>
 							</tr>
@@ -182,6 +183,13 @@
 								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 								<td><a href="javascript:showHint('<%= giftcard.getCertificateNumber() %>')">  <%= giftcard.getCertificateNumber() %></a></td>
                                 <td class="gc_balance">$<%= giftcard.getFormattedBalance() %>&nbsp;&nbsp;</td>
+                                <td><% if(giftcard.isRedeemable() && giftcard.getBalance() > 0) {%>
+                                    Active
+                                <%
+                                 } else { %>
+                                    <%= giftcard.isRedeemable() ? "Redeemed" : "Cancelled" %>
+                                    <%}%>
+                                </td>                                
                                 <td><% if(hasCustomerCase){ %> <a href="<%= request.getRequestURI() %>?action=deleteGiftCard&certNum=<%= giftcard.getCertificateNumber() %>&value=true" class="rLink">remove</a><% } else { %> remove <% } %></td>
 								<td><%= giftcard.getPurchaseSaleId() %></td>							
 							</tr>

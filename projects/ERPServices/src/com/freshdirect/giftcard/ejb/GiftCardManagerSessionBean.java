@@ -1,6 +1,8 @@
 package com.freshdirect.giftcard.ejb;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,6 +18,7 @@ import java.util.Map;
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
+import javax.mail.MessagingException;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
@@ -66,6 +69,7 @@ import com.freshdirect.giftcard.ErpRegisterGiftCardModel;
 import com.freshdirect.giftcard.ErpReverseAuthGiftCardModel;
 import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.mail.ErpEmailFactory;
+import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.GiftCardOrderInfo;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
@@ -150,6 +154,13 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 						ErpRegisterGiftCardModel transactionModel=(ErpRegisterGiftCardModel)model;
 						transactionModel.addRegisterTransaction(gcModel);
 						isGCTransactionSuccess=false;
+						//Alert Appsupport. Send an email.
+						String subject =  "[System] Unable to Register Gift Card. "+saleId;
+						StringWriter sw = new StringWriter();
+						e.printStackTrace(new PrintWriter(sw));
+						String detailMessage = sw.toString();
+						sendNotificationEmail(subject, detailMessage);
+
 					}															
 				}	
 				model.setTransactionSource(source);	
@@ -1506,4 +1517,16 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 		}	
 	}
 
+	private void sendNotificationEmail(String subject, String body) {
+		try {
+			ErpMailSender mailer = new ErpMailSender();
+			mailer.sendMail(ErpServicesProperties.getGCMailFrom(), 
+							ErpServicesProperties.getGCMailTo(), 
+							ErpServicesProperties.getGCMailCC(), 
+							subject, body);
+		} catch (MessagingException e) {
+			throw new EJBException(e);
+		}		
+	}
+	
 }

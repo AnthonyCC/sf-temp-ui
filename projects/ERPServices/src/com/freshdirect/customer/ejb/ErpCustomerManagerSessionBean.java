@@ -263,14 +263,14 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				postCheckOrderFraud(salePK,erpCustomerPk, orderModel, agentRole);// perform				
 			}
 			
-			if(EnumSaleType.REGULAR.equals(saleType) || EnumSaleType.GIFTCARD.equals(saleType) ||  EnumSaleType.DONATION.equals(saleType)) {
+			if(EnumSaleType.REGULAR.equals(saleType)) {
 				SapOrderAdapter sapOrder = this.adaptOrder(erpCustomerPk, orderModel, rating);
 				SapGatewaySB sapSB = this.getSapGatewayHome().create();
 				sapOrder.setWebOrderNumber(salePK.getId());
 				sapSB.sendCreateSalesOrder(sapOrder,saleType);
-				this.reconcileCustomerCredits(erpCustomerPk, order);
+				
 			}
-
+			this.reconcileCustomerCredits(erpCustomerPk, order);
 			LOGGER.info("Placing order - successful. CustomerPK=" + erpCustomerPk);
 
 			return salePK;

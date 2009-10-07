@@ -417,9 +417,7 @@ public class FDProductSelection implements FDProductSelectionI {
 
 	protected void performPricing() {
 		try {
-			System.out.println("inside performPricing :"+this.getSkuCode());
 			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(this.getSkuCode()) || FDStoreProperties.getRobinHoodSkucode().equalsIgnoreCase(this.getSkuCode())){
-				System.out.println("Setting the fixed price :"+this.getFixedPrice());
 				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount());
 				this.orderLine.setPrice(this.getFixedPrice());
 				this.orderLine.setDiscountAmount(0);

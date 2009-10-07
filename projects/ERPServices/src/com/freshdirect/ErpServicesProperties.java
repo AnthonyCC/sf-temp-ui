@@ -99,6 +99,10 @@ public class ErpServicesProperties {
     private final static String PROP_SAP_MAIL_CC = "sap.mail.cc";
     private final static String PROP_SAP_MAIL_FROM = "sap.mail.from";
     
+    private final static String PROP_GC_MAIL_TO = "gc.mail.to";
+    private final static String PROP_GC_MAIL_CC = "gc.mail.cc";
+    private final static String PROP_GC_MAIL_FROM = "gc.mail.from";
+
     private final static String PROP_SAP_SEND_CUTOFF_EMAIL = "sap.mail.cutoff";
     private final static String PROP_CANCEL_HRS_B4_CUTOFF  = "cancel.hours.b4.cutoff";
     private final static String PROP_WAIT_HRS_AFTER_CONFIRM  = "wait.hours.after.confirm";
@@ -230,6 +234,11 @@ public class ErpServicesProperties {
 		defaults.put(PROP_OCF_MAIL_TO, "appsupport@freshdirect.com");
 		defaults.put(PROP_OCF_MAIL_CC, "");
 		defaults.put(PROP_OCF_MAIL_FROM, "applicationdevelopment@freshdirect.com");
+		
+		defaults.put(PROP_GC_MAIL_TO, "appsupport@freshdirect.com");
+		defaults.put(PROP_GC_MAIL_CC, "");
+		defaults.put(PROP_GC_MAIL_FROM, "applicationdevelopment@freshdirect.com");
+		
 		defaults.put(PROP_OCF_SEND_EMAIL, "true");
 		defaults.put(PROP_CAPTURE_CRON_QUEUE, "false");
 		
@@ -505,6 +514,18 @@ public class ErpServicesProperties {
 	
 	public static String getOcfMailFrom() {
 		return config.getProperty(PROP_OCF_MAIL_FROM);
+	}
+
+	public static String getGCMailTo() {
+		return config.getProperty(PROP_GC_MAIL_TO);
+	}
+	
+	public static String getGCMailCC() {
+		return config.getProperty(PROP_GC_MAIL_CC);
+	}
+	
+	public static String getGCMailFrom() {
+		return config.getProperty(PROP_GC_MAIL_FROM);
 	}
 	
 	public static boolean isSendOcfEmail(){
