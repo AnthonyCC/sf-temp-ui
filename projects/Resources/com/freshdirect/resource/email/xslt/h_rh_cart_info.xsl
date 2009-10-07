@@ -12,54 +12,60 @@
 
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 
-	<tr>
-			<td class="text11bold" align="center"><b>&nbsp;Quantity</b><br/></td>
+	<tr> 
+			<td class="text11bold" align="center"><font face="verdana, arial, sans-serif" size="1" color="black"><b>Quantity</b><br/></font></td>
 			<td></td>
 			<td></td>
-			<td class="text11bold" align="center"><b>Unit<br/>Price</b></td>
 			<td></td>
-			<td class="text11bold" align="center"><b>Final<br/>Price</b></td>
-	</tr>
-		<tr>
+			<td></td>
+			<td class="text11bold" align="center"><font face="verdana, arial, sans-serif" size="1" color="black"><b>Unit<br/>Price</b></font></td>
+			<td></td>
+			<td></td>
+			<td class="text11bold" align="right"><font face="verdana, arial, sans-serif" size="1" color="black"><b>Final<br/>Price</b></font></td>
+	 </tr>
+	 <tr>
 			<td><img src="/images/clear.gif" width="1" height="1" border="0" alt="" /></td>
-		</tr>
+	 </tr>
 		
-	<tr align="left">
-			<td class="text11bold" bgcolor="#dddddd" colspan="6">
+	<tr align="left"> 
+			<td class="text11bold" bgcolor="#dddddd" colspan="10"><font face="verdana, arial, sans-serif" size="1" color="black">
 			<img src="/media_stat/images/donation/robinhood/landing/color_swatch_F0F0E7.gif" width="1" height="8" border="0" /> <b> &nbsp;&nbsp;&nbsp;FRESHDIRECT</b>
-			</td>
+			</font></td>
 	</tr>
-		<tr>
+	<tr>
 			<td><img src="/images/clear.gif" width="1" height="1" border="0" alt="" /></td>
 
-		</tr>
-
+	</tr>
 		<xsl:variable name="defaultPrice1" select="defaultPrice" /> 
 		<xsl:variable name="defaultPriceUnit1" select="defaultPriceUnit" /> 
 		<xsl:variable name="productFullName" select="productFullName" /> 
 		<xsl:for-each select="order/orderViews/orderViews">
 		<xsl:for-each select="orderLines/orderLines">
-	<tr>
+	<tr> <font face="verdana, arial, sans-serif" size="1" color="black">
 		
-			<td class="text11bold" align="center"><xsl:value-of select="orderedQuantity"/></td>
-			<td style="padding-left:30px;" class="text11bold" align="center"> <b><xsl:value-of select="$productFullName" /></b>	</td>
+			<td class="text11bold" align="center"><font face="verdana, arial, sans-serif" size="1" color="black"><xsl:value-of select="orderedQuantity"/></font></td>
+			<td style="padding-left:30px;" class="text11bold" align="center"><font face="verdana, arial, sans-serif" size="1" color="black"> <b><xsl:value-of select="$productFullName" /></b> </font></td>
 			<td></td>
-			<td align="center">$<xsl:value-of select='format-number($defaultPrice1, "###,##0.00", "USD")' />/<xsl:value-of select="$defaultPriceUnit1"/></td>
 			<td></td>
-			<td  align="center"  style="padding-left:4px;" class="text11bold">$<xsl:value-of select='format-number(price, "###,##0.00", "USD")'/></td>
+			<td></td>
+			<td align="center"><font face="verdana, arial, sans-serif" size="1" color="black">$<xsl:value-of select='format-number($defaultPrice1, "###,##0.00", "USD")' />/<xsl:value-of select="$defaultPriceUnit1"/> </font></td>
+			<td></td><td></td>
+			<td  align="right" style="padding-left:4px;" class="text11bold"> <font face="verdana, arial, sans-serif" size="1" color="black">$<xsl:value-of select='format-number(price, "###,##0.00", "USD")'/> </font></td>
 		
-	</tr>
+	</font> </tr>
 	</xsl:for-each>
 		</xsl:for-each>
 	<tr>
 				<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 	</tr>
 	 <tr>
-		<td align="center" colspan="4" ></td>
-		<td align="center"><b>ORDER TOTAL:&nbsp;&nbsp;</b></td>
-		<td align="center" >
-		<b>$<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/> </b>
-		</td>
+		<td></td>
+		<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="170" height="1" /></td>
+		<td  style="background-color: #969;color: white;line-height: 20px;" colspan="4" width="" align="right"><font face="verdana, arial, sans-serif" size="1" color="black">
+			<b>ORDER TOTAL:&nbsp;&nbsp;		
+			 $<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/> </b>
+		</font></td>
+		<td></td>
          </tr>
 
 </table> 
