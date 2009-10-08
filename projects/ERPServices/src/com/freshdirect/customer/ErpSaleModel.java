@@ -1171,6 +1171,21 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return Collections.unmodifiableList(pAuths);
 		
 	}
+	
+	public List getPendingReverseGCAuthorizations() {
+		List pAuths = new ArrayList();
+		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof ErpReverseAuthGiftCardModel) {
+				ErpReverseAuthGiftCardModel auth = (ErpReverseAuthGiftCardModel)obj;
+				if(auth.isPending())
+					pAuths.add(obj);
+			}
+		}
+		return Collections.unmodifiableList(pAuths);
+		
+	}
+	
 	public List getValidGCAuthorizations() {
 		List pAuths = new ArrayList();
 		List reverseAuthCodes = getGCReversePreAuthcodes();

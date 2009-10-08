@@ -1220,6 +1220,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		return this.model.getPendingGCAuthorizations();
 	}
 	
+	public List getPendingReverseGCAuthorizations() {
+		return this.model.getPendingReverseGCAuthorizations();
+	}
+	
 	public List getValidGCAuthorizations() {
 		return this.model.getValidGCAuthorizations();
 	}

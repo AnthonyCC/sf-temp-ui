@@ -342,6 +342,31 @@ public class GiftCardPersistanceDAO {
 		return giftCardModel;
 	}
 
+	private static final String GC_ACCOUNT_NUMBER = "select GIVEX_NUM from cust.gift_card where CERTIFICATE_NUM = ?";
+
+	public static String getAccountNumber(Connection conn, String certificateNum) throws SQLException {
+		String accountNumber = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(GC_ACCOUNT_NUMBER);
+			ps.setString(1, certificateNum);
+			// ps.setString(1, givexNum);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				accountNumber = ErpGiftCardUtil.decryptGivexNum(rs.getString("GIVEX_NUM"));
+			}
+		} catch (SQLException se) {
+			throw se;
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (ps != null)
+				ps.close();
+		}
+		return accountNumber;
+	}
+	
 	private static final String GC_LOAD_BY_SALE_ID = "select ID,GIVEX_NUM,BALANCE,ORIG_AMOUNT,CERTIFICATE_NUM,SALE_ID,CARD_TYPE from cust.gift_card where SALE_ID = ?";
 
 	public static List loadGiftCardbySaleId(Connection conn, String saleId)

@@ -978,13 +978,48 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 				//Update the final GC balance from givex to DB
 				updateBalance(saleId, pm);
 			}
+			//Check if there are any other pending reverse pre-auths other than current order.
+			//If so process them
+			List pendingRevAuths =  saleEB.getPendingReverseGCAuthorizations();
+			for(Iterator it = pendingRevAuths.iterator(); it.hasNext();){
+				ErpReverseAuthGiftCardModel rauth = (ErpReverseAuthGiftCardModel) it.next();
+				ErpGiftCardModel pm = new ErpGiftCardModel();
+				pm.setAccountNumber(getAccountNumber(rauth.getCertificateNum()));
+				GivexResponseModel rspModel = null;
+				try{
+					rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
+																rauth.getReferenceId());
+					rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
+					rauth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
+					//Reset the error message.
+					rauth.setErrorMsg("");
+				}catch(GivexException ge){
+					if(ge.getErrorCode() > 0){
+						rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.FAILURE);
+						//rauth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
+						errorList.add(rauth);
+					} else {
+						//System failed to connect to Givex. Leave the status in pending.
+					}
+					rauth.setErrorMsg(ge.getMessage());
+				} 	
+				saleEB.updateGCAuthorization(rauth);
+				//Update the final GC balance from givex to DB
+				updateBalance(saleId, pm);
+				
+			}
+			
 		}catch (FinderException fe) {
 			LOGGER.warn("FinderExceptin while trying to locate Sale Entity Bean", fe);
 			throw new EJBException(fe);
 		} catch (RemoteException re) {
 			LOGGER.warn("RemoteException while trying to talk to Sale Entity Bean", re);
 			throw new EJBException(re);
-		}
+		}catch (SQLException se) {
+			LOGGER.warn("FinderExceptin while trying to pre authorize sales", se);
+			throw new EJBException(se);
+		} 
+
 		return errorList;
 	}
 
@@ -1025,12 +1060,45 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 					updateBalance(saleId, pm);
 				} 
 			}
+			//Check if there are any other pending reverse pre-auths other than current order.
+			//If so process them
+			List pendingRevAuths =  saleEB.getPendingReverseGCAuthorizations();
+			for(Iterator it = pendingRevAuths.iterator(); it.hasNext();){
+				ErpReverseAuthGiftCardModel rauth = (ErpReverseAuthGiftCardModel) it.next();
+				ErpGiftCardModel pm = new ErpGiftCardModel();
+				pm.setAccountNumber(getAccountNumber(rauth.getCertificateNum()));
+				GivexResponseModel rspModel = null;
+				try{
+					rspModel = GivexServerGateway.cancelPreAuthorization(pm, new Long(rauth.getPreAuthCode()).longValue(),
+																rauth.getReferenceId());
+					rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.SUCCESS);
+					rauth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
+					//Reset the error message.
+					rauth.setErrorMsg("");
+				}catch(GivexException ge){
+					if(ge.getErrorCode() > 0){
+						rauth.setGcTransactionStatus(EnumGiftCardTransactionStatus.FAILURE);
+						//rauth.setAuthCode(String.valueOf(rspModel.getAuthCode()));
+						errorList.add(rauth);
+					} else {
+						//System failed to connect to Givex. Leave the status in pending.
+					}
+					rauth.setErrorMsg(ge.getMessage());
+				} 	
+				saleEB.updateGCAuthorization(rauth);
+				//Update the final GC balance from givex to DB
+				updateBalance(saleId, pm);
+				
+			}			
 		}catch (FinderException fe) {
 			LOGGER.warn("FinderExceptin while trying to locate Sale Entity Bean", fe);
 			throw new EJBException(fe);
 		} catch (RemoteException re) {
 			LOGGER.warn("RemoteException while trying to talk to Sale Entity Bean", re);
 			throw new EJBException(re);
+		}catch (SQLException se) {
+			LOGGER.warn("FinderExceptin while trying to pre authorize sales", se);
+			throw new EJBException(se);
 		}
 		return errorList;
 	}
@@ -1102,6 +1170,26 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 		return recepientList;
+	}
+	
+	public String getAccountNumber(String certificateNum) throws SQLException{
+		Connection conn = null;
+        String accountNumber =null;
+		try {
+			conn = this.getConnection();			
+			accountNumber=GiftCardPersistanceDAO.getAccountNumber(conn, certificateNum);
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("error while getting account number", e);
+			}
+		}
+		return accountNumber;
 	}
 	
 	private String convertToGivexReference(String saleId, int count){

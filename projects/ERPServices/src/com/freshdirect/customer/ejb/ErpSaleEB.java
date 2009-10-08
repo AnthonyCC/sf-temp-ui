@@ -262,6 +262,8 @@ public interface ErpSaleEB extends EntityBeanRemoteI, ErpSaleI {
 	
 	public List getPendingGCAuthorizations() throws RemoteException;
 	
+	public List getPendingReverseGCAuthorizations() throws RemoteException;
+	
 	public List getPendingGCReverseAuths(ErpPaymentMethodI pm) throws RemoteException;
 	
 	public void updateGCAuthorization(ErpGiftCardAuthModel auth) throws RemoteException;
