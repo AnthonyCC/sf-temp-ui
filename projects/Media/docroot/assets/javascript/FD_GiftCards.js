@@ -1298,6 +1298,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				$('rhContactPrefsBoxErr').innerHTML =  transport.responseText;
 			}
 		});
+		Modalbox.hide();
 	}
 
 /*	GC pending GC check
