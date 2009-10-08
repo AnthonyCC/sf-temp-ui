@@ -214,6 +214,9 @@ boolean hasCase = false;
 				<% if (!o_transactions) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/main/order_transaction_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">View Transactions</a></div>
 				<% } %>
+				<% if ( o_details && orderPermissions.allowResubmitOrder() && currentAgent.isSupervisor() ) { %>
+					<div class="cust_sub_nav" style="width: 120px;"><% if (!resubmitted) {%><a href="javascript:setAction(document.order_details, 'resubmit')" class="cust_sub_nav_text"><%}%>Resubmit Order<% if (!resubmitted) {%></a><%}%></div>
+				<% } %>
                 <% } %>
 
 			</td>
