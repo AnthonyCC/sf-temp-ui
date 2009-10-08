@@ -1021,6 +1021,8 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 						rauth.setErrorMsg(ge.getMessage());
 					} 	
 					saleEB.updateGCAuthorization(rauth);
+					//Update the final GC balance from givex to DB
+					updateBalance(saleId, pm);
 				} 
 			}
 		}catch (FinderException fe) {

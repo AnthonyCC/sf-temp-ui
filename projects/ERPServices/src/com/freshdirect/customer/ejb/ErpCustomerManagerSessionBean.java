@@ -1749,6 +1749,66 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	private SapOrderAdapter adaptDonationOrder(PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CustomerRatingI rating) throws ErpTransactionException{
+		try {
+			// find relevant customer
+			int count = 0;
+			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
+			ErpCustomerModel erpCustomer = (ErpCustomerModel) customerEB.getModel();
+			String sapCustomerId = null;
+			do {
+				//Loop until we get the sap customer id.
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException ex) {
+					//ignore;
+				}
+				count ++;
+				
+				sapCustomerId = getSapCustomerId(erpCustomerPk.getId());
+				
+			}while((sapCustomerId == null || sapCustomerId.length() == 0) && count < 10);
+			
+			if(sapCustomerId == null || sapCustomerId.length() == 0){
+				throw new ErpTransactionException("Unable to process order due to sap customer id is null");
+			}
+			erpCustomer.setSapId(sapCustomerId);
+			SapOrderAdapter adapter = new SapOrderAdapter(order, erpCustomer, rating);
+			return adapter;
+			
+		} catch (RemoteException ex) {
+			LOGGER.warn(ex);
+			throw new EJBException(ex);
+		} catch (FinderException ex) {
+			LOGGER.warn(ex);
+			throw new EJBException(ex);
+		} catch (FDResourceException ex) {
+			LOGGER.warn(ex);
+			throw new EJBException(ex);
+		}
+	}
+	
+	public String getSapCustomerId(String erpCustomerPk) {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			String sapCustomerId = ErpSaleInfoDAO.getSapCustomerId(conn, erpCustomerPk);
+
+			return sapCustomerId;
+
+		} catch (SQLException ex) {
+			throw new EJBException(ex);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException ex) {
+					LOGGER.warn("Unable to close connection", ex);
+				}
+			}
+		}
+	}
+	
 	public void reverseCustomerCredit(String saleId, String complaintId) throws ErpTransactionException {
 		try {
 			ErpSaleEB saleEB = null;
@@ -2491,7 +2551,31 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 
-
+		public void sendCreateDonationOrderToSAP(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws ErpSaleNotFoundException, ErpTransactionException {
+			
+			try {
+				
+				PrimaryKey erpCustomerPk=new PrimaryKey(erpCustomerID);
+				PrimaryKey salePK=new PrimaryKey(saleID);
+				ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(salePK);
+				ErpAbstractOrderModel orderModel=saleEB.getCurrentOrder();
+				SapOrderAdapter sapOrder = this.adaptDonationOrder(erpCustomerPk, orderModel, rating);
+				SapGatewaySB sapSB = this.getSapGatewayHome().create();
+				sapOrder.setWebOrderNumber(salePK.getId());
+				sapSB.sendCreateSalesOrder(sapOrder,saleType);
+				
+			} catch (RemoteException re) {
+				LOGGER.warn(re);
+				throw new EJBException(re);
+			} catch (FinderException fe) {
+				LOGGER.warn(fe);
+				throw new ErpSaleNotFoundException(fe);
+			} catch (CreateException ce) {
+				LOGGER.warn(ce);
+				throw new EJBException(ce);
+			}
+		}
+		
 	public void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) {
 		Connection conn = null;
 		try {

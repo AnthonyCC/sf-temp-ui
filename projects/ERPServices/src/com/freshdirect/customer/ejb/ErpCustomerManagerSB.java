@@ -274,4 +274,6 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public double getOutStandingBalance(ErpAbstractOrderModel order) throws RemoteException;
     
     public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws RemoteException;
+    
+    public void sendCreateDonationOrderToSAP(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws RemoteException, ErpSaleNotFoundException, ErpTransactionException;
 }

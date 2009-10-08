@@ -5077,6 +5077,18 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				Connection conn = this.getConnection();
 				FDDonationOptinDAO.insert(conn, customerPk, pk.getId(), isOptIn);
 				
+
+				
+				//AUTH sale in CYBER SOURCE
+				PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
+				List auths = paymentManager.authorizeSaleRealtime(pk.getId(),EnumSaleType.DONATION);
+				if(auths != null || auths.size() > 0){
+
+					//Only when it has a valid auth.
+					ErpCustomerManagerSB erpCMsb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+					erpCMsb.sendCreateDonationOrderToSAP(customerPk,  pk.getId(), EnumSaleType.DONATION, cra);
+				}
+					
 				ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(pk.getId()));
 				if (sendEmail) {
 					FDOrderI order = getOrder(pk.getId());
@@ -5087,22 +5099,14 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 //					}
 
 				}
-				
-				//AUTH sale in CYBER SOURCE
-				PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
-				List auths = paymentManager.authorizeSaleRealtime(pk.getId(),EnumSaleType.DONATION);
-				if(auths != null || auths.size() > 0){
-					//Only when it has a valid auth.
-					ErpCustomerManagerSB erpCMsb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
-					erpCMsb.sendCreateOrderToSAP(customerPk,  pk.getId(), EnumSaleType.DONATION, cra);
-				}
-					
-
 				return pk.getId();
 
 			}catch (ErpSaleNotFoundException se) {
 				LOGGER.warn("Unable to locate Order ", se);
 				throw new FDResourceException(se);					
+			}catch (ErpTransactionException te) {
+				LOGGER.warn("Unable to process order create message ", te);
+				throw new FDResourceException(te);					
 			}catch (CreateException ce) {
 				LOGGER.warn("Cannot Create ErpCustomerManagerSessionBean", ce);
 				throw new FDResourceException(ce);					

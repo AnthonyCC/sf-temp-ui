@@ -25,8 +25,7 @@ public abstract class DBReportCreator {
 		//		INT DB URL: db1.dev.nyc1.freshdirect.com:1521:DBINT01
 		
 		Connection c =
-			DriverManager.getConnection("Jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS_LIST =(ADDRESS = (PROTOCOL = TCP)(HOST = nyc1dbcl01-vip02.nyc1.freshdirect.com)(PORT = 1521))(LOAD_BALANCE = yes))(CONNECT_DATA =(SERVICE_NAME = devint)(SRVR = DEDICATED)))", "fdstore_prda", "fdstore_prda");
-			//DriverManager.getConnection("Jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=nyc2stdb01-vip.nyc2.freshdirect.com)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=nyc2stdb02-vip.nyc2.freshdirect.com)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=dbsto_prod)(failover_mode=(type=session)(method=basic)(retries=20))))", "appdev", "readn0wrt");
+			DriverManager.getConnection("Jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=nyc2stdb01-vip.nyc2.freshdirect.com)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=nyc2stdb02-vip.nyc2.freshdirect.com)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=dbsto_prod)(failover_mode=(type=session)(method=basic)(retries=20))))", "appdev", "readn0wrt");
 		return c;
 	}
 

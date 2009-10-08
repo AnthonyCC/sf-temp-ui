@@ -720,4 +720,20 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 		
 		return orderCount;
 	}
+	private static final String QUERY_SAP_CUSTOMER_ID="select sap_id from cust.customer c  where c.id =?";
+	
+	public static String getSapCustomerId(Connection conn, String erpCustomerId) throws SQLException {
+		String sapcustomerId ="";
+		PreparedStatement ps = conn.prepareStatement(QUERY_SAP_CUSTOMER_ID);
+		ps.setString(1, erpCustomerId);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()){
+			sapcustomerId = rs.getString("sap_id");	
+		}
+		rs.close();
+		ps.close();
+		
+		return sapcustomerId;
+	}
+
 }
