@@ -127,9 +127,9 @@ public class GiftCardControllerTag extends AbstractControllerTag{
 				}else{
 					actionResult.addError(new ActionError("invalid_card", SystemMessageList.MSG_GC_INVALID));					
 				}
-				/*if(actionResult.isSuccess()){
+				if(actionResult.isSuccess() && request.getRequestURI().indexOf("giftcard_summary")>-1){
 					this.redirectTo("/gift_card/giftcard_summary.jsp");
-				}*/
+				}
 			}
 		}catch (FDResourceException e) {
 			actionResult.setError(e.getMessage());
