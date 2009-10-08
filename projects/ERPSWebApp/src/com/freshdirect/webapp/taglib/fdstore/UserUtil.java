@@ -310,7 +310,7 @@ public class UserUtil {
 				ErpInventoryEntryModel e = (ErpInventoryEntryModel) i.next();
 //				System.out.println("getRobinHoodAvailability >>"+e.getStartDate()+"->"+currentDate+"->"+e.getQuantity());
 				
-				if (!e.getStartDate().after(currentDate)) {		
+				if (null!= e.getStartDate() && !e.getStartDate().after(currentDate)) {		
 					if(lastInventoryDate == null || e.getStartDate().after(lastInventoryDate)) {
 						inventoryMatch = e;
 						lastInventoryDate = e.getStartDate();
