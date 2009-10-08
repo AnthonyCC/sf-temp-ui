@@ -62,7 +62,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		"select s.id from cust.sale s, cust.salesaction sa, cust.deliveryinfo di " 
 		+ "where s.status in ('AUT','SUB','AVE')and s.type='REG' and sa.customer_id = s.customer_id and " 
 		+ "sa.sale_id=s.id and sa.sale_id = (select distinct sale_id from cust.salesaction sa1, cust.gift_card_trans gct where sa1.sale_id = s.id " 
-		+ "and sa1.id = gct.salesaction_id and gct.tran_status='P' and gct.tran_type IN ('PRE', 'REV-PRE') and customer_id = s.customer_id and action_type = 'PAG') " 
+		+ "and sa1.id = gct.salesaction_id and gct.tran_status='P' and gct.tran_type IN ('PRE', 'REV-PRE') and customer_id = s.customer_id and action_type IN('PAG','RAG')) " 
 		+ "and sa.action_type in ('CRO','MOD') "
 		+ "and sa.action_date=s.cromod_date and di.SALESACTION_ID=sa.ID and di.starttime > sysdate - 1 and di.starttime<SYSDATE+2";
 
