@@ -554,7 +554,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			ActionResult result) throws FDResourceException, JspException {
 		String addressOrLocation = request.getParameter("selectAddressList");
 
-		if (addressOrLocation.startsWith("field_")) {
+		if (addressOrLocation != null && addressOrLocation.startsWith("field_")) {
 			addressOrLocation = request.getParameter(addressOrLocation
 					.substring("field_".length()));
 		}

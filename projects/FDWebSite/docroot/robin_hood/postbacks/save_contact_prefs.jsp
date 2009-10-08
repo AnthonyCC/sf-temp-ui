@@ -19,12 +19,5 @@ String erpCustomerPk = identity.getErpCustomerPK();
 		}
 		FDCustomerManager.saveDonationOptIn(erpCustomerPk,orderNumber,rhShareInfo);
 	}
-
-	//do saving
-
-	if (rhShareInfo) {
-		%>Saved as Yes<%
-	}else{
-		%>Saved as No<%
-	}
+	
 %>
