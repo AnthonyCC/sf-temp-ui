@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -18,6 +19,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumZipCheckResponses;
+import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDInvalidAddressException;
@@ -30,6 +32,8 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
+import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDBulkRecipientList;
@@ -41,6 +45,7 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.giftcard.ErpRecipentModel;
 
 public class UserUtil {
@@ -290,5 +295,32 @@ public class UserUtil {
 			throw new FDRuntimeException(e);
 		}
 
+	}
+	
+	public static double getRobinHoodAvailability(Date currentDate, FDProductInfo prodInfo) {
+		
+		double quantity = 0.0;
+		ErpInventoryEntryModel inventoryMatch = null;
+		Date lastInventoryDate = null;
+		
+		if(prodInfo != null && prodInfo.getInventory() != null && prodInfo.getInventory().getEntries() != null 
+					&& !prodInfo.getInventory().getEntries().isEmpty()) {
+					
+			for (Iterator i = prodInfo.getInventory().getEntries().iterator(); i.hasNext();) {
+				ErpInventoryEntryModel e = (ErpInventoryEntryModel) i.next();
+//				System.out.println("getRobinHoodAvailability >>"+e.getStartDate()+"->"+currentDate+"->"+e.getQuantity());
+				
+				if (!e.getStartDate().after(currentDate)) {		
+					if(lastInventoryDate == null || e.getStartDate().after(lastInventoryDate)) {
+						inventoryMatch = e;
+						lastInventoryDate = e.getStartDate();
+					}
+				}				
+			}
+		}
+		if(inventoryMatch != null) {
+			quantity = inventoryMatch.getQuantity();
+		}
+		return quantity;
 	}
 }

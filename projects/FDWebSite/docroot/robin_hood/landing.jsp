@@ -11,7 +11,8 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<fd:CheckLoginStatus />
+
+<%@page import="com.freshdirect.framework.util.DateUtil"%><fd:CheckLoginStatus />
 <tmpl:insert template='/common/template/robinhood.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Donation</tmpl:put>
 	<tmpl:put name='content' direct='true'>
@@ -29,6 +30,7 @@
 			*/
 			String rhStatus = FDStoreProperties.getRobinHoodStatus();
 			EnumAvailabilityStatus availabilityStatus = productInfo.getAvailabilityStatus();
+			double availableQty = UserUtil.getRobinHoodAvailability(DateUtil.truncate(new Date()),productInfo);
 			FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 			FDCartModel cart = user.getDonationCart();
 			
@@ -56,7 +58,7 @@
 			</tr>
 		<%
 			//} else if ("OOS".equalsIgnoreCase(rhStatus)) {
-				} else if (EnumAvailabilityStatus.TEMP_UNAV.equals(availabilityStatus)) {
+				} else if (EnumAvailabilityStatus.TEMP_UNAV.equals(availabilityStatus) || availableQty <=0) {
 				//show out of stock page
 		%>
 			<tr>
