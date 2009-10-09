@@ -1596,8 +1596,4 @@ inner:
 		return new ArrayList(giftcardTypes);		
 	}
 
-	public List getGiftcardType() {
-		ContentNodeModelUtil.refreshModels(this, "GIFTCARD_TYPE", giftcardTypes, false);
-		return new ArrayList(giftcardTypes);		
-	}
 }
