@@ -12,12 +12,13 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
-import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
+import com.freshdirect.smartstore.scoring.CachingDataGenerator;
 import com.freshdirect.smartstore.scoring.DataAccess;
 import com.freshdirect.smartstore.scoring.DataGenerator;
 import com.freshdirect.smartstore.scoring.OrderingFunction;
+import com.freshdirect.smartstore.scoring.PrioritizedDataAccess;
 import com.freshdirect.smartstore.scoring.ScoringAlgorithm;
 
 /**
@@ -47,8 +48,10 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
         this(variant, sampler, catAggr, includeCartItems, generator, null);
     }
 
-    public List recommendNodes(SessionInput input) {
-        return recommendNodes(input, ScoreProvider.getInstance());
+    public List doRecommendNodes(SessionInput input) {
+        return recommendNodes(input, new PrioritizedDataAccess(input
+				.isIncludeCartItems() ? Collections.EMPTY_LIST : input
+				.getCartContents()));
     }
     
     public List recommendNodes(SessionInput input, DataAccess dataAccess) {
@@ -101,8 +104,12 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
             rankedContents = aggregateContentList(rankedContents);
         }
         List sample = RankedContent.getContentNodeModel(getSampler(input.isNoShuffle()).sample(rankedContents,
-        		includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), rankedContents.size()));
-        return sample;
+        		input.isIncludeCartItems() ? Collections.EMPTY_SET : input.getCartContents(), rankedContents.size()));
+        List prioritized = dataAccess.getPrioritizedNodes();
+        List appended = new ArrayList(prioritized.size() + sample.size());
+        appended.addAll(prioritized);
+        appended.addAll(sample);
+        return appended;
     }
 
     
@@ -125,4 +132,15 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
         return "generator:"+this.dataGenerator+", scoring:"+this.scoring;
     }
 
+    public boolean isCacheable() {
+        return dataGenerator instanceof CachingDataGenerator;
+    }
+    
+    public boolean isCacheEnabled() {
+        return dataGenerator instanceof CachingDataGenerator && ((CachingDataGenerator)dataGenerator).isCacheEnabled(); 
+    }
+
+    public ScoringAlgorithm getScoring() {
+        return scoring;
+    }
 }

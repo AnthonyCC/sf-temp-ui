@@ -24,26 +24,31 @@ public class BinaryExpression extends Expression {
         return operator;
     }
 
+    @Override
     public String toCode() {
         return "(" + left.toCode() + ' ' + operator + ' ' + right.toCode() + ')';
     }
 
+    @Override
     public String toJavaCode() throws CompileException {
         return "(" + left.toJavaCode() + ' ' + operator + ' ' + right.toJavaCode() + ')';
     }
     
+    @Override
     public void validate() throws CompileException {
         left.validate();
         right.validate();
         this.type = Operation.calculateType(left.getReturnType(), operator, right.getReturnType());
     }
 
+    @Override
     public void visit(ExpressionVisitor visitor) throws VisitException {
         super.visit(visitor);
         left.visit(visitor);
         right.visit(visitor);
     }
     
+    @Override
     public Number evaluateExpression() {
         Number lv = left.evaluateExpression();
         Number rv = right.evaluateExpression();
@@ -56,6 +61,17 @@ public class BinaryExpression extends Expression {
         return super.evaluateExpression();
     }
     
+    @Override
+    public String getStringValue() {
+        String s1 = left.getStringValue();
+        String s2 = right.getStringValue();
+        if (operator == '+') {
+            return s1 + s2;
+        }
+        throw new RuntimeException("Operator " + operator + " not supported in string manipulations, between : '" + s1 + "' and '" + s2 + "' !");
+    }
+    
+    @Override
     public boolean replace(Expression from,Expression to) {
         if (right == from) {
             right = to;
@@ -72,6 +88,11 @@ public class BinaryExpression extends Expression {
         StringBuffer b = new StringBuffer();
         b.append("Binary[").append(left).append(',').append(operator).append(',').append(right).append("]");
         return b.toString();
+    }
+    
+    @Override
+    public String getJavaInitializationCode() throws CompileException {
+        return right.getJavaInitializationCode() + left.getJavaInitializationCode();
     }
     
 }

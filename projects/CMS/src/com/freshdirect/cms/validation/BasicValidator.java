@@ -1,6 +1,5 @@
 package com.freshdirect.cms.validation;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -34,20 +33,19 @@ public class BasicValidator implements ContentValidatorI {
 		ContentTypeDefI typeDef = node.getDefinition();
 
 		// TODO check that all required attrs have value
-		for (Iterator i = node.getAttributes().entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
-			String name = (String) e.getKey();
+		for ( Map.Entry<String, AttributeI> e : node.getAttributes().entrySet() ) {
+			String name = e.getKey();
 			AttributeDefI def = typeDef.getAttributeDef(name);
 			if (def == null) {
 				// FIXME attribute defs should be consistent, but CompositeContentNode may not always be (as long as it works based on typeservice) 
 				continue;
 				//throw new ContentValidationException("No definition for attribute " + name, node.getKey());
 			}
-			AttributeI value = (AttributeI) e.getValue();
+			AttributeI value = e.getValue();
 
 			if (def instanceof RelationshipDefI) {
 				if (EnumCardinality.MANY.equals(def.getCardinality()))
-					validateRelationship(delegate, service, node, (RelationshipDefI) def, (List) value.getValue());
+					validateRelationship(delegate, service, node, (RelationshipDefI) def, (List<Object>) value.getValue());
 				// TODO: validate relationships of cardinality = ONE
 			} else {
 				validateAttribute(delegate, node, def, value.getValue());
@@ -82,12 +80,11 @@ public class BasicValidator implements ContentValidatorI {
 		ContentServiceI service,
 		ContentNodeI node,
 		RelationshipDefI def,
-		List values) throws ContentValidationException {
+		List<Object> values) throws ContentValidationException {
 		if (values == null)
 			return;
 
-		for (Iterator i = values.iterator(); i.hasNext();) {
-			Object o = i.next();
+		for ( Object o : values ) {
 
 			if (o == null) {
 				delegate.record(node.getKey(), def.getName(), "null value in List");

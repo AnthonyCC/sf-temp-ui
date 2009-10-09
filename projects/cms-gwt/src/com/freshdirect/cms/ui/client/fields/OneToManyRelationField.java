@@ -41,6 +41,7 @@ import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.OneToManyModel;
+import com.freshdirect.cms.ui.service.BaseCallback;
 import com.freshdirect.cms.ui.service.ContentService;
 import com.freshdirect.cms.ui.service.ContentServiceAsync;
 import com.google.gwt.core.client.GWT;
@@ -474,7 +475,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 
     void generateUniqueIdForType(final String type) {
         final ContentServiceAsync contentService = (ContentServiceAsync) GWT.create(ContentService.class);
-        contentService.generateUniqueId(type, new AsyncCallback<String>() {
+        contentService.generateUniqueId(type, new BaseCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 final ContentIdWindow w = new ContentIdWindow(result, "ID of '"+type+"'");
@@ -487,16 +488,13 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
                 });
                 w.show();
             } 
-            @Override
-            public void onFailure(Throwable caught) {
-                
-            }
         });
     }
 
-    public void addOneToManyModel(String type, String key, String label) {    	
+    public void addOneToManyModel(String type, String key, String label, GwtNodeData newNodeData) {    	
         if ( store.findModel( "key", key ) == null ) {        
 	        OneToManyModel model = createModel(type, key, label);
+	        model.setNewNodeData(newNodeData);
 	        store.add(model);
 	        grid.show();
 	        grid.getView().refresh(false);

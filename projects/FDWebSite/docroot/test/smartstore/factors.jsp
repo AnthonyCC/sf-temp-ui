@@ -197,7 +197,6 @@ body {
 <script>
 <%
 	if (request.getParameter("reload") != null) {
-	        ScoreProvider.getInstance().reloadFactorHandlers();
 		String[] values = request.getParameterValues("LF");
 		if (values != null) {
 			Set factorNames = new HashSet(Arrays.asList(values));

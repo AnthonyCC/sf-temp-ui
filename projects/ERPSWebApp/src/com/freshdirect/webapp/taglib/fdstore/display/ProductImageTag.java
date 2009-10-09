@@ -11,10 +11,10 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.util.ProductLabelling;
 
 /**
  * Product Image Tag
@@ -122,7 +122,7 @@ public class ProductImageTag extends BodyTagSupport {
 			
 			StringBuffer buf = new StringBuffer();
 
-			ProductLabelling pl = new ProductLabelling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), product,
+			ProductLabeling pl = new ProductLabeling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), product,
 					hideBurst, hideNew, hideDeals, hideYourFave);
 			
 			if (browserInfo == null)
@@ -255,7 +255,7 @@ public class ProductImageTag extends BodyTagSupport {
 	 * @param supportsPNG Is PNG supported?
 	 * @param shouldGenerateAction Should add link to image
 	 */
-	private void appendBurst(StringBuffer buf, ProductLabelling pl,
+	private void appendBurst(StringBuffer buf, ProductLabeling pl,
 			final boolean supportsPNG, final boolean shouldGenerateAction) {
 		// burst image
 		final boolean displayBurst = savingsPercentage > 0 || pl.isDisplayAny();

@@ -13,7 +13,8 @@ public class ChangeSetQueryResponse implements Serializable {
 
     List<GwtChangeSet> changes;
     List<GwtPublishMessage> publishMessages;
-
+    int publishMessageCount;
+    
     int changeSetCount;
     int changeCount;
 
@@ -42,13 +43,14 @@ public class ChangeSetQueryResponse implements Serializable {
         this.query = query;
     }
     
-    public ChangeSetQueryResponse(List<GwtChangeSet> changes, int changeSetCount, int changeCount, ChangeSetQuery query, List<GwtPublishMessage> pbMessages) {
+    public ChangeSetQueryResponse(List<GwtChangeSet> changes, int changeSetCount, int changeCount, ChangeSetQuery query, List<GwtPublishMessage> pbMessages, int publishMessageCount) {
         super();
         this.changes = changes;
         this.changeSetCount = changeSetCount;
         this.changeCount = changeCount;
         this.query = query;
         this.publishMessages = pbMessages;
+        this.publishMessageCount = publishMessageCount;
     }
     
 
@@ -78,6 +80,10 @@ public class ChangeSetQueryResponse implements Serializable {
     
     public String getPublishStatus() {
         return publishStatus;
+    }
+    
+    public int getPublishMessageCount() {
+        return publishMessageCount;
     }
     
     public Date getPublishStart() {

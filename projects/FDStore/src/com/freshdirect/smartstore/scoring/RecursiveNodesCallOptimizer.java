@@ -17,8 +17,8 @@ public class RecursiveNodesCallOptimizer implements ExpressionVisitor {
             Operation oper = (Operation) expression;
             Expression statement = oper.get(0);
             if (statement instanceof FunctionCall) {
-                if (DataGeneratorCompiler.RECURSIVE_NODES.equals(((FunctionCall) statement).getName())
-                        || DataGeneratorCompiler.RECURSIVE_NODES_EXCEPT.equals(((FunctionCall) statement).getName())) {
+                if (DataGeneratorCompiler.FN_RECURSIVE_NODES.equals(((FunctionCall) statement).getName())
+                        || DataGeneratorCompiler.FN_RECURSIVE_NODES_EXCEPT.equals(((FunctionCall) statement).getName())) {
                     boolean ok = true;
                     do {
                         char operator = oper.getOperator(0);
@@ -45,7 +45,7 @@ public class RecursiveNodesCallOptimizer implements ExpressionVisitor {
     }
 
     private void mergeMinusIntoExceptCall(FunctionCall exceptCall, Expression expression) {
-        if (expression instanceof FunctionCall && DataGeneratorCompiler.TO_LIST.equals(((FunctionCall) expression).getName())) {
+        if (expression instanceof FunctionCall && DataGeneratorCompiler.FN_TO_LIST.equals(((FunctionCall) expression).getName())) {
             FunctionCall fc = (FunctionCall) expression;
             for (int i=0;i<fc.getParams().size();i++) {
                 exceptCall.add(fc.getParam(i));
@@ -61,17 +61,17 @@ public class RecursiveNodesCallOptimizer implements ExpressionVisitor {
     
     
     private FunctionCall convertRecursiveNodesExceptFunction(FunctionCall statement) {
-        if (DataGeneratorCompiler.RECURSIVE_NODES.equals(statement.getName())) {
-            statement.setName(DataGeneratorCompiler.RECURSIVE_NODES_EXCEPT);
+        if (DataGeneratorCompiler.FN_RECURSIVE_NODES.equals(statement.getName())) {
+            statement.setName(DataGeneratorCompiler.FN_RECURSIVE_NODES_EXCEPT);
             if (statement.getParams().size() > 1) {
                 // convert RecursiveNodes(a,b,c) to
                 // RecursiveNodesExcept(toList(a,b,c))
-                FunctionCall call = new FunctionCall(DataGeneratorCompiler.TO_LIST);
+                FunctionCall call = new FunctionCall(DataGeneratorCompiler.FN_TO_LIST);
                 call.getParams().addAll(statement.getParams());
                 statement.getParams().clear();
                 statement.add(call);
             }
-        } else if (DataGeneratorCompiler.RECURSIVE_NODES_EXCEPT.equals(statement.getName())) {
+        } else if (DataGeneratorCompiler.FN_RECURSIVE_NODES_EXCEPT.equals(statement.getName())) {
 
         }
         return statement;

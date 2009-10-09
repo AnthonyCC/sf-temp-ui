@@ -36,10 +36,12 @@ public class ChangeSetPanel extends ContentPanel {
         setScrollMode(Scroll.AUTO);
         setLayout(new FitLayout());
 
-        BasePagingLoader<BasePagingLoadResult<BaseModelData>> loader = new BasePagingLoader<BasePagingLoadResult<BaseModelData>>(new ChangeSetLoader(response));
+		BasePagingLoader<BasePagingLoadResult<BaseModelData>> loader = 
+			new BasePagingLoader<BasePagingLoadResult<BaseModelData>>( new ChangeSetLoader( response ) );
         loader.setRemoteSort(true);
         loader.setSortDir(SortDir.ASC);
         loader.setSortField("date");
+        
         store = new ListStore<BaseModelData>(loader);
         store.setSortField("date");
         store.setSortDir(SortDir.ASC);
@@ -62,7 +64,7 @@ public class ChangeSetPanel extends ContentPanel {
 
         // ============ CONTENTNODE ============
         {
-            ColumnConfig cc = noSort(new ColumnConfig("contentNode", "Content", 150));
+            ColumnConfig cc = noSort(new ColumnConfig("key", "Content", 150));
             cc.setRenderer(Renderers.GRID_LINK_RENDERER);
             columns.add(cc);
         }
@@ -83,7 +85,7 @@ public class ChangeSetPanel extends ContentPanel {
 
 		grid = new Grid<BaseModelData>( store, new ColumnModel( columns ) );
 		grid.setStripeRows( true );
-		grid.setAutoExpandColumn( "attribute" );
+		grid.setAutoExpandColumn( "new" );
 		grid.setAutoHeight( true );
 		
 		add( grid );

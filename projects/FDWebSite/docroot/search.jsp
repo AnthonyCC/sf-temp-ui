@@ -41,7 +41,7 @@ if (SearchNavigator.VIEW_DEFAULT == nav.getView() && request.getParameter("refin
 		nav.setView(SearchNavigator.convertToView(( String)session.getAttribute(SessionName.SMART_SEARCH_VIEW) ));
 		if (wasDefaultSort && nav.isTextView()) {
 			// reset default sort which was adjusted by changing to text view
-			nav.setSortBy(SearchNavigator.SORT_DEFAULT_TEXT);
+			nav.setSortBy(SearchSortType.DEF4TEXT);
 		}
 	}
 } else {
@@ -66,7 +66,7 @@ request.setAttribute("recipes.show_all", new Boolean(nav.isRecipesDeptSelected()
 boolean jumpToRecipes = (results!=null) && ((results.getProducts().size() == 0 && results.getRecipes().size() > 0) || nav.isRecipesDeptSelected());
 if (jumpToRecipes && !nav.isRecipesDeptSelected()) {
 	nav.setDepartment(SearchNavigator.RECIPES_DEPT);
-	nav.setSortBy(SearchNavigator.SORT_DEFAULT_RECIPE);
+	nav.setSortBy(SearchSortType.DEF4RECIPES);
 
 	request.setAttribute("recipes.show_all", Boolean.TRUE); // -> recipes.jspf
 }
@@ -274,7 +274,7 @@ if ( results == null) {
 		<div style="float:left"><span class="text11bold">Sort:</span><%
 		boolean descName = nav.isSortByName() && !nav.isSortOrderingAscending();
 %>
-		<a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_NAME) %>" class="<%= nav.isSortByName() ? "text11bold" : "text11" %>"><%= descName ? "Name (Z-A)" : "Name (A-Z)" %></a>
+		<a href="<%= nav.getChangeSortAction(SearchSortType.BY_NAME) %>" class="<%= nav.isSortByName() ? "text11bold" : "text11" %>"><%= descName ? "Name (Z-A)" : "Name (A-Z)" %></a>
 	</div>
 	<div style="clear: both;"></div>
 </div>

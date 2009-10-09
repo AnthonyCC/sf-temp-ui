@@ -46,4 +46,8 @@ public class ScoringAlgorithm {
         return new OrderingFunction();
     }
 
+    public double[] getScoreOf(String userId, DataAccess dataAccess, ContentNodeModel node) {
+        double[] variables = dataAccess.getVariables(userId, node, getVariableNames());
+        return getScores(variables);
+    }
 }

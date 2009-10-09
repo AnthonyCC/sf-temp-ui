@@ -105,6 +105,22 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 	public AttributeI getAttribute(String name) {
 		return (AttributeI) this.attributes.get(name);
 	}
+	
+        @Override
+        public Object getAttributeValue(String name) {
+            AttributeI a = getAttribute(name);
+            return a != null ? a.getValue() : null;
+        }
+
+        @Override
+        public boolean setAttributeValue(String name, Object value) {
+            AttributeI a = getAttribute(name);
+            if (a != null) {
+                a.setValue(value);
+                return true;
+            }
+            return false;
+        }
 
 	public Map<String,AttributeI> getAttributes() {
 		return this.attributes;

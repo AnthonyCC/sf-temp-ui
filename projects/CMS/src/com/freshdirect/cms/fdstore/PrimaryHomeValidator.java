@@ -2,7 +2,6 @@ package com.freshdirect.cms.fdstore;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -23,15 +22,14 @@ import com.freshdirect.cms.validation.ContentValidatorI;
  * to a valid parent for nodes of type <code>Product</code>. 
  */
 public class PrimaryHomeValidator implements ContentValidatorI {
+	
 	private static final ContentKey FD_ROOT_KEY = ContentKey.decode("Store:FreshDirect");
-	private final List deptKeys;
+	private final List<ContentKey> deptKeys;
 
 
 	public PrimaryHomeValidator() {
-		deptKeys = new ArrayList(CmsManager.getInstance().getContentNode(FD_ROOT_KEY).getChildKeys());
+		deptKeys = new ArrayList<ContentKey>(CmsManager.getInstance().getContentNode(FD_ROOT_KEY).getChildKeys());
 	}
-
-
 
 
 	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
@@ -39,7 +37,7 @@ public class PrimaryHomeValidator implements ContentValidatorI {
 		if (FDContentTypes.PRODUCT.equals(t)) {
 			ContentKey priHome = (ContentKey) node.getAttribute("PRIMARY_HOME").getValue();
 
-			Set parentKeys = service.getParentKeys(node.getKey());
+			Set<ContentKey> parentKeys = service.getParentKeys(node.getKey());
 			if (parentKeys.isEmpty()) {
 				// new or orphaned node, leave-as is
 				return;
@@ -52,7 +50,7 @@ public class PrimaryHomeValidator implements ContentValidatorI {
 				 * Get all possible paths going from this node to the root.
 				 * Context := <this node>->Cat(->Cat)*->Dept
 				 */
-				List ctxs = new ArrayList(myService.getAllContextsOf(node.getKey()));
+				List<Context> ctxs = new ArrayList<Context>(myService.getAllContextsOf(node.getKey()));
 				
 				// Remove orphaned contexts
 				NodeWalker.filterOrphanedParents(ctxs.iterator(), myService);

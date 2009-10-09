@@ -38,7 +38,7 @@ public class FeaturedItemsRecommendationService extends AbstractRecommendationSe
      * @return a List<{@link ContentNodeModel}> of recommendations
      *         
      */
-    public List recommendNodes(SessionInput input) {
+    public List doRecommendNodes(SessionInput input) {
         List featuredNodes = Collections.EMPTY_LIST; 
         if (input.getCurrentNode()!=null) {
             ContentNodeModel model = input.getCurrentNode();

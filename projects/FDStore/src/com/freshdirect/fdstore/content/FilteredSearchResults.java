@@ -12,21 +12,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.common.pricing.Pricing;
-import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.util.RecipesUtil;
-import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
-import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.smartstore.scoring.Score;
+import com.freshdirect.smartstore.sorting.PopularityComparator;
+import com.freshdirect.smartstore.sorting.RelevancyComparator;
+import com.freshdirect.smartstore.sorting.SaleComparator;
+import com.freshdirect.smartstore.sorting.UserRelevancyComparator;
 
 /**
  * @author zsombor
@@ -36,283 +35,35 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
     final static Logger LOG = Logger.getLogger(FilteredSearchResults.class);
 
-    static class PopularityComparator implements Comparator {
 
-        final boolean inverse;
-        final boolean hideUnavailable;
-        final Set     displayable;
 
-        PopularityComparator(boolean inverse, List products) {
-            this(inverse, false, products);
-        }
 
-        PopularityComparator(boolean inverse, boolean hideUnavailable, List products) {
-            this.inverse = inverse;
-            this.hideUnavailable = hideUnavailable;
-            this.displayable = new HashSet();
-            if (products != null) {
-                for (int i = 0; i < products.size(); i++) {
-                    ContentNodeModel c = (ContentNodeModel) products.get(i);
-                    if (c.isDisplayable()) {
-                        displayable.add(c.getContentKey());
-                    }
-                }
-            }
-        }
+    static class InverseComparator implements Comparator<ContentNodeModel> {
+        Comparator<ContentNodeModel> inner;
 
-        boolean isDisplayable(ContentKey key) {
-            return displayable.contains(key);
-        }
-
-        public int compare(Object o1, Object o2) {
-            ContentNodeModel c1 = (ContentNodeModel) o1;
-            ContentNodeModel c2 = (ContentNodeModel) o2;
-
-            if (hideUnavailable) {
-                boolean h1 = isDisplayable(c1.getContentKey());
-                boolean h2 = isDisplayable(c2.getContentKey());
-
-                if (!h1 && h2) {
-                    return 1;
-                }
-
-                if (h1 && !h2) {
-                    return -1;
-                }
-            }
-
-            int sc = compareProductsByGlobalScore(c1, c2);
-            if (inverse) {
-                sc = -sc;
-            }
-            return sc;
-        }
-
-        int compareProductsByGlobalScore(ContentNodeModel c1, ContentNodeModel c2) {
-            float globalScore1 = ProductStatisticsProvider.getInstance().getGlobalProductScore(c1.getContentKey());
-            float globalScore2 = ProductStatisticsProvider.getInstance().getGlobalProductScore(c2.getContentKey());
-            // -1 means that no score found, so it should modify our ranking
-            int result = Float.compare(globalScore2, globalScore1);
-            if (result == 0) {
-                result = c1.getFullName().compareTo(c2.getFullName());
-            }
-            return result;
-        }
-    }
-
-    static class RelevancyComparator extends PopularityComparator {
-        final Map                 termScores = new HashMap();
-        final String[]            terms;
-        final String              searchTerm;
-        final String              originalSearchTerm;
-        final CategoryScoreOracle oracle;
-        CategoryNodeTree          cnt;
-        final Map                 predefinedScores;
-
-        RelevancyComparator(boolean inverse, String searchTerm, CategoryScoreOracle oracle, CategoryNodeTree cnt, List products, String originalSearchTerm) {
-            super(inverse, true, products);
-            this.terms = StringUtils.split(searchTerm);
-            this.searchTerm = searchTerm.toLowerCase();
-            predefinedScores = ContentSearch.getInstance().getSearchRelevancyScores(this.searchTerm);
-            this.oracle = oracle;
-            this.cnt = cnt;
-            this.originalSearchTerm = originalSearchTerm;
-        }
-
-        int getTermScore(ContentNodeModel model, int level) {
-            if (model == null) {
-                return 0;
-            }
-            Integer score = (Integer) termScores.get(model.getContentKey());
-            int baseScore = 0;
-            if (score == null) {
-                baseScore = oracle.getScoreOf(model, searchTerm, terms);
-                LOG.debug("term score of '" + model.getFullName() + "' -> " + baseScore);
-                termScores.put(model.getContentKey(), new Integer(baseScore));
-            } else {
-                baseScore = score.intValue();
-            }
-            return baseScore;
-        }
-
-        /**
-         * compare two product model, based on their pre-defined parent category
-         * score
-         * 
-         * @param c1
-         * @param c2
-         * @return
-         */
-        int compareByPredefinedScores(ContentNodeModel c1, ContentNodeModel c2) {
-            if (predefinedScores != null) {
-                Integer s1 = (Integer) predefinedScores.get(c1.getParentNode().getContentKey());
-                Integer s2 = (Integer) predefinedScores.get(c2.getParentNode().getContentKey());
-                if (s1 != null) {
-                    int i1 = s1.intValue();
-                    if (s2 != null) {
-                        int i2 = s2.intValue();
-                        if (i1 != i2) {
-                            return i2 - i1;
-                        }
-                        // mix the two category with the same score ...
-                        return compareInsideCategoryGroup(c1, c2);
-                    } else {
-                        return -1;
-                    }
-                } else {
-                    if (s2 != null) {
-                        return 1;
-                    }
-                }
-            }
-            return 0;
-        }
-
-        /**
-         * Compares its two arguments for order. Returns a negative integer,
-         * zero, or a positive integer as the first argument is less than, equal
-         * to, or greater than the second.
-         * <p>
-         */
-        public int compare(Object o1, Object o2) {
-            ContentNodeModel c1 = (ContentNodeModel) o1;
-            ContentNodeModel c2 = (ContentNodeModel) o2;
-
-            {
-                boolean h1 = isDisplayable(c1.getContentKey());
-                boolean h2 = isDisplayable(c2.getContentKey());
-                if (!h1 && h2) {
-                    return 1;
-                }
-    
-                if (h1 && !h2) {
-                    return -1;
-                }
-            }
-            {
-                boolean n1 = originalSearchTerm.equals(c1.getFullName().toLowerCase());
-                boolean n2 = originalSearchTerm.equals(c2.getFullName().toLowerCase());
-                if (!n1 && n2) {
-                    return inverse ? -1 : 1;
-                }
-                if (n1 && !n2) {
-                    return inverse ? 1 : -1;
-                }
-            }
-
-            int sc = compareContentNodes(c1, c2);
-            if (inverse) {
-                return -sc;
-            } else {
-                return sc;
-            }
-        }
-
-        protected int compareCategory(ContentNodeModel c1, ContentNodeModel c2) {
-            TreeElement element1 = this.cnt.getTreeElement(c1);
-            TreeElement element2 = this.cnt.getTreeElement(c2);
-            if (element1 != null && element2 != null) {
-                if (element1.getChildCount() != element2.getChildCount()) {
-                    return element2.getChildCount() - element1.getChildCount();
-                }
-            }
-            return c1.getFullName().compareTo(c2.getFullName());
-        }
-
-        /**
-         * Compare two product model.
-         * 
-         * @param c1
-         * @param c2
-         * @return
-         */
-        protected final int compareContentNodes(ContentNodeModel c1, ContentNodeModel c2) {
-            // first compare by the predefined CMS scores ...
-            int x = compareByPredefinedScores(c1, c2);
-            if (x != 0) {
-                return x;
-            }
-            // after by the magical algorithm
-            int termScore1 = getTermScore(c1.getParentNode(), 1);
-            int termScore2 = getTermScore(c2.getParentNode(), 1);
-
-            if (termScore1 != termScore2) {
-                return (termScore2 - termScore1);
-            }
-            x = compareCategory(c1.getParentNode(), c2.getParentNode());
-            if (x != 0) {
-                return x;
-            } else {
-                return compareInsideCategoryGroup(c1, c2);
-            }
-        }
-
-        protected int compareInsideCategoryGroup(ContentNodeModel c1, ContentNodeModel c2) {
-            return compareProductsByGlobalScore(c1, c2);
-        }
-    }
-
-    static class UserRelevancyComparator extends RelevancyComparator {
-
-        final Map userProductScores;
-
-        UserRelevancyComparator(boolean inverse, String searchTerm, Map userProductScores, CategoryScoreOracle oracle, CategoryNodeTree cnt, List products, String originalSearchTerm) {
-            super(inverse, searchTerm, oracle, cnt, products, originalSearchTerm);
-            this.userProductScores = userProductScores;
-        }
-
-        protected int compareInsideCategoryGroup(ContentNodeModel c1, ContentNodeModel c2) {
-            int x = userScore(c1, c2);
-            if (x != 0) {
-                return x;
-            }
-            return compareProductsByGlobalScore(c1, c2);
-        }
-
-        private int userScore(ContentNodeModel c1, ContentNodeModel c2) {
-            Float score1 = (Float) userProductScores.get(c1.getContentKey());
-            Float score2 = (Float) userProductScores.get(c2.getContentKey());
-            if (score1 != null) {
-                if (score2 != null) {
-                    return Float.compare(score2.floatValue(), score1.floatValue());
-                } else {
-                    return -1;
-                }
-            } else {
-                if (score2 != null) {
-                    return 1;
-                }
-            }
-            return 0;
-        }
-    }
-
-    static class InverseComparator implements Comparator {
-        Comparator inner;
-
-        public InverseComparator(Comparator inner) {
+        public InverseComparator(Comparator<ContentNodeModel> inner) {
             this.inner = inner;
         }
 
-        public int compare(Object o1, Object o2) {
+        public int compare(ContentNodeModel o1, ContentNodeModel o2) {
             return inner.compare(o2, o1);
         }
     }
 
-    static class RecipeNameComparator implements Comparator {
+    static class RecipeNameComparator implements Comparator<Recipe> {
         boolean reverse = false;
 
         public RecipeNameComparator(boolean reverse) {
             this.reverse = reverse;
         }
 
-        public int compare(Object o1, Object o2) {
-            Recipe r1 = (Recipe) o1;
-            Recipe r2 = (Recipe) o2;
-
+        public int compare(Recipe r1, Recipe r2) {
             return reverse ? r2.getName().compareTo(r1.getName()) : r1.getName().compareTo(r2.getName());
         }
     }
+
+
+
 
     public interface CategoryScoreOracle {
         public int getScoreOf(ContentNodeModel model, String fullSearchTerm, String[] searchTerms);
@@ -419,106 +170,12 @@ public class FilteredSearchResults extends SearchResults implements Serializable
     }
 
 
-    /**
-     * Sale Sort Comparator
-     *   based on Popularity comparator
-     * [APPREQ-234]
-     * 
-     * @author segabor
-     */
-    public static class SaleComparator extends PopularityComparator {
-        SaleComparator(boolean inverse, boolean hideUnavailable, List products) {
-            super(inverse, hideUnavailable, products);
-        }
-
-        public SaleComparator(boolean inverse, List products) {
-            super(inverse, products);
-        }
-
-        public int compare(Object o1, Object o2) {
-            ProductModel c1 = (ProductModel) o1;
-            ProductModel c2 = (ProductModel) o2;
-
-            try {
-                // Stage 0 -- sort out non-display cases
-                //
-                {
-                    boolean h1 = isDisplayable(c1.getContentKey()) && c1.getDefaultSku()!=null;
-                    boolean h2 = isDisplayable(c2.getContentKey()) && c2.getDefaultSku()!=null;
-                    if (!h1 && h2) {
-                        return 1;
-                    }
-        
-                    if (h1 && !h2) {
-                        return -1;
-                    }
-                    if (!h1 && !h2) {
-                    	// unavailable products sorted by popularity ...
-                    	return super.compare(o1, o2);
-                    }
-                }
-
-                FDProductInfo i1 = c1.getDefaultSku().getProductInfo();
-                FDProductInfo i2 = c2.getDefaultSku().getProductInfo();
-
-                // Stage 1 -- Compare highest deal percentages
-                //
-
-                int p1 = i1.getHighestDealPercentage();
-                int p2 = i2.getHighestDealPercentage();
-
-                // greater percentage is better
-                int sc = p1 > p2 ? -1 : (p1 < p2 ? 1 : 0);
-
-                // same prices -> sort by popularity
-                if (sc != 0)
-                	return inverse ? -sc : sc;
-
-                // Stage 2 -- base prices
-                //
-
-                double defp1 = i1.getDefaultPrice();
-                double defp2 = i2.getDefaultPrice();
-
-                if (defp1 != defp2) {
-
-                    // cheaper price is better
-                    sc = Double.compare(defp1, defp2);
-                    if (sc == 0)
-                        return super.compare(o1, o2);
-                    return inverse ? -sc : sc;
-                }
-
-                // Stage 4 -- equal prices --> compare by popularity
-                //
-                return super.compare(o1, o2);
-            } catch (FDSkuNotFoundException noSkuExc) {
-                return 0;
-            } catch (FDResourceException se) {
-                return 0;
-            }
-        }
-
-    }
     
     
-    public final static int        NATURAL_SORT      = -1;                        // don't
-                                                                                   // sort
-    public final static int        BY_NAME           = 0;
-    public final static int        BY_PRICE          = 1;
-    public final static int        BY_RELEVANCY      = 2;
-    public final static int        BY_POPULARITY     = 3;
-	public static final int        BY_SALE           = 5;
 
-    /*private final static Comparator POPULARITY                      = new PopularityComparator(false, false);
-    private final static Comparator POPULARITY_INVERSE              = new PopularityComparator(true, false);*/
-/*    private final static Comparator POPULARITY_HIDE_UNAVAIL         = new PopularityComparator(false, true);
-    private final static Comparator POPULARITY_HIDE_UNAVAIL_INVERSE = new PopularityComparator(true, true);*/
 
-    /**
-	 * 
-	 */
-    private static final long      serialVersionUID  = 1L;
+
+	private static final long      serialVersionUID  = 1L;
 
     String                         customerId;
     int                            start             = 0;
@@ -530,15 +187,15 @@ public class FilteredSearchResults extends SearchResults implements Serializable
     List                           postFilteredProducts;                          // List<FDProductSelectionI>
 
     
-    Map                            userProductScores = null;
+    Map<ContentKey,Float>			userProductScores = null;
 
-    Comparator                     currentComparator;
+    Comparator<ContentNodeModel>	currentComparator;
 
     CategoryScoreOracle            scoreOracle;
     CategoryNodeTree               nodeTree;
 
     String                         recipeFilter;
-    List                           _filteredRecipes;
+    List<Recipe>					_filteredRecipes;
     boolean                        reversed = false; // reversed sort of recipes
     protected String originalSearchTerm;
     
@@ -561,8 +218,8 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         this(searchTerm, original, customerId, searchTerm);
     }
 
-    public void sortProductsBy(Integer code, boolean inverse) {
-        List products = getProducts();
+    public void sortProductsBy(SearchSortType code, boolean inverse) {
+        List<ContentNodeModel> products = getProducts();
         currentComparator = getComparator(code, inverse, products);
         Collections.sort(products, currentComparator);
     }
@@ -581,30 +238,26 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         this._filteredRecipes = null; // clear filtered recipes cache
     }
 
-    public Comparator getCurrentComparator() {
+    public Comparator<ContentNodeModel> getCurrentComparator() {
         return currentComparator;
     }
 
-    private Comparator getComparator(Integer code, boolean inverse, List products) {
-        if (code != null) {
-            int sort = code.intValue();
-            return getComparator(sort, inverse, products);
-        } else {
-            return getComparator(BY_RELEVANCY, inverse, products);
-        }
-    }
+    @SuppressWarnings("unchecked")
+	private Comparator<ContentNodeModel> getComparator(SearchSortType sort, boolean inverse, List<ContentNodeModel> products) {
+        Comparator<ContentNodeModel> c = null;
+        
+        if (sort == null)
+        	sort = SearchSortType.BY_RELEVANCY;
 
-    private Comparator getComparator(int sort, boolean inverse, List products) {
-        Comparator c = null;
         switch (sort) {
             case BY_NAME:
-                c = ContentNodeModel.FULL_NAME_WITH_ID_COMPARATOR;
+                c = (Comparator<ContentNodeModel>) ContentNodeModel.FULL_NAME_WITH_ID_COMPARATOR;
                 if (inverse) {
                     c = new InverseComparator(c);
                 }
                 break;
             case BY_PRICE:
-                c = inverse ? ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE : ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR;
+                c = inverse ? (Comparator<ContentNodeModel>) ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE : (Comparator<ContentNodeModel>) ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR;
                 break;
             case BY_POPULARITY:
                 c = new PopularityComparator(inverse, products);
@@ -613,10 +266,9 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             	c = new SaleComparator(inverse, products);
             	break;
             case BY_RELEVANCY:
-//                return (customerId != null) ? new RelevancyComparator(customerId) : POPULARITY;
             default:
                 CategoryScoreOracle sc = scoreOracle != null ? scoreOracle : new DefaultCategoryScoreOracle();
-                c = (customerId != null) ? new UserRelevancyComparator(inverse, searchTerm, getUserProductScores(), sc, nodeTree, products, originalSearchTerm) : new RelevancyComparator(inverse, searchTerm,
+                c = (customerId != null) ? new UserRelevancyComparator(inverse, searchTerm, customerId, sc, nodeTree, products, originalSearchTerm) : new RelevancyComparator(inverse, searchTerm,
                         sc, nodeTree, products, originalSearchTerm);
         }
         return c;
@@ -632,13 +284,6 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
     public int getStart() {
         return start;
-    }
-
-    public Map getUserProductScores() {
-        if (userProductScores == null) {
-            userProductScores = ScoreProvider.getInstance().getUserProductScores(customerId);
-        }
-        return userProductScores;
     }
 
     // number of items per page
@@ -694,15 +339,14 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         return postFilteredProducts.subList(getStart(), Math.min(getStart() + getPageSize(), postFilteredProducts.size()));
     }
 
-    public List getFilteredRecipes() {
+    public List<Recipe> getFilteredRecipes() {
         if (_filteredRecipes == null) {
             if (recipeFilter != null) {
                 // filter recipes
                 //
-                _filteredRecipes = new ArrayList();
-                for (Iterator it = getRecipes().iterator(); it.hasNext();) {
-                    Recipe r = (Recipe) it.next();
-
+                _filteredRecipes = new ArrayList<Recipe>();
+                
+                for (Recipe r : getRecipes()) {
                     for (Iterator j = r.getClassifications().iterator(); j.hasNext();) {
                         DomainValue dv = (DomainValue) j.next();
 
@@ -724,21 +368,20 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
     // Returns Map<DomainValue,Integer> of classification-number of recipes
     // couples
-    public Map getRecipeCounts() {
-        Map stat = new HashMap();
-        List recipes = getRecipes();
+    public Map<DomainValue,Integer> getRecipeCounts() {
+        Map<DomainValue,Integer> stat = new HashMap<DomainValue,Integer>();
+        List<Recipe> recipes = getRecipes();
 
         for (Iterator it = getRecipeClassifications().iterator(); it.hasNext();) {
             DomainValue dv = (DomainValue) it.next();
             int k = 0;
 
-            for (Iterator it1 = recipes.iterator(); it1.hasNext();) {
-                Recipe r = (Recipe) it1.next();
-
+            for (Recipe r : recipes) {
                 if (r.getClassifications().contains(dv)) {
                     ++k;
                 }
             }
+            
             stat.put(dv, new Integer(k));
         }
         return stat;
@@ -752,4 +395,45 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         }
         return RecipesUtil.collectClassifications(java.util.Collections.EMPTY_SET, new HashSet(searchPage.getFilterByDomains()), getRecipes());
     }
+    
+
+    /**
+     * Just for testing ...
+     * @param model
+     * @return
+     */
+    public int getCategoryScore(ProductModel model) {
+        if (currentComparator instanceof RelevancyComparator) {
+            return ((RelevancyComparator)currentComparator).getTermScore(model);
+        }
+        return -1;  
+    }
+
+    /**
+     * Just for testing ...
+     * @param model
+     * @return
+     */
+    public boolean isDisplayable(ProductModel model) {
+        if (currentComparator instanceof PopularityComparator) {
+            return ((PopularityComparator) currentComparator).isDisplayable(model.getContentKey());
+        }
+        return true;
+    }
+    
+    public Score getGlobalScore(ProductModel model) {
+        if (currentComparator instanceof PopularityComparator) {
+            return ((PopularityComparator)currentComparator).getGlobalScore(model);
+        }
+        return null;
+    }
+    
+    public Score getPersonalScore(ProductModel model) {
+        if (currentComparator instanceof UserRelevancyComparator) {
+            return ((UserRelevancyComparator)currentComparator).getPersonalScore(model);
+        }
+        return null;
+    }
+    
+    
 }

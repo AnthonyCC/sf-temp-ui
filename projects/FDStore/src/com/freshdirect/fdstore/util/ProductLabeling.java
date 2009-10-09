@@ -1,4 +1,4 @@
-package com.freshdirect.webapp.util;
+package com.freshdirect.fdstore.util;
 
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -9,7 +9,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
  * @author segabor
  *
  */
-public class ProductLabelling {
+public class ProductLabeling {
 	FDUserI customer;
 	ProductModel product;
 	
@@ -23,7 +23,7 @@ public class ProductLabelling {
 	boolean displayFave = false;
 	boolean displayNew = false;
 
-	public ProductLabelling(FDUserI customer, ProductModel product, boolean hideBursts, boolean hideNew, boolean hideDeals, boolean hideYourFave) {
+	public ProductLabeling(FDUserI customer, ProductModel product, boolean hideBursts, boolean hideNew, boolean hideDeals, boolean hideYourFave) {
 		this.customer = customer;
 		this.product = product;
 		
@@ -36,7 +36,7 @@ public class ProductLabelling {
 	}
 
 	
-	public ProductLabelling(FDUserI customer, ProductModel product) {
+	public ProductLabeling(FDUserI customer, ProductModel product) {
 		this(customer, product, false, false, false, false);
 	}
 
@@ -55,7 +55,7 @@ public class ProductLabelling {
 		boolean isYourFave = !hideBursts && !hideYourFave && DYFUtil.isFavorite(product, customer);
 
 		// determine what to display
-		if (deal >= 10 && deal < 75) {
+		if (deal > 0) {
 			displayDeal = true;
 		} else if (isYourFave) {
 			displayFave = true;

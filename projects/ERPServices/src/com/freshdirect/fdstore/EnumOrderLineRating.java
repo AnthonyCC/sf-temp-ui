@@ -17,39 +17,47 @@ import java.util.Map;
  * @version $Revision$
  * @author $Author$
  */
-public class EnumOrderLineRating implements java.io.Serializable {
+public enum EnumOrderLineRating  {
 	
-	private final static Map STATUSCODE_MAP = new HashMap();
     
-    public final static EnumOrderLineRating NEVER_RATED        = new EnumOrderLineRating(0, "000", "Never Rated/Rating Expired");
-    public final static EnumOrderLineRating NO_RATING        = new EnumOrderLineRating(1, "X", "No rating");
-    public final static EnumOrderLineRating TERRIBLE     = new EnumOrderLineRating(2, "001", "Terrible");
-    public final static EnumOrderLineRating BELOW_AVG    = new EnumOrderLineRating(3, "002", "Below Average");
-    public final static EnumOrderLineRating BELOW_AVG_PLUS        = new EnumOrderLineRating(4, "003", "Inconsistent");
+    NEVER_RATED         (0, "000", "Never Rated/Rating Expired", 5),
+    NO_RATING           (1, "X", "No rating", 6),
+    TERRIBLE            (2, "001", "Terrible", 1),
+    BELOW_AVG           (3, "002", "Below Average", 2),
+    BELOW_AVG_PLUS      (4, "003", "Inconsistent", 3),
     
-    public final static EnumOrderLineRating AVERAGE        = new EnumOrderLineRating(5, "004", "Average ");
-    public final static EnumOrderLineRating AVERAGE_PLUS     = new EnumOrderLineRating(6, "005", "Above Average");
-    public final static EnumOrderLineRating GOOD    = new EnumOrderLineRating(7, "006", "Good");
-    public final static EnumOrderLineRating GOOD_PLUS        = new EnumOrderLineRating(8, "007", "Very Good");
+    AVERAGE             (5, "004", "Average ", 4),
+    AVERAGE_PLUS        (6, "005", "Above Average", 7),
+    GOOD                (7, "006", "Good", 8),
+    GOOD_PLUS           (8, "007", "Very Good", 9),
 
-    public final static EnumOrderLineRating VERY_GOOD        = new EnumOrderLineRating(9, "008", "Great");
-    public final static EnumOrderLineRating VERY_GOOD_PLUS     = new EnumOrderLineRating(10, "009", "Almost Perfect");
-    public final static EnumOrderLineRating PERFECT    = new EnumOrderLineRating(11, "010", "Never Better");
-    public final static EnumOrderLineRating PEAK_PRODUCE_8        = new EnumOrderLineRating(12, "P08", "Great");
-    public final static EnumOrderLineRating PEAK_PRODUCE_9        = new EnumOrderLineRating(13, "P09", "Almost Perfect");    
-    public final static EnumOrderLineRating PEAK_PRODUCE_10        = new EnumOrderLineRating(14, "P10", "Never Better");
+    VERY_GOOD           (9, "008", "Great", 10),
+    VERY_GOOD_PLUS      (10, "009", "Almost Perfect", 12),
+    PERFECT             (11, "010", "Never Better", 14),
+    PEAK_PRODUCE_8      (12, "P08", "Great", 11),
+    PEAK_PRODUCE_9      (13, "P09", "Almost Perfect", 13),    
+    PEAK_PRODUCE_10     (14, "P10", "Never Better", 15);
+
+    private final static Map<String, EnumOrderLineRating> STATUSCODE_MAP = new HashMap<String, EnumOrderLineRating> ();
     
+    static {
+        for (EnumOrderLineRating r : values()) {
+            STATUSCODE_MAP.put(r.statusCode, r);
+        }
+    }
+    
+
     
     protected final int id;
     private final String statusCode;
     private final String shortDescription;
+    private final int qualityRating;
     
-    private EnumOrderLineRating(int id, String statusCode, String shortDescription) {
+    private EnumOrderLineRating(int id, String statusCode, String shortDescription, int qualityRating) {
         this.id = id;
         this.statusCode = statusCode;
         this.shortDescription = shortDescription;
-        
-        STATUSCODE_MAP.put( this.statusCode, this );
+        this.qualityRating = qualityRating;
     }
     
     public int getId(){
@@ -85,13 +93,11 @@ public class EnumOrderLineRating implements java.io.Serializable {
     
     public String toString() {    	
         return this.statusCode + " : " + this.shortDescription;
-    }        
-    
-    public boolean equals(Object o) {
-        if (o instanceof EnumOrderLineRating) {
-            return this.id == ((EnumOrderLineRating)o).id;
-        }
-        return false;
     }
+    
+    public int getQualityRating() {
+        return qualityRating;
+    }
+    
     
 }

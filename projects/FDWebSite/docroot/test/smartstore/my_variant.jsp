@@ -15,7 +15,7 @@
 %><%@ taglib uri="freshdirect" prefix="fd"
 %><%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
 %><%@page import="com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper"
-%><%@page import="com.freshdirect.webapp.util.DYFUtil"
+%><%@page import="com.freshdirect.fdstore.util.DYFUtil"
 %><%@page import="com.freshdirect.mail.EmailUtil"
 %><%@page import="org.apache.commons.lang.math.NumberUtils"%>
 <%@page import="com.freshdirect.fdstore.FDException"%>

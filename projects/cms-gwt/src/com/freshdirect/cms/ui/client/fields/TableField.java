@@ -23,7 +23,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
-import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -37,6 +36,7 @@ import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute.ColumnType;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class TableField extends MultiField implements ChangeTrackingField {
@@ -129,6 +129,7 @@ public class TableField extends MultiField implements ChangeTrackingField {
         @Override
         public void load(DataReader<PagingLoadResult<? extends ModelData>> reader, Object loadConfig,
                 AsyncCallback<PagingLoadResult<? extends ModelData>> callback) {
+        	
             final PagingLoadConfig config = (PagingLoadConfig) loadConfig;
             List<BaseModelData> result = new ArrayList<BaseModelData>(config.getLimit());
             
@@ -163,9 +164,14 @@ public class TableField extends MultiField implements ChangeTrackingField {
 
     protected Grid<BaseModelData> grid;
     protected boolean renderAsLinks; 
+    
+    private final String nodeKey;
+    private final String attributeKey;
 
-    public TableField(TableAttribute attribute) {
+    public TableField( TableAttribute attribute, String nodeKeyp, String attributeKeyp ) {
         this.attribute = attribute;
+        this.nodeKey = nodeKeyp;
+        this.attributeKey = attributeKeyp;
         renderAsLinks = true;
 
         BasePagingLoader<BasePagingLoadResult<BaseModelData>> loader = new BasePagingLoader<BasePagingLoadResult<BaseModelData>>(new TableRowLoader(attribute));
@@ -213,13 +219,14 @@ public class TableField extends MultiField implements ChangeTrackingField {
         final PagingToolBar toolBar = new PagingToolBar(20);
         toolBar.bind(loader);
 
+        
         ContentPanel cp = new ContentPanel();
         cp.setBottomComponent(toolBar);
         cp.setAutoHeight(true);
         cp.setWidth(670);
         cp.setHeaderVisible(false);
-        ToolBar tb = new ToolBar();
-        tb.add(new Button("Show IDs", new SelectionListener<ButtonEvent>() {			
+        
+        Button showIdButton = new Button("Show IDs", new SelectionListener<ButtonEvent>() {			
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 				renderAsLinks = !renderAsLinks;
@@ -231,9 +238,25 @@ public class TableField extends MultiField implements ChangeTrackingField {
 					ce.getButton().setText("Show links");
 				}
 			}
-		}));        
-        cp.add(tb);
+		});        
         
+        Button exportCsvButton = new Button("Export to CSV");
+        exportCsvButton.setToolTip( "Exports the contents of this tablefield to a CSV file." );
+        exportCsvButton.addSelectionListener( new SelectionListener<ButtonEvent>() {
+        	public void componentSelected(ButtonEvent ce) {
+        		String url = GWT.getModuleBaseURL() + "CsvExport?nodeKey=" + nodeKey + "&attributeKey=" + attributeKey;
+        		open( url );        		        		
+        	}
+            native void open( String url ) /*-{
+				window.open( url );
+          	}-*/;
+		});
+
+        
+        ToolBar tb = new ToolBar();
+        tb.add( showIdButton );
+        tb.add( exportCsvButton );        
+        cp.add(tb);
         
         
         ListStore<BaseModelData> store;

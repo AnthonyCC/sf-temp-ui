@@ -34,7 +34,7 @@ public class AllProductInCategoryRecommendationService extends AbstractRecommend
     /* (non-Javadoc)
      * @see com.freshdirect.smartstore.impl.AbstractRecommendationService#doRecommendNodes(com.freshdirect.smartstore.Trigger, com.freshdirect.smartstore.SessionInput)
      */
-    public List recommendNodes(SessionInput input) {
+    public List doRecommendNodes(SessionInput input) {
         List result = Collections.EMPTY_LIST;
         if (input.getCurrentNode() != null) {
             ContentNodeModel model = input.getCurrentNode();

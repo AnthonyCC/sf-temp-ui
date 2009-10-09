@@ -43,7 +43,7 @@ public class FavoritesRecommendationService extends AbstractRecommendationServic
      * @return a List<{@link ContentNodeModel}> of recommendations
      *         
      */
-    public List recommendNodes(SessionInput input) {
+    public List doRecommendNodes(SessionInput input) {
         List favoriteNodes = Collections.EMPTY_LIST;
         
     	ContentFactory cf = ContentFactory.getInstance();
@@ -60,7 +60,7 @@ public class FavoritesRecommendationService extends AbstractRecommendationServic
                 keys.add(new RankedContent.Single((favoriteNodes.size() - i) * 5.0, contentNodeModel));
     	    }
     	    List sample = RankedContent.getContentNodeModel(getSampler(input).sample(keys,
-    	    		includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), keys.size()));
+    	    		input.isIncludeCartItems() ? Collections.EMPTY_SET : input.getCartContents(), keys.size()));
     	    SmartStoreUtil.clearConfiguredProductCache();
     	    favoriteNodes = SmartStoreUtil.addConfiguredProductToCache(sample);
     	}

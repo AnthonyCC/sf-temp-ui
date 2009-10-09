@@ -13,7 +13,7 @@ import java.util.Map;
  * @author istvan
  *
  */
-public class SessionCache extends LinkedHashMap {
+public class SessionCache<K,V> extends LinkedHashMap<K,V> {
 
 	private static final long serialVersionUID = 6732419652977205549L;
 	
@@ -47,7 +47,7 @@ public class SessionCache extends LinkedHashMap {
 	 * @param e ignored (the entry that gets potentially removed)
 	 * @return whether the number of entries has reached the capacity
 	 */
-	protected boolean removeEldestEntry(Map.Entry e) {
+	protected boolean removeEldestEntry(Map.Entry<K,V> e) {
 		return size() > capacity;
 	}
 	
@@ -58,7 +58,7 @@ public class SessionCache extends LinkedHashMap {
 	 * @param key 
 	 * @return object stored under key or null
 	 */
-	public synchronized Object get(Object key) { 
+	public synchronized V get(Object key) { 
 		return super.get(key);
 	}
 	
@@ -67,7 +67,7 @@ public class SessionCache extends LinkedHashMap {
 	 * @param key 
 	 * @param value
 	 */
-	public synchronized Object put(Object key, Object value) {
+	public synchronized V put(K key, V value) {
 		return super.put(key, value);
 	}
 	
@@ -75,12 +75,12 @@ public class SessionCache extends LinkedHashMap {
 	 * An entry that has an associated expiry.
 	 * 
 	 */
-	public static class TimedEntry {
+	public static class TimedEntry<V> {
 		
 		private long duration;
 		private long timeRecorded;
 		
-		private Object payLoad;
+		private V payLoad;
 		
 		/**
 		 * Constructor.
@@ -89,7 +89,7 @@ public class SessionCache extends LinkedHashMap {
 		 * @param payLoad object stored
 		 * @param duration expiry in milliseconds
 		 */
-		public TimedEntry(Object payLoad, long duration) {
+		public TimedEntry(V payLoad, long duration) {
 			timeRecorded = System.currentTimeMillis();
 			this.duration = duration;
 			this.payLoad = payLoad;
@@ -108,7 +108,7 @@ public class SessionCache extends LinkedHashMap {
 		 * Get payload.
 		 * @return payload
 		 */
-		public Object getPayload() {
+		public V getPayload() {
 			return payLoad;
 		}
 		
@@ -117,8 +117,10 @@ public class SessionCache extends LinkedHashMap {
 		 * @param payload payload object
 		 * @param resetClock whether to reset the clock
 		 */
-		public void setPayload(Object payload, boolean resetClock) {
-			if (resetClock) timeRecorded = System.currentTimeMillis();
+		public void setPayload(V payload, boolean resetClock) {
+			if (resetClock) {
+			    timeRecorded = System.currentTimeMillis();
+			}
 			this.payLoad = payload;
 		}
 	}

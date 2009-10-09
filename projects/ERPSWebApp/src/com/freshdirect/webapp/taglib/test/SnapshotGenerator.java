@@ -24,10 +24,13 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.FilteredSearchResults;
 import com.freshdirect.fdstore.content.SearchResults;
+import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.CSVUtils;
+import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.smartstore.scoring.ScoringAlgorithm;
+import com.freshdirect.smartstore.service.SearchScoringRegistry;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 
 public class SnapshotGenerator {
 
@@ -35,7 +38,7 @@ public class SnapshotGenerator {
     
     private static boolean running = false;
     
-    private static StringBuffer status = new StringBuffer();
+    private static StringBuilder status = new StringBuilder();
 
     public static boolean isRunning() {
         return running;
@@ -45,10 +48,9 @@ public class SnapshotGenerator {
         return status.toString();
     }
 
-    public static boolean startGenerating(InputStream input, String label, HttpSession session) {
+    public static String getCurrentUserId(HttpSession session) {
         FDUserI sessionUser = FDSessionUser.getFDSessionUser(session);
-        String userId = sessionUser!=null ? sessionUser.getUserId() : null;
-        return startGenerating(input, label, userId);
+        return sessionUser!=null ? sessionUser.getUserId() : null;
     }
 
     /**
@@ -117,18 +119,27 @@ public class SnapshotGenerator {
         try {
             PrintWriter p = new PrintWriter(new OutputStreamWriter(output, "UTF-8"));
             p.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            p.println("<report name=\""+label+"\">");
+            
+            final ScoringAlgorithm scoring = (customerId!=null) ? 
+                    SearchScoringRegistry.getInstance().getUserScoringAlgorithm() :
+                        SearchScoringRegistry.getInstance().getGlobalScoringAlgorithm();
+            final String factors = scoring.toString();
+            
+            p.println("<report name=\"" + label + "\" " + 
+                    (customerId != null ? "userId=\"" + customerId + "\" " : "") +
+                    "factors=\"" + factors + "\">");
             ContentSearch s = ContentSearch.getInstance();
             
             
             int termNum = 0;
             status.setLength(0);
             
-            List rows = CSVUtils.parse(input, false, false);
-            for (Iterator iter = rows.iterator(); iter.hasNext();) {
-                List row = (List) iter.next();
-                for (Iterator riter = row.iterator(); riter.hasNext();) {
-                    String term = ((String) riter.next()).trim();
+            ScoreProvider provider = ScoreProvider.getInstance();
+            List<List<String>> rows = CSVUtils.parse(input, false, false);
+            for (Iterator<List<String>> iter = rows.iterator(); iter.hasNext();) {
+                List<String> row = iter.next();
+                for (Iterator<String> riter = row.iterator(); riter.hasNext();) {
+                    String term = riter.next().trim();
                     if (term.length()>0) {
                         try {
                             Integer.parseInt(term);
@@ -150,7 +161,7 @@ public class SnapshotGenerator {
                         CategoryNodeTree nodeTree = CategoryNodeTree.createTree(fres.getProducts(), true);
                         fres.setNodeTree(nodeTree);
                         fres.setScoreOracle(new FilteredSearchResults.HierarchicalScoreOracle(nodeTree));
-                        fres.sortProductsBy(new Integer(FilteredSearchResults.BY_RELEVANCY), false);
+                        fres.sortProductsBy(SearchSortType.BY_RELEVANCY, false);
 
 
                         status.append(" ("+fres.getProducts().size()+")\n");
@@ -159,8 +170,13 @@ public class SnapshotGenerator {
                         for (int i=0;i<fres.getProducts().size();i++) {
                             ContentNodeModel model = (ContentNodeModel) fres.getProducts().get(i);
                             String fullname = StringUtils.replace(model.getFullName(), "&", "&amp;");
-                            
-                            p.println(" <result index=\""+i+"\" id=\""+model.getContentKey().getId()+"\" >"+fullname +"</result>");
+                            double[] scores = scoring.getScoreOf(customerId, provider, model);
+                            StringBuilder sb = new StringBuilder();
+                            for (double x : scores) {
+                                sb.append(x).append(',');
+                            }
+                            p.println(" <result index=\"" + i + "\" id=\"" + model.getContentKey().getId() + "\" factorValues=\"" + sb + "\">" + fullname
+                                    + "</result>");
                         }
                         
                         p.println("</term>");

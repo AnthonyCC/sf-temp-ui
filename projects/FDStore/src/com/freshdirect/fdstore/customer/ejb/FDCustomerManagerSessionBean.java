@@ -439,6 +439,38 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	}
 
+	public FDUser recognizeByEmail(String email) throws FDAuthenticationException, FDResourceException {
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			FDUser user = FDUserDAO.recognizeWithEmail(conn, email);
+
+			if (user.isAnonymous()) {
+				throw new FDAuthenticationException("Unrecognized user");
+			}
+			//Load Promo Audience Details for this customer.
+			user.setAssignedCustomerParams(getAssignedCustomerParams(user, conn));
+
+			user.setDlvPassInfo(getDeliveryPassInfo(user));
+			return user;
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle2) {
+					LOGGER.error("Unable to close connection after recognizing user by FDIdentity.", sqle2);
+					throw new FDResourceException(sqle2);
+				}
+			}
+		}
+
+	}
+
 	public FDUserDlvPassInfo getDeliveryPassInfo(FDUserI user) throws FDResourceException{
 		FDUserDlvPassInfo dlvPassInfo = null;
 		try {

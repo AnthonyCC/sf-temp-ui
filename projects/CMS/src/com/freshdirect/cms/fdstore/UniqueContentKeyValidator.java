@@ -1,7 +1,6 @@
 package com.freshdirect.cms.fdstore;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,7 +39,7 @@ import com.freshdirect.cms.validation.ContentValidatorI;
  */
 public class UniqueContentKeyValidator implements ContentValidatorI {
 
-	private final static Set UNIQUE_TYPES = new HashSet();
+	private final static Set<ContentType> UNIQUE_TYPES = new HashSet<ContentType>();
 	static {
 		UNIQUE_TYPES.add(FDContentTypes.DEPARTMENT);
 		UNIQUE_TYPES.add(FDContentTypes.CATEGORY);
@@ -66,21 +65,20 @@ public class UniqueContentKeyValidator implements ContentValidatorI {
 		
 	}
 
-	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
+	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request ) {
 		ContentType type = node.getKey().getType();
-		if (UNIQUE_TYPES.contains(type)) {
+		if ( UNIQUE_TYPES.contains( type ) ) {
 
-			Set keys = new HashSet(UNIQUE_TYPES.size() - 1);
-			for (Iterator i = UNIQUE_TYPES.iterator(); i.hasNext();) {
-				ContentType t = (ContentType) i.next();
-				if (!t.equals(type)) {
-					keys.add(new ContentKey(t, node.getKey().getId()));
+			Set<ContentKey> keys = new HashSet<ContentKey>( UNIQUE_TYPES.size() - 1 );
+			for ( ContentType t : UNIQUE_TYPES ) {
+				if ( !t.equals( type ) ) {
+					keys.add( new ContentKey( t, node.getKey().getId() ) );
 				}
 			}
 
-			Map nodes = service.getContentNodes(keys);
-			if (!nodes.isEmpty()) {
-				delegate.record(node.getKey(), "Content with the same ID already exists: " + nodes.keySet());
+			Map<ContentKey, ContentNodeI> nodes = service.getContentNodes( keys );
+			if ( !nodes.isEmpty() ) {
+				delegate.record( node.getKey(), "Content with the same ID already exists: " + nodes.keySet() );
 			}
 		}
 	}

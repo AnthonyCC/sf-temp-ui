@@ -27,7 +27,7 @@ public class CandidateProductRecommendationService extends AllProductInCategoryR
         super(variant, sampler, catAggr, includeCartItems);
     }
 
-    public List recommendNodes(SessionInput input) {
+    public List doRecommendNodes(SessionInput input) {
         List result = Collections.EMPTY_LIST;
         if (input.getCurrentNode() != null) {
             ContentNodeModel model = input.getCurrentNode();

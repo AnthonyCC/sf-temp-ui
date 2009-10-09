@@ -196,17 +196,17 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/** Getter for property skus.
 	 * @return Value of property skus.
 	 */
-	public List getSkus() {
+	public List<SkuModel> getSkus() {
 		ContentNodeModelUtil.refreshModels(this, "skus", skuModels, true);
 
-		return new ArrayList(skuModels);
+		return new ArrayList<SkuModel>(skuModels);
 	}
 
-	public List getSkuCodes() {
-		List skus = getSkus();
-		List skuCodeList = new ArrayList(skus.size());
-		for (Iterator i = skus.iterator(); i.hasNext();) {
-			skuCodeList.add(((SkuModel) i.next()).getSkuCode());
+	public List<String> getSkuCodes() {
+		List<SkuModel> skus = getSkus();
+		List<String> skuCodeList = new ArrayList<String>(skus.size());
+		for (SkuModel i : skus) {
+			skuCodeList.add(i.getSkuCode());
 		}
 		return skuCodeList;
 	}
@@ -1493,95 +1493,107 @@ inner:
 		classifications.addAll(getWineVarietal());
 		return classifications;
 	}
-	public String getProductRating() throws FDResourceException {
- 	   String rating="";
-	   
-	   List skus = getSkus(); 
-       SkuModel sku = null;
-       //remove the unavailable sku's
-       for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
-           sku = (SkuModel)li.next();
-           if ( sku.isUnavailable() ) {
-              li.remove();
-           }
-       }
 
-       FDProductInfo productInfo = null;
-       if (skus.size()==0) return rating;  // skip this item..it has no skus.  Hmmm?
-       if (skus.size()==1) {
-           sku = (SkuModel)skus.get(0);  // we only need one sku
-       }
-       else {
-           sku = (SkuModel) Collections.max(skus, RATING_COMPARATOR);
-       }
-       if (sku!=null && sku.getSkuCode() != null) {
-           //
-           // get the FDProductInfo from the FDCachedFactory
-           //
-           try {
-				/*
-				 * grab property to determine which sku prefixes to display ratings for
-				 * 
-				 * assuming some prefixes are set, loop, checking to see if the current product's
-				 * sku prefix matches an allowed prefix.
-				 * 
-				 * exit loop on a match.
-				 */
-        	   
-				/*
-				 * There is a similar setup in the GetPeakProduceTag.java file
-				 * and in ProductModelImpl.java
-				 */
-//				LOG.debug("===== in getProductRating in ProductModelImpl :"+sku.getSkuCode());
-        		  
-				// grab sku prefixes that should show ratings
-				String _skuPrefixes=FDStoreProperties.getRatingsSkuPrefixes();
-//				LOG.debug("* getRatingsSkuPrefixes :"+_skuPrefixes);
-    	   
-				//if we have prefixes then check them
-				if (_skuPrefixes!=null && !"".equals(_skuPrefixes)) {
-					StringTokenizer st=new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
-					String curPrefix = ""; //holds prefix to check against
-					String spacer="* "; //spacing for sysOut calls
-					boolean matchFound = false;
-					
-					//loop and check each prefix
-					while(st.hasMoreElements()) {
-						
-						curPrefix=st.nextToken();
-//						LOG.debug(spacer+"Rating _skuPrefixes checking :"+curPrefix);
-						
-						//if prefix matches get product info
-						if(sku.getSkuCode().startsWith(curPrefix)) {
-                            productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode());
-//							LOG.debug(" Rating productInfo :"+productInfo);
-							String tmpRating = productInfo.getRating();
-   	
-                   if(tmpRating!=null && tmpRating.trim().length()>0){
-                	   EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(tmpRating);
-//								LOG.debug(" enumRating :"+enumRating);
-								
-                	   if(enumRating!=null && enumRating.isEligibleToDisplay()){
-                		   rating=enumRating.getStatusCodeInDisplayFormat();
-//									LOG.debug(" rating in display format  :"+rating);
-                	   }
-                   }
-							matchFound=true;
-        	   } 
-						//exit on matched sku prefix
-//						LOG.debug(spacer+"Rating matchFound :"+matchFound);
-						if (matchFound) { break; }
-						spacer=spacer+"   ";
-					}
-				}
+    public String getProductRating() throws FDResourceException {
+        String rating = "";
 
-	        } catch (FDSkuNotFoundException ignore) {
+        List skus = getSkus();
+        SkuModel sku = null;
+        // remove the unavailable sku's
+        for (ListIterator li = skus.listIterator(); li.hasNext();) {
+            sku = (SkuModel) li.next();
+            if (sku.isUnavailable()) {
+                li.remove();
+            }
+        }
 
-           }
-       }
-      
-       return rating;
+        FDProductInfo productInfo = null;
+        if (skus.size() == 0)
+            return rating; // skip this item..it has no skus. Hmmm?
+        if (skus.size() == 1) {
+            sku = (SkuModel) skus.get(0); // we only need one sku
+        } else {
+            sku = (SkuModel) Collections.max(skus, RATING_COMPARATOR);
+        }
+        if (sku != null && sku.getSkuCode() != null) {
+            //
+            // get the FDProductInfo from the FDCachedFactory
+            //
+            try {
+                /*
+                 * grab property to determine which sku prefixes to display
+                 * ratings for
+                 * 
+                 * assuming some prefixes are set, loop, checking to see if the
+                 * current product's sku prefix matches an allowed prefix.
+                 * 
+                 * exit loop on a match.
+                 */
 
+                /*
+                 * There is a similar setup in the GetPeakProduceTag.java file
+                 * and in ProductModelImpl.java
+                 */
+                // LOG.debug("===== in getProductRating in ProductModelImpl :"+sku.getSkuCode());
+
+                // grab sku prefixes that should show ratings
+                String _skuPrefixes = FDStoreProperties.getRatingsSkuPrefixes();
+                // LOG.debug("* getRatingsSkuPrefixes :"+_skuPrefixes);
+
+                // if we have prefixes then check them
+                if (_skuPrefixes != null && !"".equals(_skuPrefixes)) {
+                    StringTokenizer st = new StringTokenizer(_skuPrefixes, ","); // setup
+                                                                                 // for
+                                                                                 // splitting
+                                                                                 // property
+                    String curPrefix = ""; // holds prefix to check against
+                    String spacer = "* "; // spacing for sysOut calls
+                    boolean matchFound = false;
+
+                    // loop and check each prefix
+                    while (st.hasMoreElements()) {
+
+                        curPrefix = st.nextToken();
+                        // LOG.debug(spacer+"Rating _skuPrefixes checking :"+curPrefix);
+
+                        // if prefix matches get product info
+                        if (sku.getSkuCode().startsWith(curPrefix)) {
+                            productInfo = FDCachedFactory.getProductInfo(sku.getSkuCode());
+                            // LOG.debug(" Rating productInfo :"+productInfo);
+                            String tmpRating = productInfo.getRating();
+
+                            if (tmpRating != null && tmpRating.trim().length() > 0) {
+                                EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode(tmpRating);
+                                // LOG.debug(" enumRating :"+enumRating);
+
+                                if (enumRating != null && enumRating.isEligibleToDisplay()) {
+                                    rating = enumRating.getStatusCodeInDisplayFormat();
+                                    // LOG.debug(" rating in display format  :"+rating);
+                                }
+                            }
+                            matchFound = true;
+                        }
+                        // exit on matched sku prefix
+                        // LOG.debug(spacer+"Rating matchFound :"+matchFound);
+                        if (matchFound) {
+                            break;
+                        }
+                        spacer = spacer + "   ";
+                    }
+                }
+
+            } catch (FDSkuNotFoundException ignore) {
+
+            }
+        }
+
+        return rating;
+
+    }
+
+	public List getGiftcardType() {
+		ContentNodeModelUtil.refreshModels(this, "GIFTCARD_TYPE", giftcardTypes, false);
+		return new ArrayList(giftcardTypes);		
 	}
 
 	public List getGiftcardType() {

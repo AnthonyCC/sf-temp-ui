@@ -7,6 +7,8 @@ import java.util.Set;
 
 import javax.ejb.EJBObject;
 
+import com.freshdirect.cms.ContentKey;
+
 
 /**
  * 
@@ -75,4 +77,24 @@ public interface ScoreFactorSB extends EJBObject {
 	 */
 	public Set getPersonalizedProducts(String erpCustomerId) throws RemoteException;
 	
+
+	/**
+	 * Return a list of product recommendation for a given product by a recommender vendor.
+	 * 
+	 * @param recommender
+	 * @param key
+	 * @return List<ContentKey>
+	 * @throws RemoteException
+	 */
+	public List<ContentKey> getProductRecommendations(String recommender, ContentKey key) throws RemoteException;
+	
+	/**
+	 * Return a list of personal recommendation (ContentKey-s) for a user by a recommender vendor.
+	 *  
+	 * @param recommender
+	 * @param erpCustomerId
+	 * @return List<ContentKey> 
+	 * @throws RemoteException
+	 */
+	public List<ContentKey> getPersonalRecommendations(String recommender, String erpCustomerId) throws RemoteException;
 }

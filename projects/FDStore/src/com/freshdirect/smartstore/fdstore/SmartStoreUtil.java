@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -26,6 +25,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.service.VariantRegistry;
 
 /**
  * General utilities for SmartStore.
@@ -73,6 +73,27 @@ public class SmartStoreUtil {
 
 	public static final String SKIP_OVERRIDDEN_VARIANT = "__skip_overridden_variant__";
 
+	
+	public static Variant getOveriddenVariant(FDUserI user,
+			EnumSiteFeature feature, String override) throws FDResourceException {
+		
+		String value = null;
+
+		// a., manual override
+		if (override != null) {
+			value = override;
+		}
+		// b., get overridden variant from customer's profile
+		if (value == null) {
+			// lookup overridden variant
+			OverriddenVariantsHelper helper = new OverriddenVariantsHelper(
+					user);
+			value = helper.getOverriddenVariant(feature);
+		}
+
+		return value != null ? VariantRegistry.getInstance().getService(value) : null;
+	}
+	
 	/**
 	 * Get the recommendation service for the user.
 	 * 
@@ -92,24 +113,9 @@ public class SmartStoreUtil {
 		RecommendationService svc = null;
 
 		if (!SKIP_OVERRIDDEN_VARIANT.equalsIgnoreCase(override)) {
-			String value = null;
-
-			// a., manual override
-			if (override != null) {
-				value = override;
-			}
-			// b., get overridden variant from customer's profile
-			if (value == null) {
-				// lookup overridden variant
-				OverriddenVariantsHelper helper = new OverriddenVariantsHelper(
-						user);
-				value = helper.getOverriddenVariant(feature);
-			}
-
-			if (value != null) {
-				svc = (RecommendationService) SmartStoreServiceConfiguration
-						.getInstance().getServices(feature).get(value);
-			}
+			Variant var = getOveriddenVariant(user, feature, override);
+			if (var != null)
+				svc = var.getRecommender();
 		}
 
 		// default case - use the basic facility
@@ -152,16 +158,8 @@ public class SmartStoreUtil {
 		if (anId == null)
 			return false;
 
-		if (feat == null)
-			feat = EnumSiteFeature.DYF;
-
-		Map services = SmartStoreServiceConfiguration.getInstance()
-				.getServices(feat);
-		for (Iterator it = services.keySet().iterator(); it.hasNext();) {
-			if (anId.equals((String) it.next())) {
-				return true;
-			}
-		}
+		if (VariantRegistry.getInstance().getService(anId) != null)
+			return true;
 
 		return false;
 	}
@@ -225,7 +223,7 @@ public class SmartStoreUtil {
 	 * @param feature
 	 * @return
 	 */
-	public static SortedMap getVariantsSortedInWeight(EnumSiteFeature feature) {
+	public static SortedMap<String, Integer> getVariantsSortedInWeight(EnumSiteFeature feature) {
 		return getVariantsSortedInWeight(feature, null, true);
 	}
 
@@ -235,7 +233,7 @@ public class SmartStoreUtil {
 	 * @param date
 	 * @return
 	 */
-	public static SortedMap getVariantsSortedInWeight(EnumSiteFeature feature, Date date) {
+	public static SortedMap<String, Integer> getVariantsSortedInWeight(EnumSiteFeature feature, Date date) {
 		return getVariantsSortedInWeight(feature, date, false);
 	}
 	
@@ -251,31 +249,31 @@ public class SmartStoreUtil {
 	 *            it true, get the current
 	 * @return
 	 */
-	public static SortedMap getVariantsSortedInWeight(EnumSiteFeature feature,
+	public static SortedMap<String, Integer> getVariantsSortedInWeight(EnumSiteFeature feature,
 			Date date, boolean current) {
 
 		final VariantSelection vs = VariantSelection.getInstance();
-		Map cohorts = vs.getCohorts();
-		Map assignment = getAssignment(feature, date, current);
-		final Map clone = new HashMap();
-		List variants = vs.getVariants(feature);
-		Iterator it = variants.iterator();
+		Map<String, Integer> cohorts = vs.getCohorts();
+		Map<String, String> assignment = getAssignment(feature, date, current);
+		final Map<String, Integer> clone = new HashMap<String, Integer> ();
+		List<String> variants = vs.getVariants(feature);
+		Iterator<String> it = variants.iterator();
 		while (it.hasNext()) {
 			clone.put(it.next(), new Integer(0));
 		}
 
 		it = cohorts.keySet().iterator();
 		while (it.hasNext()) {
-			String cohort = (String) it.next();
-			String variant = (String) assignment.get(cohort);
+			String cohort = it.next();
+			String variant = assignment.get(cohort);
 			if (variant != null) {
-				int weight = ((Integer) clone.get(variant)).intValue();
-				weight += ((Integer) cohorts.get(cohort)).intValue();
+				int weight = clone.get(variant).intValue();
+				weight += cohorts.get(cohort).intValue();
 				clone.put(variant, new Integer(weight));
 			}
 		}
 
-		SortedMap weights = new TreeMap(new Comparator() {
+		SortedMap<String, Integer> weights = new TreeMap<String, Integer>(new Comparator() {
 			public int compare(Object o1, Object o2) {
 				if (o1 == null) {
 					if (o2 == null)
@@ -288,8 +286,8 @@ public class SmartStoreUtil {
 					else {
 						String s1 = o1.toString();
 						String s2 = o2.toString();
-						int i1 = ((Integer) clone.get(s1)).intValue();
-						int i2 = ((Integer) clone.get(s2)).intValue();
+						int i1 = clone.get(s1).intValue();
+						int i2 = clone.get(s2).intValue();
 						if (i1 == i2)
 							return s1.compareToIgnoreCase(s2);
 						else {
@@ -304,19 +302,18 @@ public class SmartStoreUtil {
 		return weights;
 	}
 
-	public static List getVariantNamesSortedInUse(EnumSiteFeature feature) {
+	public static List<String> getVariantNamesSortedInUse(EnumSiteFeature feature) {
 		return getVariantNamesSortedInUse(feature, null, true);
 	}
 
-	public static List getVariantNamesSortedInUse(EnumSiteFeature feature, Date date) {
+	public static List<String> getVariantNamesSortedInUse(EnumSiteFeature feature, Date date) {
 		return getVariantNamesSortedInUse(feature, date, false);
 	}
 
-	public static List getVariantNamesSortedInUse(EnumSiteFeature feature, Date date, boolean current) {
+	public static List<String> getVariantNamesSortedInUse(EnumSiteFeature feature, Date date, boolean current) {
 		final VariantSelection vs = VariantSelection.getInstance();
-		List variants = vs.getVariants(feature);
-		Map assignment;
-		assignment = getAssignment(feature, date, current);
+		List<String> variants = vs.getVariants(feature);
+		Map<String,String> assignment = getAssignment(feature, date, current);
 
 		getVariantNamesSortedInUse(variants, assignment);
 		return variants;
@@ -328,7 +325,7 @@ public class SmartStoreUtil {
 	 * @param feature
 	 * @return
 	 */
-	public static Map getAssignment(EnumSiteFeature feature) {
+	public static Map<String,String> getAssignment(EnumSiteFeature feature) {
 		return getAssignment(feature, null, true);
 	}
 
@@ -342,7 +339,7 @@ public class SmartStoreUtil {
 	 * @param date
 	 * @return
 	 */
-	public static Map getAssignment(EnumSiteFeature feature, Date date) {
+	public static Map<String,String> getAssignment(EnumSiteFeature feature, Date date) {
 		return getAssignment(feature, date, false);
 	}
 
@@ -355,23 +352,26 @@ public class SmartStoreUtil {
 	 * @param current
 	 * @return
 	 */
-	public static Map getAssignment(EnumSiteFeature feature, Date date,
+	public static Map<String,String> getAssignment(EnumSiteFeature feature, Date date,
 			boolean current) {
-		Map assignment;
+		Map<String,String> assignment;
 		final VariantSelection vs = VariantSelection.getInstance();
 		if (current) {
-			List cohorts = vs.getCohortNames();
+			List<String> cohorts = vs.getCohortNames();
 			VariantSelector vsr = VariantSelectorFactory.getInstance(feature);
-			assignment = new HashMap(cohorts.size());
-			for (int i = 0; i < cohorts.size(); i++)
-				assignment.put(cohorts.get(i), vsr.getService((String) cohorts.get(i)) == null ? null :
-						vsr.getService((String) cohorts.get(i)).getVariant().getId());
-		} else
+			assignment = new HashMap<String,String>(cohorts.size());
+			for (int i = 0; i < cohorts.size(); i++) {
+				assignment.put(cohorts.get(i), vsr.getService(cohorts.get(i)) == null ? null :
+						vsr.getService(cohorts.get(i)).getVariant().getId());
+			}
+		} else {
 			assignment = vs.getVariantMap(feature, date);
+		}
 		return assignment;
 	}
 
-	private static void getVariantNamesSortedInUse(List variants, final Map assignment) {
+	@SuppressWarnings("unchecked")
+    private static void getVariantNamesSortedInUse(List<String> variants, final Map<String,String> assignment) {
 		Collections.sort(variants, new Comparator() {
 			public int compare(Object o1, Object o2) {
 				if (o1 == null) {
@@ -411,7 +411,8 @@ public class SmartStoreUtil {
 	 * @param names
 	 * @return
 	 */
-	public static List sortVariantNames(List names) {
+	@SuppressWarnings("unchecked")
+    private static List sortVariantNames(List names) {
 		Collections.sort(names, new Comparator() {
 			public int compare(Object o1, Object o2) {
 				if (o1 == null) {
@@ -435,12 +436,12 @@ public class SmartStoreUtil {
 	}
 	
 	public static boolean isCohortAssigmentUptodate() {
-		List siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
-		Iterator it = siteFeatures.iterator();
+		List<EnumSiteFeature > siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
+		Iterator<EnumSiteFeature> it = siteFeatures.iterator();
 		while (it.hasNext()) {
-			EnumSiteFeature sf = (EnumSiteFeature) it.next();
-			Map curVars = getAssignment(sf, null, true);
-			Map asgmnt = (Map) getAssignment(sf, null, false);
+			EnumSiteFeature sf = it.next();
+			Map<String,String> curVars = getAssignment(sf, null, true);
+			Map<String,String> asgmnt = getAssignment(sf, null, false);
 			if (!curVars.equals(asgmnt)) {
 				return false;
 			}
@@ -466,10 +467,11 @@ public class SmartStoreUtil {
 		if (feature == null)
 			return null;
 
-		RecommendationService svc = (RecommendationService) SmartStoreServiceConfiguration
-		.getInstance().getServices(feature).get(variantId);
-
-		return svc.getVariant();
+		Variant variant = VariantRegistry.getInstance().getService(variantId);
+		if (variant != null && variant.getSiteFeature().equals(feature))
+			return variant;
+		else
+			return null;
 	}
 	
 	
@@ -478,13 +480,12 @@ public class SmartStoreUtil {
 	 * @param models List<ContentNodeModel>
 	 * @return List<ContentKey>
 	 */
-        public static List toContentKeysFromModels(Collection models) {
+        public static List<ContentKey> toContentKeysFromModels(Collection<ContentNodeModel> models) {
             if (models==null) {
                 return null;
             }
-            List result = new ArrayList(models.size());
-            for (Iterator iter = models.iterator(); iter.hasNext();) {
-                ContentNodeModel model = (ContentNodeModel) iter.next();
+            List<ContentKey> result = new ArrayList<ContentKey>(models.size());
+            for (ContentNodeModel model : models) {
                 result.add(model.getContentKey());
             }
             return result;
@@ -496,40 +497,38 @@ public class SmartStoreUtil {
          * @param models List<ContentNodeModel>
          * @return Set<ContentKey>
          */
-        public static Set toContentKeySetFromModels(Collection models) {
+        public static Set<ContentKey> toContentKeySetFromModels(Collection<ContentNodeModel> models) {
             if (models==null) {
                 return null;
             }
-            Set result = new HashSet(models.size());
-            for (Iterator iter = models.iterator(); iter.hasNext();) {
-                ContentNodeModel model = (ContentNodeModel) iter.next();
+            Set<ContentKey> result = new HashSet<ContentKey>(models.size());
+            for (ContentNodeModel model : models) {
                 result.add(model.getContentKey());
             }
             return result;
         }
 
-        public static List toContentNodesFromKeys(List keys) {
+        public static List<ContentNodeModel> toContentNodesFromKeys(List<ContentKey> keys) {
             if (keys==null) {
                 return null;
             }
-            List result = new ArrayList(keys.size());
+            List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(keys.size());
             ContentFactory factory = ContentFactory.getInstance();
-            for (Iterator iter = keys.iterator(); iter.hasNext();) {
-                ContentKey contentKey = (ContentKey) iter.next();
+            for (ContentKey contentKey : keys) {
                 ContentNodeModel model = factory.getContentNodeByKey(contentKey);
                 result.add(model);
             }
             return result;
         }
 
-	public static ThreadLocal CFG_PRODS = new ThreadLocal() {
-	    protected Object initialValue() {
-	        return new HashMap();
+	private static ThreadLocal<Map<String, ProductModel>> CFG_PRODS = new ThreadLocal<Map<String, ProductModel>>() {
+	    protected Map<String, ProductModel> initialValue() {
+	        return new HashMap<String, ProductModel>();
 	    }
 	};
 
 	public static void clearConfiguredProductCache() {
-		((Map) CFG_PRODS.get()).clear();
+		CFG_PRODS.get().clear();
 	}
 
 	/**
@@ -541,26 +540,26 @@ public class SmartStoreUtil {
 		ProductModel orig = pm;
 		while (pm instanceof ConfiguredProduct)
 			pm = ((ConfiguredProduct) pm).getProduct();
-		if (pm != orig && pm != null)
-			((Map) CFG_PRODS.get()).put(pm.getContentKey().getId(), orig);
+		if (pm != orig && pm != null) {
+			CFG_PRODS.get().put(pm.getContentKey().getId(), orig);
+		}
 		return pm;
 	}
 
-	public static Map getConfiguredProductCache() {
-		return (Map) CFG_PRODS.get();
+	public static Map<String, ProductModel> getConfiguredProductCache() {
+		return CFG_PRODS.get();
 	}
 
-	public static List addConfiguredProductToCache(List list) {
-		List ret = new ArrayList(list.size());
-		for (ListIterator it = list.listIterator(); it.hasNext(); ) {
-			ProductModel current = (ProductModel) it.next();
-			ProductModel replace = addConfiguredProductToCache((ProductModel) current);
-			if (replace != null)
-				ret.add(replace);
-		}
-		return ret;
-	}
-	
+        public static List<ProductModel> addConfiguredProductToCache(List<ProductModel> list) {
+            List<ProductModel> ret = new ArrayList<ProductModel>(list.size());
+            for (ProductModel current : list) {
+                ProductModel replace = addConfiguredProductToCache((ProductModel) current);
+                if (replace != null) {
+                    ret.add(replace);
+                }
+            }
+            return ret;
+        }	
 	
 
 	/**
@@ -595,15 +594,15 @@ public class SmartStoreUtil {
 		return false;
 	}
 	
-	public static int countSavingProductsInCart(Variant v, FDUserI user, Map previousRecommendations) {
+	public static int countSavingProductsInCart(Variant v, FDUserI user, Map<String, List<ContentKey>> previousRecommendations) {
 		if (v == null || !v.isSmartSavings() || user == null)
 			return 0;
 
 		//int count = 0;
-		List cachedItems = (List) previousRecommendations.get(v.getId());
+		List<ContentKey> cachedItems = previousRecommendations.get(v.getId());
 		if (cachedItems == null)
 			return 0;
-		Set uniqueKeys = new HashSet();
+		Set<String> uniqueKeys = new HashSet<String>();
 		OUTER: for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
 			FDCartLineI cl = (FDCartLineI) it.next();
 
@@ -612,7 +611,7 @@ public class SmartStoreUtil {
 			if (isSavingsItem) {
 				String productId = cl.getProductName();
 				for (int i = 0; i < cachedItems.size(); i++) {
-					ContentKey key = (ContentKey) cachedItems.get(i);
+					ContentKey key = cachedItems.get(i);
 					if (key.getId().equals(productId)) {
 						//count++;
 						uniqueKeys.add(productId);
@@ -628,12 +627,12 @@ public class SmartStoreUtil {
 		return count;
 	}
 	
-	public static double sumOfSavingsInCart(Variant v, FDUserI user, Map previousRecommendations) {
+	public static double sumOfSavingsInCart(Variant v, FDUserI user, Map<String, List<ContentKey>> previousRecommendations) {
 		if (v == null || !v.isSmartSavings() || user == null)
 			return 0.;
 
 		double sum = 0.;
-		List cachedItems = (List) previousRecommendations.get(v.getId());
+		List<ContentKey> cachedItems = previousRecommendations.get(v.getId());
 		if (cachedItems == null)
 			return 0.;
 		
@@ -645,7 +644,7 @@ public class SmartStoreUtil {
 			if (isSavingsItem) {
 				String productId = cl.getProductName();
 				for (int i = 0; i < cachedItems.size(); i++) {
-					ContentKey key = (ContentKey) cachedItems.get(i);
+					ContentKey key = cachedItems.get(i);
 					if (key.getId().equals(productId)) {
 						sum += cl.getDiscountAmount();
 						continue OUTER;

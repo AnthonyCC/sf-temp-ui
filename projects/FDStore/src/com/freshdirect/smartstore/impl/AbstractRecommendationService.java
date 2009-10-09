@@ -15,6 +15,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductFilterFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.StringUtil;
@@ -22,12 +23,14 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
+import com.freshdirect.smartstore.filter.FilterFactory;
+import com.freshdirect.smartstore.filter.ProductFilter;
 import com.freshdirect.smartstore.sampling.ConfiguredImpressionSampler;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.ListSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
 import com.freshdirect.smartstore.sampling.SimpleLimit;
+import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 
 /**
  * Simple abstract implementation of recommendation service
@@ -47,17 +50,17 @@ public abstract class AbstractRecommendationService implements RecommendationSer
     private ImpressionSampler sampler;
 	
     protected boolean aggregateAtCategoryLevel;
-    protected boolean includeCartItems;
+    private boolean includeCartItems;
   
     /**
      * ThreadLocal<Map<String:ContentKey.id,String:Recommender.id>>
      */
-    public static ThreadLocal RECOMMENDER_SERVICE_AUDIT = new ThreadLocal();
+    public static ThreadLocal<Map<String,String>> RECOMMENDER_SERVICE_AUDIT = new ThreadLocal<Map<String,String>>();
 
     /**
      * ThreadLocal<Map<String:ContentKey.id,String:RecommenderStrategy.id>>
      */
-    public static ThreadLocal RECOMMENDER_STRATEGY_SERVICE_AUDIT = new ThreadLocal();
+    public static ThreadLocal<Map<String,String>> RECOMMENDER_STRATEGY_SERVICE_AUDIT = new ThreadLocal<Map<String,String>>();
 
     
     /**
@@ -257,8 +260,14 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 		return this.variant;
 	}
 
-	abstract public List recommendNodes(SessionInput input);
+	final public List<ContentNodeModel> recommendNodes(SessionInput input) {
+		if (!input.isIncludeCartItems())
+			input.setIncludeCartItems(includeCartItems);
+		return doRecommendNodes(input);
+	}
 	
+	protected abstract List<ContentNodeModel> doRecommendNodes(SessionInput input);
+
 	public String getDescription() {
 	    return "";
 	}
@@ -288,7 +297,7 @@ public abstract class AbstractRecommendationService implements RecommendationSer
                     rankedContents.add(new RankedContent.Single(size - i, node));
                 }
                 List result = RankedContent.getContentNodeModel(getSampler(input).sample(rankedContents,
-                		includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), rankedContents.size()));
+                		input.isIncludeCartItems() ? Collections.EMPTY_SET : input.getCartContents(), rankedContents.size()));
                 return result;
             }
             return nodes;
@@ -304,7 +313,7 @@ public abstract class AbstractRecommendationService implements RecommendationSer
         protected List sampleRankedContents(SessionInput input, List nodes, Collection exclude) {
             if (!(nodes.isEmpty() || input.isNoShuffle())) {
                 List sample = RankedContent.getContentNodeModel(getSampler(input).sample(nodes,
-                		includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), nodes.size()));
+                		input.isIncludeCartItems() ? Collections.EMPTY_SET : input.getCartContents(), nodes.size()));
                 List result = new ArrayList(sample.size());
                 for (int i=0;i<sample.size();i++) {
                     ContentNodeModel model = (ContentNodeModel)  sample.get(i);
@@ -315,9 +324,12 @@ public abstract class AbstractRecommendationService implements RecommendationSer
                 return result;
             } else {
                 List result = new ArrayList(nodes.size());
+				ProductFilter filter = FilterFactory.createStandardFilter(input.isIncludeCartItems() ?
+						Collections.EMPTY_LIST : input.getCartContents());                
                 for (Iterator iter = nodes.iterator(); iter.hasNext();) {
                     RankedContent.Single node = (RankedContent.Single) iter.next();
-                    if (!exclude.contains(node.getModel())) {
+                    if (!exclude.contains(node.getModel()) &&
+                    		filter.filter((ProductModel) node.getModel()) != null) {
                         result.add(node.getModel());
                     }
                 }
@@ -330,8 +342,8 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 		return "Service(feature:"+variant.getSiteFeature().getName() +
 		    ",variant:" + variant.getId()+
 		    ",class:"+StringUtil.getSimpleName(this.getClass())+
-		    ','+SmartStoreServiceConfiguration.CKEY_CAT_AGGR + ':' + aggregateAtCategoryLevel+
-		    ','+SmartStoreServiceConfiguration.CKEY_INCLUDE_CART_ITEMS + ':' + includeCartItems + 
+		    ','+RecommendationServiceFactory.CKEY_CAT_AGGR + ':' + aggregateAtCategoryLevel+
+		    ','+RecommendationServiceFactory.CKEY_INCLUDE_CART_ITEMS + ':' + includeCartItems + 
 		    ",sampler:("+sampler+"),"+getDescription()+")";
 	}
 

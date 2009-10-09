@@ -18,14 +18,13 @@ public class MediaAssociator {
 	private final static String EXTENSION_SEPARATOR = ".";
 
 	/** Map of String (prefix) -> (Map of String (suffix) -> MediaAssociator.Rule */
-	private final Map rules = new HashMap();
+	private final Map<String,Map<String,MediaAssociator.Rule>> rules = new HashMap<String,Map<String,MediaAssociator.Rule>>();
 
-	public void addRule(String prefix, String suffix, ContentType type,
-			String attributeName) {
+	public void addRule(String prefix, String suffix, ContentType type, String attributeName) {
 
-		Map m = (Map) rules.get(prefix);
+		Map<String,MediaAssociator.Rule> m = rules.get(prefix);
 		if (m == null) {
-			m = new HashMap();
+			m = new HashMap<String,MediaAssociator.Rule>();
 			rules.put(prefix, m);
 		}
 
@@ -73,12 +72,11 @@ public class MediaAssociator {
 			return null;
 		}
 
-		Map m = (Map) rules.get(prefix);
+		Map<String, MediaAssociator.Rule> m = rules.get(prefix);
 		if (m != null) {
 			Rule r = (Rule) m.get(suffix);
 			if (r != null) {
-				return new MediaAssociation(new ContentKey(r.type, id),
-						r.attributeName);
+				return new MediaAssociation(new ContentKey(r.type, id),r.attributeName);
 			}
 		}
 

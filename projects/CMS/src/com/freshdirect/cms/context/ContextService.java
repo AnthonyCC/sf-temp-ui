@@ -2,7 +2,6 @@ package com.freshdirect.cms.context;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -41,17 +40,16 @@ public class ContextService {
 	 * @param key content key, never null
 	 * @return Collection of {@link Context}, never null
 	 */
-	public Collection getAllContextsOf(ContentKey key) {
-		List contexts = new ArrayList();
-		Set parentKeys = contentService.getParentKeys(key);
-		if (parentKeys.isEmpty()) {
-			contexts.add(new Context(null, key));
+	public Collection<Context> getAllContextsOf( ContentKey key ) {
+		List<Context> contexts = new ArrayList<Context>();
+		Set<ContentKey> parentKeys = contentService.getParentKeys( key );
+		if ( parentKeys.isEmpty() ) {
+			contexts.add( new Context( null, key ) );
 		} else {
-			for (Iterator in = parentKeys.iterator(); in.hasNext();) {
-				ContentKey parentKey = (ContentKey) in.next();
-				Collection parentContexts = getAllContextsOf(parentKey);
-				for (Iterator ic = parentContexts.iterator(); ic.hasNext();) {
-					contexts.add(new Context((Context) ic.next(), key));
+			for ( ContentKey parentKey : parentKeys ) {
+				Collection<Context> parentContexts = getAllContextsOf( parentKey );
+				for ( Context ctx : parentContexts ) {
+					contexts.add( new Context( ctx, key ) );
 				}
 			}
 		}

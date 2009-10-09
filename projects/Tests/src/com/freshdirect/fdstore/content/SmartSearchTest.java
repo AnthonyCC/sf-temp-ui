@@ -1,7 +1,9 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,9 +34,12 @@ import com.freshdirect.cms.search.LuceneSearchServiceTest;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticProviderAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticUserProviderAspect;
+import com.freshdirect.fdstore.aspects.ScoreFactorGlobalNameAspect;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.util.SearchNavigator;
+import com.freshdirect.smartstore.dsl.Expression;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.smartstore.impl.GlobalCompiler;
 import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockPageContext;
@@ -89,11 +94,12 @@ public class SmartSearchTest extends TestCase {
 
         CmsManager.setInstance(new CmsManager(service, searchService));
 
+        aspectSystem.add(new ScoreFactorGlobalNameAspect(Collections.singleton(ScoreProvider.GLOBAL_POPULARITY)));
         
         aspectSystem.add(new FDFactoryProductInfoAspect().addAvailableSku("DAI0008813", 2.0).addAvailableSku("DAI0008812", 3.0).addAvailableSku("CAN0062899",
                 4.0).addAvailableSku("DAI0059088", 5.0));
 
-        aspectSystem.add(new ProductStatisticProviderAspect() {
+        /*aspectSystem.add(new ProductStatisticProviderAspect() {
             public Map getGlobalProductScores() {
                 try {
                     Map map = new HashMap();
@@ -106,20 +112,43 @@ public class SmartSearchTest extends TestCase {
                 }
             }
 
-        });
+        });*/
         ScoreProvider.setInstance(new ProductStatisticUserProviderAspect() {
-            public Map getUserProductScores(String userId) {
-                try {
-                    Map map = new HashMap();
-                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_orgval_whlmilk_01"), new Float(3));
-                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_organi_1_milk_01"), new Float(2));
-                    return map;
-                } catch (InvalidContentKeyException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+             
 
+            @Override
+            protected double getPersonalizedScore(String userId, ContentKey key, int idx) {
+                String id = key.getId();
+                if ("dai_orgval_whlmilk_01".equals(id)) {
+                    return 3;
+                }
+                if ("dai_organi_1_milk_01".equals(id)) {
+                    return 2;
+                }
+                return 0;
+            }
+            
+            @Override
+            protected double getGlobalScore(ContentKey key, int idx) {
+                String id = key.getId();
+                if ("cfncndy_ash_mcrrd".equals(id)) {
+                    return 100;
+                }
+                if ("dai_orgval_whlmilk_01".equals(id)) {
+                    return 90;
+                }
+                if ("dai_organi_2_milk_02".equals(id)) {
+                    return 80;
+                }
+             
+                return 0;
+            }
+            
+            
+        }.addPersonalizedFactors(ScoreProvider.USER_FREQUENCY).addGlobalFactors(ScoreProvider.GLOBAL_POPULARITY));
+
+        GlobalCompiler.getInstance().addVariable(ScoreProvider.GLOBAL_POPULARITY, Expression.RET_FLOAT);
+        GlobalCompiler.getInstance().addVariable(ScoreProvider.USER_FREQUENCY, Expression.RET_FLOAT);
         initTag();
     }
 
@@ -145,7 +174,7 @@ public class SmartSearchTest extends TestCase {
         try {
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_NAME));
+            request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
             sst.doStartTag();
 
             assertSmartSearchTagResult();
@@ -182,7 +211,7 @@ public class SmartSearchTest extends TestCase {
         try {
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_NAME));
+            request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
             request.setupAddParameter("pageSize", "2");
             request.setupAddParameter("start", "0");
             sst.doStartTag();
@@ -239,7 +268,7 @@ public class SmartSearchTest extends TestCase {
         try {
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_NAME));
+            request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
             sst.doStartTag();
 
             assertSmartSearchTagResult();
@@ -269,7 +298,7 @@ public class SmartSearchTest extends TestCase {
         try {
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_NAME));
+            request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
             request.setupAddParameter("brandValue", "bd_organic_valley");
 
             sst.doStartTag();
@@ -302,7 +331,7 @@ public class SmartSearchTest extends TestCase {
         try {
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_NAME));
+            request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
             request.setupAddParameter("catId", "gro_choc_fine");
 
             sst.doStartTag();
@@ -322,7 +351,7 @@ public class SmartSearchTest extends TestCase {
             initTag();
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_NAME));
+            request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
             request.setupAddParameter("catId", "gro_candy_blkch");
 
             sst.doStartTag();
@@ -341,7 +370,7 @@ public class SmartSearchTest extends TestCase {
         try {
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_NAME));
+            request.setupAddParameter("sort", SearchSortType.BY_NAME.getLabel());
             request.setupAddParameter("brandValue", "bd_organic_valley");
             request.setupAddParameter("catId", "orgnat_dai_milk");
             request.setupAddParameter("start", "0");
@@ -373,7 +402,7 @@ public class SmartSearchTest extends TestCase {
         try {
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_PRICE));
+            request.setupAddParameter("sort", SearchSortType.BY_PRICE.getLabel());
             request.setupAddParameter("start", "0");
             sst.doStartTag();
 
@@ -407,7 +436,7 @@ public class SmartSearchTest extends TestCase {
         try {
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_POPULARITY));
+            request.setupAddParameter("sort", SearchSortType.BY_POPULARITY.getLabel());
             request.setupAddParameter("start", "0");
             sst.doStartTag();
 
@@ -441,7 +470,7 @@ public class SmartSearchTest extends TestCase {
         try {
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_RELEVANCY));
+            request.setupAddParameter("sort", SearchSortType.BY_RELEVANCY.getLabel());
             request.setupAddParameter("start", "0");
             sst.doStartTag();
 
@@ -481,7 +510,7 @@ public class SmartSearchTest extends TestCase {
         try {
 
             request.setupAddParameter("searchParams", "chocolate milk dairy organic");
-            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_RELEVANCY));
+            request.setupAddParameter("sort", SearchSortType.BY_RELEVANCY.getLabel());
             request.setupAddParameter("start", "0");
             sst.doStartTag();
 

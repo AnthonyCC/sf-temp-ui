@@ -11,6 +11,7 @@ import java.util.Random;
 
 import junit.framework.TestCase;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
@@ -31,7 +32,7 @@ public class VariantSelectorTest extends TestCase {
 			return variant;
 		}
 
-		public List recommendNodes(SessionInput input) {
+		public List<ContentNodeModel> recommendNodes(SessionInput input) {
 			return null;
 		}
 

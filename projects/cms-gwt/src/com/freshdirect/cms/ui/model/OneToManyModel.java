@@ -1,11 +1,18 @@
 package com.freshdirect.cms.ui.model;
 
+import com.freshdirect.cms.ui.client.NewContentNodePopup;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Widget;
 
 public class OneToManyModel extends ContentNodeModel {
 
     private static final long serialVersionUID = 1L;
 
+    GwtNodeData newNodeData;
+    
     public OneToManyModel() {
         super();
     }
@@ -13,6 +20,19 @@ public class OneToManyModel extends ContentNodeModel {
     public OneToManyModel(String type, String key, String label, int index) {
         super(type, label, key);
         setIndex(index);
+    }
+    
+    
+    public boolean isNewlyCreated() {
+        return newNodeData != null;
+    }
+    
+    public void setNewNodeData(GwtNodeData newNodeData) {
+        this.newNodeData = newNodeData;
+    }
+    
+    public GwtNodeData getNewNodeData() {
+        return newNodeData;
     }
 
     public int getIndex() {
@@ -33,4 +53,21 @@ public class OneToManyModel extends ContentNodeModel {
         return "OneToManyModel[" + getKey() + ',' + getType() + ',' + getLabel() + ',' + getIndex() + ',' + getValue() + ']';
     }
 
+    
+    @Override
+    public Widget renderLinkComponent() {
+        if (isNewlyCreated()) {
+            Anchor a = new Anchor(getLabel());
+            a.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    NewContentNodePopup ncn = new NewContentNodePopup(OneToManyModel.this.newNodeData, null);
+                    ncn.show();
+                }
+            });
+            return a;
+        }
+        return super.renderLinkComponent();
+    }
+    
 }

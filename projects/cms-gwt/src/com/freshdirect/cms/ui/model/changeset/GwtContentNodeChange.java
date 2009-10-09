@@ -18,8 +18,10 @@ public class GwtContentNodeChange implements Serializable {
     private String contentType;
     private String contentId;
     
-
-    protected GwtContentNodeChange() {    	
+    private String previewLink;
+    
+    
+	protected GwtContentNodeChange() {    	
     }
     
 	public GwtContentNodeChange( String contentKey, String changeType ) {
@@ -86,7 +88,15 @@ public class GwtContentNodeChange implements Serializable {
         return this.changeSet;
     }
 
-    
+	public String getPreviewLink() {
+		return previewLink;
+	}
+	
+	public void setPreviewLink( String previewLink ) {
+		this.previewLink = previewLink;
+	}
+
+
     
     public void addDetail(GwtChangeDetail detail) {
         this.changeDetails.add(detail);

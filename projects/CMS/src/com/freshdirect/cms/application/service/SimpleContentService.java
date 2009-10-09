@@ -30,10 +30,10 @@ public class SimpleContentService extends AbstractContentService implements Cont
 	private final ContentTypeServiceI typeService;
 
 	/** Map of ContentKey -> ContentNodeI */
-	private Map nodesByKey = new HashMap();
+	private Map<ContentKey,ContentNodeI> nodesByKey = new HashMap<ContentKey,ContentNodeI>();
 
 	/** Map of ContentKey (child) -> Set of ContentKey (parents) */
-	private Map nodeParentsByKey = new HashMap();
+	private Map<ContentKey,Set<ContentKey>> nodeParentsByKey = new HashMap<ContentKey,Set<ContentKey>>();
 
 	public SimpleContentService(ContentTypeServiceI typeService) {
 		this.typeService = typeService;
@@ -47,10 +47,10 @@ public class SimpleContentService extends AbstractContentService implements Cont
 		return (ContentNodeI) nodesByKey.get(key);
 	}
 
-	public Map getContentNodes(Set keys) {
-		Map m = new HashMap(keys.size());
-		for (Iterator i = keys.iterator(); i.hasNext();) {
-			ContentKey key = (ContentKey) i.next();
+	public Map<ContentKey,ContentNodeI> getContentNodes(Set<ContentKey> keys) {
+		Map<ContentKey,ContentNodeI> m = new HashMap<ContentKey,ContentNodeI>(keys.size());
+		for (Iterator<ContentKey> i = keys.iterator(); i.hasNext();) {
+			ContentKey key = i.next();
 			ContentNodeI node = getContentNode(key);
 			if (node != null) {
 				m.put(key, node);
@@ -59,10 +59,10 @@ public class SimpleContentService extends AbstractContentService implements Cont
 		return m;
 	}
 
-	public Set getContentKeysByType(ContentType type) {
-		Set keys = new HashSet();
-		for (Iterator i = nodesByKey.keySet().iterator(); i.hasNext();) {
-			ContentKey key = (ContentKey) i.next();
+	public Set<ContentKey> getContentKeysByType(ContentType type) {
+		Set<ContentKey> keys = new HashSet<ContentKey>();
+		for (Iterator<ContentKey> i = nodesByKey.keySet().iterator(); i.hasNext();) {
+			ContentKey key = i.next();
 			if (key.getType().equals(type)) {
 				keys.add(key);
 			}
@@ -70,12 +70,12 @@ public class SimpleContentService extends AbstractContentService implements Cont
 		return keys;
 	}
 
-	public Set getContentKeys() {
+	public Set<ContentKey> getContentKeys() {
 		return Collections.unmodifiableSet(nodesByKey.keySet());
 	}
 
-	public Set getParentKeys(ContentKey key) {
-		Set s = (Set) nodeParentsByKey.get(key);
+	public Set<ContentKey> getParentKeys(ContentKey key) {
+		Set<ContentKey> s = nodeParentsByKey.get(key);
 		return s == null ? Collections.EMPTY_SET : s;
 	}
 
@@ -95,7 +95,7 @@ public class SimpleContentService extends AbstractContentService implements Cont
 		return new CmsResponse();
 	}
 
-	protected void putNodes(Map nodes) {
+	protected void putNodes(Map<ContentKey,ContentNodeI> nodes) {
 		nodesByKey.putAll(nodes);
 		buildNodeIndex();
 	}

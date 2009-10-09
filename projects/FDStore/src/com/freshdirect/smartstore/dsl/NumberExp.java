@@ -42,5 +42,10 @@ public class NumberExp extends Expression {
     public Number evaluateExpression() {
         return number;
     }
+    
+    @Override
+    public String getStringValue() {
+        return number.toString();
+    }
 
 }

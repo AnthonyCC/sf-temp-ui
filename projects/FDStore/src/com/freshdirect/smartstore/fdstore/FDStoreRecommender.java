@@ -9,14 +9,16 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductRef;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -31,47 +33,67 @@ import com.freshdirect.smartstore.ymal.YmalUtil;
 public class FDStoreRecommender {
     private final static Logger LOGGER = Logger.getLogger(FDStoreRecommender.class);
 
-	public List filterProducts(List models, final Collection cartItems, boolean includeCartItems) {
-		List newModels = new ArrayList(models.size());
-		
-		ProductFilter filter = null;
-        if (!includeCartItems)
-        	filter = FilterFactory.createStandardFilter(cartItems);
-        else
-        	filter = FilterFactory.createStandardFilter(); 
-		
-		Iterator it = models.iterator();
-		while (it.hasNext()) {
-			ProductModel model = filter.filter((ProductModel) it.next());
-	        if (model != null)
-	        	newModels.add(model);
-		}
+    public List<ContentNodeModel> filterProducts(List<ContentNodeModel> models, final Collection<ContentKey> cartItems, boolean includeCartItems) {
+        List<ContentNodeModel> newModels = new ArrayList<ContentNodeModel>(models.size());
+
+        ProductFilter filter = null;
+        if (!includeCartItems) {
+            filter = FilterFactory.createStandardFilter(cartItems);
+        } else {
+            filter = FilterFactory.createStandardFilter();
+        }
+        
+        Iterator it = models.iterator();
+        while (it.hasNext()) {
+            ProductModel model = filter.filter((ProductModel) it.next());
+            if (model != null) {
+                newModels.add(model);
+            }
+        }
 
         return newModels;
-	}
+    }
 
         /**
          * 
          * @param user
          * @return Set<ProductModel>
          */
-        public static Set getShoppingCartContents(FDUserI user) {
+        public static Set<ContentNodeModel> getShoppingCartContents(FDUserI user) {
             return getShoppingCartContents(user.getShoppingCart());
         }
-	
+
+        /**
+         * 
+         * @param user
+         * @return
+         */
+        public static Set<ContentKey> getShoppingCartContentKeys(FDUserI user) {
+            return getShoppingCartContentKeys(user.getShoppingCart());
+        }
+        
         /**
          * helper to turn a shopping cart into a set of products
          * 
          * @return Set<ProductModel>
          */
-	protected static Set getShoppingCartContents(FDCartModel cart) {
-		List orderlines = cart.getOrderLines();
-		Set products = new HashSet();
-		for(Iterator i = orderlines.iterator(); i.hasNext();) {
-			FDCartLineI cartLine = (FDCartLineI)i.next();
-			products.add(ContentFactory.getInstance().getProduct(cartLine.getProductRef()));
-		}
-		return products;
+        protected static Set<ContentNodeModel> getShoppingCartContents(FDCartModel cart) {
+            List<FDCartLineI> orderlines = cart.getOrderLines();
+            Set<ContentNodeModel> products = new HashSet<ContentNodeModel>();
+            for (FDCartLineI cartLine : orderlines) {
+                products.add(ContentFactory.getInstance().getProduct(cartLine.getProductRef()));
+            }
+            return products;
+        }
+	
+	protected static Set<ContentKey> getShoppingCartContentKeys(FDCartModel cart) {
+            List<FDCartLineI> orderlines = cart.getOrderLines();
+            Set<ContentKey> products = new HashSet<ContentKey>();
+            for (FDCartLineI cartLine : orderlines) {
+                ProductRef productRef = cartLine.getProductRef();
+                products.add(productRef.getProductContentKey());
+            }
+            return products;
 	}
 
 	/**
@@ -81,7 +103,7 @@ public class FDStoreRecommender {
 	 */
 	public Recommendations getRecommendations(EnumSiteFeature siteFeature, FDUserI user, 
 			SessionInput input, String overriddenVariantId) throws FDResourceException {
-		Set cartItems = SmartStoreUtil.toContentKeySetFromModels(getShoppingCartContents(user.getShoppingCart()));
+		Set<ContentKey> cartItems = getShoppingCartContentKeys(user.getShoppingCart());
 		return getRecommendations(siteFeature, user, input, overriddenVariantId, cartItems);
 	}
 
@@ -94,7 +116,7 @@ public class FDStoreRecommender {
          * 
          * @return The most expensive product as YmalSource
          */
-        public static YmalSource resolveYmalSource(Collection products, ServletRequest request) {
+        public static YmalSource resolveYmalSource(Collection<ContentNodeModel> products, ServletRequest request) {
             if (products == null || products.isEmpty()) {
                 return null;
             } else  {
@@ -112,7 +134,7 @@ public class FDStoreRecommender {
          * @param products List<ProductModel>
          */
         public static void initYmalSource(SessionInput input, FDUserI user, ServletRequest request) {
-            Set cartContents = FDStoreRecommender.getShoppingCartContents( user ) ;
+            Set<ContentNodeModel> cartContents = FDStoreRecommender.getShoppingCartContents( user ) ;
             input.setCartContents(SmartStoreUtil.toContentKeySetFromModels(cartContents));
             YmalSource ymal = resolveYmalSource(cartContents, request);
             if (ymal!=null) {
@@ -134,7 +156,7 @@ public class FDStoreRecommender {
 	 * @throws FDResourceException
 	 */
 	public Recommendations getRecommendations(EnumSiteFeature siteFeature, FDUserI user,
-			SessionInput input, String overriddenVariantId, Set cartItems) throws FDResourceException
+			SessionInput input, String overriddenVariantId, Set<ContentKey> cartItems) throws FDResourceException
 	{
 		if (cartItems != null) {
 		    input.setCartContents(cartItems);
@@ -145,18 +167,20 @@ public class FDStoreRecommender {
 			SmartStoreUtil.getRecommendationService(user, siteFeature, overriddenVariantId);
 		
 		
-		List contentModels = doRecommend(input, service);
+		List<ContentNodeModel> contentModels = doRecommend(input, service);
 
 		LOGGER.debug("Items before filter: " + contentModels);
 
 
 		// boolean includeCartItems = Boolean.valueOf(service.getVariant().getServiceConfig().get(SmartStoreServiceConfiguration.CKEY_INCLUDE_CART_ITEMS)).booleanValue();
 		// filter unnecessary models
-		List renderableProducts = filterProducts(contentModels, cartItems, service.isIncludeCartItems());
+		List<ContentNodeModel> renderableProducts = filterProducts(contentModels, cartItems, service.isIncludeCartItems());
 		
 		// shave off the extra ones
-		if (renderableProducts.size() > input.getMaxRecommendations()) 
+		// NOTE: Recommender no longer trim products to size.
+		/** if (renderableProducts.size() > input.getMaxRecommendations()) { 
 			renderableProducts = renderableProducts.subList(0, input.getMaxRecommendations());
+		} **/
 		
 		LOGGER.debug("Recommended products by " + service.getVariant().getId() + ": " + renderableProducts);
 
@@ -165,7 +189,7 @@ public class FDStoreRecommender {
 	}
 
 	// mock point
-	protected List doRecommend(SessionInput input, RecommendationService service) {
+	protected List<ContentNodeModel> doRecommend(SessionInput input, RecommendationService service) {
 		return service.recommendNodes(input);
 	}
 

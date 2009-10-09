@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
@@ -25,7 +26,7 @@ public class NullRecommendationService implements RecommendationService {
 		this.variant = variant;
 	}
 
-	public List recommendNodes(SessionInput input) {
+	public List<ContentNodeModel> recommendNodes(SessionInput input) {
 		return Collections.EMPTY_LIST;
 	}
 

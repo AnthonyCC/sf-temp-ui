@@ -66,6 +66,16 @@ public class CmsFunctionsTest extends TestCase {
                 LOGGER.info("getVariables called with name: '"+variables+"'");
                 return new double[variables.length];
             }
+            
+            @Override
+            public boolean addPrioritizedNode(ContentNodeModel model) {
+            	return false;
+            }
+            
+            @Override
+            public List<ContentNodeModel> getPrioritizedNodes() {
+            	return Collections.EMPTY_LIST;
+            }
         };
         
     }

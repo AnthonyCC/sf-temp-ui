@@ -30,6 +30,11 @@
     <load-on-startup>4</load-on-startup>
   </servlet>
 
+  <servlet>
+    <servlet-name>CsvExport</servlet-name>
+    <servlet-class>com.freshdirect.cms.ui.serviceimpl.CsvExportServlet</servlet-class>
+    <load-on-startup>5</load-on-startup>
+  </servlet>
 
 
   <servlet-mapping>
@@ -56,6 +61,13 @@
     <url-pattern>/com.freshdirect.cms.ui.cmsgwt/XlsUpload</url-pattern>
   </servlet-mapping>
 
+  <servlet-mapping>
+    <servlet-name>CsvExport</servlet-name>
+    <url-pattern>/CsvExport</url-pattern>
+    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/CsvExport</url-pattern>
+  </servlet-mapping>
+  
+  
   <filter>
 		<filter-name>registry</filter-name>
 		<filter-class>com.freshdirect.framework.conf.FDRegistryFilter</filter-class>

@@ -31,6 +31,15 @@ public class Expression {
     }
 
     
+    /**
+     * Return a code fragment which initialize, and declares the necessary variables.
+     * @return
+     * @throws CompileException
+     */
+    public String getJavaInitializationCode() throws CompileException {
+        return "";
+    }
+    
     public String toJavaCode() throws CompileException {
         throw new CompileException("Not implemented for "+this.getClass().getName());
     }
@@ -58,6 +67,10 @@ public class Expression {
         throw new RuntimeException(this.getClass().getName()+".evaluateExpression not supported!");
     }
     
+    public String getStringValue() {
+        throw new RuntimeException(this.getClass().getName()+".getStringValue() not supported!");
+    }
+    
     public void visit(ExpressionVisitor visitor) throws VisitException {
         visitor.visit(this);
     }
@@ -74,8 +87,13 @@ public class Expression {
             case RET_UNKNOWN : return "unknown";
             case RET_VOID : return "void";
             case RET_SYMBOL : return "symbol";
+            case RET_STRING : return "string";
+            case RET_NODE : return "node";
         }
-        throw new RuntimeException("Unknown code:"+code);
+        throw new RuntimeException("Unknown code:" + code + "('" + ((char) code) + "')");
     }
 
+	public Context getContext() {
+		return context;
+	}
 }

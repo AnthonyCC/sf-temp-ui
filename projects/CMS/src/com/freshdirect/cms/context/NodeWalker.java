@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.cms.AttributeI;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 
@@ -72,7 +73,7 @@ public class NodeWalker extends ContextWalker {
 	 *               
 	 * NOTE: Call after context (path) is walked.
 	 */
-	public int getRank(List deptKeys) {
+	public int getRank(List<ContentKey> deptKeys) {
 		final int n_depts = deptKeys.size();
 		ContentNodeI t = getTerminalNode(); // := [department] or null (it should not be)
 		return (isValid() ? n_depts : 0 ) + (n_depts-1)-(t == null ? 0 : deptKeys.indexOf(t.getKey()) );
@@ -119,27 +120,27 @@ public class NodeWalker extends ContextWalker {
 	}
 
 
-	public static Comparator getRankedComparator(ContextService service, List deptKeys) {
-		return new RankedContextComparator(service, deptKeys);
+	public static Comparator<Context> getRankedComparator(ContextService service, List<ContentKey> deptKeys) {
+		return new RankedContextComparator<Context>(service, deptKeys);
 	}
 }
 
 
 
 
-class RankedContextComparator implements Comparator {
+class RankedContextComparator<T> implements Comparator<Context> {
 	ContextService	svc;
-	List			deptKeys;
+	List<ContentKey>			deptKeys;
 	
-	public RankedContextComparator(ContextService service, List deptKeys) {
+	public RankedContextComparator(ContextService service, List<ContentKey> deptKeys) {
 		this.svc = service;
 		this.deptKeys = deptKeys;
 	}
 	
 	
-	public int compare(Object o1, Object o2) {
-		NodeWalker nw1 = new NodeWalker(svc.getContextualizedContentNode((Context) o1)).walkWithMe();
-		NodeWalker nw2 = new NodeWalker(svc.getContextualizedContentNode((Context) o2)).walkWithMe();
+	public int compare(Context c1, Context c2) {
+		NodeWalker nw1 = new NodeWalker(svc.getContextualizedContentNode(c1)).walkWithMe();
+		NodeWalker nw2 = new NodeWalker(svc.getContextualizedContentNode(c2)).walkWithMe();
 
 		int v1 = nw1.getRank(deptKeys);
 		int v2 = nw2.getRank(deptKeys);

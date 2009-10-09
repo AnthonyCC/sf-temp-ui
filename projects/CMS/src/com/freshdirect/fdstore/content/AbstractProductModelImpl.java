@@ -11,8 +11,10 @@ import java.util.Map;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.Attribute;
@@ -274,7 +276,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	
 	public int getHighestDealPercentage(String skuCode) {
 		SkuModel defaultSku = getDefaultSku();
-                if (skuCode == null) {
+		if (skuCode == null) {
 			skuCode = defaultSku != null ? defaultSku.getSkuCode() : null;
 		} else {
 			if (getSkuCodes().indexOf(skuCode) < 0) {
@@ -293,6 +295,143 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			}
 		}
 		return deal;
+	}
+
+	public String getTieredPrice(double savingsPercentage) {
+		SkuModel skuCode = getDefaultSku();
+
+		if (skuCode != null) {
+			try {
+				FDProductInfo productInfo = FDCachedFactory
+						.getProductInfo(skuCode.getSkuCode());
+				FDProduct product = FDCachedFactory.getProduct(productInfo);
+				if (product != null) {
+					String[] tieredPricing = null;
+
+					if (savingsPercentage > 0)
+						tieredPricing = product.getPricing().getScaleDisplay(
+								savingsPercentage);
+					else
+						tieredPricing = product.getPricing().getScaleDisplay();
+
+					if (tieredPricing.length > 0) {
+						return tieredPricing[tieredPricing.length - 1];
+					}
+				}
+				return null;
+			} catch (FDSkuNotFoundException ex) {
+			} catch (FDResourceException e) {
+			}
+		}
+		return null;
+	}
+	
+	public String getPriceFormatted(double savingsPercentage) {
+		SkuModel skuCode = getDefaultSku();
+
+		if (skuCode != null) {
+			try {
+				FDProductInfo productInfo = FDCachedFactory
+						.getProductInfo(skuCode.getSkuCode());
+				if (productInfo != null) {
+					double price;
+					if (savingsPercentage > 0) {
+						price = productInfo.getDefaultPrice()
+								* (1 - savingsPercentage);
+					} else if (productInfo.hasWasPrice()) {
+						price = productInfo.getDefaultPrice();
+					} else {
+						price = productInfo.getDefaultPrice();
+					}
+
+					return CURRENCY_FORMAT.format(price)
+							+ "/"
+							+ productInfo.getDisplayableDefaultPriceUnit()
+									.toLowerCase();
+				}
+				return null;
+			} catch (FDSkuNotFoundException ex) {
+			} catch (FDResourceException e) {
+			}
+		}
+		return null;
+	}
+
+	public String getWasPriceFormatted(double savingsPercentage) {
+		SkuModel skuCode = getDefaultSku();
+
+		if (skuCode != null) {
+			try {
+				FDProductInfo productInfo = FDCachedFactory
+						.getProductInfo(skuCode.getSkuCode());
+				if (productInfo != null) {
+					double wasPrice = 0;
+					
+					if ( savingsPercentage > 0 ) {
+						wasPrice = productInfo.getDefaultPrice();
+					} else if ( productInfo.hasWasPrice() ) {
+						wasPrice = productInfo.getBasePrice();
+					}
+
+					return CURRENCY_FORMAT.format(wasPrice)
+							+ "/"
+							+ productInfo.getDisplayableDefaultPriceUnit()
+									.toLowerCase();
+				}
+				return null;
+			} catch (FDSkuNotFoundException ex) {
+			} catch (FDResourceException e) {
+			}
+		}
+		return null;
+	}
+
+	public String getAboutPriceFormatted(double savingsPercentage) {
+		SkuModel skuCode = getDefaultSku();
+
+		if (skuCode != null) {
+			try {
+				FDProductInfo productInfo = FDCachedFactory
+						.getProductInfo(skuCode.getSkuCode());
+				if (productInfo != null) {
+					String displayPriceString = null;
+					FDProduct fdProduct = FDCachedFactory
+							.getProduct(productInfo);
+					if (fdProduct.getDisplaySalesUnits() != null
+							&& fdProduct.getDisplaySalesUnits().length > 0) {
+						FDSalesUnit fdSalesUnit = fdProduct
+								.getDisplaySalesUnits()[0];
+						double salesUnitRatio = (double) fdSalesUnit.getDenominator()
+								/ (double) fdSalesUnit.getNumerator();
+						String alternateUnit = fdSalesUnit.getName();
+
+						if (savingsPercentage < 0.)
+							savingsPercentage = 0.;
+						String[] scales = savingsPercentage > 0. ?
+								fdProduct.getPricing().getScaleDisplay() : 
+								fdProduct.getPricing().getScaleDisplay(savingsPercentage);
+						double displayPrice = 0.;
+						if (scales != null && scales.length > 0) {
+							displayPrice = fdProduct.getPricing().getMinPrice()
+									* (1. - savingsPercentage) / salesUnitRatio;
+						} else {
+							displayPrice = productInfo.getDefaultPrice()
+									* (1. - savingsPercentage) / salesUnitRatio;
+						}
+						if (displayPrice > 0.) {
+							displayPriceString = "about "
+									+ CURRENCY_FORMAT.format(displayPrice)
+									+ "/" + alternateUnit.toLowerCase();
+						}
+					}
+					return displayPriceString;
+				}
+				return null;
+			} catch (FDSkuNotFoundException ex) {
+			} catch (FDResourceException e) {
+			}
+		}
+		return null;
 	}
 	
 	public String getYmalHeader() {
@@ -385,6 +524,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	       
 	       return coolInfo;
 	}
+
 	private String getCOOLText(List countries) {
 		if(countries==null)
 			return "";
@@ -401,5 +541,4 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		}
 		return temp.toString();
 	}
-
 }

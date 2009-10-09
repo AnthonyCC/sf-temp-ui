@@ -28,11 +28,13 @@ import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.CmsUser;
 import com.freshdirect.cms.changecontrol.ChangeLogServiceI;
 import com.freshdirect.cms.changecontrol.ChangeSet;
+import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.cms.publish.EnumPublishStatus;
 import com.freshdirect.cms.publish.Publish;
 import com.freshdirect.cms.publish.PublishMessage;
 import com.freshdirect.cms.publish.PublishServiceI;
 import com.freshdirect.cms.search.SearchHit;
+import com.freshdirect.cms.search.SearchRelevancyList;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.BulkEditModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
@@ -69,7 +71,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     
     private static final String[] ROOTKEYS         = { "Store:FreshDirect", "MediaFolder:/", "CmsFolder:forms", "CmsQueryFolder:queries",
             "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", "FDFolder:starterLists",
-            "FDFolder:synonymList", "FDFolder:searchRelevancyList" };
+            "FDFolder:synonymList", SearchRelevancyList.SEARCH_RELEVANCY_KEY, SearchRelevancyList.WORD_STEMMING_EXCEPTION };
     
     public List<ContentNodeModel> search(String searchTerm) {
         List<SearchHit> hits = (List<SearchHit>)CmsManager.getInstance().search(searchTerm, MAX_HITS);
@@ -192,10 +194,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 ContentNodeI node = TranslatorFromGwt.getContentNodeI(gwtNode);
                 
                 for (String attrName : gwtNode.getChangedValueKeys()) {
-                    AttributeI attribute = node.getAttribute(attrName);
-                    if (attribute != null) {
-                        attribute.setValue(TranslatorFromGwt.getServerValue(gwtNode.getAttributeValue(attrName)));
-                    }
+                    node.setAttributeValue(attrName, TranslatorFromGwt.getServerValue(gwtNode.getAttributeValue(attrName)));
                 }
                 request.addNode(node);
             }
@@ -256,7 +255,9 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                     LOG.info("publish info:"+query.getPublishId() + " -> "+ publish.getId()+':'+publish.getStatus().getName()+" ("+publish.getDescription()+')');
                     return new ChangeSetQueryResponse(publish.getStatus().getName(),
                             publish.getTimestamp(), 
-                            System.currentTimeMillis() - publish.getTimestamp().getTime(), TranslatorToGwt.getPublishMessages(publish), getLastInfo(publish));
+                            System.currentTimeMillis() - publish.getTimestamp().getTime(), 
+                            TranslatorToGwt.getPublishMessages(publish, query.getPublishMessageStart(), query.getPublishMessageEnd()), 
+                            getLastInfo(publish));
                 }
                 
                 LOG.info("collecting changes from " + prevTimestamp + " to " + timestamp + ", query:" + query);
@@ -264,7 +265,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 LOG.info("returning " + result.size() + " changeset" + ", query:" + query);
                 
                 // hack, to not fail with thousands of changesets ...
-                return createResponse(TranslatorToGwt.getGwtChangeSets(result), query, TranslatorToGwt.getPublishMessages(publish));
+                return createResponse(TranslatorToGwt.getGwtChangeSets(result), query, publish);
             }
             return null;
         } catch (Throwable e) {
@@ -324,7 +325,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     }
     
 
-    private ChangeSetQueryResponse createResponse(List<GwtChangeSet> changeHistory, ChangeSetQuery query, List<GwtPublishMessage> pMessages) {
+    private ChangeSetQueryResponse createResponse(List<GwtChangeSet> changeHistory, ChangeSetQuery query, Publish publish) {
         int changeCount = 0;
         for (GwtChangeSet gcs : changeHistory) {
             changeCount += gcs.length();
@@ -350,10 +351,24 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 
         int limit = query.getLimit() <= 0 ? 1000 : Math.min(query.getLimit(), 1000);
         int end = Math.min(query.getStart() + limit, changeHistory.size());
+        
+        List<GwtChangeSet> clientChanges = null;
+        
         if (end == changeHistory.size() && query.getStart() == 0) {
-            return new ChangeSetQueryResponse(changeHistory, changeHistory.size(), changeCount, query, pMessages);
+            clientChanges = changeHistory;
+        } else {
+            clientChanges = new ArrayList<GwtChangeSet>(changeHistory.subList(query.getStart(), end)); 
         }
-        return new ChangeSetQueryResponse(new ArrayList<GwtChangeSet>(changeHistory.subList(query.getStart(), end)), changeHistory.size(), changeCount, query, pMessages);
+        List<GwtPublishMessage> publishMessages = null;
+        int publishMessageCount = 0;
+        
+        if (publish != null) {
+            publishMessageCount = publish.getMessages().size();
+            publishMessages = TranslatorToGwt.getPublishMessages(publish, query
+                    .getPublishMessageStart(), query.getPublishMessageEnd());            
+        }
+        
+        return new ChangeSetQueryResponse(clientChanges, changeHistory.size(), changeCount, query, publishMessages, publishMessageCount);
     }
 
 
@@ -450,5 +465,14 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     public void init() throws ServletException {
         super.init();
         CmsManager.getInstance();
+    }
+    
+    public String getPreviewUrl( String contentKey ) throws ServerException {
+        try {
+        	return PreviewLinkProvider.getLink( ContentKey.decode( contentKey ) );
+        } catch (Throwable e) {
+            LOG.error("RuntimeException in getPreviewUrl", e);
+            throw TranslatorToGwt.wrap(e);
+        }    	
     }
 }

@@ -53,7 +53,7 @@ public abstract class GeneratedContentNode implements ContentNodeI {
 
     public abstract Object getAttributeValue(String name);
     
-    public abstract void setAttributeValue(String name, Object value);
+    public abstract boolean setAttributeValue(String name, Object value);
 
     public AttributeDefI getAttributeDef(String name) {
         return (AttributeDefI) getAttributeDefs().get(name);

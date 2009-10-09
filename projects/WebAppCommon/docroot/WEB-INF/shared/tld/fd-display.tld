@@ -609,4 +609,16 @@
 		</attribute>
 	</tag>
 
+	<tag>
+		<name>StoreRecommendation</name>
+		<tagclass>com.freshdirect.webapp.taglib.smartstore.StoreRecommendationTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.smartstore.StoreRecommendationTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>recommendations</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>

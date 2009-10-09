@@ -21,7 +21,7 @@ public class VariableExpression extends Expression {
     }
     
     public String toJavaCode() throws CompileException {
-        return name;
+        return context.getJavaVariableId(name);
     }
 
     public String toString() {
@@ -30,5 +30,11 @@ public class VariableExpression extends Expression {
     
     public Number evaluateExpression() {
         return (Number) context.getVariableValue(name);
+    }
+    
+    @Override
+    public String getStringValue() {
+        Object value = context.getVariableValue(name);
+        return (value != null ? value.toString() : null);
     }
 }

@@ -418,42 +418,49 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
     
     // =============== ACTION METHODS =============== 
     
-    
     private void viewHistory() {
         if (currentNode != null) {
-            setStatus("Loading history...");
-            startProgress("Load", "Loading history of " + currentNode.getNode().getKey(), "loading...");
-            final String label = currentNode.getNode().getLabel() + " " + currentNode.getNode().getType() + " [" + currentNode.getNode().getKey() + "]";
+            viewHistory( currentNode.getNode().getKey(), currentNode.getNode().getLabel(), currentNode.getNode().getType() );
+        }    	
+    }
+    
+    public static void viewHistory( ContentNodeModel model ) {
+    	viewHistory( model.getKey(), model.getLabel(), model.getType() );    	
+    }
+    
+    public static void viewHistory( String contentKey, String contentLabel, String contentType ) {
+        setStatus("Loading history...");
+        startProgress("Load", "Loading history of " + contentKey, "loading...");
+        final String label = contentLabel + " " + contentType + " [" + contentKey + "]";
 
-            CmsGwt.getContentService().getChangeSets(new ChangeSetQuery().setByKey(currentNode.getNode().getKey()), new BaseCallback<ChangeSetQueryResponse>() {
-                @Override
-                public void errorOccured(Throwable error) {
-                    setStatus("Error loading history.");
-                    stopProgress();
-                }
+        CmsGwt.getContentService().getChangeSets(new ChangeSetQuery().setByKey(contentKey), new BaseCallback<ChangeSetQueryResponse>() {
+            @Override
+            public void errorOccured(Throwable error) {
+                setStatus("Error loading history.");
+                stopProgress();
+            }
 
-                public void onSuccess(ChangeSetQueryResponse result) {
-                    setStatus("History loaded successfully.");
-                    stopProgress();
+            public void onSuccess(ChangeSetQueryResponse result) {
+                setStatus("History loaded successfully.");
+                stopProgress();
 
-                    Window popup = new Window();
-                    popup.setHeaderVisible(true);
-                    popup.setLayout(new FitLayout());
-                    popup.setModal(true);
-                    popup.setMaximizable(true);
-                    popup.setMinimizable(true);
-                    popup.setClosable(true);
-                    popup.setDraggable(true);
-                    popup.setResizable(true);
-                    popup.setSize(900, 600);
-                    popup.setHeading("Change History for : " + label);
+                Window popup = new Window();
+                popup.setHeaderVisible(true);
+                popup.setLayout(new FitLayout());
+                popup.setModal(true);
+                popup.setMaximizable(true);
+                popup.setMinimizable(true);
+                popup.setClosable(true);
+                popup.setDraggable(true);
+                popup.setResizable(true);
+                popup.setSize(900, 600);
+                popup.setHeading("Change History for : " + label);
 
-                    ChangeHistoryPanel panel = new ChangeHistoryPanel(result, null);
-                    popup.add(panel);
-                    popup.show();
-                }
-            });
-        }
+                ChangeHistoryPanel panel = new ChangeHistoryPanel(result, null, false);
+                popup.add(panel);
+                popup.show();
+            }
+        });
     }
     
     private void showPublishPanel() {
@@ -506,7 +513,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                     currentNode = null;
                     
                     if (result.getChangeSet() != null) {
-                        ChangeHistoryPanel cp = new ChangeHistoryPanel(new ChangeSetQueryResponse(result.getChangeSet()), "saved nodes");
+                        ChangeHistoryPanel cp = new ChangeHistoryPanel(new ChangeSetQueryResponse(result.getChangeSet()), "saved nodes",true);
                         setContentPanel( cp );
                     }
                     

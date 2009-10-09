@@ -7,6 +7,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.util.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
@@ -105,7 +106,7 @@
 				<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 				
 					ProductModel productNode = contentNode;
-					ProductLabelling pl = new ProductLabelling((FDUserI) session.getAttribute(SessionName.USER), productNode);
+					ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode);
 					String fiRating = "";
 					String fiProdPrice = null;
 					%><fd:ProduceRatingCheck><%

@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.FDResourceException;
@@ -90,26 +91,33 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
     			sessionUser.logImpression(r.getVariant().getId(), r.getProducts().size());
     		}
     	}
-        for (Iterator it = r.getProducts().iterator();it.hasNext();) {
-            ProductModel p = (ProductModel) it.next();
+
+    	for (ProductModel p : r.getProducts()) {
             FDEventUtil.logRecommendationImpression(r.getVariant().getId(), p.getContentKey());
         }
-        if (ImpressionLogger.isGlobalEnabled()) {
-            
+
+
+    	if (ImpressionLogger.isGlobalEnabled()) {
             Impression imp = Impression.get(user, (HttpServletRequest) pageContext.getRequest());
             
             int rank = 1;
-            Map map = new HashMap();
+            Map<ContentKey,String> map = new HashMap<ContentKey,String>();
             String featureImpId = imp.logFeatureImpression(parentFeatureImpressionId, parentVariantId, r);
-            for (Iterator it = r.getProducts().iterator();it.hasNext();) {
-                ProductModel p = (ProductModel) it.next();
 
+            for (ProductModel p : r.getProducts()) {
                 String imp_id = imp.logProduct(featureImpId, rank, p.getContentKey());
                 map.put(p.getContentKey(), imp_id);
                 rank++;
             }
             r.setImpressionIds(map);
         }
+        
+        // [APPREQ-689] pass product to recommendation map to request that it will be reused in i_ymal_box.jsp
+        
+        if (AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get() != null) {
+        	pageContext.getRequest().setAttribute("map_prd2recommender", AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get());
+        }
+        
         AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.set(null);
         AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.set(null);
     }
@@ -125,14 +133,18 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
         if (results != null && results.getProducts().size() == 0)
         	results = null;
 
-        if (results != null) {
+        if (results != null && shouldLogImpressions()) {
             // do impression logging
             logImpressions(results);
         }
         return results;
     }
 
-    
+    protected boolean shouldLogImpressions() {
+    	return true;
+    }
+
+
     public static class TagEI extends AbstractGetterTag.TagEI {
         protected String getResultType() {
             return "com.freshdirect.smartstore.fdstore.Recommendations";

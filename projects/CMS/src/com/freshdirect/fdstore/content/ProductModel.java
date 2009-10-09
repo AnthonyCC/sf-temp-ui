@@ -1,7 +1,9 @@
 package com.freshdirect.fdstore.content;
 
+import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
@@ -180,6 +182,8 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	/** Don't use allTheSame/reset, that's not thread-safe */
 	public final static Comparator RATING_COMPARATOR = new ProductModel.RatingComparator();
 
+	public static NumberFormat CURRENCY_FORMAT = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+
 	
 	// data model accessors
 	
@@ -290,9 +294,9 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	/** Getter for property skus.
 	 * @return a list of SkuModel objects.
 	 */
-	public List getSkus();
+	public List<SkuModel> getSkus();
 
-	public List getSkuCodes();
+	public List<String> getSkuCodes();
 	
 	/**
 	 * Get the source product.
@@ -610,6 +614,14 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public int getHighestDealPercentage();
 
 	public int getHighestDealPercentage(String skuCode);
+	
+	public String getTieredPrice(double savingsPercentage);
+	
+	public String getPriceFormatted(double savingsPercentage);
+	
+	public String getWasPriceFormatted(double savingsPercentage);
+	
+	public String getAboutPriceFormatted(double savingsPercentage);
 	
 	public int getExpertWeight();
 	

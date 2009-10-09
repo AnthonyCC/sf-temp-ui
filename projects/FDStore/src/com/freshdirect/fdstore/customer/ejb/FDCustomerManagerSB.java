@@ -140,6 +140,8 @@ public interface FDCustomerManagerSB extends EJBObject {
     
     public FDUser recognize(String cookie) throws FDAuthenticationException, FDResourceException, RemoteException;
     
+    public FDUser recognizeByEmail(String email) throws FDAuthenticationException, FDResourceException, RemoteException;
+    
     public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId) throws FDResourceException, RemoteException;
     
     /**

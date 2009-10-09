@@ -32,7 +32,7 @@ public abstract class BaseContentKeyRecommendationService extends AbstractRecomm
         super(variant, sampler, catAggr, includeCartItems);
     }
 
-    public List recommendNodes(SessionInput input) {
+    public List doRecommendNodes(SessionInput input) {
         List contentKeys = recommend(input);
         // remove duplicates and turn content keys into content nodes
         Set seen = new HashSet();

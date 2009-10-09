@@ -44,17 +44,56 @@ public class ParserTest extends TestCase {
     
     
     public void testPriorities() throws CompileException {
-        
-        BlockExpression expression = parser.parse("5 + 3 * 2");
-        assertNotNull("expression", expression);
-        assertEquals("expression size", 1, expression.size());
-        assertNotNull("expression", expression.get(0));
+        {        
+            BlockExpression expression = parser.parse("5 + 3 * 2");
+            assertNotNull("expression", expression);
+            assertEquals("expression size", 1, expression.size());
+            assertNotNull("expression", expression.get(0));
+    
+            Expression expr = expression.get(0);
+            Operation oper = (Operation) expr;
+            BinaryExpression xpr = oper.fixPrecedence();
+            assertEquals("fixed precedence", "(5 + (3 * 2))", xpr.toCode());
+            assertEquals("value correct", (5 + (3 * 2)), xpr.evaluateExpression().intValue());
+        }
 
-        Expression expr = expression.get(0);
-        Operation oper = (Operation) expr;
-        BinaryExpression xpr = oper.fixPrecedence();
-        assertEquals("fixed precedence", "(5 + (3 * 2))", xpr.toCode());
-        assertEquals("value correct", (5 + (3 * 2)), xpr.evaluateExpression().intValue());
+        {
+            BlockExpression expression = parser.parse("5 + (3 - 1) * 2 + 3");
+            assertNotNull("expression", expression);
+            assertEquals("expression size", 1, expression.size());
+            assertNotNull("expression", expression.get(0));
+    
+            Expression expr = expression.get(0);
+            Operation oper = (Operation) expr;
+            BinaryExpression xpr = oper.fixPrecedence();
+            assertEquals("fixed precedence", "((5 + ((3 - 1) * 2)) + 3)", xpr.toCode());
+            assertEquals("value correct", ((5 + ((3 - 1) * 2)) + 3), xpr.evaluateExpression().intValue());
+        }
+        
+        {
+            BlockExpression expression2 = parser.parse("set + setx : 3");
+            assertNotNull("expression2", expression2);
+            assertEquals("expression size", 1, expression2.size());
+            assertNotNull("expression", expression2.get(0));
+    
+            Expression expr = expression2.get(0);
+            Operation oper = (Operation) expr;
+            BinaryExpression xpr = oper.fixPrecedence();
+            assertEquals("fixed precedence", "($set + ($setx : 3))", xpr.toCode());
+        }
+        
+        {
+            BlockExpression expression2 = parser.parse("set + setx : 3 : 2");
+            assertNotNull("expression3", expression2);
+            assertEquals("expression size", 1, expression2.size());
+            assertNotNull("expression", expression2.get(0));
+    
+            Expression expr = expression2.get(0);
+            Operation oper = (Operation) expr;
+            BinaryExpression xpr = oper.fixPrecedence();
+            assertEquals("fixed precedence", "($set + (($setx : 3) : 2))", xpr.toCode());
+        }
+        
         
     }
 

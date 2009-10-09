@@ -59,7 +59,23 @@ class ContextualContentNode implements ContextualContentNodeI {
 		}
 		return attr;
 	}
+	
+        @Override
+        public Object getAttributeValue(String name) {
+            AttributeI a = getAttribute(name);
+            return a != null ? a.getValue() : null;
+        }
 
+        @Override
+        public boolean setAttributeValue(String name, Object value) {
+            AttributeI a = getAttribute(name);
+            if (a != null) {
+                a.setValue(value);
+                return true;
+            }
+            return false;
+        }
+        
 	public ContentKey getKey() {
 		return node.getKey();
 	}

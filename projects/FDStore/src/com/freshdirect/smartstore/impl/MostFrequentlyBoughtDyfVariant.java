@@ -55,6 +55,6 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 		} 
 		
 		return RankedContent.getKeys(getSampler(input).sample((List)cachedSortedAggregates.getPayload(),
-				includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), 20));
+				input.isIncludeCartItems() ? Collections.EMPTY_SET : input.getCartContents(), 20));
 	}
 }

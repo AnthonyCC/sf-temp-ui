@@ -154,6 +154,9 @@ public class FDStoreProperties {
 
 	// SmartStore
 	private final static String DYF_STRATEGY_CACHE_ENTRIES = "fdstore.strategy.cache.entries";
+	
+	private final static String SS_GLOBAL_POPULARITY_SCORING = "fdstore.scoring.globalPopularity"; 
+        private final static String SS_USER_POPULARITY_SCORING = "fdstore.scoring.userPopularity"; 
 
 	// DYF Site Feature
 	private final static String DYF_ENABLED = "fdstore.dyf.enabled";
@@ -1212,13 +1215,13 @@ public class FDStoreProperties {
 		return Integer.parseInt(get(SMARTSTORE_NEWPRODUCTS_DAYS));
 	}
 
-	public static Set getSmartstorePreloadFactors() {
+	public static Set<String> getSmartstorePreloadFactors() {
 		String frs = get(SMARTSTORE_PRELOAD_FACTORS);
 		if (frs == null)
 			return Collections.EMPTY_SET;
 		
 		String[] factors = frs.split(",");
-		Set fs = new HashSet(factors.length);
+		Set<String> fs = new HashSet<String>(factors.length);
 		for (int i = 0; i < factors.length; i++) {
 			String f = factors[i].trim();
 			if (f.length() != 0)
@@ -1357,4 +1360,13 @@ public class FDStoreProperties {
 	public static String getGCTemplateBaseUrl() {
 		return get(PROP_GC_TEMPLATE_BASE_URL);
 	}
+	
+	public static String getGlobalPopularityScoring() {
+	    return get(SS_GLOBAL_POPULARITY_SCORING);
+	}
+
+        public static String getUserPopularityScoring() {
+            return get(SS_USER_POPULARITY_SCORING);
+        }
+	
 }

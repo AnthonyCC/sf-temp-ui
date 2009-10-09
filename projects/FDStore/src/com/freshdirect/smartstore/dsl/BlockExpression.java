@@ -7,26 +7,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlockExpression extends Expression {
-    List expressions = new ArrayList();
+    List<Expression> expressions = new ArrayList<Expression>();
 
     public BlockExpression() {
         this.type = Expression.RET_VOID;
     }
 
+    @Override
     public String toCode() {
         StringBuffer b = new StringBuffer();
         for (int i = 0; i < expressions.size(); i++) {
             if (i > 0) {
                 b.append(';');
             }
-            b.append(((Expression) expressions.get(i)).toCode());
+            b.append(expressions.get(i).toCode());
         }
         return b.toString();
     }
 
+    @Override
     public void validate() throws CompileException {
-        for (int i = 0; i < expressions.size(); i++) {
-            ((Expression) expressions.get(i)).validate();
+        for (Expression exp : expressions) {
+            exp.validate();
         }
     }
 
@@ -35,7 +37,7 @@ public class BlockExpression extends Expression {
     }
 
     public Expression get(int i) {
-        return (Expression) expressions.get(i);
+        return expressions.get(i);
     }
 
     public boolean add(Expression arg0) {
@@ -44,7 +46,7 @@ public class BlockExpression extends Expression {
     }
 
     public Expression lastExpression() {
-        return (Expression) (expressions.size() > 0 ? expressions.get(expressions.size() - 1) : null);
+        return (expressions.size() > 0 ? expressions.get(expressions.size() - 1) : null);
     }
 
     public void removeLastExpression() {
@@ -53,20 +55,31 @@ public class BlockExpression extends Expression {
         }
     }
 
+    @Override
     public void visit(ExpressionVisitor visitor) throws VisitException {
         visitor.visit(this);
-        for (int i = 0; i < expressions.size(); i++) {
-            ((Expression) expressions.get(i)).visit(visitor);
+        for (Expression exp : expressions) {
+            exp.visit(visitor);
         }
     }
 
+    @Override
     public String toJavaCode() throws CompileException {
-        StringBuffer b = new StringBuffer();
+        StringBuilder b = new StringBuilder();
         for (int i = 0; i < expressions.size(); i++) {
             if (i > 0) {
                 b.append(';');
             }
-            b.append(((Expression) expressions.get(i)).toJavaCode());
+            b.append(expressions.get(i).toJavaCode());
+        }
+        return b.toString();
+    }
+ 
+    @Override
+    public String getJavaInitializationCode() throws CompileException {
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; i < expressions.size(); i++) {
+            b.append(expressions.get(i).toJavaCode());
         }
         return b.toString();
     }

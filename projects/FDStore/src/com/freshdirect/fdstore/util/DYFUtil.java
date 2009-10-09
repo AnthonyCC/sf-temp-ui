@@ -1,4 +1,4 @@
-package com.freshdirect.webapp.util;
+package com.freshdirect.fdstore.util;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;

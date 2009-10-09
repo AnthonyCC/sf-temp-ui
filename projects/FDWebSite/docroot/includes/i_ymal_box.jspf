@@ -3,6 +3,7 @@
 <%@ page import='java.util.Set' %>
 <%@ page import='java.util.ArrayList' %>
 <%@ page import='java.util.Map' %>
+<%@ page import="java.util.HashMap"%>
 <%@ page import="java.util.Collections"%>
 <%@ page import='com.freshdirect.fdstore.FDConfigurableI' %>
 <%@ page import='com.freshdirect.fdstore.FDSalesUnit' %>
@@ -24,7 +25,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName' %>
 <%@ page import="com.freshdirect.webapp.util.ProductImpression" %>
 <%@ page import="com.freshdirect.webapp.util.TransactionalProductImpression" %>
-<%@ page import="com.freshdirect.webapp.util.ProductLabelling" %>
+<%@ page import="com.freshdirect.fdstore.util.ProductLabeling" %>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil" %>
 <%@ page import="com.freshdirect.webapp.util.ConfigurationContext" %>
 <%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy" %>
@@ -35,6 +36,7 @@
 <%@ page import="com.freshdirect.smartstore.Variant" %>
 <%@ page import="com.freshdirect.smartstore.fdstore.Recommendations" %>
 <%@ page import="com.freshdirect.smartstore.ymal.YmalUtil" %>
+<%@ page import="com.freshdirect.smartstore.impl.AbstractRecommendationService"%>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -82,6 +84,9 @@
 	String ym_hdr			= (String) request.getAttribute("ymal_header"); // [optional]
 	Recommendations recmnd = (Recommendations) request.getAttribute("recommendations"); // [optional]
 
+	// [APPREQ-689] product ID -> recommender mapping (SmartYMAL) otherwise null
+	final Map<String,String> prd2recommendation = (Map<String,String>) request.getAttribute("map_prd2recommender");
+
 	FDUserI fd_user = (FDUserI) session.getAttribute(SessionName.USER);
 
 	if (variant == null) {
@@ -115,7 +120,9 @@
 	 */
 	if (FDStoreProperties.isCclAjaxDebugClient()) { 
 		// debug JS libs
-%><script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
+%>
+
+<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
 <%
 	} else {
 		// production JS libs
@@ -196,8 +203,12 @@
 			// product cell
 			//
 			ProductModel product = pi.getProductModel();
-			ProductLabelling pl = new ProductLabelling(fd_user, product);
-			String actionURI = FDURLUtil.getProductURI(product, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), pl.getTrackingCode(), rank, recmnd!=null ? recmnd.getImpressionId(product) : null,
+			ProductLabeling pl = new ProductLabeling(fd_user, product);
+			
+			// TRKD := recommender ID (if recommender is Smart YMAL) otherwise burst code
+			final String trkd = prd2recommendation != null ? prd2recommendation.get(product.getContentKey().getId()) : pl.getTrackingCode();
+
+			String actionURI = FDURLUtil.getProductURI(product, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), trkd, rank, recmnd!=null ? recmnd.getImpressionId(product) : null,
 					ym_aset.getContentKey().getId(), ym_product != null ? ym_product.getContentName() : null);
 %>							<td class="ymal_product" style="width: <%= Math.round(100.0/rsize) %>%; text-align: center; vertical-align: top;">
 

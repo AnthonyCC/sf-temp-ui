@@ -7,6 +7,7 @@ public class CompileException extends Exception {
     public final static int TYPE_ERROR = 3;
     public final static int UNKNOWN_FUNCTION = 4;
     public final static int PARAMETER_ERROR = 5;
+    public final static int UNKNOWN_OPERATION = 6;
     
     int code;
     

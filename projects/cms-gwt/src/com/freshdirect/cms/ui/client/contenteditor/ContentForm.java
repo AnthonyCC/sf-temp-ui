@@ -109,13 +109,13 @@ public class ContentForm extends FormPanel {
 			
 			String ctxPath = contextPath == null ? nodeData.getDefaultContextPath() : contextPath;
 			
-			for (String attributeKey : tabDefinition.getAttributeKeys(sectionId)) {
-                            Field<Serializable> field = createField(attributeKey, nodeData, ctxPath);
-                            if (field != null) {
-                                section.add(field);
-                                containerIndex++;
-                            }
-                        }
+			for ( String attributeKey : tabDefinition.getAttributeKeys( sectionId ) ) {
+				Field<Serializable> field = createField( attributeKey, nodeData, ctxPath );
+				if ( field != null ) {
+					section.add( field );
+					containerIndex++;
+				}
+			}
 			
 			add(section);			
 		}
@@ -274,7 +274,7 @@ public class ContentForm extends FormPanel {
 		}
 		if (type.equals("table")) {
 		    TableAttribute tableAttr = (TableAttribute) attribute;
-		    TableField t = new TableField(tableAttr);
+		    TableField t = new TableField( tableAttr, node.getNode().getKey(), attributeKey );
 		    
 		    return t;
 		}

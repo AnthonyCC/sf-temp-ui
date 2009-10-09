@@ -75,31 +75,26 @@ public class TranslatorToGwt {
 
 	public static BulkEditModel getBulkModel( ContentNodeI node ) {
 		BulkEditModel model = new BulkEditModel( node.getDefinition().getType().getName(), node.getLabel(), node.getKey().getEncoded() );
-		if ( node.getAttribute( "FULL_NAME" ) != null ) {
-			if ( node.getAttribute( "FULL_NAME" ).getValue() != null ) {
-				model.setFullName( String.valueOf( node.getAttribute( "FULL_NAME" ).getValue() ) );
-			}
-		}
-		if ( node.getAttribute( "GLANCE_NAME" ) != null ) {
-			if ( node.getAttribute( "GLANCE_NAME" ).getValue() != null ) {
-				model.setGlanceName( String.valueOf( node.getAttribute( "GLANCE_NAME" ).getValue() ) );
-			}
-		}
-		if ( node.getAttribute( "NAV_NAME" ) != null ) {
-			if ( node.getAttribute( "NAV_NAME" ).getValue() != null ) {
-				model.setNavName( String.valueOf( node.getAttribute( "NAV_NAME" ).getValue() ) );
-			}
-		}
+                if (node.getAttributeValue("FULL_NAME") != null) {
+                    model.setFullName(String.valueOf(node.getAttributeValue("FULL_NAME")));
+                }
+                if (node.getAttributeValue("GLANCE_NAME") != null) {
+                    model.setGlanceName(String.valueOf(node.getAttributeValue("GLANCE_NAME")));
+                }
+                if (node.getAttributeValue("NAV_NAME") != null) {
+                    model.setNavName(String.valueOf(node.getAttributeValue("NAV_NAME")));
+                }
 		return model;
 	}
 
 	public static GwtContentNode getGwtNode( ContentNodeI node, TabDefinition tabDefs ) {
-		GwtContentNode gwtNode = new GwtContentNode( node.getKey().getType().getName(), node.getKey().getId() );
+		ContentKey contentKey = node.getKey();
+                GwtContentNode gwtNode = new GwtContentNode( contentKey.getType().getName(), contentKey.getId() );
 		gwtNode.setLabel( node.getLabel() );
 		
 		for ( String key : (Set<String>)node.getAttributes().keySet() ) {
 			AttributeI attribute = node.getAttribute( key );
-			ModifiableAttributeI attr = translateAttribute(attribute, tabDefs != null ? tabDefs.getCustomFieldDefinition(key) : null);
+			ModifiableAttributeI attr = translateAttribute(attribute.getDefinition(), attribute.getValue(), tabDefs != null ? tabDefs.getCustomFieldDefinition(key) : null, contentKey);
 			gwtNode.setOriginalAttribute( key, attr );
 		}
 
@@ -159,22 +154,22 @@ public class TranslatorToGwt {
 			return tabDef;
 		}
 
-		Collection<ContentKey> tabs = (Collection<ContentKey>)editor.getAttribute( "pages" ).getValue();
+		Collection<ContentKey> tabs = (Collection<ContentKey>)editor.getAttributeValue( "pages" );
 		for ( ContentKey tabKey : tabs ) {
 			ContentNodeI tab = tabKey.getContentNode();			
 			String tabId = tabKey.getId();			
 			tabDef.addTab( tabId, tab.getLabel() );
 
-			Collection<ContentKey> sections = (Collection<ContentKey>)tab.getAttribute( "sections" ).getValue();
+			Collection<ContentKey> sections = (Collection<ContentKey>)tab.getAttributeValue( "sections" );
 			for ( ContentKey sectKey : sections ) {
 				ContentNodeI section = sectKey.getContentNode();
 				String sectionId = sectKey.getId();
 				tabDef.addSection( tabId, sectionId, section.getLabel() );
 				
-				Collection<ContentKey> attributes = (Collection<ContentKey>)section.getAttribute( "fields" ).getValue();
+				Collection<ContentKey> attributes = (Collection<ContentKey>)section.getAttributeValue( "fields" );
 				for ( ContentKey attrKey : attributes ) {
 					ContentNodeI attr = attrKey.getContentNode();
-					String attributeKey = (String)attr.getAttribute( "attribute" ).getValue();					
+                                        String attributeKey = (String) attr.getAttributeValue("attribute");					
 					
 					tabDef.addAttributeKey( sectionId, attributeKey );
 					
@@ -190,9 +185,9 @@ public class TranslatorToGwt {
 							}
 							CustomFieldDefinition cfd = new CustomFieldDefinition( CustomFieldDefinition.Type.Grid );
 
-							List<ContentKey> values = (List<ContentKey>)attr.getAttribute( "columns" ).getValue();
+							List<ContentKey> values = (List<ContentKey>)attr.getAttributeValue("columns");
 							for ( ContentKey k : values ) {
-								cfd.addColumn( (String)k.getContentNode().getAttribute( "attribute" ).getValue() );
+								cfd.addColumn( (String)k.getContentNode().getAttributeValue("attribute"));
 							}
 
 							tabDef.addCustomFieldDefinition( attributeKey, cfd );
@@ -232,7 +227,7 @@ public class TranslatorToGwt {
 			if ( cxNode == null )
 				break;
 			Map<String,AttributeI> inheritedAttributes = (Map<String,AttributeI>)cxNode.getInheritedAttributes();			
-			nodeContext.addContext( cx.getPath(), cx.getLabel(), translateAttributeMap( inheritedAttributes, tabs ) );
+			nodeContext.addContext( cx.getPath(), cx.getLabel(), translateAttributeMap( inheritedAttributes, tabs, key ) );
 		}		
 		return nodeContext;
 	}
@@ -247,14 +242,15 @@ public class TranslatorToGwt {
 	 * @param attributeMap
 	 * @return
 	 */
-	public static Map<String, ContentNodeAttributeI> translateAttributeMap( Map<String, AttributeI> attributeMap, TabDefinition tabs ) {
+	public static Map<String, ContentNodeAttributeI> translateAttributeMap( Map<String, AttributeI> attributeMap, TabDefinition tabs,ContentKey contentKey ) {
 		if ( attributeMap == null )
 			return null;
 		
 		Map<String, ContentNodeAttributeI> translatedAttributes = new HashMap<String, ContentNodeAttributeI>();
 
 		for ( String key : attributeMap.keySet() ) {
-		    ModifiableAttributeI attribute = translateAttribute( attributeMap.get( key ), tabs != null ? tabs.getCustomFieldDefinition( key ) : null );
+		    AttributeI attributeI = attributeMap.get( key );
+		    ModifiableAttributeI attribute = translateAttribute( attributeI.getDefinition(), attributeI.getValue(), tabs != null ? tabs.getCustomFieldDefinition( key ) : null, contentKey );
                     translatedAttributes.put( key, attribute );
 		}
 
@@ -268,12 +264,10 @@ public class TranslatorToGwt {
 	 * @param customFieldDefinition 
 	 * @return
 	 */
-    public static ModifiableAttributeI translateAttribute(AttributeI attribute, CustomFieldDefinition customFieldDefinition) {
-        AttributeDefI definition = attribute.getDefinition();
-        Object value = attribute.getValue();
+    public static ModifiableAttributeI translateAttribute(AttributeDefI definition, Object value, CustomFieldDefinition customFieldDefinition,ContentKey key) {
         ModifiableAttributeI attr = translateAttribute(definition, customFieldDefinition, value);
         if (attr == null) {
-            throw new RuntimeException("Unknown attribute type "+ attribute.getDefinition() + ", in node :"+attribute.getContentNode().getKey());
+            throw new RuntimeException("Unknown attribute type "+ definition + ", in node :"+key);
         }
         return attr;
     }
@@ -341,15 +335,15 @@ public class TranslatorToGwt {
                         if (customFieldDefinition != null) {
                             if (customFieldDefinition.getGridColumns() != null) {
                                 for (String col : customFieldDefinition.getGridColumns()) {
-                                    Object attrValue = contentNode.getAttribute(col).getValue();
+                                    Object attrValue = contentNode.getAttributeValue(col);
                                     model.set(col, attrValue);
                                 }
                             }
                             // for variation matrix, we need the skus other
                             // properties too.
                             if (customFieldDefinition.getType() == CustomFieldDefinition.Type.VariationMatrix) {
-                                model.set("VARIATION_MATRIX", toClientValues(contentNode.getAttribute("VARIATION_MATRIX").getValue()));
-                                model.set("VARIATION_OPTIONS", toClientValues(contentNode.getAttribute("VARIATION_OPTIONS").getValue()));
+                                model.set("VARIATION_MATRIX", toClientValues(contentNode.getAttributeValue("VARIATION_MATRIX")));
+                                model.set("VARIATION_OPTIONS", toClientValues(contentNode.getAttributeValue("VARIATION_OPTIONS")));
                             }
                         }
 
@@ -379,7 +373,7 @@ public class TranslatorToGwt {
      * @param table
      * @return
      */
-    private static TableAttribute createTableAttribute(ITable table) {
+    public static TableAttribute createTableAttribute(ITable table) {
         AttributeDefI[] columnDefinitions = table.getColumnDefinitions();
         ContentNodeAttributeI[] columns = new ContentNodeAttributeI[columnDefinitions.length];
         TableAttribute.ColumnType[] columnTypes = new TableAttribute.ColumnType[columns.length];
@@ -419,9 +413,9 @@ public class TranslatorToGwt {
                                 ContentKey key = new ContentKey(ContentType.get(tokens[0]), tokens[1]);
                                 ContentNodeI node = key.getContentNode();
                                 if (node != null) {
-                                    AttributeI attribute = node.getAttribute(tokens[2]);
-                                    if (attribute != null && attribute.getValue() != null) {
-                                        rowValue[i] = String.valueOf(String.valueOf(attribute.getValue()));
+                                    Object attributeValue = node.getAttributeValue(tokens[2]);
+                                    if (attributeValue != null) {
+                                        rowValue[i] = String.valueOf(attributeValue);
                                     }
                                 }
                             }
@@ -492,15 +486,15 @@ public class TranslatorToGwt {
         if (node != null) {
             result.setHasChildren(node.getChildKeys().size() > 0);
             if (result.isHtmlType()) {
-                Object path = node.getAttribute("path").getValue();
+                Object path = node.getAttributeValue("path");
                 result.setPreviewUrl(FDStoreProperties.getCmsMediaBaseURL() + path);
             }
             if (result.isImageType()) {
-                Object path = node.getAttribute("path").getValue();
+                Object path = node.getAttributeValue("path");
                 result.setPreviewUrl(FDStoreProperties.getCmsMediaBaseURL() + path);
-                Object width = node.getAttribute("width").getValue();
+                Object width = node.getAttributeValue("width");
                 result.setWidth((Integer) width);
-                Object height = node.getAttribute("height").getValue();
+                Object height = node.getAttributeValue("height");
                 result.setHeight((Integer) height);
             }
         }
@@ -539,7 +533,8 @@ public class TranslatorToGwt {
     @SuppressWarnings("unchecked")
 	private static GwtContentNodeChange getGwtContentNodeChange(ContentNodeChange cnc) {
     	
-		GwtContentNodeChange gcnc = new GwtContentNodeChange( cnc.getContentKey().getEncoded(), cnc.getChangeType().getName() );		
+		GwtContentNodeChange gcnc = new GwtContentNodeChange( cnc.getContentKey().getEncoded(), cnc.getChangeType().getName() );
+		gcnc.setPreviewLink( PreviewLinkProvider.getLink( cnc.getContentKey() ) );
 		ContentNodeI contentNode = cnc.getContentKey().getContentNode();
 		gcnc.setLabel( contentNode != null ? contentNode.getLabel() : cnc.getContentKey().getEncoded() );
 		for ( ChangeDetail cd : (List<ChangeDetail>)cnc.getChangeDetails() ) {
@@ -555,7 +550,7 @@ public class TranslatorToGwt {
         Set<ContentKey> editorKeys = CmsManager.getInstance().getContentKeysByType(ContentType.get("CmsEditor"));
         Map<ContentKey, ContentNodeI> nodes = CmsManager.getInstance().getContentNodes(editorKeys);
         for (ContentNodeI node : nodes.values()) {
-            if (typeName.equals(node.getAttribute("contentType").getValue().toString())) {
+            if (typeName.equals(node.getAttributeValue("contentType").toString())) {
                 return node;
             }
         }
@@ -583,16 +578,18 @@ public class TranslatorToGwt {
         return g;
     }
     
-    public static List<GwtPublishMessage> getPublishMessages(Collection<PublishMessage> list) {
-        List<GwtPublishMessage> result = new ArrayList<GwtPublishMessage>(list.size());
-        for (PublishMessage pm : list) {
-            result.add(getPublishMessage(pm));
+    public static List<GwtPublishMessage> getPublishMessages(List<PublishMessage> list, int start, int end) {
+        start = Math.max(start, 0);
+        end = Math.min(end, list.size());
+        List<GwtPublishMessage> result = new ArrayList<GwtPublishMessage>(end - start);
+        for (int i = start; i < end; i++) {
+            result.add(getPublishMessage(list.get(i)));
         }
         return result;
     }
 
-    public static List<GwtPublishMessage> getPublishMessages(Publish publish) {
-        return getPublishMessages(publish.getMessages());
+    public static List<GwtPublishMessage> getPublishMessages(Publish publish, int start, int end) {
+        return getPublishMessages(publish.getMessages(), start, end);
     }
 
     /**

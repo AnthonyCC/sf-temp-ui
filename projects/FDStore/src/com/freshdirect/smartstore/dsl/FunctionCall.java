@@ -12,7 +12,7 @@ public class FunctionCall extends Expression {
     /**
      * List<Expression>
      */
-    List   params = new ArrayList();
+    List<Expression>   params = new ArrayList<Expression>();
 
     public int getReturnType() {
         return type;
@@ -35,7 +35,7 @@ public class FunctionCall extends Expression {
     }
 
     public Expression lastExpression() {
-        return (Expression) (params.size() > 0 ? params.get(params.size() - 1) : null);
+        return (params.size() > 0 ? params.get(params.size() - 1) : null);
     }
 
     public void removeLastExpression() {
@@ -51,20 +51,31 @@ public class FunctionCall extends Expression {
             if (i > 0) {
                 buf.append(',');
             }
-            buf.append(((Expression) params.get(i)).toCode());
+            buf.append(params.get(i).toCode());
         }
         buf.append(')');
         return buf.toString();
     }
     
+    @Override
     public String toJavaCode() throws CompileException {
-        return context.getJavaCode(name, new ArrayList(params));
+        String tempVariable = context.getJavaTempVariableId(this);
+        if (tempVariable != null) {
+            return tempVariable;
+        } else {
+            return context.getJavaCode(this, new ArrayList<Expression>(params));
+        }
+    }
+    
+    @Override
+    public String getJavaInitializationCode() throws CompileException {
+        return context.getPreparingCode(this, new ArrayList<Expression>(params));
     }
 
     public void validate() throws CompileException {
         StringBuffer paramTypes = new StringBuffer();
         for (int i = 0; i < params.size(); i++) {
-            Expression exp = (Expression) params.get(i);
+            Expression exp = params.get(i);
             exp.validate();
             int rtype = exp.getReturnType();
             if (rtype == RET_FLOAT || rtype == RET_INT || rtype == RET_STRING || rtype == RET_NODE || rtype == RET_SET) {
@@ -88,21 +99,21 @@ public class FunctionCall extends Expression {
     }
 
     public Expression getParam(int index) {
-        return (Expression) params.get(index);
+        return params.get(index);
     }
     
     /**
      * The raw parameter list.
      * @return
      */
-    public List getParams() {
+    public List<Expression> getParams() {
         return params;
     }
 
     public void visit(ExpressionVisitor visitor) throws VisitException {
         visitor.visit(this);
-        for (int i = 0; i < params.size(); i++) {
-            ((Expression) params.get(i)).visit(visitor);
+        for (Expression exp : params) {
+            exp.visit(visitor);
         }
     }
 

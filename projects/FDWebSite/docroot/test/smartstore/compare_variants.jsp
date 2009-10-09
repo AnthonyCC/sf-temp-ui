@@ -318,6 +318,7 @@ if (useLoggedIn && user != null) {
 }
 si.setYmalSource(source);
 si.setNoShuffle(true);
+si.setIncludeCartItems(!useLoggedIn);
 si.setMaxRecommendations(EnumSiteFeature.YMAL.equals(siteFeature) ? 6 : 5);
 
 String scopeNodes = urlG.get("scope");
@@ -446,6 +447,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 .prod-items .negative{color:#990000;}
 .prod-items .unknown{color:#FF9900;}
 .not-found{color:red;}
+.warning{color:#FF6633; !important}
 .disabled{color:gray;font-style:italic;}
 .selected{font-weight:bold;color:blue;}
 	</style>
@@ -526,6 +528,13 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    				<p class="result">
 	    					Service Type: <%= user != null ? user.getUserServiceType().getName() : unknown %>
 	    				</p>
+	    				<% if (useLoggedIn) { %>
+	    				<p class="result warning">
+	    					Note, that cart items will be<br>
+	    					excluded. To include cart items<br>
+	    					uncheck 'use logged in'.
+	    				</p>
+	    				<% } %>
     				</td>
 <% if (EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature)) { %>
     				<td>

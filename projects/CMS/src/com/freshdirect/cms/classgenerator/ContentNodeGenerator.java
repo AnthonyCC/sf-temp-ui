@@ -360,25 +360,41 @@ public class ContentNodeGenerator {
         
         {
             boolean hasAttributes = attributeMap.size() > 0;
-            StringBuffer initAttributes = new StringBuffer();
+            StringBuilder initAttributes = new StringBuilder();
             initAttributes.append("public void initAttributes() {  \n");
 
-            StringBuffer getAttribute = new StringBuffer();
+            StringBuilder getAttribute = new StringBuilder();
             getAttribute.append("public final com.freshdirect.cms.AttributeI getAttribute(String name) { \n" +
             		" if (name==null) { return null; } \n");
-            StringBuffer getAttributeMap = new StringBuffer();
+            
+            StringBuilder getAttributeValue = new StringBuilder();
+            getAttributeValue.append("public final Object getAttributeValue(String name) { \n" +
+                        " if (name==null) { return null; } \n");
+
+            StringBuilder setAttributeValue = new StringBuilder();
+            setAttributeValue.append("public final boolean setAttributeValue(String name, Object value) { \n" +
+                        " if (name==null) { return false; } \n");
+            
+            StringBuilder getAttributeMap = new StringBuilder();
             getAttributeMap.append(" public java.util.Map getAttributes() {\n" +
             		" java.util.Map result = new java.util.HashMap();");
 
-            StringBuffer getChildKeys = new StringBuffer();
+            StringBuilder getChildKeys = new StringBuilder();
             getChildKeys.append("public java.util.Set getChildKeys() {  \n" +
             		" java.util.Set result = new java.util.HashSet();\n");
             if (debug) {
                 getAttribute.append(" System.out.println(\""+def.getType()+ " - getAttribute : \"+name + \" of \"+getKey());");
+                getAttributeValue.append(" System.out.println(\""+def.getType()+ " - getAttributeValue : \"+name + \" of \"+getKey());");
             }
             
             if (hasAttributes) {
                 getAttribute.append(
+                        " int hc = name.hashCode(); \n" +
+                            " switch (hc) { \n");
+                getAttributeValue.append(
+                        " int hc = name.hashCode(); \n" +
+                            " switch (hc) { \n");
+                setAttributeValue.append(
                         " int hc = name.hashCode(); \n" +
                             " switch (hc) { \n");
             }
@@ -398,13 +414,29 @@ public class ContentNodeGenerator {
                 initAttributes.append("  this.").append(attributeFieldName).append(".setNode(this);\n");
 
                 getAttribute.append(" case ").append(name.hashCode()).append(" : { \n");
+                getAttributeValue.append(" case ").append(name.hashCode()).append(" : { \n");
+                setAttributeValue.append(" case ").append(name.hashCode()).append(" : { \n");
                 if (UNSAFE) {
                     getAttribute.append("   return ").append(attributeFieldName).append(";\n  }\n");
+                    getAttributeValue.append("   return ").append(getReturnsAsObject(attributeDef)+ ";\n  }\n");
+                    setAttributeValue.append("   ").append(getFieldName(attributeDef) + " = " + getSetStatement(field.getType()) + " ;\n" +
+                    		"    return true;\n  }\n");
                 } else {
                     getAttribute.append(" if (\"").append(name).append("\".equals(name)) { \n" +
-                    		"   return ").append(attributeFieldName).append("; \n" +
-                    				"}");
+                    "   return ").append(attributeFieldName).append("; \n" +
+                                    "}");
                     getAttribute.append("\n break; \n }\n");
+                    
+                    getAttributeValue.append(" if (\"").append(name).append("\".equals(name)) { \n" +
+                            "   return ").append(getReturnsAsObject(attributeDef)).append("; \n" +
+                                    "}");
+                    getAttributeValue.append("\n break; \n }\n");
+                    
+                    setAttributeValue.append(" if (\"").append(name).append("\".equals(name)) { \n")
+                            .append("   ").append(getFieldName(attributeDef) + " = " + getSetStatement(field.getType()) + " \n    return true; \n" +
+                            "}");
+                    setAttributeValue.append("\n break; \n }\n");
+                    
                 }
                 getAttributeMap.append(" result.put(\"").append(name).append("\", ").append(attributeFieldName).append(");\n");
                 
@@ -428,8 +460,12 @@ public class ContentNodeGenerator {
             initAttributes.append(" }\n");
             if (hasAttributes) {
                 getAttribute.append(" } ");
+                getAttributeValue.append(" } ");
+                setAttributeValue.append(" } ");
             }
             getAttribute.append(" return null; \n}");
+            getAttributeValue.append(" return null; \n}");
+            setAttributeValue.append(" return false; \n}");
             /*if (debug) {
                 getAttributeMap.append(" System.out.println(\""+def.getType()+ " - getAttributeMap : \"+result);");
                 getChildKeys.append(" System.out.println(\""+def.getType()+ " - getChildKeys : \"+result);");
@@ -464,6 +500,8 @@ public class ContentNodeGenerator {
             class1.addMethod(CtNewMethod.make(getAttributeMap.toString(), class1));
             class1.addMethod(CtNewMethod.make(getChildKeys.toString(), class1));
             class1.addMethod(CtNewMethod.make(copy.toString(), class1));
+            class1.addMethod(CtNewMethod.make(getAttributeValue.toString(), class1));
+            class1.addMethod(CtNewMethod.make(setAttributeValue.toString(), class1));
         }
         ci.add(new AttributeMapClassInitializer(attributeMap));
         ci.setGeneratedClass(class1.toClass());
@@ -683,7 +721,7 @@ public class ContentNodeGenerator {
                     " } ");
             }
             //if (!attributeDef.isReadOnly()) {
-                buf.append(" this."+fieldName+ " = "+getSetStatement(attributeDef, type));
+                buf.append(" this."+fieldName+ " = "+getSetStatement(type));
             //}
             buf.append("}");
             
@@ -784,16 +822,9 @@ public class ContentNodeGenerator {
         return getFieldName(attributeDef)+";";
     }
     
-    private String getSetStatement(AttributeDefI attributeDef,CtClass fieldType) {
-        if (attributeDef instanceof EnumDefI) {
-            EnumDefI ed = (EnumDefI) attributeDef;
-            return getSetStatement(attributeDef, ed.getValueType(),fieldType);
-        }
-        return getSetStatement(attributeDef, attributeDef.getAttributeType(), fieldType);
-    }
     
 
-    private String getSetStatement(AttributeDefI attributeDef, EnumAttributeType type,CtClass fieldType) {
+    private String getSetStatement(CtClass fieldType) {
         /*if (type==EnumAttributeType.BOOLEAN) {
             return "((Boolean)value).booleanValue();";
         } 

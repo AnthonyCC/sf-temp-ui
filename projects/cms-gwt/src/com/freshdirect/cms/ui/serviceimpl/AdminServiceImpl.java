@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
@@ -23,10 +25,13 @@ import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
 import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.framework.conf.FDRegistry;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class AdminServiceImpl extends RemoteServiceServlet implements AdminService {
 
+    final static Logger LOG = LoggerFactory.getInstance(AdminServiceImpl.class);
+    
     ExecutorService executor = Executors.newSingleThreadExecutor();
 
     AdminProcStatus status = new AdminProcStatus();
@@ -45,9 +50,16 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        rebuildIndexImpl();
-
-                        status.setRunning(false);
+                        try {
+                            LOG.info("starting indexing");
+                            rebuildIndexImpl();
+                            LOG.info("indexing finished");
+                        } catch (Exception e) {
+                            LOG.error("indexing failed:"+e.getMessage(), e);
+                            setStatus("Failed : " + e.getMessage());
+                        } finally {
+                            status.setRunning(false);
+                        }
                     }
                 });
             }
@@ -56,6 +68,11 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
         return status;
     }
 
+    private void setStatus(String msg) {
+        status.setCurrent(msg);
+        LOG.info("status:"+msg);
+    }
+    
     private void rebuildIndexImpl() {
         long time = System.currentTimeMillis();
         status.setStarted(time);
@@ -66,20 +83,20 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
         for (Iterator<ContentType> i = searchService.getIndexedTypes().iterator(); i.hasNext();) {
             ContentType type = (ContentType) i.next();
             keys.addAll(instance.getContentKeysByType(type));
-            status.setCurrent("loading " + keys.size() + " keys");
+            setStatus("loading " + keys.size() + " keys");
         }
 
-        status.setCurrent("loading " + keys.size() + " nodes");
+        setStatus("loading " + keys.size() + " nodes");
         Map nodes = instance.getContentNodes(keys);
-        status.setCurrent("setting up synonym dictionary");
+        setStatus("setting up synonym dictionary");
         searchService.setDictionary(SynonymDictionary.createFromCms());
-        status.setCurrent("indexing " + nodes.values().size() + " nodes");
+        setStatus("indexing " + nodes.values().size() + " nodes");
         searchService.index(nodes.values());
-        status.setCurrent("refreshing relevancy scores. ");
+        setStatus("refreshing relevancy scores. ");
 
         ContentSearch.getInstance().refreshRelevencyScores();
         long elapsed = System.currentTimeMillis() - time;
-        status.setCurrent("finished in " + (elapsed / 1000) + " sec");
+        setStatus("finished in " + (elapsed / 1000) + " sec");
         status.setLastReindexResult("indexed " + nodes.values().size() + " nodes in " + (elapsed / 1000) + " sec");
     }
 
@@ -88,7 +105,13 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                validateEditorsImpl();
+                try {
+                    LOG.info("validate editors started");
+                    validateEditorsImpl();
+                    LOG.info("validate editors finished");
+                } catch (Exception e) {
+                    LOG.error("validate editors failed:" + e.getMessage(), e);
+                }
             }
         });
         return status;
@@ -104,7 +127,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
             ContentNodeI e = (ContentNodeI) i.next();
             validator.validate(delegate, instance, e, null);
         }
-        System.err.println(delegate);
+        LOG.warn("editor validation:"+delegate);
     }
 
     /**
@@ -152,7 +175,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
                     for (Iterator<ContentNodeI> k = service.getContentNodes(fieldKeys).values().iterator(); k.hasNext();) {
                         ContentNodeI field = (ContentNodeI) k.next();
 
-                        String fieldName = (String) field.getAttribute("attribute").getValue();
+                        String fieldName = (String) field.getAttributeValue("attribute");
                         if (!names.add(fieldName)) {
                             delegate.record(editor.getKey(), "Duplicate field definition: " + fieldName);
                         }

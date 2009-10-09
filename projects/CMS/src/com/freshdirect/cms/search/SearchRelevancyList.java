@@ -1,6 +1,8 @@
 package com.freshdirect.cms.search;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import com.freshdirect.cms.node.ContentNodeUtil;
 public class SearchRelevancyList {
 
     public static final String SEARCH_RELEVANCY_KEY = "FDFolder:searchRelevancyList";
+    public static final String WORD_STEMMING_EXCEPTION = "FDFolder:wordStemmingException";
 
     public static final String KEYWORDS = "Keywords";
     public static final String HINTS = "categoryHints";
@@ -24,6 +27,8 @@ public class SearchRelevancyList {
     private static final String SCORE = "score";
 
     private static final String CATEGORY = "category";
+    
+    private static final String WORD = "word";
     
     
     
@@ -35,9 +40,9 @@ public class SearchRelevancyList {
     /**
      * Map<ContentKey,Integer>
      */
-    Map                        categoryScoreMap;
+    Map<ContentKey,Integer>     categoryScoreMap;
 
-    public SearchRelevancyList(String[] keywords, Map categoryScoreMap) {
+    public SearchRelevancyList(String[] keywords, Map<ContentKey,Integer> categoryScoreMap) {
         super();
         this.keywords = keywords;
         this.categoryScoreMap = categoryScoreMap;
@@ -47,7 +52,7 @@ public class SearchRelevancyList {
         return keywords;
     }
 
-    public Map getCategoryScoreMap() {
+    public Map<ContentKey,Integer> getCategoryScoreMap() {
         return categoryScoreMap;
     }
 
@@ -55,26 +60,26 @@ public class SearchRelevancyList {
      * 
      * @return Map<String,SearchRelevancyList>
      */
-    public static Map createFromCms() {
-        Map result = new HashMap();
+    public static Map<String, SearchRelevancyList> createFromCms() {
+        Map<String, SearchRelevancyList> result = new HashMap<String, SearchRelevancyList>();
 
         CmsManager instance = CmsManager.getInstance();
 
         ContentNodeI searchRelRootNode = instance.getContentNode(ContentKey.decode(SearchRelevancyList.SEARCH_RELEVANCY_KEY));
         if (searchRelRootNode!=null) {
-            Set searchRelKeys = ContentNodeUtil.collectReachableKeys(searchRelRootNode, FDContentTypes.SEARCH_RELEVANCY_LIST);
-            Map searchRelNodes = instance.getContentNodes(searchRelKeys);
+            Set<ContentKey> searchRelKeys = ContentNodeUtil.collectReachableKeys(searchRelRootNode, FDContentTypes.SEARCH_RELEVANCY_LIST);
+            Map<ContentKey, ContentNodeI> searchRelNodes = instance.getContentNodes(searchRelKeys);
     
-            for (Iterator contentNodeIterator = searchRelNodes.values().iterator(); contentNodeIterator.hasNext();) {
-                ContentNodeI node = (ContentNodeI) contentNodeIterator.next();
+            for (Iterator<ContentNodeI> contentNodeIterator = searchRelNodes.values().iterator(); contentNodeIterator.hasNext();) {
+                ContentNodeI node = contentNodeIterator.next();
                 String keywords = ContentNodeUtil.getStringAttribute(node, KEYWORDS).toLowerCase();
                 String[] kw = StringUtils.split(keywords, ",");
                 if (kw.length>0) {
-                    List hints = (List) node.getAttribute(HINTS).getValue();
-                    if (hints!=null) {
-                        Map scores = new HashMap();
-                        for (int i=0;i<hints.size();i++) {
-                            ContentKey key = (ContentKey) hints.get(i);
+                    List<ContentKey> hints = (List<ContentKey>) node.getAttribute(HINTS).getValue();
+                    if (hints != null) {
+                        Map<ContentKey, Integer> scores = new HashMap<ContentKey, Integer>();
+                        for (int i = 0; i < hints.size(); i++) {
+                            ContentKey key = hints.get(i);
                             ContentNodeI hint = instance.getContentNode(key);
                             
                             Integer score = ContentNodeUtil.getIntegerAttribute(hint, SCORE);
@@ -96,4 +101,29 @@ public class SearchRelevancyList {
         return result;
     }
 
+    
+    /**
+     * Return a collection of string from the cms, which is under FDFolder:searchRelevancyList, and their type is WORD_PLURALIZATION_EXCEPTION
+     *    
+     * @return
+     */
+    public static Collection<String> getBadPluralFormsFromCms() {
+        Set<String> result = new HashSet<String>();
+        CmsManager instance = CmsManager.getInstance();
+
+        ContentNodeI searchRelRootNode = instance.getContentNode(ContentKey.decode(SearchRelevancyList.WORD_STEMMING_EXCEPTION));
+        if (searchRelRootNode!=null) {
+            Set<ContentKey> wordPluralException = ContentNodeUtil.collectReachableKeys(searchRelRootNode, FDContentTypes.WORD_STEMMING_EXCEPTION);
+            Map<ContentKey, ContentNodeI> wordPluralNodes = instance.getContentNodes(wordPluralException);
+    
+            for (ContentNodeI node : wordPluralNodes.values()) {
+                String word = ContentNodeUtil.getStringAttribute(node, WORD);
+                if (word!=null) {
+                    result.add(word.toLowerCase().trim());
+                }
+            }
+        }
+        return result;
+    }
+    
 }

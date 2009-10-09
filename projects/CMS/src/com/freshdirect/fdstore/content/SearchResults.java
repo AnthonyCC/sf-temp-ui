@@ -81,7 +81,7 @@ public class SearchResults implements Serializable {
 	};
 	
 	private List products;
-	private final List recipes;
+	private final List<Recipe> recipes;
 	
 	private final boolean productsRelevant;
 	
@@ -129,7 +129,7 @@ public class SearchResults implements Serializable {
 		this.products = products;
 	}
 	
-	public List getRecipes() {
+	public List<Recipe> getRecipes() {
 		return recipes;
 	}
 

@@ -13,13 +13,18 @@ import java.util.Set;
  * 
  */
 public class Context {
-    Map variableTypes    = new HashMap();
+    Map<String, Integer> variableTypes    = new HashMap<String, Integer>();
     Map variableValues    = new HashMap();
-    Map functionDefs = new HashMap();
+    Map<String, FunctionDef> functionDefs = new HashMap<String, FunctionDef>();
+    Map<String, String> javaVariableIds    = new HashMap<String, String>();
+    Map<Expression, String> javaTempVariableIds = new HashMap<Expression, String>();
+
+    Map<Object, String> generatedVariables = new HashMap<Object, String>();
     
+    int lastTempVariable = 0;
 
     public int getFunctionReturnType(String name, String paramTypes) throws CompileException {
-        FunctionDef def = (FunctionDef) functionDefs.get(name);
+        FunctionDef def = functionDefs.get(name);
         if (def != null) {
             return def.getReturnType(name, paramTypes);
         }
@@ -30,20 +35,20 @@ public class Context {
         return functionDefs.get(name)!=null;
     }
 
-    public String getJavaCode(String name, List params) throws CompileException {
-        FunctionDef def = (FunctionDef) functionDefs.get(name);
+    public String getJavaCode(FunctionCall call, List<Expression> params) throws CompileException {
+        FunctionDef def = functionDefs.get(call.getName());
         if (def != null) {
-            return def.toJavaCode(name, params);
+            return def.toJavaCode(call, params);
         }
-        throw new CompileException(CompileException.UNKNOWN_FUNCTION, "Function '" + name + "' not declared!");
+        throw new CompileException(CompileException.UNKNOWN_FUNCTION, "Function '" + call.getName() + "' not declared!");
     }
 
-    public String getPreparingCode(String name, List params) throws CompileException {
-        FunctionDef def = (FunctionDef) functionDefs.get(name);
+    public String getPreparingCode(FunctionCall call, List<Expression> params) throws CompileException {
+        FunctionDef def = functionDefs.get(call.getName());
         if (def != null) {
-            return def.getPreparingCode(name, params);
+            return def.getPreparingCode(call, params);
         }
-        throw new CompileException(CompileException.UNKNOWN_FUNCTION, "Function '" + name + "' not declared!");
+        throw new CompileException(CompileException.UNKNOWN_FUNCTION, "Function '" + call.getName()+ "' not declared!");
     }
     
     public void addFunctionDef(String name, FunctionDef def) {
@@ -109,7 +114,7 @@ public class Context {
             return this;
         }
 
-        protected void validateParamCount(String name, String paramTypes) throws CompileException {
+        protected final void validateParamCount(String name, String paramTypes) throws CompileException {
             int paramCount = paramTypes.length();
             if (minParams != -1 && paramCount < minParams) {
                 throw new CompileException(CompileException.PARAMETER_ERROR, "Function '" + name + "' expect at least " + minParams
@@ -120,13 +125,21 @@ public class Context {
                         + paramCount);
             }
         }
+        
+        protected void validate(String name, String paramTypes) throws CompileException {
+            validateParamCount(name, paramTypes);
+        }
 
         public int getReturnType(String name, String paramTypes) throws CompileException {
-            validateParamCount(name, paramTypes);
+            validate(name, paramTypes);
             return retType;
         }
 
-        public String toJavaCode(String name, List parameters) throws CompileException {
+        public String toJavaCode(FunctionCall call, List<Expression> parameters) throws CompileException {
+            return toJavaCode(call.getName(), parameters);
+        }
+        
+        public String toJavaCode(String name, List<Expression> parameters) throws CompileException {
             StringBuffer buf = new StringBuffer();
             buf.append(name);
             buf.append('(');
@@ -140,8 +153,10 @@ public class Context {
             return buf.toString();
         }
         
-        public String getPreparingCode(String name, List parameters) {
-            return null;
+
+        
+        public String getPreparingCode(FunctionCall call, List<Expression> parameters) {
+            return "";
         }
     }
 
@@ -159,6 +174,7 @@ public class Context {
             super(params);
         }
 
+        @Override
         public int getReturnType(String name, String paramTypes) throws CompileException {
             validateParamCount(name, paramTypes);
             if (paramTypes.indexOf(Expression.RET_FLOAT) != -1) {
@@ -169,8 +185,37 @@ public class Context {
 
     }
 
-    public Set getVariables() {
+    public Set<String> getVariables() {
         return variableTypes.keySet();
+    }
+
+    public String getJavaVariableId(String variableName) {
+        if (javaVariableIds.containsKey(variableName)) {
+            return javaVariableIds.get(variableName);
+        } else {
+            return variableName;
+        }
+    }
+
+    public String putJavaVariableId(String variableName, String variableId) {
+        return javaVariableIds.put(variableName, variableId);
+    }
+
+    public String getJavaTempVariableId(Expression expression) {
+        return javaTempVariableIds.get(expression);
+    }
+
+    public String putJavaTempVariableId(Expression expression, String variableId) {
+        return javaTempVariableIds.put(expression, variableId);
+    }
+
+    public String createTempVariable(Object key) {
+        String var = generatedVariables.get(key);
+        if (var == null) {
+            var = "var" + (lastTempVariable++);
+            generatedVariables.put(key, var);
+        }
+        return var;
     }
 
 }

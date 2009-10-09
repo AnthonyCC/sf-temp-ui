@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -14,9 +15,14 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.FavoriteList;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
+import com.freshdirect.smartstore.filter.FilterFactory;
+import com.freshdirect.smartstore.filter.ProductFilter;
+import com.freshdirect.smartstore.sampling.RankedContent;
 
 /**
  * This class contains functions which used by the generated code.
@@ -340,12 +346,16 @@ public class HelperFunctions {
         return result;
     }
     
-    public static List toList(ContentNodeModel model) {
-        return Collections.singletonList(model);
+    public static List<ContentNodeModel> toList(ContentNodeModel model) {
+        ArrayList<ContentNodeModel> a = new ArrayList<ContentNodeModel>();
+        a.add(model);
+        return a;
     }
 
-    public static List toList(String id) {
-        return Collections.singletonList(lookup(id));
+    public static List<ContentNodeModel> toList(String id) {
+        ArrayList<ContentNodeModel> a = new ArrayList<ContentNodeModel>();
+        a.add(lookup(id));
+        return a;
     }
 
     /**
@@ -376,7 +386,154 @@ public class HelperFunctions {
         return "<empty-list>";
     }
     
+    /**
+     * Return a list of product recommendation for a given product by a
+     * recommender vendor.
+     * 
+     * @param recommender
+     * @param model
+     * @return List<ContentNodeModel>
+     */
+    public static List getProductRecommendationFromVendor(String recommender, ContentNodeModel model) {
+        return SmartStoreUtil.toContentNodesFromKeys(DatabaseScoreFactorProvider.getInstance().getProductRecommendations(recommender, model.getContentKey()));
+    }
+
+    public static List getUserRecommendationFromVendor(String recommender, String erpCustomerId) {
+        return SmartStoreUtil.toContentNodesFromKeys(DatabaseScoreFactorProvider.getInstance().getPersonalRecommendations(recommender, erpCustomerId));
+    }
+
+    public static List getFeaturedItems(ContentNodeModel model) {
+        if(model instanceof DepartmentModel) {
+            return ((DepartmentModel) model).getFeaturedProducts();
+        } else if (model instanceof CategoryModel) {
+            return ((CategoryModel) model).getFeaturedProducts();
+        } else if (model instanceof ProductModel) {
+        	return ((CategoryModel) getToplevelCategory(model)).getFeaturedProducts();
+        } else {
+            Object value = model.getAttribute("FEATURED_PRODUCTS", null);
+            if (value instanceof List) {
+                return (List) value;
+            }
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    public static List getCandidateLists(ContentNodeModel model) {
+		List nodes = new ArrayList();
+		if (model instanceof CategoryModel) {
+			CategoryModel category = (CategoryModel) model;
+			List candidateList = category.getCandidateList();
+			if (candidateList != null && candidateList.size() > 0) {
+				nodes.addAll(recursiveNodes(candidateList));
+			} else {
+				nodes.addAll(recursiveNodes(model));
+			}
+		}
+		return nodes;
+	}
+
+    public static List getManuallyOverriddenSlots(ContentNodeModel model,
+			SessionInput input, DataAccess dataAccess) {
+		List nodes = new ArrayList();
+		if (model instanceof CategoryModel) {
+			CategoryModel category = (CategoryModel) model;
+			int slots = category.getManualSelectionSlots();
+			if (slots > 0) {
+				ProductFilter filter = FilterFactory.createStandardFilter(input
+						.isIncludeCartItems() ? Collections.EMPTY_LIST : input
+						.getCartContents());
+				List fprods = category.getFeaturedProducts();
+				Random rnd = new Random();
+
+				while (nodes.size() < slots && fprods.size() > 0) {
+					int pos = input.isNoShuffle() ? 0 : rnd.nextInt(fprods
+							.size());
+					Object product = fprods.remove(pos);
+
+					ProductModel pm = (ProductModel) product;
+					// it does all checks against cart include, displaying, uniqueness, etc.
+					if (filter.filter(pm) != null) {
+						nodes.add(pm);
+						slots--;
+					}
+				}
+			}
+		}
+		return nodes;
+	}
+
+    public static List getManuallyOverriddenSlotsP(ContentNodeModel model,
+			SessionInput input, DataAccess dataAccess) {
+		List nodes = new ArrayList();
+		if (model instanceof CategoryModel) {
+			CategoryModel category = (CategoryModel) model;
+			int slots = category.getManualSelectionSlots();
+			if (slots > 0) {
+				List fprods = category.getFeaturedProducts();
+				Random rnd = new Random();
+
+				while (slots > 0 && fprods.size() > 0) {
+					int pos = input.isNoShuffle() ? 0 : rnd.nextInt(fprods
+							.size());
+					Object product = fprods.remove(pos);
+
+					ProductModel pm = (ProductModel) product;
+					// it does all checks against cart include, displaying, uniqueness, etc.
+					if (dataAccess.addPrioritizedNode(pm))
+						slots--;
+					// we do not return prioritized nodes 
+				}
+			}
+		}
+		return nodes;
+	}
+    
+    public static List getTopN(List nodes, String factorName, int n,
+    		SessionInput input, final DataAccess dataAccess) {
+    	String userId = input.getCustomerId();
+    	String[] variables = { factorName };
+    	OrderingFunction of = new OrderingFunction();
+    	for (Object node : nodes) {
+    		ContentNodeModel model = (ContentNodeModel) node;
+    		of.addScore(model, dataAccess.getVariables(userId, model, variables));
+    	}
+    	List results = new ArrayList(n);
+    	List ranked = of.getRankedContents();
+    	int topN = Math.min(n, ranked.size());
+		for (int i = 0; i < topN; i++) {
+    		RankedContent.Single rc = (RankedContent.Single) ranked.get(i);
+    		results.add(rc.getModel());
+    	}
+    	return results;
+    }
     
     
+    public static boolean matchSkuPrefix(ContentNodeModel model, String[] prefixes) {
+        if (model instanceof ProductModel) {
+            ProductModel pm = (ProductModel) model;
+            List<SkuModel> skus = pm.getSkus();
+            for (SkuModel sku : skus) {
+                for (String prefix : prefixes) {
+                    if (sku.getSkuCode().startsWith(prefix)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     
+    /**
+     * Add the node to the prioritized sets, and returns 0, because this function is used as a filter
+     * and 0 means that the node should be removed from the active list.
+     * 
+     * @param da the data access object
+     * @param model
+     * @return 0
+     */
+    public static int addPrioritizedNode(DataAccess da, ContentNodeModel model) {
+        da.addPrioritizedNode(model);
+        return 0;
+    }
+
 }

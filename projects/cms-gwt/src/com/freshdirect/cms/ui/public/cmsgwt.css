@@ -1,3 +1,8 @@
+
+/* =========================== */
+/* ====== HEADER STYLES ====== */
+/* =========================== */
+
 /* Header styles */
 .appHeader {
 	background-color: black;
@@ -44,17 +49,13 @@
 	color:#fb0;
 }
 
-
 #buttonPanel {
-	/* background-color : red; */	
 	float : right;
 	height : 18px;
 }
-
 #buttonPanel div, #buttonPanel table {
 	height : 18px;
 }
-
 #buttonPanel td {
 	padding-left: 5px;
 	padding-right: 5px;
@@ -62,7 +63,41 @@
 	height: 18px;
 }
 
-/* ====== button icons ====== */
+#pageTitle {
+	border-bottom: 1px solid #CCCCCC;
+}
+#pageTitle h1 {
+	color:#999999;
+	font-family:impact,verdana,sans-serif;
+	font-size:23pt;
+	font-weight:normal;
+	line-height:normal;
+	margin-left:0;
+	padding:0;
+	position:relative;
+	top:8px;
+	vertical-align:bottom;
+}
+#pageTitle h1 span {
+	margin-left: 10px;
+}
+
+.pageHeader {
+	color:#999999;
+	font-size:8pt;
+	background-color: #EAF2FF;
+	padding: 10px;
+}
+.pageHeader .rigthPanel {
+	text-align : right;
+}
+
+
+
+/* ========================== */
+/* ====== BUTTON ICONS ====== */
+/* ========================== */
+
 .rel-button {
 	background-image: url(img/rel_link.gif) ! important;
 	background-position: center center;
@@ -127,9 +162,12 @@
 .del-icon {
 	cursor: pointer;	
 }
-/* ====== button icons ====== */
 
 
+
+/* ===================== */
+/* ====== COLOURS ====== */
+/* ===================== */
 
 /* ====== node tree ====== */
 .node-tree .disabled {
@@ -138,14 +176,11 @@
 .node-tree .dimmed {
 	color: #B8B8B8;
 }
-/* ====== node tree ====== */
 
 /* read only field labels */
 .readonly {
 	color: #C0C0C0;
 }
-
-
 
 /* ====== publish status and publish message severity colors ====== */
 .publish-complete {
@@ -173,43 +208,33 @@
 .publish-debug {
 	color: green;
 }
-/* ====== publish ... ====== */
 
 
 
+/* ========================= */
+/* ====== FORM STYLES ====== */
+/* ========================= */
 
-/* ====== form ====== */
 .x-form-checkbox {
 	position: static ! important;
 }
+
 .x-form-field {
 	width: 100% ! important;
 }
 .x-form-group {
-	width: auto ! important;
+	width: 100% ! important;
 }
 .x-panel {
-	width: auto ! important;
+	width: 100% ! important;
 }
 
 .cms-gwt-file-upload .x-form-field {
 	width : 144px ! important;
 }
 
-
-
-.inheritable > table {
-	width: 105% ! important;
-}
-.inheritance-checkbox * {
-	text-align: right;
-}
-.inheritance-checkbox {
-	margin-left : 5px;
-	text-align: right;
-}
 .x-form-item {
-	padding: 5px;
+	padding: 2px;
 }
 .x-form-item.gray {
 	background-color: #f2f2f2;
@@ -222,17 +247,21 @@
 	width: auto ! important;
 }
 
-/* hack for context dropdown */
-.x-combo-list-item {
-	width: 400px ! important;		
+/* ====== inheritance field ====== */
+.inheritable > table {
+	width: 105% ! important;
 }
-.x-combo-list-inner {
-	width: 400px ! important;		
+.inheritance-checkbox * {
+	text-align: right;
 }
-.x-combo-list {
-	width: 400px ! important;		
+.inheritance-checkbox {
+	margin-left : 2px;
+	text-align: right;
+	position: relative ! important;
+	z-index: 99 ! important;
 }
-/* ====== form ====== */
+
+
 
 .notab-form .x-panel-body form {
 	padding-top: 0px ! important;
@@ -265,104 +294,44 @@
 }
 
 
+/* ========================= */
+
 .content-label {
 	border-spacing: 0px;
-	border-collapse: collapse;;
+	border-collapse: collapse;
 }
 .content-label td {
 	vertical-align: middle;
 	font-size: 12px;
 }
 
-
-#pageTitle {
-	border-bottom: 1px solid #CCCCCC;
-}
-#pageTitle h1 {
-	color:#999999;
-	font-family:impact,verdana,sans-serif;
-	font-size:23pt;
-	font-weight:normal;
-	line-height:normal;
-	margin-left:0;
-	padding:0;
-	position:relative;
-	top:8px;
-	vertical-align:bottom;
-}
-#pageTitle h1 span {
-	margin-left: 10px;
-}
-
-.pageHeader {
-	color:#999999;
-	font-size:8pt;
-	background-color: #EAF2FF;
-	padding: 10px;
-}
-.pageHeader .rigthPanel {
-	text-align : right;
-}
-
 /* context drop down */
-
 .context-dropdown input {
   width : 500px !important;
 }
 
 
 /* TableField */
-
 .cms-table-field-MOD-even {
 	background-color: #ffffff;
 }
-
 .cms-table-field-MOD-odd {
 	background-color: #f6f6f6;
 }
-
 .cms-table-field-CRE-even {
 	background-color: #eeffee;
 }
-
 .cms-table-field-CRE-odd {
 	background-color: #e6ffe6;
 }
-
 .cms-table-field-DEL-even {
 	background-color: #ffeeee;
 }
-
 .cms-table-field-DEL-odd {
 	background-color: #ffe6e6;
 }
-
 .table-field .x-grid3-row {
 	-moz-user-select: text!important;
 	-khtml-user-select: text!important;
-}
-
-/* ============ i think styles below this line are not used anymore anywhere ... ============*/
-
-.my-tree-icon div {
-	background-position: center center;
-	background-repeat: no-repeat;
-}
-.my-treetbl-cell, .my-tbl-col-label, .my-tbl-item-cell-widget, .x-grid3-dirty-cell {
-	padding-left: 1px;
-	padding-right: 1px;
-}
-.my-treetbl-item {
-	border-top: none;
-}
-
-/** Example rules used by the template application (remove for your app) */
-.pc-template-btn {
-	display: block;
-	font-size: 16pt
-}
-
-#pc-template-img {
-	margin-top: 20px;
 }
 

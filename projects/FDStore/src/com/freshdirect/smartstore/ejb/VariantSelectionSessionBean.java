@@ -54,7 +54,7 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 	
 	final static String SQL_GETVARIANTMAP_ON = getVariantMapQuery("?");
 	
-	public Map getVariantMap(EnumSiteFeature feature) throws RemoteException {
+	public Map<String,String> getVariantMap(EnumSiteFeature feature) throws RemoteException {
 		return getVariantMap(feature, null);
 	}
 	
@@ -64,9 +64,9 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 	 * @return Variant assignment map
 	 * @throws RemoteException
 	 */
-	public Map getVariantMap(EnumSiteFeature feature, Date date) throws RemoteException {
+	public Map<String,String> getVariantMap(EnumSiteFeature feature, Date date) throws RemoteException {
 		Connection conn = null;
-		Map cohortVariantMap = new HashMap();
+		Map<String,String> cohortVariantMap = new HashMap<String,String>();
 		
 		try {
 			conn = getConnection();
@@ -114,9 +114,9 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 	 * Returns (cohort ID, weight) pairs indexed by cohort IDs
 	 * @return
 	 */
-	public Map getCohorts() throws RemoteException {
+	public Map<String, Integer> getCohorts() throws RemoteException {
 		Connection conn = null;
-		Map cohortMap = new HashMap();
+		Map<String, Integer> cohortMap = new HashMap<String, Integer>();
 		
 		try {
 			conn = getConnection();
@@ -151,12 +151,13 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 	}
 	
 	/**
-	 * Returns (cohort ID, weight) pairs indexed by cohort IDs
+	 * Return a cohort ID list.
+	 *  
 	 * @return
 	 */
-	public List getCohortNames() throws RemoteException {
+	public List<String> getCohortNames() throws RemoteException {
 		Connection conn = null;
-		List cohortNames = new ArrayList();
+		List<String> cohortNames = new ArrayList<String>();
 		
 		try {
 			conn = getConnection();
@@ -196,9 +197,9 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 	 * @return list of variant IDs
 	 * @throws RemoteException
 	 */
-	public List getVariants(EnumSiteFeature feature) throws RemoteException {
+	public List<String> getVariants(EnumSiteFeature feature) throws RemoteException {
 		Connection conn = null;
-		List variantList = new ArrayList();
+		List<String> variantList = new ArrayList<String>();
 		
 		try {
 			conn = getConnection();
@@ -234,9 +235,9 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 		
 	}
 	
-	public List getStartDates() throws RemoteException {
+	public List<Date> getStartDates() throws RemoteException {
 		Connection conn = null;
-		List dateList = new ArrayList();
+		List<Date> dateList = new ArrayList<Date>();
 		
 		try {
 			conn = getConnection();

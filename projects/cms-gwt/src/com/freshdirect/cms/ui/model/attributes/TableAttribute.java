@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.freshdirect.cms.ui.model.attributes;
 
 import java.io.Serializable;
@@ -12,6 +9,7 @@ import java.util.List;
  * 
  */
 public class TableAttribute extends BaseAttribute implements ModifiableAttributeI, Serializable {
+	
     public enum ColumnType {
         NORMAL, ATTRIB, KEY, CLASS, GROUPING
     }

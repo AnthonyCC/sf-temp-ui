@@ -1,8 +1,10 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -32,7 +34,7 @@ import com.freshdirect.webapp.util.FDEventUtil;
 public class RecommendationServiceTestBase extends TestCase {
     
     XmlContentService service;
-    AspectSystem aspectSystem ;
+    protected AspectSystem aspectSystem ;
     
     public RecommendationServiceTestBase(String name) {
         super(name);
@@ -58,6 +60,8 @@ public class RecommendationServiceTestBase extends TestCase {
 
         initAspects(aspectSystem);
         ScoreProvider.setInstance(new ProductStatisticUserProviderAspect() {
+        	Set factors = null;
+            Map<String,Float> popularityMap = null;
             
             public Map getUserProductScores(String userId) {
                 try {
@@ -74,6 +78,69 @@ public class RecommendationServiceTestBase extends TestCase {
                 } catch (InvalidContentKeyException e) {
                     throw new RuntimeException(e);
                 }
+            }
+            
+            public double[] getVariables(String userId,
+					ContentNodeModel contentNode, String[] variables) {
+				Map varMap = getVariables(userId, contentNode.getContentKey().getId());
+				double[] result = new double[variables.length];
+
+				for (int i = 0; i < variables.length; i++) {
+					String var = variables[i];
+					Number number = (Number) varMap.get(var);
+					if (number != null) {
+						result[i] = number.doubleValue();
+					}
+				}
+
+				return result;
+			}
+            
+            protected Float getPopularityScores(String key) {
+            	if (popularityMap == null) {
+                    popularityMap = new HashMap<String, Float>();
+                    popularityMap.put("cfncndy_ash_mcrrd", new Float(100));
+                    popularityMap.put("dai_orgval_whlmilk_01", new Float(90));
+                    popularityMap.put("dai_organi_2_milk_02", new Float(80));
+                    
+                    
+                    String[] keys = StringUtils.split("gro_earths_oat_cereal, gro_enfamil_powder_m_02,hba_1ups_aloe_rf,hab_pampers_crsrs_4,hba_svngen_dprs_3",',');
+                    for (int i=0;i<keys.length;i++) {
+                        popularityMap.put(keys[i].trim(), new Float(200-i));
+                    }
+                    popularityMap.put("spe_walkers_shortbre_02", new Float(5));
+            	}
+            	return popularityMap.get(key);
+            }
+
+			public Map getVariables(String userId, String key) {
+				Map mp = new HashMap();
+				if ("user-with-favorite-prods".equals(userId)) {
+					if ("gro_enfamil_powder_m_02".equals(key)) {
+						mp.put("Frequency", new Float(10));
+					}
+				}
+				if ("user-with-favorite-prods2".equals(userId)) {
+					if ("gro_enfamil_powder_m_02".equals(key)) {
+						mp.put("Frequency", new Float(10));
+					}
+					if ("gro_7gen_diaperlg".equals(key)) {
+						mp.put("Frequency", new Float(20));
+					}
+				}
+				mp.put("Popularity", getPopularityScores(key));
+                
+				return mp;
+			}
+            
+            @Override
+            public Set getAvailableFactors() {
+            	if (factors == null) {
+            		factors = new HashSet();
+            		factors.add("Frequency");
+            		factors.add("Popularity");
+            	}
+            	return factors;
             }
         });
         

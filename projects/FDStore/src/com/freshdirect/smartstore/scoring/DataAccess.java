@@ -29,6 +29,9 @@ public interface DataAccess {
      * @param name
      * @return
      */
-    public List getDatasource(SessionInput input, String name);
+    public List<ContentNodeModel>  getDatasource(SessionInput input, String name);
     
+    public boolean addPrioritizedNode(ContentNodeModel model);
+    
+    public List<ContentNodeModel> getPrioritizedNodes();
 }

@@ -111,18 +111,6 @@ StringBuffer buffer = new StringBuffer(
 
 <%@ include file="/includes/i_modifyorder.jspf" %>
 
-<!-- display items just added to cart  -->
-<%
-	/**
-	 * Display recently added products
-	 * FIXME: put this partial to a separate jsp
-	 */
-	if (cart.getRecentOrderLines().size() > 0 && "1".equalsIgnoreCase(request.getParameter("confirm"))) {
-%><%@ include file="/includes/smartstore/i_recent_orderlines.jspf" %>
-<br/>
-<%
-	}
-%>
 <form name="viewcart" method="post" action="/view_cart.jsp" style="margin:0px ! important">
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="695">
     <TR VALIGN="TOP">
@@ -146,20 +134,30 @@ StringBuffer buffer = new StringBuffer(
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%@ include file="/includes/i_cartcleanup.jspf" %>
-
 <%@ include file="/includes/i_viewcart.jspf" %> 
 
 </form>
 
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
+<!-- display items just added to cart  -->
+<%
+	/**
+	 * Display recently added products
+	 * FIXME: put this partial to a separate jsp
+	 */
+	if (cart.getRecentOrderLines().size() > 0 && "1".equalsIgnoreCase(request.getParameter("confirm"))) {
+%><%@ include file="/includes/smartstore/i_recent_orderlines.jspf" %>
+<br/>
+<%
+	}
+%>
 
 <!-- ===================================== -->
 <!-- ============ Cart & tabs ============ -->
 <!-- ===================================== -->
 
 <%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
-
 
 <BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>

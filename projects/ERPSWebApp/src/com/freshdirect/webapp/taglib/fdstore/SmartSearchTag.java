@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.FilteredSearchResults;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SearchResults;
+import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElementFilter;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -171,17 +172,13 @@ public class SmartSearchTag extends BodyTagSupport {
         }
 
 
-        Integer sortBy = null;
-        if (request.getParameter("sort") != null) {
-            sortBy = new Integer(SearchNavigator.convertToSort(request.getParameter("sort")));
-        }
         boolean reverseOrder = "desc".equalsIgnoreCase(request.getParameter("order"));
 
         FilteredSearchResults fres = new FilteredSearchResults(res.getSearchTerm(), res, userId, searchTerm.toLowerCase());
         CategoryNodeTree contentTree = putTree(categoryTreeName, fres.getProducts(), true);
         fres.setNodeTree(contentTree);
         fres.setScoreOracle(new FilteredSearchResults.HierarchicalScoreOracle(contentTree));
-        fres.sortProductsBy(sortBy, reverseOrder);
+        fres.sortProductsBy(SearchSortType.findByLabel(request.getParameter("sort")), reverseOrder);
 
         fres.setStart(Math.max(getIntParameter("start", 0), 0));
 

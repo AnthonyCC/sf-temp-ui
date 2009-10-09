@@ -190,14 +190,20 @@ public class TestUtils {
      * @param coll
      * @return
      */
-    public static Set convertToStringList(Collection coll) {
-        Set set = new HashSet();
+    public static Set<String> convertToStringList(Collection coll) {
+        Set<String> set = new HashSet<String>();
         for (Iterator iter = coll.iterator(); iter.hasNext();) {
             ContentNodeModel obj = (ContentNodeModel) iter.next();
             set.add(obj.getContentKey().getId());
         }
         return set;
     }
+    
+    
+    public static String getId(List<ContentNodeModel> nodes, int pos) {
+        return (nodes.get(pos)).getContentKey().getId();
+    }
+    
     
     public static XmlContentService initCmsManagerFromXmls(String xmlPath) {
         List list = new ArrayList();

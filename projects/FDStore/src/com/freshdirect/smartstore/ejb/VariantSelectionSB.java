@@ -10,10 +10,10 @@ import javax.ejb.EJBObject;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 
 public interface VariantSelectionSB extends EJBObject {
-	public Map getVariantMap(EnumSiteFeature feature) throws RemoteException;
-	public Map getVariantMap(EnumSiteFeature feature, Date date) throws RemoteException;
-	public Map getCohorts() throws RemoteException;
-	public List getCohortNames() throws RemoteException;
-	public List getVariants(EnumSiteFeature feature) throws RemoteException;
-	public List getStartDates() throws RemoteException;
+	public Map<String,String> getVariantMap(EnumSiteFeature feature) throws RemoteException;
+	public Map<String,String> getVariantMap(EnumSiteFeature feature, Date date) throws RemoteException;
+	public Map<String, Integer> getCohorts() throws RemoteException;
+	public List<String> getCohortNames() throws RemoteException;
+	public List<String> getVariants(EnumSiteFeature feature) throws RemoteException;
+	public List<Date> getStartDates() throws RemoteException;
 }

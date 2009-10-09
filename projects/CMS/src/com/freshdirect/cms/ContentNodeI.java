@@ -46,7 +46,13 @@ public interface ContentNodeI extends Serializable {
 	 * @return {@link AttributeI} or null only if no such attribute is defined
 	 */
 	public AttributeI getAttribute(String name);
+	
+	
+	public Object getAttributeValue(String name);
 
+        public boolean setAttributeValue(String name, Object value);
+	
+	
 	/**
 	 * Get all attributes.
 	 * Map must entries for all attributes defined in the TypeService providing the node.

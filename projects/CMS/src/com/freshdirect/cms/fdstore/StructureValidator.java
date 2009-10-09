@@ -3,6 +3,7 @@ package com.freshdirect.cms.fdstore;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsRequestI;
@@ -28,7 +29,7 @@ import com.freshdirect.cms.validation.ContentValidatorI;
  */
 public class StructureValidator implements ContentValidatorI {
 
-	private final static Set TYPES = new HashSet();
+	private final static Set<ContentType> TYPES = new HashSet<ContentType>();
 	static {
 		TYPES.add(FDContentTypes.DEPARTMENT);
 		TYPES.add(FDContentTypes.CATEGORY);
@@ -42,13 +43,12 @@ public class StructureValidator implements ContentValidatorI {
 		TYPES.add(FDContentTypes.STARTER_LIST);
 	}
 
-	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
+	public void validate( ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request ) {
 		ContentType t = node.getKey().getType();
-		if (TYPES.contains(t)) {
-			Set parentKeys = service.getParentKeys(node.getKey());
-			if (parentKeys.size() > 1) {
-				delegate.record(node.getKey(), "Cannot have multiple parents. "
-						+ parentKeys);
+		if ( TYPES.contains( t ) ) {
+			Set<ContentKey> parentKeys = service.getParentKeys( node.getKey() );
+			if ( parentKeys.size() > 1 ) {
+				delegate.record( node.getKey(), "Cannot have multiple parents. " + parentKeys );
 			}
 		}
 	}

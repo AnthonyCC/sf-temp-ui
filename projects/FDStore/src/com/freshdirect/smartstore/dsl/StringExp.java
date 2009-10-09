@@ -29,5 +29,10 @@ public class StringExp extends Expression {
     public String toString() {
         return "String['"+value+"']";
     }
+
     
+    @Override
+    public String getStringValue() {
+        return value;
+    }
 }

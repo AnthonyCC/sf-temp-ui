@@ -41,4 +41,5 @@ public interface ContentServiceAsync {
     
     void startPublish(String comment, AsyncCallback<String> callback);
     
+    void getPreviewUrl( String contentKey, AsyncCallback<String> callback );
 }

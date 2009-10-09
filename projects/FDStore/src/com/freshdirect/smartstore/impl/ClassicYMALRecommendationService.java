@@ -25,7 +25,7 @@ public class ClassicYMALRecommendationService extends AbstractRecommendationServ
 	/**
 	 * Recommends products for the current node
 	 */
-	public List recommendNodes(SessionInput input) {
+	public List doRecommendNodes(SessionInput input) {
 		List prodList;
 
 		if (input.getYmalSource() != null) {

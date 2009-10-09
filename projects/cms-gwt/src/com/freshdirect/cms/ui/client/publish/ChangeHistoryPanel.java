@@ -9,7 +9,7 @@ import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 
 public class ChangeHistoryPanel extends ContentPanel {
 
-    public ChangeHistoryPanel(ChangeSetQueryResponse changeHistory, String label) {
+	public ChangeHistoryPanel( ChangeSetQueryResponse changeHistory, String label, boolean grouping ) {
         super();
         if (label != null) {
             setHeading("Change History for : " + label);
@@ -17,25 +17,39 @@ public class ChangeHistoryPanel extends ContentPanel {
         } else {
             setHeaderVisible(false);
         }
-        
-        setScrollMode(Scroll.AUTO);
+		setScrollMode( Scroll.AUTO );
 
-        if (changeHistory.getPublishMessages() != null) {
+        
+		ContentPanel changeSetPanel;
+		if ( grouping ) {
+			changeSetPanel = new ChangeSetGroupingPanel( changeHistory );
+		} else {
+			changeSetPanel = new ChangeSetPanel( changeHistory );
+		}
+
+        if ( changeHistory.getPublishMessages() != null ) {
 
             TabPanel tabPanel = new TabPanel();
 
-            TabItem changesetTab = new TabItem("Changeset details");
-            changesetTab.setLayout(new FitLayout());
-            changesetTab.add(new ChangeSetPanel(changeHistory));
-            tabPanel.add(changesetTab);
+			TabItem changesetTab = new TabItem( "Changeset details" );
+			changesetTab.setLayout( new FitLayout() );
+			changesetTab.add( changeSetPanel );
+			changesetTab.setAutoHeight( true );
+			changesetTab.setAutoWidth( true );
+			tabPanel.add( changesetTab );
 
-            TabItem messagesTab = new TabItem("Publish messages");
-            messagesTab.setLayout(new FitLayout());
-            messagesTab.add(new PublishMessagesPanel(changeHistory.getPublishMessages()));
-            tabPanel.add(messagesTab);
-            add(tabPanel);
-        } else {
-            add(new ChangeSetPanel(changeHistory));
+			TabItem messagesTab = new TabItem( "Publish messages" );
+			messagesTab.setLayout( new FitLayout() );
+			messagesTab.add( new PublishMessagesPanel( changeHistory ) );
+			messagesTab.setAutoHeight( true );
+			messagesTab.setAutoWidth( true );
+			tabPanel.add( messagesTab );
+			
+			add( tabPanel );
+            
+        } else {        	
+    		setLayout( new FitLayout() );            
+        	add( changeSetPanel );
         }
 
     }

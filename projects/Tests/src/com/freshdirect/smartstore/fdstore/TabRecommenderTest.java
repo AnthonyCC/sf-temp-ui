@@ -49,11 +49,11 @@ public class TabRecommenderTest extends RecommendationServiceTestBase {
 			return variant;
 		}
 
-		public List recommendNodes(SessionInput input) {
-	        ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode("gro_7gen_diaperlg");
-			List x = new ArrayList();
-			x.add(contentNode);
-			return x;
+		public List<ContentNodeModel> recommendNodes(SessionInput input) {
+	            ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode("gro_7gen_diaperlg");
+                    List<ContentNodeModel> x = new ArrayList<ContentNodeModel>();
+                    x.add(contentNode);
+                    return x;
 		}
 
 		public String getDescription() {

@@ -1,5 +1,6 @@
 package com.freshdirect.smartstore.scoring;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,8 +11,9 @@ import com.freshdirect.smartstore.SessionInput;
 
 public abstract class MockDataAccess implements DataAccess {
     private final static Logger LOGGER = Logger.getLogger(MockDataAccess.class);
+    List<ContentNodeModel> nodes = new ArrayList<ContentNodeModel>();
 
-    public List getDatasource(SessionInput input, String name) {
+    public List<ContentNodeModel> getDatasource(SessionInput input, String name) {
         LOGGER.info("getDatasource called with name: '"+name+"'");
         return null;
     }
@@ -34,4 +36,17 @@ public abstract class MockDataAccess implements DataAccess {
 
     protected abstract Map getVariables(String id);
 
+    @Override
+    public boolean addPrioritizedNode(ContentNodeModel model) {
+    	return nodes.add(model);
+    }
+    
+    @Override
+    public List<ContentNodeModel> getPrioritizedNodes() {
+    	return nodes;
+    }
+    
+    public void reset() {
+    	nodes.clear();
+    }
 }

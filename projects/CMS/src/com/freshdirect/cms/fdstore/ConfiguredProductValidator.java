@@ -5,7 +5,6 @@ package com.freshdirect.cms.fdstore;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -77,13 +76,13 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 
 		// validate sales unit
 
-		Map salesUnits = getSalesUnits(sku);
+		Map<String,ContentNodeI> salesUnits = getSalesUnits(sku);
 		String su = (String) node.getAttribute("SALES_UNIT").getValue();
 		if (su == null) {
 			delegate.record(node.getKey(), "SALES_UNIT", "No sales unit specified");
 		} else {
 			if (!salesUnits.keySet().contains(su)) {
-				SortedSet suKeysSorted = new TreeSet(salesUnits.keySet());
+				SortedSet<String> suKeysSorted = new TreeSet<String>( salesUnits.keySet() );
 				
 				delegate.record(node.getKey(), "SALES_UNIT", "Invalid sales unit '"
 					+ su
@@ -94,29 +93,29 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 
 		// validate characteristic values
 
-		Map definitions = getDefinitionMap(sku);
-		Map options = getConfigurationOptions(node);
+		Map<String,EnumDef> definitions = getDefinitionMap(sku);
+		Map<String,String> options = getConfigurationOptions(node);
 
-		for (Iterator i = definitions.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Entry) i.next();
-			String charName = (String) e.getKey();
-			EnumDef charValues = (EnumDef) e.getValue();
-			String charValue = (String) options.get(charName);
+		for ( Map.Entry<String,EnumDef> e : definitions.entrySet() ) {
+			String charName = e.getKey();
+			EnumDef charValues = e.getValue();
+			String charValue = options.get(charName);
+			
 			if (charValue == null) {
 				delegate.record(node.getKey(), "OPTIONS", "No value for characteristic " + charName);
 				continue;
 			}
+			
 			boolean validCharValue = false;
-			Set charValueSet = charValues.getValues().keySet();
-			for (Iterator j = charValueSet.iterator(); j.hasNext();) {
-				String cv = (String) j.next();
+			Set<String> charValueSet = charValues.getValues().keySet();			
+			for ( String cv : charValueSet ) {
 				if (cv.equals(charValue)) {
 					validCharValue = true;
 					break;
 				}
 			}
 			if (!validCharValue) {
-				SortedSet charValueSortedSet = new TreeSet(charValueSet);
+				SortedSet<String> charValueSortedSet = new TreeSet<String>(charValueSet);
 				
 				delegate.record(node.getKey(), "OPTIONS", "Invalid characteristic value "
 					+ charValue
@@ -137,14 +136,14 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 		//		}
 		
 		// validate parent counts
-		Set parentKeys = service.getParentKeys(node.getKey());
+		Set<ContentKey> parentKeys = service.getParentKeys(node.getKey());
 		int catCount = 0;
 		int confPrdCount = 0;
 		int recSecCount = 0;
 		int folderCount = 0;
 		int starterListCount = 0;
-		for (Iterator i = parentKeys.iterator(); i.hasNext(); ) {
-			ContentKey parentKey = (ContentKey)i.next();
+		
+		for ( ContentKey parentKey : parentKeys ) {
 			ContentType t = parentKey.getType();
 			if (FDContentTypes.CONFIGURED_PRODUCT_GROUP.equals(t)){
 				confPrdCount++;
@@ -170,9 +169,9 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 	 * @param configuredProduct {@link ContentNodeI} of type <code>ConfiguredProduct</code>
 	 * @return Map of String (characteristic) -> String (char. value)
 	 */
-	public static Map getConfigurationOptions(ContentNodeI configuredProduct) {
+	public static Map<String,String> getConfigurationOptions(ContentNodeI configuredProduct) {
 		String optStr = (String) configuredProduct.getAttribute("OPTIONS").getValue();
-		return optStr == null ? new HashMap() : ErpOrderLineUtil.convertStringToHashMap(optStr);
+		return optStr == null ? new HashMap<String,String>() : ErpOrderLineUtil.convertStringToHashMap(optStr);
 	}
 
 	public static void setConfigurationOptions(ContentNodeI configuredProduct, Map options) {
@@ -186,16 +185,16 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 	 * @param sku Sku node
 	 * @return Map of String (characteristic name) -> {@link EnumDef} (char. values)
 	 */
-	public static Map getDefinitionMap(ContentNodeI sku) {
-		Map mapDefinition = new HashMap();
-		Set charKeys = ContentNodeUtil.collectReachableKeys(sku, FDContentTypes.ERP_CHARACTERISTIC);
-		for (Iterator chi = charKeys.iterator(); chi.hasNext();) {
-			ContentNodeI charNode = ((ContentKey) chi.next()).getContentNode();
+	public static Map<String,EnumDef> getDefinitionMap(ContentNodeI sku) {
+		Map<String,EnumDef> mapDefinition = new HashMap<String,EnumDef>();
+		Set<ContentKey> charKeys = ContentNodeUtil.collectReachableKeys(sku, FDContentTypes.ERP_CHARACTERISTIC);
+		for ( ContentKey charKey : charKeys ) {
+			ContentNodeI charNode = charKey.getContentNode();
 			String charName = (String) charNode.getAttribute("name").getValue();
-			Map values = new HashMap();
-			Set cvKeys = charNode.getChildKeys();
-			for (Iterator cvi = cvKeys.iterator(); cvi.hasNext();) {
-				ContentNodeI cvNode = ((ContentKey) cvi.next()).getContentNode();
+			Map<String,String> values = new HashMap<String,String>();
+			Set<ContentKey> cvKeys = charNode.getChildKeys();
+			for ( ContentKey cvKey : cvKeys ) {
+				ContentNodeI cvNode = cvKey.getContentNode();
 				String cvName = (String) cvNode.getAttribute("name").getValue();
 				String label = cvNode.getLabel();
 				values.put(cvName, label);
@@ -211,13 +210,14 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 	 * @param sku
 	 * @return Map of String (sales unit) -> {@link ContentNodeI} of type <code>ErpSalesUnit</code>
 	 */
-	public static Map getSalesUnits(ContentNodeI sku) {
-		Set keys = ContentNodeUtil.collectReachableKeys(sku, FDContentTypes.ERP_SALES_UNIT);
-		Map m = CmsManager.getInstance().getContentNodes(keys);
-		Map su = new HashMap(m.size());
-		for (Iterator i = m.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
-			ContentKey k = (ContentKey) e.getKey();
+	public static Map<String,ContentNodeI> getSalesUnits(ContentNodeI sku) {
+		
+		Set<ContentKey> keys = ContentNodeUtil.collectReachableKeys(sku, FDContentTypes.ERP_SALES_UNIT);
+		Map<ContentKey, ContentNodeI> m = CmsManager.getInstance().getContentNodes(keys);
+		Map<String,ContentNodeI> su = new HashMap<String,ContentNodeI>(m.size());
+		
+		for ( Map.Entry<ContentKey, ContentNodeI> e : m.entrySet() ) {
+			ContentKey k = e.getKey();
 			su.put(k.getId(), e.getValue());
 		}
 		return su;

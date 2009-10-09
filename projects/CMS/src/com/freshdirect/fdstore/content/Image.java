@@ -6,7 +6,7 @@ public class Image extends MediaModel {
     
     public Image() {
         super();
-        mediaType = MediaModel.TYPE_IMAGE;
+        mediaType = TYPE_IMAGE;
     }
     
     public Image(String path, int width, int height) {

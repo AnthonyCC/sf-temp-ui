@@ -73,5 +73,13 @@ public class CachingDataGenerator extends DataGenerator {
         }
         return Collections.EMPTY_LIST;
     }
+    
+    public boolean isCacheEnabled() {
+        return cacheEnabled;
+    }
+    
+    public void setCacheEnabled(boolean cacheEnabled) {
+        this.cacheEnabled = cacheEnabled;
+    }
 
 }

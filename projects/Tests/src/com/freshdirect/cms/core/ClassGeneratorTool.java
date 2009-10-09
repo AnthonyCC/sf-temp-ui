@@ -42,8 +42,8 @@ public class ClassGeneratorTool {
                 "classpath:/com/freshdirect/cms/application/service/TestContent3.xml");
 */
         
-        //baseTest();
-
+        baseTest();
+/*
         ContentNodeGenerator.GETATTRIBUTE_MODE = 0;
         double rate0 = benchmark();
         ContentNodeGenerator.GETATTRIBUTE_MODE = 1;
@@ -54,7 +54,7 @@ public class ClassGeneratorTool {
         System.out.println("MODE SWITCH : "+rate0);
         System.out.println("MODE BINARY : "+rate1);
         System.out.println("MODE HASHMAP: "+rate2);
-        
+  */      
         //System.in.read();
     }
 
@@ -117,12 +117,27 @@ public class ClassGeneratorTool {
             LOG.info("node LAYOUT:" + node.getAttribute("LAYOUT").getValue());
             LOG.info("node brands:" + node.getAttribute("brands").getValue());
 
+            
+            LOG.info("node FULL_NAME:" + node.getAttributeValue("FULL_NAME"));
+            LOG.info("node LAYOUT:" + node.getAttributeValue("LAYOUT"));
+            LOG.info("node brands:" + node.getAttributeValue("brands"));
+            
             ContentNodeI copy = node.copy();
             LOG.info("copy FULL_NAME:" + copy.getAttribute("FULL_NAME").getValue());
             LOG.info("copy LAYOUT:" + copy.getAttribute("LAYOUT").getValue());
             LOG.info("copy brands:" + copy.getAttribute("brands").getValue());
             LOG.info("copy key:" + copy.getKey());
 
+            LOG.info("node FULL_NAME:" + copy.getAttributeValue("FULL_NAME"));
+            LOG.info("node LAYOUT:" + copy.getAttributeValue("LAYOUT"));
+            LOG.info("node brands:" + copy.getAttributeValue("brands"));
+            
+            node.setAttributeValue("FULL_NAME", "new name");
+            node.setAttributeValue("LAYOUT", Integer.valueOf(1));
+            
+            LOG.info("node FULL_NAME:" + node.getAttributeValue("FULL_NAME"));
+            LOG.info("node LAYOUT:" + node.getAttributeValue("LAYOUT"));
+            
         }
         {
             ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.IMAGE, "image"));

@@ -43,9 +43,8 @@ public class ContentTypeUtil {
 		if (definition==null) {
 			return Collections.EMPTY_LIST;
 		}
-		List<RelationshipDefI> l = new ArrayList<RelationshipDefI>();
-		for (Iterator i = definition.getSelfAttributeDefs().iterator(); i.hasNext();) {
-			AttributeDefI def = (AttributeDefI) i.next();
+		List<RelationshipDefI> l = new ArrayList<RelationshipDefI>();		
+		for ( AttributeDefI def : definition.getSelfAttributeDefs() ) {
 			if (def instanceof RelationshipDefI && ((RelationshipDefI) def).isNavigable()) {
 				l.add((RelationshipDefI) def);
 			}

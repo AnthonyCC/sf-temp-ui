@@ -65,7 +65,7 @@ public class YourFavoritesInCategoryRecommendationService extends ManualOverride
             Float score = (Float) userProductScores.get(p.getContentKey());
             if (score != null && score.floatValue() > maxScore) {
                 if (p.isDisplayable()) {
-                    if (includeCartItems || !input.getCartContents().contains(p.getContentKey())) {
+                    if (input.isIncludeCartItems() || !input.getCartContents().contains(p.getContentKey())) {
                         maxScore = score.floatValue();
                         maxProd = p;
                     }

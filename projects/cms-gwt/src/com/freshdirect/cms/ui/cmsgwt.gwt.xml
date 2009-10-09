@@ -23,6 +23,7 @@
 	  <servlet path="/adminService" class="com.freshdirect.cms.ui.serviceimpl.AdminServiceImpl" />		
 	  <servlet path="/RecipeUpload" class="com.freshdirect.cms.ui.serviceimpl.RecipeLoaderServlet" />		
 	  <servlet path="/XlsUpload" class="com.freshdirect.cms.ui.serviceimpl.XLSLoaderServlet" />		
+	  <servlet path="/CsvExport" class="com.freshdirect.cms.ui.serviceimpl.CsvExportServlet" />		
 	  
 	  <source path="client" />
 	  <source path="service" />

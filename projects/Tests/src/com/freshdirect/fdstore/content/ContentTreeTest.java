@@ -82,7 +82,7 @@ public class ContentTreeTest extends TestCase {
         SearchResults sr = new SearchResults(products, new ArrayList(), true, "milk");
         FilteredSearchResults fsr = new FilteredSearchResults("milk", sr, null);
         // sort products by name
-        fsr.sortProductsBy(new Integer(FilteredSearchResults.BY_NAME), false);
+        fsr.sortProductsBy(SearchSortType.BY_NAME, false);
         fsr.setFilter(null);
 
         assertEquals("sort by name", "spe_tasthai_cocmlk,spe_tasthai_ltcocmlk,gro_alprose_bitchoc,gro_alprose_mlkchoc", getKeys(fsr.getFilteredProducts(),4));

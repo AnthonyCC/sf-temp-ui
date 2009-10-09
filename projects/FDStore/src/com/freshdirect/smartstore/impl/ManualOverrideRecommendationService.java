@@ -29,7 +29,7 @@ public class ManualOverrideRecommendationService extends CandidateProductRecomme
         super(variant, sampler, catAggr, includeCartItems);
     }
     
-    public List recommendNodes(SessionInput input) {
+    public List doRecommendNodes(SessionInput input) {
         if (input.getCurrentNode() != null) {
             ContentNodeModel model = input.getCurrentNode();
             if (model instanceof CategoryModel) {
@@ -67,7 +67,7 @@ public class ManualOverrideRecommendationService extends CandidateProductRecomme
             
             if (((ProductModelImpl)product).isDisplayable()) {
                 ProductModelImpl pi = (ProductModelImpl)product;
-                if (includeCartItems || !input.getCartContents().contains(pi.getContentKey())) {
+                if (input.isIncludeCartItems() || !input.getCartContents().contains(pi.getContentKey())) {
                     result.add(product);
                 }
             }

@@ -69,7 +69,7 @@ public class RecipeChildNodeValidator implements ContentValidatorI {
 			String relationshipName, ContentKey childKey, CmsRequestI request) {
 		
 		RelationshipI rel = (RelationshipI) node.getAttribute(relationshipName);
-		if (rel.getValue() != null && ((List) rel.getValue()).contains(childKey)) {
+		if (rel.getValue() != null && ((List<Object>) rel.getValue()).contains(childKey)) {
 			return null;
 		}
 		

@@ -34,9 +34,9 @@ public class ErpOrderLineUtil {
 		return ret.toString();
 	}
 	
-	public static HashMap convertStringToHashMap(String configuration){
+	public static HashMap<String,String> convertStringToHashMap(String configuration){
 		
-		HashMap ret = new HashMap();
+		HashMap<String,String> ret = new HashMap<String,String>();
 		if (configuration != null) {
 			StringTokenizer st = new StringTokenizer(configuration, ",");
 			while(st.hasMoreTokens()){

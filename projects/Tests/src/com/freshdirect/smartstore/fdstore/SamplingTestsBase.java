@@ -135,7 +135,7 @@ public class SamplingTestsBase extends TestCase {
 			aggregateAtCategoryLevel = value;
 		}
 
-		public List recommendNodes(SessionInput input) {
+		public List doRecommendNodes(SessionInput input) {
 			return null;
 		}
 

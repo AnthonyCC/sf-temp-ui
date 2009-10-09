@@ -10,12 +10,12 @@ public class Operation extends Expression {
     /**
      * List<Expression>
      */
-    List    params         = new ArrayList();
+    List<Expression>    params         = new ArrayList<Expression>();
 
     /**
      * List<Character>
      */
-    List    operators      = new ArrayList();
+    List<Character>    operators      = new ArrayList<Character>();
 
     boolean includeParent  = false;
 
@@ -60,7 +60,7 @@ public class Operation extends Expression {
     }
     
     public Expression get(int index) {
-        return (Expression) params.get(index);
+        return params.get(index);
     }
     
     /**
@@ -69,22 +69,22 @@ public class Operation extends Expression {
      * @return
      */
     public char getOperator(int index) {
-        return ((Character)operators.get(index)).charValue();
+        return (operators.get(index)).charValue();
     }
 
     public String toCode() {
-        StringBuffer b = new StringBuffer();
+        StringBuilder b = new StringBuilder();
         if (includeParent) {
             b.append('(');
         }
-        b.append(((Expression) params.get(0)).toCode());
+        b.append(params.get(0).toCode());
         for (int i = 1; i < params.size(); i++) {
             if (operators.size() > i - 1) {
                 b.append(' ').append(operators.get(i - 1)).append(' ');
             } else {
                 b.append(" --- ");
             }
-            Expression exp = ((Expression) params.get(i));
+            Expression exp = params.get(i);
             b.append(exp.toCode());
         }
         if (includeParent) {
@@ -94,12 +94,12 @@ public class Operation extends Expression {
     }
 
     public String toJavaCode() throws CompileException {
-        StringBuffer b = new StringBuffer();
+        StringBuilder b = new StringBuilder();
         b.append('(');
         b.append(((Expression) params.get(0)).toJavaCode());
         for (int i = 1; i < params.size(); i++) {
             b.append(' ').append(operators.get(i - 1)).append(' ');
-            Expression exp = ((Expression) params.get(i));
+            Expression exp = params.get(i);
             b.append(exp.toJavaCode());
         }
         b.append(')');
@@ -107,21 +107,21 @@ public class Operation extends Expression {
     }
 
     public String toString() {
-        StringBuffer b = new StringBuffer();
+        StringBuilder b = new StringBuilder();
         b.append("Oper[").append(operators).append(',').append(params).append("]");
         return b.toString();
     }
 
     public void validate() throws CompileException {
         for (int i = 0; i < params.size(); i++) {
-            Expression exp = ((Expression) params.get(i));
+            Expression exp = params.get(i);
             exp.validate();
         }
-        int currentType = ((Expression) params.get(0)).getReturnType();
+        int currentType = params.get(0).getReturnType();
         for (int i = 1; i < params.size(); i++) {
-            Expression exp = ((Expression) params.get(i));
+            Expression exp = params.get(i);
             int type = exp.getReturnType();
-            Character operator = (Character) operators.get(i - 1);
+            Character operator = operators.get(i - 1);
             currentType = calculateType(currentType, operator.charValue(), type);
         }
         this.type = currentType;
@@ -140,8 +140,8 @@ public class Operation extends Expression {
     
 
     public static int calculateType(int type0, char operator, int type1) throws CompileException {
-        if (type0==RET_FLOAT || type0 == RET_INT) {
-            if (type1==RET_FLOAT || type1==RET_INT) {
+        if (type0 == RET_FLOAT || type0 == RET_INT) {
+            if (type1 == RET_FLOAT || type1 == RET_INT) {
                 switch (operator) {
                     case '+':
                     case '-':
@@ -159,9 +159,9 @@ public class Operation extends Expression {
                 throw new CompileException(CompileException.TYPE_ERROR, "Operation between "+Expression.getTypeName(type0) + " "+operator + " "+Expression.getTypeName(type1));
             }
         }
-        if (type0==RET_SET) {
-            if (operator==':') {
-                if (type1!=RET_INT) {
+        if (type0 == RET_SET) {
+            if (operator == ':') {
+                if (type1 != RET_INT) {
                     throw new CompileException(CompileException.TYPE_ERROR, "Filtering function must return integer value!");
                 }
                 return RET_SET;
@@ -208,29 +208,46 @@ public class Operation extends Expression {
     public void visit(ExpressionVisitor visitor) throws VisitException {
         visitor.visit(this);
         for (int i = 0; i < params.size(); i++) {
-            ((Expression) params.get(i)).visit(visitor);
+            params.get(i).visit(visitor);
         }
     }
     
+    public Expression getUniqueExpression() {
+        return params.size() == 1 ? params.get(0) : null;
+    }
     
+    /**
+     * Return a fixed binary tree. It can be null, when there is only one operand.
+     * @return
+     */
     public BinaryExpression fixPrecedence() {
-        List tParams = new ArrayList(params);
-        List tOps = new ArrayList(operators);
+        if (params.size() <= 1) {
+            // rare case, when some tree manipulation removed one or more operand ..
+            return null;
+        }
+        List<Expression> tParams = new ArrayList<Expression>(params);
+        List<Character> tOps = new ArrayList<Character>(operators);
         int max = 0;
         do {
             max = 0;
-            for (int i=0;i<tOps.size();i++) {
-                int curr = getPrecedence(((Character)tOps.get(i)).charValue());
+            for (int i = 0; i < tOps.size(); i++) {
+                int curr = getPrecedence(tOps.get(i).charValue());
                 max = curr > max ? curr : max;
             }
             if (max>0) {
                 for (int i=0;i<tOps.size();i++) {
-                    char charValue = ((Character)tOps.get(i)).charValue();
+                    char charValue = tOps.get(i).charValue();
                     int curr = getPrecedence(charValue);
-                    if (curr==max) {
-                        Expression left = (Expression) tParams.remove(i);
-                        Expression right = (Expression) tParams.remove(i);
+                    if (curr == max) {
+                        Expression left = tParams.remove(i);
+                        Expression right = tParams.remove(i);
                         tOps.remove(i);
+                        if (left instanceof Operation) {
+                            left = ((Operation) left).fixPrecedence();
+                        }
+                        if (right instanceof Operation) {
+                            right = ((Operation) right).fixPrecedence();
+                        }
                         BinaryExpression b = new BinaryExpression(left, charValue, right);
                         tParams.add(i, b);
                         i = 0;
@@ -249,6 +266,14 @@ public class Operation extends Expression {
             operators.remove(i-1);
         }
     }
-    
 
+    
+    @Override
+    public String getJavaInitializationCode() throws CompileException {
+       StringBuilder buf = new StringBuilder();
+       for (Expression exp : params) {
+           buf.append(exp.getJavaInitializationCode());
+       }
+       return buf.toString();
+    }
 }

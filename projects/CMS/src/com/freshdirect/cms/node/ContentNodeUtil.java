@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -105,15 +104,14 @@ public class ContentNodeUtil {
 
 	private static void collectReachableKeys(Set<ContentKey> collectedKeys, ContentType targetType, ContentNodeI root) {
 		Set<ContentKey> children = root.getChildKeys();
-		ContentTypeServiceI ts = CmsManager.getInstance().getTypeService();
-		for (Iterator i = children.iterator(); i.hasNext();) {
-			ContentKey k = (ContentKey) i.next();
+		ContentTypeServiceI ts = CmsManager.getInstance().getTypeService();		
+		for ( ContentKey k : children ) {
 			if (targetType == null || targetType.equals(k.getType())) {
 				collectedKeys.add(k);
 			}
 			// recursion, if node may have reachable keys of targetType
 			ContentTypeDefI def = ts.getContentTypeDefinition(k.getType());
-			Set reachableTypes = ContentTypeUtil.getReachableContentTypes(ts, def);
+			Set<ContentType> reachableTypes = ContentTypeUtil.getReachableContentTypes(ts, def);
 			if (reachableTypes.contains(targetType)) {
 				collectReachableKeys(collectedKeys, targetType, k.getContentNode());
 			}
@@ -172,7 +170,7 @@ public class ContentNodeUtil {
 						}
 					} else {
 						if (rel.getValue() != null) {
-							s.addAll((List) rel.getValue());
+							s.addAll((List<ContentKey>) rel.getValue());
 						}
 					}
 				}
@@ -250,7 +248,7 @@ public class ContentNodeUtil {
 
 		ContentKey key = new ContentKey(t, value);
 		if (r.getDefinition().getCardinality().equals(EnumCardinality.MANY)) {
-			List list = new ArrayList();
+			List<ContentKey> list = new ArrayList<ContentKey>();
 			list.add(key);
 			attr.setValue(list);
 		} else {

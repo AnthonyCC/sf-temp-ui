@@ -5,13 +5,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.core.MockProductModel;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModelImpl;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Expression;
@@ -19,7 +23,7 @@ import com.freshdirect.smartstore.dsl.Expression;
 public class DataGeneratorCompilerTest extends TestCase {
     DataGeneratorCompiler comp;
 
-    DataAccess            input;
+    MockDataAccess            input;
 
     SessionInput          s = new SessionInput("ses1", null);
 
@@ -29,11 +33,13 @@ public class DataGeneratorCompilerTest extends TestCase {
         comp.addVariable("set2", Expression.RET_SET);
         comp.addVariable("content", Expression.RET_SET);
         comp.addVariable("content2", Expression.RET_SET);
+        comp.addVariable("content3", Expression.RET_SET);
 
         comp.addVariable("afact", Expression.RET_INT);
         comp.addVariable("bfact", Expression.RET_FLOAT);
 
         input = new MockDataAccess() {
+            @SuppressWarnings("unchecked")
             public List getDatasource(SessionInput input, String name) {
                 List set = new ArrayList();
                 if ("set".equals(name)) {
@@ -57,6 +63,17 @@ public class DataGeneratorCompilerTest extends TestCase {
                 if ("content2".equals(name)) {
                     set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a2")));
                     set.add(new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "bbb")));
+                    return set;
+                }
+                if ("content3".equals(name)) {
+                    set.add(new MockProductModel(new ContentKey(FDContentTypes.PRODUCT, "e1"))
+                        .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "bela_01")))
+                        .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "fru_01"))));
+                    set.add(new MockProductModel(new ContentKey(FDContentTypes.PRODUCT, "e2"))
+                    .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "bela_02")))
+                    .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "cucc"))));
+                    set.add(new MockProductModel(new ContentKey(FDContentTypes.PRODUCT, "e3"))
+                    .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "cucc_02"))));
                     return set;
                 }
                 return null;
@@ -209,7 +226,7 @@ public class DataGeneratorCompilerTest extends TestCase {
     }
     
     public void testYmalRelated() throws CompileException {
-        DataGenerator dataGenerator = comp.createDataGenerator("ymal1", "RecursiveNodes(currentProduct)");
+        DataGenerator dataGenerator = comp.createDataGenerator("ymal1", "RecursiveNodes(currentNode)");
         assertNotNull("dataGenerator", dataGenerator);
         Collection collection = dataGenerator.generate(s, input);
     }
@@ -224,6 +241,108 @@ public class DataGeneratorCompilerTest extends TestCase {
         }
     }
     
+    public void testManuallyOverriddenSlots() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("mo1", "ManuallyOverriddenSlots(currentNode)");
+        assertNotNull("dataGenerator", dataGenerator);
+        Collection collection = dataGenerator.generate(s, input);
+        try {
+        	dataGenerator = comp.createDataGenerator("mo2", "ManuallyOverriddenSlots(content)");
+        	fail("should fail with invalid parameter type");
+        } catch (CompileException e) {
+        	e.printStackTrace();
+            assertEquals("type error", CompileException.PARAMETER_ERROR, e.getCode());
+            assertEquals("error message", "first parameter has unexpected type of set, but expected node or string", e.getMessage());
+        }
+    }
+    
+    public void testManuallyOverriddenSlotsP() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("mo2", "ManuallyOverriddenSlotsP(currentNode)");
+        assertNotNull("dataGenerator", dataGenerator);
+        Collection collection = dataGenerator.generate(s, input);
+    }
 
+    public void testPrioritize() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("prio1", "content:prioritize()");
+        assertNotNull("dataGenerator", dataGenerator);
+        input.reset();
+        Collection collection = dataGenerator.generate(s, input);
+        assertNotNull("result collection", collection);
+        assertEquals("result collection size", 0, collection.size());
+        assertNotNull("result prioritized nodes", input.getPrioritizedNodes());
+        assertEquals("result prioritized nodes size", 3, input.getPrioritizedNodes().size());
+        assertTrue("contains a1", input.getPrioritizedNodes().contains(
+        		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a1"))));
+        assertTrue("contains a2", input.getPrioritizedNodes().contains(
+        		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a2"))));
+        assertTrue("contains a3", input.getPrioritizedNodes().contains(
+        		new ProductModelImpl(new ContentKey(FDContentTypes.PRODUCT, "a3"))));
+    }
 
+    public void testRecurseRecursiveNodes() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("recRec", "RecursiveNodes(RecursiveNodes(RecursiveNodes(content)))");
+        assertNotNull("dataGenerator", dataGenerator);
+        input.reset();
+        Collection result = dataGenerator.generate(s, input);
+        assertNotNull("result not null", result);
+    }
+    
+    public void testTopN() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("topN", "Top(content,afact,3)");
+        assertNotNull("dataGenerator", dataGenerator);
+        input.reset();
+        Collection result = dataGenerator.generate(s, input);
+        assertNotNull("result not null", result);
+    }
+    
+    public void testPrioritize2() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("prio2", "content + content2:prioritize()");
+        assertNotNull("dataGenerator", dataGenerator);
+        input.reset();
+        List result = dataGenerator.generate(s, input);
+        assertNotNull("result not null", result);
+        assertEquals("result length 3", 3, result.size());
+        Set<String> resultNodes = TestUtils.convertToStringList(result);
+        assertTrue("prio a1", resultNodes.contains("a1"));
+        assertTrue("prio a2", resultNodes.contains("a2"));
+        assertTrue("prio a3", resultNodes.contains("a3"));
+
+        
+        assertNotNull("result prioritized nodes", input.getPrioritizedNodes());
+        assertEquals("result prioritized nodes size", 2, input.getPrioritizedNodes().size());
+        Set<String> prioNodes = TestUtils.convertToStringList(input.getPrioritizedNodes());
+        assertTrue("prio a2", prioNodes.contains("a2"));
+        assertTrue("prio bbb", prioNodes.contains("bbb"));
+    }
+ 
+    
+    public void testSkuFilter() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("skuFilter", "content3:matchSkuPrefix(\"fru\",\"bela\")");
+        assertNotNull("dataGenerator", dataGenerator);
+        input.reset();
+        List<ContentNodeModel> result = dataGenerator.generate(s, input);
+        assertNotNull("result not null", result);
+        assertEquals("result length 2", 2, result.size());
+        Set<String> resultNodes = TestUtils.convertToStringList(result);
+        assertTrue("e1", resultNodes.contains("e1"));
+        assertTrue("e2", resultNodes.contains("e2"));
+        assertEquals("e1-1", "e1", TestUtils.getId(result, 0));
+        assertEquals("e2-2", "e2", TestUtils.getId(result, 1));
+    }
+    
+    public void testSkuFilter2() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("skuFilter2", "content3:matchSkuPrefix(\"cucc\") + content3:matchSkuPrefix(\"fru\")");
+        assertNotNull("dataGenerator", dataGenerator);
+        input.reset();
+        List<ContentNodeModel> result = dataGenerator.generate(s, input);
+        assertNotNull("result not null", result);
+        assertEquals("result length 2", 3, result.size());
+        Set<String> resultNodes = TestUtils.convertToStringList(result);
+        assertTrue("e1", resultNodes.contains("e1"));
+        assertTrue("e2", resultNodes.contains("e2"));
+        assertTrue("e3", resultNodes.contains("e3"));
+        assertEquals("0", "e2", TestUtils.getId(result, 0));
+        assertEquals("1", "e3", TestUtils.getId(result, 1));
+        assertEquals("2", "e1", TestUtils.getId(result, 2));
+    }
+    
 }

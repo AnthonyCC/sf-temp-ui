@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
@@ -23,15 +23,15 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ContentSearch {
-    final static Category        LOGGER   = LoggerFactory.getInstance(ContentSearch.class);
-
+    private final static Logger        LOGGER   = LoggerFactory.getInstance(ContentSearch.class);
+    
     private static ContentSearch instance = new ContentSearch();
 
     AutocompleteService autocompletion;
     Thread autocompleteUpdater;
     
     
-    Map searchRelevancyMap;
+    Map<String, SearchRelevancyList> searchRelevancyMap;
     
     public static ContentSearch getInstance() {
         return instance;
@@ -96,7 +96,7 @@ public class ContentSearch {
                     }
                     if (tokens.length == 0) {
                         tokens = new String[] { canonicalBrandName };
-                        List rt = ContentSearchUtil.tokenizeTerm(normalizedTerm, " ");
+                        List<String> rt = ContentSearchUtil.tokenizeTerm(normalizedTerm, " ");
                         rt.add(canonicalBrandName);
                         rawTokens = (String[]) rt.toArray(new String[rt.size()]);
                         //rawTokens = tokens;
@@ -297,14 +297,14 @@ public class ContentSearch {
 
     public AutocompleteService createAutocompleteService() {
         LOGGER.info("createAutocompleteService");
-        Set contentKeysByType = CmsManager.getInstance().getContentKeysByType(FDContentTypes.PRODUCT);
+        Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(FDContentTypes.PRODUCT);
         LOGGER.info("contentKeysByType loaded :"+contentKeysByType.size());
         
-        List words = new ArrayList(contentKeysByType.size());
+        List<String> words = new ArrayList<String>(contentKeysByType.size());
         
         ContentFactory contentFactory = ContentFactory.getInstance();
-        for (Iterator keyIterator = contentKeysByType.iterator();keyIterator.hasNext();) {
-            ContentKey key = (ContentKey) keyIterator.next();
+        for (Iterator<ContentKey> keyIterator = contentKeysByType.iterator();keyIterator.hasNext();) {
+            ContentKey key = keyIterator.next();
             ContentNodeModel nodeModel = contentFactory.getContentNodeByKey(key);
             if (nodeModel instanceof ProductModel) {
                 ProductModel pm = (ProductModel) nodeModel;
@@ -315,7 +315,10 @@ public class ContentSearch {
             }
         }
         LOGGER.info("product names extracted:"+words.size());
-        return new AutocompleteService(words);     
+        
+        AutocompleteService a = new AutocompleteService(words);
+        a.addAllBadSingular(SearchRelevancyList.getBadPluralFormsFromCms());
+        return a;     
     }
 
     
@@ -327,7 +330,8 @@ public class ContentSearch {
         this.autocompletion = autocompletion;
     }
     
-    public List getAutocompletions(String prefix) {
+    @SuppressWarnings("unchecked")
+    public List<String> getAutocompletions(String prefix) {
         initAutocompleter();
         if (this.autocompletion!=null) {
             return this.autocompletion.getAutocompletions(prefix);
@@ -372,13 +376,13 @@ public class ContentSearch {
      * @param searchTerm
      * @return Map<ContentKey,Integer>
      */
-    public Map getSearchRelevancyScores(String searchTerm) {
+    public Map<ContentKey,Integer> getSearchRelevancyScores(String searchTerm) {
         synchronized(this) {
             if (this.searchRelevancyMap == null) {
                 this.searchRelevancyMap = SearchRelevancyList.createFromCms();
             }
         }
-        SearchRelevancyList srl = (SearchRelevancyList) searchRelevancyMap.get(searchTerm.trim().toLowerCase());
+        SearchRelevancyList srl = searchRelevancyMap.get(searchTerm.trim().toLowerCase());
         return srl!=null ? Collections.unmodifiableMap(srl.getCategoryScoreMap()) : null;
     }
     
@@ -386,6 +390,8 @@ public class ContentSearch {
     public void refreshRelevencyScores() {
         synchronized(this) {
             this.searchRelevancyMap = SearchRelevancyList.createFromCms();
+            autocompletion.clearBadSingular();
+            autocompletion.addAllBadSingular(SearchRelevancyList.getBadPluralFormsFromCms());
         }
     }
 

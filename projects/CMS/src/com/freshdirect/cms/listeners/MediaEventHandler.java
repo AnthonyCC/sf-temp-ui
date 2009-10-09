@@ -54,7 +54,7 @@ public class MediaEventHandler extends DbService implements MediaEventHandlerI {
 	}
 
 	private static Executor threadPool = new ThreadPoolExecutor(1, 1, 360,
-			TimeUnit.SECONDS, new LinkedBlockingQueue(), new LowerPriorityThreadFactory(),
+			TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new LowerPriorityThreadFactory(),
 			new ThreadPoolExecutor.DiscardPolicy());
 	
 	private static Object threadLock = new Object();
@@ -122,6 +122,12 @@ public class MediaEventHandler extends DbService implements MediaEventHandlerI {
 		associator.addRule(null, "cr", FDContentTypes.PRODUCT, "PROD_IMAGE_ROLLOVER");
 		associator.addRule(null, "z", FDContentTypes.PRODUCT, "PROD_IMAGE_ZOOM");
 		associator.addRule(null, "desc", FDContentTypes.PRODUCT, "PROD_DESCR");
+
+		associator.addRule(null, "a", FDContentTypes.PRODUCT, "ALTERNATE_IMAGE");
+		associator.addRule(null, "d", FDContentTypes.PRODUCT, "DESCRIPTIVE_IMAGE");
+		associator.addRule(null, "note", FDContentTypes.PRODUCT, "PROD_DESCRIPTION_NOTE");
+		associator.addRule(null, "abt", FDContentTypes.PRODUCT, "PRODUCT_ABOUT");
+		
 		
 		associator.addRule("bd", "l", FDContentTypes.BRAND, "BRAND_LOGO");
 		associator.addRule("bd", "m", FDContentTypes.BRAND, "BRAND_LOGO_MEDIUM");

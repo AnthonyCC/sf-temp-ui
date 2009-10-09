@@ -26,11 +26,13 @@ import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.impl.AllProductInCategoryRecommendationService;
 import com.freshdirect.smartstore.impl.CandidateProductRecommendationService;
 import com.freshdirect.smartstore.impl.FeaturedItemsRecommendationService;
 import com.freshdirect.smartstore.impl.ManualOverrideRecommendationService;
 import com.freshdirect.smartstore.impl.NullRecommendationService;
+import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 import com.freshdirect.smartstore.impl.YourFavoritesInCategoryRecommendationService;
 import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
 import com.freshdirect.webapp.util.FDEventUtil;
@@ -46,6 +48,9 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     AllProductInCategoryRecommendationService apicrs = null;
     CandidateProductRecommendationService cprs = null;
     ManualOverrideRecommendationService mors = null;
+    ScriptedRecommendationService mors_s = null;
+    ScriptedRecommendationService yfrs_s = null;
+    ScriptedRecommendationService yfrs_s2 = null;
 
     private YourFavoritesInCategoryRecommendationService yfrs;
 
@@ -53,7 +58,6 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     public FeaturedItemsTest(String name) throws NamingException {
         super(name);
     } 
-    
     
     RecommendationService getFeaturedItemsService() {
         if (firs == null) {
@@ -111,6 +115,17 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         return mors;
     }
 
+    RecommendationService getScriptedManualOverrideService() throws CompileException {
+        if (mors_s == null) {
+            mors_s = new ScriptedRecommendationService(new Variant("mos_s", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("mos_scripted_config",
+                RecommendationServiceType.SCRIPTED)), 
+                RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("mos_config",
+                RecommendationServiceType.SCRIPTED), new java.util.HashMap()),
+                false, false, "ManuallyOverriddenSlotsP(currentNode) + CandidateLists", "Popularity");
+        }
+        return mors_s;
+    }
+    
     RecommendationService getYourFavoritesService() {
         if (yfrs == null) {
             yfrs = new YourFavoritesInCategoryRecommendationService(new Variant("yf_fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("yf_fi",
@@ -130,6 +145,28 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
                 false, false);
     }
 
+    RecommendationService getScriptedYourFavoritesService() throws CompileException {
+        if (yfrs_s == null) {
+            yfrs_s = new ScriptedRecommendationService(new Variant("yf_fi_s", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("yf_fi_s_config",
+                RecommendationServiceType.SCRIPTED)), 
+                RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("mos_config",
+                RecommendationServiceType.SCRIPTED), new java.util.HashMap()),
+                false, false, "(Top(RecursiveNodes(currentNode),Frequency,1):atLeast(Frequency,1):prioritize()) + ManuallyOverriddenSlotsP(currentNode) + CandidateLists", "Popularity");
+        }
+        return yfrs_s;
+    }
+
+    RecommendationService getScriptedYourFavoritesService2() throws CompileException {
+        if (yfrs_s2 == null) {
+            yfrs_s2 = new ScriptedRecommendationService(new Variant("yf_fi_s2", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("yf_fi_s_config2",
+                RecommendationServiceType.SCRIPTED)), 
+                RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("mos_config",
+                RecommendationServiceType.SCRIPTED), new java.util.HashMap()),
+                false, false, "Top(RecursiveNodes(currentNode),Frequency,1):atLeast(Frequency,1):prioritize() + ManuallyOverriddenSlotsP(currentNode) + CandidateLists", "Popularity");
+        }
+        return yfrs_s2;
+    }
+    
     
     RecommendationService getNullService() { 
         return new NullRecommendationService(new Variant("nil", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("nil", RecommendationServiceType.NIL)));
@@ -382,6 +419,93 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     
     }
 
+    public void testScriptedManualOverrideService() throws CompileException {
+        MockPageContext ctx;
+        FeaturedItemsTag fit;
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS,
+        		new SingleVariantSelector(getScriptedManualOverrideService()));
+        ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
+        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
+        
+        fit = TestUtils.createFeaturedItemsTag(ctx, "gro_cooki_cooki");
+        
+        try {
+            RecommendationEventLoggerMockup eventLogger = getMockup();
+            eventLogger.getCollectedEvents().clear();
+            
+            fit.doStartTag();
+
+            Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
+            assertNotNull("man_p : recommendations", recomm);
+            assertEquals("man_p : 2 recommendation", 2, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
+            // from the FEATURED_ITEMS set:
+            assertNode("man_p : 0-spe_madmoose_chc", nodes, 0, "spe_madmoose_chc");
+            assertNode("man_p : 1-fro_veniero_biscotti", nodes, 1, "fro_veniero_biscotti");
+
+            FDEventUtil.flushImpressions();
+            
+            assertEquals("man_p : event log size", 2, eventLogger.getCollectedEvents().size());
+
+        } catch (JspException e) {
+            e.printStackTrace();
+            fail("jsp exception" + e.getMessage());
+        }
+
+        fit = TestUtils.createFeaturedItemsTag(ctx, "speci_xxx_yyy");
+        
+        try {
+            RecommendationEventLoggerMockup eventLogger = getMockup();
+            eventLogger.getCollectedEvents().clear();
+            
+            fit.doStartTag();
+
+            Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
+            assertNotNull("speci 1 : recommendations", recomm);
+            assertEquals("speci 1 : 1 recommendation", 1, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
+            // from the FEATURED_ITEMS set:
+            assertNode("man_p : 0-spe_madmoose_chc", nodes, 0, "spe_madmoose_chc");
+            //assertNode("man_p : 1-fro_veniero_biscotti", nodes, 1, "fro_veniero_biscotti");
+
+            FDEventUtil.flushImpressions();
+            
+            assertEquals("man_p : event log size", 1, eventLogger.getCollectedEvents().size());
+
+        } catch (JspException e) {
+            e.printStackTrace();
+            fail("jsp exception" + e.getMessage());
+        }
+        
+        Set cart = new HashSet();
+        cart.add(new ContentKey(FDContentTypes.PRODUCT, "spe_madmoose_chc"));
+        fit.setShoppingCart(cart);
+
+        try {
+            RecommendationEventLoggerMockup eventLogger = getMockup();
+            eventLogger.getCollectedEvents().clear();
+            
+            fit.doStartTag();
+
+            Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
+            assertNotNull("speci 2 : recommendations", recomm);
+            assertEquals("speci 2 : 1 recommendation", 1, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
+            // from the FEATURED_ITEMS set:
+            assertNode("speci 2 : 0-fro_veniero_biscotti", nodes, 0, "fro_veniero_biscotti");
+            //assertNode("man_p : 1-fro_veniero_biscotti", nodes, 1, "fro_veniero_biscotti");
+
+            FDEventUtil.flushImpressions();
+            
+            assertEquals("speci 2 : event log size", 1, eventLogger.getCollectedEvents().size());
+
+        } catch (JspException e) {
+            e.printStackTrace();
+            fail("jsp exception" + e.getMessage());
+        }
+        
+    
+    }
     
     public void testYourFavoritesInFi() {
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getYourFavoritesService()));
@@ -524,7 +648,121 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
             fail("jsp exception" + e.getMessage());
         }
     }
+
+    public void testScriptedYourFavoritesInFi() throws CompileException {
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getScriptedYourFavoritesService()));
+        doScriptedYourFavoritesInFi();
+    }
+
+    public void testScriptedYourFavoritesInFi2() throws CompileException {
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getScriptedYourFavoritesService2()));
+        doScriptedYourFavoritesInFi();
+    }
     
+    private void doScriptedYourFavoritesInFi() throws CompileException {
+        MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
+        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
+        
+        FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
+        
+        RecommendationEventLoggerMockup eventLogger = getMockup();
+        try {
+            eventLogger.getCollectedEvents().clear();
+            
+            fit.doStartTag();
+
+            Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
+            assertNotNull("yf_p : recommendations", recomm);
+            assertEquals("yf_p : 5 recommendation", 5, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
+            // from the FEATURED_ITEMS set
+            // gro_earths_oat_cereal, gro_enfamil_powder_m_02, hba_1ups_aloe_rf, hab_pampers_crsrs_4, hba_svngen_dprs_3
+            assertNode("without user prefs - manual slot/featured : yf_p : 0 hab_pampers_crsrs_4", nodes, 0, "hab_pampers_crsrs_4");
+            assertNode("without user prefs : yf_p : 1 gro_earths_oat_cereal", nodes, 1, "gro_earths_oat_cereal");
+            assertNode("without user prefs : yf_p : 2 gro_enfamil_powder_m_02", nodes, 2, "gro_enfamil_powder_m_02");
+            assertNode("without user prefs : yf_p : 3 hba_1ups_aloe_rf", nodes, 3, "hba_1ups_aloe_rf");
+            assertNode("without user prefs : yf_p : 4 hba_svngen_dprs_3", nodes, 4, "hba_svngen_dprs_3");
+
+            FDEventUtil.flushImpressions();
+            
+            assertEquals("yf_p : event log size", 5, eventLogger.getCollectedEvents().size());
+
+        } catch (JspException e) {
+            e.printStackTrace();
+            fail("jsp exception" + e.getMessage());
+        }
+
+        
+        ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods", "789"));
+        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
+        
+        fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
+        
+        try {
+            eventLogger.getCollectedEvents().clear();
+            
+            fit.doStartTag();
+            FDEventUtil.flushImpressions();
+
+            Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
+            assertNotNull("yf_p : recommendations", recomm);
+            assertEquals("yf_p : 5 recommendation", 5, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
+            // from the FEATURED_ITEMS set
+            // gro_earths_oat_cereal, gro_enfamil_powder_m_02, hba_1ups_aloe_rf, hab_pampers_crsrs_4, hba_svngen_dprs_3
+            assertNode("with user prefs - manual slot/featured : yf_p : 0 gro_enfamil_powder_m_02", nodes, 0, "gro_enfamil_powder_m_02");
+            assertNode("with user prefs : yf_p : 1 hab_pampers_crsrs_4", nodes, 1, "hab_pampers_crsrs_4");
+            assertNode("with user prefs : yf_p : 2 gro_earths_oat_cereal", nodes, 2, "gro_earths_oat_cereal");
+            assertNode("with user prefs : yf_p : 3 hba_1ups_aloe_rf", nodes, 3, "hba_1ups_aloe_rf");
+            assertNode("with user prefs : yf_p : 4 hba_svngen_dprs_3", nodes, 4, "hba_svngen_dprs_3");
+//            assertNode("with user prefs : yf_p : 1 gro_earths_oat_cereal", nodes, 1, "gro_earths_oat_cereal");
+//            assertNode("with user prefs : yf_p : 2 hba_1ups_aloe_rf", nodes, 2, "hba_1ups_aloe_rf");
+//            assertNode("with user prefs : yf_p : 3 hab_pampers_crsrs_4", nodes, 3, "hab_pampers_crsrs_4");
+//            assertNode("with user prefs : yf_p : 4 hba_svngen_dprs_3", nodes, 4, "hba_svngen_dprs_3");
+
+            
+            assertEquals("yf_p : event log size", 5, eventLogger.getCollectedEvents().size());
+
+        } catch (JspException e) {
+            e.printStackTrace();
+            fail("jsp exception" + e.getMessage());
+        }
+
+        ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods2", "789"));
+        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
+        
+        fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
+        
+        try {
+            eventLogger.getCollectedEvents().clear();
+            
+            fit.doStartTag();
+            FDEventUtil.flushImpressions();
+
+            Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
+            assertNotNull("yf_p : recommendations", recomm);
+            assertEquals("yf_p : 5 recommendation", 5, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
+            // from the FEATURED_ITEMS set
+            // gro_earths_oat_cereal, gro_enfamil_powder_m_02, hba_1ups_aloe_rf, hab_pampers_crsrs_4, hba_svngen_dprs_3
+            assertNode("with user prefs - manual slot/featured : yf_p : 0 gro_7gen_diaperlg", nodes, 0, "gro_7gen_diaperlg");
+//            assertNode("with user prefs : yf_p : 1 gro_earths_oat_cereal", nodes, 1, "gro_earths_oat_cereal");
+//            assertNode("with user prefs : yf_p : 2 gro_enfamil_powder_m_02", nodes, 2, "gro_enfamil_powder_m_02");
+//            assertNode("with user prefs : yf_p : 3 hba_1ups_aloe_rf", nodes, 3, "hba_1ups_aloe_rf");
+//            assertNode("with user prefs : yf_p : 4 hab_pampers_crsrs_4", nodes, 4, "hab_pampers_crsrs_4");
+            assertNode("with user prefs : yf_p : 1 hab_pampers_crsrs_4", nodes, 1, "hab_pampers_crsrs_4");
+            assertNode("with user prefs : yf_p : 2 gro_earths_oat_cereal", nodes, 2, "gro_earths_oat_cereal");
+            assertNode("with user prefs : yf_p : 3 gro_enfamil_powder_m_02", nodes, 3, "gro_enfamil_powder_m_02");
+            assertNode("with user prefs : yf_p : 4 hba_1ups_aloe_rf", nodes, 4, "hba_1ups_aloe_rf");
+
+            
+            assertEquals("yf_p : event log size", 5, eventLogger.getCollectedEvents().size());
+
+        } catch (JspException e) {
+            e.printStackTrace();
+            fail("jsp exception" + e.getMessage());
+        }
+    }
 
     
     public void testCartItemRemoval() {

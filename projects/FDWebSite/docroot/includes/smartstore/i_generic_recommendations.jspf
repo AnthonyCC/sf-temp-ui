@@ -12,6 +12,7 @@
 <%@page import="java.net.URLEncoder"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
 <%@page import="com.freshdirect.framework.webapp.ActionError"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
 <%@page import="com.freshdirect.smartstore.Variant"%>
@@ -19,7 +20,7 @@
 <%@page import="com.freshdirect.webapp.util.ConfigurationStrategy"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy"%>
-<%@page import="com.freshdirect.webapp.util.ProductLabelling"%>
+<%@page import="com.freshdirect.fdstore.util.ProductLabeling"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.webapp.util.TransactionalProductImpression"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
@@ -29,6 +30,7 @@
 <%@ page import="com.freshdirect.fdstore.promotion.PromoVariantModel" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
 <%@ page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
+<%@page import="com.freshdirect.fdstore.util.EnumSiteFeature"%>
 
 <%--
 
@@ -38,6 +40,7 @@
 	@input parentImpressionId String parent impression ID
 	@input parentVariantId String parent variant ID
 --%>
+
 
 <script type="text/javascript" src="/assets/javascript/pricing.js"></script>
 
@@ -72,10 +75,12 @@
 	boolean hideSavings = genericRecommendationsVariant.isSmartSavings() && SmartStoreUtil.countSavingProductsInCart(genericRecommendationsVariant, pip_u, prevRecs) < 0;
 
 	if ( genericRecommendationsVariant != null && !hideSavings) {
+		// [APPREQ-689] product ID -> recommender mapping (SmartYMAL) otherwise null
+		final Map<String,String> prd2recommendation = (Map<String,String>) request.getAttribute("map_prd2recommender");
 %>
 
 	
-<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>">
+<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="ViewCart">
 		<% 		
 		    isRendered = true;
 			ConfigurationContext confContext = new ConfigurationContext();
@@ -83,21 +88,21 @@
 			boolean hasAnyItemAddable = false;
 	
 			// List<ProductImpression> impressions : configured products enlisted in 'Your Favourites' table
-			List impressions = new ArrayList();
+			List<ProductImpression> impressions = new ArrayList<ProductImpression>();
 	
 			// List<SkuModel> skus : SKUs required by the pricing engine
-			List skus = new ArrayList();
+			List<SkuModel> skus = new ArrayList<SkuModel>();
 			
 			if ( recommendations != null && recommendations.getProducts().size() > 0 ) {
 							
 		        request.setAttribute("recommendationsRendered","true");
 				ConfigurationStrategy cUtil = SmartStoreConfigurationStrategy.getInstance();
 		
-				List products = recommendations.getProducts();
+				List<ProductModel> products = recommendations.getProducts();
 				
 		
 				// 'configure' products.
-				Iterator it = products.iterator();
+				Iterator<ProductModel> it = products.iterator();
 				while ( it.hasNext() ) {
 					ProductModel prd = (ProductModel) it.next();
 					ProductImpression pi = cUtil.configure(prd, confContext);
@@ -129,22 +134,13 @@
 					<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
 					<input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1"/>
 					<input type="hidden" name="fdsc.source"  value="SS"/>
-		
-					<input type="hidden" name="variant" value="<%= recommendations.getVariant().getId() %>">
-					<input type="hidden" name="siteFeature" value="<%= recommendations.getVariant().getSiteFeature().getName() %>">
-					<input type="hidden" name="rec_product_ids" value="<%= StringEscapeUtils.escapeHtml(recommendations.serializeContentNodes()) %>">
-					<input type="hidden" name="rec_current_node" value="<%= recommendations.getSessionInput() != null && recommendations.getSessionInput().getCurrentNode() != null ? 
-							recommendations.getSessionInput().getCurrentNode().getContentKey().getId() : "(null)" %>">
-					<input type="hidden" name="rec_ymal_source" value="<%= recommendations.getSessionInput() != null && recommendations.getSessionInput().getCurrentNode() != null ? 
-							recommendations.getSessionInput().getCurrentNode().getContentKey().getId() : "(null)" %>">
-					<input type="hidden" name="rec_refreshable" value="<%=  Boolean.toString(recommendations.isRefreshable()) %>">
-					<input type="hidden" name="rec_smart_savings" value="<%=  Boolean.toString(recommendations.isSmartSavings()) %>">
-					<input type="hidden" name="trk" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
+
+					<display:StoreRecommendation recommendations="<%= recommendations %>"/>
 				
 					<!-- PRICING -->
 					<fd:TxProductPricingSupport formName="<%= tx_pricing_FormName %>" namespace="<%= tx_pricing_JSNameSpace %>" customer="<%= pip_u %>" impressions="<%= impressions %>" inputNamePostfix="<%= tx_input_postfix %>"/>
-								
-								
+
+
 					<fd:PIPLayout rowSize="5" impressions="<%= impressions %>" id="recommendations_layout" singleRowMode="<%= true %>" maxRowHeight="rowHeight" >
 					
 						<table style="width: 100%;">
@@ -183,13 +179,16 @@
 										// product cell
 											
 										ProductModel product = recommendations_row.getProductModel();
-										ProductLabelling pl = new ProductLabelling(pip_u, product);
+										ProductLabeling pl = new ProductLabeling(pip_u, product);
 										pl.setHideYourFave(true);
+
+										// TRKD := recommender ID (if recommender is Smart YMAL) otherwise burst code
+										final String trkd = prd2recommendation != null ? prd2recommendation.get(product.getContentKey().getId()) : pl.getTrackingCode();
 										String actionURI = FDURLUtil.getProductURI(
 												product, 
 												recommendations.getVariant().getId(), 
 										        recommendations.getVariant().getSiteFeature().getName().toLowerCase(), 
-										        pl.getTrackingCode(), 
+										        trkd, 
 										        rank,  
 										        recommendations.getImpressionId(product)
 										);
@@ -210,7 +209,7 @@
 													<% if (isVariantSavings) { %>
 														<display:ProductImage product="<%= product %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" opacity="<%= shouldDimProduct ? 0.5 : 1.0 %>" showRolloverImage="true"/>
 													<% } else {%>
-														<display:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" browserInfo="<%= bi %>" showRolloverImage="true"/>
+														<display:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="<%= EnumSiteFeature.DYF.equals(recommendations.getVariant().getSiteFeature()) %>" browserInfo="<%= bi %>" showRolloverImage="true"/>
 													<% } %>
 												</td>
 											</tr>
@@ -225,9 +224,9 @@
 														<input type="hidden" name="impId_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getImpressionId( recommendations_row.getProductModel() ) %>"/>
 														<input type="hidden" name="trk_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>"/>
 														
-														<% if (pl.getTrackingCode() != null) { %>
-															<input type="hidden" name="trkd_tab_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/>
-															<input type="hidden" name="trkd_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/>
+														<% if (trkd != null) { %>
+															<input type="hidden" name="trkd_tab_<%= txProdCount %>" value="<%= trkd %>"/>
+															<input type="hidden" name="trkd_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= trkd %>"/>
 														<% } %>
 														
 														<fd:TxProductControl txNumber="<%= txProdCount %>" namespace="<%= tx_pricing_JSNameSpace %>" inputNamePostfix="<%= tx_input_postfix %>" impression="<%= (TransactionalProductImpression) recommendations_row %>" disabled="<%= shouldDimProduct %>"/>
@@ -264,28 +263,51 @@
 													
 						<table style="width: 100%;">
 							<tr>
-														
-								<% if (impressions.size() >= 5 && recommendations.isRefreshable()) { %>
-									<td style="text-align: left;">
-										<a class="text11bold" style="padding-left: 6px" id="ra_<%= genericRecommendationsVariant.getId() %>" href="/unsupported.jsp">Click here to refresh</a>
-										<script type="text/javascript">
-											$E.on('ra_<%= genericRecommendationsVariant.getId() %>', 'click', function(e) {
-												$E.preventDefault(e);
-												PIP.refresh('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true);
-											});
-										</script>
-									</td>
-								<% } %>
-								
-								<td></td>
-								
-								<% if (hasAnyItemAddable) { %>
-									<td style="text-align: right;">
-										<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>
-										<input type="hidden" name="itemCount" value="<%= txProdCount %>"/>
-										<input type="image" name="addMultipleToCart" style="padding: 8px 6px; border: 0" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" alt="ADD SELECTED TO CART"/>
-									</td>
-								<% } %>
+								<td id="ra_<%= genericRecommendationsVariant.getId() %>" colspan="<%= recommendations_layout.size() %>" style="text-align: center;">
+									<table border="0" style="margin-left: auto; margin-right: auto;">
+										<tr>
+											<% boolean multiplePages = recommendations.getNumberOfPages() > 1; 
+											   if ( multiplePages && !recommendations.isFirstPage() ) { %>
+											<td>
+												<img id="ra_bwd_<%= genericRecommendationsVariant.getId() %>" src="/media_stat/images/buttons/tab_prev.gif" style="width: 57px; height: 16px; cursor: pointer;"/>
+<script type="text/javascript">
+	$E.on('ra_bwd_<%= genericRecommendationsVariant.getId() %>', 'click', function(e) {
+		$E.preventDefault(e);
+		PIP.backward('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true);
+	});
+</script>
+											</td>
+											<% } else if ( multiplePages ) { %>
+												<td>
+													<img src="/media_stat/images/buttons/tab_prev_disabled.gif" style="width: 57px; height: 16px;"/>
+												</td>
+											<% } %>
+											<% if ( hasAnyItemAddable ) { %>
+											<td>
+												<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>
+												<input type="hidden" name="itemCount" value="<%= txProdCount %>"/>
+												<input type="image" name="addMultipleToCart" style="padding: 8px 6px; border: 0" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" alt="ADD SELECTED TO CART"/>
+											</td>
+											<% } %>
+											
+											<% if ( multiplePages && !recommendations.isLastPage() ) { %>
+											<td>
+												<img id="ra_fwd_<%= genericRecommendationsVariant.getId() %>" src="/media_stat/images/buttons/tab_next.gif" style="width: 57px; height: 16px; cursor: pointer;"/>
+<script type="text/javascript">
+	$E.on('ra_fwd_<%= genericRecommendationsVariant.getId() %>', 'click', function(e) {
+		$E.preventDefault(e);
+		PIP.forward('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true);
+	});
+</script>
+											</td>
+											<% } else if ( multiplePages ) { %>
+												<td>
+													<img src="/media_stat/images/buttons/tab_next_disabled.gif" style="width: 57px; height: 16px;"/>
+												</td>
+											<% } %>
+										</tr>
+									</table>
+								</td>
 							</tr>
 						</table>
 					</fd:PIPLayout>

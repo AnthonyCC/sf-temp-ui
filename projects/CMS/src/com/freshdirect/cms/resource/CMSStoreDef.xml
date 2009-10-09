@@ -31,6 +31,7 @@
 				<DestinationDef contentType="FavoriteList"/>
 				<DestinationDef contentType="Recommender"/>
 				<DestinationDef contentType="RecommenderStrategy"/>
+				<DestinationDef contentType="WordStemmingException"/>
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -1406,6 +1407,12 @@
 		</RelationshipDefs>	
 	</ContentTypeDef>
 
+
+	<ContentTypeDef name="WordStemmingException" generateId="true">
+		<AttributeDefs>
+			<AttributeDef name="word" type="S" required="true" label="Bad Singular Form"/>
+		</AttributeDefs>	
+	</ContentTypeDef>
 	<!--
 		
 		FavoriteList
@@ -1422,6 +1429,7 @@
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
+
 
 	<!--
 		

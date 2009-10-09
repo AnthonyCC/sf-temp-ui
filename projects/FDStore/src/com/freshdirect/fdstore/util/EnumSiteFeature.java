@@ -13,6 +13,7 @@ import java.util.Map;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.Latch;
 import com.freshdirect.smartstore.ejb.DynamicSiteFeature;
 import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 
@@ -41,39 +42,13 @@ public class EnumSiteFeature implements Serializable, Comparable {
     public final static EnumSiteFeature FEATURED_ITEMS = new EnumSiteFeature("FEATURED_ITEMS", true, "Featured Items");
     public final static EnumSiteFeature FAVORITES = new EnumSiteFeature("FAVORITES", true, "FreshDirect Favorites");
     public final static EnumSiteFeature CART_N_TABS = new EnumSiteFeature("CART_N_TABS", true, "Cart & Tabs");
+    public final static EnumSiteFeature SMART_CATEGORY = new EnumSiteFeature("SMART_CATEGORY", true, "Smart Category (virtual)");
     
     //gift cards
-	public final static EnumSiteFeature GIFT_CARDS = new EnumSiteFeature("giftCards");
+    public final static EnumSiteFeature GIFT_CARDS = new EnumSiteFeature("giftCards");
 
 
-    private static class Latch implements Serializable {
-		private static final long serialVersionUID = -5565193126379596331L;
-
-		boolean value;
-
-		public Latch(boolean value) {
-			super();
-			this.value = value;
-		}
-    	
-    	public void set() {
-    		value = true;
-    	}
-    	
-    	public void reset() {
-    		value = false;
-    	}
-    	
-    	public boolean isSet() {
-    		return value;
-    	}
-    	
-    	public boolean isReset() {
-    		return !value;
-    	}
-    }
-
-	String name;
+    String name;
 	
 	/**
      * Is Smart Store feature?
@@ -102,14 +77,6 @@ public class EnumSiteFeature implements Serializable, Comparable {
 		this.name = name;
 		this.isSmartStore = isSmartStore;
 		this.isSmartSavings = false;
-		this.title = title;
-		staticEnum.put(name, this);
-	}
-
-	private EnumSiteFeature(String name, boolean isSmartStore, boolean isSmartSavings, String title) {
-		this.name = name;
-		this.isSmartStore = isSmartStore;
-		this.isSmartSavings = isSmartSavings;
 		this.title = title;
 		staticEnum.put(name, this);
 	}
@@ -162,7 +129,7 @@ public class EnumSiteFeature implements Serializable, Comparable {
 		synchronized (loaded) {
 			if (loaded.isReset()) {
 				if (mocked.isReset()) {
-					Iterator it = SmartStoreServiceConfiguration.getInstance().loadSiteFeatures().iterator();
+					Iterator it = SmartStoreServiceConfiguration.getInstance().loadDynamicSiteFeatures().iterator();
 					while (it.hasNext()) {
 						new EnumSiteFeature(((DynamicSiteFeature) it.next()));
 					}
@@ -254,18 +221,19 @@ public class EnumSiteFeature implements Serializable, Comparable {
 		return title;
 	}
 	
-	public static List getSmartStoreEnumList() {
-		List list = new ArrayList();
-		
-		Iterator it = iterator();
-		while (it.hasNext()) {
-			EnumSiteFeature sf = (EnumSiteFeature) it.next();
-			if (sf.isSmartStore)
-				list.add(sf);
-		}
-		
-		return list;
-	}
+        public static List<EnumSiteFeature> getSmartStoreEnumList() {
+            List<EnumSiteFeature> list = new ArrayList<EnumSiteFeature>();
+    
+            Iterator it = iterator();
+            while (it.hasNext()) {
+                EnumSiteFeature sf = (EnumSiteFeature) it.next();
+                if (sf.isSmartStore) {
+                    list.add(sf);
+                }
+            }
+    
+            return list;
+        }
 
 	public static List getSmartSavingsFeatureList() {
 		List list = new ArrayList();

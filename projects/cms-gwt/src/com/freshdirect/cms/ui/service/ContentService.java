@@ -53,4 +53,6 @@ public interface ContentService extends RemoteService {
     List<GwtPublishData> getPublishHistory() throws ServerException;
 
     String startPublish(String comment) throws ServerException;
+    
+    String getPreviewUrl( String contentKey ) throws ServerException;
 }

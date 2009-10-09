@@ -4,7 +4,7 @@
 %><%@ page import="com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper.VariantInfo" 
 %><%@ page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
-%><%@ page import="com.freshdirect.webapp.util.DYFUtil"
+%><%@ page import="com.freshdirect.fdstore.util.DYFUtil"
 %><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
 %><%@ page import="java.util.List"
 %><%@ page import="java.util.Iterator"

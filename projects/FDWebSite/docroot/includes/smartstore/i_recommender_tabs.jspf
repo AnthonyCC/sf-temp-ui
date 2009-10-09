@@ -171,7 +171,9 @@
 			
 				var loadingMessage = "<br/><br/><br/><br/><p class=\"tab_text_simple\">Refreshing, please wait...</p><br/><br/><br/><br/>";
 				var errorMessage = "<br/><br/><br/><br/><p class=\"tab_text_simple\">Sorry, we weren't able to get recommendations.<br/><a href=\"/unsupported.jsp\" onClick=\"window.location.reload(false); return false;\">Click here</a> to refresh with new products. </p><br/><br/><br/><br/>";
-				var loadingLink = "Refreshing...";
+				var loadingLink = "<span class=\"text13bold\" style=\"color: #875087; \">Refreshing...</span>";
+
+				var prezFormURI = '<%=response.encodeURL(request.getRequestURL().toString().replaceFirst("^[^:]*://[^/]*/", "/")) %>';
 
 				var PIP = {
 					tabs: [],
@@ -222,10 +224,8 @@
 						}
 					},
 
-					refresh: function(tabId, tabPos, isRefresh) {
+					_call: function(tabId, uri) {
 						var self = this;
-						var uri = '/ajax/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri=<%= 
-							response.encodeURL(request.getRequestURL().toString().replaceFirst("^[^:]*://[^/]*/", "/")) %>&impId='+PIP.impressionIds[tabPos] + '&pImpId='+PIP.parentImpressionId+(isRefresh?'&refresh=true':'');
 						if ( $('ra_'+tabId) != null ) {
 							$('ra_'+tabId).innerHTML = loadingLink;
 						}
@@ -241,6 +241,21 @@
 								self.onFailure(tabId);
 							}
 						});
+					},
+					
+					refresh: function(tabId, tabPos, isRefresh) {
+						var uri = '/ajax/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri='+prezFormURI+'&impId='+PIP.impressionIds[tabPos] + '&pImpId='+PIP.parentImpressionId+(isRefresh?'&refresh=true':'');
+						this._call(tabId, uri);
+					},
+
+					backward: function(tabId, tabPos, isRefresh) {
+						var uri = '/ajax/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri='+prezFormURI+'&impId='+PIP.impressionIds[tabPos] + '&pImpId='+PIP.parentImpressionId+(isRefresh?'&refresh=true':'')+'&page=prev';
+						this._call(tabId, uri);
+					},
+
+					forward: function(tabId, tabPos, isRefresh) {
+						var uri = '/ajax/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri='+prezFormURI+'&impId='+PIP.impressionIds[tabPos] + '&pImpId='+PIP.parentImpressionId+(isRefresh?'&refresh=true':'')+'&page=next';
+						this._call(tabId, uri);
 					},
 
 					norefresh: function(tabId, tabPos) {

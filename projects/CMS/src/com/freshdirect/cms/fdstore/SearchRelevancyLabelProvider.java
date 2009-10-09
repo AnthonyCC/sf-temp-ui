@@ -23,6 +23,10 @@ public class SearchRelevancyLabelProvider implements ILabelProvider {
             String synonymValue = ContentNodeUtil.getStringAttribute(node, "synonymValue");
             return "Add keyword '" + synonymValue + "' where full name contains '" + word+"'"; 
         }
+        if (FDContentTypes.WORD_STEMMING_EXCEPTION.equals(type)) {
+            String word = ContentNodeUtil.getStringAttribute(node, "word");
+            return "Bad singular form : "+word;
+        }
         return null;
     }
 

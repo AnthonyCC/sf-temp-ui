@@ -6,6 +6,9 @@
 
 package com.freshdirect.fdstore.content;
 
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+
 /**
  *
  * @author  rgayle
@@ -42,6 +45,16 @@ public class ProductRef extends ContentRef {
 	public ProductModel lookupProduct() {
 		CategoryModel cm = this.lookupCategory();
 		return cm.getProductByName(this.refName2);
+	}
+
+	/**
+	 * Please do not call getProductContentKey().getContentNode() instead of lookupProduct, because lookupProduct slower, 
+	 * but returns product with the proper parent.
+	 *  
+	 * @return
+	 */
+	public ContentKey getProductContentKey() {
+	    return new ContentKey(FDContentTypes.PRODUCT, getProductName());
 	}
 
 }

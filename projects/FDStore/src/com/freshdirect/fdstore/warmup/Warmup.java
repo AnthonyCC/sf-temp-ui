@@ -20,6 +20,9 @@ import com.freshdirect.fdstore.content.*;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.*;
 import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
+import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
+import com.freshdirect.smartstore.service.SearchScoringRegistry;
+import com.freshdirect.smartstore.service.VariantRegistry;
 
 /**
  *
@@ -75,7 +78,9 @@ public class Warmup {
 					warmupProducts();
 					
 					if (FDStoreProperties.isPreloadSmartStore()) {
-						SmartStoreServiceConfiguration.getInstance().getServices(EnumSiteFeature.YMAL);
+						VariantRegistry.getInstance().reload();
+						CmsRecommenderRegistry.getInstance().reload();
+						SearchScoringRegistry.getInstance().load();
 					}
 
 					LOGGER.info("Warmup done");
@@ -125,6 +130,7 @@ public class Warmup {
 					}
 				}
 			};
+			t.setDaemon(true);
 			t.start();
 		}
 

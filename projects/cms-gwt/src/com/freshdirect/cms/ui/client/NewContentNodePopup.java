@@ -20,57 +20,64 @@ import com.freshdirect.cms.ui.model.GwtNodeData;
  */
 public class NewContentNodePopup extends Window {
 
-	GwtNodeData				nodeData;
-	OneToManyRelationField	field;
+    GwtNodeData nodeData;
+    OneToManyRelationField field;
+    boolean add;
 
-	public NewContentNodePopup( GwtNodeData result, OneToManyRelationField field ) {
-		super();
-		this.nodeData = result;
-		this.field = field;
-		
-		setHeading( "New " + result.getNode().getType() + " - " + result.getNode().getKey() );
-		setLayout( new BorderLayout() );
-		setSize( 840, 600 );
-		setModal( true );
-		setMaximizable( true );
+    /**
+     * If field is null, we wont add the new node to the workingset, and to the relation field.
+     * @param result
+     * @param field
+     */
+    public NewContentNodePopup(GwtNodeData result, OneToManyRelationField field) {
+        super();
+        this.nodeData = result;
+        this.field = field;
 
-		ContentPanel panel = new ContentPanel();
-		panel.setHeaderVisible( false );
-		panel.setScrollMode( Scroll.AUTO );
-		panel.setBorders( false );
-		panel.setBodyBorder( false );
-		
-		result.setupUI( panel, null );
-		add( panel, new BorderLayoutData( LayoutRegion.CENTER ) );
+        setHeading("New " + result.getNode().getType() + " - " + result.getNode().getKey());
+        setLayout(new BorderLayout());
+        setSize(840, 600);
+        setModal(true);
+        setMaximizable(true);
 
-		Button cancelButton = new Button( "Cancel" );
-		cancelButton.addListener( Events.OnClick, new Listener<BaseEvent>() {
+        ContentPanel panel = new ContentPanel();
+        panel.setHeaderVisible(false);
+        panel.setScrollMode(Scroll.AUTO);
+        panel.setBorders(false);
+        panel.setBodyBorder(false);
 
-			@Override
-			public void handleEvent( BaseEvent be ) {
-				hide();
-			}
-		} );
-		addButton( cancelButton );
+        result.setupUI(panel, null);
+        add(panel, new BorderLayoutData(LayoutRegion.CENTER));
 
-		Button okButton = new Button( "Ok" );
-		okButton.addListener( Events.OnClick, new Listener<BaseEvent>() {
+        Button cancelButton = new Button("Cancel");
+        cancelButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
 
-			@Override
-			public void handleEvent( BaseEvent be ) {
-				GwtNodeData nodeData = NewContentNodePopup.this.nodeData;
-				nodeData.collectValuesFromFields();
-				GwtContentNode node = nodeData.getNode();
-				WorkingSet.add( node );
-				OneToManyRelationField f = NewContentNodePopup.this.field;
+            @Override
+            public void handleEvent(BaseEvent be) {
+                hide();
+            }
+        });
+        addButton(cancelButton);
 
-				if ( f != null ) {
-					f.addOneToManyModel( node.getType(), node.getKey(), node.getType() + " : " + node.getLabel() );
-				}
-				hide();
-			}
-		} );
-		addButton( okButton );
-	}
+        Button okButton = new Button("Ok");
+        okButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                GwtNodeData nodeData = NewContentNodePopup.this.nodeData;
+                nodeData.collectValuesFromFields();
+                
+                OneToManyRelationField f = NewContentNodePopup.this.field;
+                if (f != null) {
+                    GwtContentNode node = nodeData.getNode();
+                    WorkingSet.add(node);
+    
+                    f.addOneToManyModel(node.getType(), node.getKey(), node.getType() + " : " + node.getLabel(), nodeData);
+                }
+                hide();
+            }
+        });
+        addButton(okButton);
+    }
 
 }

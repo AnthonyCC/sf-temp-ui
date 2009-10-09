@@ -4,6 +4,7 @@ import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HtmlContainer;
 import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This model object represents a content node, it contains an key, a label, and a type.
@@ -134,7 +135,7 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 	    return false;
 	}
 	
-    public Component renderLinkComponent() {
+    public Widget renderLinkComponent() {
         if ( getType() == null ) {
             return null;
         }
@@ -150,6 +151,12 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
     	return renderLink( false );
     }
     
+    /**
+     * Render a table html which contains the necessary type specific icon and optional preview javascript link.
+     * 
+     * @param javascript
+     * @return
+     */
     public String renderLink( boolean javascript ) {
         StringBuilder sb = new StringBuilder( 1024 );
         sb.append("<table class=\"content-label\"><tr>");

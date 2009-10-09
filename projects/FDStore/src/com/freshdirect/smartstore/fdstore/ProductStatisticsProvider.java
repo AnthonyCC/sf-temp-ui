@@ -38,7 +38,7 @@ public class ProductStatisticsProvider {
          * Global product frequency map, Map<@link {@link ContentKey},Float>.
          */
         protected Map globalProductScores = new HashMap();
-
+        
 	/**
 	 * Get provider instance.
 	 * @return instance (may throw a runtime exception if the instance cannot be created, and it was not cached)
@@ -114,5 +114,6 @@ public class ProductStatisticsProvider {
                 throw new FDRuntimeException(e);
             }
         }
+
 
 }

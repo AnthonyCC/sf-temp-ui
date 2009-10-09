@@ -16,14 +16,12 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
-import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProxyProduct;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
+import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
 
@@ -37,16 +35,6 @@ import com.freshdirect.webapp.taglib.smartstore.Impression;
  *
  */
 public class FDURLUtil {
-	private static final String IMPRESSION_ID = "impId";
-
-    public static final String URL_PARAM_SEP = "&amp;";
-	
-	public static final String PRODUCT_PAGE_BASE		= "/product.jsp";
-	public static final String CATEGORY_PAGE_BASE		= "/category.jsp";
-	public static final String DEPARTMENT_PAGE_BASE		= "/department.jsp";
-	public static final String CART_CONFIRM_PAGE_BASE	= "/cart_confirm.jsp";
-	public static final String GR_CART_CONFIRM_PAGE_BASE	= "/grocery_cart_confirm.jsp";
-
 	public static final String RECIPE_PAGE_BASE			= "/recipe.jsp";
 	public static final String RECIPE_PAGE_BASE_CRM		= "/order/recipe.jsp";
 
@@ -73,44 +61,6 @@ public class FDURLUtil {
 	}
 
 	/**
-	 * Get the "real" parent of the content node.
-	 * 
-	 * In the case of {@link ProxyProduct}s the "real" parent is that of the product wrapped.
-	 * 
-	 * @param model
-	 * @return
-	 */
-	private static ContentNodeModel getRealParent(ContentNodeModel model) {
-		if (model instanceof ConfiguredProductGroup) {
-			ConfiguredProductGroup configuredProductGroup = (ConfiguredProductGroup)model;
-			return getRealParent(configuredProductGroup.getProduct());
-		} else if (model instanceof ConfiguredProduct) {
-			ConfiguredProduct configuredProduct = (ConfiguredProduct)model;
-			return getRealParent(configuredProduct.getProduct());
-		} else { 
-			return model.getParentNode();
-		}
-	}
-	
-	/**
-	 * Get the "real" product.
-	 * 
-	 * In the case of {@link ProxyProduct}s the "real" product is the one wrapped.
-	 * @param productModel
-	 * @return
-	 */
-	private static ProductModel getRealProduct(ProductModel productModel) {
-		if (productModel instanceof ConfiguredProductGroup) {
-			return ((ConfiguredProductGroup)productModel).getProduct();
-		} else if (productModel instanceof ConfiguredProduct) {
-			return ((ConfiguredProduct)productModel).getProduct();
-		} else {
-			return productModel;
-		}
-	}
-
-
-	/**
 	 * Generate product page URL
 	 * 
 	 * @param productNode {@link ProductModel} product instance
@@ -123,21 +73,21 @@ public class FDURLUtil {
 		StringBuffer uri = new StringBuffer();
 		
 		// product page with category ID
-		uri.append(PRODUCT_PAGE_BASE + "?catId=" + getRealParent(productNode).getContentName());
+		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
 		
 		// tracking code 
 		if (trackingCode != null) {
-			uri.append(URL_PARAM_SEP + "trk=" + trackingCode);
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trk=" + trackingCode);
 		}
 		
 		// append product ID
-		uri.append(URL_PARAM_SEP + "productId=" + getRealProduct(productNode).getContentName());
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
 		
 		// append variant ID (optional)
 		if (variantId != null) {
 			// variant ID may contain SPACE or other non-ASCII characters ...
-			uri.append(URL_PARAM_SEP + "variant=" + safeURLEncode(variantId));
-			uri.append(URL_PARAM_SEP + "fdsc.source=SS");
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "variant=" + safeURLEncode(variantId));
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "fdsc.source=SS");
 		}
 
 		return uri.toString();
@@ -205,44 +155,44 @@ public class FDURLUtil {
 		StringBuffer uri = new StringBuffer();
 		
 		// product page with category ID
-		uri.append(PRODUCT_PAGE_BASE + "?catId=" + getRealParent(productNode).getContentName());
+		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
 
 		// append product ID
-		uri.append(URL_PARAM_SEP + "productId=" + getRealProduct(productNode).getContentName());
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
 		
 		// append variant ID (optional)
 		if (variantId != null) {
 			// variant ID may contain SPACE or other non-ASCII characters ...
-			uri.append(URL_PARAM_SEP + "variant=" + safeURLEncode(variantId));
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "variant=" + safeURLEncode(variantId));
 			// uri.append(URL_PARAM_SEP + "fdsc.source=SS");
 		}
 
 		// append YMAL set ID (optional)
 		if (ymalSetId != null) {
 			// YMAL set ID may contain SPACE or other non-ASCII characters ...
-			uri.append(URL_PARAM_SEP + "ymalSetId=" + safeURLEncode(ymalSetId));
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "ymalSetId=" + safeURLEncode(ymalSetId));
 		}
 
 		// append originatig product ID (optional)
 		if (originatingProductId != null) {
 			// originating product ID may contain SPACE or other non-ASCII characters ...
-			uri.append(URL_PARAM_SEP + "originatingProductId=" + safeURLEncode(originatingProductId));
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "originatingProductId=" + safeURLEncode(originatingProductId));
 		}
 
 		// tracking code 
 		if (trackingCode != null) {
-			uri.append(URL_PARAM_SEP + "trk=" + trackingCode);
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trk=" + trackingCode);
 			
 			
 			// tracking code 
 			if (trackingCodeEx != null) {
-				uri.append(URL_PARAM_SEP + "trkd=" + trackingCodeEx);
+				uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trkd=" + trackingCodeEx);
 			}
 
-			uri.append(URL_PARAM_SEP + "rank=" + rank);
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "rank=" + rank);
 		}
 		if (impressionId != null) {
-		    uri.append(URL_PARAM_SEP).append(IMPRESSION_ID+"=").append(impressionId);
+		    uri.append(ProductDisplayUtil.URL_PARAM_SEP).append(ProductDisplayUtil.IMPRESSION_ID+"=").append(impressionId);
 		}
 
 		return uri.toString();
@@ -263,23 +213,23 @@ public class FDURLUtil {
 		StringBuffer uri = new StringBuffer();
 		
 		// product page with category ID
-		uri.append(PRODUCT_PAGE_BASE + "?catId=" + getRealParent(productNode).getContentName());
+		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
 		
 		// tracking code 
 		if (trackingCode == null) {
 			trackingCode = "srch"; // default value
 		}
-		uri.append(URL_PARAM_SEP + "trk=" + trackingCode);
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trk=" + trackingCode);
 		
 		// append product ID
-		uri.append(URL_PARAM_SEP + "productId=" + getRealProduct(productNode).getContentName());
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
 		
 		// tracking code "<%= request.getRequestURI()%>?catId=<%=catIdParam%>&recipeId=<%=recipe.getContentName()+subCatIdParam%>&variantId=<%= variant.getContentName() %>"
 		if (trackingCodeEx != null) {
-			uri.append(URL_PARAM_SEP + "trkd=" + trackingCodeEx);
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trkd=" + trackingCodeEx);
 		}
 
-		uri.append(URL_PARAM_SEP + "rank=" + rank);
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "rank=" + rank);
 
 		return uri.toString();
 	}
@@ -293,24 +243,24 @@ public class FDURLUtil {
 		StringBuffer uri = new StringBuffer();
 		
 		// product page with category ID
-		uri.append(PRODUCT_PAGE_BASE + "?catId=" + actProd.getParentNode().getContentName());
+		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + actProd.getParentNode().getContentName());
 
 		// tracking code 
 		if (trackingCode != null) {
-			uri.append(URL_PARAM_SEP + "trk=" + trackingCode);
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trk=" + trackingCode);
 		}
 		
 		// append product ID
-		uri.append(URL_PARAM_SEP + "productId=" + actProd.getContentName());
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + actProd.getContentName());
 		
-		uri.append(URL_PARAM_SEP + "skuCode="+productNode.getSkuCode());
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "skuCode="+productNode.getSkuCode());
 
 		// append configuration
-		uri.append(URL_PARAM_SEP + "quantity=").append(config.getQuantity()).append(URL_PARAM_SEP + "salesUnit=").append(config.getSalesUnit());
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "quantity=").append(config.getQuantity()).append(ProductDisplayUtil.URL_PARAM_SEP + "salesUnit=").append(config.getSalesUnit());
     	for(Iterator optItr = cfgOptions.keySet().iterator(); optItr.hasNext();) {
     		String optionName = (String)optItr.next();
     		String optionValue = (String)cfgOptions.get(optionName);
-    		uri.append(URL_PARAM_SEP).append(optionName).append("=").append(optionValue);
+    		uri.append(ProductDisplayUtil.URL_PARAM_SEP).append(optionName).append("=").append(optionValue);
     	}
 		return uri.toString();
 	}
@@ -342,11 +292,11 @@ public class FDURLUtil {
 		StringBuffer uri = new StringBuffer();
 		
 		// product page with category ID
-		uri.append(CATEGORY_PAGE_BASE + "?catId=" + catId);
+		uri.append(ProductDisplayUtil.CATEGORY_PAGE_BASE + "?catId=" + catId);
 
 		// tracking code 
 		if (trackingCode != null) {
-			uri.append(URL_PARAM_SEP + "trk=" + trackingCode);
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trk=" + trackingCode);
 		}
 
 		return uri.toString();
@@ -404,8 +354,8 @@ public class FDURLUtil {
 	    		}
 	    	}
 	    }
-	    if (params.get(IMPRESSION_ID) != null) {
-	        collectedParams.put(IMPRESSION_ID, ((String[])params.get(IMPRESSION_ID))[0]);
+	    if (params.get(ProductDisplayUtil.IMPRESSION_ID) != null) {
+	        collectedParams.put(ProductDisplayUtil.IMPRESSION_ID, ((String[])params.get(ProductDisplayUtil.IMPRESSION_ID))[0]);
 	    }
 	    return collectedParams;
 	}
@@ -473,7 +423,7 @@ public class FDURLUtil {
 		String catId = request.getParameter("catId");
 		
 		// product page with category ID
-		uri.append(CATEGORY_PAGE_BASE + "?catId=" + catId);
+		uri.append(ProductDisplayUtil.CATEGORY_PAGE_BASE + "?catId=" + catId);
 		uri.append("&prodCatId=" + catId);
 		uri.append("&productId=" + productNode.getContentName());
 
@@ -488,7 +438,7 @@ public class FDURLUtil {
 		
 		// "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId")+"&trk="+ptrk;
 		
-		uri.append(GR_CART_CONFIRM_PAGE_BASE + "?catId=" + request.getParameter("catId"));
+		uri.append(ProductDisplayUtil.GR_CART_CONFIRM_PAGE_BASE + "?catId=" + request.getParameter("catId"));
 
 		appendCommonParameters(uri, request.getParameterMap());
 
@@ -502,7 +452,7 @@ public class FDURLUtil {
 		
 		// "/cart_confirm.jsp?catId="+productNode.getParentNode().getContentName()+"&productId="+productNode.getContentName()+"&trk="+ptrk;		
 		
-		uri.append(CART_CONFIRM_PAGE_BASE + "?catId=" + productNode.getParentNode().getContentName());
+		uri.append(ProductDisplayUtil.CART_CONFIRM_PAGE_BASE + "?catId=" + productNode.getParentNode().getContentName());
 		uri.append("&productId=" + productNode.getContentName());
 
 		appendCommonParameters(uri, request.getParameterMap());
@@ -519,7 +469,7 @@ public class FDURLUtil {
 		String recipeId	= request.getParameter("recipeId");
 		/// String catId	= request.getParameter("catId");
 
-		uri.append(GR_CART_CONFIRM_PAGE_BASE + "?catId=" + catId);
+		uri.append(ProductDisplayUtil.GR_CART_CONFIRM_PAGE_BASE + "?catId=" + catId);
 		uri.append("&recipeId=" + recipeId);
 
 		appendCommonParameters(uri, request.getParameterMap());
@@ -561,11 +511,11 @@ public class FDURLUtil {
 		StringBuffer uri = new StringBuffer();
 		
 		// product page with category ID
-		uri.append(DEPARTMENT_PAGE_BASE + "?deptId=" + deptId);
+		uri.append(ProductDisplayUtil.DEPARTMENT_PAGE_BASE + "?deptId=" + deptId);
 
 		// tracking code 
 		if (trackingCode != null) {
-			uri.append(URL_PARAM_SEP + "trk=" + trackingCode);
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trk=" + trackingCode);
 		}
 
 		return uri.toString();
@@ -573,7 +523,7 @@ public class FDURLUtil {
 	
 	
 	public static void logProductClick(HttpServletRequest req) {
-            String impressionId = req.getParameter(IMPRESSION_ID);
+            String impressionId = req.getParameter(ProductDisplayUtil.IMPRESSION_ID);
             String trkId = req.getParameter("trk");
             String trkdId = req.getParameter("trkd");
             if (impressionId!=null) {

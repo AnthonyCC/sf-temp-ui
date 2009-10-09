@@ -282,8 +282,8 @@ public class ContentSearchUtil {
 	}
 
 	
-	public static List tokenizeTerm(String term, String separator) {
-            List tokens = new ArrayList();
+	public static List<String> tokenizeTerm(String term, String separator) {
+            List<String> tokens = new ArrayList<String>();
             for (StringTokenizer st = new StringTokenizer(term, separator); st.hasMoreTokens();) {
                 String token = st.nextToken();
                 if (token.length() > 1) {

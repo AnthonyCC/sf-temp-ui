@@ -60,7 +60,7 @@ public class VariantSelection {
 	 * Returns the map of variant selection for a given date
 	 * @return
 	 */
-	public Map getVariantMap(EnumSiteFeature feature, Date date) {
+	public Map<String, String> getVariantMap(EnumSiteFeature feature, Date date) {
 		try {
 			VariantSelectionSB bean = this.getVariantSelectionHome().create();
 			
@@ -77,7 +77,7 @@ public class VariantSelection {
 	 * Returns the map of variant selection
 	 * @return
 	 */
-	public Map getVariantMap(EnumSiteFeature feature) {
+        public Map<String, String> getVariantMap(EnumSiteFeature feature) {
 		try {
 			VariantSelectionSB bean = this.getVariantSelectionHome().create();
 			
@@ -94,7 +94,7 @@ public class VariantSelection {
 	 * Returns the set of (cohort ID, weight) couples
 	 * @return
 	 */
-	public Map getCohorts() {
+	public Map<String, Integer> getCohorts() {
 		try {
 			VariantSelectionSB bean = this.getVariantSelectionHome().create();
 			
@@ -108,12 +108,12 @@ public class VariantSelection {
 	}
 	
 
-	public List getCohortNames() {
+	public List<String> getCohortNames() {
 		try {
-			VariantSelectionSB bean = this.getVariantSelectionHome().create();
-			
-			List names = bean.getCohortNames();
-    		return names;
+                    VariantSelectionSB bean = this.getVariantSelectionHome().create();
+        
+                    List<String> names = bean.getCohortNames();
+    		    return names;
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection", e);
 		} catch (CreateException e) {
@@ -122,7 +122,7 @@ public class VariantSelection {
 		return Collections.EMPTY_LIST;
 	}
 
-	public List getVariants(EnumSiteFeature feature) {
+	public List<String> getVariants(EnumSiteFeature feature) {
 		try {
 			VariantSelectionSB bean = this.getVariantSelectionHome().create();
 			
@@ -139,7 +139,7 @@ public class VariantSelection {
 	 * Returns a list of start dates in cohort-variant assignment (history dates)
 	 * @return
 	 */
-	public List getStartDates() {
+	public List<Date> getStartDates() {
 		try {
 			VariantSelectionSB bean = this.getVariantSelectionHome().create();
 			

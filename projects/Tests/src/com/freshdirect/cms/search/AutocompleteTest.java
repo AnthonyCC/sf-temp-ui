@@ -16,9 +16,13 @@ import junit.framework.TestCase;
 public class AutocompleteTest extends TestCase {
 
     Collection words =  Arrays.asList(new String[] {
-            "blueberry triangle", "blueberry soup", "bluecheese pie", "apple cream", "apple pine", "apple pie", "borring pig"
+            "blueberry triangle", "blueberry soup", "bluecheese pie", "apple cream", "apple pine", "apple pie", "borring pig",
+            "reddi wip", "baby wipes", "basic wipe"
     }); 
     AutocompleteService service = new AutocompleteService (words); 
+    {
+        service.addBadSingular("wip");
+    }
     
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
@@ -62,6 +66,8 @@ public class AutocompleteTest extends TestCase {
         assertTrue("apple is valid", service.isValidWord("apple"));
         assertTrue("pie is valid", service.isValidWord("pie"));
         assertFalse("pidgin is not valid", service.isValidWord("pidgin"));
+        assertFalse("wip is not valid", service.isValidWord("wip"));
+        assertTrue("wipe is valid", service.isValidWord("wipe"));
     }
 
     /**
@@ -72,6 +78,8 @@ public class AutocompleteTest extends TestCase {
         assertEquals("handle hummus", "hummus", service.removePlural("hummus"));
         assertEquals("handle blueberries", "blueberry", service.removePlural("blueberries"));
         assertEquals("handle pines", "pine", service.removePlural("pines"));
+        assertEquals("handle wipe", "wipe", service.removePlural("wipe"));
+        assertEquals("handle wipes", "wipe", service.removePlural("wipes"));
     }
 
 }

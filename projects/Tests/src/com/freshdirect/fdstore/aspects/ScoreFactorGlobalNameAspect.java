@@ -5,9 +5,7 @@ package com.freshdirect.fdstore.aspects;
 
 import java.util.Set;
 
-import org.mockejb.interceptor.Aspect;
 import org.mockejb.interceptor.InvocationContext;
-import org.mockejb.interceptor.Pointcut;
 
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 
@@ -17,9 +15,9 @@ import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
  */
 public class ScoreFactorGlobalNameAspect extends BaseAspect {
 
-    Set globalFactorNames;
+    Set<String> globalFactorNames;
 
-    public ScoreFactorGlobalNameAspect(Set factorNames) {
+    public ScoreFactorGlobalNameAspect(Set<String> factorNames) {
         super(new DebugMethodPatternPointCut("ScoreFactorSessionBean\\.getGlobalFactorNames\\(\\)"));
         this.globalFactorNames = factorNames;
     }

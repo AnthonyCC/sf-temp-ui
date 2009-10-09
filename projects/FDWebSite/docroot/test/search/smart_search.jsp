@@ -41,6 +41,8 @@
 
 	URLGenerator g = new URLGenerator(request);
 
+	String userId = request.getParameter("userID") != null ? request.getParameter("userID") : SnapshotGenerator.getCurrentUserId(session);
+	
 	SearchSnapshot snapshot = null;
 	
 	// Snapshot constructing
@@ -56,14 +58,15 @@
 %>
 
 
-<html>
+
+<%@page import="java.io.ByteArrayInputStream"%><html>
 <head>
 <title>SmartSearch Test Page</title>
 <style>
 	body {
 		font-family: arial, sans;
 	}
-	ul, h3, h4 {m.get(n_key).toString()
+	ul, h3, h4 {
 		margin: 0px;
 		padding: 0px;
 	}
@@ -143,6 +146,7 @@
 	boolean running = SnapshotGenerator.isRunning();
 	String uploadError = "";
 	String snapshotname = "";
+	String searchTerms = null;
 
 	if (ServletFileUpload.isMultipartContent(request)) {
 		// A process is already running, but the user posted another file
@@ -153,7 +157,7 @@
 			// Create a new file upload handler
 			ServletFileUpload upload = new ServletFileUpload(factory);
 	
-			FileItem csvfile = null;			
+			FileItem csvfile = null;
 			// Parse the request
 			List /* FileItem */ items = upload.parseRequest(request);
 			for(Iterator i = items.iterator(); i.hasNext(); ) {
@@ -164,21 +168,29 @@
 				}
 				if ("csvfile".equals(item.getFieldName())) {
 					csvfile = item;
-				} 
+				}
+				if ("searchTerms".equals(item.getFieldName())) { 
+				    searchTerms = item.getString();
+				}
 			}
 			if ( snapshotname.equals("") ) {
 				uploadError += "<li>Missing snapshot name!</li>"; 
 			}
 			
 			if (csvfile == null || csvfile.getSize() == 0) {
-				uploadError += "<li>Missing CSV file!</li>";
+			    if (searchTerms == null || searchTerms.trim().length() == 0) {
+					uploadError += "<li>Missing CSV file!</li>";
+			    } else {
+			        csvfile = null;
+			    }
 			}
 			
 			if (uploadError.equals("")) {
 				running = true;
 				
 				// Start generating
-				SnapshotGenerator.startGenerating(csvfile.getInputStream(), snapshotname, session );							
+				SnapshotGenerator.startGenerating(csvfile != null ? csvfile.getInputStream() : new ByteArrayInputStream(searchTerms.getBytes()), 
+				        snapshotname, userId.trim().length() == 0 ? null : userId);
 			}
 		}
 		if (!uploadError.equals("")) {
@@ -194,6 +206,8 @@
 %>	
 	<div><label for="snapshotname">Snapshot name: </label><input type="text" name="snapshotname" id="snapshotname" value="<%=snapshotname%>"></div>
 	<div><label for="csvfile">Search terms in a CSV file:</label><input type="file" id="csvfile" name="csvfile"></div>
+	<div><label for="searchTerms">Search terms:</label><textarea name="searchTerms" id="searchTerms"><%= searchTerms != null ? searchTerms : "" %></textarea></div>
+	<div><label for="userID">User ID:</label><input type="text" name="userID" id="userID" value="<%= (userId != null ? userId : "") %>"></input></div>
 	<div><input type="submit" value="Upload file"></div>
 <%
 	} else {
@@ -270,6 +284,12 @@
 	<a class="<%=g.get("sortBy") == null || g.get("sortBy").equals("") || g.get("sortBy").equals("popularity") ? "bold" : ""%>" href="<%=g.set("sortBy", "popularity").buildNew() %>">popularity</a>
 	<a class="<%=g.get("sortBy") != null && g.get("sortBy").equals("correlation") ? "bold" : ""%>" href="<%=g.set("sortBy", "correlation").buildNew() %>">correlation</a>
 	<a class="<%=g.get("sortBy") != null && g.get("sortBy").equals("moves") ? "bold" : ""%>" href="<%=g.set("sortBy", "moves").buildNew() %>">difference</a>
+</div>
+<div style="margin-bottom: 10px">
+	<span>User ID of 1st snapshot: <%= snapshot.getUserId(0) %></span><br/>
+	<span>User ID of 2nd snapshot: <%= snapshot.getUserId(1) %></span><br/>
+	<span>Factor of 1st snapshot: <%= snapshot.getFactor(0) %></span><br/>
+	<span>Factor of 2nd snapshot: <%= snapshot.getFactor(1) %></span>
 </div>
 <ul>
 <%
@@ -383,6 +403,8 @@
 			<div><span style="font-weight: bold"><%=product.getFullName() %></span></div>
 			<div style="margin-bottom: 5px;"><span style="font-style: italic;font-size: smaller"><%=taxonomy %></span></div>
 			<div>Popularity: <%=ProductStatisticsProvider.getInstance().getGlobalProductScore(ContentKey.create(FDContentTypes.PRODUCT, item.getId())) %></div>
+			<div>Baseline factors : <span class="baseLineFactor"><%= item.getFactorValue(0) %></span></div>
+			<div>Current factors :  <span class="currentFactor"><%= item.getFactorValue(1) %></span></div>
 		</td>		
 	</tr>
 <%

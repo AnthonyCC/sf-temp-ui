@@ -71,6 +71,6 @@ public class RandomDyfVariant extends DYFService {
 		    rankedContents.add(new RankedContent.Single(key, size-i));
 		}
 		return RankedContent.getKeys(getSampler(input).sample(rankedContents,
-				includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), toSelect));
+				input.isIncludeCartItems() ? Collections.EMPTY_SET : input.getCartContents(), toSelect));
 	}
 }

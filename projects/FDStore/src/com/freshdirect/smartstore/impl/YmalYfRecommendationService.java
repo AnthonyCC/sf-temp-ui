@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
@@ -48,12 +49,12 @@ public class YmalYfRecommendationService extends AbstractRecommendationService i
 		return rs;
 	}
 
-	public List recommendNodes(SessionInput input) {
+	public List<ContentNodeModel> doRecommendNodes(SessionInput input) {
 		RecommendationService smart = getSmartYmalRecommender();
 		if (smart == null)
 			return Collections.EMPTY_LIST;
 		
-		List favorites = popularity.recommendNodes(input);
+		List<ContentNodeModel> favorites = popularity.recommendNodes(input);
 		favorites = FDStoreRecommender.getInstance().filterProducts(favorites, input.getCartContents(), false);
 		if (favorites.isEmpty())
 			return Collections.EMPTY_LIST;
@@ -66,7 +67,7 @@ public class YmalYfRecommendationService extends AbstractRecommendationService i
 		i2.setYmalSource(currentNode);
 		i2.setNoShuffle(input.isNoShuffle());
 		
-		List prods = smart.recommendNodes(i2);
+		List<ContentNodeModel> prods = smart.recommendNodes(i2);
 		return prods;
 	}
 

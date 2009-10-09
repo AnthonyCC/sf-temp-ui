@@ -2,6 +2,8 @@ package com.freshdirect.smartstore;
 
 import java.util.List;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
+
 public abstract class WrapperRecommendationService implements RecommendationService {
 
     protected RecommendationService internal;
@@ -22,7 +24,7 @@ public abstract class WrapperRecommendationService implements RecommendationServ
         this.internal = internal;
     }
 
-    public abstract List recommendNodes(SessionInput input);
+    public abstract List<ContentNodeModel> recommendNodes(SessionInput input);
 
     public boolean isIncludeCartItems() {
     	return internal.isIncludeCartItems();

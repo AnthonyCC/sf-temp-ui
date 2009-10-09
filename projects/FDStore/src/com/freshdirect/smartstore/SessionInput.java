@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.promotion.PromoVariantModel;
 
 /**
  * Represents session information.
@@ -23,7 +24,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
  */
 public class SessionInput {
 
-	private Set cartContents = null;
+	private Set<ContentKey> cartContents = null;
 
 	private String customerId;
 
@@ -41,15 +42,15 @@ public class SessionInput {
 
 	private FDCartModel cartModel;
 
-	private Map previousRecommendations;
+	private Map<String,List<ContentKey>> previousRecommendations;
 
 	int maxRecommendations = Integer.MAX_VALUE;
-	
-	private Map promoVariantMap = null;
 	
 	private boolean checkForEnoughSavingsMode = false;
 	
 	private String savingsVariantId;
+	
+	private boolean includeCartItems = false;
 	
 	//private Set eligiblePromotions = null;
 
@@ -64,14 +65,6 @@ public class SessionInput {
 	public SessionInput(String customerId, EnumServiceType customerServiceType) {
 		this.customerId = customerId;
 		this.customerServiceType = customerServiceType;
-	}
-/*
-	public Set getEligiblePromotions() {
-		return eligiblePromotions;
-	}
-*/
-	public Map getPromoVariantMap() {
-		return promoVariantMap;
 	}
 
 	/**
@@ -98,7 +91,7 @@ public class SessionInput {
 	 * @param cartContents
 	 *            (List<@link {@link ContentKey}>)
 	 */
-	public void setCartContents(Set cartContents) {
+	public void setCartContents(Set<ContentKey> cartContents) {
 		this.cartContents = cartContents;
 	}
 
@@ -109,7 +102,7 @@ public class SessionInput {
 	 * 
 	 * @return The current cart contents as Collection<@link {@link ContentKey}>
 	 */
-	public Set getCartContents() {
+	public Set<ContentKey> getCartContents() {
 		return cartContents != null ? cartContents : Collections.EMPTY_SET;
 	}
 
@@ -170,11 +163,11 @@ public class SessionInput {
 		return cartModel;
 	}
 
-	public void setPreviousRecommendations(Map previousRecommendations) {
+	public void setPreviousRecommendations(Map<String, List<ContentKey>> previousRecommendations) {
 		this.previousRecommendations = previousRecommendations;
 	}
 
-	public Map getPreviousRecommendations() {
+	public Map<String, List<ContentKey>> getPreviousRecommendations() {
 		return previousRecommendations;
 	}
 
@@ -209,6 +202,22 @@ public class SessionInput {
 	    else
             return category;
     }
+	
+	public CategoryModel getFICategory() {
+		if (currentNode instanceof CategoryModel)
+			return (CategoryModel) currentNode;
+		else if (currentNode instanceof ProductModel
+				&& currentNode.getParentNode() instanceof CategoryModel)
+			return (CategoryModel) currentNode.getParentNode();
+		else
+			return null;
+    }
 
+	public boolean isIncludeCartItems() {
+		return includeCartItems;
+	}
 
+	public void setIncludeCartItems(boolean includeCartItems) {
+		this.includeCartItems = includeCartItems;
+	}
 }

@@ -179,6 +179,31 @@ public class FDUserDAO {
 		return user;
 	}
 
+	private static final String LOAD_FROM_EMAIL_QUERY =
+		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
+		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID " +
+		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
+		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.user_id=? " +
+		"AND erpc.id = ci.customer_id";
+
+	public static FDUser recognizeWithEmail(Connection conn, String email) throws SQLException {
+		LOGGER.debug("attempting to load FDUser based on user id (email)");
+		PreparedStatement ps = conn.prepareStatement(LOAD_FROM_EMAIL_QUERY);
+		ps.setString(1, email);
+		ResultSet rs = ps.executeQuery();
+		FDUser user = loadUserFromResultSet(rs);
+
+		if (!user.isAnonymous()) {
+			FDCartModel cart = new FDCartModel();
+			cart.addOrderLines(convertToCartLines(FDCartLineDAO.loadCartLines(conn, user.getPK())));
+			user.setShoppingCart(cart);
+		}
+		rs.close();
+		ps.close();
+
+		return user;
+	}
+
 	private static final String LOAD_FROM_COOKIE_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID " +

@@ -8,7 +8,6 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.webapp.BodyTagSupport;
@@ -80,33 +79,20 @@ public class ProductPriceTag extends BodyTagSupport {
 		// display price
 		FDProductInfo productInfo = impression.getProductInfo();		
 		
-		if ( productInfo != null ) {
+		if ( productInfo != null ) {	
+			String priceString = impression.getProductModel().getPriceFormatted(savingsPercentage);
 			
-			double price = 0;
-			double wasPrice = 0;
+			String scaleString = impression.getProductModel().getTieredPrice(savingsPercentage);
 			
-			if ( savingsPercentage > 0 ) {
-				price = productInfo.getDefaultPrice() * (1-savingsPercentage);
-				wasPrice = productInfo.getDefaultPrice();
-			} else if ( productInfo.hasWasPrice() ) {
-				price = productInfo.getDefaultPrice();
-				wasPrice = productInfo.getBasePrice();
-			} else {
-				price = productInfo.getDefaultPrice();
-			}
-			
-			String priceString = JspMethods.currencyFormatter.format( price ) + "/" +	
-								productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
-			
-			String scaleString = getScaleDisplay();
-			
-			String wasString = "(was " + JspMethods.currencyFormatter.format( wasPrice ) + ")";
+			String wasString = impression.getProductModel().getWasPriceFormatted(savingsPercentage);
+			if (wasString != null)
+				wasString = "(was " + wasString + ")";
 
 			/* Display Sales Units price-Apple Pricing[AppDev-209].. */
-			String displayPriceString = "";
+			String aboutPriceString = "";
 			
 			try {
-				displayPriceString = JspMethods.getAboutPriceForDisplay(productInfo);
+				aboutPriceString = JspMethods.getAboutPriceForDisplay(productInfo);
 			} catch (JspException e) {
 			
 			}
@@ -114,9 +100,9 @@ public class ProductPriceTag extends BodyTagSupport {
 			// style for the real price depends on what kind of deals we have
 			String styleRegular;			
 			if ( scaleString != null )
-				styleRegular = ( wasPrice > 0 ) ? styleRegularWithBoth : styleRegularWithScaled;
+				styleRegular = ( wasString != null ) ? styleRegularWithBoth : styleRegularWithScaled;
 			else
-				styleRegular = ( wasPrice > 0 ) ? styleRegularWithWas : styleRegularOnly;
+				styleRegular = ( wasString != null ) ? styleRegularWithWas : styleRegularOnly;
 			
 						
 			// regular price
@@ -139,7 +125,7 @@ public class ProductPriceTag extends BodyTagSupport {
 			}	
 				
 			// was price
-			if ( wasPrice > 0 ) buf.append(
+			if ( wasString != null ) buf.append(
 					"<div" + styleWas + ">" + 
 					wasString +
 					"</div>"
@@ -147,10 +133,10 @@ public class ProductPriceTag extends BodyTagSupport {
 			
 			//about price
 			if(showAboutPrice){
-				if(null != displayPriceString && !"".equals(displayPriceString)){
+				if(null != aboutPriceString && !"".equals(aboutPriceString)){
 					buf.append(
 							"<div class=\"aboutDisplaySalesUnitCat\">about<br>" + 
-							displayPriceString +
+							aboutPriceString +
 							"</div>"
 					);
 				}
@@ -166,24 +152,6 @@ public class ProductPriceTag extends BodyTagSupport {
 		}
 
 		return EVAL_BODY_INCLUDE;
-	}
-
-	private String getScaleDisplay() {
-		
-		FDProduct product = impression.getFDProduct();
-		if ( product != null ) {
-			String[] ymalScales = null;
-			
-			if ( savingsPercentage > 0 )
-				ymalScales = product.getPricing().getScaleDisplay( savingsPercentage );
-			else
-				ymalScales = product.getPricing().getScaleDisplay();			
-			
-			if ( ymalScales.length > 0 ) {
-				return ymalScales[ ymalScales.length-1 ];
-			}
-		}
-		return null;
 	}
 
 	public static class TagEI extends TagExtraInfo {

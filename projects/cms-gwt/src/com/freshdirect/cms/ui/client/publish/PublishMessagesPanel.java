@@ -6,7 +6,6 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
-import com.extjs.gxt.ui.client.data.PagingModelMemoryProxy;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
@@ -18,23 +17,29 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.freshdirect.cms.ui.client.fields.Renderers;
+import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage.Level;
 
 public class PublishMessagesPanel extends ContentPanel {
 
+        ChangeSetQueryResponse changeHistory;
 	ListStore<GwtPublishMessage>	store;
 	Grid<GwtPublishMessage>			grid;
 
-	public PublishMessagesPanel( List<GwtPublishMessage> messages ) {
+	public PublishMessagesPanel( ChangeSetQueryResponse changeHistory ) {
 		super();
+		this.changeHistory = changeHistory;
 		setHeading( "Messages" );
 		setScrollMode( Scroll.AUTO );
 		setLayout( new FitLayout() ); 
 
-		BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>> loader = new BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>>( new PagingModelMemoryProxy( messages ) );
-        store = new ListStore<GwtPublishMessage>( loader );
+                BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>> loader = new BasePagingLoader<BasePagingLoadResult<GwtPublishMessage>>(
+                        new PublishMessageLoader(changeHistory));
+                loader.setRemoteSort(true);
+                store = new ListStore<GwtPublishMessage>(loader);
         
+                
 		List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 		
         // ============ SEVERITY ============

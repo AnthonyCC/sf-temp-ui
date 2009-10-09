@@ -96,6 +96,7 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
         for (GwtChangeSet changeSet : response.getChanges()) {
             for (GwtContentNodeChange nodeChange : changeSet.getNodeChanges()) {
                 if (nodeChange.getChangeDetails().size() == 0) {
+                	
                     ContentNodeModel b = new ContentNodeModel(nodeChange.getContentType(), nodeChange.getLabel(), nodeChange.getContentKey() );
 
                     b.set("changeType", nodeChange.getChangeType());
@@ -103,11 +104,16 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
                     b.set("user", changeSet.getUserId());
                     b.set("note", changeSet.getNote());
                     b.set("date", changeSet.getModifiedDate());
+                    
+                    b.set("previewLink", nodeChange.getPreviewLink() );
+                    
                     alreadyLoaded.add(b);
 
                 } else {
                     for (GwtChangeDetail detail : nodeChange.getChangeDetails()) {
+                    	
                         ContentNodeModel b = new ContentNodeModel(nodeChange.getContentType(), nodeChange.getLabel(), nodeChange.getContentKey());
+                        
                         b.set("old", detail.getOldValue());
                         b.set("new", detail.getNewValue());
                         b.set("attribute", detail.getAttributeName());
@@ -118,6 +124,8 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
                         b.set("note", changeSet.getNote());
                         b.set("date", changeSet.getModifiedDate());
 
+                        b.set("previewLink", nodeChange.getPreviewLink() );
+                        
                         alreadyLoaded.add(b);
                     }
                 }

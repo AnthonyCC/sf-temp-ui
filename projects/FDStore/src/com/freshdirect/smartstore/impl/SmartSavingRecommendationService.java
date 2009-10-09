@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -36,23 +37,25 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
         super(internal);
     }
 
-    public List recommendNodes(SessionInput input) {
+    public List<ContentNodeModel> recommendNodes(SessionInput input) {
     	if(input.isCheckForEnoughSavingsMode()) {
     		return internal.recommendNodes(input);
     	}
     		
         String variantId = getVariant().getId();
-        if(!variantId.equals(input.getSavingsVariantId()))return Collections.EMPTY_LIST;
+        if(!variantId.equals(input.getSavingsVariantId())) {
+            return Collections.EMPTY_LIST;
+        }
         //if(!isEligibleForSavings(input, variantId)) return Collections.EMPTY_LIST;
-        Map prevMap = input.getPreviousRecommendations();
+        Map<String, List<ContentKey>> prevMap = input.getPreviousRecommendations();
         if (prevMap != null) {
-            List prevRecommendations = (List) prevMap.get(variantId);
+            List<ContentKey> prevRecommendations = prevMap.get(variantId);
             if (prevRecommendations != null) {
                 return SmartStoreUtil.toContentNodesFromKeys(prevRecommendations);
             }
         }
         FDCartModel cartModel = input.getCartModel();
-        List cartSuggestions = new ArrayList();
+        List<ContentNodeModel> cartSuggestions = new ArrayList<ContentNodeModel>();
         for (int i = 0; i < cartModel.numberOfOrderLines(); i++) {
             FDCartLineI orderLine = cartModel.getOrderLine(i);
             if (!cartSuggestions.contains(orderLine.lookupProduct()) && 
@@ -61,10 +64,10 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
             }
         }
         if (cartSuggestions.size() < input.getMaxRecommendations()) {
-            List internalRec = internal.recommendNodes(input);
-            Set filterProds = new HashSet(cartSuggestions.size());
+            List<ContentNodeModel> internalRec = internal.recommendNodes(input);
+            Set<ContentKey> filterProds = new HashSet<ContentKey>(cartSuggestions.size());
             for (int i = 0; i < cartSuggestions.size(); i++) {
-            	ContentNodeModel node = (ContentNodeModel) cartSuggestions.get(i);
+            	ContentNodeModel node = cartSuggestions.get(i);
             	filterProds.add(node.getContentKey());
             }
             internalRec = FDStoreRecommender.getInstance().filterProducts(internalRec, filterProds, false);            

@@ -936,7 +936,7 @@
 					<attribute name="Implementation-Title" value="@{project}"/>
 					<attribute name="Implementation-Version" value="${build.counter}"/>
 					<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-					<attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+					<attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
 				</manifest>
 				<fileset dir="${work.dir}/@{project}" />
 				<fileset dir="${projects.dir}/@{project}/src">
@@ -966,7 +966,7 @@
                     <attribute name="Implementation-Title" value="@{project}"/>
                     <attribute name="Implementation-Version" value="${build.counter}"/>
                     <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>                    
-                    <attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+                    <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
                 </manifest>
                 <fileset dir="${work.dir}/@{project}.instrout" />
                 <fileset dir="${projects.dir}/@{project}/src">
@@ -1124,7 +1124,7 @@
 					<attribute name="Implementation-Title" value="@{application}"/>
 					<attribute name="Implementation-Version" value="${build.counter}"/>
 					<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-					<attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+					<attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
 				</manifest>
 				<fileset dir="${work.dir}/@{project}">
 				</fileset>
@@ -1148,7 +1148,7 @@
 					<attribute name="Implementation-Title" value="@{application}"/>
 					<attribute name="Implementation-Version" value="${build.counter}"/>
 					<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-					<attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+					<attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
 				</manifest>
 				<!-- pull in the template (this includes all thirdparty jars) -->
 				<fileset dir="${applications.dir}/@{application}"/>
@@ -1254,7 +1254,7 @@
 					<attribute name="Implementation-Title" value="@{application}"/>
 					<attribute name="Implementation-Version" value="${build.counter}"/>
 					<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-					<attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+					<attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
 				</manifest>
 				<!-- pull in the template (this includes all thirdparty jars) -->
 				<fileset dir="${applications.dir}/@{application}"/>
@@ -1599,7 +1599,7 @@
                 <attribute name="Implementation-Title" value="DlvAdmin"/>
                 <attribute name="Implementation-Version" value="${build.counter}"/>
                 <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
             </manifest>
 			<fileset dir="${work.dir}/DlvAdmin">
 			</fileset>
@@ -1660,7 +1660,7 @@
                         <attribute name="Implementation-Title" value="cms-gwt"/>
                         <attribute name="Implementation-Version" value="${build.counter}"/>
                         <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                        <attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+                        <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
                     </manifest>
                     <webinf dir="${cms-gwt.path}/war/WEB-INF">
                         <include name="*.xml"/>
@@ -1749,7 +1749,7 @@
                 <attribute name="Implementation-Title" value="cms-tap"/>
                 <attribute name="Implementation-Version" value="${build.counter}"/>
                 <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
             </manifest>
 			<fileset dir="${work.dir}/cms-tap">
 			</fileset>
@@ -1935,7 +1935,7 @@
                 <attribute name="Implementation-Title" value="MarketingAdmin"/>
                 <attribute name="Implementation-Version" value="${build.counter}"/>
                 <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
             </manifest>
 			<fileset dir="${work.dir}/MarketingAdmin">
 			</fileset>
@@ -2017,7 +2017,7 @@
                 <attribute name="Implementation-Title" value="TransportationAdmin"/>
                 <attribute name="Implementation-Version" value="${build.counter}"/>
                 <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
             </manifest>
 			<fileset dir="${work.dir}/TransportationAdmin">
 			</fileset>
@@ -2117,7 +2117,7 @@
                 <attribute name="Implementation-Title" value="Resources"/>
                 <attribute name="Implementation-Version" value="${build.counter}"/>
                 <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
             </manifest>
 			<fileset dir="${work.dir}/Resources" />
 		</jar>
@@ -2412,7 +2412,7 @@
                 <attribute name="Implementation-Title" value="FreshDirect Client Application JAR"/>
                 <attribute name="Implementation-Version" value="${build.counter}"/>
                 <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
             </manifest>
 			<!-- thirdparty classes -->
 			<zipfileset src="${thirdparty.home}/commons-lang-2.3.jar" excludes="META-INF/*"/>
@@ -2463,7 +2463,7 @@
 				<attribute name="Implementation-Title" value="FreshDirect USPS Loader JAR"/>
 				<attribute name="Implementation-Version" value="${build.counter}"/>
 				<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-				<attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+				<attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Main-Class" value="com/freshdirect/dataloader/usps/USPSLoader"/>
 				<attribute name="Class-Path" value="."/>
@@ -2505,7 +2505,7 @@
 				<attribute name="Implementation-Title" value="FreshDirect Geocode Filter JAR"/>
 				<attribute name="Implementation-Version" value="${build.counter}"/>
 				<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-				<attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+				<attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Main-Class" value="com/freshdirect/dataloader/geocodefilter/ui/GFGui"/>
 				<attribute name="Class-Path" value="."/>

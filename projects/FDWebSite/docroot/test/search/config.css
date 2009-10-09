@@ -1,0 +1,82 @@
+
+body, td       { font-size: small; font-family: arial, sans; color: #003333 }
+td.even        { background: #ffeeee }
+td.odd         { background: #eeeeff }
+td.even-stat   { background: #eedddd }
+td.odd-stat    { background: #ddddee }
+td.head        { background: #000033; color: #aaaa00 }
+div.high       { background: #ddddff }
+
+ul,h3,h4 {
+	margin: 0px;
+	padding: 0px;
+}
+
+h3 {
+	margin-bottom: 10px;
+}
+
+ul {
+	padding-left: 20px;
+}
+
+li {
+	list-style-type: decimal;
+	margin-left: 20px;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table thead td {
+	text-align: center;
+	width: 300px;
+}
+
+table td {
+	border: 1px solid black;
+	padding: 5px;
+	vertical-align: top;
+}
+
+.product {
+	width: 280px;
+	text-indent: -10px;
+	padding-left: 10px;
+	font-weight: bold;
+}
+
+.productname {
+	color: #336600;
+}
+
+.productinfo {
+	font-size: smaller;
+	font-weight: normal;
+	width: 280px;
+	padding-left: 10px;
+	text-indent: -10px;
+}
+
+label {
+	margin-right: 10px;
+}
+
+a {
+	color: blue;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.error {
+	color: red;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.error li {
+	list-style-type: disc;
+}

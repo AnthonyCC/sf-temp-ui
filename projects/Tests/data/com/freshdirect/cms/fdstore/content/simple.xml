@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Content>
+	<Store id="FreshDirect">
+		<departments>
+			<Department ref="dep_1"/>
+		</departments>
+	</Store>
+	<Department id="dep_1">
+		<FULL_NAME>First department</FULL_NAME>
+		<categories>
+		</categories>
+	</Department>
+
+	<Product id="prod1">
+		<skus>
+			<Sku ref="prod1"/>
+		</skus>
+		<FULL_NAME>R1 / 1</FULL_NAME>
+	</Product>
+
+
+	<Product id="r1_prod1_1">
+		<skus>
+			<Sku ref="r1_prod1_1_sku1"/>
+		</skus>
+		<FULL_NAME>R1 / 1</FULL_NAME>
+	</Product>
+
+	<Product id="r1_prod1_2">
+		<skus>
+			<Sku ref="r1_prod1_2_sku1"/>
+		</skus>
+		<FULL_NAME>R1 / 2</FULL_NAME>
+	</Product>
+	<Product id="r1_prod1_3">
+		<skus>
+			<Sku ref="r1_prod1_3_sku1"/>
+		</skus>
+		<FULL_NAME>R1 / 3</FULL_NAME>
+	</Product>
+
+	<Product id="p_1">
+		<skus>
+			<Sku ref="sku_p_1"/>
+		</skus>
+		<FULL_NAME>p1</FULL_NAME>
+	</Product>
+	<Product id="p_2">
+		<skus>
+			<Sku ref="sku_p_2"/>
+		</skus>
+		<FULL_NAME>p2</FULL_NAME>
+	</Product>
+
+
+	<Sku id="r1_prod1_1_sku1"/>
+	<Sku id="r1_prod1_2_sku1"/>
+	<Sku id="r1_prod1_3_sku1"/>
+
+	<Sku id="sku_p_1"/>
+	<Sku id="sku_p_2"/>
+
+
+</Content>

@@ -13,8 +13,7 @@
 %><%@ page import="com.freshdirect.fdstore.lists.FDListManager"
 %><%@ page import="com.freshdirect.fdstore.lists.FDCustomerProductListLineItem"
 %><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
-%><%@ page import="com.freshdirect.webapp.util.ProductLabelling"
-%><%@ page import="com.freshdirect.webapp.util.DYFUtil"
+%><%@ page import="com.freshdirect.fdstore.util.DYFUtil"
 %>
 
 <%@ taglib uri="freshdirect" prefix="fd"%>

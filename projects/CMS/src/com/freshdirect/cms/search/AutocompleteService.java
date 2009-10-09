@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -23,7 +22,7 @@ public class AutocompleteService {
 
     private final static int MAX_AUTOCOMPLETE_HITS     = 20;
 
-    private final static Set skipWordsInAutoCompletion = new HashSet();
+    private final static Set<String> skipWordsInAutoCompletion = new HashSet<String>();
     static {
         skipWordsInAutoCompletion.addAll(LuceneSearchService.stopWords);
         skipWordsInAutoCompletion.add("all");
@@ -31,25 +30,27 @@ public class AutocompleteService {
         skipWordsInAutoCompletion.add("without");
     }
 
-    SortedSet                prefixSet;
+    SortedSet<HitCounter>         prefixSet;
 
-    SortedSet               wordSet;
+    SortedSet<String>             wordSet;
+
+    final SortedSet<String>             badSingularForms = new TreeSet<String>();
     
     public AutocompleteService() {
 
     }
 
-    public AutocompleteService(Collection words) {
+    public AutocompleteService(Collection<String> words) {
         prefixSet = initWords(words);
     }
 
-    public List getAutocompletions(String prefix) {
+    public List<String> getAutocompletions(String prefix) {
         HitCounter start = new HitCounter(prefix.toLowerCase(), 0, null);
         HitCounter end = new HitCounter(start.prefix + '\uffff', 0, null);
 
-        SortedSet subSet = prefixSet.subSet(start, end);
+        SortedSet<HitCounter> subSet = prefixSet.subSet(start, end);
         // sort according to the number of occurances
-        List result = new ArrayList(subSet);
+        List<HitCounter> result = new ArrayList<HitCounter>(subSet);
         Collections.sort(result, new Comparator() {
             public int compare(Object o1, Object o2) {
                 HitCounter h1 = (HitCounter) o1;
@@ -58,15 +59,15 @@ public class AutocompleteService {
             }
         });
 
-        List words = new ArrayList(result.size());
+        List<String> words = new ArrayList<String>(result.size());
         for (int i = 0; i < result.size() && i < MAX_AUTOCOMPLETE_HITS; i++) {
-            words.add(((HitCounter) result.get(i)).prefix);
+            words.add(result.get(i).prefix);
         }
         return words;
     }
 
-    private List filterWords(String[] words) {
-        List result = new ArrayList(words.length);
+    private List<String> filterWords(String[] words) {
+        List<String> result = new ArrayList<String> (words.length);
         for (int i = 0; i < words.length; i++) {
             if (!skipWordsInAutoCompletion.contains(words[i])) {
                 result.add(words[i]);
@@ -75,15 +76,16 @@ public class AutocompleteService {
         return result;
     }
 
-    public void setWordList(Collection words) {
+    public void setWordList(Collection<String> words) {
         prefixSet = initWords(words);
     }
+    
+    
 
-    private SortedSet initWords(Collection words) {
+    private SortedSet<HitCounter> initWords(Collection<String> words) {
         LOGGER.info("word list size:" + words.size());
-        HashMap counters = new HashMap();
-        for (Iterator iter = words.iterator(); iter.hasNext();) {
-            String fullname = (String) iter.next();
+        HashMap<String, HitCounter> counters = new HashMap<String, HitCounter>();
+        for (String fullname : words) {
             if (fullname != null) {
                 fullname = fullname.toLowerCase().replace('&', ' ').replace('"', ' ').replace('.', ' ').replace(':', ' ').replace(',', ' ').replace('-', ' ')
                         .replace('(', ' ').replace(')', ' ').replace(/* NBSP */(char)160, ' ').replace(/* REG TRADEMARK */ (char) 174, ' ');
@@ -99,9 +101,8 @@ public class AutocompleteService {
             }
         }
         LOGGER.info("prefix map size:" + counters.size());
-        TreeSet set = new TreeSet();
-        for (Iterator iter = counters.values().iterator(); iter.hasNext();) {
-            HitCounter hc = (HitCounter) iter.next();
+        TreeSet<HitCounter> set = new TreeSet<HitCounter>();
+        for (HitCounter hc : counters.values()) {
             // skip words which occures only one
             //if (hc.number > 1) {
                 // skip autocomplete suggest
@@ -110,16 +111,14 @@ public class AutocompleteService {
                 }
             //}
         }
-        wordSet = new TreeSet();
-        for (Iterator iter = set.iterator(); iter.hasNext(); ){
-            HitCounter hc = (HitCounter) iter.next();
+        wordSet = new TreeSet<String>();
+        for (HitCounter hc : set) {
             if (hc.wordCount==1) {
                 wordSet.add(hc.prefix);
             }
         }
         if (LOGGER.isDebugEnabled()) {
-            for (Iterator iter = set.iterator(); iter.hasNext(); ){
-                HitCounter hc = (HitCounter) iter.next();
+            for (HitCounter hc : set){
                 if (hc.wordCount==1) {
                     if (hc.prefix.endsWith("s")) {
                         String wordWithoutS = hc.prefix.substring(0, hc.prefix.length()-1);
@@ -137,9 +136,24 @@ public class AutocompleteService {
      * @return
      */
     public boolean isValidWord(String word) {
-        return wordSet.contains(word);
+        return wordSet.contains(word) && !badSingularForms.contains(word);
     }
+
     
+    
+    
+    public boolean addBadSingular(String e) {
+        return badSingularForms.add(e);
+    }
+
+    public boolean addAllBadSingular(Collection<? extends String> c) {
+        return badSingularForms.addAll(c);
+    }
+
+    public void clearBadSingular() {
+        badSingularForms.clear();
+    }
+
     public String removePlural(String word) {
         if (word.length()>2 && word.endsWith("s")) {
             if (word.endsWith("ies")) {
@@ -165,8 +179,8 @@ public class AutocompleteService {
     
     
 
-    private void createCounters(HashMap counters, String fullname) {
-        List strings = filterWords(StringUtils.split(fullname));
+    private void createCounters(HashMap<String, HitCounter> counters, String fullname) {
+        List<String> strings = filterWords(StringUtils.split(fullname));
 
         final int len = strings.size();
         for (int j = 0; j < len; j++) {
@@ -183,7 +197,7 @@ public class AutocompleteService {
         }
     }
 
-    private HitCounter accumulate(HashMap counters, String str, int wordCount, HitCounter before) {
+    private HitCounter accumulate(HashMap<String, HitCounter> counters, String str, int wordCount, HitCounter before) {
         HitCounter hc = (HitCounter) counters.get(str);
         if (hc == null) {
             hc = new HitCounter(str, wordCount, before);
@@ -195,7 +209,7 @@ public class AutocompleteService {
     }
 
 
-    static class HitCounter implements Comparable {
+    static class HitCounter implements Comparable<HitCounter> {
         String     prefix;
 
         // the number of occurences of the prefix word in the whole database.
@@ -221,8 +235,8 @@ public class AutocompleteService {
             number++;
         }
 
-        public int compareTo(Object o) {
-            return prefix.compareTo(((HitCounter) o).prefix);
+        public int compareTo(HitCounter o) {
+            return prefix.compareTo(o.prefix);
         }
         
         public String toString() {

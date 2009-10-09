@@ -64,7 +64,7 @@ public class PublishHistoryPanel extends ContentPanel {
                 PublishConfirmationPopup popup = new PublishConfirmationPopup(result);
                 popup.show();
             } else {
-            	ChangeHistoryPanel historyPanel = new ChangeHistoryPanel(result, "Publish "+id);
+            	ChangeHistoryPanel historyPanel = new ChangeHistoryPanel(result, "Publish "+id, true);
             	MainLayout.setContentPanel( historyPanel );
                 MainLayout.setStatus("Change history loaded.");
             }
@@ -150,6 +150,7 @@ public class PublishHistoryPanel extends ContentPanel {
                             ChangeSetQuery q = new ChangeSetQuery();
                             q.setPublishId(id);
                             q.setRange(0, 20);
+                            q.setPublishMessageRange(0, 20);
                             MainLayout.startProgress("Details", "Downloading changes in publish "+id, "loading...");
                             CmsGwt.getContentService().getChangeSets(q, new ShowChangeHistoryCallback(id));
                         } 

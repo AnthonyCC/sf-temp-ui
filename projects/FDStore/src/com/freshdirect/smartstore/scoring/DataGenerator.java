@@ -4,13 +4,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.SessionInput;
 
 public class DataGenerator {
 
     Set factors;
 
-    public List generate(SessionInput sessionInput, DataAccess input) {
+    public List<ContentNodeModel> generate(SessionInput sessionInput, DataAccess input) {
         return Collections.EMPTY_LIST;
     }
 

@@ -56,7 +56,7 @@ public class FeaturedItemsTag extends RecommendationsTag {
         
         Recommendations results = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS, user,
         		si, (String) pageContext.getAttribute("fi_override_variant"),
-        		shoppingCart != null ? shoppingCart : SmartStoreUtil.toContentKeySetFromModels(FDStoreRecommender.getShoppingCartContents(user)));
+        		shoppingCart != null ? shoppingCart : FDStoreRecommender.getShoppingCartContentKeys(user));
         persistToSession(results);
         return results;
     }
