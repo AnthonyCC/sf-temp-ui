@@ -78,15 +78,13 @@
 		// [APPREQ-689] product ID -> recommender mapping (SmartYMAL) otherwise null
 		final Map<String,String> prd2recommendation = (Map<String,String>) request.getAttribute("map_prd2recommender");
 %>
-
-	
-<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="ViewCart">
+<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>">
 		<% 		
 		    isRendered = true;
 			ConfigurationContext confContext = new ConfigurationContext();
 			confContext.setFDUser( pip_u );
 			boolean hasAnyItemAddable = false;
-	
+
 			// List<ProductImpression> impressions : configured products enlisted in 'Your Favourites' table
 			List<ProductImpression> impressions = new ArrayList<ProductImpression>();
 	
@@ -273,7 +271,7 @@
 <script type="text/javascript">
 	$E.on('ra_bwd_<%= genericRecommendationsVariant.getId() %>', 'click', function(e) {
 		$E.preventDefault(e);
-		PIP.backward('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true);
+		PIP.goToPage('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true, <%= recommendations.getOffset() %>-1);
 	});
 </script>
 											</td>
@@ -296,7 +294,7 @@
 <script type="text/javascript">
 	$E.on('ra_fwd_<%= genericRecommendationsVariant.getId() %>', 'click', function(e) {
 		$E.preventDefault(e);
-		PIP.forward('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true);
+		PIP.goToPage('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true, <%= recommendations.getOffset() %>+1);
 	});
 </script>
 											</td>

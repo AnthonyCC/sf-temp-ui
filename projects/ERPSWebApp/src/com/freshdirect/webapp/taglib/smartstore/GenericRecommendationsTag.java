@@ -1,41 +1,29 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
-import com.freshdirect.smartstore.service.VariantRegistry;
-import com.freshdirect.smartstore.ymal.YmalUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
 import com.freshdirect.webapp.util.ProductImpression;
+import com.freshdirect.webapp.util.RecommendationsCache;
 import com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy;
 
 /**
@@ -66,26 +54,6 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
     
     
     /**
-     * Prepare recommendation cache
-     */
-    public int doStartTag() throws JspException {
-		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-
-		overriddenVariantId = getOverriddenVariantID();
-		
-        // get selected tab (variant) on UI
-        Variant variant = (Variant)request.getAttribute( "genericRecommendationsVariant" );
-        
-        if ( variant != null ) {
-        	prepareCache(variant, false);
-        }
-
-    	
-    	return super.doStartTag();
-    }
-
-    
-    /**
      * 
      * @param v Original variant
      * @param override ID of overridden variant
@@ -98,43 +66,26 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 		return v2 != null ? v2 : v;
     }
 
-    /**
-     * Prepare recommendation cache
-     * 
-     * @param variant
-     * @param force Force (re)loading recommendation
-     */
-    protected void prepareCache(Variant variant, boolean force) {
-        HttpSession session = pageContext.getSession();
-
-		try {
-			variant = getOverriddenVariant(variant, overriddenVariantId);
-				
-			final String CACHE_KEY = "RC-"+cacheId;
-			
-			Map<String,Recommendations> cache = (Map<String,Recommendations>) session.getAttribute(CACHE_KEY);
-			if (force || cache == null) {
-				cache = new HashMap<String,Recommendations>();
-				session.setAttribute(CACHE_KEY, cache);
-			}
-
-			if (cache != null && cache.get(variant.getId()) == null ) {
-				Recommendations recache = extractRecommendations(session, variant.getSiteFeature());
-				cache.put(variant.getId(), recache);
-			}
-		} catch (FDResourceException e) {
-		}
-    }
     
 
-    public Recommendations getCachedRecommendations(Variant variant) throws FDResourceException {
+    /**
+     * 
+     * @param oVariant Variant which is already overridden (if necessary)
+     * @return
+     * @throws FDResourceException
+     */
+    public Recommendations getCachedRecommendations(Variant oVariant) throws FDResourceException {
         HttpSession session = pageContext.getSession();
-    	Map<String,Recommendations> cache = (Map<String,Recommendations>) session.getAttribute("RC-"+cacheId);
-    	
-    	if (cache == null)
-    		return null;
-    	
-    	return cache.get(variant.getId());
+		// variant = getOverriddenVariant(variant, overriddenVariantId);
+		
+		RecommendationsCache cache = RecommendationsCache.getCache(session);
+		
+		Recommendations r = cache.get(cacheId, oVariant);
+		if (r == null) {
+			r = extractRecommendations(session, oVariant.getSiteFeature());
+			cache.store(cacheId, oVariant, r);
+		}
+		return r;
     }
 
 
@@ -153,18 +104,10 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 		return overriddenVariantID;
     }
     
-    protected String getCacheKey(Variant variant) throws FDResourceException {
-		return "RC-"+cacheId;
-    }
-
-
     protected Recommendations getRecommendations() throws FDResourceException, InvalidContentKeyException {
     	
-        HttpSession session = pageContext.getSession();
-    	HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-    	
-        // get selected tab (variant) on UI
+        HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+		// get selected tab (variant) on UI
         Variant variant = (Variant)request.getAttribute( "genericRecommendationsVariant" );
         
         if ( variant == null ) {
@@ -172,18 +115,17 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
         }
 
 
-        // invalidate cache after a successful add2cart operation
-        final boolean add2cartOccured = user.getShoppingCart().getRecentOrderLines().size() > 0 && "1".equalsIgnoreCase(request.getParameter("confirm"));
-    	if (add2cartOccured) {
-    		// invalidate cache
-    		LOGGER.debug("Invalidate recommendations cache");
-    		prepareCache(variant, true);
-    	}
-
-        
         Recommendations recommendations = getCachedRecommendations(getOverriddenVariant(variant, overriddenVariantId));
-		if (recommendations != null && !add2cartOccured) {
-			if ("next".equalsIgnoreCase(request.getParameter("page")) ) {
+		if (recommendations != null) {
+			Integer n = null;
+			try {
+				n = Integer.parseInt(request.getParameter("page"));
+			} catch(NumberFormatException exc) {
+			}
+
+			if (n != null) {
+				recommendations.setOffset(n.intValue());
+			} else if ("next".equalsIgnoreCase(request.getParameter("page")) ) {
 				recommendations.pageForward();
 			} else if ("prev".equalsIgnoreCase(request.getParameter("page"))) {
 				recommendations.pageBackward();

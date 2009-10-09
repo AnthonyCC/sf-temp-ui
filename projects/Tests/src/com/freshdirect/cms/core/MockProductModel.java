@@ -1517,4 +1517,9 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
         skuModels.add(sku);
         return this;
     }
+
+	@Override
+	public List getGiftcardType() {
+		return null;
+	}
 }

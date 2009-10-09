@@ -242,19 +242,36 @@
 							}
 						});
 					},
+
+
+					baseURI: function(pageURI, tabId, tabPos, isRefresh) {
+						var uri = (pageURI || '/ajax/refresh.jsp')+
+							'?tab='+tabPos+
+							'&variant='+tabId+
+							'&siteFeature='+PIP.features[tabId]+
+							'&formUri='+prezFormURI+'&impId='+PIP.impressionIds[tabPos] +
+							'&pImpId='+PIP.parentImpressionId+
+							(isRefresh?'&refresh=true':'');
+						return uri;
+					},
 					
 					refresh: function(tabId, tabPos, isRefresh) {
-						var uri = '/ajax/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri='+prezFormURI+'&impId='+PIP.impressionIds[tabPos] + '&pImpId='+PIP.parentImpressionId+(isRefresh?'&refresh=true':'');
+						var uri = this.baseURI(null, tabId, tabPos, isRefresh);
 						this._call(tabId, uri);
 					},
 
 					backward: function(tabId, tabPos, isRefresh) {
-						var uri = '/ajax/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri='+prezFormURI+'&impId='+PIP.impressionIds[tabPos] + '&pImpId='+PIP.parentImpressionId+(isRefresh?'&refresh=true':'')+'&page=prev';
+						var uri = this.baseURI(null, tabId, tabPos, isRefresh)+'&page=prev';
 						this._call(tabId, uri);
 					},
 
 					forward: function(tabId, tabPos, isRefresh) {
-						var uri = '/ajax/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri='+prezFormURI+'&impId='+PIP.impressionIds[tabPos] + '&pImpId='+PIP.parentImpressionId+(isRefresh?'&refresh=true':'')+'&page=next';
+						var uri = this.baseURI(null, tabId, tabPos, isRefresh)+'&page=next';
+						this._call(tabId, uri);
+					},
+
+					goToPage: function(tabId, tabPos, isRefresh, pnumber) {
+						var uri = this.baseURI(null, tabId, tabPos, isRefresh)+'&page='+pnumber;
 						this._call(tabId, uri);
 					},
 
@@ -321,5 +338,4 @@
 			</script>
 			
 		<% } %>	
-</fd:PIPTab>	
-
+</fd:PIPTab>

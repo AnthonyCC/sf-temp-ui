@@ -255,9 +255,10 @@ public class Recommendations implements Serializable {
     	return this.offset;
     }
 
-    public void setOffset(int newOffset) {
+    public void setOffset(int newOffset) throws IndexOutOfBoundsException {
     	if (newOffset < 0 || (newOffset*wsize)>= products.size())
     		throw new IndexOutOfBoundsException();
+    	this.offset = newOffset;
     }
 
     public int getNumberOfPages() {
