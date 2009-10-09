@@ -29,6 +29,7 @@ import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
+import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 
 /**
  * @author zsombor
@@ -70,16 +71,16 @@ public class FDFavoritesTest extends TestCase {
 
     RecommendationService getFeaturedItemsService() throws CompileException {
         if (favrs == null) {
-        	favrs = SmartStoreServiceConfiguration.configure(new Variant("favorites", EnumSiteFeature.FAVORITES,
+        	favrs = RecommendationServiceFactory.configure(new Variant("favorites", EnumSiteFeature.FAVORITES,
 					new RecommendationServiceConfig("favorites_config", RecommendationServiceType.FAVORITES)
-        	    .set(SmartStoreServiceConfiguration.CKEY_SAMPLING_STRATEGY, "deterministic")));
+        	    .set(RecommendationServiceFactory.CKEY_SAMPLING_STRATEGY, "deterministic")));
         }
         return favrs;
     }
 
     public void testRecommendationService() throws CompileException {
     	FavoriteList favorites = (FavoriteList) ContentFactory.getInstance().getContentNodeByKey(
-    			new ContentKey(FDContentTypes.FAVORITE_LIST, SmartStoreServiceConfiguration.DEFAULT_FAVORITE_LIST_ID));
+    			new ContentKey(FDContentTypes.FAVORITE_LIST, RecommendationServiceFactory.DEFAULT_FAVORITE_LIST_ID));
 
         assertNotNull("spe_cooki_cooki category", favorites);
 

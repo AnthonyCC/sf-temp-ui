@@ -21,9 +21,9 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Expression;
-import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 import com.freshdirect.smartstore.impl.GlobalCompiler;
 import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
+import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 
 public class GlobalCompilerTest extends TestCase {
 
@@ -192,7 +192,7 @@ public class GlobalCompilerTest extends TestCase {
 
     private ScriptedRecommendationService build(String generator, String scoringFunction) throws CompileException {
         return new ScriptedRecommendationService(variant,
-        		SmartStoreServiceConfiguration.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
+        		RecommendationServiceFactory.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
         		false, false,
         		generator, scoringFunction);
     }

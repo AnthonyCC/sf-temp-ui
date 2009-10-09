@@ -18,6 +18,7 @@ import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.impl.SmartYMALRecommendationService;
+import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 
 public class SmartYMALRecommendationServiceTest extends RecommendationServiceTestBase {
     
@@ -47,7 +48,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
         if (firs == null) {
             firs = new SmartYMALRecommendationService(new Variant("smart_ymal", EnumSiteFeature.YMAL, new RecommendationServiceConfig("smart_ymal_config",
                     RecommendationServiceType.SMART_YMAL)),
-                    SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("smart_ymal_config",
+                    RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("smart_ymal_config",
                     RecommendationServiceType.SMART_YMAL), new java.util.HashMap()), false, false);
         }
         return firs;

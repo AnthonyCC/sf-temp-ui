@@ -38,5 +38,12 @@
 		</invoke-factory>
 	</service-point>
 	-->
+ 	<service-point id="CmsRecommenderService" interface="com.freshdirect.cms.smartstore.CmsRecommenderService">
+ 		<invoke-factory>
+ 			<construct class="com.freshdirect.smartstore.impl.CmsRecommenderServiceImpl">
+ 			</construct>
+ 		</invoke-factory>
+ 	</service-point>
+
 </module>
 

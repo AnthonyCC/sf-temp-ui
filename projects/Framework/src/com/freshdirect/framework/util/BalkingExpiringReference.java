@@ -25,10 +25,14 @@ public abstract class BalkingExpiringReference extends ExpiringReference {
 	private class AsyncLoader implements Runnable {
 		public void run() {
 			LOGGER.debug("task is scheduled for execution.");
-			Object _new = load();
-			
-			loaded(_new);
-			LOGGER.debug("task is finished.");
+			try {
+				Object _new = load();
+				loaded(_new);
+				LOGGER.debug("task is finished.");
+			} catch (Exception e) {
+				loaded(referent);
+				LOGGER.debug("task failed.");
+			}
 		}	
 	}
 
@@ -43,12 +47,22 @@ public abstract class BalkingExpiringReference extends ExpiringReference {
 	/**
 	 * @param refreshPeriod
 	 *            in milliseconds
+	 * @param executor
+	 *            executor, usually a thread pool. cannot be null
 	 */
 	public BalkingExpiringReference(long refreshPeriod, Executor executor) {
 		super(refreshPeriod);
 		this.executor = executor;
 	}
 
+	/**
+	 * @param refreshPeriod
+	 *            in milliseconds
+	 * @param executor
+	 *            executor, usually a thread pool. cannot be null
+	 * @param initializer
+	 *            pre-initialize the reference until the new value is generated
+	 */
 	public BalkingExpiringReference(long refreshPeriod, Executor executor, Object initializer) {
 		super(refreshPeriod);
 		this.referent = initializer;
@@ -66,8 +80,12 @@ public abstract class BalkingExpiringReference extends ExpiringReference {
 	}
 	
 	protected synchronized void loaded(Object _new) {
+		if (referent == _new)
+			// failed next time will retry
+			lastRefresh = 0;
+		else
+			lastRefresh = System.currentTimeMillis();
 		referent = _new;
-		lastRefresh = System.currentTimeMillis();
 		loader = null;		
 	}
 

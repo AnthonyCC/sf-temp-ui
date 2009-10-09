@@ -6,7 +6,8 @@ import java.util.Map;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.LruCache;
 import com.freshdirect.framework.util.TimedLruCache;
-import com.freshdirect.smartstore.RecommendationService;
+import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.service.VariantRegistry;
 
 /**
  * Factory for variant selectors.
@@ -47,7 +48,7 @@ public class VariantSelectorFactory {
         if (selector == null) {
 
             selector = new VariantSelector();
-            Map id2vrnt = SmartStoreServiceConfiguration.getInstance().getServices(siteFeature);
+            Map<String, Variant> id2vrnt = VariantRegistry.getInstance().getServices(siteFeature);
 
             VariantSelection helper = VariantSelection.getInstance();
 
@@ -56,7 +57,7 @@ public class VariantSelectorFactory {
             // iterate over cohorts
             for (Iterator it = assignment.keySet().iterator(); it.hasNext();) {
                 String cohortId = (String) it.next();
-                selector.addCohort(cohortId, (RecommendationService) id2vrnt.get(assignment.get(cohortId)));
+                selector.addCohort(cohortId, id2vrnt.get(assignment.get(cohortId)).getRecommender());
             }
 
             selectors.put(siteFeature, selector);

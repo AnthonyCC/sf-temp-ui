@@ -15,13 +15,6 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
  *
  */
 public class Variant implements Serializable, Comparable {
-	/**
-	 * Variant used for "empty" recommendations.
-	 * @author segabor
-	 */
-	public static final Variant BAD_VARIANT = 
-		new Variant("(invalid)", EnumSiteFeature.DYF, null, null);
-
 	// generated id
 	private static final long serialVersionUID = -2411779130333500328L;
 
@@ -37,6 +30,8 @@ public class Variant implements Serializable, Comparable {
 	private SortedMap tabStrategyPriorities;
 	
 	private boolean isSmartSavings = false;
+
+	private RecommendationService recommender;
 	
 	/**
 	 * Get identifier.
@@ -126,5 +121,13 @@ public class Variant implements Serializable, Comparable {
     
     public void setSmartSavings(boolean isSmartSavings) {
 		this.isSmartSavings = isSmartSavings;
+	}
+
+	public void setRecommender(RecommendationService recommender) {
+		this.recommender = recommender;
+	}
+
+	public RecommendationService getRecommender() {
+		return recommender;
 	}
 }

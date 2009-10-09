@@ -17,6 +17,7 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
 import com.freshdirect.smartstore.sampling.RankedContent;
+import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 
 public class SamplingTestsBase extends TestCase {
 
@@ -91,7 +92,7 @@ public class SamplingTestsBase extends TestCase {
 					}
 					
 				}
-			}), SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("SEMMI",RecommendationServiceType.NIL) {
+			}), RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("SEMMI",RecommendationServiceType.NIL) {
 				
 				private static final long serialVersionUID = 1L;
 

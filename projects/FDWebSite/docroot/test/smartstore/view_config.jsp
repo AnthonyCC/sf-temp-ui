@@ -24,7 +24,9 @@
 <%@page import="com.freshdirect.smartstore.RecommendationServiceConfig "%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
 <%@page import="com.freshdirect.smartstore.Variant"%>
-<%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
+<%@page import="com.freshdirect.smartstore.service.RecommendationServiceFactory"%>
+<%@page import="com.freshdirect.smartstore.service.CmsRecommenderRegistry"%>
+<%@page import="com.freshdirect.smartstore.service.VariantRegistry"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
@@ -42,7 +44,8 @@ System.err.println(request.getServletPath());
 String origURL = urlG.build();
 
 if (urlG.get("refresh") != null) {
-	SmartStoreServiceConfiguration.getInstance().refreshAll();
+	VariantRegistry.getInstance().reload();
+	CmsRecommenderRegistry.getInstance().reload();
 	urlG.remove("refresh");
 	urlG.set("reloaded", "1");
 	String newURL = urlG.build();
@@ -160,7 +163,7 @@ td.no-use{border-color:#999 !important;}
 	it = siteFeatures.iterator();
 	while (it.hasNext()) {
 		EnumSiteFeature sf = (EnumSiteFeature) it.next();
-		Map curVars = SmartStoreServiceConfiguration.getInstance().getServices(sf);
+		Map curVars = VariantRegistry.getInstance().getServices(sf);
 		Map sortedVars = SmartStoreUtil.getVariantsSortedInWeight(sf);
 		varMap.put(sf, curVars);
 
@@ -168,7 +171,7 @@ td.no-use{border-color:#999 !important;}
  		List varErrors = new ArrayList();
 		while (it2.hasNext()) {
 			String varId = (String) it2.next();
-			RecommendationService service = (RecommendationService) curVars.get(varId);
+			RecommendationService service = ((Variant) curVars.get(varId)).getRecommender();
    			Variant variant = service.getVariant();
 			int weight = ((Integer) sortedVars.get(varId)).intValue();
   			boolean faulty = (!variant.getServiceConfig().getType().equals(RecommendationServiceType.NIL)
@@ -226,7 +229,7 @@ td.no-use{border-color:#999 !important;}
     		int newInUse;
    			while (it2.hasNext()) {
    				String varId = (String) it2.next();
-   				RecommendationService service = (RecommendationService) curVars.get(varId);
+   				RecommendationService service = ((Variant) curVars.get(varId)).getRecommender();
     			Variant variant = service.getVariant();
    				int weight = ((Integer) sortedVars.get(varId)).intValue();
    				boolean faulty = (!variant.getServiceConfig().getType().equals(RecommendationServiceType.NIL)
@@ -290,8 +293,8 @@ td.no-use{border-color:#999 !important;}
 				for (Iterator keyIt = statuses.keySet().iterator(); keyIt.hasNext(); ) {
 					String configKey = (String) keyIt.next();
 					ConfigurationStatus status = (ConfigurationStatus) statuses.get(configKey);
-					String description = SmartStoreServiceConfiguration.configDesc.containsKey(configKey) ?
-							(String) SmartStoreServiceConfiguration.configDesc.get(configKey) : "&lt;Unknown description&gt;";
+					String description = RecommendationServiceFactory.CONFIG_LABELS.containsKey(configKey) ?
+							(String) RecommendationServiceFactory.CONFIG_LABELS.get(configKey) : "&lt;Unknown description&gt;";
 					String warning = status.getWarning();
 					String error = status.getError();
 					String textClass = "";

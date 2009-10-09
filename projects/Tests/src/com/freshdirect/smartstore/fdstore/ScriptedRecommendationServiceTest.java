@@ -19,6 +19,7 @@ import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Expression;
 import com.freshdirect.smartstore.impl.GlobalCompiler;
 import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
+import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.mockrunner.mock.web.MockPageContext;
@@ -135,7 +136,7 @@ public class ScriptedRecommendationServiceTest extends RecommendationServiceTest
     RecommendationService getScriptedRecommendationService(String generator) throws CompileException {
         RecommendationServiceConfig config = new RecommendationServiceConfig("yf_fi", RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS);
         return new ScriptedRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, config),
-                SmartStoreServiceConfiguration.configureSampler(config, new java.util.HashMap()), false, false, generator);
+                RecommendationServiceFactory.configureSampler(config, new java.util.HashMap()), false, false, generator);
     }
 
 }

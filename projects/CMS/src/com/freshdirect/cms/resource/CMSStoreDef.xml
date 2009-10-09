@@ -261,6 +261,9 @@
 			<RelationshipDef name="VIRTUAL_GROUP" cardinality="Many"  label="Virtual Group" >
 				<DestinationDef contentType="Category" />
 			</RelationshipDef>
+ 			<RelationshipDef name="recommender" cardinality="One" label="Recommender" inheritable="false">
+ 				<DestinationDef contentType="Recommender" />
+ 			</RelationshipDef>
 			<RelationshipDef name="products" navigable="true" cardinality="Many">
 				<DestinationDef contentType="Product" />
 				<DestinationDef contentType="ConfiguredProduct"/>

@@ -14,9 +14,11 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
+import com.freshdirect.smartstore.service.VariantRegistry;
 import com.freshdirect.smartstore.ymal.YmalUtil;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -53,12 +55,9 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
     		String siteFeatureName = request.getParameter("siteFeature");
 
     		if (variantId != null && siteFeatureName != null) {
-    			final EnumSiteFeature sf = EnumSiteFeature.getEnum(siteFeatureName);
-    			Map svcMap = SmartStoreServiceConfiguration.getInstance().getServices(sf);
-    			RecommendationService svc = (RecommendationService) svcMap.get(variantId);
-    			
+    			Variant var = VariantRegistry.getInstance().getService(variantId);   			
     			if (request.getParameter("rec_product_ids") != null)
-    				results = new Recommendations( svc.getVariant(),
+    				results = new Recommendations(var,
     						request.getParameter("rec_product_ids"),
     						request.getParameter("rec_current_node"),
     						request.getParameter("rec_ymal_source"),

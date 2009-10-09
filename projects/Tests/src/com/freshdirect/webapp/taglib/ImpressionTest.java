@@ -22,10 +22,10 @@ import com.freshdirect.smartstore.fdstore.RecommendationServiceTestBase;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
 import com.freshdirect.smartstore.fdstore.SingleVariantSelector;
-import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.smartstore.impl.FeaturedItemsRecommendationService;
+import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.mockrunner.mock.web.MockPageContext;
@@ -80,7 +80,7 @@ public class ImpressionTest extends RecommendationServiceTestBase {
     RecommendationService getFeaturedItemsService() {
         if (firs == null) {
             firs = new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
-                    RecommendationServiceType.FEATURED_ITEMS)), SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("fi_config",
+                    RecommendationServiceType.FEATURED_ITEMS)), RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("fi_config",
                     RecommendationServiceType.FEATURED_ITEMS), new java.util.HashMap()), false, false);
         }
         return firs;

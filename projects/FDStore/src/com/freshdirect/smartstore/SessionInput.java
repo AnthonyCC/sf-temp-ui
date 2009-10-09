@@ -1,15 +1,14 @@
 package com.freshdirect.smartstore;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDCartModel;

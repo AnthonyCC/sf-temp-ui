@@ -66,7 +66,7 @@ public class GlobalCompiler {
      * Load factor names from the ScoreProvider.
      * 
      */
-    public void loadFactorNames() {
+    private void loadFactorNames() {
         DataGeneratorCompiler dg = getDataGeneratorCompiler();
 
         String[] datasourceNames = ScoreProvider.getInstance().getDatasourceNames();

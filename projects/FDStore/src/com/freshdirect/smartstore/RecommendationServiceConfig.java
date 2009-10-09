@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.SortedMap;
 
 import com.freshdirect.fdstore.util.EnumSiteFeature;
-import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
+import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 
 
 /**
@@ -128,20 +128,20 @@ public class RecommendationServiceConfig implements Serializable {
 	}
 
 	public String getFILabel() {
-		return get(SmartStoreServiceConfiguration.CKEY_FI_LABEL,
-				SmartStoreServiceConfiguration.DEFAULT_FI_LABEL);
+		return get(RecommendationServiceFactory.CKEY_FI_LABEL,
+				RecommendationServiceFactory.DEFAULT_FI_LABEL);
 	}
 
 	public String getPresentationTitle() {
-		return get(SmartStoreServiceConfiguration.CKEY_PREZ_TITLE);
+		return get(RecommendationServiceFactory.CKEY_PREZ_TITLE);
 	}
 
 	public String getPresentationDescription() {
-		return get(SmartStoreServiceConfiguration.CKEY_PREZ_DESC);
+		return get(RecommendationServiceFactory.CKEY_PREZ_DESC);
 	}
 
 	public String getPresentationFooter() {
-		return get(SmartStoreServiceConfiguration.CKEY_PREZ_FOOTER);
+		return get(RecommendationServiceFactory.CKEY_PREZ_FOOTER);
 	}
 	
 	public RecommendationServiceConfig set(String key, String value) {

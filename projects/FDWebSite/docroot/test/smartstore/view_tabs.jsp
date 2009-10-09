@@ -8,12 +8,14 @@
 <%@page import="com.freshdirect.fdstore.util.EnumSiteFeature"%>
 <%@page import="com.freshdirect.smartstore.CartTabStrategyPriority"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
+<%@page import="com.freshdirect.smartstore.Variant"%>
+<%@page import="com.freshdirect.smartstore.service.VariantRegistry"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri='logic' prefix='logic' %>
 <fd:CheckLoginStatus noRedirect="true" />
 <%
 %>
-<%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%><html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>CART TAB STRATEGY CONFIGURATIONS PAGE</title>
@@ -37,15 +39,15 @@ p.fi{margin:20px 0px;}
 </head>
 <body class="test-page">
 <%
-Iterator recs = SmartStoreServiceConfiguration.getInstance().getServices(EnumSiteFeature.CART_N_TABS).values().iterator();
-while (recs.hasNext()) {
+Iterator variants = VariantRegistry.getInstance().getServices(EnumSiteFeature.CART_N_TABS).values().iterator();
+while (variants.hasNext()) {
 %>
 	<% 
-	RecommendationService rs = (RecommendationService) recs.next();
-	SortedMap priorities = rs != null ? rs.getVariant().getTabStrategyPriorities() : new TreeMap();
+	Variant variant = (Variant) variants.next();
+	SortedMap priorities = variant != null ? variant.getTabStrategyPriorities() : new TreeMap();
 	if (priorities != null) {
 	%>
-	<h2 title="Strategy"><%= rs.getVariant().getId() %></h2>
+	<h2 title="Strategy"><%= variant.getId() %></h2>
 	<table class="priorities">
 		<thead>
 			<tr>

@@ -9,19 +9,78 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.smartstore.CmsRecommenderService;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.conf.FDRegistry;
+import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CategoryModel extends ContentNodeModelImpl {
+	private static final long serialVersionUID = 5787890004203680537L;
 
-	private final static Category LOGGER = LoggerFactory.getInstance(CategoryModel.class);
+	private static final Category LOGGER = LoggerFactory.getInstance(CategoryModel.class);
+
+	private static final Executor threadPool = new ThreadPoolExecutor(5, 5, 60,
+			TimeUnit.SECONDS, new LinkedBlockingQueue(),
+			new ThreadPoolExecutor.DiscardPolicy());
+	
+	private static final long TWO_MINUTES = 2l * 60l * 1000l;
+	
+	private static final class RecommendedProductsRef extends BalkingExpiringReference {
+		private static CmsRecommenderService recommenderService;
+		
+		String categoryId;
+		String recommenderId;
+		
+		private RecommendedProductsRef(long refreshPeriod, Executor executor,
+				String categoryId, String recommenderId) {
+			super(refreshPeriod, executor, new ArrayList());
+			this.categoryId = categoryId;
+			this.recommenderId = recommenderId;
+		}
+
+		@Override
+		protected Object load() {
+			CmsRecommenderService recommenderService = getRecommenderService();
+			if (recommenderService != null) {
+				List prodIds = recommenderService.recommendNodes(recommenderId, categoryId);
+				List products = new ArrayList(prodIds.size());
+				for (Iterator it = prodIds.iterator(); it.hasNext();) {
+					String productId = (String) it.next();
+					ContentNodeModel product = ContentFactory.getInstance().getContentNode(productId);
+					if (product instanceof ProductModel &&
+							!products.contains(product))
+						products.add(product);
+				}
+				return products;
+			} else
+				return referent;
+		}
+		
+		private static synchronized CmsRecommenderService getRecommenderService() {
+			try {
+				if (recommenderService == null)
+					return recommenderService = (CmsRecommenderService) FDRegistry.getInstance()
+							.getService("com.freshdirect.fdstore.CmsRecommenderService", CmsRecommenderService.class);
+			} catch (RuntimeException e) {
+				LOGGER.error("failed to initialize CMS recommender service", e);
+			}
+			return recommenderService;
+		}
+	}
 
 	private CategoryAlias categoryAlias;
+	
+	private BalkingExpiringReference recommendedProductsRef;
 
 	private List subcategoriesModels = new ArrayList();
 
@@ -190,6 +249,9 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return this.getAttribute("TEMPLATE_PATH", null);		
 	}
 	
+	public Recommender getRecommender() {
+		return (Recommender) getAttribute("recommender", (Recommender) null);
+	}
 	
 	/** @return List of {@link CategoryRef} */
 	public List getVirtualGroupRefs() {
@@ -211,11 +273,10 @@ public class CategoryModel extends ContentNodeModelImpl {
 			try {
 				Collection aliasProds = this.categoryAlias.processCategoryAlias();
 				if (aliasProds != null) { // if we had an error..then we get null, cause empty list is valid
-					int i = 0;
 					for (Iterator pItr = aliasProds.iterator(); pItr.hasNext();) {
 						CmsContentNodeAdapter newProd = (CmsContentNodeAdapter) ((CmsContentNodeAdapter) pItr.next()).clone();
 						newProd.setParentNode(this);
-						newProd.setPriority(prodList.size() + i++);
+						newProd.setPriority(prodList.size());
 						if (!prodList.contains(newProd)) { // don't put a duplicate product in there
 							prodList.add(newProd);
 //							LOGGER.debug(" ##### added aliased product: " + newProd.getContentName());
@@ -232,6 +293,29 @@ public class CategoryModel extends ContentNodeModelImpl {
 			}
 		}
 
+		Recommender recommender = getRecommender();
+		if (recommender != null) {
+			if (recommendedProductsRef == null)
+				recommendedProductsRef = new RecommendedProductsRef(TWO_MINUTES, threadPool, 
+						getContentName(), recommender.getContentName());
+
+			try {
+				List recProds = (List) recommendedProductsRef.get();
+				if (recProds != null) {
+					for (Iterator pItr = recProds.iterator(); pItr.hasNext();) {
+						CmsContentNodeAdapter newProd = (CmsContentNodeAdapter) ((CmsContentNodeAdapter) pItr.next()).clone();
+						newProd.setParentNode(this);
+						newProd.setPriority(prodList.size());
+						if (!prodList.contains(newProd)) {
+							prodList.add(newProd);
+						}
+					}
+				}
+			} catch (Exception e) {
+				LOGGER.warn("exception during smart category recommendation", e);
+			}
+		}
+		
 		/*
 		ArrayList retList = new ArrayList();
 		for (Iterator iter = prodList.iterator(); iter.hasNext();) {

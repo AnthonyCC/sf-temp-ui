@@ -19,8 +19,8 @@ public final class UnicityFilter extends ProductFilter {
 	}
 	
 	public ProductModel filter(ProductModel model) {
-		if (!keys.contains(model)) {
-			keys.add(model);
+		if (!keys.contains(model.getContentKey())) {
+			keys.add(model.getContentKey());
 			return model;
 		}
 		return null;

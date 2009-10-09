@@ -20,8 +20,8 @@ import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
-import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
+import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class Impression {
@@ -106,7 +106,7 @@ public class Impression {
         		!type.equals(RecommendationServiceType.SMART_YMAL))
         	ymalSource = null;
 
-		String generator = variant.getServiceConfig().get(SmartStoreServiceConfiguration.CKEY_GENERATOR);
+		String generator = variant.getServiceConfig().get(RecommendationServiceFactory.CKEY_GENERATOR);
         if (!type.equals(RecommendationServiceType.CLASSIC_YMAL) &&
         		!type.equals(RecommendationServiceType.SMART_YMAL) &&
         		!(type.equals(RecommendationServiceType.SCRIPTED) && generator != null

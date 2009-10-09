@@ -39,6 +39,8 @@
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
 <%@page import="com.freshdirect.smartstore.fdstore.StoreLookup"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
+<%@page import="com.freshdirect.smartstore.service.RecommendationServiceFactory"%>
+<%@page import="com.freshdirect.smartstore.service.VariantRegistry"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
@@ -73,7 +75,7 @@ if (siteFeature == null) {
 	urlG.remove("siteFeature");
 }
 
-Map variants = SmartStoreServiceConfiguration.getInstance().getServices(siteFeature);
+Map<String,Variant> variants = VariantRegistry.getInstance().getServices(siteFeature);
 VariantSelection helper = VariantSelection.getInstance();
 final Map assignment = helper.getVariantMap(siteFeature);
 
@@ -102,7 +104,7 @@ if (generatorFunction != null && generatorFunction.length() > 0) {
     scriptedRecServ = (RecommendationService) customRecommenders.get(generatorFunction + "@@@" + scoringFunction);
 	if (scriptedRecServ == null) {
         //SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("scripted-test", RecommendationServiceType.SCRIPTED))
-    	scriptedRecServ = SmartStoreServiceConfiguration.configure(new Variant("scripted-test", siteFeature, new RecommendationServiceConfig("scripted-test",
+    	scriptedRecServ = RecommendationServiceFactory.configure(new Variant("scripted-test", siteFeature, new RecommendationServiceConfig("scripted-test",
     	        RecommendationServiceType.SCRIPTED).set("generator", generatorFunction).set("scoring", scoringFunction)));
     	customRecommenders.put(generatorFunction + "@@@" + scoringFunction, scriptedRecServ);
 		if (scriptedRecServ instanceof NullRecommendationService)
@@ -398,9 +400,9 @@ if (!origURL.equals(newURL)) {
 	response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));	
 }
 
-RecommendationService aRecService = (variantA != null) ? (RecommendationService) variants.get(variantA) : null;
+RecommendationService aRecService = (variantA != null) ? variants.get(variantA).getRecommender() : null;
 
-RecommendationService bRecService = (variantB != null) ? (RecommendationService) variants.get(variantB) : null;
+RecommendationService bRecService = (variantB != null) ? variants.get(variantB).getRecommender() : null;
 
 if (scriptedRecServ != null) {
     bRecService = scriptedRecServ;

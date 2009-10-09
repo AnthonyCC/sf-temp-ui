@@ -28,12 +28,14 @@
 <%@page import="com.freshdirect.mail.EmailUtil"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
+<%@page import="com.freshdirect.smartstore.Variant"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
+<%@page import="com.freshdirect.smartstore.service.VariantRegistry"%>
 <%@page import="com.freshdirect.smartstore.ymal.YmalUtil"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
@@ -56,7 +58,7 @@ if (siteFeature == null) {
 	urlG.remove("siteFeature");
 }
 
-Map variants = SmartStoreServiceConfiguration.getInstance().getServices(siteFeature);
+Map variants = VariantRegistry.getInstance().getServices(siteFeature);
 VariantSelection helper = VariantSelection.getInstance();
 final Map assignment = helper.getVariantMap(siteFeature);
 
@@ -450,7 +452,7 @@ if (!origURL.equals(newURL)) {
     final Map clone = new HashMap();
 	long start = System.currentTimeMillis();
 	if (variant != null) {
-		RecommendationService rs = (RecommendationService) variants.get(variant);
+		RecommendationService rs = ((Variant) variants.get(variant)).getRecommender();
 		for (int i = 0; i < i_noOfCycles; i++ ) {
 			try {
 				List recs = rs.recommendNodes(input);

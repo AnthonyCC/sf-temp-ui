@@ -26,6 +26,7 @@ import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.service.VariantRegistry;
 
 public class SmartStoreServiceConfigurationTest extends TestCase {
 
@@ -83,15 +84,15 @@ public class SmartStoreServiceConfigurationTest extends TestCase {
     }
 
     public void testFeaturedItems() {
-        Map services = SmartStoreServiceConfiguration.getInstance().getServices(EnumSiteFeature.FEATURED_ITEMS);
-        RecommendationService service = (RecommendationService) services.get("test_manual_override");
+        Map<String, Variant> services = VariantRegistry.getInstance().getServices(EnumSiteFeature.FEATURED_ITEMS);
+        RecommendationService service = services.get("test_manual_override").getRecommender();
         assertNotNull("test_manual_override", service);
         assertNotNull("test_manual_override variant", service.getVariant());
         assertEquals("test_manual_override variant", "test_manual_override", service.getVariant().getId());
 
         for (Iterator iter = services.keySet().iterator(); iter.hasNext();) {
             String key = (String) iter.next();
-            RecommendationService s = (RecommendationService) services.get(key);
+            RecommendationService s = services.get(key).getRecommender();
             if (key.startsWith("test_")) {
                 String name = key.substring(5);
                 assertNotNull("s variant[" + key + ']', s.getVariant());
@@ -102,10 +103,10 @@ public class SmartStoreServiceConfigurationTest extends TestCase {
     }
 
     public void testDyf() {
-        Map services = SmartStoreServiceConfiguration.getInstance().getServices(EnumSiteFeature.DYF);
+        Map<String, Variant> services = VariantRegistry.getInstance().getServices(EnumSiteFeature.DYF);
 
         for (int i = 0; i < STRATS.length; i++) {
-            RecommendationService s = (RecommendationService) services.get("dyf_test_" + i);
+            RecommendationService s = services.get("dyf_test_" + i).getRecommender();
             assertNotNull("dyf_test_" + i, s);
             assertEquals("description", "Service(feature:DYF,variant:dyf_test_" + i
                     + ",class:MostFrequentlyBoughtDyfVariant,cat_aggr:false,include_cart_items:false,sampler:(limit:topN:" + TOP_N[i] + ",percent:20.0,list:"
