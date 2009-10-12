@@ -71,7 +71,7 @@ public List cleanSkus(List prodSkus) {
 
 public String buildOtherParams(boolean showThumbnails, int displayPerPageSetting, int pageNumberValue, String brandValue, String _sortBy,
                             String _nutriName, HttpServletRequest _req, String virtualValue) {
-        StringBuffer buf = new StringBuffer();
+    	StringBuffer buf = new StringBuffer();
         buf.append( "&sortBy=" ).append( _sortBy==null ? "name" : _sortBy );
         if (_nutriName!=null) buf.append("&nutritionName=").append(_nutriName);
         String groceryVirtual = null;
@@ -106,8 +106,7 @@ public String getPageNumbers(HttpServletRequest requestObj, HttpServletResponse 
         String urlStart = "/category.jsp?catId=" + currFolder +"&disp=" + display + "&sortDescending=" + descending + "&trk=trans";
         String fullURL = null;
         int startFrom = 1;
-
-        if(pageNumber > 1)   {
+		if(pageNumber > 1)   {
                 if (pageNumber/10 > 1) {
                         startFrom = ((pageNumber/10) * 10) + 1;
                         fullURL= responseObj.encodeURL(urlStart + urlParams + "&pageNumber=" + startFrom);
@@ -192,15 +191,27 @@ if (brandValue==null) {
         }
 }
 
+ProductModel[] productArray = null; //(ProductModel[])sortedColl.toArray( new ProductModel[0] );
+int skuCount =0;
+List allSkuModels = new ArrayList();
+for (Iterator skuItr=sortedColl.iterator(); skuItr.hasNext();) {
+        ContentNodeModel cn = (ContentNodeModel)skuItr.next();
+        if (cn instanceof SkuModel)  {
+                allSkuModels.add((SkuModel) cn);
+        }
+}
+skuCount=allSkuModels.size();
 int itemsToDisplay = 30;
 {
         String reqItemsToDisp = request.getParameter("DisplayPerPage");
         String sessItemsToDisp = (String)session.getAttribute("itemsToDisplay");
-
+		
         if ( reqItemsToDisp!=null && (sessItemsToDisp==null || !sessItemsToDisp.equals(reqItemsToDisp)) && "true".equalsIgnoreCase(request.getParameter("set")) ) {
                 // we have to update the session with the value from the request
                 sessItemsToDisp = reqItemsToDisp;
                 session.setAttribute("itemsToDisplay", sessItemsToDisp);
+        }else{
+        	reqItemsToDisp = (String)session.getAttribute("itemsToDisplay");
         }
         try {
                 if (reqItemsToDisp!=null) {
@@ -208,7 +219,7 @@ int itemsToDisplay = 30;
                 } else if (sessItemsToDisp!=null) {
                         itemsToDisplay = Integer.valueOf(sessItemsToDisp).intValue();
                 }
-                if (itemsToDisplay!=15 && itemsToDisplay!=30 && itemsToDisplay!=45) {
+                if (itemsToDisplay!=30 && itemsToDisplay!=60 && itemsToDisplay!=skuCount) {
                         itemsToDisplay = 30;
                 }
         } catch (NumberFormatException nfe) {
@@ -291,16 +302,7 @@ for (Iterator itr = sortedColl.iterator(); itr.hasNext(); ){
         }
 }
 
-ProductModel[] productArray = null; //(ProductModel[])sortedColl.toArray( new ProductModel[0] );
-int skuCount =0;
-List allSkuModels = new ArrayList();
-for (Iterator skuItr=sortedColl.iterator(); skuItr.hasNext();) {
-        ContentNodeModel cn = (ContentNodeModel)skuItr.next();
-        if (cn instanceof SkuModel)  {
-                allSkuModels.add((SkuModel) cn);
-        }
-}
-skuCount=allSkuModels.size();
+
 
 
 // get all the brands that in the category that we are in
@@ -743,6 +745,7 @@ if(productCode != null || reqSkuCode!=null) {
 <%--- ====================   Start of Header Area ==============================   ----%>
 <%
 	String pageNumberLinks = getPageNumbers(request,response,pageNumber,itemsToDisplay, (CategoryModel)currentFolder, skuCount,showThumbnails,brandValue,sortBy,nutriName, descending, display);
+
 String brandOrFolderName = "".equals(brandValue)?currentFolder.getFullName():brandName;
 if (brandLogo !=null) {
         brandOrFolderName = "<img src=\""+brandLogo.getPath()+"\" width=\""+brandLogo.getWidth()+"\"  height=\""+brandLogo.getHeight()+"\" alt=\""+brandName+"\" border=\"0\">";
@@ -1057,23 +1060,23 @@ Thumbnails <A HREF="<%=thumbNailURL%>">ON</A> | <B>OFF</B><%
 <table border="0" cellspacing="0" cellpadding="0" width="425">
 <tr valign="top"><td CLASS="text10bold" width="240">Page: <%= pageNumberLinks %><br></td>
 <td ALIGN="RIGHT" width="185">Display <%
-if (itemsToDisplay == 15) {
+if (itemsToDisplay == 30) {
 %>
-<B>15</B> |
-<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,30,-1, brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">30</A> |
-<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,45,-1, brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">45</A>
-<%
-} else if (itemsToDisplay == 30) {
-%>
-<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,15,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">15</A> |
 <B>30</B> |
-<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,45,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">45</A>
+<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,60,-1, brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">60</A> |
+<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,skuCount,-1, brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">ALL</A>
+<%
+} else if (itemsToDisplay == 60) {
+%>
+<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,30,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">30</A> |
+<B>60</B> |
+<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,skuCount,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">ALL</A>
 <%
 } else {
 %>
-<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,15,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">15</A> |
 <A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,30,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">30</A> |
-<B>45</B><%
+<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,60,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">60</A> |
+<B>ALL</B><%
 }
 %> per page</td>
 </tr></table>
