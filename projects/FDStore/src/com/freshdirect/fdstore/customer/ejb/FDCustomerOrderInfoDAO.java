@@ -260,8 +260,8 @@ class FDCustomerOrderInfoDAO {
 		"select distinct c.id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, ci.cell_phone, "
 		+ "(select p.profile_value from cust.profile p where p.customer_id = fc.id and p.profile_name='VIPCustomer') VIP_CUST, "
 		+ "(select p.profile_value from cust.profile p where p.customer_id = fc.id and p.profile_name='ChefsTable') CHEFS_TABLE "
-		+ "from cust.customer c, cust.customerinfo ci, cust.fdcustomer fc "
-		+ "where c.id = ci.customer_id and c.id = fc.erp_customer_id";
+		+ "from cust.customer c, cust.customerinfo ci, cust.fdcustomer fc, cust.address a "
+		+ "where c.id = ci.customer_id and c.id = fc.erp_customer_id and c.id = a.customer_id (+)";
 	
 	private static List customerSearch(Connection conn, CriteriaBuilder builder) throws SQLException {
 		String query = CUST_SEARCH_QUERY + " and " + builder.getCriteria();
