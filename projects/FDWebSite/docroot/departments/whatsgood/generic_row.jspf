@@ -3,6 +3,9 @@
 <%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.display.*' %>
+<%@ page import='com.freshdirect.webapp.util.*' %>
+
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%
 sortedColl = null; 
@@ -65,92 +68,16 @@ List tmpList=new ArrayList();
 				<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 					<%
 						ProductModel pm = (ProductModel) contentNode;
-						Comparator priceComp = new ProductModel.PriceComparator();
-					
-						ContentNodeModel prodParent = pm.getParentNode(); 
-						List skus = pm.getSkus();
-
-						SkuModel sku = null;
-
-						
-						List useSkus = new ArrayList();
-						
-						String prodPrice = null;
-						String prodBasePrice=null;
-						boolean hasWas=false;
-						int deal=0;
-						String dealImage="";
-						
-						if (skus.size() == 1) {
-							sku = (SkuModel)skus.get(0);  // we only need one sku
-						} else {
-							
-							%><logic:iterate id="skusCheck" collection="<%= skus %>" type="java.lang.Object" indexId="idxSkus"><%
-
-							//System.out.println("========================================================== : "+skusCheck);
-							//System.out.println("in generic row skusCheck : "+skusCheck);
-							//sku = (SkuModel) Collections.min(skus, priceComp);
-								%><fd:FDProductInfo id="skusCheckPM" skuCode="<%= skusCheck.toString() %>"><%
-									
-									//System.out.println("	in generic row avail? : "+skusCheckPM.isAvailable());
-									//System.out.println("	in generic row deal? : "+skusCheckPM.hasWasPrice());
-									//System.out.println("	in generic row sku? : "+skusCheckPM.getSkuCode());
-									if (skusCheckPM.isAvailable()) {
-											useSkus.add(skusCheck);
-									}
-
-								%></fd:FDProductInfo><%
-									
-							//System.out.println("========================================================== : "+skusCheck);
-
-							%></logic:iterate><%
-							if (useSkus != null && useSkus.size()==0) {
-						            System.out.println(">>> generic_row.jspf 1 >>"+pm.getFullName()+"-->"+pm.getContentKey()+"-->"+pm.getContentName()+"-->"+pm.getContentType());
-						            continue;
-        						}
-							sku = (SkuModel) Collections.min(useSkus, priceComp);
-						}
-
-							//sku = (SkuModel)skus.get(0);
-
-
-					if (idx.intValue() >= 5) { continue; } 
-						%>
-
-						<fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
-							<% 
-							prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice());
-
-							//comment out here for DEBUG, just make everything a deal
-							//hasWas = true;
-							
-							//System.out.println("in generic row : "+productInfo.isAvailable());
-							//System.out.println("in generic row : "+productInfo.getSkuCode());
-
-							deal=productInfo.getHighestDealPercentage();
-							if(deal > 0) {
-								dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
-							}  
-
-							%>
-						</fd:FDProductInfo>
-					<%	
-						
 						String prodNameAttribute = JspMethods.getProductNameToUse(pm);
 						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
 						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-					%>
+						String actionURI = FDURLUtil.getProductURI( pm, trkCode );
+						
+						if (idx.intValue() >= 5) { continue; } 
+						%>
+
 						<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
-							<div style="width: 100px; height: 100px; text-align: left; position: relative;">
-								<div style="padding: 0px; line-height: 0px; position: absolute; height: 0px; padding: 10px 10px 0px;">
-									<a href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>"><img src="<%= displayObj.getImagePath()%>" <%=displayObj.getImageDimensions() %> alt="<%=displayObj.getAltText()%>" vspace="0" hspace="0" border="0" /></a>
-								</div>
-							<% if(hasWas) {	%>
-								<div style="position: absolute; top: 0px; left: 0px;">
-									<a id="prod_link_starimg_<%= sku %>" style="display: block;" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>" name="prod_link_starimg_<%= sku %>"><img style="border: 0px" alt="SAVE %<%=deal%>" src="<%= dealImage %>" /></a>
-								</div>
-							<% } %>
-							</div>
+							<display:ProductImage product="<%= pm %>" hideDeals="true" showRolloverImage="false" action="<%= actionURI %>"/>
 						</td>
 				</logic:iterate>
 				</tr>
@@ -158,73 +85,20 @@ List tmpList=new ArrayList();
 				<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 					<%
 						ProductModel pm = (ProductModel) contentNode;
-						Comparator priceComp = new ProductModel.PriceComparator();
-					
-						ContentNodeModel prodParent = pm.getParentNode(); 
-						List skus = pm.getSkus();
-
-						SkuModel sku = null;
-						
-						String prodPrice = null;
-						String prodBasePrice=null;
-						boolean hasWas=false;
-						int deal=0;
-						
-						if (skus.size()==0) {
-					            System.out.println(">>> generic_row.jspf 2 >>"+pm.getFullName()+"-->"+pm.getContentKey()+"-->"+pm.getContentName()+"-->"+pm.getContentType());
-					            continue;
-        					}
-						if (skus.size() == 1) {
-							sku = (SkuModel)skus.get(0);  // we only need one sku
-						} else {
-							sku = (SkuModel) Collections.min(skus, priceComp);
-						}
-
-
-					if (idx.intValue() >= 5) { continue; } 
-						%>
-						<fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
-							<% 
-							prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
-
-
-							//comment out here for DEBUG, just make everything a deal
-							hasWas=productInfo.hasWasPrice();
-							//hasWas = true;
-
-							if(hasWas) {
-								prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
-							}  
-
-							%>
-						</fd:FDProductInfo>
-					<% if (idx.intValue() >= 5) { continue; }
-						
 						String prodNameAttribute = JspMethods.getProductNameToUse(pm);
 						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
 						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-						String thisProdBrandLabel = pm.getPrimaryBrandName();
+						String actionURI = FDURLUtil.getProductURI( pm, trkCode );
+
+						if (idx.intValue() >= 5) { continue; }
 					%>
 
 						<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
 							<div class="WG_deals">
-								<a id="prod_link_txt_<%= sku %>" name="prod_link_txt_<%= sku %>" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>">
-									<% if (thisProdBrandLabel.length()>0) { %>
-										<b><%= thisProdBrandLabel %></b><br />
-									<% } %>
-										<%= pm.getFullName().substring(thisProdBrandLabel.length()).trim() %>
-								</a>
-								<div class="price <% if(hasWas) { %>dealPrice<% } %>" <%= hasWas ? " style=\"color: red;\"" : "" %>>
-									<%= displayObj.getPrice() %>
-								</div>
-							<% if(hasWas) {	%>
-								<div class="wasPrice">
-									(was <%= prodBasePrice %>)
-								</div>
-							<% } %>
+								<display:ProductName product="<%= pm %>" action="<%= actionURI %>"/>
+								<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="false"/>
 							</div>
-					</td>
-
+						</td>
 				</logic:iterate>
 				</tr>
 			</table>
