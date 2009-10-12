@@ -597,25 +597,28 @@ public class ScoreProvider implements DataAccess {
 	 * 	<li>Available personalized factors will be validated</li>
 	 * </ol>
 	 *   
-	 * @param names Collection<{@link String}>
+	 * @param requestedFactors Collection<{@link String}>
 	 * @return the names of actually acquired factors
 	 */
 	public synchronized List acquireFactors(Collection names) {
 		
-	    names.add(ORIGINAL_SCORES_GLOBAL);
-	    names.add(ORIGINAL_SCORES_PERSONALIZED);
-	    names.add("Newness");
-	    names.add("QualityRating_Discretized1");
+		Set<String> requestedFactors = new HashSet<String>(names);
+	    requestedFactors.add(ORIGINAL_SCORES_GLOBAL);
+	    requestedFactors.add(ORIGINAL_SCORES_PERSONALIZED);
+	    requestedFactors.add("Newness");
+	    requestedFactors.add("QualityRating_Discretized1");
 	    	    
 	    // extra factors can be parameterized
-	    names.addAll(FDStoreProperties.getSmartstorePreloadFactors());
+	    requestedFactors.addAll(FDStoreProperties.getSmartstorePreloadFactors());
 	    
-	    Set newFactors = new HashSet(names);
-	    LOGGER.debug("loaded factors " + getLoadedFactors());
-	    newFactors.removeAll(getLoadedFactors());
+	    Set newFactors = new HashSet(requestedFactors);
+	    Set<String> loadedFactors = getLoadedFactors();
+		LOGGER.debug("loaded factors " + loadedFactors);
+	    newFactors.removeAll(loadedFactors);
+	    requestedFactors.addAll(loadedFactors);
 	    if (newFactors.isEmpty()) {
 	    	LOGGER.info("no new factors needed, factors will not be reloaded");
-	    	return new ArrayList(names);
+	    	return new ArrayList(requestedFactors);
 	    }
 	    LOGGER.info("found new factors " + newFactors + ", reloading factors");
 	    
@@ -633,7 +636,7 @@ public class ScoreProvider implements DataAccess {
 		
 		loadedStoreLookups.clear();
 
-		NEXT_FACTOR: for(Iterator i = names.iterator(); i.hasNext();) {
+		NEXT_FACTOR: for(Iterator i = requestedFactors.iterator(); i.hasNext();) {
 			String name = i.next().toString();
 			if (rangeConverters.containsKey(name)) {
 				FactorRangeConverter converter = (FactorRangeConverter)rangeConverters.get(name);
