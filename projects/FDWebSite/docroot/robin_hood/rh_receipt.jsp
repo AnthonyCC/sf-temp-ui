@@ -148,7 +148,7 @@ int idx = 0;
 				You may view this donation in <a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">
 			  Your Orders.</a><br/><br/>
 				
-				FreshDirect and Robin Hood respect your privacy. To view of change your contact preferences (and indicate whether you'd like to receive a letter that confirms your tax-deductible gift), please <a href="#" onclick="rhContactPrefsShow(); return false;">click here</a>.</td>
+				FreshDirect and Robin Hood respect your privacy. To view or change your contact preferences (and indicate whether you'd like to receive a letter that confirms your tax-deductible gift), please <a href="#" onclick="rhContactPrefsShow(); return false;">click here</a>.</td>
 			</TR>
         </TABLE>
     </TD>
