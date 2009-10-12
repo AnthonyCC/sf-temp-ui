@@ -9,7 +9,7 @@
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
-
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <fd:ProduceRatingCheck>
 
@@ -90,137 +90,31 @@
         <logic:iterate id="peakProduce" collection="<%= fruCol %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
         <% if (idx.intValue() >= ppFru) { continue; }
           String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-          ProductModel pm = peakProduce.getProductModel();
-          Comparator priceComp = new ProductModel.PriceComparator();
-
-          ContentNodeModel prodParent = pm.getParentNode();
-          List skus = pm.getSkus();
-
-          SkuModel sku = null;
-          
-          String prodPrice = null;
-          String prodBasePrice=null;
-          boolean isDeal=false;
-          boolean hasWas=false;
-          int deal=0;
-          String dealImage="";
-          
-          if (skus.size()==0) {
-              System.out.println(">>> department_peakproduce_whatsgood 1 >>"+pm.getFullName()+"-->"+pm.getContentKey()+"-->"+pm.getContentName()+"-->"+pm.getContentType());
-              continue;
-          }
-          
-          if (skus.size() == 1) {
-              sku = (SkuModel)skus.get(0);  // we only need one sku
-          } else {
-            sku = (SkuModel) Collections.min(skus, priceComp);
-          }
-
           DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response, 
               peakProduce.getProductModel().getParentNode().getContentName(), 
               peakProduce.getProductModel(), prodNameAttribute, 
               true);
           int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+          String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), trkCode );
         %>
-          <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
-          <% 
-            prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); 
-
-
-            //comment out here for DEBUG, just make everything a deal
-            isDeal=productInfo.getHighestDealPercentage() > 0;
-            hasWas=productInfo.hasWasPrice();
-            //isDeal = true;
-
-			if(hasWas)
-              prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice());
-            if(isDeal) {
-              deal=productInfo.getHighestDealPercentage();
-              dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
-            }  
-
-          %>
-          </fd:FDProductInfo>
-
+          
           <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
-            <div style="width: 100px; height: 100px; text-align: left; position: relative;">
-              <div style="padding: 0px; line-height: 0px; position: absolute; height: 0px; padding: 10px 10px 0px;">
-                <a href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>"><img src="<%= displayObj.getImagePath()%>" <%=displayObj.getImageDimensions() %> alt="<%=displayObj.getAltText()%>" vspace="0" hspace="0" border="0" /></a>
-              </div>
-            <% if(isDeal) { %>
-              <div style="position: absolute; top: 0px; left: 0px;">
-                <a id="prod_link_starimg_<%= sku %>" style="display: block;" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>" name="prod_link_starimg_<%= sku %>"><img style="border: 0px" alt="SAVE %<%=deal%>" src="<%= dealImage %>" /></a>
-              </div>
-            <% } %>
-            </div>
+            <display:ProductImage product="<%= peakProduce.getProductModel() %>" hideDeals="false" showRolloverImage="false" action="<%= actionUrl %>"/>
           </td>
         </logic:iterate>
         <logic:iterate id="peakProduce" collection="<%= vegCol %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
         <% if (idx.intValue() >= ppVeg) { continue; }
           String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-          ProductModel pm = peakProduce.getProductModel();
-          Comparator priceComp = new ProductModel.PriceComparator();
-
-          ContentNodeModel prodParent = pm.getParentNode();
-          List skus = pm.getSkus();
-
-          SkuModel sku = null;
-          
-          String prodPrice = null;
-          String prodBasePrice=null;
-          boolean isDeal=false;
-          boolean hasWas=false;
-          int deal=0;
-          String dealImage="";
-          
-          if (skus.size()==0) {
-             System.out.println(">>> department_peakproduce_whatsgood 2 >>"+pm.getFullName()+"-->"+pm.getContentKey()+"-->"+pm.getContentName()+"-->"+pm.getContentType());
-             continue;
-          }
-          
-          if (skus.size() == 1) {
-              sku = (SkuModel)skus.get(0);  // we only need one sku
-          } else {
-            sku = (SkuModel) Collections.min(skus, priceComp);
-          }
-
           DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response, 
               peakProduce.getProductModel().getParentNode().getContentName(), 
               peakProduce.getProductModel(), prodNameAttribute, 
               true);
           int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+          String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), trkCode );
         %>
-          <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
-          <% 
-            prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); 
-
-
-            //comment out here for DEBUG, just make everything a deal
-            isDeal=productInfo.getHighestDealPercentage() > 0;
-            hasWas=productInfo.hasWasPrice();
-            //isDeal = true;
-
-			if(hasWas)
-              prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice());
-            if(isDeal) {
-              deal=productInfo.getHighestDealPercentage();
-              dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
-            }  
-
-          %>
-          </fd:FDProductInfo>
-
+          
           <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
-            <div style="width: 100px; height: 100px; text-align: left; position: relative;">
-              <div style="padding: 0px; line-height: 0px; position: absolute; height: 0px; padding: 10px 10px 0px;">
-                <a href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>"><img src="<%= displayObj.getImagePath()%>" <%=displayObj.getImageDimensions() %> alt="<%=displayObj.getAltText()%>" vspace="0" hspace="0" border="0" /></a>
-              </div>
-            <% if(isDeal) { %>
-              <div style="position: absolute; top: 0px; left: 0px;">
-                <a id="prod_link_starimg_<%= sku %>" style="display: block;" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>" name="prod_link_starimg_<%= sku %>"><img style="border: 0px" alt="SAVE %<%=deal%>" src="<%= dealImage %>" /></a>
-              </div>
-            <% } %>
-            </div>
+            <display:ProductImage product="<%= peakProduce.getProductModel() %>" hideDeals="true" showRolloverImage="false" action="<%= actionUrl %>"/>
           </td>
         </logic:iterate>
       </tr>
@@ -228,85 +122,18 @@
         <logic:iterate id="peakProduce" collection="<%= fruCol %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
         
         <% if (idx.intValue() >= ppFru) { continue; }
-                    
           String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-
-          ProductModel pm = peakProduce.getProductModel();
-          Comparator priceComp = new ProductModel.PriceComparator();
-
-          ContentNodeModel prodParent = pm.getParentNode();
-          List skus = pm.getSkus();
-
-          SkuModel sku = null;
-          
-          String prodPrice = null;
-          String prodBasePrice=null;
-          boolean isDeal=false;
-          boolean hasWas=false;
-          int deal=0;
-          String dealImage="";
-          
-          if (skus.size()==0) {
-               System.out.println(">>> department_peakproduce_whatsgood 3 >>"+pm.getFullName()+"-->"+pm.getContentKey()+"-->"+pm.getContentName()+"-->"+pm.getContentType());
-               continue;
-          }
-          
-          if (skus.size() == 1) {
-              sku = (SkuModel)skus.get(0);  // we only need one sku
-          } else {
-            sku = (SkuModel) Collections.min(skus, priceComp);
-          }
-          
-          
-          
-          DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(), peakProduce.getProductModel(), prodNameAttribute, true);
+		  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(), peakProduce.getProductModel(), prodNameAttribute, true);
           int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-          String thisProdBrandLabel = pm.getPrimaryBrandName();
+          String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), trkCode );
         %>
-
-          <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
-              <% 
-              prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
-
-
-              //comment out here for DEBUG, just make everything a deal
-              isDeal=productInfo.getHighestDealPercentage() > 0;
-              hasWas=productInfo.hasWasPrice();
-              //isDeal = true;
-
-			  if(hasWas)
-                prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
-              if(isDeal) {
-                deal=productInfo.getHighestDealPercentage();
-              }  
-
-              %>
-          </fd:FDProductInfo>
-
-
+          
           <td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
-            
-
             <div class="WG_deals">
-            <% if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>          
-              <img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif" name="rating" width="59" height="11" border="0" vspace="3" /><br />
-            <% } %>
-              <a id="prod_link_txt_<%= sku %>" name="prod_link_txt_<%= sku %>" style="color: #360" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>">
-                <% if (thisProdBrandLabel.length()>0) { %>
-                  <b><%= thisProdBrandLabel %></b><br />
-                <% } %>
-                  <%= pm.getFullName().substring(thisProdBrandLabel.length()).trim() %>
-              </a>
-              <div class="price <% if(hasWas) { %>dealPrice<% } %>">
-                <%= displayObj.getPrice() %>
-              </div>
-            <% if(hasWas) { %>
-              <div class="wasPrice">
-                (was <%= prodBasePrice %>)
-              </div>
-            <% } %>
+	            <display:ProductRating product="<%= peakProduce.getProductModel() %>" action="<%= actionUrl %>"/>
+				<display:ProductName product="<%= peakProduce.getProductModel() %>" action="<%= actionUrl %>"/>
+				<display:ProductPrice impression="<%= new ProductImpression(peakProduce.getProductModel()) %>" showDescription="false"/>
             </div>
-
           </td>
         </logic:iterate>
 
@@ -314,83 +141,19 @@
 
         <logic:iterate id="peakProduce" collection="<%= vegCol %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
         <% if (idx.intValue() >= ppVeg) { continue; }
-                    
           String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-
-          ProductModel pm = peakProduce.getProductModel();
-          Comparator priceComp = new ProductModel.PriceComparator();
-
-          ContentNodeModel prodParent = pm.getParentNode();
-          List skus = pm.getSkus();
-
-          SkuModel sku = null;
-          
-          String prodPrice = null;
-          String prodBasePrice=null;
-          boolean isDeal=false;
-          boolean hasWas=false;
-          int deal=0;
-          String dealImage="";
-          
-          if (skus.size()==0) {
-               System.out.println(">>> department_peakproduce_whatsgood 4 >>"+pm.getFullName()+"-->"+pm.getContentKey()+"-->"+pm.getContentName()+"-->"+pm.getContentType());
-               continue;
-          }
-          
-          if (skus.size() == 1) {
-              sku = (SkuModel)skus.get(0);  // we only need one sku
-          } else {
-            sku = (SkuModel) Collections.min(skus, priceComp);
-          }
-          
-          
-          
-          DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(), peakProduce.getProductModel(), prodNameAttribute, true);
+		  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(), peakProduce.getProductModel(), prodNameAttribute, true);
           int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-          String thisProdBrandLabel = pm.getPrimaryBrandName();
+          String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), trkCode );
         %>
-
-          <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
-              <% 
-              prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
-
-
-              //comment out here for DEBUG, just make everything a deal
-              isDeal=productInfo.getHighestDealPercentage() > 0;
-              hasWas=productInfo.hasWasPrice();
-              //isDeal = true;
-
-			  if(hasWas)
-                prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
-              if(isDeal) {
-                deal=productInfo.getHighestDealPercentage();
-              }  
-
-              %>
-          </fd:FDProductInfo>
-
-
+          
           <td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
             
 
             <div style="font-weight: normal; font-size: 8pt; width: 100px; text-align: center">
-            <% if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>          
-              <img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif" name="rating" width="59" height="11" border="0" vspace="3" /><br />
-            <% } %>
-              <a id="prod_link_txt_<%= sku %>" name="prod_link_txt_<%= sku %>" style="color: #360" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>">
-                <% if (thisProdBrandLabel.length()>0) { %>
-                  <b><%= thisProdBrandLabel %></b><br />
-                <% } %>
-                  <%= pm.getFullName().substring(thisProdBrandLabel.length()).trim() %>
-              </a>
-              <div style="font-weight: bold; font-size: 8pt; <% if(hasWas) {  %>color: #CC0000;<% } %>">
-                <%= displayObj.getPrice() %>
-              </div>
-            <% if(hasWas) { %>
-              <div style="font-size: 7pt; color: #888">
-                (was <%= prodBasePrice %>)
-              </div>
-            <% } %>
+            	<display:ProductRating product="<%= peakProduce.getProductModel() %>" action="<%= actionUrl %>"/>
+				<display:ProductName product="<%= peakProduce.getProductModel() %>" action="<%= actionUrl %>"/>
+				<display:ProductPrice impression="<%= new ProductImpression(peakProduce.getProductModel()) %>" showDescription="false"/>
             </div>
 
           </td>
