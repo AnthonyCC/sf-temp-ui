@@ -138,21 +138,6 @@ StringBuffer buffer = new StringBuffer(
 
 </form>
 
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-
-<!-- display items just added to cart  -->
-<%
-	/**
-	 * Display recently added products
-	 * FIXME: put this partial to a separate jsp
-	 */
-	if (cart.getRecentOrderLines().size() > 0 && "1".equalsIgnoreCase(request.getParameter("confirm"))) {
-%><%@ include file="/includes/smartstore/i_recent_orderlines.jspf" %>
-<br/>
-<%
-	}
-%>
-
 <!-- ===================================== -->
 <!-- ============ Cart & tabs ============ -->
 <!-- ===================================== -->

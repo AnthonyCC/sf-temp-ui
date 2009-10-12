@@ -575,3 +575,17 @@ FDIdentity identity = user.getIdentity();
 	<tr><td colspan="7" align="right"><br><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = Bottle Deposit</td></tr>
 </table>
 </div>
+<a name="cartRec"></a>
+<div style="padding-top: 1em">
+<%-- display items just added to cart  --%>
+<%
+	/**
+	 * Display recently added products
+	 */
+	if (cart.getRecentOrderLines().size() > 0 && "1".equalsIgnoreCase(request.getParameter("confirm"))) {
+%><%@ include file="/includes/smartstore/i_recent_orderlines.jspf" %>
+<br/>
+<%
+	}
+%>
+</div>
