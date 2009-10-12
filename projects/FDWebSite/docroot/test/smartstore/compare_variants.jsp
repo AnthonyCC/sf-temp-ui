@@ -408,8 +408,21 @@ if (scriptedRecServ != null) {
     bRecService = scriptedRecServ;
     variantB = "User Provided Functions";
 }
+ScoringAlgorithm scoringA = null;
+ScoringAlgorithm scoringB = null;
 
-%><html>
+if (aRecService instanceof ScriptedRecommendationService) {
+    scoringA = ((ScriptedRecommendationService) aRecService).getScoring();
+}
+
+if (bRecService instanceof ScriptedRecommendationService) {
+    scoringB = ((ScriptedRecommendationService) bRecService).getScoring();
+}
+
+
+%>
+<%@page import="com.freshdirect.smartstore.scoring.ScoringAlgorithm"%>
+<%@page import="com.freshdirect.smartstore.impl.ScriptedRecommendationService"%><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>VARIANT COMPARISON PAGE - <%= siteFeature.getName() %><%=
@@ -771,7 +784,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						}
 					%>
 					</select>
-					<% if (aRecService.getVariant().getServiceConfig().getType().equals(RecommendationServiceType.SCRIPTED) ) {  %>
+					<% if (aRecService!=null && aRecService.getVariant().getServiceConfig().getType().equals(RecommendationServiceType.SCRIPTED) ) {  %>
 						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= aRecService.getDescription() %></td></tr></table>
 					<% } %>
 
