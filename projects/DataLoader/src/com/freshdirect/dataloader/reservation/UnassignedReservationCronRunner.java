@@ -130,7 +130,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 				}
 			 } else {
 								
-				 dlvManager.commitReservationEx(reservation, address, reservation.getOrderId());
+				 dlvManager.commitReservationEx(reservation, address,reservation.getRoutingOrderId()==null?reservation.getOrderId():reservation.getRoutingOrderId());
 			 }
 			 
 			 
