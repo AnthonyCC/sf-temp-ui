@@ -12,7 +12,7 @@ INSERT INTO "CUST"."SS_VARIANT_PARAMS" (ID, KEY, VALUE) VALUES ('featured-popula
 INSERT INTO "CUST"."SS_VARIANT_PARAMS" (ID, KEY, VALUE) VALUES ('featured-popular-s', 'sampling_strat', 'power');
 INSERT INTO "CUST"."SS_VARIANT_PARAMS" (ID, KEY, VALUE) VALUES ('featured-popular-s', 'top_n', '10');
 INSERT INTO "CUST"."SS_VARIANT_PARAMS" (ID, KEY, VALUE) VALUES ('featured-popular-s', 'top_perc', '20');
-INSERT INTO "CUST"."SS_VARIANT_PARAMS" (ID, KEY, VALUE) VALUES ('featured-popular-s', 'generator', 'ManuallyOverriddenSlotsP(FeaturedItems) + CandidateLists');
+INSERT INTO "CUST"."SS_VARIANT_PARAMS" (ID, KEY, VALUE) VALUES ('featured-popular-s', 'generator', 'ManuallyOverriddenSlotsP(currentNode) + CandidateLists');
 INSERT INTO "CUST"."SS_VARIANT_PARAMS" (ID, KEY, VALUE) VALUES ('featured-popular-s', 'scoring', 'Popularity');
 
 INSERT INTO "CUST"."SS_VARIANT_PARAMS" (ID, KEY, VALUE) VALUES ('featured-pop2-s', 'exponent', '0.5');
