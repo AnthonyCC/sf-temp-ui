@@ -7,9 +7,9 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/lcc.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/givexclient.jar"/>
-	<classpathentry kind="lib" path="C:/bea10/wlserver_10.3/server/lib/webservices.jar"/>
-	<classpathentry kind="lib" path="C:/bea10/wlserver_10.3/server/lib/weblogic.jar"/>
-	<classpathentry kind="lib" path="C:/bea10/wlserver_10.3/server/lib/webserviceclient.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Resources"/>
+	<classpathentry kind="var" path="WL_HOME/lib/weblogic.jar"/>
+	<classpathentry kind="var" path="WL_HOME/lib/webserviceclient.jar"/>
+	<classpathentry kind="var" path="WL_HOME/lib/webservices.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
