@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Category;
 
@@ -30,6 +31,7 @@ import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.ListSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
 import com.freshdirect.smartstore.sampling.SimpleLimit;
+import com.freshdirect.smartstore.sampling.RankedContent.Single;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 
 /**
@@ -129,13 +131,13 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	 * @param scores Map<{@link ContentKey},{@link Number}>
 	 * @return List<@link {@link RankedContent}>
 	 */
-	protected List createSortedRankedContentList(Map scores, final boolean aggregate) {
+	protected List<RankedContent> createSortedRankedContentList(Map scores, final boolean aggregate) {
 		
 		
-		List result = new ArrayList();
+		List<RankedContent> result = new ArrayList<RankedContent>();
 		
 		/** Map<String,RankedContent> */
-		Map aggregateMap = new HashMap();
+		Map<String, RankedContent> aggregateMap = new HashMap<String, RankedContent>();
 		
 		for(Iterator i = scores.entrySet().iterator(); i.hasNext(); ) {
 			Map.Entry e = (Map.Entry)i.next();
@@ -158,7 +160,7 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 			
 			
 			if (aggregate) {
-				RankedContent aggregateContent = (RankedContent)aggregateMap.get(label);
+				RankedContent aggregateContent = aggregateMap.get(label);
 				if (aggregateContent == null) {
 					aggregateContent = new RankedContent.Aggregate(label);
 					aggregateMap.put(label, aggregateContent);
@@ -201,19 +203,18 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	 * @param rankedContentNodes
 	 * @return
 	 */
-	protected List aggregateContentList(List rankedContentNodes) {
-            List result = new ArrayList();
+	protected List<RankedContent> aggregateContentList(List<RankedContent> rankedContentNodes) {
+            List<RankedContent> result = new ArrayList<RankedContent>();
     
             /** Map<ContentKey,RankedContent> */
-            Map aggregateMap = new HashMap();
+            Map<ContentKey,RankedContent> aggregateMap = new HashMap<ContentKey,RankedContent>();
     
-            for (Iterator i = rankedContentNodes.iterator(); i.hasNext();) {
-                RankedContent e = (RankedContent) i.next();
+            for (RankedContent e : rankedContentNodes) {
                 if (e instanceof RankedContent.Single) {
                     RankedContent.Single s = (RankedContent.Single) e;
                     ContentKey aggregationLevelKey = getAggregationKey(s.getContentKey());
                     if ((aggregationLevelKey != null) && (!aggregationLevelKey.equals(s.getContentKey()))) {
-                        RankedContent aggregateContent = (RankedContent) aggregateMap.get(aggregationLevelKey);
+                        RankedContent aggregateContent = aggregateMap.get(aggregationLevelKey);
                         if (aggregateContent == null) {
                             aggregateContent = new RankedContent.Aggregate(aggregationLevelKey.getId());
                             aggregateMap.put(aggregationLevelKey, aggregateContent);
@@ -229,7 +230,7 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 
             for (Iterator i = aggregateMap.entrySet().iterator(); i.hasNext();) {
                 // Map.Entry<String,RankedContent>
-                Map.Entry e = (Map.Entry) i.next();
+                Map.Entry<ContentKey,RankedContent> e = (Map.Entry<ContentKey,RankedContent>) i.next();
                 RankedContent.Aggregate agg = (RankedContent.Aggregate) e.getValue();
                 if (agg.getCount() == 1) { // not aggregate
                     result.add(agg.takeFirst());
@@ -291,13 +292,13 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	protected List sampleContentNodeModels(SessionInput input, List nodes) {
             if (!(nodes.isEmpty() || input.isNoShuffle())) {
                 int size =nodes.size();
-                List rankedContents = new ArrayList(size);
+                List<RankedContent> rankedContents = new ArrayList<RankedContent>(size);
                 for (int i=0;i<size;i++) {
                     ContentNodeModel node = (ContentNodeModel) nodes.get(i);
                     rankedContents.add(new RankedContent.Single(size - i, node));
                 }
                 List result = RankedContent.getContentNodeModel(getSampler(input).sample(rankedContents,
-                		input.isIncludeCartItems() ? Collections.EMPTY_SET : input.getCartContents(), rankedContents.size()));
+                		(Set<ContentKey>) (input.isIncludeCartItems() ? Collections.EMPTY_SET : input.getCartContents()), rankedContents.size()));
                 return result;
             }
             return nodes;
@@ -310,24 +311,24 @@ public abstract class AbstractRecommendationService implements RecommendationSer
          * @param nodes List<RankedContent.Single>
          * @return List<ContentNodeModel>
          */
-        protected List sampleRankedContents(SessionInput input, List nodes, Collection exclude) {
+        protected List<ContentNodeModel> sampleRankedContents(SessionInput input, List<RankedContent.Single> nodes, Collection<ContentNodeModel> exclude) {
             if (!(nodes.isEmpty() || input.isNoShuffle())) {
-                List sample = RankedContent.getContentNodeModel(getSampler(input).sample(nodes,
-                		input.isIncludeCartItems() ? Collections.EMPTY_SET : input.getCartContents(), nodes.size()));
-                List result = new ArrayList(sample.size());
+                List<ContentNodeModel> sample = RankedContent.getContentNodeModel(getSampler(input).sample((List<RankedContent>) (List) nodes,
+                        (Set<ContentKey>) (input.isIncludeCartItems() ? Collections.EMPTY_SET : input.getCartContents()), nodes.size()));
+                List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(sample.size());
                 for (int i=0;i<sample.size();i++) {
-                    ContentNodeModel model = (ContentNodeModel)  sample.get(i);
+                    ContentNodeModel model = sample.get(i);
                     if (model!=null && !exclude.contains(model)) {
                         result.add(model);
                     }
                 }
                 return result;
             } else {
-                List result = new ArrayList(nodes.size());
+                List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(nodes.size());
 				ProductFilter filter = FilterFactory.createStandardFilter(input.isIncludeCartItems() ?
 						Collections.EMPTY_LIST : input.getCartContents());                
-                for (Iterator iter = nodes.iterator(); iter.hasNext();) {
-                    RankedContent.Single node = (RankedContent.Single) iter.next();
+                for (Iterator<Single> iter = nodes.iterator(); iter.hasNext();) {
+                    RankedContent.Single node = iter.next();
                     if (!exclude.contains(node.getModel()) &&
                     		filter.filter((ProductModel) node.getModel()) != null) {
                         result.add(node.getModel());

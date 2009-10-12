@@ -21,7 +21,7 @@ public interface ImpressionSampler {
 	 * @param k number of impressions to produce
 	 * @return List<{@link ContentKey}>
 	 */
-	public List sample(List sortedRankedContent, Set reserved, int k);
+	public List<RankedContent.Single> sample(List<RankedContent> sortedRankedContent, Set<ContentKey> reserved, int k);
 	
 	public boolean isDeterministic();
 }

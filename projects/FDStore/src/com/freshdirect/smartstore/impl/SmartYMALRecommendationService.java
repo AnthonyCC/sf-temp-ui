@@ -205,7 +205,7 @@ public class SmartYMALRecommendationService extends
 		return keys;
 	}
 
-	public void collectFactors(Collection buffer) {
+	public void collectFactors(Collection<String> buffer) {
 		// XXX currently loaded in the SmartStoreServiceConfiguration
 	}
 

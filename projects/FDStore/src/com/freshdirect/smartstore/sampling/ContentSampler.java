@@ -33,15 +33,15 @@ public class ContentSampler {
 		 * @param rankedItems (List<{@link RankedContent}>)
 		 * @return how many to remove max from ranked items
 		 */
-		public int max(List rankedItems);
+		public int max(List<RankedContent> rankedItems);
 	}
 	
 	
 	/** List<{@link RankedContent}> */
-	private List sortedItems;
+	private List<RankedContent> sortedItems;
 	
 	/** List<{@link RankedContent}> */
-	protected List getSortedItems() {
+	protected List<RankedContent> getSortedItems() {
 		return sortedItems;
 	}
 	
@@ -54,8 +54,8 @@ public class ContentSampler {
 	 * @param cart Set<{@link ContentKey}>
 	 * @param cl rule to decide number of content to keep
 	 */
-	private ContentSampler(List allSortedItems, Set cart, ConsiderationLimit cl) {
-		sortedItems = new LinkedList();
+	private ContentSampler(List<RankedContent> allSortedItems, Set<ContentKey> cart, ConsiderationLimit cl) {
+		sortedItems = new LinkedList<RankedContent>();
 		
 		boolean reSort = false;
 		
@@ -63,7 +63,7 @@ public class ContentSampler {
 		
 		int n = cl.max(allSortedItems); 
 			
-		NEXT_SORTED_ITEM: for(Iterator i = allSortedItems.iterator(); i.hasNext();) {
+		NEXT_SORTED_ITEM: for(Iterator<RankedContent> i = allSortedItems.iterator(); i.hasNext();) {
 			RankedContent item = (RankedContent)i.next();
 			if (n == sortedItems.size()) break;
 			RankedContent itemToUse = item;
@@ -95,11 +95,9 @@ public class ContentSampler {
 		}
 		
 		if (reSort) {
-			Collections.sort(sortedItems,new Comparator() {
+			Collections.sort(sortedItems,new Comparator<RankedContent>() {
 
-				public int compare(Object o1, Object o2) {
-					RankedContent r1 = (RankedContent)o1;
-					RankedContent r2 = (RankedContent)o2;
+				public int compare(RankedContent r1, RankedContent r2) {
 					return r1.getScore() < r2.getScore() ? +1 : r1.getScore() > r2.getScore() ? -1 : 0; 
 				}
 			});
@@ -120,15 +118,15 @@ public class ContentSampler {
 	 * @param sampler
 	 * @return List<{@link ContentNode}>
 	 */
-	private List drawWithoutReplacement(int k, ListSampler sampler) {
+	private List<RankedContent.Single> drawWithoutReplacement(int k, ListSampler sampler) {
 		if (k > totalItems()) k = totalItems();
-		List items = new ArrayList(k);
+		List<RankedContent.Single> items = new ArrayList<RankedContent.Single>(k);
 		for(int i=0; i<k && sortedItems.size() > 0; ++i) {
 			
 			int ind = sampler.next(sortedItems.size()); 
 		
-			ListIterator it = sortedItems.listIterator(ind);
-			RankedContent item = (RankedContent)it.next();
+			ListIterator<RankedContent> it = sortedItems.listIterator(ind);
+			RankedContent item = it.next();
 			
 			RankedContent.Single itemToUse = null;
 			
@@ -140,12 +138,12 @@ public class ContentSampler {
 				} else { 
 					// not so lucky, needs to re-insert node in proper place, plus 
 					// re-calculate the distribution
-					ListIterator prev = sortedItems.listIterator(ind);
+					ListIterator<RankedContent> prev = sortedItems.listIterator(ind);
 					// reinsert where it belongs to	
 					sampler.changeWeight(ind, aggregate.getScore());
 					while(prev.hasPrevious()) {
-						RankedContent prevItem = (RankedContent)prev.previous();
-						RankedContent thisItem = (RankedContent)it.previous();
+						RankedContent prevItem = prev.previous();
+						RankedContent thisItem = it.previous();
 						if (prevItem.getScore() > thisItem.getScore()) {
 							prev.set(thisItem);
 							it.set(prevItem);
@@ -179,7 +177,7 @@ public class ContentSampler {
 	 * @param sampler
 	 * @return List<{@link ContentKey}>
 	 */
-	public static List drawWithoutReplacement(List allSortedItems, Set cart, ConsiderationLimit cl, int k, ListSampler sampler) {
+	public static List<RankedContent.Single> drawWithoutReplacement(List<RankedContent> allSortedItems, Set<ContentKey> cart, ConsiderationLimit cl, int k, ListSampler sampler) {
 		ContentSampler rankedItems = new ContentSampler(allSortedItems,cart,cl);
 		return rankedItems.drawWithoutReplacement(k, sampler);
 	}
@@ -280,7 +278,7 @@ public class ContentSampler {
 	 * @param k max content to select
 	 * @return List<{@link ContentKey}>
 	 */
-	public static List drawWithoutReplacement(final List allSoretedItems, Set cart, ConsiderationLimit cl, int k) {
+	public static List<RankedContent.Single> drawWithoutReplacement(final List<RankedContent> allSoretedItems, Set<ContentKey> cart, ConsiderationLimit cl, int k) {
 		ContentSampler rankedItems = new ContentSampler(allSoretedItems,cart,cl);
 		return rankedItems.drawWithoutReplacement(k, new ExplicitSampler(new Random(),rankedItems.getSortedItems()));
 	}

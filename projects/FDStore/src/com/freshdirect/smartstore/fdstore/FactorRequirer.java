@@ -14,6 +14,6 @@ public interface FactorRequirer {
      * Collect needed factors into the buffer
      * @param buffer Collection<String>
      */
-    public void collectFactors(Collection buffer);
+    public void collectFactors(Collection<String> buffer);
 
 }

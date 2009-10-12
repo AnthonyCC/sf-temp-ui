@@ -6,6 +6,7 @@ package com.freshdirect.smartstore.sampling;
 import java.util.List;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.smartstore.sampling.ContentSampler.ConsiderationLimit;
 
 
@@ -17,9 +18,11 @@ public class ComplicatedImpressionSampler implements
 		this.cl = cl;
 	}
 
-	public List sample(List sortedRankedContent, Set reserved, int k) {
-		return ContentSampler.drawWithoutReplacement(
-				sortedRankedContent, reserved, cl, k);
+	
+	@Override
+	public List<RankedContent.Single> sample(List<RankedContent> sortedRankedContent, Set<ContentKey> reserved, int k) {
+            return ContentSampler.drawWithoutReplacement(
+                    sortedRankedContent, reserved, cl, k);
 	}
 
 	public String toString() {

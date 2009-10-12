@@ -112,7 +112,7 @@ public abstract class RankedContent {
 		private double totalScore = 0;
 		
 		// List<Single> 
-		private LinkedList items = new LinkedList(); 
+		private LinkedList<Single> items = new LinkedList<Single>(); 
 		private String id;
 		
 		public Aggregate(String id) {
@@ -145,7 +145,7 @@ public abstract class RankedContent {
 		 * @param item name of content to be removed
 		 */
 		public void remove(String item) {
-			for(Iterator i = items.iterator(); i.hasNext();) {
+			for(Iterator<Single> i = items.iterator(); i.hasNext();) {
 				Single stored = (Single)i.next();
 				if (item.equals(stored.getId())) {
 					totalScore -= stored.getScore();
@@ -165,7 +165,7 @@ public abstract class RankedContent {
 		 * 
 		 * @return List<Single>
 		 */
-		public List getItems() {
+		public List<Single> getItems() {
 			return items;
 		}
 		
@@ -179,7 +179,7 @@ public abstract class RankedContent {
 		
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
-			for(Iterator i = items.iterator(); i.hasNext(); ) {
+			for(Iterator<Single> i = items.iterator(); i.hasNext(); ) {
 				RankedContent.Single item = (RankedContent.Single)i.next();	
 				buffer.append(buffer.length() > 0? ',' : '[');
 				buffer.append(item);
@@ -189,23 +189,21 @@ public abstract class RankedContent {
 	};
 	
 	
-	public static List getKeys(List rankedContents) {
-	    List result = new ArrayList(rankedContents.size());
-	    for (Iterator iter=rankedContents.iterator();iter.hasNext();) {
-	        RankedContent.Single rs = (RankedContent.Single)iter.next();
-	        result.add(rs.getContentKey());
-	    }
-	    return result;
-	}
-
-        public static List getContentNodeModel(List rankedContents) {
-            List result = new ArrayList(rankedContents.size());
-            for (Iterator iter=rankedContents.iterator();iter.hasNext();) {
-                RankedContent.Single rs = (RankedContent.Single)iter.next();
-                result.add(rs.getModel());
-            }
-            return result;
+    public static List<ContentKey> getKeys(List<Single> rankedContents) {
+        List<ContentKey> result = new ArrayList<ContentKey>(rankedContents.size());
+        for (Iterator<Single> iter = rankedContents.iterator(); iter.hasNext();) {
+            RankedContent.Single rs = iter.next();
+            result.add(rs.getContentKey());
         }
-	
+        return result;
+    }
+
+    public static List<ContentNodeModel> getContentNodeModel(List<RankedContent.Single> rankedContents) {
+        List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(rankedContents.size());
+        for (RankedContent.Single rs : rankedContents) {
+            result.add(rs.getModel());
+        }
+        return result;
+    }	
 	
 }

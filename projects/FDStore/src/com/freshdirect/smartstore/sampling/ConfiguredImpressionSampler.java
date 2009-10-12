@@ -6,6 +6,8 @@ package com.freshdirect.smartstore.sampling;
 import java.util.List;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentKey;
+
 
 public class ConfiguredImpressionSampler implements ImpressionSampler {
     private ContentSampler.ConsiderationLimit cl;
@@ -16,7 +18,7 @@ public class ConfiguredImpressionSampler implements ImpressionSampler {
         this.listSampler = listSampler;
     }
 
-    public List sample(List sortedRankedContent, Set reserved, int k) {
+    public List<RankedContent.Single> sample(List<RankedContent> sortedRankedContent, Set<ContentKey> reserved, int k) {
         return ContentSampler.drawWithoutReplacement(sortedRankedContent, reserved, cl, k, listSampler);
     }
 

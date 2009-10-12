@@ -9,17 +9,17 @@ import com.freshdirect.smartstore.SessionInput;
 
 public class DataGenerator {
 
-    Set factors;
+    Set<String> factors;
 
     public List<ContentNodeModel> generate(SessionInput sessionInput, DataAccess input) {
         return Collections.EMPTY_LIST;
     }
 
-    public void setFactors(Set factors) {
+    public void setFactors(Set<String> factors) {
         this.factors = factors;
     }
 
-    public Set getFactors() {
+    public Set<String> getFactors() {
         return factors;
     }
 

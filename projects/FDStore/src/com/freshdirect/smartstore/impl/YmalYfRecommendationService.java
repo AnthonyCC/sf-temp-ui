@@ -87,7 +87,7 @@ public class YmalYfRecommendationService extends AbstractRecommendationService i
 			return smartYmal;
 	}
 
-    public void collectFactors(Collection factors) {
+    public void collectFactors(Collection<String> factors) {
         popularity.collectFactors(factors);
     }
     

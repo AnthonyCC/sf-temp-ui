@@ -48,18 +48,18 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
         this(variant, sampler, catAggr, includeCartItems, generator, null);
     }
 
-    public List doRecommendNodes(SessionInput input) {
+    public List<ContentNodeModel> doRecommendNodes(SessionInput input) {
         return recommendNodes(input, new PrioritizedDataAccess(input
 				.isIncludeCartItems() ? Collections.EMPTY_LIST : input
 				.getCartContents()));
     }
     
-    public List recommendNodes(SessionInput input, DataAccess dataAccess) {
+    public List<ContentNodeModel> recommendNodes(SessionInput input, DataAccess dataAccess) {
         // generate content node list based on the 'generator' expression.
-        List result = dataGenerator.generate(input, dataAccess);
+        List<ContentNodeModel> result = dataGenerator.generate(input, dataAccess);
 
         String userId = input.getCustomerId();
-        List rankedContents = new ArrayList(result.size());
+        List<RankedContent> rankedContents = new ArrayList<RankedContent>(result.size());
         
         if (scoring != null) {
             String[] variableNames = scoring.getVariableNames();
@@ -67,8 +67,8 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
             if (scoring.getReturnSize() > 1) {
                 
                 OrderingFunction orderingFunction = scoring.createOrderingFunction();
-                for (Iterator iter = result.iterator(); iter.hasNext();) {
-                    ContentNodeModel contentNode = (ContentNodeModel) iter.next();
+                for (Iterator<ContentNodeModel> iter = result.iterator(); iter.hasNext();) {
+                    ContentNodeModel contentNode = iter.next();
                     double[] values = dataAccess.getVariables(userId, contentNode, variableNames);
                     double[] score = scoring.getScores(values);
                     orderingFunction.addScore(contentNode, score);
@@ -76,26 +76,28 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
                 rankedContents = orderingFunction.getRankedContents();
             } else {
                 // one score computed, interpret as 'weight' or probability.
-                TreeSet scores = new TreeSet();
+                TreeSet<RankedContent.Single> scores = new TreeSet<RankedContent.Single>();
 
-                for (Iterator iter = result.iterator(); iter.hasNext();) {
-                    ContentNodeModel contentNode = (ContentNodeModel) iter.next();
+                for (Iterator<ContentNodeModel> iter = result.iterator(); iter.hasNext();) {
+                    ContentNodeModel contentNode = iter.next();
                     double[] values = dataAccess.getVariables(userId, contentNode, variableNames);
                     double[] score = scoring.getScores(values);
                     scores.add(new RankedContent.Single(score[0], contentNode));
                 }
-                for (Iterator iter = scores.iterator(); iter.hasNext();) {
+                for (Iterator<RankedContent.Single> iter = scores.iterator(); iter.hasNext();) {
                     rankedContents.add(iter.next());
                 }
             }
         } else {
             // no scoring, go ahead and prepare for sampling
-            int max = result.size()+1;
-            int i=0;
-            for (Iterator iter = result.iterator();iter.hasNext();) {
-                ContentNodeModel sc = (ContentNodeModel) iter.next();
-                rankedContents.add(new RankedContent.Single(max - i, sc));
-                i++;
+            int max = result.size() + 1;
+            int i = 0;
+            for (ContentNodeModel sc : result) {
+                if (sc != null) {
+                    // if the content node is valid ...
+                    rankedContents.add(new RankedContent.Single(max - i, sc));
+                    i++;
+                }
             }
         }
         
@@ -103,10 +105,11 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
         if (aggregateAtCategoryLevel) {
             rankedContents = aggregateContentList(rankedContents);
         }
-        List sample = RankedContent.getContentNodeModel(getSampler(input.isNoShuffle()).sample(rankedContents,
+        List<ContentNodeModel> sample = RankedContent.getContentNodeModel(getSampler(input.isNoShuffle()).sample(rankedContents,
         		input.isIncludeCartItems() ? Collections.EMPTY_SET : input.getCartContents(), rankedContents.size()));
-        List prioritized = dataAccess.getPrioritizedNodes();
-        List appended = new ArrayList(prioritized.size() + sample.size());
+        
+        List<ContentNodeModel> prioritized = dataAccess.getPrioritizedNodes();
+        List<ContentNodeModel> appended = new ArrayList<ContentNodeModel>(prioritized.size() + sample.size());
         appended.addAll(prioritized);
         appended.addAll(sample);
         return appended;
@@ -118,7 +121,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
      * @param buffer Collection<String>
      * @return the original buffer.
      */
-    public void collectFactors(Collection buffer) {
+    public void collectFactors(Collection<String> buffer) {
         buffer.addAll(dataGenerator.getFactors());
         if (scoring!=null) {
             String[] variableNames = scoring.getVariableNames();
