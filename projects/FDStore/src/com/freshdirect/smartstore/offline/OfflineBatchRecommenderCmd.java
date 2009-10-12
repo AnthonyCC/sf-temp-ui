@@ -22,6 +22,7 @@ public class OfflineBatchRecommenderCmd {
 					.lookup(OfflineBatchRecommenderHome.JNDI_HOME);
 			OfflineBatchRecommenderSB sb = home.create();
 			System.out.println("No. of users processed: " + sb.runBatch("DYF").getUserCount());
+			System.out.println("No. of users processed: " + sb.runBatch("C_DEALS").getUserCount());
 		} catch (NamingException e) {
 			e.printStackTrace();
 		} catch (RemoteException e) {

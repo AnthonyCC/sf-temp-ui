@@ -365,18 +365,19 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 				FDProductInfo productInfo = FDCachedFactory
 						.getProductInfo(skuCode.getSkuCode());
 				if (productInfo != null) {
-					double wasPrice = 0;
+					Double wasPrice = null;
 					
-					if ( savingsPercentage > 0 ) {
+					if ( savingsPercentage > 0. ) {
 						wasPrice = productInfo.getDefaultPrice();
 					} else if ( productInfo.hasWasPrice() ) {
 						wasPrice = productInfo.getBasePrice();
 					}
 
-					return CURRENCY_FORMAT.format(wasPrice)
-							+ "/"
-							+ productInfo.getDisplayableDefaultPriceUnit()
-									.toLowerCase();
+					if (wasPrice != null)
+						return CURRENCY_FORMAT.format(wasPrice)
+								+ "/"
+								+ productInfo.getDisplayableDefaultPriceUnit()
+										.toLowerCase();
 				}
 				return null;
 			} catch (FDSkuNotFoundException ex) {

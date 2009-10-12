@@ -100,78 +100,79 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 	}
 
 	private static final String DELETE_OFFLINE_RECOMMENDATION = "DELETE FROM CUST.SS_OFFLINE_RECOMMENDATION"
-			+ " WHERE USER_ID = ? AND SITE_FEATURE_ID = ?";
+			+ " WHERE CUSTOMER_ID = ? AND SITE_FEATURE_ID = ?";
 	private static final String INSERT_OFFLINE_RECOMMENDATION = "INSERT INTO CUST.SS_OFFLINE_RECOMMENDATION"
-			+ " (LAST_MODIFIED, USER_ID, SITE_FEATURE_ID, PRODUCT_ID, POSITION, NAME, LINK, IMAGE_PATH, IMAGE_WIDTH, IMAGE_HEIGHT, RATING, PRICE, WAS_PRICE, TIERED_PRICE, ABOUT_PRICE, BURST)"
-			+ " VALUES (SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			+ " (LAST_MODIFIED, CUSTOMER_ID, SITE_FEATURE_ID, VARIANT_ID, PRODUCT_ID, POSITION, NAME, LINK, IMAGE_PATH, IMAGE_WIDTH, IMAGE_HEIGHT, RATING, PRICE, WAS_PRICE, TIERED_PRICE, ABOUT_PRICE, BURST)"
+			+ " VALUES (SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-	private int saveRecommendations(FDUserI user, EnumSiteFeature siteFeature,
-			List<ProductModel> products) {
+	private int saveRecommendations(FDUserI user, Recommendations recommendations) {
 		Connection conn = null;
 
 		try {
 			conn = getConnection();
 			PreparedStatement ps = conn
 					.prepareStatement(DELETE_OFFLINE_RECOMMENDATION);
-			ps.setString(1, user.getUserId());
-			ps.setString(2, siteFeature.getName());
+			ps.setString(1, user.getIdentity().getErpCustomerPK());
+			ps.setString(2, recommendations.getVariant().getSiteFeature().getName());
 			ps.executeUpdate();
 			ps.close();
 			ps = null;
 
 			int rowCount = 0;
-			int n = Math.min(5, products.size());
+			int n = Math.min(5, recommendations.getProducts().size());
+			EnumSiteFeature siteFeature = recommendations.getVariant().getSiteFeature();
 
 			for (int i = 0; i < n; i++) {
 				ps = conn.prepareStatement(INSERT_OFFLINE_RECOMMENDATION);
-				ps.setString(1, user.getUserId());
+				ps.setString(1, user.getIdentity().getErpCustomerPK());
 				ps.setString(2, siteFeature.getName());
-				ProductModel product = products.get(i);
-				ps.setString(3, product.getContentName());
-				ps.setInt(4, i + 1);
+				ps.setString(3, recommendations.getVariant().getId());
+				ProductModel product = recommendations.getProducts().get(i);
+				ps.setString(4, product.getContentName());
+				ps.setInt(5, i + 1);
 
 				// name
 				String fullName = product.getFullName();
-				ps.setString(5, fullName != null
+				ps.setString(6, fullName != null
 						&& !"".equalsIgnoreCase(fullName) ? fullName
 						: "(this product)");
 
 				// link
-				ps.setString(6, ProductDisplayUtil.getProductURI(product));
+				ps.setString(7, ProductDisplayUtil.getProductURI(product));
 
 				// image
 				Image productImage = product.getProdImage();
-				ps.setString(7, productImage.getPath());
-				ps.setInt(8, productImage.getWidth());
-				ps.setInt(9, productImage.getHeight());
+				ps.setString(8, productImage.getPath());
+				ps.setInt(9, productImage.getWidth());
+				ps.setInt(10, productImage.getHeight());
 
 				// rating
 				try {
 					String rating = ProductDisplayUtil.getProductRatingCode(
 							user, product);
 					if (rating == null)
-						ps.setNull(10, Types.VARCHAR);
+						ps.setNull(11, Types.VARCHAR);
 					else
-						ps.setString(10, rating);
+						ps.setString(11, rating);
 				} catch (FDResourceException e) {
-					ps.setNull(10, Types.VARCHAR);
+					ps.setNull(11, Types.VARCHAR);
 				} catch (FDSkuNotFoundException e) {
-					ps.setNull(10, Types.VARCHAR);
+					ps.setNull(11, Types.VARCHAR);
 				}
 
 				// price, pricing
-				ps.setString(11, product.getPriceFormatted(0));
-				ps.setString(12, product.getWasPriceFormatted(0));
-				ps.setString(13, product.getTieredPrice(0));
-				ps.setString(14, product.getAboutPriceFormatted(0));
+				ps.setString(12, product.getPriceFormatted(0));
+				ps.setString(13, product.getWasPriceFormatted(0));
+				ps.setString(14, product.getTieredPrice(0));
+				ps.setString(15, product.getAboutPriceFormatted(0));
 
 				// burst
 				String burst = ProductDisplayUtil.getProductBurstCode(user,
 						siteFeature, product);
 				if (burst == null)
-					ps.setNull(15, Types.VARCHAR);
+					ps.setNull(16, Types.VARCHAR);
 				else
-					ps.setString(15, burst);
+					ps.setString(16, burst);
 				rowCount += ps.executeUpdate();
 				ps.close();
 				ps = null;
@@ -202,9 +203,10 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 		FDUserI user = getUserByEmail(customerEmail);
 		SessionInput input = createSessionInput(user, currentNode);
 		input.setMaxRecommendations(5);
+		input.setIncludeCartItems(true);
 		Recommendations recs = FDStoreRecommender.getInstance()
 				.getRecommendations(siteFeature, user, input, null);
-		saveRecommendations(user, siteFeature, recs.getProducts());
+		saveRecommendations(user, recs);
 		return recs.getProducts();
 	}
 }
