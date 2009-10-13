@@ -20,6 +20,7 @@ import com.freshdirect.cms.ui.client.fields.Renderers;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage.Level;
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 public class PublishMessagesPanel extends ContentPanel {
 
@@ -81,8 +82,12 @@ public class PublishMessagesPanel extends ContentPanel {
         }
 		
         // ============ TIMESTAMP ============
-		columns.add( new ColumnConfig( "timestamp", "Timestamp", 120 ) );
-		
+                {
+                    ColumnConfig cc = new ColumnConfig( "timestamp", "Timestamp", 120 );
+                    cc.setDateTimeFormat(DateTimeFormat.getMediumDateTimeFormat());
+                    columns.add(cc);
+                }
+
         // ============ CONTENTNODE ============
 		ColumnConfig cc = new ColumnConfig( "key", "Content Node", 150 );
 		cc.setRenderer( Renderers.GRID_LINK_RENDERER );

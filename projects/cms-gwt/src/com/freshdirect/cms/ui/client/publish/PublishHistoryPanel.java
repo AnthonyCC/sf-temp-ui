@@ -26,6 +26,7 @@ import com.freshdirect.cms.ui.client.MainLayout;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.publish.GwtPublishData;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -128,7 +129,12 @@ public class PublishHistoryPanel extends ContentPanel {
         }
         
         // ============ CREATED ============
-        columns.add(new ColumnConfig("created", "Publish On", 150));
+        {
+            ColumnConfig cc = new ColumnConfig("created", "Publish On", 150);
+            cc.setDateTimeFormat(DateTimeFormat.getMediumDateTimeFormat());
+            columns.add(cc);
+        }
+        
         
         // ============ PUBLISHER ============
         columns.add(new ColumnConfig("publisher", "Publish By", 150));
