@@ -34,7 +34,11 @@
 <%@ page import='com.freshdirect.webapp.taglib.test.SmartStoreSession' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.fdstore.content.ContentNodeModelUtil" %>
+<%!
+Logger LOG = LoggerFactory.getInstance("dyf_test.jsp");
+ %>
 <%
+
 
 String action = request.getParameter("action");
 String errorMsg = null;
@@ -106,14 +110,13 @@ FDCartLineModel createCartLine(String skuCode, double quantity, String salesUnit
 		if (skuModel.getProductModel() != null) {
 			line = new FDCartLineModel(new FDSku(fdProd),skuModel.getProductModel().getProductRef(),conf,null);
 		} else {
-			System.err.println("[" + skuCode + "]-> skuModel.getProductModel() = NULL, Skipping ...");
+			LOG.info("[" + skuCode + "]-> skuModel.getProductModel() = NULL, Skipping ...");
 		}
 	} catch (FDSkuNotFoundException sku_exc) {
-		System.err.println("SKU not found " + sku_exc);
+		LOG.error("SKU not found " + sku_exc);
 		return null;
 	} catch (Exception exc) {
-		System.err.println("General exception: " + exc + ", SKU=" + skuCode);
-		exc.printStackTrace();
+		LOG.error("General exception, SKU=" + skuCode, exc);
 		return null;
 	}
 	
@@ -164,7 +167,7 @@ void processCartLinesFromCSV(File inpFile, Long customerID, List cartLineItems) 
 			}
 		}
 	} catch (Exception exc) {
-		System.err.println("Trouble striked into processCSVInputFile; exc=" + exc);
+		LOG.error("Trouble striked into processCSVInputFile", exc);
 	}
 }
 
@@ -219,7 +222,10 @@ if ("recommend".equals(action)) {
 %>
 
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@page import="com.freshdirect.smartstore.SessionInput"%><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<%@page import="com.freshdirect.smartstore.SessionInput"%>
+<%@page import="org.apache.log4j.Logger"%>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <% if ("recommend".equals(action)) { %>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
@@ -412,7 +418,7 @@ if ("recommend".equals(action)) {
 
 <div style="padding: 20px 20px;">
 
-	<form action="dyf_test.jsp" method="GET" target="details">
+	<form action="dyf_test.jsp" method="get" target="details">
 		<input type="hidden" name="action" value="recommend"/>
 		<span class="text1">Choose a Customer:</span><select id="c_chooser" name="customer" onchange="if (this.value != '-----'){ document.getElementById('details-iframe').style.display = ''; document.forms[0].submit(); return false;};">
 			<option name="cust_none" selected="1">-----</option>

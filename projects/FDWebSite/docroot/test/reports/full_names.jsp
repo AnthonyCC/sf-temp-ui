@@ -47,7 +47,7 @@ if (ServletFileUpload.isMultipartContent(request)) {
 				else if (source.equals("file"))
 					fromFile = true;
 			}
-			System.err.println("fromFile: " + fromFile);
+			//System.err.println("fromFile: " + fromFile);
 		}
 	}
 

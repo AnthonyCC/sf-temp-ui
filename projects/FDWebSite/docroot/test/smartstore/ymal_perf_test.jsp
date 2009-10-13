@@ -78,6 +78,7 @@ static class TestPair {
 }
 %><%
 
+Logger LOG = LoggerFactory.getInstance("ymal_perf_test.jsp");
 
 EnumSiteFeature siteFeature = EnumSiteFeature.YMAL;
 
@@ -103,14 +104,14 @@ if (ServletFileUpload.isMultipartContent(request)) {
 				else if (source.equals("file"))
 					fromFile = true;
 			}
-			System.err.println("fromFile: " + fromFile);
+			LOG.info("fromFile: " + fromFile);
 		}
 	}
 
 	Iterator it = items.iterator();
 	while (it.hasNext()) {
 		FileItem item = (FileItem) it.next();
-		System.err.println("item: " + item.getFieldName());
+		LOG.info("item: " + item.getFieldName());
 		if ("noOfCycles".equals(item.getFieldName())) {
 			noOfCycles = item.getString();
 			if (noOfCycles == null || noOfCycles.length() == 0
@@ -151,7 +152,7 @@ if (ServletFileUpload.isMultipartContent(request)) {
 					Iterator rowIt = CSVUtils.rowIterator(item.getInputStream(), false, false);
 					while (rowIt.hasNext()) {
 						List row = (List) rowIt.next();
-						System.err.println("row: " + row);
+						LOG.info("row: " + row);
 						if (row.size() < 2)
 							continue;
 
@@ -173,9 +174,11 @@ if (ServletFileUpload.isMultipartContent(request)) {
 
 
 // debug
-System.err.println("# of cycles to simulate: " + noOfCycles);
+LOG.info("# of cycles to simulate: " + noOfCycles);
 
-%><html>
+%><%@page import="org.apache.log4j.Logger"%>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>YMAL PERFORMANCE TEST PAGE</title>

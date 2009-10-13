@@ -168,7 +168,7 @@ li span {
 
 			List formulas = Collections.EMPTY_LIST;
 			if (formula != null) {
-				System.err.println(T.compileFormula(formula,0));
+				//System.err.println(T.compileFormula(formula,0));
 				formulas = Collections.singletonList(formula);
 			}
 

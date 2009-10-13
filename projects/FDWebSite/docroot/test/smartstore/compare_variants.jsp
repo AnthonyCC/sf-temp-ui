@@ -51,6 +51,10 @@
 <%@page import="com.freshdirect.smartstore.impl.NullRecommendationService"%>
 <%@page import="com.freshdirect.smartstore.ymal.YmalUtil"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="com.freshdirect.smartstore.scoring.ScoringAlgorithm"%>
+<%@page import="com.freshdirect.smartstore.impl.ScriptedRecommendationService"%>
+<%@page import="org.apache.log4j.Logger"%>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -380,20 +384,22 @@ StoreLookup nsLookup = "detailed".equals(view) ? FactorUtil.getNewnessLookup() :
 /* redirect */
 String newURL = urlG.build();
 
+final Logger LOG = LoggerFactory.getInstance("compare_variants.jsp");
+
 // debug
 if (true) {
-	System.err.println("orig URI: " + origURL);
-	System.err.println("generated URI: " + newURL);
-	System.err.println("site feature: " + siteFeature.getName());
-	System.err.println("variant A: " + variantA);
-	System.err.println("variant B: " + variantB);
-	System.err.println("customer Email: " + customerEmail);
-	System.err.println("customer Id: " + customerId);
-	System.err.println("cohort Id: " + cohortId);
-	System.err.println("user variant: " + userVariant);
-	System.err.println("category Id: " + categoryId);
-	System.err.println("category name: " + categoryName);
-	System.err.println("view: " + view);
+	LOG.info("orig URI: " + origURL);
+	LOG.info("generated URI: " + newURL);
+	LOG.info("site feature: " + siteFeature.getName());
+	LOG.info("variant A: " + variantA);
+	LOG.info("variant B: " + variantB);
+	LOG.info("customer Email: " + customerEmail);
+	LOG.info("customer Id: " + customerId);
+	LOG.info("cohort Id: " + cohortId);
+	LOG.info("user variant: " + userVariant);
+	LOG.info("category Id: " + categoryId);
+	LOG.info("category name: " + categoryName);
+	LOG.info("view: " + view);
 }
 
 if (!origURL.equals(newURL)) {
@@ -421,8 +427,7 @@ if (bRecService instanceof ScriptedRecommendationService) {
 
 
 %>
-<%@page import="com.freshdirect.smartstore.scoring.ScoringAlgorithm"%>
-<%@page import="com.freshdirect.smartstore.impl.ScriptedRecommendationService"%><html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>VARIANT COMPARISON PAGE - <%= siteFeature.getName() %><%=
@@ -717,24 +722,24 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
     <% } // end if "simple".equals...
     List recsA = null;
 	if (aRecService != null) {
-		System.err.println("variant A recommender: " + aRecService.getClass().getName());
+		LOG.info("variant A recommender: " + aRecService.getClass().getName());
 		try {
 			recsA = aRecService.recommendNodes(si);
 			recsA = FDStoreRecommender.getInstance().filterProducts(recsA, null, true);
-			System.err.println("Recommender A node count: " + recsA.size());
+			LOG.info("Recommender A node count: " + recsA.size());
 		} catch (RuntimeException e) {
-			e.printStackTrace(System.err);
+			LOG.error("exception when recommend for A", e);
 		}
 	}
 	List recsB = null;
 	if (bRecService != null) {
-		System.err.println("variant B recommender: " + bRecService.getClass().getName());
+		LOG.info("variant B recommender: " + bRecService.getClass().getName());
 		try {
 			recsB = bRecService.recommendNodes(si);
 			recsB = FDStoreRecommender.getInstance().filterProducts(recsB, null, true);
-			System.err.println("Recommender B node count: " + recsB.size());
+			LOG.info("Recommender B node count: " + recsB.size());
 		} catch (RuntimeException e) {
-			e.printStackTrace(System.err);
+			LOG.error("exception when recommend for B", e);
 		}	
 	}	
     %>

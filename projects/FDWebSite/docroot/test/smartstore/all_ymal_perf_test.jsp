@@ -106,7 +106,7 @@ if (i_noOfCycles <= 0) {
 }
 
 // debug
-System.err.println("# of cycles to simulate: " + noOfCycles);
+//System.err.println("# of cycles to simulate: " + noOfCycles);
 
 /* redirect */
 String newURL = urlG.build();
@@ -240,7 +240,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     
     	Map sets = new HashMap();
     	Set keys = CmsManager.getInstance().getContentKeysByType(ContentType.get("Product"));
-		System.err.println("found " + keys.size() + " products");
+		//System.err.println("found " + keys.size() + " products");
     	Iterator it = keys.iterator();
     	while (it.hasNext()) {
     		ContentKey key = (ContentKey) it.next();
@@ -254,7 +254,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     	}
 
     	Set orphans = CmsManager.getInstance().getContentKeysByType(ContentType.get("YmalSet"));
-		System.err.println("found " + orphans.size() + " YMAL sets");
+		//System.err.println("found " + orphans.size() + " YMAL sets");
     	it = orphans.iterator();
     	while (it.hasNext()) {
     		ContentKey key = (ContentKey) it.next();

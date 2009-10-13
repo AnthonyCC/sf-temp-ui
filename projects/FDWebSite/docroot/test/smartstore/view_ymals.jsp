@@ -89,11 +89,12 @@ if (products)
 else
 	urlG.remove("products");
 
+Logger LOG = LoggerFactory.getInstance("view_ymals.jsp");
 
 // debug
-System.err.println("show departments: " + departments);
-System.err.println("show categories: " + categories);
-System.err.println("show products: " + products);
+LOG.info("show departments: " + departments);
+LOG.info("show categories: " + categories);
+LOG.info("show products: " + products);
 
 /* redirect */
 String newURL = urlG.build();
@@ -102,7 +103,9 @@ if (!origURL.equals(newURL)) {
 	response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));	
 }
 
-%><html>
+%><%@page import="org.apache.log4j.Logger"%>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>VIEW SMART YMALS PAGE</title>
@@ -193,7 +196,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     	});
 
     	Set keys = CmsManager.getInstance().getContentKeysByType(ContentType.get("YmalSet"));
-		System.err.println("found " + keys.size() + " YMAL sets");
+		LOG.info("found " + keys.size() + " YMAL sets");
     	Iterator it = keys.iterator();
     	while (it.hasNext()) {
     		ContentKey key = (ContentKey) it.next();
@@ -220,7 +223,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 
     	if (departments) {
 	    	keys = CmsManager.getInstance().getContentKeysByType(ContentType.get("Department"));
-			System.err.println("found " + keys.size() + " departments");
+			LOG.info("found " + keys.size() + " departments");
 	    	it = keys.iterator();
 	    	while (it.hasNext()) {
 	    		ContentKey key = (ContentKey) it.next();
@@ -251,7 +254,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 
     	if (categories) {
 	    	keys = CmsManager.getInstance().getContentKeysByType(ContentType.get("Category"));
-			System.err.println("found " + keys.size() + " categories");
+			LOG.info("found " + keys.size() + " categories");
 	    	it = keys.iterator();
 	    	while (it.hasNext()) {
 	    		ContentKey key = (ContentKey) it.next();
@@ -283,7 +286,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 		if (products) {
 	    	keys = new HashSet(CmsManager.getInstance().getContentKeysByType(ContentType.get("Product")));
 	    	keys.addAll(CmsManager.getInstance().getContentKeysByType(ContentType.get("ConfiguredProduct")));
-			System.err.println("found " + keys.size() + " products");
+			LOG.info("found " + keys.size() + " products");
 	    	it = keys.iterator();
 	    	while (it.hasNext()) {
 	    		ContentKey key = (ContentKey) it.next();

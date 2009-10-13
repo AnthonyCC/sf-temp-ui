@@ -92,11 +92,11 @@
 	String newURL = urlG.build();
 
 	// debug
-	System.err.println("orig URI: " + origURL);
-	System.err.println("generated URI: " + newURL);
-	System.err.println("# of items to display: " + noOfItems);
-	System.err.println("category Id: " + categoryId);
-	System.err.println("category name: " + categoryName);
+	//System.err.println("orig URI: " + origURL);
+	//System.err.println("generated URI: " + newURL);
+	//System.err.println("# of items to display: " + noOfItems);
+	//System.err.println("category Id: " + categoryId);
+	//System.err.println("category name: " + categoryName);
 
 	if (!origURL.equals(newURL)) {
 		response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));

@@ -40,7 +40,7 @@
 
 Iterator it;
 URLGenerator urlG = new URLGenerator(request);
-System.err.println(request.getServletPath());
+//System.err.println(request.getServletPath());
 String origURL = urlG.build();
 
 if (urlG.get("refresh") != null) {

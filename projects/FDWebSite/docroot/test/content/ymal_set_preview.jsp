@@ -15,8 +15,12 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%@ page import="com.freshdirect.smartstore.SessionInput"%>
-<%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%><fd:CheckLoginStatus />
+<%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@page import="org.apache.log4j.Logger"%>
+<fd:CheckLoginStatus />
 <%
+	final Logger LOG = LoggerFactory.getInstance("ymal_set_preview.js");
 	if (request.getParameter("ymalSetId") == null) {
 %>
 	<div style="text-align: center; font-size: 14px; font-weight: bold; color: red;">Nothing to render...</div>
@@ -75,7 +79,7 @@
 for (Iterator it = relatedProducts.iterator(); it.hasNext();) {
 	ProductModel prd = (ProductModel) it.next();
 	if (!prd.isDisplayable()) {
-		System.err.println("Throwing non disp prod " + prd.getContentName());
+		LOG.error("Throwing non disp prod " + prd.getContentName());
 		%><div>Skip Product <span style="font-weight: bold;"><%= prd %></span></div><%
 		it.remove();
 	}
@@ -85,7 +89,7 @@ for (Iterator it = relatedProducts.iterator(); it.hasNext();) {
 for (Iterator it = relatedRecipes.iterator(); it.hasNext();) {
 	Recipe rec = (Recipe) it.next();
 	if (!rec.isAvailable()) {
-		System.err.println("Throwing unavailable rec " + rec.getContentName());
+		LOG.error("Throwing unavailable rec " + rec.getContentName());
 		%><div>Skip Unavail Recipe <span style="font-weight: bold;"><%= rec %></span></div><%
 		it.remove();
 	}

@@ -15,6 +15,7 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil"%>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <% 
 String thisPageURI = request.getRequestURI();
 String bgcolor = "#CCFFCC"; 
@@ -138,11 +139,10 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
 			                pendingMethod = pendingLine.getMethod().getName();
 			            }
 		            } else {
-		            	System.err.println("Unknown class: " + anObj.getClass());
+		            	LoggerFactory.getInstance("i_complaint_info.jsp").error("Unknown class: " + anObj.getClass());
 		            }
 	        	} catch(ClassCastException exc) {
-	        		System.err.println(exc);
-	        		exc.printStackTrace();
+	        		LoggerFactory.getInstance("i_complaint_info.jsp").error("this cannot happen", exc);
 	        	}
 	        }
 	

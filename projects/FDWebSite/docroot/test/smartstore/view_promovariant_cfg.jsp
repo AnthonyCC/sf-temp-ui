@@ -32,6 +32,7 @@
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@page import="org.apache.commons.lang.math.NumberUtils"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
+<%@page import="java.util.Collection"%>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -74,7 +75,7 @@ td.no-use{border-color:#999 !important;}
 
 Iterator it;
 URLGenerator urlG = new URLGenerator(request);
-System.err.println(request.getServletPath());
+//System.err.println(request.getServletPath());
 String origURL = urlG.build();
 PromoVariantCache cache=PromoVariantCache.getInstance();
 if (urlG.get("refresh") != null) {

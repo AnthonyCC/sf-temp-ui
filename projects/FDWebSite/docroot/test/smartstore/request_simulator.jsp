@@ -206,6 +206,7 @@ if (!origURL.equals(newURL)) {
 }
 
 %>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -465,7 +466,7 @@ if (!origURL.equals(newURL)) {
 					clone.put(pm, new Integer(count));
 				}
 			} catch (RuntimeException e) {
-				e.printStackTrace(System.err);
+				LoggerFactory.getInstance("request_simulator.jsp").error("exception during iteration #" + i, e);
 			}
 		}
 	}
