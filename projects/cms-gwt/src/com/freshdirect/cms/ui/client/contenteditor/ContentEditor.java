@@ -13,11 +13,14 @@ import com.freshdirect.cms.ui.model.TabDefinition;
 public class ContentEditor extends TabPanel {
 
 	private HashMap<String, ContentForm>	panels;
+	private HashMap<String, TabItem>		tabs;
 	private GwtNodeData						nodeData;
+	private static String 					lastActiveTab = null;
 
 	public ContentEditor() {
 		super();
 		panels = new HashMap<String, ContentForm>();
+		tabs = new HashMap<String, TabItem>();
 		setBodyBorder( false );
 		setBorders( false );
 	}
@@ -26,9 +29,15 @@ public class ContentEditor extends TabPanel {
 		super();
 		this.nodeData = nodeData;
 		panels = new HashMap<String, ContentForm>();
+		tabs = new HashMap<String, TabItem>();
 		setBodyBorder( false );
 		setBorders( false );
 		addTabs( nodeData.getTabDefinition(), contextPath );
+
+		if ( lastActiveTab != null && tabs.containsKey( lastActiveTab )) {
+			setAutoSelect( false );
+			setSelection( tabs.get( lastActiveTab ) );
+		}
 	}
 
 	public void addTabs( TabDefinition tabDef, final String contextPath ) {
@@ -45,11 +54,12 @@ public class ContentEditor extends TabPanel {
 						tab.add( form );
 						tab.layout();
 					}
+					lastActiveTab = tabLabel;
 				}
 			} );
 			
 			add( tab );
-		}
+			tabs.put( tabLabel, tab );
+		}		
 	}
-
 }
