@@ -272,15 +272,6 @@
 		</session>
 
 		<session>
-			<ejb-name>OfflineBatchRecommender</ejb-name>
-			<home>com.freshdirect.smartstore.ejb.OfflineBatchRecommenderHome</home>
-			<remote>com.freshdirect.smartstore.ejb.OfflineBatchRecommenderSB</remote>
-			<ejb-class>com.freshdirect.smartstore.ejb.OfflineBatchRecommenderSessionBean</ejb-class>
-			<session-type>Stateless</session-type>
-			<transaction-type>Container</transaction-type>
-		</session>
-
-		<session>
 			<ejb-name>OfflineRecommender</ejb-name>
 			<home>com.freshdirect.smartstore.ejb.OfflineRecommenderHome</home>
 			<remote>com.freshdirect.smartstore.ejb.OfflineRecommenderSB</remote>

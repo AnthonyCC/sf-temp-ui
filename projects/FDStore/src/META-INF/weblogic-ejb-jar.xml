@@ -398,19 +398,6 @@
 	</weblogic-enterprise-bean>
 
 	<weblogic-enterprise-bean>
-		<ejb-name>OfflineBatchRecommender</ejb-name>
-		<stateless-session-descriptor>
-			<pool>
-				<max-beans-in-free-pool>10</max-beans-in-free-pool>
-			</pool>
-			<stateless-clustering></stateless-clustering>
-		</stateless-session-descriptor>
-		<transaction-descriptor></transaction-descriptor>
-		<reference-descriptor></reference-descriptor>
-		<jndi-name>freshdirect.smartstore.OfflineBatchRecommender</jndi-name>
-	</weblogic-enterprise-bean>
-	
-	<weblogic-enterprise-bean>
 		<ejb-name>OfflineRecommender</ejb-name>
 		<stateless-session-descriptor>
 			<pool>

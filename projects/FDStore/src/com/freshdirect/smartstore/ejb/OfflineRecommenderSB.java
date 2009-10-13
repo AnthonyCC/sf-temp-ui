@@ -1,17 +1,19 @@
 package com.freshdirect.smartstore.ejb;
 
 import java.rmi.RemoteException;
-import java.util.List;
+import java.util.Set;
 
 import javax.ejb.EJBObject;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 
 public interface OfflineRecommenderSB extends EJBObject {
-	public List<ProductModel> recommend(EnumSiteFeature siteFeature,
-			String customerEmail, ContentNodeModel currentNode)
-			throws RemoteException, FDResourceException;
+	public Set<String> getRecentCustomers(int days) throws RemoteException,
+			FDResourceException;
+
+	public void checkSiteFeature(String siteFeature) throws RemoteException,
+			FDResourceException;
+
+	public int recommend(String siteFeature, String customerId,
+			String currentNode) throws RemoteException, FDResourceException;
 }

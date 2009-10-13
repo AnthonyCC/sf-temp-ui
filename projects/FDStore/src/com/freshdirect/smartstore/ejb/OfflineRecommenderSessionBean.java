@@ -3,9 +3,11 @@ package com.freshdirect.smartstore.ejb;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -17,11 +19,13 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
@@ -68,11 +72,12 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 		customerManagerHome = null;
 	}
 
-	private FDUserI getUserByEmail(String email) throws FDResourceException {
+	private FDUserI getUserById(String customerId) throws FDResourceException {
 		lookupCustomerManagerHome();
 		try {
 			FDCustomerManagerSB sb = customerManagerHome.create();
-			FDUser user = sb.recognizeByEmail(email);
+			FDIdentity identity = new FDIdentity(customerId);
+			FDUser user = sb.recognize(identity);
 			return user;
 		} catch (CreateException ce) {
 			invalidateCustomerManagerHome();
@@ -105,7 +110,8 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 			+ " (LAST_MODIFIED, CUSTOMER_ID, SITE_FEATURE_ID, VARIANT_ID, PRODUCT_ID, POSITION, NAME, LINK, IMAGE_PATH, IMAGE_WIDTH, IMAGE_HEIGHT, RATING, PRICE, WAS_PRICE, TIERED_PRICE, ABOUT_PRICE, BURST)"
 			+ " VALUES (SYSDATE, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-	private int saveRecommendations(FDUserI user, Recommendations recommendations) {
+	private int saveRecommendations(FDUserI user,
+			Recommendations recommendations) {
 		Connection conn = null;
 
 		try {
@@ -113,14 +119,16 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 			PreparedStatement ps = conn
 					.prepareStatement(DELETE_OFFLINE_RECOMMENDATION);
 			ps.setString(1, user.getIdentity().getErpCustomerPK());
-			ps.setString(2, recommendations.getVariant().getSiteFeature().getName());
+			ps.setString(2, recommendations.getVariant().getSiteFeature()
+					.getName());
 			ps.executeUpdate();
 			ps.close();
 			ps = null;
 
 			int rowCount = 0;
 			int n = Math.min(5, recommendations.getProducts().size());
-			EnumSiteFeature siteFeature = recommendations.getVariant().getSiteFeature();
+			EnumSiteFeature siteFeature = recommendations.getVariant()
+					.getSiteFeature();
 
 			for (int i = 0; i < n; i++) {
 				ps = conn.prepareStatement(INSERT_OFFLINE_RECOMMENDATION);
@@ -180,7 +188,7 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 
 			return rowCount;
 		} catch (SQLException e) {
-			LOGGER.error("saving recommendations failed; exception=" + e);
+			LOGGER.error("saving recommendations failed", e);
 			try {
 				LOGGER.error("Connection URL: " + conn.getMetaData().getURL()
 						+ "/ User: " + conn.getMetaData().getUserName());
@@ -197,16 +205,77 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List<ProductModel> recommend(EnumSiteFeature siteFeature,
-			String customerEmail, ContentNodeModel currentNode)
+	private static final String QUERY_RECENT_CUSTOMERS = "SELECT DISTINCT customer_id FROM cust.sale"
+			+ " WHERE status = 'STL' AND cromod_date > sysdate - ?";
+
+	public Set<String> getRecentCustomers(int days) throws RemoteException,
+			FDResourceException {
+		Set<String> customerIds = new HashSet<String>(200000);
+		Connection conn = null;
+
+		try {
+			conn = getConnection();
+			PreparedStatement ps = conn
+					.prepareStatement(QUERY_RECENT_CUSTOMERS);
+			ps.setInt(1, days);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				customerIds.add(rs.getString(1));
+			}
+			rs.close();
+			rs = null;
+
+			ps.close();
+			ps = null;
+
+		} catch (SQLException e) {
+			LOGGER.error("retrieving recent customers failed", e);
+			try {
+				LOGGER.error("Connection URL: " + conn.getMetaData().getURL()
+						+ "/ User: " + conn.getMetaData().getUserName());
+			} catch (SQLException e1) {
+			}
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				throw new EJBException(e);
+			}
+		}
+		return customerIds;
+	}
+
+	public void checkSiteFeature(String siteFeatureName)
 			throws RemoteException, FDResourceException {
-		FDUserI user = getUserByEmail(customerEmail);
+		EnumSiteFeature siteFeature = EnumSiteFeature.getEnum(siteFeatureName);
+		if (siteFeature == null)
+			throw new FDResourceException("unknown site feature: "
+					+ siteFeatureName);
+	}
+
+	public int recommend(String siteFeatureName, String customerId,
+			String currentNodeId) throws RemoteException, FDResourceException {
+		EnumSiteFeature siteFeature = EnumSiteFeature.getEnum(siteFeatureName);
+		if (siteFeature == null)
+			throw new FDResourceException("unknown site feature: "
+					+ siteFeatureName);
+		ContentNodeModel currentNode = null;
+		if (currentNodeId != null) {
+			currentNode = ContentFactory.getInstance().getContentNode(
+					currentNodeId);
+			if (currentNode == null)
+				throw new FDResourceException("unknown current node: "
+						+ currentNodeId);
+		}
+		FDUserI user = getUserById(customerId);
 		SessionInput input = createSessionInput(user, currentNode);
 		input.setMaxRecommendations(5);
 		input.setIncludeCartItems(true);
 		Recommendations recs = FDStoreRecommender.getInstance()
 				.getRecommendations(siteFeature, user, input, null);
 		saveRecommendations(user, recs);
-		return recs.getProducts();
+		return recs.getProducts().size();
 	}
 }
