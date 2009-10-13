@@ -20,6 +20,7 @@ import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
@@ -227,12 +228,28 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		this.address = new AddressModel();
 		String homeZipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()),"").trim();
 		String corpZipcode = NVL.apply(request.getParameter(EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()),"").trim();
-		if(!"".equals(homeZipcode) && "".equals(corpZipcode)){
-			this.address.setZipCode(homeZipcode);
-			this.serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter("serviceType"), "").trim());
+		
+		System.out.println("successPage in populate: " + successPage);
+		String gcLanding = FDStoreProperties.getGiftCardLandingUrl();
+		String rhLanding = FDStoreProperties.getRobinHoodLandingUrl();
+		boolean isGiftCardEnabled = FDStoreProperties.isGiftCardEnabled();
+		boolean isRobinHoodEnabled = FDStoreProperties.isRobinHoodEnabled();
+		
+		if((successPage.indexOf(gcLanding)>-1 && isGiftCardEnabled)||(successPage.indexOf(rhLanding)>-1 && isRobinHoodEnabled)){
+			if(!"".equals(homeZipcode) && "".equals(corpZipcode)){
+				this.address.setZipCode(homeZipcode);
+			}else{
+				this.address.setZipCode(corpZipcode);
+			}
+			this.serviceType = EnumServiceType.getEnum(NVL.apply("WEB", "").trim());
 		}else{
-			this.address.setZipCode(corpZipcode);
-			this.serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter("corpServiceType"), "").trim());
+			if(!"".equals(homeZipcode) && "".equals(corpZipcode)){
+				this.address.setZipCode(homeZipcode);
+				this.serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter("serviceType"), "").trim());
+			}else{
+				this.address.setZipCode(corpZipcode);
+				this.serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter("corpServiceType"), "").trim());
+			}
 		}
 		//this.serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter("serviceType"), "").trim());
 		this.address.setAddress1(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim());		
