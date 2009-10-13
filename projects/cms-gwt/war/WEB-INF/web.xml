@@ -73,6 +73,11 @@
 		<filter-class>com.freshdirect.framework.conf.FDRegistryFilter</filter-class>
   </filter>	
 
+    <filter>
+        <filter-name>CmsHibernateSession</filter-name>
+        <filter-class>com.freshdirect.cms.core.CmsHibernateSessionFilter</filter-class>
+    </filter>
+
   <filter-mapping>
   	<filter-name>registry</filter-name>
     <url-pattern>/contentService</url-pattern>
@@ -80,6 +85,16 @@
     <url-pattern>/adminService</url-pattern>
     <url-pattern>/com.freshdirect.cms.ui.cmsgwt/adminService</url-pattern>
   </filter-mapping>
+  
+  <filter-mapping>
+  	<filter-name>CmsHibernateSession</filter-name>
+    <url-pattern>/contentService</url-pattern>
+    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/contentService</url-pattern>
+    <url-pattern>/adminService</url-pattern>
+    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/adminService</url-pattern>
+  </filter-mapping>
+
+  
 <!--  -->
   <security-constraint>
 		<display-name>CMS Security Constraint</display-name>
