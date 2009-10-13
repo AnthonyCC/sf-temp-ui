@@ -65,6 +65,11 @@ public class PublishStatusPopup extends Window {
                     public void onSuccess(ChangeSetQueryResponse resp) {
                         refreshFields(resp);
                     }
+                    
+                    @Override
+                    public void errorOccured(Throwable error) {
+                        timer.cancel();
+                    }
 
                 });
             }
