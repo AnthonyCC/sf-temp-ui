@@ -49,10 +49,10 @@ public class FDContentTypes {
 	
 	public static final ContentType SYNONYM = ContentType.get("Synonym");
 
-        public static final ContentType SEARCH_RELEVANCY_LIST = ContentType.get("SearchRelevancyList");
-        public static final ContentType SEARCH_RELEVANCY_HINT = ContentType.get("SearchRelevancyHint");
+	public static final ContentType SEARCH_RELEVANCY_LIST = ContentType.get("SearchRelevancyList");
+	public static final ContentType SEARCH_RELEVANCY_HINT = ContentType.get("SearchRelevancyHint");
         
-        public static final ContentType WORD_STEMMING_EXCEPTION = ContentType.get("WordStemmingException");
+	public static final ContentType WORD_STEMMING_EXCEPTION = ContentType.get("WordStemmingException");
 	
    	public static final ContentType FAVORITE_LIST = ContentType.get("FavoriteList");
 	
