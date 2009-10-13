@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.mail;
 
 import java.util.Collection;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.EnumDiscountType;
@@ -49,6 +50,9 @@ public class FDXMLSerializer extends XMLSerializer {
 
 		c.add(EnumDiscountType.class);
 		c.add( EnumModel.class );
+		
+		c.add(ContentKey.class);
+		
 		return c;
 	}
 
