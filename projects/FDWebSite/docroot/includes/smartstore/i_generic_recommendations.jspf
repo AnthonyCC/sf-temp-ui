@@ -75,8 +75,6 @@
 	boolean hideSavings = genericRecommendationsVariant.isSmartSavings() && SmartStoreUtil.countSavingProductsInCart(genericRecommendationsVariant, pip_u, prevRecs) < 0;
 
 	if ( genericRecommendationsVariant != null && !hideSavings) {
-		// [APPREQ-689] product ID -> recommender mapping (SmartYMAL) otherwise null
-		final Map<String,String> prd2recommendation = (Map<String,String>) request.getAttribute("map_prd2recommender");
 %>
 <fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>">
 		<% 		
@@ -84,6 +82,9 @@
 			ConfigurationContext confContext = new ConfigurationContext();
 			confContext.setFDUser( pip_u );
 			boolean hasAnyItemAddable = false;
+
+			// [APPREQ-689] product ID -> recommender mapping (SmartYMAL) otherwise null
+			final Map<String,String> prd2recommendation = (Map<String,String>) request.getAttribute("map_prd2recommender");
 
 			// List<ProductImpression> impressions : configured products enlisted in 'Your Favourites' table
 			List<ProductImpression> impressions = new ArrayList<ProductImpression>();
