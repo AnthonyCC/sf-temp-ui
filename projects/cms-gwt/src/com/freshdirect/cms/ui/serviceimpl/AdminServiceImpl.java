@@ -44,7 +44,9 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
 
     @Override
     public AdminProcStatus rebuildIndexes() {
+        
         synchronized (AdminServiceImpl.class) {
+            LOG.info("rebuild index called ("+status.isRunning()+")");
             if (!status.isRunning()) {
                 status.setRunning(true);
                 executor.execute(new Runnable() {

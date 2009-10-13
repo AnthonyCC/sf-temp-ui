@@ -303,10 +303,15 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 	        if (!user.isPublishAllowed()) {
 	            throw new GwtSecurityException("User "+user.getName()+" is not allowed to publish!");
 	        }
+                LOG.info("start publish called by " + user.getName() + " : '" + comment + "'");
 	        Publish recentPublish = getPublishService().getMostRecentNotCompletedPublish();
-	        if (recentPublish!=null && EnumPublishStatus.PROGRESS.equals(recentPublish.getStatus())) {
-	            return recentPublish.getId();
-	        }
+                LOG.info("most recent publish : " + recentPublish + ", status : " + (recentPublish != null ? recentPublish.getStatus() : null)
+                        + ", id : "+ (recentPublish != null ? recentPublish.getId() : null));
+                
+                if (recentPublish != null && EnumPublishStatus.PROGRESS.equals(recentPublish.getStatus())) {
+                    LOG.info("publish in progress ...: "+recentPublish.getId());
+                    return recentPublish.getId();
+                }
 	        
 	        Date date = new Date();
 	        
@@ -316,7 +321,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 	        publish.setStatus(EnumPublishStatus.PROGRESS);
 	        publish.setDescription(comment);
 	        publish.setLastModified(date);
-	        
+	        LOG.info("starting new publish by " + user.getName() + ", with comment : '" + comment + "'");
 	        return getPublishService().doPublish(publish);
         } catch (Throwable e) {
             LOG.error("RuntimeException for startPublish ", e);
