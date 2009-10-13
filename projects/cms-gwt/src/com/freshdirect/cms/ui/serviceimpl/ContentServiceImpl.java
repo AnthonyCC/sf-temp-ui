@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeComparator;
 import com.freshdirect.cms.ContentNodeI;
@@ -73,21 +72,25 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", "FDFolder:starterLists",
             "FDFolder:synonymList", SearchRelevancyList.SEARCH_RELEVANCY_KEY, SearchRelevancyList.WORD_STEMMING_EXCEPTION };
     
-    public List<ContentNodeModel> search(String searchTerm) {
-        List<SearchHit> hits = (List<SearchHit>)CmsManager.getInstance().search(searchTerm, MAX_HITS);
-        List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(hits.size());
-        for (SearchHit hit : hits) {
-            ContentKey key = hit.getContentKey();
-            ContentNodeI node = CmsManager.getInstance().getContentNode(key);
-            if ( node == null )
-            	continue;
-            ContentNodeModel n = TranslatorToGwt.getContentNodeModel(node);
-            result.add(n);
-        }
-        Collections.sort( result );
-        
-        return result;
-    }
+	public List<ContentNodeModel> search( String searchTerm ) {
+		List<SearchHit> hits = (List<SearchHit>)CmsManager.getInstance().search( searchTerm, MAX_HITS );
+		List<ContentNodeI> resultNodes = new ArrayList<ContentNodeI>( hits.size() );
+		List<ContentNodeModel> result = new ArrayList<ContentNodeModel>( hits.size() );
+		
+		for ( SearchHit hit : hits ) {
+			resultNodes.add( hit.getContentKey().getContentNode() );
+		}
+		Collections.sort( resultNodes, ContentNodeComparator.DEFAULT );
+		
+		for ( ContentNodeI node : resultNodes ) {
+			if ( node == null )
+				continue;
+			ContentNodeModel n = TranslatorToGwt.getContentNodeModel( node );
+			result.add( n );
+		}
+
+		return result;
+	}
 
     public List<ContentNodeModel> getChildren(ContentNodeModel loadConfig) throws ServerException {
         try {
@@ -121,11 +124,12 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         }
     }
 
-    @SuppressWarnings("unchecked")
 	private TreeSet<ContentNodeI> getOrderedNodes(Collection<ContentKey> childKeys) {
         TreeSet<ContentNodeI> nodes = new TreeSet<ContentNodeI>(ContentNodeComparator.DEFAULT);
         for (ContentKey key : childKeys) {
-            nodes.add(key.getContentNode());
+        	ContentNodeI node = key.getContentNode();
+        	if ( node != null )
+        		nodes.add( node );
         }
         return nodes;
     }
