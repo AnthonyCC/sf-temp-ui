@@ -90,6 +90,11 @@
 	} else if ( isGroceryVirtual ) 
 		noLeftNav=false;
 	
+	//smart category for meat deals and edlp
+	if(layouttype==EnumLayoutType.MEAT_DEALS.getId()){
+		noLeftNav=true;
+	}
+	
 	
 	// [APPREQ-77] Page uses include media type layout
 	boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_INCLUDE.getId()); // [APPREQ-77]
