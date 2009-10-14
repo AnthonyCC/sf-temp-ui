@@ -253,7 +253,8 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                     publish = service.getPublish(query.getPublishId());
                     Publish prevPublish = service.getPreviousPublish(publish);
                 
-                    prevTimestamp = prevPublish.getTimestamp();
+                    // for unknown reason, sometimes during publish, prevPublish become null, fortunately 
+                    prevTimestamp = prevPublish != null ? prevPublish.getTimestamp() : null;
                     timestamp = publish.getTimestamp();
                 }
                 if (query.isPublishInfoQuery()) {
@@ -266,7 +267,8 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 }
                 
                 LOG.info("collecting changes from " + prevTimestamp + " to " + timestamp + ", query:" + query);
-                List<ChangeSet> result = (List<ChangeSet>) chgService.getChangesBetween(prevTimestamp, timestamp);
+                List<ChangeSet> result = prevTimestamp != null ? (List<ChangeSet>) chgService.getChangesBetween(prevTimestamp, timestamp)
+                        : new ArrayList<ChangeSet>();
                 LOG.info("returning " + result.size() + " changeset" + ", query:" + query);
                 
                 // hack, to not fail with thousands of changesets ...
