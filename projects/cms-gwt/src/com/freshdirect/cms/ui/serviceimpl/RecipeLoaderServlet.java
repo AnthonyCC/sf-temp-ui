@@ -21,6 +21,12 @@ import com.freshdirect.framework.util.StringUtil;
 
 public class RecipeLoaderServlet extends FileUploadServlet {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    
+
     @Override
     protected String handleFileItems(HttpServletRequest req, List<FileItem> items) throws IOException, ServletException {
         String type = null;

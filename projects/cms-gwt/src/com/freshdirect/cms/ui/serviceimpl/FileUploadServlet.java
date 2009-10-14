@@ -15,6 +15,11 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 public abstract class FileUploadServlet extends HttpServlet {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    
     ServletFileUpload upload;
 
     @Override

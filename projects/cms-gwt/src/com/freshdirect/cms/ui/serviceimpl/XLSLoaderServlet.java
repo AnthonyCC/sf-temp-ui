@@ -18,6 +18,11 @@ import com.freshdirect.cms.fdstore.ProductBulkLoader;
 
 public class XLSLoaderServlet extends FileUploadServlet {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected String handleFileItems(HttpServletRequest req, List<FileItem> list) throws ServletException, IOException  {
 

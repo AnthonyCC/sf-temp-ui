@@ -401,7 +401,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             for (ContentNodeModel domain : domains) {
                 ContentKey key = (ContentKey) TranslatorFromGwt.getServerValue(domain);
                 ContentNodeI node = key.getContentNode();
-                List<ContentKey> domainValues = (List<ContentKey>) node.getAttribute("domainValues").getValue();
+                List<ContentKey> domainValues = (List<ContentKey>) node.getAttributeValue("domainValues");
                 
                 List<ContentNodeModel> tempList = new ArrayList<ContentNodeModel>();
                 for (ContentKey domainValue : domainValues) {
