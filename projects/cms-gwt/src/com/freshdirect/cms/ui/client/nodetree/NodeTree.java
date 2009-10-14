@@ -91,7 +91,6 @@ public class NodeTree extends ContentPanel {
 
 					@Override
 					public void errorOccured( Throwable error ) {
-						//MainLayout.stopProgress();
 						callback.onFailure( error );
 					}
 
@@ -176,11 +175,16 @@ public class NodeTree extends ContentPanel {
     	private List<TreeContentNodeModel> nodes;
     	TreeContentNodeModel currentNode;
     	private List<String> pathList;
+    	private boolean forceRefresh;
     	    	
     	public void synchronize( String path ) {    		
         	tree.collapseAll();        	    		
         	tree.addListener( Events.Expand, this );    
-    		initTokens(path);    		
+    		initTokens(path);
+    	}
+    	    	
+    	public void setForceRefresh(boolean fr) {
+    		forceRefresh = fr;
     	}
     	
     	public void initTokens(String path) {    		
@@ -196,16 +200,21 @@ public class NodeTree extends ContentPanel {
     			}
     		}
     		
-    		tree.getStore().getLoader().loadChildren(currentNode);
-    		tree.getStore().getLoader().addLoadListener(new LoadListener() {
-    			
-    			@Override
-				public void loaderLoad(LoadEvent le) {    				
-    				tree.setExpanded(currentNode, true);
-    				tree.getStore().getLoader().removeLoadListener(this);
-				}
-    			
-    		});
+    		if (forceRefresh) {
+	    		tree.getStore().getLoader().loadChildren(currentNode);
+	    		tree.getStore().getLoader().addLoadListener(new LoadListener() {
+	    			
+	    			@Override
+					public void loaderLoad(LoadEvent le) {    				
+	    				tree.setExpanded(currentNode, true);
+	    				tree.getStore().getLoader().removeLoadListener(this);
+					}
+	    			
+	    		});
+    		} 
+    		else {
+    			tree.setExpanded(currentNode, true);
+    		}
     		
     	}
     	
@@ -397,7 +406,7 @@ public class NodeTree extends ContentPanel {
 		refreshButton.setToolTip( new ToolTipConfig("Refresh", "Refresh the node tree.") );  
 		refreshButton.addListener( Events.OnClick, new Listener<BaseEvent>() { 
 			@Override public void handleEvent( BaseEvent be ) {
-				refresh(expandedPaths);
+				refresh(expandedPaths, true);
 			}; 
 		} );
 		nodeToolBar.add( refreshButton );
@@ -539,10 +548,12 @@ public class NodeTree extends ContentPanel {
     
     
     public void synchronize( String path ) {
+    	synchronizer.setForceRefresh(true);
     	synchronizer.synchronize( path );
     }
     
-    public void refresh(List<String> paths) {
+    public void refresh(List<String> paths, boolean forceRefresh) {
+    	synchronizer.setForceRefresh(forceRefresh);
     	synchronizer.refresh(paths);
     }
     

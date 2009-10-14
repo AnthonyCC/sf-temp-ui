@@ -158,7 +158,7 @@ public class ContentTreePopUp extends Window {
     @Override
     public void show() {
     	super.show();
-    	treepanel.refresh(treepanel.getExpandedPaths());
+    	treepanel.refresh(treepanel.getExpandedPaths(), false);
     	treepanel.scrollHack();
     }
 }
