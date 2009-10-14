@@ -28,4 +28,6 @@ public interface RoutingGatewaySB extends EJBObject {
 	
 	public void sendReleaseReservationRequest(DlvReservationModel reservation,ContactAddressModel address) throws RemoteException;
 
+	public void sendUpdateReservationRequest(DlvReservationModel reservation,ContactAddressModel address)throws RemoteException;
+
 }

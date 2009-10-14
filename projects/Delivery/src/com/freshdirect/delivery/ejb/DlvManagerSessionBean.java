@@ -1761,13 +1761,37 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			} else if(reservation.getStatusCode() == 15 || reservation.getStatusCode() == 20) {
 				doReleaseReservationEx(reservation, address);
 				//clearUnassignedInfo(reservation.getId());
-			} /*else if(reservation.getStatusCode() == 10) {
-				doReleaseReservationEx(reservation, address);
-			}*/
+			} else if(reservation.getStatusCode() == 5) {
+				updateReservationEx(reservation, address);
+			}
 		} else if (reservation.getUnassignedActivityType()==null){
 			doConfirmEx(reservation, address, previousOrderId);
 		}	else if (RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
 			doReleaseReservationEx(reservation, address);
+		}
+	}
+	
+	public void updateReservationEx(DlvReservationModel reservation,ContactAddressModel address) {
+		
+		if(reservation==null || address==null ||!reservation.isInUPS()/*|| reservation.getUnassignedActivityType().*/)
+			return ;
+		RoutingUtil util=RoutingUtil.getInstance();
+		IOrderModel order= util.getOrderModel(address,reservation.getOrderId());
+		
+		try {
+			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
+			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
+			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getZoneCode()));
+			order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
+			this.schedulerUpdateOrder(order, reservation,reservation.getRoutingOrderId());
+			if(reservation.isUnassigned()) {
+				clearUnassignedInfo(reservation.getId());
+			}
+			
+		} catch (Exception e) {
+			LOGGER.debug("Exception in updateReservationEx():"+e.toString());
+			e.printStackTrace();
+			setUnassignedInfo(reservation.getId(),RoutingActivityType.CONFIRM_TIMESLOT);		
 		}
 	}
 	
@@ -2024,37 +2048,31 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		return reservation;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
 	private void schedulerConfirmOrder(IOrderModel orderModel,DlvReservationModel reservation, String previousOrderId) throws RoutingServiceException {
-		
 		
 		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
 		orderModel.setOrderNumber(reservation.getOrderId());
-		boolean isUpdated = true;
-		if(orderModel.getOrderNumber() != null && !orderModel.getOrderNumber().equalsIgnoreCase(previousOrderId)) {
-			isUpdated=routingService.schedulerUpdateOrder(orderModel, previousOrderId);
-			
-			LOGGER.debug("routingService.schedulerUpdateOrder() :"+isUpdated);
-			
-		}		
-		
-		if(!isUpdated) {
-			throw new RoutingServiceException(null, IIssue.PROCESS_UPDATE_UNSUCCESSFUL);
-		}
-		else {
-			this.setRoutingIndicator(reservation.getId(), orderModel.getOrderNumber());
-		}
+		schedulerUpdateOrder(orderModel,reservation,previousOrderId);
 		routingService.schedulerConfirmOrder(orderModel);
-		//LOGGER.info("schedulerConfirmOrder():: commitReservationEx:"+"SUCCESS");
-
-		return ;
 	}
+	
+	private void schedulerUpdateOrder(IOrderModel orderModel,DlvReservationModel reservation, String previousOrderId) throws RoutingServiceException {
+		
+		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
+        orderModel.setOrderNumber(reservation.getOrderId());
+        boolean isUpdated = true;
+        if(orderModel.getOrderNumber() != null && !orderModel.getOrderNumber().equalsIgnoreCase(previousOrderId)) {
+             isUpdated=routingService.schedulerUpdateOrder(orderModel, previousOrderId);
+             LOGGER.debug("routingService.schedulerUpdateOrder() :"+isUpdated);
+        }                       
+        if(!isUpdated) {
+             throw new RoutingServiceException(null, IIssue.PROCESS_UPDATE_UNSUCCESSFUL);
+        }
+        else {
+             this.setRoutingIndicator(reservation.getId(), orderModel.getOrderNumber());
+        }
+	}
+	
 	private void schedulerCancelOrder(IOrderModel orderModel,DlvReservationModel reservation) throws RoutingServiceException {
 		
 		

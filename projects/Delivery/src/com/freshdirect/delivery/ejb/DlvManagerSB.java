@@ -144,4 +144,6 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public void expireReservations() throws DlvResourceException,RemoteException;
 	
+	public void updateReservationEx(DlvReservationModel reservation,ContactAddressModel address)throws  RemoteException;
+	
 }   

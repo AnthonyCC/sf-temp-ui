@@ -137,6 +137,19 @@ public class RoutingUtil {
 		}
 		
 	}
+	
+	public void sendUpdateReservationRequest(DlvReservationModel reservation,
+			ContactAddressModel address) {
+		try {
+			RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
+			routingSB.sendUpdateReservationRequest(reservation,address);
+
+		} catch (Exception ce) {
+			home=null;
+			ce.printStackTrace();
+			
+		}
+	}
 	public IOrderModel getOrderModel(ContactAddressModel address) {
 
 		return getOrderModel(address,address.getId()!=null?new StringBuilder("T").append(address.getId()).toString():new StringBuilder("T").append((int)(Math.random()/0.00001)).toString());
@@ -232,6 +245,8 @@ public class RoutingUtil {
 			//(RoutingGatewayHome) //serviceLocator.getRemoteHome(FDStoreProperties.getRoutingGatewayHome(), RoutingGatewayHome.class);
 		
 	}
+
+	
 	
 	/*
 	public static class DateCriteria implements Criteria {

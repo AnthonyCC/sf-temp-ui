@@ -605,6 +605,7 @@ public class FDDeliveryManager {
 			sb.commitReservation(rsvId, customerId, orderId,pr1);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(rsvId);
+				 //System.out.println("Reservation ID in commitReservation() is -->"+rsvId+" Old routing order id-->"+oldReserve.getRoutingOrderId());
 				//if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))
 					RoutingUtil.getInstance().sendCommitReservationRequest(reservation, address, oldReserve.getRoutingOrderId());
 			}
@@ -622,12 +623,17 @@ public class FDDeliveryManager {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			 boolean isRestored=sb.releaseReservation(rsvId);
-			 
-			 if(FDStoreProperties.isDynamicRoutingEnabled()&& !isRestored) {
-				DlvReservationModel reservation=sb.getReservation(rsvId);
-				RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
+			 //System.out.println("Reservation ID in releaseReservation() is -->"+rsvId+". isRestored--> "+isRestored);
+			 if(FDStoreProperties.isDynamicRoutingEnabled()) {
+				 DlvReservationModel reservation=sb.getReservation(rsvId);
+				 if(isRestored) {
+					 RoutingUtil.getInstance().sendUpdateReservationRequest(reservation,address);
+				 } else {
+					RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
+				 }
 				
 			 }
+			 
 			 return isRestored;
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -947,7 +953,19 @@ public class FDDeliveryManager {
 		} 
 	}
 	
-	
+	public void updateReservationEx(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) throws FDResourceException{
+		try {
+			
+			
+			DlvManagerSB sb = getDlvManagerHome().create();
+			sb.updateReservationEx(reservation,address);
+
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} 
+	}
 	public List<DlvReservationModel> getUnassignedReservations(Date _date) throws FDResourceException {
 		
 		try {
@@ -988,105 +1006,5 @@ public class FDDeliveryManager {
 			throw new FDResourceException(re);
 		}
 	}
-	/*public List<DlvReservationModel> getUnassignedReservations() throws FDResourceException {
-		
-		try {
-			
-			
-			DlvManagerSB sb = getDlvManagerHome().create();
-			return sb.getUnassignedReservations();
-			
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			throw new FDResourceException(ce);
-		} catch (DlvResourceException e) {
-			throw new FDResourceException(e);
-		} 
-	}*/
-	
-	
-	
-	/*public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, AddressModel address) {
-		try {
-			Date startDate = getDateByNextDayOfWeek(dayOfWeek);
-			Date endDate = DateUtil.addDays(startDate, 1);
-
-			List lst = this.getTimeslotForDateRangeAndZone(startDate, endDate, address);
-			List messages = new ArrayList();
-			
-			try {
-				if(lst != null) {
-					List geographicRestrictions = this.getGeographicDlvRestrictions( address);
-					
-					if(geographicRestrictions != null && geographicRestrictions.size() > 0) {
-						for(Iterator i = lst.iterator(); i.hasNext();) {						
-							FDTimeslot ts = new FDTimeslot((DlvTimeslotModel)i.next());
-							if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, messages, null)) {
-								// filter off empty timeslots (unless they must be retained)
-								i.remove();
-							}
-						}
-					}
-				}
-			} catch (DlvResourceException dlvResException) {
-				LOGGER.info("Failed to load Geography Restriction "+messages);
-			}
-			
-			DlvTimeslotModel foundTimeslot = null;
-			for (Iterator i = lst.iterator(); i.hasNext();) {
-				DlvTimeslotModel t = (DlvTimeslotModel) i.next();
-				if (t.isMatching(startDate, startTime, endTime)) {
-					foundTimeslot = t;
-					break;
-				}
-			}
-
-			if (foundTimeslot == null) {
-				logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
-								"Failed to make recurring reservation for customer - no timeslot found");
-				LOGGER.info("Failed to make recurring reservation for customer " + customerId + " - no timeslot found");
-				return false;
-			}
-			
-			List reservations = getAllReservationsByCustomerAndTimeslot(customerId, foundTimeslot.getPK().getId());
-			for (Iterator i = reservations.iterator(); i.hasNext(); ) {
-				DlvReservationModel rsv = (DlvReservationModel) i.next();
-				if (!EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType())) {
-					logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
-									"Failed to make recurring reservation for customer - already reserved");
-					LOGGER.info("Failed to make recurring reservation for customer " + customerId + " - already reserved");
-					return false;
-				}
-			}
-
-			long duration = foundTimeslot.getCutoffTimeAsDate().getTime()
-				- System.currentTimeMillis()
-				- (FDStoreProperties.getPreReserveHours() * DateUtil.HOUR);
-			if (duration < 0) {
-				duration = Math.min(foundTimeslot.getCutoffTimeAsDate().getTime() - System.currentTimeMillis(), DateUtil.HOUR);
-			}
-			//recurring timeslot should not go to chefs table capacity
-			this.reserveTimeslot(
-				foundTimeslot.getPK().getId(),
-				customerId,
-				duration,
-				EnumReservationType.RECURRING_RESERVATION,
-				address.getPK().getId(), false);
-			
-			logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
-								"Made recurring reservation");
-			
-			LOGGER.info("Made recurring reservation for " + customerId);
-
-			return true;
-			
-		} catch (Exception e) {
-			
-			LOGGER.warn("Could not Reserve a Weekly recurring timeslot for customer id: "+customerId, e);
-			return false;
-		} 
-	}*/
 	
 }

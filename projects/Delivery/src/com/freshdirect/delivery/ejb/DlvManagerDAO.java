@@ -402,7 +402,7 @@ public class DlvManagerDAO {
 	}
 	
 	public static void restoreReservation(Connection conn, String rsvId) throws SQLException {
-	    PreparedStatement ps = conn.prepareStatement("UPDATE DLV.RESERVATION SET STATUS_CODE = ?, MODIFIED_DTTM=SYSDATE WHERE ID = ? ");
+	    PreparedStatement ps = conn.prepareStatement("UPDATE DLV.RESERVATION SET STATUS_CODE = ?,ORDER_ID='x'||ID, MODIFIED_DTTM=SYSDATE WHERE ID = ? ");
 	    ps.setInt(1, EnumReservationStatus.RESERVED.getCode());
 	    ps.setString(2, rsvId);
 	    if(ps.executeUpdate() != 1){
@@ -877,7 +877,7 @@ public class DlvManagerDAO {
 	
 	private static final String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
 	" T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION,R.IN_UPS, R.ROUTING_ORDER_ID FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z "+
-	" WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) AND unassigned_datetime IS NOT NULL ";
+	" WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) AND unassigned_datetime IS NOT NULL  ORDER BY R.STATUS_CODE";
 	public static List<DlvReservationModel> getUnassignedReservations(Connection conn, Date _date)  throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
