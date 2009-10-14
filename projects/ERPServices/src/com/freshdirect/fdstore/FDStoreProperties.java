@@ -351,6 +351,12 @@ public class FDStoreProperties {
 	
 	private static final String PR1_DELIVERY_CAPACITY_FILE_NAME = "fdstore.pr1.filename";	
 	
+	//MEAT DEALS and EDLP
+	private final static String DEPT_MEAT_DEALS = "fdstore.department.meatdeals.isEnabled";
+	private final static String DEPT_EDLP = "fdstore.department.edlp.isEnabled";
+	private final static String DEPT_MEAT_DEALS_CATID = "fdstore.department.meatdeals.catId";
+	private final static String DEPT_EDLP_CATID = "fdstore.department.edlp.catId";
+	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -604,6 +610,11 @@ public class FDStoreProperties {
 		defaults.put(CT_DELIVERY_CAPACITY_FILE_NAME, "ctprofile.xml");		
 		defaults.put(PR1_DELIVERY_CAPACITY_FILE_NAME, "pr1profile.xml");		
 		
+		//Meat Deals and EDLP
+		defaults.put(DEPT_MEAT_DEALS, "true");
+		defaults.put(DEPT_EDLP, "true");
+		defaults.put(DEPT_MEAT_DEALS_CATID, "");
+		defaults.put(DEPT_EDLP_CATID, "");
 		refresh();
 	}
 
@@ -1412,4 +1423,17 @@ public class FDStoreProperties {
     public static int getOfflineRecommenderWindowLength() {
     	return Integer.parseInt(get(SMARTSTORE_OFFLINE_REC_WINDOW_LENGTH));
     }
+	
+	public static boolean isDeptMeatDealsEnabled() {
+		return Boolean.valueOf(get(DEPT_MEAT_DEALS)).booleanValue();
+	}
+	public static boolean isDeptEDLPEnabled() {
+		return Boolean.valueOf(get(DEPT_EDLP)).booleanValue();
+	}
+	public static String getDeptMeatDealsCatId() {
+		return get(DEPT_MEAT_DEALS_CATID);
+	}
+	public static String getDeptEDLPCatId() {
+		return get(DEPT_EDLP_CATID);
+	}
 }
