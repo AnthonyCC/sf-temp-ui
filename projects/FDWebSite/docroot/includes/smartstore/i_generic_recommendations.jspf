@@ -86,6 +86,34 @@
 			// [APPREQ-689] product ID -> recommender mapping (SmartYMAL) otherwise null
 			final Map<String,String> prd2recommendation = (Map<String,String>) request.getAttribute("map_prd2recommender");
 
+			// DEBUG
+%>
+<pre style="display: none;"><%-- prd2recommendation map --%>
+<%
+			if (prd2recommendation != null) {
+				%>== <%= prd2recommendation.size() %> Product Keys ==
+
+<%
+				for (String key : prd2recommendation.keySet()) {
+					boolean existingPrdKey = false;
+					for (ProductModel prd : recommendations.getProducts()) {
+						if (key.equalsIgnoreCase(prd.getContentKey().getId()) ) {
+							existingPrdKey = true;
+							break;
+						}
+					}
+					
+					if (existingPrdKey) {
+						%><%= key %>
+    -- <%= prd2recommendation.get(key) %>
+<%					}
+				}
+			} else {
+				%>!NIL!<br><%
+			}
+			%></pre>
+<%
+
 			// List<ProductImpression> impressions : configured products enlisted in 'Your Favourites' table
 			List<ProductImpression> impressions = new ArrayList<ProductImpression>();
 	
@@ -181,7 +209,13 @@
 										pl.setHideYourFave(true);
 
 										// TRKD := recommender ID (if recommender is Smart YMAL) otherwise burst code
-										final String trkd = prd2recommendation != null ? prd2recommendation.get(product.getContentKey().getId()) : pl.getTrackingCode();
+										String trkd = prd2recommendation != null ? prd2recommendation.get(product.getContentKey().getId()) : pl.getTrackingCode();
+										/* String trkd = null;
+										if (prd2recommendation != null)
+											trkd = prd2recommendation.get(product.getContentKey().getId());
+										if (trkd == null)
+											trkd = pl.getTrackingCode();*/
+										
 										String actionURI = FDURLUtil.getProductURI(
 												product, 
 												recommendations.getVariant().getId(), 

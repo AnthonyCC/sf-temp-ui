@@ -134,12 +134,10 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 			}
 			
 			try {
-				if (recommendations.getVariant().getRecommender() instanceof SmartYMALRecommendationService) {
-					// [APPREQ-689] pass product to recommendation map to request that it will be reused in i_ymal_box.jsp
-					
-					if (AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get() != null) {
-						pageContext.getRequest().setAttribute("map_prd2recommender", AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get());
-					}
+				// [APPREQ-689] pass product to recommendation map to request that it will be reused in i_ymal_box.jsp
+				
+				if (AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get() != null) {
+					pageContext.getRequest().setAttribute("map_prd2recommender", AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get());
 				}
 			} catch(NullPointerException npe) {
 				LOGGER.warn("NPE caught!! Recommendations has no recommender or variant!");
