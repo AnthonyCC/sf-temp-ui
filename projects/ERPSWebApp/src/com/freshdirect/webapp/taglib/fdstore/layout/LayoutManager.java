@@ -341,6 +341,32 @@ public class LayoutManager extends BodyTagSupport {
 			// [APPREQ-77]
 			s.setLayoutFileName("/includes/layouts/media_no_nav.jsp");
 			// TODO: what more I need to do here?
+		} else if (layoutType == EnumLayoutType.MEAT_DEPT.getId()) {
+			// Meat Dept Redesign new layout
+			s.setLayoutFileName("/includes/layouts/meat_dept.jsp");
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, sortDescending));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
+		} else if (layoutType == EnumLayoutType.MEAT_DEALS.getId()) {
+			// Best Meat Deals sub-category new layout
+			//s.setLayoutFileName("/includes/layouts/meat_deals.jsp");
+			s.setLayoutFileName("/includes/multi_cat_dept.jsp");
+			//s.setIgnoreShowChildren(true);
+			//s.setIgnoreDuplicateProducts(true);
+			s.setGrabberDepth(1);
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
+		} else if (layoutType == EnumLayoutType.MEAT_CATEGORY.getId()) {
+			// Meat sub-category new layout
+			s.setLayoutFileName("/includes/layouts/meat_categories.jsp");
+			//s.setIgnoreShowChildren(true);
+			//s.setIgnoreDuplicateProducts(true);
+			s.setGrabberDepth(1);
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
 		} else {
 			// default to the generic layout using the default settings for the ItemGrabber
 			s.setLayoutFileName("/includes/layouts/generic_layout.jsp");
