@@ -19,6 +19,8 @@ import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
+import com.freshdirect.smartstore.impl.AbstractRecommendationService;
+import com.freshdirect.smartstore.impl.SmartYMALRecommendationService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
@@ -129,6 +131,18 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 				recommendations.pageForward();
 			} else if ("prev".equalsIgnoreCase(request.getParameter("page"))) {
 				recommendations.pageBackward();
+			}
+			
+			try {
+				if (recommendations.getVariant().getRecommender() instanceof SmartYMALRecommendationService) {
+					// [APPREQ-689] pass product to recommendation map to request that it will be reused in i_ymal_box.jsp
+					
+					if (AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get() != null) {
+						pageContext.getRequest().setAttribute("map_prd2recommender", AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get());
+					}
+				}
+			} catch(NullPointerException npe) {
+				LOGGER.warn("NPE caught!! Recommendations has no recommender or variant!");
 			}
 		}
 		
