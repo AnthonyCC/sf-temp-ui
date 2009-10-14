@@ -92,6 +92,12 @@
 	text-align : right;
 }
 
+/* ========================== */
+/* ====== Waiting GIF  ====== */
+/* ========================== */
+.waiting-gif {
+	background-image: url(img/ajax-loader.gif) ! important;
+}
 
 
 /* ========================== */

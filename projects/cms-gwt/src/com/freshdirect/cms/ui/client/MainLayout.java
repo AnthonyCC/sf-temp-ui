@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.client.nodetree.NodeTree;
+import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.client.publish.ChangeHistoryPanel;
 import com.freshdirect.cms.ui.client.publish.PublishHistoryPanel;
 import com.freshdirect.cms.ui.client.treetable.EditorTree;
@@ -92,12 +93,12 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 
                 treePanel.addNodeSelectListener(new NodeTree.NodeSelectListener() {
                     @Override
-                    public void nodeSelected(final ContentNodeModel node) {
+                    public void nodeSelected(final TreeContentNodeModel node) {
                         final ContentNodeModel parent = treePanel.getSelectedParent();
                         if (node != null) {
                             MainLayout.this.nodeSelected(node.getKey(), parent);
                         }
-                    };
+                    }
                 });		
 		
 		// ============ extra buttons in node tree header ============

@@ -35,6 +35,7 @@ import com.freshdirect.cms.publish.PublishServiceI;
 import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.cms.search.SearchRelevancyList;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
+import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.model.BulkEditModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
@@ -70,12 +71,12 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     
     private static final String[] ROOTKEYS         = { "Store:FreshDirect", "MediaFolder:/", "CmsFolder:forms", "CmsQueryFolder:queries",
             "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", "FDFolder:starterLists",
-            "FDFolder:synonymList", SearchRelevancyList.SEARCH_RELEVANCY_KEY, SearchRelevancyList.WORD_STEMMING_EXCEPTION };
-    
-	public List<ContentNodeModel> search( String searchTerm ) {
+            "FDFolder:synonymList", SearchRelevancyList.SEARCH_RELEVANCY_KEY, SearchRelevancyList.WORD_STEMMING_EXCEPTION };    
+
+	public List<TreeContentNodeModel> search( String searchTerm ) {
 		List<SearchHit> hits = (List<SearchHit>)CmsManager.getInstance().search( searchTerm, MAX_HITS );
 		List<ContentNodeI> resultNodes = new ArrayList<ContentNodeI>( hits.size() );
-		List<ContentNodeModel> result = new ArrayList<ContentNodeModel>( hits.size() );
+		List<TreeContentNodeModel> result = new ArrayList<TreeContentNodeModel>( hits.size() );
 		
 		for ( SearchHit hit : hits ) {
 			resultNodes.add( hit.getContentKey().getContentNode() );
@@ -86,40 +87,40 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 			if ( node == null )
 				continue;
 			ContentNodeModel n = TranslatorToGwt.getContentNodeModel( node );
-			result.add( n );
+			result.add( new TreeContentNodeModel(n) );
 		}
 
 		return result;
 	}
 
-    public List<ContentNodeModel> getChildren(ContentNodeModel loadConfig) throws ServerException {
+    public List<TreeContentNodeModel> getChildren(TreeContentNodeModel parentNode) throws ServerException {
         try {
-            ArrayList<ContentNodeModel> children = new ArrayList<ContentNodeModel>();
+            ArrayList<TreeContentNodeModel> children = new ArrayList<TreeContentNodeModel>();
 
-            if (loadConfig == null) {
+            if (parentNode == null) {
                 for (int i = 0; i < ROOTKEYS.length; i++) {
                     ContentNodeI cn = ContentKey.decode(ROOTKEYS[i]).getContentNode();
                     if (cn != null) {
                         ContentNodeModel n = TranslatorToGwt.getContentNodeModel(cn);
-                        children.add(n);
+                        children.add(new TreeContentNodeModel(n));
                     }
                 }
                 return children;
             }
 
-            ContentNodeI root = CmsManager.getInstance().getContentNode(ContentKey.decode(loadConfig.getKey()));
+            ContentNodeI root = CmsManager.getInstance().getContentNode(ContentKey.decode(parentNode.getKey()));
             if (root != null) {
                 List<ContentKey> childKeys = new ArrayList<ContentKey>((Collection<ContentKey>)root.getChildKeys());
                 TreeSet<ContentNodeI> nodes = getOrderedNodes(childKeys);
                 for (ContentNodeI childNode : nodes) {
                     ContentNodeModel child = TranslatorToGwt.getContentNodeModel(childNode);
-                    children.add(child);
+                    children.add(new TreeContentNodeModel(child, parentNode));
                 }
             }            
             return children;
             
         } catch (Throwable e) {
-            LOG.error("runtime exception for "+loadConfig, e);
+            LOG.error("runtime exception for "+parentNode, e);
             throw TranslatorToGwt.wrap(e);
         }
     }

@@ -26,7 +26,7 @@ public class ContentTreePopUp extends Window {
     private Button ok;
     private Button cancel;
 
-    private List<ContentNodeModel> selected;
+    private List<TreeContentNodeModel> selected;
 
     private static ContentTreePopUp popup = null;
     
@@ -71,7 +71,7 @@ public class ContentTreePopUp extends Window {
     }
 
     
-    public void setSelected(List<ContentNodeModel> s) {
+    public void setSelected(List<TreeContentNodeModel> s) {
         selected = s;
     }
 
@@ -81,7 +81,7 @@ public class ContentTreePopUp extends Window {
     	else
     		return null;
     }
-    public List<ContentNodeModel> getSelectedItems() {
+    public List<TreeContentNodeModel> getSelectedItems() {
         return selected;
     }
 
@@ -139,10 +139,10 @@ public class ContentTreePopUp extends Window {
         if ( treepanel != null ) {
         	
             treepanel.removeSelectionChangedListener();
-            treepanel.addSelectionChangedListener(new SelectionChangedListener<ContentNodeModel>() {
+            treepanel.addSelectionChangedListener(new SelectionChangedListener<TreeContentNodeModel>() {
                 @Override
-                public void selectionChanged(SelectionChangedEvent<ContentNodeModel> se) {
-                    ContentNodeModel selectedItem = se.getSelectedItem();
+                public void selectionChanged(SelectionChangedEvent<TreeContentNodeModel> se) {
+                    TreeContentNodeModel selectedItem = se.getSelectedItem();
                     if (selectedItem != null && (allowedTypes == null || allowedTypes.contains(selectedItem.getType()))) {
                         ok.enable();
                     } else {
@@ -158,6 +158,7 @@ public class ContentTreePopUp extends Window {
     @Override
     public void show() {
     	super.show();
+    	treepanel.refresh(treepanel.getExpandedPaths());
     	treepanel.scrollHack();
     }
 }

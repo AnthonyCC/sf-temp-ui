@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
+import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.model.BulkEditModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
@@ -19,9 +20,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("contentService")
 public interface ContentService extends RemoteService {
 
-    List<ContentNodeModel> search(String searchTerm) throws ServerException;
+    List<TreeContentNodeModel> search(String searchTerm) throws ServerException;
 
-    List<ContentNodeModel> getChildren(ContentNodeModel loadConfig) throws ServerException;
+    List<TreeContentNodeModel> getChildren(TreeContentNodeModel loadConfig) throws ServerException;
 
     GwtNodeData getNodeData(String key) throws ServerException;
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
+import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.model.BulkEditModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
@@ -17,9 +18,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface ContentServiceAsync {
 
-	void getChildren( ContentNodeModel loadConfig, AsyncCallback<List<ContentNodeModel>> callback );
+	void getChildren( TreeContentNodeModel loadConfig, AsyncCallback<List<TreeContentNodeModel>> callback );
 
-	void search( String searchTerm, AsyncCallback<List<ContentNodeModel>> callback );
+	void search( String searchTerm, AsyncCallback<List<TreeContentNodeModel>> callback );
 
 	void getNodeData( String key, AsyncCallback<GwtNodeData> callback );
 	

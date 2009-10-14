@@ -17,7 +17,7 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 
     private static final long serialVersionUID = 1L;
 
-    private boolean hasChildren = true;
+    protected boolean hasChildren = true;
     
     private String previewUrl = null;
     private int width = 0;    

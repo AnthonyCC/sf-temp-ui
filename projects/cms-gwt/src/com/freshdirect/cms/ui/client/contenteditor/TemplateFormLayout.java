@@ -9,9 +9,9 @@ package com.freshdirect.cms.ui.client.contenteditor;
 
 import java.io.Serializable;
 
-import com.extjs.gxt.ui.client.core.XDOM;
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.core.Template;
+import com.extjs.gxt.ui.client.core.XDOM;
 import com.extjs.gxt.ui.client.util.Params;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.Field;

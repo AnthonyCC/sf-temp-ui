@@ -502,7 +502,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
         }
     }
 
-	public void addOneToManyModels( List<ContentNodeModel> list ) {
+	public void addOneToManyModels( List<? extends ContentNodeModel> list ) {
 		for ( ContentNodeModel cmModel : list ) {
 			if ( store.findModel( "key", cmModel.getKey() ) == null ) {
 				OneToManyModel otmModel = createModel( cmModel.getType(), cmModel.getKey(), cmModel.getLabel() );
