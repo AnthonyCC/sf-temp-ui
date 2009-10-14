@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.offline;
 
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.naming.Context;
@@ -12,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.smartstore.ejb.OfflineRecommenderHome;
 import com.freshdirect.smartstore.ejb.OfflineRecommenderSB;
 
@@ -19,69 +21,169 @@ public class OfflineRecommenderCmd {
 	private static final Logger LOG = Logger
 			.getLogger(OfflineRecommenderCmd.class);
 
+	private static Iterator<String> customerIterator;
+
 	public static void main(String[] args) {
-		if (args.length < 2)
-			usage();
-		int days = -1;
+		int days = 365;
+		int age = 5;
+		int threadCount = 5;
+		int windowLength = 300;
+		String[] siteFeatures = null;
 		try {
-			days = Integer.parseInt(args[0]);
-			if (days <= 0) {
-				LOG.error("num_of_days parameter must be positive");
-				usage();
-			}
+			days = FDStoreProperties.getOfflineRecommenderNoOfRecentDays();
 		} catch (NumberFormatException e) {
-			LOG.error("num_of_days parameter: integer number expected");
+			LOG.fatal("no of recent days must be an integer");
+			System.exit(-1);
 		}
-		Set<String> siteFeaturesSet = new HashSet<String>(args.length);
-		for (int i = 1; i < args.length; i++)
+		try {
+			age = FDStoreProperties.getOfflineRecommenderMaxAge();
+		} catch (NumberFormatException e) {
+			LOG.fatal("maximum recommendation age must be an integer");
+			System.exit(-1);
+		}
+		try {
+			threadCount = FDStoreProperties.getOfflineRecommenderThreadCount();
+		} catch (NumberFormatException e) {
+			LOG.fatal("thread count must be an integer");
+			System.exit(-1);
+		}
+		try {
+			windowLength = FDStoreProperties
+					.getOfflineRecommenderWindowLength();
+		} catch (NumberFormatException e) {
+			LOG.fatal("window length must be an integer");
+			System.exit(-1);
+		}
+		try {
+			siteFeatures = FDStoreProperties
+					.getOfflineRecommenderSiteFeatures();
+		} catch (NullPointerException e) {
+			LOG.fatal("site features parameter is required");
+			System.exit(-1);
+		}
+		validateSiteFeatures(siteFeatures);
+		LOG.info("no of recent days: " + days);
+		LOG.info("max recommendation age in days: " + age);
+		LOG.info("site features: " + arrayToString(siteFeatures));
+		LOG.info("thread count: " + threadCount);
+		LOG.info("time window length in minutes: " + windowLength);
+		Set<String> customerIds = lookupCustomers(days, age);
+		customerIterator = customerIds.iterator();
+		Thread[] workers = new Thread[threadCount];
+		for (int i = 0; i < threadCount; i++) {
+			workers[i] = new Thread(new Worker(siteFeatures,
+					windowLength * 60 * 1000), "Worker #" + (i + 1));
+			workers[i].start();
+			LOG.info("started " + workers[i].getName());
+		}
+		for (int i = 0; i < threadCount; i++) {
+			try {
+				workers[i].join();
+			} catch (InterruptedException e) {
+				LOG
+						.info("join for " + workers[i].getName()
+								+ " interrupted", e);
+			}
+			LOG.info(workers[i].getName() + " has stopped");
+		}
+	}
+
+	private static class Worker implements Runnable {
+		long endTime;
+		String[] siteFeatures;
+
+		public Worker(String[] siteFeatures, long windowLength) {
+			endTime = System.currentTimeMillis();
+			endTime += windowLength;
+			this.siteFeatures = siteFeatures;
+		}
+
+		@Override
+		public void run() {
+			int nCustomers = 0;
+			while (System.currentTimeMillis() < endTime) {
+				Set<String> customerIds = getNextNCustomers(10);
+				if (customerIds.isEmpty()) {
+					LOG.info("no more customer ids - halting");
+					break;
+				}
+				for (String customerId : customerIds)
+					generateRecommendations(customerId, siteFeatures);
+				nCustomers += customerIds.size();
+				if (nCustomers % 100 < 5 || nCustomers % 100 > 95)
+					LOG.info("processed " + nCustomers + " customers so far");
+			}
+			if (System.currentTimeMillis() >= endTime) {
+				LOG.info("run out the time window - halting");
+			}
+			LOG.info("processed " + nCustomers + " customers overall");
+		}
+	}
+
+	private static synchronized Set<String> getNextNCustomers(int n) {
+		if (customerIterator == null)
+			throw new IllegalStateException();
+		Set<String> customerIds = new HashSet<String>(n);
+		for (int i = 0; i < n; i++)
+			if (customerIterator.hasNext())
+				customerIds.add(customerIterator.next());
+			else
+				break;
+		return customerIds;
+	}
+
+	private static void validateSiteFeatures(String[] siteFeatures) {
+		for (int i = 0; i < siteFeatures.length; i++)
 			try {
 				lookupOfflineRecommenderHome();
-				OfflineRecommenderSB sb = offlineRecommenderHome.create();
-				sb.checkSiteFeature(args[i]);
-				siteFeaturesSet.add(args[i]);
-				LOG.info("site feature valid: " + args[i]);
+				OfflineRecommenderSB sb = offlineRecommenderHome.get().create();
+				sb.checkSiteFeature(siteFeatures[i]);
+				LOG.info("site feature valid: " + siteFeatures[i]);
 			} catch (Exception e) {
 				invalidateOfflineRecommenderHome();
-				LOG.error("error while validating site feature: " + args[i], e);
+				LOG.error("error while validating site feature: "
+						+ siteFeatures[i], e);
 				LOG.fatal("exiting: failed to validate site feature");
 				System.exit(-1);
 			}
-		String[] siteFeatures = siteFeaturesSet.toArray(new String[0]);
-		Set<String> customerIds = null;
+	}
+
+	private static Set<String> lookupCustomers(int days, int age) {
 		try {
 			lookupOfflineRecommenderHome();
-			OfflineRecommenderSB sb = offlineRecommenderHome.create();
-			customerIds = sb.getRecentCustomers(days);
+			OfflineRecommenderSB sb = offlineRecommenderHome.get().create();
+			Set<String> customerIds = sb.getRecentCustomers(days);
 			LOG.info("customers counted for the last " + days + " days: "
 					+ customerIds.size());
+			Set<String> updatedCustomerIds = sb.getUpdatedCustomers(age);
+			LOG.info("customers updated in the last " + age + " days: "
+					+ updatedCustomerIds.size());
+			customerIds.removeAll(updatedCustomerIds);
+			LOG.info("need to update customers: " + customerIds.size());
+			return customerIds;
 		} catch (Exception e) {
 			invalidateOfflineRecommenderHome();
 			LOG.error("error while retrieving recent customers", e);
 			LOG.fatal("exiting: failed to retrieve recent customers");
 			System.exit(-1);
+			return null;
 		}
-		for (String customerId : customerIds)
-			for (String siteFeature : siteFeatures)
-				try {
-					lookupOfflineRecommenderHome();
-					OfflineRecommenderSB sb = offlineRecommenderHome.create();
-					int n = sb.recommend(siteFeature, customerId, null);
-					LOG.debug("recommendations (" + siteFeature
-							+ ") for customer #" + customerId + ": " + n);
-				} catch (Exception e) {
-					invalidateOfflineRecommenderHome();
-					LOG
-							.error("exception while generating " + siteFeature
-									+ " recommendations for customer #"
-									+ customerId, e);
-				}
 	}
 
-	private static void usage() {
-		LOG.error("usage: java " + OfflineRecommenderCmd.class.getSimpleName()
-				+ " num_of_days SITE_FEATURE [ SITE_FEATURE_2 ... ]");
-		LOG.fatal("exiting: wrong parameters");
-		System.exit(-1);
+	private static void generateRecommendations(String customerId,
+			String[] siteFeatures) {
+		try {
+			lookupOfflineRecommenderHome();
+			OfflineRecommenderSB sb = offlineRecommenderHome.get().create();
+			int n = sb.recommend(siteFeatures, customerId, null);
+			//LOG.debug("recommendations (" + arrayToString(siteFeatures)
+			//		+ ") for customer #" + customerId + ": " + n);
+		} catch (Exception e) {
+			invalidateOfflineRecommenderHome();
+			LOG.error("exception while generating "
+					+ arrayToString(siteFeatures)
+					+ " recommendations for customer #" + customerId, e);
+		}
 	}
 
 	private static Context getInitialContext() throws NamingException {
@@ -92,18 +194,18 @@ public class OfflineRecommenderCmd {
 		return new InitialContext(h);
 	}
 
-	private static OfflineRecommenderHome offlineRecommenderHome = null;
+	private static ThreadLocal<OfflineRecommenderHome> offlineRecommenderHome = new ThreadLocal<OfflineRecommenderHome>();
 
 	private static void lookupOfflineRecommenderHome()
 			throws FDResourceException {
-		if (offlineRecommenderHome != null) {
+		if (offlineRecommenderHome.get() != null) {
 			return;
 		}
 		Context ctx = null;
 		try {
 			ctx = getInitialContext();
-			offlineRecommenderHome = (OfflineRecommenderHome) ctx
-					.lookup(OfflineRecommenderHome.JNDI_HOME);
+			offlineRecommenderHome.set((OfflineRecommenderHome) ctx
+					.lookup(OfflineRecommenderHome.JNDI_HOME));
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
 		} finally {
@@ -118,6 +220,19 @@ public class OfflineRecommenderCmd {
 	}
 
 	private static void invalidateOfflineRecommenderHome() {
-		offlineRecommenderHome = null;
+		offlineRecommenderHome.set(null);
+	}
+
+	private static String arrayToString(String[] strs) {
+		StringBuilder buf = new StringBuilder();
+		buf.append("[");
+		if (strs.length > 0)
+			buf.append(strs[0]);
+		for (int i = 1; i < strs.length; i++) {
+			buf.append(", ");
+			buf.append(strs[0]);
+		}
+		buf.append("]");
+		return buf.toString();
 	}
 }

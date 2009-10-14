@@ -178,7 +178,16 @@ public class FDStoreProperties {
 	// timeout of a cache entry in seconds, default 30*60
 	private final static String SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT = "fdstore.smartstore.personalScores.cache.timeout";
 
+	private final static String SMARTSTORE_OFFLINE_REC_RECENT_DAYS = "fdstore.smartstore.offlineRecommender.noOfRecentDays";
+
+	private final static String SMARTSTORE_OFFLINE_REC_MAX_AGE = "fdstore.smartstore.offlineRecommender.maxRecommendationAge";
 	
+	private final static String SMARTSTORE_OFFLINE_REC_SITE_FEATURES = "fdstore.smartstore.offlineRecommender.siteFeatures";
+	
+	private final static String SMARTSTORE_OFFLINE_REC_THREAD_COUNT = "fdstore.smartstore.offlineRecommender.threadCount";
+
+	private final static String SMARTSTORE_OFFLINE_REC_WINDOW_LENGTH = "fdstore.smartstore.offlineRecommender.windowLength";
+
 	// Referral Program admin
 	private final static String RFL_PRG_PAGINATION_SIZE="fdstore.referral.paginationSize";
 
@@ -496,6 +505,14 @@ public class FDStoreProperties {
 		defaults.put(SMARTSTORE_CACHE_DATA_SOURCES, "true");
 		defaults.put(SMARTSTORE_CACHE_DATA_SOURCES_SIZE, "150");
 		defaults.put(SMARTSTORE_CACHE_ONLINE_FACTORS, "true");
+
+		defaults.put(SMARTSTORE_OFFLINE_REC_RECENT_DAYS, "365");
+
+		defaults.put(SMARTSTORE_OFFLINE_REC_MAX_AGE, "5");
+		
+		defaults.put(SMARTSTORE_OFFLINE_REC_THREAD_COUNT, "5");
+
+		defaults.put(SMARTSTORE_OFFLINE_REC_WINDOW_LENGTH, "300");
 
 		defaults.put(SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES, "500");
 		defaults.put(SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT, "" + (30*60));
@@ -1368,5 +1385,31 @@ public class FDStoreProperties {
         public static String getUserPopularityScoring() {
             return get(SS_USER_POPULARITY_SCORING);
         }
-	
+
+    public static int getOfflineRecommenderNoOfRecentDays() {
+    	return Integer.parseInt(get(SMARTSTORE_OFFLINE_REC_RECENT_DAYS));
+    }
+
+    public static int getOfflineRecommenderMaxAge() {
+    	return Integer.parseInt(get(SMARTSTORE_OFFLINE_REC_MAX_AGE));
+    }
+
+    public static String[] getOfflineRecommenderSiteFeatures() {
+    	String[] raw = get(SMARTSTORE_OFFLINE_REC_SITE_FEATURES).split("[,;]");
+    	List<String> siteFeatures = new ArrayList<String>();
+    	for (String s : raw) {
+    		s = s.trim();
+    		if (s.length() > 0)
+    			siteFeatures.add(s);
+    	}
+    	return siteFeatures.toArray(new String[0]);
+    }
+    
+    public static int getOfflineRecommenderThreadCount() {
+    	return Integer.parseInt(get(SMARTSTORE_OFFLINE_REC_THREAD_COUNT));
+    }
+
+    public static int getOfflineRecommenderWindowLength() {
+    	return Integer.parseInt(get(SMARTSTORE_OFFLINE_REC_WINDOW_LENGTH));
+    }
 }

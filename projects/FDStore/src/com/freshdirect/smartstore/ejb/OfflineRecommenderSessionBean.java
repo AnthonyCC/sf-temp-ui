@@ -247,6 +247,48 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 		return customerIds;
 	}
 
+	private static final String QUERY_UPDATED_CUSTOMERS = "SELECT DISTINCT customer_id FROM CUST.SS_OFFLINE_RECOMMENDATION"
+			+ " WHERE last_modified > sysdate - ?";
+
+	public Set<String> getUpdatedCustomers(int age) throws RemoteException,
+			FDResourceException {
+		Set<String> customerIds = new HashSet<String>(200000);
+		Connection conn = null;
+
+		try {
+			conn = getConnection();
+			PreparedStatement ps = conn
+					.prepareStatement(QUERY_UPDATED_CUSTOMERS);
+			ps.setInt(1, age);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				customerIds.add(rs.getString(1));
+			}
+			rs.close();
+			rs = null;
+
+			ps.close();
+			ps = null;
+
+		} catch (SQLException e) {
+			LOGGER.error("retrieving recent customers failed", e);
+			try {
+				LOGGER.error("Connection URL: " + conn.getMetaData().getURL()
+						+ "/ User: " + conn.getMetaData().getUserName());
+			} catch (SQLException e1) {
+			}
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				throw new EJBException(e);
+			}
+		}
+		return customerIds;
+	}
+
 	public void checkSiteFeature(String siteFeatureName)
 			throws RemoteException, FDResourceException {
 		EnumSiteFeature siteFeature = EnumSiteFeature.getEnum(siteFeatureName);
@@ -255,27 +297,31 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 					+ siteFeatureName);
 	}
 
-	public int recommend(String siteFeatureName, String customerId,
+	public int recommend(String[] siteFeatureNames, String customerId,
 			String currentNodeId) throws RemoteException, FDResourceException {
-		EnumSiteFeature siteFeature = EnumSiteFeature.getEnum(siteFeatureName);
-		if (siteFeature == null)
-			throw new FDResourceException("unknown site feature: "
-					+ siteFeatureName);
-		ContentNodeModel currentNode = null;
-		if (currentNodeId != null) {
-			currentNode = ContentFactory.getInstance().getContentNode(
-					currentNodeId);
-			if (currentNode == null)
-				throw new FDResourceException("unknown current node: "
-						+ currentNodeId);
+		int n = 0;
+		for (String siteFeatureName : siteFeatureNames) {
+			EnumSiteFeature siteFeature = EnumSiteFeature.getEnum(siteFeatureName);
+			if (siteFeature == null)
+				throw new FDResourceException("unknown site feature: "
+						+ siteFeatureName);
+			ContentNodeModel currentNode = null;
+			if (currentNodeId != null) {
+				currentNode = ContentFactory.getInstance().getContentNode(
+						currentNodeId);
+				if (currentNode == null)
+					throw new FDResourceException("unknown current node: "
+							+ currentNodeId);
+			}
+			FDUserI user = getUserById(customerId);
+			SessionInput input = createSessionInput(user, currentNode);
+			input.setMaxRecommendations(5);
+			input.setIncludeCartItems(false);
+			Recommendations recs = FDStoreRecommender.getInstance()
+					.getRecommendations(siteFeature, user, input, null);
+			saveRecommendations(user, recs);
+			n += recs.getProducts().size();
 		}
-		FDUserI user = getUserById(customerId);
-		SessionInput input = createSessionInput(user, currentNode);
-		input.setMaxRecommendations(5);
-		input.setIncludeCartItems(true);
-		Recommendations recs = FDStoreRecommender.getInstance()
-				.getRecommendations(siteFeature, user, input, null);
-		saveRecommendations(user, recs);
-		return recs.getProducts().size();
+		return n;
 	}
 }

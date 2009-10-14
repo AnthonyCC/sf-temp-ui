@@ -11,9 +11,12 @@ public interface OfflineRecommenderSB extends EJBObject {
 	public Set<String> getRecentCustomers(int days) throws RemoteException,
 			FDResourceException;
 
+	public Set<String> getUpdatedCustomers(int age) throws RemoteException,
+	FDResourceException;
+
 	public void checkSiteFeature(String siteFeature) throws RemoteException,
 			FDResourceException;
 
-	public int recommend(String siteFeature, String customerId,
+	public int recommend(String[] siteFeatures, String customerId,
 			String currentNode) throws RemoteException, FDResourceException;
 }
