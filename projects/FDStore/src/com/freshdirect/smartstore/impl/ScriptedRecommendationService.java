@@ -73,7 +73,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
                     double[] score = scoring.getScores(values);
                     orderingFunction.addScore(contentNode, score);
                 }
-                rankedContents = orderingFunction.getRankedContents();
+                rankedContents = (List) orderingFunction.getRankedContents();
             } else {
                 // one score computed, interpret as 'weight' or probability.
                 TreeSet<RankedContent.Single> scores = new TreeSet<RankedContent.Single>();

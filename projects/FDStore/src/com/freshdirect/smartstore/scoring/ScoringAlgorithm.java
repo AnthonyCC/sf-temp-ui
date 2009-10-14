@@ -20,6 +20,15 @@ public class ScoringAlgorithm {
     }
     
     /**
+     * Return the expressions which generates the scores.
+     * 
+     * @return
+     */
+    public String[] getExpressions() {
+        return new String[0];
+    }
+    
+    /**
      * Calculate a score from the given variables. 
      * @param variables
      * @return

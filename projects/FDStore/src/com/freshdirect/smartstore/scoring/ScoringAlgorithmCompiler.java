@@ -142,6 +142,9 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
             CtMethod method4 = CtNewMethod.make("public int getReturnSize() { return "+expr.size()+"; } ", class1);
             class1.addMethod(method4);
             
+            CtMethod method7 = CtNewMethod.make(generateGetExpressionsMethodBody(expr), class1);
+            class1.addMethod(method7);
+            
             method = createToStringMethod(class1, toStringValue);
             class1.addMethod(method);
             
@@ -245,6 +248,19 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
     private String generateGetVariablesMethodBody(Set variables) {
         return "public String[] getVariableNames() {\n"+
         "  return variables; \n}";
+    }
+    
+    private String generateGetExpressionsMethodBody(BlockExpression xp) {
+        String s = "public String[] getExpressions() {\n";
+        int size = xp.size();
+        s += "  String[] result = new String[] { \n";
+        for (int i=0;i<size;i++) {
+            if (i>0) {
+                s += ",";
+            }
+            s += "  \"" + xp.get(i).toCode() + "\"\n";
+        }
+        return s + "  };\n  return result;\n}";
     }
 
     public ScoringAlgorithm createScoringAlgorithm(String name, String expression) throws CompileException {

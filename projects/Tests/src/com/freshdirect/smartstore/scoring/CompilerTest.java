@@ -56,7 +56,7 @@ public class CompilerTest extends TestCase {
 
         assertEquals("output variable", 1, sa.getReturnSize());
         
-        Map var = new HashMap();
+        Map<String, Number> var = new HashMap<String, Number>();
         var.put("ia", new Integer(31));
         var.put("fb", new Double(7));
 
@@ -104,7 +104,12 @@ public class CompilerTest extends TestCase {
         ScoringAlgorithm sa = comp.createScoringAlgorithm("testCompound", "ia * ic; ia - fb");
         assertEquals("output variable", 2, sa.getReturnSize());
 
-        Map var = new HashMap();
+        String[] exps = sa.getExpressions();
+        assertEquals("expressions", 2, exps.length);
+        assertEquals("expression[0]", "$ia * $ic", exps[0]);
+        assertEquals("expression[1]", "$ia - $fb", exps[1]);
+        
+        Map<String, Number> var = new HashMap<String, Number>();
         var.put("ia", new Integer(79));
         var.put("ic", new Integer(19));
         var.put("fb", new Double(42.1));
@@ -129,7 +134,7 @@ public class CompilerTest extends TestCase {
             double fa = rnd.nextDouble();
             double fb = rnd.nextDouble();
 
-            Map var = new HashMap();
+            Map<String, Number> var = new HashMap<String, Number>();
             var.put("fa", new Double(fa));
             var.put("fb", new Double(fb));
 
@@ -202,7 +207,14 @@ public class CompilerTest extends TestCase {
 
         ScoringAlgorithm sa = comp.createScoringAlgorithm("testTopLimitFunction", "fa:top; fb; fa*fb");
         assertEquals("output variable", 3, sa.getReturnSize());
-        List result = calculateScores(sa, true);
+
+        String[] exps = sa.getExpressions();
+        assertEquals("expressions", 3, exps.length);
+        assertEquals("expression[0]", "$fa", exps[0]);
+        assertEquals("expression[1]", "$fb", exps[1]);
+        assertEquals("expression[2]", "$fa * $fb", exps[2]);
+
+        List<String> result = calculateScores(sa, true);
 
         assertEquals("1. element", result.get(0), "a2");
         assertEquals("2. element", result.get(1), "a0");
@@ -216,7 +228,12 @@ public class CompilerTest extends TestCase {
 
         ScoringAlgorithm sa = comp.createScoringAlgorithm("testNoTopLimitFunction", "fa; fb; fa*fb");
         assertEquals("output variable", 3, sa.getReturnSize());
-        List result = calculateScores(sa, false);
+        String[] exps = sa.getExpressions();
+        assertEquals("expressions", 3, exps.length);
+        assertEquals("expression[0]", "$fa", exps[0]);
+        assertEquals("expression[1]", "$fb", exps[1]);
+        assertEquals("expression[2]", "$fa * $fb", exps[2]);
+        List<String> result = calculateScores(sa, false);
 
         assertEquals("1. element", result.get(0), "a2");
         assertEquals("2. element", result.get(1), "a1");
@@ -228,7 +245,7 @@ public class CompilerTest extends TestCase {
     int[] fa = { 1, 2, 3, 0};
     int[] fb = { 5, 3, 1, 0};
 
-    private List calculateScores(ScoringAlgorithm sa, boolean topLimitAdded) {
+    private List<String> calculateScores(ScoringAlgorithm sa, boolean topLimitAdded) {
         String[] variableNames = sa.getVariableNames();
         
         assertNotNull("variableNames", variableNames);
@@ -262,10 +279,10 @@ public class CompilerTest extends TestCase {
             double[] result = sa.getScores(vars);
             orderingFunction.addScore(model[i], result);
         }
-        List result = orderingFunction.getRankedContents();
-        List strings = new ArrayList(result.size());
-        for (int i=0;i<result.size();i++) {
-            strings.add( ((RankedContent.Single) result.get(i)).getId());
+        List<RankedContent.Single> result = orderingFunction.getRankedContents();
+        List<String> strings = new ArrayList<String>(result.size());
+        for (RankedContent.Single r : result) {
+            strings.add(r.getId());
         }
         return strings;
     }

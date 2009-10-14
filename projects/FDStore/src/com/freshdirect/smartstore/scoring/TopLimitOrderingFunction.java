@@ -1,10 +1,10 @@
 package com.freshdirect.smartstore.scoring;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.smartstore.sampling.RankedContent;
 
 /**
  * Implement sorting functionality which support zeroing out all non-maximum values.
@@ -19,7 +19,7 @@ public class TopLimitOrderingFunction extends OrderingFunction {
     int position;
     ContentNodeModel maximum;
     double maxValue = Double.NEGATIVE_INFINITY;
-    List nodes = new ArrayList();
+    List<Score> nodes = new ArrayList<Score>();
     
     public TopLimitOrderingFunction() {
         position  = 0;
@@ -37,9 +37,8 @@ public class TopLimitOrderingFunction extends OrderingFunction {
         }
     }
     
-    public List getRankedContents() {
-        for (Iterator iter=this.nodes.iterator();iter.hasNext();) {
-            Score sc = (Score) iter.next();
+    public List<RankedContent.Single> getRankedContents() {
+        for (Score sc : this.nodes) {
             if (sc.node!=maximum) {
                 sc.values[position] = 0;
             }
