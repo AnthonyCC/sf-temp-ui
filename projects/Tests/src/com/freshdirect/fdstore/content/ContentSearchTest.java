@@ -65,14 +65,9 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
         aspectSystem.add(new FDFactoryProductInfoAspect().addAvailableSku("DAI0008813", 2.0).addAvailableSku("DAI0008812", 3.0).addAvailableSku("CAN0062899", 4.0)
                 .addAvailableSku("DAI0059088", 5.0));
 
+        ContentSearch.getInstance().setDisableAutocompleter(true);
     }
 
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     /**
      * Test method for {@link com.freshdirect.fdstore.content.ContentSearch#simpleSearch(java.lang.String, com.freshdirect.fdstore.content.SearchQueryStemmer)}.

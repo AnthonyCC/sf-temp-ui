@@ -30,6 +30,8 @@ public class ContentSearch {
     AutocompleteService autocompletion;
     Thread autocompleteUpdater;
     
+
+    boolean disableAutocompleter = false;
     
     Map<String, SearchRelevancyList> searchRelevancyMap;
     
@@ -42,6 +44,14 @@ public class ContentSearch {
         LOGGER.info("ContentSearch instance replaced");
     }
 
+    public void setDisableAutocompleter(boolean disableAutocompleter) {
+        this.disableAutocompleter = disableAutocompleter;
+    }
+    
+    public boolean isDisableAutocompleter() {
+        return disableAutocompleter;
+    }
+    
     /** Maximum number of the top spelling results that should be analyzed */
     public static int MAX_SUGGESTIONS = 5;
 
@@ -343,7 +353,7 @@ public class ContentSearch {
     private AutocompleteService initAutocompleter() {
         synchronized(this) {
             if (this.autocompletion == null) {
-                if (autocompleteUpdater==null) {
+                if (autocompleteUpdater == null && disableAutocompleter == false) {
                     autocompleteUpdater = new Thread(new Runnable() {
                         public void run() {
                             //while(true) {

@@ -28,7 +28,7 @@ public class DebugMethodPatternPointCut extends MethodPatternPointcut {
         try {
             return super.matchesJointpoint(arg0);
         } catch (RuntimeException e) {
-            LOG.error("error in " + this.getClass().getName() + ", pattern: " + pattern + ", problem:" + e.getMessage(), e);
+            LOG.error("error in " + this.getClass().getName() + ", pattern: " + pattern + " with method : "+arg0 + ", problem:" + e.getMessage(), e);
             throw e;
         }
     }
