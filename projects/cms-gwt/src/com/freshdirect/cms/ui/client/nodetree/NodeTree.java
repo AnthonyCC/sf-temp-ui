@@ -176,15 +176,20 @@ public class NodeTree extends ContentPanel {
     	TreeContentNodeModel currentNode;
     	private List<String> pathList;
     	private boolean forceRefresh;
-    	    	
+    	private int scrollPos;
+    	
     	public void synchronize( String path ) {    		
         	tree.collapseAll();        	    		
-        	tree.addListener( Events.Expand, this );    
+        	tree.addListener( Events.Expand, this );   
     		initTokens(path);
     	}
     	    	
     	public void setForceRefresh(boolean fr) {
     		forceRefresh = fr;
+    	}
+    	
+    	public void setScrollPosition(int pos) {
+    		scrollPos = pos;
     	}
     	
     	public void initTokens(String path) {    		
@@ -235,8 +240,7 @@ public class NodeTree extends ContentPanel {
 				eatToken();
 				if ( tokens.countTokens() == 0 ) {
 					// last one
-					tree.getSelectionModel().select( currentNode, false );
-					tree.scrollIntoView( currentNode );
+					tree.getSelectionModel().select( currentNode, false );					
 				} else {
 					tree.setExpanded( currentNode, true );
 				}
@@ -247,7 +251,7 @@ public class NodeTree extends ContentPanel {
 					initTokens(newPath);					
 					return;
 				}
-				
+				tree.getElement().setScrollTop(scrollPos);
 				tree.removeListener( Events.Expand, this );
 			}
 		}    	
@@ -548,11 +552,13 @@ public class NodeTree extends ContentPanel {
     
     
     public void synchronize( String path ) {
-    	synchronizer.setForceRefresh(true);
+    	synchronizer.setScrollPosition(tree.getElement().getScrollTop());
+    	synchronizer.setForceRefresh(true);    	
     	synchronizer.synchronize( path );
     }
     
     public void refresh(List<String> paths, boolean forceRefresh) {
+    	synchronizer.setScrollPosition(tree.getElement().getScrollTop());
     	synchronizer.setForceRefresh(forceRefresh);
     	synchronizer.refresh(paths);
     }
