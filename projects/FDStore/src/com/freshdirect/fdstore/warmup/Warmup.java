@@ -9,6 +9,7 @@
 package com.freshdirect.fdstore.warmup;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -83,6 +84,8 @@ public class Warmup {
 						SearchScoringRegistry.getInstance().load();
 					}
 
+					warmupSmartCategories();
+					
 					LOGGER.info("Warmup done");
 				} catch (FDResourceException e) {
 					LOGGER.error("Warmup failed", e);
@@ -94,6 +97,20 @@ public class Warmup {
 	
 	private final static int MAX_THREADS = 2;
 	private final static int GRAB_SIZE = 100;
+	
+	private void warmupSmartCategories() {
+		Set<ContentKey> categories = CmsManager.getInstance().getContentKeysByType(ContentType.get("Category"));
+		LOGGER.info("found " + categories.size() + " categories");
+		for (ContentKey catKey : categories) {
+			ContentNodeModel node = contentFactory.getContentNodeByKey(catKey);
+			if (node instanceof CategoryModel) {
+				CategoryModel category = (CategoryModel) node;
+				if (category.getRecommender() != null)
+					LOGGER.info("category " + category.getContentName() + " is smart, pre-loading child products");
+					category.getProducts();
+			}
+		}
+	}
 
 	private void warmupProducts() throws FDResourceException {
 		LOGGER.info("Loading lightweight product data");

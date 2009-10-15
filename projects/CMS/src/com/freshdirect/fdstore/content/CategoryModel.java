@@ -61,9 +61,15 @@ public class CategoryModel extends ContentNodeModelImpl {
 							!products.contains(product))
 						products.add(product);
 				}
+				LOGGER.warn("found " + products.size() + " products for category " + categoryId);
 				return products;
-			} else
+			} else {
+				LOGGER.warn("recommender service ("
+						+ recommenderId
+						+ ") not found, returning previous recommendations for category "
+						+ categoryId);
 				return referent;
+			}
 		}
 		
 		private static synchronized CmsRecommenderService getRecommenderService() {
