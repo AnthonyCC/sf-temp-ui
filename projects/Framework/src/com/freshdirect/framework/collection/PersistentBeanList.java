@@ -259,12 +259,10 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
 		for (Iterator i=this.iterator(); i.hasNext(); ) {
 			PersistentBeanI bean = (PersistentBeanI)i.next();
 			if (bean.isAnonymous()) {
-				System.out.println("I ma anaonymous............ ");
 				// new bean
 				//LOGGER.debug("syncToDatabase create "+bean);
 				bean.create(conn);
 			} else if (bean.isModified()) {
-				System.out.println("I ma modified............ ");
 				// changed bean
 				//LOGGER.debug("syncToDatabase store "+bean);
 				bean.store(conn);
