@@ -106,11 +106,13 @@ public class RoutingServiceLocator {
 		} else {
 			url = RoutingServicesProperties.getTransportationSuiteProviderURL(deliveryType);
 		}
-		LOGGER.debug("getTransportationSuiteService:"+ deliveryType +":"+ url);
+		
 
 		if(url == null) {
 			url = RoutingServicesProperties.getTransportationSuiteProviderURL();
 			LOGGER.debug("getTransportationSuiteService Server not found :"+ deliveryType +":"+ url);
+		} else {
+			LOGGER.debug("getTransportationSuiteService:"+ deliveryType +":"+ url);
 		}
 
 		TransportationWebServiceStub stub = new TransportationWebServiceStub(url);
@@ -137,19 +139,19 @@ public class RoutingServiceLocator {
 	}
 
 	public RouteNetWebService getRouteNetBatchService() throws AxisFault {
-		System.out.println("RSL:getRoadNetBatchProviderURL() >>"+RoutingServicesProperties.getRoadNetBatchProviderURL());
+		LOGGER.debug("RSL:getRoadNetBatchProviderURL() >>"+RoutingServicesProperties.getRoadNetBatchProviderURL());
 		RouteNetWebServiceStub stub = new RouteNetWebServiceStub(RoutingServicesProperties.getRoadNetBatchProviderURL());
 		initBatchStub(stub);
 		return stub;
 	}
 
 	private void initStub(Stub stub) {
-		System.out.println("RSL:initStub() >>"+stub._getServiceClient().getAxisService().getEndpointURL()+RoutingServicesProperties.getServiceTimeout());
+		//System.out.println("RSL:initStub() >>"+stub._getServiceClient().getAxisService().getEndpointURL()+RoutingServicesProperties.getServiceTimeout());
 		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(RoutingServicesProperties.getServiceTimeout()*1000);
 	}
 	
 	private void initBatchStub(Stub stub) {
-		System.out.println("RSL:initBatchStub() >>"+stub._getServiceClient().getAxisService().getEndpointURL()+RoutingServicesProperties.getBatchServiceTimeout());
+		//System.out.println("RSL:initBatchStub() >>"+stub._getServiceClient().getAxisService().getEndpointURL()+RoutingServicesProperties.getBatchServiceTimeout());
 		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(RoutingServicesProperties.getBatchServiceTimeout()*1000);
 	}
 
