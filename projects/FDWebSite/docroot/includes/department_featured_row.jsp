@@ -20,6 +20,7 @@ int MAX_FAVSLINES2SHOW	= 1; //number of lines of featured products
 int MIN_FAVS2SHOW		= 3; //minimum featured products required to show featured section
 int	MAX_FAVS2SHOW		= FAVS_PER_LINE*MAX_FAVSLINES2SHOW; //to keep each row matching
 String catId = request.getParameter("catId");
+System.out.println("department_featured_row>> catId: " + catId);
 ContentNodeModel node = ContentFactory.getInstance().getContentNodeByName(catId);
 boolean isDept = (node instanceof DepartmentModel);
 boolean isCat = (node instanceof CategoryModel);
@@ -64,7 +65,7 @@ List tmpList=new ArrayList();
     <fd:ItemSorter nodes='<%=(List)sortedColl%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
 
 <% if(sortedColl.size() >= MIN_FAVS2SHOW){ %>
-	<% String mediaPath = "/media/editorial/whats_good/"+ catId + "_above.html"; %>
+	<% String mediaPath = "/media/editorial/meat/meat_deals_"+catId+".html"; %>
 	<fd:IncludeMedia name="<%= mediaPath %>" />
 	<!--<div align="center"><a href="/category.jsp?catId=wgd_butchers_deals&trk=cpage"><img src="/media/images/navigation/department/meat/mea_block.jpg"></img></a></div>-->
 	<br><br>
@@ -74,33 +75,38 @@ List tmpList=new ArrayList();
 		<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 			<%
 				if (idx.intValue() >= MAX_FAVS2SHOW) { continue; }
-				ProductModel pm = (ProductModel) contentNode;
-				String prodNameAttribute = JspMethods.getProductNameToUse(pm);
-				DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
-				int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-				String actionUrl = FDURLUtil.getProductURI( pm, "dept" );
+				if(contentNode instanceof CategoryModel) { continue; }
+				else if(contentNode instanceof ProductModel){
+					ProductModel pm = (ProductModel) contentNode;
+					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
+					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
+					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+					String actionUrl = FDURLUtil.getProductURI( pm, "dept" );
 			%>
 				<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
 					<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionUrl %>"/>
 				</td>
+				<% } %>
 		</logic:iterate>
 		</tr>
 		<tr>
 		<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 			<%
 				if (idx.intValue() >= MAX_FAVS2SHOW) { continue; } 
-				ProductModel pm = (ProductModel) contentNode;
-				String prodNameAttribute = JspMethods.getProductNameToUse(pm);
-				DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
-				int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-				String actionUrl = FDURLUtil.getProductURI( pm, "dept" );
+				if(contentNode instanceof CategoryModel) { continue; }
+				else if(contentNode instanceof ProductModel){
+					ProductModel pm = (ProductModel) contentNode;
+					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
+					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
+					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+					String actionUrl = FDURLUtil.getProductURI( pm, "dept" );
 			%>
 
 				<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
 					<display:ProductName product="<%= pm %>" action="<%= actionUrl %>"/>								
 					<display:ProductPrice impression="<%= new ProductImpression( pm ) %>" showAboutPrice="false" showDescription="false"/>
 				</td>
-
+				<% } %>
 		</logic:iterate>
 		</tr>
 	</table>
