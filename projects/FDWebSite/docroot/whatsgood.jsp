@@ -47,6 +47,8 @@ String catId="";
 	String sortNameAttrib;
 	Settings layoutSettings;
 	String mediaPath;
+	int perRow = 5; //used in generic_row
+	int maxRows = 1; //used in generic_row
 
 
 deptId = request.getParameter("deptid");
@@ -125,6 +127,17 @@ if (deptId==null) { deptId="wgd"; }
 
 			//get current row
 			curRow=result[rowId];
+			System.out.println("=============row curRow :"+curRow);
+			System.out.println("=============row indexOf :"+(curRow.indexOf(":")));
+
+			//check here for row limits
+			if (curRow.indexOf(":") > 0) { //zero since it can't START with a colon (correctly)
+				String[] resultSub = curRow.split(":");
+				//now reset curRow
+				curRow=resultSub[0];
+				if(resultSub.length>1){ perRow=Integer.parseInt(resultSub[1]); }
+				if(resultSub.length>2){ maxRows=Integer.parseInt(resultSub[2]); }
+			}
 
 			//System.out.println("=============row :"+rowId);
 			//System.out.println("=============row strWGRows :"+curRow);
@@ -139,7 +152,7 @@ if (deptId==null) { deptId="wgd"; }
 				//START Great Right Now 
 				
 					System.out.println("=============row in wg_peakproduce :");
-					%><%@ include file="/includes/department_peakproduce_whatsgood.jsp" %><%
+					%><%@ include file="/includes/department_peakproduce_whatsgood.jspf" %><%
 				//END Great Right Now
 
 			//special : deals
