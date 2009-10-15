@@ -20,7 +20,7 @@
 	String catId_1 = FDStoreProperties.getDeptMeatDealsCatId();
 	String catId_2 = FDStoreProperties.getDeptEDLPCatId(); 
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_1);
-	
+	System.out.println("multi_cat_dept>> catId_1: " + catId_1 + " catId_2: " + catId_2);
 	List edlpProducts=new ArrayList();
 	Collection dealCol = null;
 	Collection edlpCol = null;
@@ -89,67 +89,77 @@
 %>
 
 <% if(dealProductsCount > 0 || edlpProductsCount > 0){ %>
-	<fd:IncludeMedia name= "/media/editorial/whats_good/wgd_butchers_deals_edlp_above.html"/>
+	<fd:IncludeMedia name= "/media/editorial/meat/meat_deals_everyday.html"/>
     <table cellpadding="0" cellspacing="0" border="0">
 	<tr valign="bottom">
 		<logic:iterate id="contentNode" collection="<%= dealCol %>" type="java.lang.Object" indexId="idx">
 			<%if(idx.intValue()>=dealProductsCount) continue; 
-			  ProductModel dealProduct = (ProductModel) contentNode;
-			  String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
-			  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_1,dealProduct,prodNameAttribute,true);
-			  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-			  String actionUrl = FDURLUtil.getProductURI( dealProduct, "dept" );
+			  if(contentNode instanceof CategoryModel) { continue; }
+			  else if(contentNode instanceof ProductModel){
+				  ProductModel dealProduct = (ProductModel) contentNode;
+				  String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
+				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_1,dealProduct,prodNameAttribute,true);
+				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+				  String actionUrl = FDURLUtil.getProductURI( dealProduct, "dept" );
 			 %>
 			 <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
 				<display:ProductImage product="<%= dealProduct %>" showRolloverImage="false" action="<%= actionUrl %>"/>
 			 </td>
+			 <% } %>
 		</logic:iterate>
 			<logic:iterate id="contentNode" collection="<%= edlpCol %>" type="java.lang.Object" indexId="idx">
 			<% 
 			  if(idx.intValue()>=edlpProductsCount) continue;
-			  ProductModel edlpProduct = (ProductModel) contentNode;
-			  String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
-			  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
-			  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-			  String actionUrl = FDURLUtil.getProductURI( edlpProduct, "dept" );
+			  if(contentNode instanceof CategoryModel) { continue; }
+			  else if(contentNode instanceof ProductModel){
+				  ProductModel edlpProduct = (ProductModel) contentNode;
+				  String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
+				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
+				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+				  String actionUrl = FDURLUtil.getProductURI( edlpProduct, "dept" );
 			 %>
 			 <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
 				<display:ProductImage product="<%= edlpProduct %>" showRolloverImage="false" action="<%= actionUrl %>"/>
 			 </td>
+			 <% } %>
 		</logic:iterate>
 		</tr>
 		<tr>
 			<logic:iterate id="contentNode" collection="<%=dealCol %>" type="java.lang.Object" indexId="idx">
 			<%
 				if(idx.intValue()>=dealProductsCount) continue; 
-				ProductModel dealProduct = (ProductModel) contentNode;
-				String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
-				DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_1,dealProduct,prodNameAttribute,true);
-				int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-				String actionUrl = FDURLUtil.getProductURI( dealProduct, "dept" );
+				if(contentNode instanceof CategoryModel) { continue; }
+				else if(contentNode instanceof ProductModel){
+				    ProductModel dealProduct = (ProductModel) contentNode;
+					String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
+					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_1,dealProduct,prodNameAttribute,true);
+					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+					String actionUrl = FDURLUtil.getProductURI( dealProduct, "dept" );
 			%>
 
 				<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
 					<display:ProductName product="<%= dealProduct %>" action="<%= actionUrl %>"/>								
 					<display:ProductPrice impression="<%= new ProductImpression( dealProduct ) %>" showAboutPrice="false" showDescription="false"/>
 				</td>
-
+				<% } %>
 			</logic:iterate>
 			<logic:iterate id="contentNode" collection="<%= edlpCol %>" type="java.lang.Object" indexId="idx">
 			<%
 				if(idx.intValue()>=edlpProductsCount) continue;
-				ProductModel edlpProduct = (ProductModel) contentNode;
-				String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
-				DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
-				int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-				String actionUrl = FDURLUtil.getProductURI( edlpProduct, "dept" );
+				if(contentNode instanceof CategoryModel) { continue; }
+				else if(contentNode instanceof ProductModel){
+					ProductModel edlpProduct = (ProductModel) contentNode;
+					String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
+					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
+					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+					String actionUrl = FDURLUtil.getProductURI( edlpProduct, "dept" );
 			%>
 
 				<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
 					<display:ProductName product="<%= edlpProduct %>" action="<%= actionUrl %>"/>								
 					<display:ProductPrice impression="<%= new ProductImpression( edlpProduct ) %>" showAboutPrice="false" showDescription="false"/>
 				</td>
-
+				<% } %>
 		</logic:iterate>
 		</tr>
 		</table>
