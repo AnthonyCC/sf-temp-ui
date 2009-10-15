@@ -2,10 +2,13 @@ package com.freshdirect.webapp.taglib.smartstore;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
@@ -13,6 +16,7 @@ import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
@@ -22,7 +26,11 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.FDEventUtil;
 
 public abstract class RecommendationsTag extends AbstractGetterTag {
-    // maximum number of recommended items
+	private static final long serialVersionUID = -7592561069328056899L;
+
+	private static final Category LOGGER = LoggerFactory.getInstance(RecommendationsTag.class);
+
+	// maximum number of recommended items
     protected int     itemCount     = 5;
 
     // skip checking user eligibility
@@ -65,7 +73,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
     }
     
     protected void persistToSession(Recommendations r) {
-        Map previousRecommendations = r.getSessionInput().getPreviousRecommendations();
+        Map<String, List<ContentKey>> previousRecommendations = r.getSessionInput().getPreviousRecommendations();
         if (previousRecommendations!=null) {
             pageContext.getSession().setAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS, previousRecommendations);
         }
@@ -73,7 +81,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
     
     protected void initFromSession(SessionInput input) {
         HttpSession session = pageContext.getSession();
-        input.setPreviousRecommendations((Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
+        input.setPreviousRecommendations((Map<String, List<ContentKey>>) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
     }
 
     /**
@@ -114,6 +122,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
         
         AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.set(null);
         AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.set(null);
+		LOGGER.debug("[recServiceAudit] Cleanup.");
     }
 
     /**

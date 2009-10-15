@@ -2,6 +2,7 @@ package com.freshdirect.webapp.taglib.smartstore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -137,7 +138,11 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 				// [APPREQ-689] pass product to recommendation map to request that it will be reused in i_ymal_box.jsp
 				
 				if (AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get() != null) {
-					pageContext.getRequest().setAttribute("map_prd2recommender", AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get());
+					Map<String,String> recServiceAudit = (Map<String,String>) AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();
+					pageContext.getRequest().setAttribute("map_prd2recommender", recServiceAudit);
+					LOGGER.debug("[recServiceAudit] Pass to request: " + recServiceAudit);
+				} else {
+					LOGGER.debug("[recServiceAudit] Nothing to pass");
 				}
 			} catch(NullPointerException npe) {
 				LOGGER.warn("NPE caught!! Recommendations has no recommender or variant!");

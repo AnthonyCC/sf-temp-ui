@@ -126,6 +126,8 @@ public class SmartYMALRecommendationService extends
 
 				for (int j = 0; j < recNodes.size(); j++) {
 					ContentNodeModel model = (ContentNodeModel) recNodes.get(j);
+					LOGGER.debug("SmartYMAL["+i+"]: [recServiceAudit] Set " + rec
+							.getContentKey().getId()+ " <== " + model.getContentKey().getId());
 					recServiceAudit.put(model.getContentKey().getId(), rec
 							.getContentKey().getId());
 					recStratServiceAudit.put(model.getContentKey().getId(),
@@ -134,6 +136,7 @@ public class SmartYMALRecommendationService extends
 				addContentKeys(smartInput.getCartContents(), recNodes);
 				recommendations[i] = recNodes;
 
+				LOGGER.debug("SmartYMAL["+i+"]: [recServiceAudit] logged: " + recServiceAudit);
 			}
 
 			if (recommenders.size() == 1) {
