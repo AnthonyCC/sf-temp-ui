@@ -20,6 +20,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.MainLayout;
@@ -80,17 +81,27 @@ public class PublishHistoryPanel extends ContentPanel {
         setHeading("Publish History");
         setScrollMode( Scroll.AUTO );
 
-        getHeader().addTool(new Button("Start Publish", new SelectionListener<ButtonEvent> () {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                ChangeSetQuery q = new ChangeSetQuery();
-                q.setPublishId("latest");
-                q.setRange(0, 20);
-                MainLayout.startProgress("Details", "Downloading recent changes since last publish", "loading...");
-                CmsGwt.getContentService().getChangeSets(q, new ShowChangeHistoryCallback());
-            }
-        }));
-
+        boolean publishInProgress = false;
+        
+        if (datas.size() > 0) {
+            GwtPublishData gwp = datas.get(0);
+            publishInProgress = GwtPublishData.PROGRESS.equals(gwp.getStatusCode());
+        }
+        
+        if (publishInProgress) {
+            getHeader().addTool(new LabelToolItem("Publish in progress"));
+        } else {
+            getHeader().addTool(new Button("Start Publish", new SelectionListener<ButtonEvent> () {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    ChangeSetQuery q = new ChangeSetQuery();
+                    q.setPublishId("latest");
+                    q.setRange(0, 20);
+                    MainLayout.startProgress("Details", "Downloading recent changes since last publish", "loading...");
+                    CmsGwt.getContentService().getChangeSets(q, new ShowChangeHistoryCallback());
+                }
+            }));
+        }
         
         BasePagingLoader<BasePagingLoadResult<GwtPublishData>> loader = new BasePagingLoader<BasePagingLoadResult<GwtPublishData>> (new PagingModelMemoryProxy(datas));
         store = new ListStore<GwtPublishData>(loader);
