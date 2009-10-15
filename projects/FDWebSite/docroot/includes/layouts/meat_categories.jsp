@@ -227,5 +227,5 @@
 		<% }
 	} // layouts
 %>
-
-<jsp:include page="/includes/category_featured_row.jsp" flush="true"/>	
+<% String sPage = "/includes/category_featured_row.jsp?parentCat="+currentFolder; %>
+<jsp:include page='<%= sPage %>' flush="true"/>	
