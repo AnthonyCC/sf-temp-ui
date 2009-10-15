@@ -42,13 +42,13 @@
 	  	ScoringAlgorithm global = SearchScoringRegistry.getInstance().getGlobalScoringAlgorithm();
 	  	String[] globExpr = global.getExpressions();
 	  	for (int i=0;i<global.getReturnSize();i++) {
-	  	    %><td>Global Factor[<i><%= globExpr[i] %></i>]</td><%	  	    
+	  	    %><td>Global Factor[ <i><%= globExpr[i] %></i> ]</td><%	  	    
 	  	}
 	  	ScoringAlgorithm user = SearchScoringRegistry.getInstance().getUserScoringAlgorithm();
 	  	String[] userExpr = user.getExpressions();
 	  	
 	  	for (int i=0;i<user.getReturnSize();i++) {
-	  	    %><td>Personal Factor[<i><%= userExpr[i] %></i>]</td><%	  	    
+	  	    %><td>Personal Factor[ <i><%= userExpr[i] %></i> ]</td><%	  	    
 	  	}
 	  	%>
 	  </tr>
