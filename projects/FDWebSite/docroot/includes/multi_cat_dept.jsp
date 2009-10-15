@@ -22,7 +22,7 @@
 	String catId_1 = FDStoreProperties.getDeptMeatDealsCatId();
 	String catId_2 = FDStoreProperties.getDeptEDLPCatId(); 
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_1);
-	
+	System.out.println("multi_cat_dept>> catId_1: " + catId_1 + " catId_2: " + catId_2);
 	List edlpProducts=new ArrayList();
 	Collection dealCol = null;
 	Collection edlpCol = null;
@@ -76,17 +76,19 @@
 
 <% if(dealCol.size() >= MIN_PROD2SHOW){ %>
 	<br /><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br />
-	<fd:IncludeMedia name= "/media/editorial/whats_good/wgd_butchers_deals_above.html"/>
+	<div align="center"><img src="/media/images/navigation/department/meat/meat_deals.gif"></img></div>
     <table cellpadding="0" cellspacing="0" border="0">
 		<tr valign="bottom">
 		<logic:iterate id="contentNode" collection="<%= dealCol %>" type="java.lang.Object" indexId="idx">
 			<%//if(idx.intValue()==MAX_PROD2SHOW) break; %>
 			<% 
-			  ProductModel dealProduct = (ProductModel) contentNode;
-			  String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
-			  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_1,dealProduct,prodNameAttribute,true);
-			  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-			  String actionUrl = FDURLUtil.getProductURI( dealProduct, "dept" );
+			  if(contentNode instanceof CategoryModel) { continue; }
+			  else if(contentNode instanceof ProductModel){
+				  ProductModel dealProduct = (ProductModel) contentNode;
+				  String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
+				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_1,dealProduct,prodNameAttribute,true);
+				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+				  String actionUrl = FDURLUtil.getProductURI( dealProduct, "dept" );
 			 %>
 			 <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
 				<display:ProductImage product="<%= dealProduct %>" showRolloverImage="false" action="<%= actionUrl %>"/><br>
@@ -96,7 +98,8 @@
 			 <% if(idx.intValue() > 0 && (idx.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE-1){ %>
 			 	</tr><tr><td><img src="/media_stat/images/layout/clear.gif" width="25" height="25"></td></tr></table>
 			 	<table cellpadding="0" cellspacing="0" border="0"><tr>
-			 <% } %>
+			 <% } 
+			 } %>
 		</logic:iterate>
 		</tr>
 		</table>
@@ -106,17 +109,19 @@
 
 <% if(edlpCol.size() >= MIN_PROD2SHOW){ %>
 	<br /><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br />
-	<fd:IncludeMedia name= "/media/editorial/whats_good/wgd_butchers_edlp_above.html"/>
+	<div align="center"><img src="/media/images/navigation/department/meat/meat_deals_edlp.gif"></img></div>
     <table cellpadding="0" cellspacing="0" border="0">
 		<tr valign="bottom">
 		<logic:iterate id="contentNode" collection="<%= edlpCol %>" type="java.lang.Object" indexId="idx">
 			<%//if(idx.intValue()==MAX_PROD2SHOW) break; %>
 			<% 
-			  ProductModel edlpProduct = (ProductModel) contentNode;
-			  String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
-			  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
-			  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-			  String actionUrl = FDURLUtil.getProductURI( edlpProduct, "dept" );
+			  if(contentNode instanceof CategoryModel) { continue; }
+			  else if(contentNode instanceof ProductModel){
+				  ProductModel edlpProduct = (ProductModel) contentNode;
+				  String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
+				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
+				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+				  String actionUrl = FDURLUtil.getProductURI( edlpProduct, "dept" );
 			 %>
 			 <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
 				<display:ProductImage product="<%= edlpProduct %>" showRolloverImage="false" action="<%= actionUrl %>"/><br>
@@ -126,7 +131,8 @@
 			 <% if(idx.intValue() > 0 && (idx.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE-1){ %>
 			 	</tr><tr><td><img src="/media_stat/images/layout/clear.gif" width="25" height="25"></td></tr></table>
 			 	<table cellpadding="0" cellspacing="0" border="0"><tr>
-			 <% } %>
+			 <% } 
+			 } %>
 		</logic:iterate>
 		</tr>
 		</table>
