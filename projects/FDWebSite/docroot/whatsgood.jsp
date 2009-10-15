@@ -1,20 +1,20 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
-<%@ page import='com.freshdirect.customer.*'%>
-<%@ page import='com.freshdirect.*'%>
-<%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.FDReservation'%>
-<%@ page import='com.freshdirect.fdstore.content.*'%>
-<%@ page import='com.freshdirect.fdstore.promotion.*'%>
+<%@ page import='com.freshdirect.customer.*' %>
+<%@ page import='com.freshdirect.*' %>
+<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.FDReservation' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.promotion.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='java.util.StringTokenizer' %>
 <%@ page import='java.text.*' %>
-<%@ page import="java.util.Collection"%>
-<%@ page import="java.util.Map"%>
-<%@ page import="java.util.HashMap"%>
+<%@ page import='java.util.Collection' %>
+<%@ page import='java.util.Map' %>
+<%@ page import='java.util.HashMap' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -35,6 +35,8 @@ String catId="";
 
 //generic_row variables
 	Collection sortedColl=null;
+	Collection globalColl=new ArrayList();
+	Collection rowColl=null;
 	boolean onlyOneProduct =false;
 	ProductModel theOnlyProduct =  null;
 	ContentNodeModel currentFolder;
@@ -45,6 +47,7 @@ String catId="";
 	String sortNameAttrib;
 	Settings layoutSettings;
 	String mediaPath;
+
 
 deptId = request.getParameter("deptid");
 
@@ -136,7 +139,7 @@ if (deptId==null) { deptId="wgd"; }
 				//START Great Right Now 
 				
 					System.out.println("=============row in wg_peakproduce :");
-					%><jsp:include page="/includes/department_peakproduce_whatsgood.jsp" flush="true"/><%
+					%><%@ include file="/includes/department_peakproduce_whatsgood.jsp" %><%
 				//END Great Right Now
 
 			//special : deals
@@ -210,10 +213,11 @@ if (deptId==null) { deptId="wgd"; }
 			}else{
 				//see if row is a category
 				ContentNodeModel currentFolderTemp = ContentFactory.getInstance().getContentNode(curRow);
+				System.out.println(curRow);
 
 				if(currentFolderTemp instanceof CategoryModel) {
 					//is a category
-					//System.out.println("==============cat : IS cat");
+					System.out.println("==============cat : IS cat");
 
 					//we know it's a category, so use it in the generic row
 					catId = curRow;
@@ -221,7 +225,7 @@ if (deptId==null) { deptId="wgd"; }
 
 				}else{
 					//is NOT a category
-					//System.out.println("==============cat : IS NOT cat");
+					System.out.println("==============cat : IS NOT cat");
 
 					//try using it as media instead
 					String mediaPathTemp="/media/editorial/whats_good/"+curRow;
@@ -234,6 +238,7 @@ if (deptId==null) { deptId="wgd"; }
 					%><fd:IncludeMedia name="<%= mediaPathTemp %>" parameters="<%=params%>"/><%
 				}
 			}
+
 		}
 	//no rows were found
 	}else{

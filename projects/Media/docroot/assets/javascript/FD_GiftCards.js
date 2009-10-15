@@ -9,7 +9,7 @@
 
 var global_gcDebug = false;
 var global_gcLog = false;
-var lastEdit = '2009.10.07_01.45.24.PM';
+var lastEdit = '2009.10.14_12.30.37.AM';
 var lastLog;
 
 gcLog('Last Edit: '+lastEdit);
@@ -473,7 +473,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 			}
 
 			//update gcId_containerId now if a select box
-			if (typeof(this.gcId_containerId) != 'undefined' && this.gcId_containerId != '') {
+			if (typeof(this.gcId_containerId) != 'undefined' && this.gcId_containerId != '' && $(this.gcId_containerId)) {
 				$(this.gcId_containerId).value = $(this.selectBoxId)[this.curSelectedIndex].value;
 				this.log('2 gcId_containerId ('+this.gcId_containerId+') = ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
 			}else{
@@ -603,6 +603,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 			var tempAmount = formatCurrency($('fldAltAmount').value);
 			tempAmount=(tempAmount).replace(/\$/g, '');
 
+			var tempHeight = getHeight()*.90; //also change in previewShow
 
 			/* only trigger if we have a choice of preview type */
 			if ( $('deliveryMethodEmail').checked || $('deliveryMethodPdf').checked) {
@@ -625,7 +626,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 					overlayOpacity: .85,
 					overlayClose: false,
 					width: 700,
-					height: 800,
+					height: tempHeight,
 					transitions: false,
 					autoFocusing: false,
 					centered: true,
@@ -692,6 +693,8 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 			if (global_gcDebug) { titleString = 'debug: '+params.gcId; }
 			var gcRedempCodeTemp = 'xxxxx';
 
+			var tempHeight = getHeight()*.90; //also change in emailPreview
+
 			Modalbox.show('/gift_card/postbacks/preview.jsp', {
 				params: {
 					isEmailPreview: isEmailPreview, //delivery type here
@@ -711,7 +714,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 				overlayOpacity: .85,
 				overlayClose: false,
 				width: 700,
-				height: 800,
+				height: tempHeight,
 				transitions: false,
 				autoFocusing: false,
 				afterLoad: function() { window.scrollTo(0,0); },
@@ -1333,4 +1336,15 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 			setCheckOut();
 			return true;
 		}
+	}
+
+/* function for getting the display height */
+	function getHeight(){
+		return (self.innerHeight)
+			?self.innerHeight
+			:(document.documentElement && document.documentElement.clientHeight)
+				?document.documentElement.clientHeight
+				:(document.body)
+					?document.body.clientHeight
+					:500; //default to 500
 	}

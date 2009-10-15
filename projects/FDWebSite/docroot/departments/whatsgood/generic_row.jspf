@@ -8,6 +8,8 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%
+int tempCounter=0;
+rowColl = new ArrayList();
 sortedColl = null; 
 onlyOneProduct = false;
 theOnlyProduct = null;
@@ -28,12 +30,17 @@ sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
     
 layoutSettings = new Settings();
 layoutSettings.setGrabberDepth(0);
-layoutSettings.setIgnoreDuplicateProducts(false);
-layoutSettings.setIgnoreShowChildren(true);
+layoutSettings.setIgnoreDuplicateProducts(true);
+layoutSettings.setIgnoreShowChildren(false);
 layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
+layoutSettings.setReturnHiddenFolders(false);
 
 List tmpList=new ArrayList();
 %>
+<% System.out.println("-=-=-=-=-= in generic row currentFolder : "+currentFolder); %>
+<% System.out.println("-=-=-=-=-= isDept : "+isDept); %>
+<% System.out.println("-=-=-=-=-= isCat : "+isCat); %>
+
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
 	id='rtnColl' 
@@ -51,55 +58,92 @@ List tmpList=new ArrayList();
         
         request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
 		
-		//System.out.println("-=-=-=-=-= in generic row ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts());
+		System.out.println("-=-=-=-=-= in generic row ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts());
 %>
     </fd:ItemGrabber> 
  
     <fd:ItemSorter nodes='<%=(List)sortedColl%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
 
-			<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
-			<% mediaPath = "/media/editorial/whats_good/whats_good_"+ catId + "_above.html"; %>
-			<fd:IncludeMedia name="<%=mediaPath%>" />
+	<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
+		<%
+			// skip if more than 5, is a category or already used on page
+			if (tempCounter >= 5 || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode)) { continue; }
+			ProductModel pm = (ProductModel) contentNode;
+			//skip if discontinued or unavailable
+			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
 
-			<table cellpadding="0" cellspacing="0" border="0">
-			<tr valign="bottom">
+			//add to global collection for dupe check
+			globalColl.add(contentNode);
+			//add to pageColl for prices ref
+			rowColl.add(contentNode);
 
-				<% //System.out.println("-=-=-=-=-= in generic row sortedColl : "+catId+" : "+(List)sortedColl); %>
-				<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
-					<%
-						ProductModel pm = (ProductModel) contentNode;
-						String prodNameAttribute = JspMethods.getProductNameToUse(pm);
-						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
-						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-						String actionURI = FDURLUtil.getProductURI( pm, trkCode );
-						
-						if (idx.intValue() >= 5) { continue; } 
-						%>
+			tempCounter++;
+		%>
+	</logic:iterate>
+	<% tempCounter=0; %>
 
-						<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
-							<display:ProductImage product="<%= pm %>" hideDeals="true" showRolloverImage="false" action="<%= actionURI %>"/>
-						</td>
-				</logic:iterate>
-				</tr>
-				<tr>
-				<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
-					<%
-						ProductModel pm = (ProductModel) contentNode;
-						String prodNameAttribute = JspMethods.getProductNameToUse(pm);
-						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
-						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-						String actionURI = FDURLUtil.getProductURI( pm, trkCode );
+	<%
+		//rowColl should now have the collection of products to use
 
-						if (idx.intValue() >= 5) { continue; }
-					%>
+		//if we have any items to show, display them
+		if (rowColl.size() > 0) {
+	%>
+		<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
+		<% mediaPath = "/media/editorial/whats_good/whats_good_"+ catId + "_above.html"; %>
+		<fd:IncludeMedia name="<%=mediaPath%>" />
 
-						<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
-							<div class="WG_deals">
-								<display:ProductName product="<%= pm %>" action="<%= actionURI %>"/>
-								<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="false"/>
-							</div>
-						</td>
-				</logic:iterate>
-				</tr>
-			</table>
+		<table cellpadding="0" cellspacing="0" border="0">
+		<tr valign="bottom">
 
+			<% System.out.println("-=-=-=-=-= in generic row rowColl : "+catId+" : "+(List)rowColl); %>
+			<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
+			<%
+				System.out.println("-=-=-=-=-= in generic row contentNode : "+contentNode);
+				System.out.println("-=-=-=-=-= in generic row instanceof CategoryModel : "+(contentNode instanceof CategoryModel));
+				System.out.println("-=-=-=-=-= in generic row instanceof globalColl.contains : "+globalColl.contains(contentNode));
+				
+				//we don't need checks here, we did it previously
+
+				ProductModel pm = (ProductModel) contentNode;
+				String prodNameAttribute = JspMethods.getProductNameToUse(pm);
+				DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
+				int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+				String actionURI = FDURLUtil.getProductURI( pm, trkCode );			
+			%>
+
+				<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
+					<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionURI %>" />
+				</td>
+			
+			</logic:iterate>
+		</tr>
+		<tr>
+			<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
+			<%
+
+				System.out.println("-=-=-=-=-= in generic row contentNode2 : "+contentNode);
+				System.out.println("-=-=-=-=-= in generic row contentNode2 : "+(contentNode instanceof CategoryModel));
+				System.out.println("-=-=-=-=-= in generic row instanceof globalColl.contains2 : "+rowColl.contains(contentNode));
+
+				ProductModel pm = (ProductModel) contentNode;
+				String prodNameAttribute = JspMethods.getProductNameToUse(pm);
+				DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
+				int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+				String actionURI = FDURLUtil.getProductURI( pm, trkCode );
+			%>
+
+				<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
+					<div class="WG_deals">
+						<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
+						<display:ProductName product="<%= pm %>" action="<%= actionURI %>" />
+						<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="false" />
+					</div>
+				</td>
+			</logic:iterate>
+		</tr>
+		</table>
+	<%
+		}
+	%>
+	
+	<% System.out.println("-=-=-=-=-= in generic row END : "); %>

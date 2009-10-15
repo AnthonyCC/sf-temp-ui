@@ -55,12 +55,13 @@
 
 			String gcBaseUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
 
-			String gcId = request.getParameter("gcId");				// Gift Card ID (domain value ID), used in paths
-			String gcAmount = request.getParameter("gcAmount");		// Gift Card Amount
+			String gcId = request.getParameter("gcTemplateId");				// Gift Card ID (domain value ID), used in paths
+			String gcAmount = request.getParameter("fldAltAmount");		// Gift Card Amount
 			String gcRedempCode = request.getParameter("gcRedempCode");	// Gift Card Redemption Code (fake in email preview)
-			String gcFor = request.getParameter("gcFor");			// Gift Card "for"
-			String gcFrom = request.getParameter("gcFrom");			// Gift Card "from"
-			String gcMessage = request.getParameter("gcMessage");	// Gift Card "personal message"
+			String gcFor = request.getParameter("gcRecipientName");			// Gift Card "for"
+			String gcFrom = request.getParameter("gcBuyerName");			// Gift Card "from"
+			String gcMessage = request.getParameter("fldMessage");	// Gift Card "personal message"
+			String gcIsPDF = "true";	// signal to ftl that we're making a PDF
 
 			/* do some validation / limitation */
 				%><%@ include file="gc_validation.jspf" %><%
@@ -79,6 +80,7 @@
 				params.put("gcMessage", gcMessage);
 				params.put("gcBaseUrl", gcBaseUrl);
 				params.put("gcMediaRoot", gcBaseUrl+"/media/editorial/giftcards/"+gcId+"/");
+				params.put("gcIsPDF", gcIsPDF);	// signal to ftl that we're making a PDF
 
 			//setup string writer
 			StringWriter sw = new StringWriter();

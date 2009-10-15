@@ -22,13 +22,14 @@
   Collection vegCol = null;
   Collection fruCol = null;
 
+	rowColl = new ArrayList();
   
-  String catId = "picks_pres";
+  catId = "picks_pres";
   //request.getParameter("catId");
-  ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
-  boolean isDept = (currentFolder instanceof DepartmentModel);
-  boolean isCat = (currentFolder instanceof CategoryModel);
-  String trkCode= "";
+  currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+  isDept = (currentFolder instanceof DepartmentModel);
+  isCat = (currentFolder instanceof CategoryModel);
+  trkCode= "";
   //** pass the code that should be used as the tracking code **/
   if (isDept) {
     trkCode = "dpage";
@@ -37,7 +38,9 @@
     trkCode = "cpage";
     request.setAttribute("trk","cpage");
   }
+
 %>
+
 
 
   
@@ -50,12 +53,20 @@
   </fd:GetPeakProduce>
 
   <%
-    //iterate over vegCol and remove dupes contained in fruCol
-    Iterator iterator = vegCol.iterator();
-    while (iterator.hasNext()) {
-      Object element = iterator.next();
-      if (fruCol.contains(element)) {
-        iterator.remove();
+    //iterate over vegCol and remove dupes contained in fruCol or globalColl
+    Iterator iteratorVeg = vegCol.iterator();
+    while (iteratorVeg.hasNext()) {
+      Object element = iteratorVeg.next();
+      if (fruCol.contains(element) || globalColl.contains(element)) {
+        iteratorVeg.remove();
+      }
+    }
+	//now iterate over fruCol and remove dupes contained in globalColl
+    Iterator iteratorFru = fruCol.iterator();
+    while (iteratorFru.hasNext()) {
+      Object element = iteratorFru.next();
+      if (globalColl.contains(element)) {
+        iteratorFru.remove();
       }
     }
     //set sizes
@@ -88,7 +99,7 @@
       <table cellpadding="0" cellspacing="0" border="0">
       <tr valign="bottom">
         <logic:iterate id="peakProduce" collection="<%= fruCol %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
-        <% if (idx.intValue() >= ppFru) { continue; }
+        <% if (idx.intValue() >= ppFru || globalColl.contains(peakProduce.getProductModel())) { continue; }
           String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
           DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response, 
               peakProduce.getProductModel().getParentNode().getContentName(), 
@@ -96,6 +107,11 @@
               true);
           int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
           String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), trkCode );
+
+			//add to global collection for dupe check
+			globalColl.add(peakProduce.getProductModel());
+			//add to pageColl for prices ref
+			rowColl.add(peakProduce.getProductModel());
         %>
           
           <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
@@ -103,7 +119,7 @@
           </td>
         </logic:iterate>
         <logic:iterate id="peakProduce" collection="<%= vegCol %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
-        <% if (idx.intValue() >= ppVeg) { continue; }
+        <% if (idx.intValue() >= ppVeg || globalColl.contains(peakProduce.getProductModel())) { continue; }
           String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
           DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response, 
               peakProduce.getProductModel().getParentNode().getContentName(), 
@@ -111,6 +127,11 @@
               true);
           int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
           String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), trkCode );
+
+			//add to global collection for dupe check
+			globalColl.add(peakProduce.getProductModel());
+			//add to pageColl for prices ref
+			rowColl.add(peakProduce.getProductModel());
         %>
           
           <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
@@ -121,7 +142,7 @@
       <tr valign="top">
         <logic:iterate id="peakProduce" collection="<%= fruCol %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
         
-        <% if (idx.intValue() >= ppFru) { continue; }
+        <% if (idx.intValue() >= ppFru || !rowColl.contains(peakProduce.getProductModel())) { continue; }
           String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
 		  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(), peakProduce.getProductModel(), prodNameAttribute, true);
           int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
@@ -140,7 +161,7 @@
 
 
         <logic:iterate id="peakProduce" collection="<%= vegCol %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
-        <% if (idx.intValue() >= ppVeg) { continue; }
+        <% if (idx.intValue() >= ppVeg || !rowColl.contains(peakProduce.getProductModel())) { continue; }
           String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
 		  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(), peakProduce.getProductModel(), prodNameAttribute, true);
           int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
@@ -160,5 +181,8 @@
         </logic:iterate>
       </tr>
       </table>
-    <% } %>
+    <%
+	} 
+	
+%>
 </fd:ProduceRatingCheck>

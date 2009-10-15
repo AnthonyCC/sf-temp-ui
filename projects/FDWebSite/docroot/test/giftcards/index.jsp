@@ -1,22 +1,6 @@
 <%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
-<%
-	String deptId="GC_testDept";
-	String catId="GC_testCat";
-	ContentNodeModel categoryRef = ContentFactory.getInstance().getContentNodeByName(catId);
-	ProductModel prodRef = ContentFactory.getInstance().getProductByName(catId, "GC_testProd");
-	List gcList = prodRef.getGiftcardType();
-	String mediaRoot = "/media/editorial/giftcards/";
-	String mediaStaticRoot = "/media_stat/images/giftcards/";
-	String gcId = request.getParameter("gcId");
-%>
-	<fd:Department id='department' departmentId='<%= deptId %>'/>
-
-<%
-	//ContentNodeModel currentFolder = department;
-%>
-
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -40,6 +24,50 @@
 
 <body>
 
+<%
+
+	String deptId=FDStoreProperties.getGiftCardDeptId();
+	String catId=FDStoreProperties.getGiftCardCatId();
+	String prodId=FDStoreProperties.getGiftCardProdName();
+	String fdTemplateId = request.getParameter("fdTemplateId");
+	List gcList = null;
+	ProductModel prodRef = null;
+	boolean errorFound = false;
+	String gcDisplayId = "gcDisplay"; //id of gc Display object
+	String gcDisplayTemplateContainerId = "gcTemplateId";
+
+	
+	// is set (gcId is not used/invalid), this value is used.
+		int gcInitialCard = 0;
+
+	ContentNodeModel categoryRef = null;
+	categoryRef = ContentFactory.getInstance().getContentNodeByName(catId);
+	System.out.println("catId "+catId);
+	if (categoryRef!=null) {
+		System.out.println("categoryRef "+categoryRef);
+		prodRef = ContentFactory.getInstance().getProductByName(catId, prodId);
+		if (prodRef!=null) {
+			gcList = prodRef.getGiftcardType();
+		}else{
+			errorFound = true;
+			%><div class="error title18">prodId: <%=prodId%> not found (required).</div><%
+		}
+	}else{
+		errorFound = true;
+		%><div class="error title18">catId: <%=catId%> not found (required).</div><%
+	}
+	System.out.println("errorFound 1 "+errorFound);
+	String mediaRoot = FDStoreProperties.getMediaGiftCardTemplatePath();
+	String mediaStaticRoot = "/media_stat/images/giftcards/";
+	String gcId = request.getParameter("gcId");
+%>
+	<fd:Department id='department' departmentId='<%= deptId %>'/>
+
+<%
+	//ContentNodeModel currentFolder = department;
+%>
+
+	
 <script type="text/javascript">
 	function TEST() {
 		TEST1();
@@ -60,17 +88,27 @@
 			//carArr = Array('GC_001','GC_002','GC_003');
 		<%
 			String test = "";
-			for(int i=0;i<gcList.size();i++) {
-				DomainValue gcType=(DomainValue)gcList.get(i);
-				%>
-				cardArr[<%=i%>]=Array(
-									<%=i%>,						// fdCard.index
-									'<%= gcType.getID() %>',	// fdCard.id
-									'<%= gcType.getLabel() %>',	// fdCard.displayName
-									true						// fdCard.preLoad
-								);		
-				if (window.console) { console.log(cardArr[<%=i%>]); }
-				<%
+			if (gcList != null && gcList.size()>0) {
+				System.out.println("gcList.size() "+gcList.size());
+				for(int i=0;i<gcList.size();i++) {
+					DomainValue gcType=(DomainValue)gcList.get(i);
+					%>
+					cardArr[<%=i%>]=Array(
+										<%=i%>,						// fdCard.index
+										'<%= gcType.getID() %>',	// fdCard.id
+										'<%= gcType.getLabel() %>',	// fdCard.displayName
+										true						// fdCard.preLoad
+									);
+						<%
+						//if this is the id we've passed, make it the initial card
+						if ((gcType.getID()).equals(fdTemplateId)) {
+							gcInitialCard = i;
+						}%>
+					if (window.console) { console.log(cardArr[<%=i%>]); }
+					<%
+				}
+			}else{
+				errorFound = true;
 			}
 		%>
 		if (window.console) { console.log(cardArr); }
@@ -91,6 +129,8 @@
 
 			//send test card array to test carousel
 				window[testArray[i]].addCardsArray(cardArr);
+			//set container ID for the giftcard ID
+				window[testArray[i]].gcId_containerId = "<%= gcDisplayTemplateContainerId%>"+"_0"+i;
 
 			//set container  to hold display
 				$('containerTest'+i).appendChild(window[testArray[i]].setDisplayObjType(i));
@@ -121,7 +161,6 @@
 		}
 
 
-
 		//test with nopassed id
 			//initCarousel();
 
@@ -137,17 +176,20 @@
 		var testArray = new Array;
 
 		<%
-			for(int i=0;i<gcList.size();i++) {
-				DomainValue gcType=(DomainValue)gcList.get(i);
-				%>
-				cardArr[<%=i%>]=Array(
-									<%=i%>,						// fdCard.index
-									'<%= gcType.getID() %>',	// fdCard.id
-									'<%= gcType.getLabel() %>',	// fdCard.displayName
-									true						// fdCard.preLoad
-								);		
-				if (window.console) { console.log(cardArr[<%=i%>]); }
-				<%
+			if (gcList != null && gcList.size()>0) {
+				System.out.println("gcList.size() "+gcList.size());
+					for(int i=0;i<gcList.size();i++) {
+						DomainValue gcType=(DomainValue)gcList.get(i);
+						%>
+						cardArr[<%=i%>]=Array(
+											<%=i%>,						// fdCard.index
+											'<%= gcType.getID() %>',	// fdCard.id
+											'<%= gcType.getLabel() %>',	// fdCard.displayName
+											true						// fdCard.preLoad
+										);		
+						if (window.console) { console.log(cardArr[<%=i%>]); }
+						<%
+					}
 			}
 		%>
 		
@@ -166,7 +208,7 @@
 				$('formTesterContainer').appendChild(window['formTester'].setDisplayObjType(1));
 
 			//set container ID for the giftcard ID (leave blank to test without)
-				window['formTester'].gcId_containerId = 'gcId';
+				window['formTester'].gcId_containerId = 'gcTemplateId';
 
 			window['formTester'].updateDisplay();
 	}
@@ -175,8 +217,8 @@
 </script>
 <div style="font-family: monospace;">
 <b>Department:</b> <%= department.getFullName() %><br />
-<b>Category:</b> <%= categoryRef.getFullName() %><br />
-<b>Gift Card Types:</b> <%= prodRef.getGiftcardType() %><br />
+<b>Category:</b> <%= (errorFound)?"":categoryRef.getFullName() %><br />
+<b>Gift Card Types:</b> <%= (errorFound)?"":prodRef.getGiftcardType() %><br />
 <b>Media Root:</b> <%= mediaRoot %><br />
 <b>Media Static Root:</b> <%= mediaStaticRoot %><br />
 </div>
@@ -184,22 +226,24 @@
 <br /><br />
 <div style="font-family: monospace;">
 <%
-	for(int i=0;i<gcList.size();i++){
-		DomainValue gcType=(DomainValue)gcList.get(i);
-		%>
-		<div style="float: left;">
-		<b>ID:</b> <%= gcType.getID() %><br />
-		<b>Label:</b> <%= gcType.getLabel() %><br />
-		<b>(Not) Value:</b> <%= gcType.getValue() %><br />
-		<b>Value:</b> <%= gcType.getTheValue() %><br />
-		<img src="<%= mediaRoot %><%= gcType.getID() %>/car_c.jpg" />
-		</div>
-		<%
+	if (gcList != null && gcList.size()>0) {
+		System.out.println("gcList.size() "+gcList.size());
+		for(int i=0;i<gcList.size();i++){
+			DomainValue gcType=(DomainValue)gcList.get(i);
+			%>
+			<div style="float: left;">
+			<b>ID:</b> <%= gcType.getID() %><br />
+			<b>Label:</b> <%= gcType.getLabel() %><br />
+			<b>(Not) Value:</b> <%= gcType.getValue() %><br />
+			<b>Value:</b> <%= gcType.getTheValue() %><br />
+			<img src="<%= mediaRoot %><%= gcType.getID() %>/car_c.jpg" />
+			</div>
+			<%
+		}
 	}
 %> 
 </div>
 <p style="clear: left;" />
-
 
 <hr /><hr />
 
@@ -229,45 +273,59 @@ Gift Card with select (Choosing second card)
 Gift Card with carousel (Choosing second card)
 <hr />
 <div id="containerTest3" class="container"></div>
-Gift Card alone (Choosing a card outside of available [99 of 5])
+Gift Card alone (Choosing a card outside of available [99 of <%if (gcList != null && gcList.size()>0) { %><%=gcList.size()%><%}else{%>null<%}%>])
 <hr />
 
 <hr />
 Gift Card test page
 <div id="formTesterContainer" class="container"></div>
 <div>
-	<form action="postback.jsp" method="POST">
-		emailPreview:	<input type="checkbox" id="isEmailPreview" name="isEmailPreview" value="true" checked="true" /><br />
-		pdfPreview:	<input type="checkbox" id="isPdfPreview" name="isPdfPreview" /><br />
-		gcID:			<input type="text" id="gcId" name="gcId" value="<%= gcId %>" /><br />
-		gcAmount:		<input type="text" id="gcAmount" name="gcAmount" value="$50.00" /><br />
-		gcRedempCode:	<input type="text" id="gcRedempCode" name="gcRedempCode" value="XXXXX123456" /><br />
-		gcFor:			<input type="text" id="gcFor" name="gcFor" value="PersonB" /><br />
-		gcFrom:		<input type="text" id="gcFrom" name="gcFrom" value="PersonA" /><br />
-		gcMessage:		<textarea type="text" id="gcMessage" name="gcMessage">Test message</textarea><br />
-		<input type="submit" value="test non-ajax" name="submit" />
-		<input type="button" value="test ajax" name="submit" onclick="window['formTester'].emailPreview(); return false;" />
-		<input type="button" value="test ajax recip add" name="submit" onclick="addRecip(); return false;" />
+	<form action="pdf_generator.jsp" method="POST">
+		emailPreview:	<input type="radio" id="deliveryMethodEmail" name="deliveryMethod" value="true" checked="true" /><br />
+		pdfPreview:	<input type="radio" id="deliveryMethodPdf" name="deliveryMethod" /><br />
+		gcID:			<input type="text" id="gcTemplateId" name="gcTemplateId" value="<%= gcId %>" style="width: 200px;" /><br />
+		gcAmount:		<input type="text" id="fldAltAmount" name="fldAltAmount" value="$50.00" style="width: 100px;" /><br />
+		gcRedempCode:	<input type="text" id="gcRedempCode" name="gcRedempCode" value="XXXXX123456" style="width: 100px;" /><br />
+		gcFor:			<input type="text" id="gcRecipientName" name="gcRecipientName" value="PersonB" style="width: 200px;" /><br />
+		gcFrom:		<input type="text" id="gcBuyerName" name="gcBuyerName" value="PersonA" style="width: 200px;" /><br />
+		gcMessage:		<textarea type="text" id="fldMessage" name="fldMessage" onkeyup="charCounter();" style="width: 300px; height: 100px;">Test message</textarea>&nbsp;<span id="msgLength"></span><br />
+		<input type="button" value="randomize" name="submit" onclick="gcTest(); return false;" />
+		<input type="button" value="preview" name="submit" onclick="window['formTester'].emailPreview(); return false;" />
+		<input type="submit" value="save pdf" name="submit" />
 	</form>
 </div>
 
-<div style="border: 1px dashed #00c; width: 750px;"">
-	The gray box below is the recipient list container. It starts empty and only creates the header if it's empty. &nbsp;&nbsp;&nbsp;
-	<input type="submit" value="clear recip list" onclick="$('recipList').innerHTML='';$('recipTotal').innerHTML='';totalSoFar=0;" />
-	<div id="recipList" style="border: 2px solid #ccc;"></div>
-	<div id="recipTotal" class="recipTotal" style="text-align: right;"></div>
-</div>
+<script type="text/javascript">
+<!--
 
+	function gcTest(){
+		var d=new Date();
+		var ran=(Math.floor(Math.random()*1000));
+		$('gcBuyerName').value="gcBuyerName "+ran;
+		$('gcRecipientName').value="gcRecipientName "+ran;
+		$('fldMessage').value='Random';
+		var m=sI(1,20);
+		for (var i=0; i<m; i++) {
+			$('fldMessage').value+=" Text"+ran;
+			$('msgLength').innerHTML=($('fldMessage').value).length+' chars';
+		}
+		$('fldAltAmount').value=sI(1,5000);
+		$('gcRedempCode').value=(dM())?'XXXXXX'+sI(100000,900000):sI(100000000000,999999999999);
+		$('formTesterSELECT_card_select').selectedIndex=sI(0,$('formTesterSELECT_card_select').length);
+		window['formTester'].selectCard();
+		(dM())?$('deliveryMethodPdf').checked=true:$('deliveryMethodEmail').checked=true;
+		charCounter();
+	}
+	function charCounter() {
+		if (($('fldMessage').value).length<150){
+			$('msgLength').innerHTML=(150-($('fldMessage').value).length)+' chars left';
+		}else{
+			$('msgLength').innerHTML='0 chars left ('+($('fldMessage').value).length+' chars)';
+		}
+	}
+	charCounter();
+//-->
+</script>
 
-<br /><br />
-<div id="testTarget" style=" width: 200px; border: 1px solid red; float: left;">
-	1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ 1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ 1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ 1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ 1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ
-</div>
-<div id="testTarget" style="height: 100px; width: 100px; border: 1px solid red; overflow: scroll; float: left;">
-	1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ 1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ 1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ 1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ 1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ
-</div>
-<div id="testTarget" style="height: 100px; width: 100px; border: 1px solid red; overflow: hidden; float: left;">
-	1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ 1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ 1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ 1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ 1234567890 ABCDEFGHIJ KLMNOPQRST UVWXYZ
-</div>
 
 <div id="error" style="clear: both;"></div>

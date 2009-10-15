@@ -15,10 +15,10 @@
 	int ranNumb = generator.nextInt(99) + 1;
 	int ranNumbAsID = generator.nextInt(999999) + 1;
 
-	if ( "true".equals ((String)request.getParameter("isEmailPreview")) ) {
+	if ( "true".equals ((String)request.getParameter("deliveryMethodEmail")) ) {
 		isEmailPreview = true;
 	}
-	if ( "true".equals ((String)request.getParameter("isPdfPreview")) ) {
+	if ( "true".equals ((String)request.getParameter("deliveryMethodPdf")) ) {
 		isPdfPreview = true;
 	}
 	if ( "on".equals ((String)request.getParameter("isPdfPreview")) ) {
@@ -45,12 +45,12 @@
 
 	String gcBaseUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
 
-	String gcId = request.getParameter("gcId");				// Gift Card ID (domain value ID), used in paths
+	String gcId = request.getParameter("gcTemplateId");				// Gift Card ID (domain value ID), used in paths
 	String gcAmount = request.getParameter("gcAmount");		// Gift Card Amount
 	String gcRedempCode = request.getParameter("gcRedempCode");	// Gift Card Redemption Code (fake in email preview)
-	String gcFor = request.getParameter("gcFor");			// Gift Card "for"
-	String gcFrom = request.getParameter("gcFrom");			// Gift Card "from"
-	String gcMessage = request.getParameter("gcMessage");	// Gift Card "personal message"
+	String gcFor = request.getParameter("gcRecipientName");			// Gift Card "for"
+	String gcFrom = request.getParameter("gcBuyerName");			// Gift Card "from"
+	String gcMessage = request.getParameter("fldMessage");	// Gift Card "personal message"
 
 	String rowRecipId = request.getParameter("rowRecipId");	// Recipient Row Id
 

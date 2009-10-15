@@ -46,7 +46,7 @@
 		ContentNodeModel prodParent = product.getParentNode(); 
         List skus = product.getSkus();
 
-        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel) || skus.size()==0) // || !(product.hasWasPrice())
+        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel) || skus.size()==0 || globalColl.contains(product)) // || !(product.hasWasPrice())
         	continue;
 
         // validFavorites.add(product);	
@@ -89,6 +89,10 @@
         if(!isDeal) {
             continue;
         }
+		
+		//add to global collection for dupe check
+		globalColl.add(product);
+
 		String dealsCat="";
 Attribute _featCats = currentFolder.getAttribute("FEATURED_CATEGORIES");
 List _featuredCats=null;
@@ -220,5 +224,5 @@ if (_featCats!=null) {
 	        	</tr>
 	    	</table><br /><%-- close the featured product column --%><%
     
-    }    
+    }
 %>
