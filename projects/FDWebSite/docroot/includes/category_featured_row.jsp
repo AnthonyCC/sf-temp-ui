@@ -17,10 +17,11 @@
 	int productsTarget = 4;
 	int dealProductsCount = 2;
 	int edlpProductsCount = 2;
-	String catId_1 = FDStoreProperties.getDeptMeatDealsCatId();
-	String catId_2 = FDStoreProperties.getDeptEDLPCatId(); 
+	String parentCat = request.getParameter("parentCat");
+	String catId_1 = parentCat+"_deals";
+	String catId_2 = parentCat+"_edlp"; 
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_1);
-	System.out.println("multi_cat_dept>> catId_1: " + catId_1 + " catId_2: " + catId_2);
+	System.out.println("category_featured_row>> catId_1: " + catId_1 + " catId_2: " + catId_2);
 	List edlpProducts=new ArrayList();
 	Collection dealCol = null;
 	Collection edlpCol = null;
@@ -44,7 +45,7 @@
 		dealCol = rtnColl;        
 		System.out.println("Category>> dealCol size: " + dealCol.size());
 		System.out.println("Category>> dealCol: " + dealCol);
-        request.setAttribute("itemGrabberResult",dealCol); //** expose result of item grabber to the layout **
+        //request.setAttribute("itemGrabberResult",dealCol); //** expose result of item grabber to the layout **
 %>
 </fd:ItemGrabber>
 <fd:ItemSorter nodes='<%=(List)dealCol%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
@@ -66,7 +67,7 @@
 		edlpCol = rtnColl;        
 		System.out.println("Category>>  edlpCol size: " + edlpCol.size());
 		System.out.println("Category>>  edlpCol: " + edlpCol);
-        request.setAttribute("itemGrabberResult",edlpCol); //** expose result of item grabber to the layout **
+        //request.setAttribute("itemGrabberResult",edlpCol); //** expose result of item grabber to the layout **
 %>
 </fd:ItemGrabber>
 <fd:ItemSorter nodes='<%=(List)edlpCol%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
