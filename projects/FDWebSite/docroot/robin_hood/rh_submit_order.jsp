@@ -28,10 +28,14 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER );
 request.setAttribute("donation", "true");
 UserUtil.initializeCartForDonationOrder(user);
+String optInInd = request.getParameter("optinInd");
 %>
 <fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="/robin_hood/rh_receipt.jsp" ccdProblemPage="/robin_hood/rh_submit_order.jsp?ccerror=true">
         
         <fd:ErrorHandler result='<%=result%>' name='fraud_check_failed' id='errorMsg'>
+			<%@ include file="/includes/i_error_messages.jspf" %>	
+		</fd:ErrorHandler>
+		<fd:ErrorHandler result='<%=result%>' name='paymentMethodList' id='errorMsg'>
 			<%@ include file="/includes/i_error_messages.jspf" %>	
 		</fd:ErrorHandler>
 <%
@@ -152,8 +156,11 @@ boolean isCheckEligible = false;
 				<b>YES, I understand that I am making a charitable contribution to Robin Hood.</b><br/>
 				Leave checked in order to receive a one-time e-mail from Robin Hood acknowledging your gift.
 			</td>
-			<td>
-				<input type="radio" name="optinInd" id="optin" value="optin"  />
+			<td><% if("optin".equals(optInInd)){ %>
+			<input type="radio" name="optinInd" id="optin" value="optin" checked/>
+			<% } else { %>
+			<input type="radio" name="optinInd" id="optin" value="optin" />
+			<% } %>				
 			</td>
 		</tr>
 		<tr>
@@ -164,8 +171,11 @@ boolean isCheckEligible = false;
 			<b>NO, I want my gift to Robin Hood to be anonymous.</b><br/>
 			You will not receive an acknowledgement of your gift from Robin Hood.
 			</td>
-			<td>
+			<td><% if("optout".equals(optInInd)){ %>
+			<input type="radio" name="optinInd" id="optout" value="optout" checked/>
+			<% } else { %>
 			<input type="radio" name="optinInd" id="optout" value="optout" />
+			<% } %>			
 			</td>
 		</tr>
 		<tr>

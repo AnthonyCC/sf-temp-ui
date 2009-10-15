@@ -42,6 +42,7 @@ String fldRepeatPassword    = request.getParameter(EnumUserInfoName.REPEAT_PASSW
 String fldPasswordHint      = request.getParameter(EnumUserInfoName.PASSWORD_HINT.getCode());
 String fldTermsAndConditions = request.getParameter(EnumUserInfoName.CUSTOMER_AGREEMENT.getCode());
 String fldHowDidYouHear 	= request.getParameter("howDidYouHear");
+String optInInd = request.getParameter("optinInd");
 if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
     fldTermsAndConditions = "checked";
 } else {
@@ -273,7 +274,12 @@ System.out.println("d");
 	<tr>
 		<td align="right"><b>YES, I understand that I am making a charitable contribution to Robin Hood.</b><br/>
 			Leave checked in order to receive a one-time e-mail from Robin Hood acknowledging your gift.</td>
-		<td><input type="radio" name="optinInd" id="optin" value="optin" />
+			
+		<td><% if("optin".equals(optInInd)){ %>
+			<input type="radio" name="optinInd" id="optin" value="optin" checked/>
+			<% } else { %>
+			<input type="radio" name="optinInd" id="optin" value="optin" />
+			<% } %>
 		</td>
 	</tr>
 	<tr>
@@ -283,8 +289,13 @@ System.out.println("d");
 	<tr>
 		<td align="right"><b>NO, I want my gift to Robin Hood to be anonymous.</b><br/>
 			You will not receive an acknowledgement of your gift from Robin Hood.</td>
-		<td><input type="radio" name="optinInd" id="optout"
-			value="optout" /></td>
+		<td>
+		<% if("optout".equals(optInInd)){ %>
+			<input type="radio" name="optinInd" id="optout" value="optout" checked/>
+			<% } else { %>
+			<input type="radio" name="optinInd" id="optout" value="optout" />
+			<% } %>
+			</td>
 	</tr>
 	<tr>
 		<td><IMG src="/media_stat/images/layout/clear.gif" width="8"

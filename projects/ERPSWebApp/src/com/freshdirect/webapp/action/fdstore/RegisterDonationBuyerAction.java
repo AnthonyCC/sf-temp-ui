@@ -38,7 +38,7 @@ public class RegisterDonationBuyerAction extends RegistrationAction {
 		// TODO Auto-generated constructor stub
 	}
 
-	private static Category LOGGER = LoggerFactory.getInstance(RegisterGiftCardBuyerAction.class);
+	private static Category LOGGER = LoggerFactory.getInstance(RegisterDonationBuyerAction.class);
 	
 	public String execute() throws Exception {
 		HttpSession session = this.getWebActionContext().getSession();
