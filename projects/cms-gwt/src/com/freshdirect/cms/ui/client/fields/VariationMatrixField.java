@@ -230,9 +230,11 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
         for (int i = 0; i < this.store.getCount(); i++) {
             OneToManyModel model2 = this.store.getAt(i);
             
-            GwtContentNode newNode = new GwtContentNode(model2.getKey());
-//            List<String> skuDomainValues = model2.get(SKU_DOMAIN_VALUES);
-//            List<ContentTreeModel> serverSkuDomainValues = new ArrayList()
+			GwtContentNode newNode = WorkingSet.get( model2.getKey() );			
+			if ( newNode == null ) {
+				newNode = new GwtContentNode( model2.getKey() );
+			}
+            
             newNode.changeValue(SKU_DOMAIN_VALUES, (Serializable) model2.get(SKU_DOMAIN_VALUES));
             WorkingSet.add(newNode);
         }

@@ -169,7 +169,7 @@ public class TranslatorToGwt {
 				Collection<ContentKey> attributes = (Collection<ContentKey>)section.getAttributeValue( "fields" );
 				for ( ContentKey attrKey : attributes ) {
 					ContentNodeI attr = attrKey.getContentNode();
-                                        String attributeKey = (String) attr.getAttributeValue("attribute");					
+					String attributeKey = (String) attr.getAttributeValue("attribute");					
 					
 					tabDef.addAttributeKey( sectionId, attributeKey );
 					

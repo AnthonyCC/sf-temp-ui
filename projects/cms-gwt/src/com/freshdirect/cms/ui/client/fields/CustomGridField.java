@@ -17,6 +17,7 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.freshdirect.cms.ui.client.WorkingSet;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
 import com.freshdirect.cms.ui.model.GwtContentNode;
+import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -68,7 +69,10 @@ public class CustomGridField extends OneToManyRelationField implements SaveListe
 		for ( int rowIndex = 0; rowIndex < this.store.getCount(); rowIndex++ ) {
 			OneToManyModel model = this.store.getAt( rowIndex );
 
-			GwtContentNode newNode = new GwtContentNode( model.getKey() );
+			GwtContentNode newNode = WorkingSet.get( model.getKey() );			
+			if ( newNode == null ) {
+				newNode = new GwtContentNode( model.getKey() );
+			}
 			
 			for ( int colId = 0; colId < customFields.getGridColumns().size(); colId++ ) {
 				int colIndex = grid.getColumnModel().getIndexById( "extra_" + colId );
@@ -84,4 +88,24 @@ public class CustomGridField extends OneToManyRelationField implements SaveListe
 			WorkingSet.add( newNode );
 		}
 	}
+    
+    @Override
+    public void addOneToManyModel( String type, String key, String label, GwtNodeData newNodeData ) {
+        if ( store.findModel( "key", key ) == null ) {        
+	        OneToManyModel model = createModel(type, key, label);
+	        model.setNewNodeData(newNodeData);
+	        
+			if ( customFields.getGridColumns() != null ) {
+				for ( String col : customFields.getGridColumns() ) {
+					model.set( col, newNodeData.getNode().getAttributeValue( col ) );
+				}
+			}	        
+	        
+	        store.add(model);
+	        grid.show();
+	        grid.getView().refresh(false);
+	        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(this));       
+        }
+    }
+    
 }
