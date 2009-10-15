@@ -249,9 +249,13 @@
 	background-color: #f2f2f2;
 	padding-top: 0px;
 }
-.x-form-field-wrap {
+.x-form-element .x-form-field-wrap {
 	width: auto ! important;
 }
+.x-form-group .x-form-field-wrap {
+	width: auto ! important;
+}
+
 
 /* ====== inheritance field ====== */
 .inheritable > table {
