@@ -105,10 +105,7 @@ UserUtil.initializeGiftCart(user);
         </fd:ErrorHandler>    
         <fd:ErrorHandler result='<%=result%>' name='limitReached' id='errorMsg'>
            <%@ include file="/includes/i_error_messages.jspf" %>
-        </fd:ErrorHandler>            
-        <fd:ErrorHandler result='<%=result%>' name='paymentMethodList' id='errorMsg'>
-            <%@ include file="/includes/i_error_messages.jspf" %>	
-        </fd:ErrorHandler>  
+        </fd:ErrorHandler>       
         <% String[] checkPaymentForm = {"system", "order_minimum", "payment_inadequate", "technical_difficulty", "paymentMethodList", "payment", "declinedCCD", "matching_addresses", "expiration","bil_apartment","bil_address1","cardNum"}; %>
             <fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentForm%>' id='errorMsg'>
                 <%@ include file="/includes/i_error_messages.jspf" %>	
