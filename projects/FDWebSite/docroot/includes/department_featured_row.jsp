@@ -37,19 +37,22 @@ boolean sortDescending = "true".equalsIgnoreCase(request.getParameter("sortDesce
 //String sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
     
 Settings layoutSettings = new Settings();
-layoutSettings.setGrabberDepth(0);
+layoutSettings.setGrabberDepth(99);
 layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
 
 List tmpList=new ArrayList();
 %>
+<% //check if the category exists
+	if(node instanceof CategoryModel){ %>
+
 <fd:ItemGrabber
 	category='<%=node %>' 
 	id='rtnColl' 
 	depth='<%=layoutSettings.getGrabberDepth()%>'
 	ignoreShowChildren='true' 
-	filterDiscontinued='true'
+	filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
 	returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
-	ignoreDuplicateProducts='false'
+	ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
 	returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
 	returnSkus='<%=layoutSettings.isReturnSkus()%>'
 	workSet='<%=tmpList%>'
@@ -111,4 +114,5 @@ List tmpList=new ArrayList();
 		</tr>
 	</table>
 
-<% } %>
+<% } 
+}//category instance %>
