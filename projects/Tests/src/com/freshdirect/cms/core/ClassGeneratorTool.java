@@ -24,7 +24,6 @@ import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.classgenerator.ClassGeneratorContentService;
 import com.freshdirect.cms.classgenerator.ContentNodeGenerator;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.node.ContentNode;
 
 public class ClassGeneratorTool {
     private static final Logger LOG = Logger.getLogger(ClassGeneratorTool.class);
@@ -113,9 +112,9 @@ public class ClassGeneratorTool {
 
             AttributeI brands = node.getAttribute("brands");
             brands.setValue(new ArrayList());
-            LOG.info("node FULL_NAME:" + node.getAttribute("FULL_NAME").getValue());
-            LOG.info("node LAYOUT:" + node.getAttribute("LAYOUT").getValue());
-            LOG.info("node brands:" + node.getAttribute("brands").getValue());
+            LOG.info("node FULL_NAME:" + node.getAttributeValue("FULL_NAME"));
+            LOG.info("node LAYOUT:" + node.getAttributeValue("LAYOUT"));
+            LOG.info("node brands:" + node.getAttributeValue("brands"));
 
             
             LOG.info("node FULL_NAME:" + node.getAttributeValue("FULL_NAME"));
@@ -123,9 +122,9 @@ public class ClassGeneratorTool {
             LOG.info("node brands:" + node.getAttributeValue("brands"));
             
             ContentNodeI copy = node.copy();
-            LOG.info("copy FULL_NAME:" + copy.getAttribute("FULL_NAME").getValue());
-            LOG.info("copy LAYOUT:" + copy.getAttribute("LAYOUT").getValue());
-            LOG.info("copy brands:" + copy.getAttribute("brands").getValue());
+            LOG.info("copy FULL_NAME:" + copy.getAttributeValue("FULL_NAME"));
+            LOG.info("copy LAYOUT:" + copy.getAttributeValue("LAYOUT"));
+            LOG.info("copy brands:" + copy.getAttributeValue("brands"));
             LOG.info("copy key:" + copy.getKey());
 
             LOG.info("node FULL_NAME:" + copy.getAttributeValue("FULL_NAME"));
@@ -152,8 +151,8 @@ public class ClassGeneratorTool {
              * attribute.setValue("Hello"); AttributeI layout =
              * node.getAttribute("width"); layout.setValue(new Integer(5));
              * 
-             * LOG.info("node path:" + node.getAttribute("path").getValue());
-             * LOG.info("node width:" + node.getAttribute("width").getValue());
+             * LOG.info("node path:" + node.getAttributeValue("path"));
+             * LOG.info("node width:" + node.getAttributeValue("width"));
              */
         }
         {
@@ -193,7 +192,7 @@ public class ClassGeneratorTool {
             for (Iterator iter = names.iterator(); iter.hasNext();) {
                 String name = (String) iter.next();
 
-                Object value = node.getAttribute(name).getValue();
+                Object value = node.getAttributeValue(name);
                 if (value instanceof String) {
                     inc ++;
                     node.getAttribute(name).setValue("value " + i);

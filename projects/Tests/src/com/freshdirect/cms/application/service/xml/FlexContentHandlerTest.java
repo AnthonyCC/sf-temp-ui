@@ -34,21 +34,21 @@ public class FlexContentHandlerTest extends TestCase {
 
 		ContentNodeI fooA = service.getContentNode(key("A"));
 		assertEquals(3, fooA.getAttributes().size());
-		assertEquals("aaa", fooA.getAttribute("label").getValue());
-		assertNull(fooA.getAttribute("children").getValue());
+		assertEquals("aaa", fooA.getAttributeValue("label"));
+		assertNull(fooA.getAttributeValue("children"));
 
 		ContentNodeI fooB = service.getContentNode(key("B"));
 		assertEquals(3, fooB.getAttributes().size());
-		assertEquals("bbb", fooB.getAttribute("label").getValue());
-		List l = (List) fooB.getAttribute("children").getValue();
+		assertEquals("bbb", fooB.getAttributeValue("label"));
+		List l = (List) fooB.getAttributeValue("children");
 		assertEquals(2, l.size());
 		assertEquals(key("A"), l.get(0));
 		assertEquals(key("B"), l.get(1));
 
 		ContentNodeI fooC = service.getContentNode(key("C"));
 		assertEquals(3, fooC.getAttributes().size());
-		assertEquals("ccc", fooC.getAttribute("label").getValue());
-		l = (List) fooC.getAttribute("children").getValue();
+		assertEquals("ccc", fooC.getAttributeValue("label"));
+		l = (List) fooC.getAttributeValue("children");
 		assertEquals(4, l.size());
 		assertEquals(key("A"), l.get(0));
 		assertEquals(key("D"), l.get(1));
@@ -57,17 +57,17 @@ public class FlexContentHandlerTest extends TestCase {
 
 		ContentNodeI fooFlex0 = service.getContentNode(key("flex_0"));
 		assertEquals(3, fooFlex0.getAttributes().size());
-		assertEquals("xxx", fooFlex0.getAttribute("label").getValue());
-		assertNull(fooFlex0.getAttribute("children").getValue());
+		assertEquals("xxx", fooFlex0.getAttributeValue("label"));
+		assertNull(fooFlex0.getAttributeValue("children"));
 	}
 
 	public void testDate() {
 		ContentNodeI fooD = service.getContentNode(key("D"));
 		assertEquals(3, fooD.getAttributes().size());
-		assertEquals("an element with a date attribute", fooD.getAttribute("label").getValue());
+		assertEquals("an element with a date attribute", fooD.getAttributeValue("label"));
 
 		Calendar date = new GregorianCalendar(2006, 0, 25);
-		assertEquals(fooD.getAttribute("date").getValue(), date.getTime());
+		assertEquals(fooD.getAttributeValue("date"), date.getTime());
 	}
 
 	public void testBadDate() {

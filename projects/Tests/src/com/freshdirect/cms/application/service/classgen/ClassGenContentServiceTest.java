@@ -34,13 +34,13 @@ public class ClassGenContentServiceTest extends TestCase {
 
         ContentNodeI fooNode = service.getContentNode(FOO_KEY);
         assertEquals(2, fooNode.getAttributes().size());
-        assertEquals("fooValue", fooNode.getAttribute("FOO").getValue());
-        assertEquals("bazValue", fooNode.getAttribute("BAZ").getValue());
+        assertEquals("fooValue", fooNode.getAttributeValue("FOO"));
+        assertEquals("bazValue", fooNode.getAttributeValue("BAZ"));
 
         ContentNodeI barNode = service.getContentNode(BAR_KEY);
         assertEquals(2, barNode.getAttributes().size());
-        assertEquals("barValue", barNode.getAttribute("BAR").getValue());
-        assertEquals("bazValue", barNode.getAttribute("BAZ").getValue());
+        assertEquals("barValue", barNode.getAttributeValue("BAR"));
+        assertEquals("bazValue", barNode.getAttributeValue("BAZ"));
 
         assertNull(service.getContentNode(new ContentKey(FOO_TYPE, "nonexistent")));
     }

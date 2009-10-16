@@ -81,13 +81,13 @@ public class CompositeContentServiceTest extends TestCase {
     public void testGetContentNode() {
         ContentNodeI fooNode = service.getContentNode(FOO_KEY);
         assertEquals(2, fooNode.getAttributes().size());
-        assertEquals("fooValue", fooNode.getAttribute("FOO").getValue());
-        assertEquals("bazValue", fooNode.getAttribute("BAZ").getValue());
+        assertEquals("fooValue", fooNode.getAttributeValue("FOO"));
+        assertEquals("bazValue", fooNode.getAttributeValue("BAZ"));
 
         ContentNodeI barNode = service.getContentNode(BAR_KEY);
         assertEquals(2, barNode.getAttributes().size());
-        assertEquals("barValue", barNode.getAttribute("BAR").getValue());
-        assertEquals("bazValue", barNode.getAttribute("BAZ").getValue());
+        assertEquals("barValue", barNode.getAttributeValue("BAR"));
+        assertEquals("bazValue", barNode.getAttributeValue("BAZ"));
 
         assertNull(service.getContentNode(new ContentKey(FOO_TYPE, "nonexistent")));
     }
@@ -102,8 +102,8 @@ public class CompositeContentServiceTest extends TestCase {
         // ContentNodeI n = Cms.getService().getContentNode(zzzKey);
 
         assertEquals(2, node.getAttributes().size());
-        assertEquals("zzz_foo", node.getAttribute("FOO").getValue());
-        assertEquals("zzz_baz", node.getAttribute("BAZ").getValue());
+        assertEquals("zzz_foo", node.getAttributeValue("FOO"));
+        assertEquals("zzz_baz", node.getAttributeValue("BAZ"));
     }
 
 }

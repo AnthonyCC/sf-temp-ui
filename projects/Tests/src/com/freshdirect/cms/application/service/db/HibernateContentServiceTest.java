@@ -71,8 +71,8 @@ public class HibernateContentServiceTest extends TestCase {
 
 		ContentNodeI testNode = service.getContentNode(TEST_KEY);
 		assertEquals(4, testNode.getAttributes().size());
-		assertEquals(new Integer(8), testNode.getAttribute("theInt").getValue());
-		assertEquals("hello", testNode.getAttribute("theString").getValue());
+		assertEquals(new Integer(8), testNode.getAttributeValue("theInt"));
+		assertEquals("hello", testNode.getAttributeValue("theString"));
 	}
 	*/
 	
@@ -81,8 +81,8 @@ public class HibernateContentServiceTest extends TestCase {
 
 		ContentNodeI testNode = service.getContentNode(TEST_KEY);
 		assertEquals(4, testNode.getAttributes().size());
-		assertEquals(new Integer(8), testNode.getAttribute("theInt").getValue());
-		assertEquals("hello", testNode.getAttribute("theString").getValue());
+		assertEquals(new Integer(8), testNode.getAttributeValue("theInt"));
+		assertEquals("hello", testNode.getAttributeValue("theString"));
 	}
 
 	
@@ -91,26 +91,26 @@ public class HibernateContentServiceTest extends TestCase {
 
 		ContentNodeI testNode = service.getContentNode(TEST_KEY2);
 		assertEquals(1, testNode.getAttributes().size());
-		assertEquals(testNode.getAttribute("message").getValue(),"hello again");
+		assertEquals(testNode.getAttributeValue("message"),"hello again");
 	}
 	
 	public void testSimpleSet() throws Exception {
 		HibernateContentService service = new HibernateContentService(sessionFactory);
 
 		ContentNodeI testNode = service.getContentNode(TEST_KEY);
-		assertEquals("hello", testNode.getAttribute("theString").getValue());
+		assertEquals("hello", testNode.getAttributeValue("theString"));
 		
 		String newString = "A different message";
 		testNode.getAttribute("theString").setValue(newString);
 		
-		assertEquals(newString, testNode.getAttribute("theString").getValue());
+		assertEquals(newString, testNode.getAttributeValue("theString"));
 		
 		CmsRequest req = new CmsRequest(null);
 		req.addNode(testNode);		
 		service.handle(req);
 		
 		testNode  = service.getContentNode(TEST_KEY);
-		assertEquals(newString,testNode.getAttribute("theString").getValue());
+		assertEquals(newString,testNode.getAttributeValue("theString"));
 	}
 	
 	
@@ -127,7 +127,7 @@ public class HibernateContentServiceTest extends TestCase {
 		AttributeI att = node.getAttribute("theString");
 		att.setValue("I am an attribute");
 
-		assertEquals(node.getAttribute("theString").getValue(),"I am an attribute");
+		assertEquals(node.getAttributeValue("theString"),"I am an attribute");
 	}
 	
 	public void testSimpleSaveNode() throws Exception {
@@ -168,7 +168,7 @@ public class HibernateContentServiceTest extends TestCase {
 
 		ContentNodeI testNode = service.getContentNode(TEST_KEY);
 		
-		Object obj = testNode.getAttribute("theSet").getValue();
+		Object obj = testNode.getAttributeValue("theSet");
 		
 		assertTrue(obj instanceof Collection);
 		
@@ -179,10 +179,10 @@ public class HibernateContentServiceTest extends TestCase {
 		assertTrue(c.contains(key));
 		
 		testNode = service.getContentNode(key);
-		assertEquals("hello again1", testNode.getAttribute("message").getValue());
+		assertEquals("hello again1", testNode.getAttributeValue("message"));
 		
 		testNode = service.getContentNode(new ContentKey(TEST_TYPE2,"testObject2"));
-		assertEquals("hello again2", testNode.getAttribute("message").getValue());
+		assertEquals("hello again2", testNode.getAttributeValue("message"));
 	}
 
 	public void testHibernateSimpleUpdate() throws Exception {
