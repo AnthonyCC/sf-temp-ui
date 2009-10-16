@@ -63,6 +63,8 @@ if("fru".equals(deptId) ||"veg".equals(deptId))  {
     }
 } else if("gro".equals(deptId) ||"hba".equals(deptId)||"dai".equals(deptId) ||"fro".equals(deptId))  {
     ttl=3600;
+} else if("mea".equals(deptId)){
+	ttl=120;
 }
 %>
 <oscache:cache key='<%= keyPrefix+request.getQueryString() %>'  time='<%=ttl%>'>
