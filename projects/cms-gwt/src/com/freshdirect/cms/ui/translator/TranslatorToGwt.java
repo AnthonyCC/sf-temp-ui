@@ -193,7 +193,7 @@ public class TranslatorToGwt {
 							tabDef.addCustomFieldDefinition( attributeKey, cfd );
 						}
 						if ( "CmsCustomField".equals( attrType ) ) {
-							tabDef.addCustomFieldDefinition( attributeKey, new CustomFieldDefinition( (String)attr.getAttribute( "component" ).getValue() ) );
+							tabDef.addCustomFieldDefinition( attributeKey, new CustomFieldDefinition( (String)attr.getAttributeValue( "component" ) ) );
 						}
 					}
 				}

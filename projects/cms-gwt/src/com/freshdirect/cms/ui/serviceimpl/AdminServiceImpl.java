@@ -141,7 +141,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
     private static class CmsFormValidator implements ContentValidatorI {
 
         public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
-            ContentType type = ContentType.get(node.getAttribute("contentType").getValue().toString());
+            ContentType type = ContentType.get(node.getAttributeValue("contentType").toString());
             ContentTypeDefI def = service.getTypeService().getContentTypeDefinition(type);
 
             Set<String> editorFields = collectFieldNames(delegate, service, node);
