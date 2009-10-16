@@ -41,31 +41,7 @@ request.setAttribute("listPos", "SystemMessage");
 
 <fd:FDShoppingCart id='cart' result='result' action='<%= actionName %>' successPage='<%= successPage %>' cleanupCart='true' source='<%= cartSource %>'>
 <fd:RedemptionCodeController actionName="<%=actionName%>" result="redemptionResult">
-<%
-//Added for Smart Savings.
-    Map savingsLookupTable = (Map) session.getAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
-    if(savingsLookupTable == null){
-        savingsLookupTable = new HashMap();
-    }
-    PromoVariantHelper.updateSavingsVariant(user, savingsLookupTable);
-    String usrVariant = user.getSavingsVariantId();
-    if(usrVariant != null && usrVariant.length() > 0) {
-        PromoVariantHelper.updateSavingsVariantFound(user, 5, request);
-    } else {
-        user.setSavingsVariantFound(false);
-    }
-    session.setAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE, savingsLookupTable);
-    String savingsVariant =  (String) session.getAttribute(SessionName.PREV_SAVINGS_VARIANT);
-    Boolean prevVariantFound = (Boolean) session.getAttribute(SessionName.PREV_VARIANT_FOUND);
-    boolean usrVariantFound = user.isSavingsVariantFound();
-    if((usrVariant != null && !usrVariant.equals(savingsVariant)) || (prevVariantFound != null && usrVariantFound != prevVariantFound.booleanValue())) {
-        //If current savings variant is different from previous savings variant
-
-        user.updateUserState();
-        session.setAttribute(SessionName.PREV_SAVINGS_VARIANT, usrVariant);
-        session.setAttribute(SessionName.PREV_VARIANT_FOUND, new Boolean(usrVariantFound));
-    }
-%>    
+<fd:SmartSavingsUpdate promoConflictMode="false"/>
 <tmpl:put name='title' direct='true'>FreshDirect - View Cart</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <fd:ErrorHandler result='<%=result%>' name='order_minimum' id='errorMsg'>
