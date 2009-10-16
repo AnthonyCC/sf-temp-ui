@@ -31,29 +31,34 @@ public class PlantService extends BaseService implements IPlantService {
 		this.deliveryDAOImpl = deliveryDAOImpl;
 	}
 	
-	public IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
-		
-		IPackagingModel _historyInfo = null;
+	public IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario, IPackagingModel _historyInfo) throws RoutingServiceException {
+
 		int cartonCount = (int)scenario.getDefaultCartonCount(); 
 		int freezerCount = (int)scenario.getDefaultFreezerCount();
 		int caseCount = (int)scenario.getDefaultCaseCount();
-		try {
+		
+		if(_historyInfo != null && !(_historyInfo.getNoOfCartons() == 0
+				&& _historyInfo.getNoOfCases() == 0
+				&& _historyInfo.getNoOfFreezers() == 0)) {
+			cartonCount = (int)_historyInfo.getNoOfCartons(); 
+			freezerCount = (int)_historyInfo.getNoOfFreezers();
+			caseCount = (int)_historyInfo.getNoOfCases();
+		}
+		return getPackageModel(new HashMap(), scenario.getOrderSizeFormula(),
+				cartonCount, freezerCount, caseCount);
+	}
+	
+	public IPackagingModel getHistoricOrderSize(IOrderModel model) throws RoutingServiceException {
+		
+		IPackagingModel _historyInfo = null;		
+		try {			
 			
 			_historyInfo = deliveryDAOImpl.getHistoricOrderSize(model.getCustomerNumber()
-																, RoutingServicesProperties.getDefaultOrderEstimationRange());
-			
-			if(_historyInfo != null && !(_historyInfo.getNoOfCartons() == 0
-											&& _historyInfo.getNoOfCases() == 0
-												&& _historyInfo.getNoOfFreezers() == 0)) {
-				cartonCount = (int)_historyInfo.getNoOfCartons(); 
-				freezerCount = (int)_historyInfo.getNoOfFreezers();
-				caseCount = (int)_historyInfo.getNoOfCases();
-			}
+																, RoutingServicesProperties.getDefaultOrderEstimationRange());					
 		} catch (SQLException e) {
 			e.printStackTrace();			
 		}	
-		return getPackageModel(new HashMap(), scenario.getOrderSizeFormula(),
-												cartonCount, freezerCount, caseCount);
+		return _historyInfo;
 	}
 	
 	public Map getOrderSize(IOrderModel model) throws RoutingServiceException {

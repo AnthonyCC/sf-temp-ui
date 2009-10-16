@@ -33,8 +33,12 @@ public class PlantServiceProxy extends BaseServiceProxy  {
 		return getService().getPackagingInfoList(orderIdLst);
 	}
 	
-	public IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
-		return getService().estimateOrderSize(model, scenario);
+	public IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario, IPackagingModel historyInfo) throws RoutingServiceException {
+		return getService().estimateOrderSize(model, scenario, historyInfo);
+	}
+	
+	public IPackagingModel getHistoricOrderSize(IOrderModel model) throws RoutingServiceException {
+		return getService().getHistoricOrderSize(model);
 	}
 	
 	public Map getOrderSize(IOrderModel model) throws RoutingServiceException {

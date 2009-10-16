@@ -1654,15 +1654,17 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		try {
 			if(_timeSlots==null ||_timeSlots.isEmpty()|| address==null)
 				return timeSlots;
-			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
+			DeliveryServiceProxy dlvService = new DeliveryServiceProxy();
 			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
 			String zoneCode = null;
 			Map<java.util.Date,java.util.List<IDeliverySlot>> routingTimeSlots=util.getDeliverySlot(_timeSlots);
 			//LOGGER.info("getTimeslotForDateRangeAndZoneEx():: DeliverySlot Map:"+routingTimeSlots);
-			Iterator<java.util.Date> it=routingTimeSlots.keySet().iterator();
-			java.util.Date _date=null;
+			Iterator<java.util.Date> it = routingTimeSlots.keySet().iterator();
+			java.util.Date _date = null;
 			List<IDeliverySlot> _tmpSlots = null;
 			boolean isLocationSaved = false;
+			IPackagingModel historyPackageInfo = this.getHistoricOrderSize(order);
+			
 			while(it.hasNext()) {
 				_date = it.next();
 				_tmpSlots = routingTimeSlots.get(_date);
@@ -1671,13 +1673,13 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 					order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(zoneCode));
 					order.getDeliveryInfo().setDeliveryDate(_date);
 					IServiceTimeScenarioModel srvScenario=getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
-					order.getDeliveryInfo().setPackagingInfo(estimateOrderSize(order,srvScenario));
-					order.getDeliveryInfo().setServiceTime(dlvService.estimateOrderServiceTime(order,srvScenario));
+					order.getDeliveryInfo().setPackagingInfo(estimateOrderSize(order, srvScenario, historyPackageInfo));
+					order.getDeliveryInfo().setServiceTime(dlvService.estimateOrderServiceTime(order, srvScenario));
 					if(!isLocationSaved) {
 						isLocationSaved = true;
 						this.schedulerSaveLocation(order);
 					}
-					timeSlots.add(schedulerAnalyzeOrder(order,_date,1,_tmpSlots));
+					timeSlots.add(schedulerAnalyzeOrder(order, _date, 1, _tmpSlots));
 				}
 				//LOGGER.info("getTimeslotForDateRangeAndZoneEx():: Date:" +RoutingDateUtil.formatDateTime(_date)+" DeliverySlot:"+timeSlots);
 			}
@@ -2024,12 +2026,14 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		slots.add(_slots);
 		return slots;
 	}
-	private IOrderModel setDeliveryInfo(IOrderModel order,Date deliveryDate) throws RoutingServiceException {
+	
+	private IOrderModel setDeliveryInfo(IOrderModel order, Date deliveryDate) throws RoutingServiceException {
 		
 		DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
 		order.getDeliveryInfo().setDeliveryDate(deliveryDate);
+		IPackagingModel historyPackageInfo = this.getHistoricOrderSize(order);
 		IServiceTimeScenarioModel srvScenario=getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
-		order.getDeliveryInfo().setPackagingInfo(estimateOrderSize(order,srvScenario));
+		order.getDeliveryInfo().setPackagingInfo(estimateOrderSize(order, srvScenario, historyPackageInfo));
 		order.getDeliveryInfo().setServiceTime(dlvService.estimateOrderServiceTime(order,srvScenario));
 		return order;
 	}
@@ -2042,8 +2046,13 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	private IServiceTimeScenarioModel getRoutingScenario(Date dlvDate) throws RoutingServiceException {
 		return new RoutingInfoServiceProxy().getRoutingScenario(dlvDate);
 	}
-	private IPackagingModel estimateOrderSize(IOrderModel order, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
-		return new PlantServiceProxy().estimateOrderSize(order, scenario);
+	
+	private IPackagingModel estimateOrderSize(IOrderModel order, IServiceTimeScenarioModel scenario, IPackagingModel historyInfo) throws RoutingServiceException {
+		return new PlantServiceProxy().estimateOrderSize(order, scenario, historyInfo);
+	}
+	
+	private IPackagingModel getHistoricOrderSize(IOrderModel order) throws RoutingServiceException {
+		return new PlantServiceProxy().getHistoricOrderSize(order);
 	}
 	
 	private List<IDeliverySlot> schedulerAnalyzeOrder(IOrderModel orderModel, Date startDate, int noOfDays, List<IDeliverySlot> slots) throws RoutingServiceException {
