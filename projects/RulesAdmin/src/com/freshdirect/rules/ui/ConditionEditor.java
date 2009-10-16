@@ -35,14 +35,13 @@ public abstract class ConditionEditor extends BaseComponent {
 		return new LabelPropertySelectionModel(types, true);
 	}
 	
-	public IPropertySelectionModel getServiceTypeSelectionModel() {
-		Map types = new HashMap();
-		for(Iterator i = EnumServiceType.iterator(); i.hasNext(); ){
-			EnumServiceType st = (EnumServiceType) i.next();
-			types.put(st.getName(), st.getName());
-		}
-		return new LabelPropertySelectionModel(types, true);
-	}
+    public IPropertySelectionModel getServiceTypeSelectionModel() {
+        Map types = new HashMap();
+        for (EnumServiceType st : EnumServiceType.values()) {
+            types.put(st.getName(), st.getName());
+        }
+        return new LabelPropertySelectionModel(types, true);
+    }
 	
 	public String getCurrServiceType() {
 		ServiceTypeCondition st = (ServiceTypeCondition) getCondition();
