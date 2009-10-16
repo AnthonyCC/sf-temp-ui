@@ -3758,4 +3758,17 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	
+	<tag>
+		<name>SmartSavingsUpdate</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.SmartSavingsUpdateTag</tagclass>
+ 		<teiclass>com.freshdirect.webapp.taglib.fdstore.SmartSavingsUpdateTagEI</teiclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
+ 		<attribute>
+			<name>promoConflictMode</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>
