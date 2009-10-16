@@ -13,7 +13,7 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.TableLayoutHelper' %>
 <%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
-
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 <%@ page import='org.apache.commons.collections.Predicate' %>
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -229,3 +229,33 @@
 %>
 <% String sPage = "/includes/category_featured_row.jsp?parentCat="+currentFolder; %>
 <jsp:include page='<%= sPage %>' flush="true"/>	
+
+<%	// ads are enabled
+	if (FDStoreProperties.isAdServerEnabled()) {
+		//--------OAS Page Variables-----------------------
+		request.setAttribute("sitePage", "www.freshdirect.com/category");
+		request.setAttribute("listPos", "MeaCatLeft,MeaCatRight");
+%>	
+		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%= maxWidth %>" height="1" border="0"><br />
+		<table style="text-align: center;">
+		<tr>
+			<td>
+				<!-- AD SPOT Left -->
+				<SCRIPT LANGUAGE=JavaScript>
+				<!--
+					OAS_AD('MeaCatLeft');
+				//-->
+				</SCRIPT>
+			</td>
+			<td><img src="/media_stat/images/layout/cccccc.gif" width="1" height="100" border="0"></td>
+			<td>
+				<!-- AD SPOT Right -->
+				<SCRIPT LANGUAGE=JavaScript>
+				<!--
+					OAS_AD('MeaCatRight');
+				//-->
+				</SCRIPT>
+			</td>
+		</tr>
+		</table>
+<% } %>
