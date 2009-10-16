@@ -1656,19 +1656,29 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				return timeSlots;
 			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
 			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
-			String zoneCode=_timeSlots.get(0).getZoneCode();
+			String zoneCode = null;
 			Map<java.util.Date,java.util.List<IDeliverySlot>> routingTimeSlots=util.getDeliverySlot(_timeSlots);
 			//LOGGER.info("getTimeslotForDateRangeAndZoneEx():: DeliverySlot Map:"+routingTimeSlots);
 			Iterator<java.util.Date> it=routingTimeSlots.keySet().iterator();
 			java.util.Date _date=null;
+			List<IDeliverySlot> _tmpSlots = null;
+			boolean isLocationSaved = false;
 			while(it.hasNext()) {
-				_date=it.next();
-				order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(zoneCode));
-				order.getDeliveryInfo().setDeliveryDate(_date);
-				IServiceTimeScenarioModel srvScenario=getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
-				order.getDeliveryInfo().setPackagingInfo(estimateOrderSize(order,srvScenario));
-				order.getDeliveryInfo().setServiceTime(dlvService.estimateOrderServiceTime(order,srvScenario));
-				timeSlots.add(schedulerAnalyzeOrder(order,_date,1,routingTimeSlots.get(_date)));
+				_date = it.next();
+				_tmpSlots = routingTimeSlots.get(_date);
+				if(_tmpSlots != null && _tmpSlots.size() > 0) {
+					zoneCode = _tmpSlots.get(0).getZoneCode();
+					order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(zoneCode));
+					order.getDeliveryInfo().setDeliveryDate(_date);
+					IServiceTimeScenarioModel srvScenario=getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
+					order.getDeliveryInfo().setPackagingInfo(estimateOrderSize(order,srvScenario));
+					order.getDeliveryInfo().setServiceTime(dlvService.estimateOrderServiceTime(order,srvScenario));
+					if(!isLocationSaved) {
+						isLocationSaved = true;
+						this.schedulerSaveLocation(order);
+					}
+					timeSlots.add(schedulerAnalyzeOrder(order,_date,1,_tmpSlots));
+				}
 				//LOGGER.info("getTimeslotForDateRangeAndZoneEx():: Date:" +RoutingDateUtil.formatDateTime(_date)+" DeliverySlot:"+timeSlots);
 			}
 			long endTime=System.currentTimeMillis();
@@ -2036,9 +2046,14 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		return new PlantServiceProxy().estimateOrderSize(order, scenario);
 	}
 	
-	private List<IDeliverySlot>schedulerAnalyzeOrder(IOrderModel orderModel, Date startDate, int noOfDays, List<IDeliverySlot> slots) throws RoutingServiceException {
+	private List<IDeliverySlot> schedulerAnalyzeOrder(IOrderModel orderModel, Date startDate, int noOfDays, List<IDeliverySlot> slots) throws RoutingServiceException {
 		
 		return new RoutingEngineServiceProxy().schedulerAnalyzeOrder(orderModel, RoutingServicesProperties.getDefaultLocationType(), RoutingServicesProperties.getDefaultOrderType(), startDate, noOfDays, slots);
+	}
+	
+	private void schedulerSaveLocation(IOrderModel orderModel) throws RoutingServiceException {
+		
+		new RoutingEngineServiceProxy().schedulerSaveLocation(orderModel, RoutingServicesProperties.getDefaultLocationType());
 	}
 	
 	private IDeliveryReservation schedulerReserveOrder(IOrderModel orderModel, IDeliverySlot slot) throws RoutingServiceException {

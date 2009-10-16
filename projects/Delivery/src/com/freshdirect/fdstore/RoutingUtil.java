@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore;
 
-import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,7 +8,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.CreateException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -189,6 +187,7 @@ public class RoutingUtil {
 			routeDlvTimeslot.setStartTime(dlvTimeSlot.getBegDateTime());
 			routeDlvTimeslot.setStopTime(dlvTimeSlot.getEndDateTime());
 			routeDlvTimeslot.setWaveCode(getHourAMPM(dlvTimeSlot.getCutoffDateTime()));
+			routeDlvTimeslot.setZoneCode(dlvTimeSlot.getZoneCode());
 			
 			if(data.containsKey(dlvTimeSlot.getBaseDate())) {
 				List<IDeliverySlot> _timeSlots=data.get(dlvTimeSlot.getBaseDate());

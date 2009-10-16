@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.routing.model.DeliverySlot;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
@@ -21,7 +20,6 @@ import com.freshdirect.routing.proxy.stub.transportation.SchedulerCalculateDeliv
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
 import com.freshdirect.routing.service.IRoutingEngineService;
-import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.util.RoutingDataDecoder;
@@ -145,10 +143,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		return sessionId;
 	}
 	
-		
-	public List<IDeliverySlot> schedulerAnalyzeOrder(IOrderModel orderModel, String locationType
-			, String orderType, Date startDate, int noOfDays, List<IDeliverySlot> slots) throws RoutingServiceException {
-
+	public void schedulerSaveLocation(IOrderModel orderModel, String locationType) throws RoutingServiceException {
 		try {
 			IRoutingSchedulerIdentity schId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
 			TransportationWebService port = getTransportationSuiteService(schId);
@@ -159,8 +154,20 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 													(_tmpLocOrders, schId.getRegionId(), locationType));
 			if(result != null && result.length >0) {
 				throw new RoutingServiceException(null, IIssue.PROCESS_LOCATION_SAVEERROR);
-			}
-			
+			}						
+
+		} catch (RemoteException exp) {			
+			throw new RoutingServiceException(exp, IIssue.PROCESS_ANALYZE_UNSUCCESSFUL);
+		}
+	}
+		
+	public List<IDeliverySlot> schedulerAnalyzeOrder(IOrderModel orderModel, String locationType
+			, String orderType, Date startDate, int noOfDays, List<IDeliverySlot> slots) throws RoutingServiceException {
+
+		try {
+			IRoutingSchedulerIdentity schId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
+			TransportationWebService port = getTransportationSuiteService(schId);
+						
 			return RoutingDataDecoder.decodeDeliveryWindows(
 						port.schedulerAnalyzeOrder(RoutingDataEncoder.encodeAnalyzeOrder(schId									
 								, orderModel

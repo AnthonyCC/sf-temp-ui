@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.routing.model.DeliverySlot;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
@@ -45,5 +44,7 @@ public interface IRoutingEngineService {
 	void schedulerCancelOrder(IOrderModel orderModel) throws RoutingServiceException;
 	
 	List<IDeliveryWindowMetrics> retrieveCapacityMetrics(IRoutingSchedulerIdentity schedulerId, List<IDeliverySlot> slots) throws RoutingServiceException;
+	
+	void schedulerSaveLocation(IOrderModel orderModel, String locationType) throws RoutingServiceException;
 	
 }

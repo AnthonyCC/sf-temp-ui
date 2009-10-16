@@ -13,7 +13,14 @@ public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 	private Date startTime;
 	private Date stopTime;
 	private String waveCode;
+	private String zoneCode;
 	
+	public String getZoneCode() {
+		return zoneCode;
+	}
+	public void setZoneCode(String zoneCode) {
+		this.zoneCode = zoneCode;
+	}
 	public IDeliverySlotCost getDeliveryCost() {
 		return deliveryCost;
 	}

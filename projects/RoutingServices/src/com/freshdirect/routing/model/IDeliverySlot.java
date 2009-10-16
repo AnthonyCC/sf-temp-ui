@@ -17,5 +17,8 @@ public interface IDeliverySlot {
 	
 	String getWaveCode();
 	void setWaveCode(String waveCode);
+	
+	String getZoneCode();
+	void setZoneCode(String zoneCode);
 
 }

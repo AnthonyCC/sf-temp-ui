@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.routing.model.DeliverySlot;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
@@ -75,6 +74,10 @@ public class RoutingEngineServiceProxy extends BaseServiceProxy {
 	
 	public List<IDeliveryWindowMetrics> retrieveCapacityMetrics(IRoutingSchedulerIdentity schedulerId, List<IDeliverySlot> slots) throws RoutingServiceException {
 		return getService().retrieveCapacityMetrics(schedulerId, slots);
+	}
+	
+	public void schedulerSaveLocation(IOrderModel orderModel, String locationType) throws RoutingServiceException {
+		getService().schedulerSaveLocation(orderModel, locationType);
 	}
 	
 	public IRoutingEngineService getService() {
