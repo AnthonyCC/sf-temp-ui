@@ -129,14 +129,14 @@ public class TabRecommenderTest extends RecommendationServiceTestBase {
         
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.YMAL, selector);
 
-        SortedMap ps = new TreeMap();
-        SortedMap ss = new TreeMap();
+        SortedMap<Integer, SortedMap<Integer, CartTabStrategyPriority>> ps = new TreeMap<Integer, SortedMap<Integer, CartTabStrategyPriority>>();
+        SortedMap<Integer, CartTabStrategyPriority> ss = new TreeMap<Integer, CartTabStrategyPriority>();
         ss.put(new Integer(1), new CartTabStrategyPriority("strat-1", "DYF", 1, 1));
         ps.put(new Integer(1), ss);
-        ss = new TreeMap();
+        ss = new TreeMap<Integer, CartTabStrategyPriority>();
         ss.put(new Integer(1), new CartTabStrategyPriority("strat-1", "FAVORITES", 2, 1));
         ps.put(new Integer(2), ss);
-        ss = new TreeMap();
+        ss = new TreeMap<Integer, CartTabStrategyPriority>();
         ss.put(new Integer(2), new CartTabStrategyPriority("strat-1", "FEATURED_ITEMS", 3, 2));
         ss.put(new Integer(1), new CartTabStrategyPriority("strat-1", "YMAL", 3, 1));
         ps.put(new Integer(3), ss);

@@ -79,17 +79,17 @@ public class BulkLoaderTest extends TestCase {
 		
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals("Main", sectionNode.section);
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals("FRU0005203", key.getId());
 		
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals("Main", sectionNode.section);
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals("FRU0005090", key.getId());
 		
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals("Main", sectionNode.section);
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals("MEA0063339", key.getId());
 	}
 
@@ -129,27 +129,27 @@ public class BulkLoaderTest extends TestCase {
 		
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "GRO058390");
 		
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "SPE0066161");
 
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "SPE0058949");
 
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "GRO002558");
 
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "SPE0058948");
 	}
 
@@ -190,67 +190,67 @@ public class BulkLoaderTest extends TestCase {
 		
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "SEA0007114");
 		
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "SPE0058834");
 
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "DAI0068691");
 
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "DAI0008771");
 
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "VEG0011235");
 
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "VEG0058758");
 
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "SPE0000580");
 
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "VEG0011090");
 
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "GRO001138");
 
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Staple");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "FRU0005131");
 		
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Staple");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "GRO002572");
 		
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Staple");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "[clig_pepper]");
 		
 	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Staple");
-		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
+		key  = (ContentKey) sectionNode.node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "GRO002521");
 	}
 	
@@ -300,23 +300,23 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(list.size(), 6);
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "GRO058390");
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "SPE0066161");
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "SPE0058949");
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "GRO002558");
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "SPE0058948");
 
 		// this is the configured product group itself
@@ -376,15 +376,15 @@ public class BulkLoaderTest extends TestCase {
 
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "FRU0005203");
 		
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "FRU0005090");
 		
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "MEA0063339");
 		
 		// this is the main recipe section
@@ -393,7 +393,7 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(key.getId(), "fruitRecipe_default_main");
 		assertEquals(key.getType(), FDContentTypes.RECIPE_SECTION);
 		// check for the section to include 2 ingredients
-		llist = (List) node.getAttribute("ingredients").getValue();
+		llist = (List) node.getAttributeValue("ingredients");
 		assertEquals(3, llist.size());
 		
 		// check the ingredients one by one
@@ -418,7 +418,7 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(key.getId(), "fruitRecipe_default");
 		assertEquals(key.getType(), FDContentTypes.RECIPE_VARIANT);
 		// check for the variant to include a main section
-		llist = (List) node.getAttribute("sections").getValue();
+		llist = (List) node.getAttributeValue("sections");
 		assertEquals(llist.size(), 1);
 		key = (ContentKey) llist.get(0);
 		assertEquals(key.getId(), "fruitRecipe_default_main");
@@ -429,7 +429,7 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(key.getId(), "fruitRecipe");
 		assertEquals(key.getType(), FDContentTypes.RECIPE);
 		// check for the recipe to include the single main variant
-		llist = (List) node.getAttribute("variants").getValue();
+		llist = (List) node.getAttributeValue("variants");
 		assertEquals(llist.size(), 1);
 		key = (ContentKey) llist.get(0);
 		assertEquals(key.getId(), "fruitRecipe_default");
@@ -485,7 +485,7 @@ public class BulkLoaderTest extends TestCase {
 
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "DEL0057701");
 				
 		// this is the main recipe section
@@ -494,7 +494,7 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(key.getId(), "pate_default_main");
 		assertEquals(key.getType(), FDContentTypes.RECIPE_SECTION);
 		// check for the section to include 1 ingredient
-		llist = (List) node.getAttribute("ingredients").getValue();
+		llist = (List) node.getAttributeValue("ingredients");
 		assertEquals(1, llist.size());
 		
 		// check the ingredients one by one
@@ -510,7 +510,7 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(key.getId(), "pate_default");
 		assertEquals(key.getType(), FDContentTypes.RECIPE_VARIANT);
 		// check for the variant to include a main section
-		llist = (List) node.getAttribute("sections").getValue();
+		llist = (List) node.getAttributeValue("sections");
 		assertEquals(llist.size(), 1);
 		key = (ContentKey) llist.get(0);
 		assertEquals(key.getId(), "pate_default_main");
@@ -521,7 +521,7 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(key.getId(), "pate");
 		assertEquals(key.getType(), FDContentTypes.RECIPE);
 		// check for the recipe to include the single main variant
-		llist = (List) node.getAttribute("variants").getValue();
+		llist = (List) node.getAttributeValue("variants");
 		assertEquals(llist.size(), 1);
 		key = (ContentKey) llist.get(0);
 		assertEquals(key.getId(), "pate_default");
@@ -575,51 +575,51 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(list.size(), 16);
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "SEA0007114");
 		
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "SPE0058834");
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "DAI0068691");
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "DAI0008771");
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "VEG0011235");
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "VEG0058758");
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "SPE0000580");
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "VEG0011090");
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "GRO001138");
 
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "FRU0005131");
 		
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "GRO002572");
 		
 	    node = (ContentNodeI) it.next();
-		key  = (ContentKey) node.getAttribute("SKU").getValue();
+		key  = (ContentKey) node.getAttributeValue("SKU");
 		assertEquals(key.getId(), "GRO002521");
 		
 		// this is the main recipe section
@@ -628,7 +628,7 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(key.getId(), "twoSectionRecipe_default_main");
 		assertEquals(key.getType(), FDContentTypes.RECIPE_SECTION);
 		// check for the section to include 9 ingredients
-		llist = (List) node.getAttribute("ingredients").getValue();
+		llist = (List) node.getAttributeValue("ingredients");
 		assertEquals(llist.size(), 9);
 		// TODO: check the ingredients one by one
 
@@ -638,7 +638,7 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(key.getId(), "twoSectionRecipe_default_Staple");
 		assertEquals(key.getType(), FDContentTypes.RECIPE_SECTION);
 		// check for the section to include 4 ingredients
-		llist = (List) node.getAttribute("ingredients").getValue();
+		llist = (List) node.getAttributeValue("ingredients");
 		assertEquals(llist.size(), 4);
 		
 		// check the ingredients one by one
@@ -667,7 +667,7 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(key.getId(), "twoSectionRecipe_default");
 		assertEquals(key.getType(), FDContentTypes.RECIPE_VARIANT);
 		// check for the variant to include a main and a Staple section
-		llist = (List) node.getAttribute("sections").getValue();
+		llist = (List) node.getAttributeValue("sections");
 		assertEquals(llist.size(), 2);
 		key = (ContentKey) llist.get(0);
 		assertEquals(key.getId(), "twoSectionRecipe_default_main");
@@ -680,7 +680,7 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(key.getId(), "twoSectionRecipe");
 		assertEquals(key.getType(), FDContentTypes.RECIPE);
 		// check for the recipe to include the single main variant
-		llist = (List) node.getAttribute("variants").getValue();
+		llist = (List) node.getAttributeValue("variants");
 		assertEquals(llist.size(), 1);
 		key = (ContentKey) llist.get(0);
 		assertEquals(key.getId(), "twoSectionRecipe_default");
@@ -826,7 +826,7 @@ public class BulkLoaderTest extends TestCase {
 		service.handle(request);
 		
 		newbornFolder = service.getContentNode(newbornKey);
-		newbornChildren = (List) newbornFolder.getAttribute("children").getValue();
+		newbornChildren = (List) newbornFolder.getAttributeValue("children");
 		
 		assertNull(newbornChildren);
 	
@@ -854,7 +854,7 @@ public class BulkLoaderTest extends TestCase {
 		}
 		
 		newbornFolder   = service.getContentNode(newbornKey);
-		newbornChildren = (List) newbornFolder.getAttribute("children").getValue();
+		newbornChildren = (List) newbornFolder.getAttributeValue("children");
 		
 		assertEquals(3, newbornChildren.size());
 
