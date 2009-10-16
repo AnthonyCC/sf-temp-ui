@@ -30,6 +30,7 @@
 	List tmpList=new ArrayList();
 %>
 <%-- Grab items on deals --%>
+<% if(currentFolder instanceof CategoryModel){ %>
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
 	id='rtnColl' 
@@ -49,9 +50,10 @@
 %>
 </fd:ItemGrabber>
 <fd:ItemSorter nodes='<%=(List)dealCol%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
-
+<% } %>
 <%-- Grab edlp items --%>
 <% currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_2); %>
+<% if(currentFolder instanceof CategoryModel){ %>
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
 	id='rtnColl' 
@@ -71,6 +73,7 @@
 %>
 </fd:ItemGrabber>
 <fd:ItemSorter nodes='<%=(List)edlpCol%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
+<% } %>
 
 <% 	//set the sizes
 	dealProductsCount = dealCol.size();
