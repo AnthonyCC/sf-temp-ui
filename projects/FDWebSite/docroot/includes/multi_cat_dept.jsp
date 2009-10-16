@@ -31,10 +31,11 @@
 	List tmpList=new ArrayList();
 %>
 <%-- Grab items on deals --%>
+<% if(currentFolder instanceof CategoryModel){ %>
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
 	id='rtnColl' 
-	depth='1'
+	depth='99'
 	ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
 	filterDiscontinued='true'
 	returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
@@ -51,13 +52,15 @@
 %>
 </fd:ItemGrabber>
 <fd:ItemSorter nodes='<%=(List)dealCol%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
+<% } %>
 
 <%-- Grab edlp items --%>
 <% currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_2); %>
+<% if(currentFolder instanceof CategoryModel){ %>
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
 	id='rtnColl' 
-	depth='1'
+	depth='99'
 	ignoreShowChildren='true' 
 	filterDiscontinued='true'
 	returnHiddenFolders='true'
@@ -73,10 +76,11 @@
 %>
 </fd:ItemGrabber>
 <fd:ItemSorter nodes='<%=(List)edlpCol%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
+<% } %>
 
 <% if(dealCol.size() >= MIN_PROD2SHOW){ %>
-	<br /><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br />
-	<div align="center"><img src="/media/images/navigation/department/meat/meat_deals.gif"></img></div>
+	<% String mediaPath = "/media/editorial/meat/"+catId_1+".html"; %>
+	<fd:IncludeMedia name= "<%= mediaPath %>"/>
     <table cellpadding="0" cellspacing="0" border="0">
 		<tr valign="bottom">
 		<logic:iterate id="contentNode" collection="<%= dealCol %>" type="java.lang.Object" indexId="idx">
@@ -108,9 +112,9 @@
 
 
 <% if(edlpCol.size() >= MIN_PROD2SHOW){ %>
-	<br /><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br />
-	<div align="center"><img src="/media/images/navigation/department/meat/meat_deals_edlp.gif"></img></div>
-    <table cellpadding="0" cellspacing="0" border="0">
+	<% String mediaPath = "/media/editorial/meat/"+catId_2+".html"; %>
+	<fd:IncludeMedia name= "<%= mediaPath %>"/>
+	<table cellpadding="0" cellspacing="0" border="0">
 		<tr valign="bottom">
 		<logic:iterate id="contentNode" collection="<%= edlpCol %>" type="java.lang.Object" indexId="idx">
 			<%//if(idx.intValue()==MAX_PROD2SHOW) break; %>
