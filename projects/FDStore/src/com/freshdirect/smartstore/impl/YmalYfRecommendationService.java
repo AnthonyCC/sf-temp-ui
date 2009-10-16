@@ -2,7 +2,6 @@ package com.freshdirect.smartstore.impl;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,7 +17,6 @@ import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
-import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 import com.freshdirect.smartstore.service.VariantRegistry;

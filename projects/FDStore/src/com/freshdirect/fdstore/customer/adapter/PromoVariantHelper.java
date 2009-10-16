@@ -122,7 +122,8 @@ public class PromoVariantHelper {
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(maxRecommendations);
 		tabs = CartTabRecommender.recommendTabs( user, input, null);	
-		if(tabs == null || tabs.size() == 0) user.setSavingsVariantFound(false);
+		if(tabs == null || tabs.size() == 0) 
+		    user.setSavingsVariantFound(false);
 		for (int i = 0; i < tabs.size(); i++) {
 			String variantId = tabs.get(i).getId();
 			if(variantId.equals(user.getSavingsVariantId())){

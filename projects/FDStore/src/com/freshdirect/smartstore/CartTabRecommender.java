@@ -1,7 +1,6 @@
 package com.freshdirect.smartstore;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.SortedMap;
 
@@ -27,24 +26,20 @@ public class CartTabRecommender {
      * @return up to 3 variant used to produce cart tab recommendations
      */
     public static TabRecommendation recommendTabs(FDUserI user, SessionInput input, String overriddenVariantId) {
-        List recs = new ArrayList();
+        List<Variant> recs = new ArrayList<Variant>();
         RecommendationService rs = null;
         boolean smartSavingsFound = false;
         try {
             if (user != null) {
                 rs = SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.CART_N_TABS, overriddenVariantId);
                 if (rs != null) {
-                    SortedMap prios = rs.getVariant().getTabStrategyPriorities();
+                    SortedMap<Integer, SortedMap<Integer, CartTabStrategyPriority>> prios = rs.getVariant().getTabStrategyPriorities();
 
-                    Iterator it = prios.keySet().iterator();
-                    while (it.hasNext()) {
-                        Integer p1 = (Integer) it.next();
-                        SortedMap map = (SortedMap) prios.get(p1);
+                      for (Integer p1 : prios.keySet()) { 
+                        SortedMap<Integer,CartTabStrategyPriority> map = prios.get(p1);
 
-                        Iterator it2 = map.keySet().iterator();
-                        while (it2.hasNext()) {
-                            Integer p2 = (Integer) it2.next();
-                            CartTabStrategyPriority strat = (CartTabStrategyPriority) map.get(p2);
+                        for (Integer p2 : prios.keySet()) { 
+                            CartTabStrategyPriority strat = map.get(p2);
 
                             if (strat == null) {
                                 continue;
@@ -52,12 +47,16 @@ public class CartTabRecommender {
 
                             try {
                             	EnumSiteFeature sf = EnumSiteFeature.getEnum(strat.getSiteFeatureId());
-                            	if(sf.isSmartSavings() && smartSavingsFound) continue;
+                            	if(sf.isSmartSavings() && smartSavingsFound) {
+                            	    continue;
+                            	}
                                 Recommendations rec = FDStoreRecommender.getInstance().getRecommendations(sf, user, input, overriddenVariantId,
-                                        SmartStoreUtil.toContentKeySetFromModels(FDStoreRecommender.getShoppingCartContents(user)));
+                                        FDStoreRecommender.getShoppingCartContentKeys(user));
                                 if (rec.getProducts().size() > 0) {
                                     recs.add(rec.getVariant());
-                                    if(sf.isSmartSavings()) smartSavingsFound = true;
+                                    if(sf.isSmartSavings()) {
+                                        smartSavingsFound = true;
+                                    }
                                     break;
                                 }
                             } catch (FDResourceException e) {

@@ -27,7 +27,7 @@ public class Variant implements Serializable, Comparable {
 	// id of variant
 	private String id;
 	
-	private SortedMap tabStrategyPriorities;
+	private SortedMap<Integer, SortedMap<Integer, CartTabStrategyPriority>> tabStrategyPriorities;
 	
 	private boolean isSmartSavings = false;
 
@@ -67,11 +67,11 @@ public class Variant implements Serializable, Comparable {
 		this.id = id;
 		this.siteFeature = siteFeature;
 		this.serviceConfig = serviceConfig;
-		this.tabStrategyPriorities = new TreeMap();
+		this.tabStrategyPriorities = new TreeMap<Integer, SortedMap<Integer, CartTabStrategyPriority>>();
 	}
 	
 	public Variant(String id, EnumSiteFeature siteFeature,
-			RecommendationServiceConfig serviceConfig, SortedMap tabStrategyPriorities) {
+			RecommendationServiceConfig serviceConfig, SortedMap<Integer, SortedMap<Integer, CartTabStrategyPriority>> tabStrategyPriorities) {
 		this.id = id;
 		this.siteFeature = siteFeature;
 		this.serviceConfig = serviceConfig;
@@ -111,7 +111,7 @@ public class Variant implements Serializable, Comparable {
             (serviceConfig != null && serviceConfig.getType()!=null ? serviceConfig.getType().getName() : "null") + ')';
     }
 	
-    public SortedMap getTabStrategyPriorities() {
+    public SortedMap<Integer, SortedMap<Integer, CartTabStrategyPriority>> getTabStrategyPriorities() {
 		return tabStrategyPriorities;
 	}
    

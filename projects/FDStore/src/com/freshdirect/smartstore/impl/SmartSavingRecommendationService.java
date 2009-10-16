@@ -7,17 +7,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.WrapperRecommendationService;

@@ -118,13 +118,13 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-	public Collection getVariants(EnumSiteFeature feature) throws RemoteException, SQLException {
+	public Collection<Variant> getVariants(EnumSiteFeature feature) throws RemoteException, SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Connection conn = null;
 		try {
 			
-			List result = new LinkedList();
+			List<Variant> result = new LinkedList<Variant>();
 			
 			conn = getConnection();
 			
@@ -157,7 +157,7 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 				String variantIdConfig = variantId;
 				
 				RecommendationServiceType type = null;
-				SortedMap prios = new TreeMap();
+				SortedMap<Integer, SortedMap<Integer, CartTabStrategyPriority>> prios = new TreeMap<Integer, SortedMap<Integer, CartTabStrategyPriority>>();
 				
 				// -------------------
 				// ALIAS type variant
@@ -221,11 +221,11 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 
 							Integer p1 = new Integer(p.getPrimaryPriority());
 							Integer p2 = new Integer(p.getSecondaryPriority());
-							SortedMap pMap;
+							SortedMap<Integer, CartTabStrategyPriority> pMap;
 							if (prios.containsKey(p1))
-								pMap = (SortedMap) prios.get(p1);
+								pMap = prios.get(p1);
 							else
-								prios.put(p1, pMap = new TreeMap());
+								prios.put(p1, pMap = new TreeMap<Integer, CartTabStrategyPriority>());
 							
 							pMap.put(p2, p);
 						}
@@ -247,7 +247,7 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 					
 					if ( feature != null && type != null ) {
 						if (variantId.equals(variantIdConfig)) { // not an alias
-							result.add( new Variant( variantId, feature, createConfig(conn, variantIdConfig, type), prios ) );
+                                                        result.add(new Variant(variantId, feature, createConfig(conn, variantIdConfig, type), prios));
 						} else { // alias
 							// first fetch original configuration
 							RecommendationServiceConfig origConfig = createConfig(conn, variantIdConfig, type);
