@@ -500,9 +500,18 @@ public class HelperFunctions {
     	List results = new ArrayList(n);
     	List ranked = of.getRankedContents();
     	int topN = Math.min(n, ranked.size());
-		for (int i = 0; i < topN; i++) {
-    		RankedContent.Single rc = (RankedContent.Single) ranked.get(i);
-    		results.add(rc.getModel());
+		ProductFilter filter = FilterFactory.createStandardFilter(input
+				.isIncludeCartItems() ? Collections.EMPTY_LIST : input
+				.getCartContents());
+		Iterator it = ranked.iterator();
+		while (topN > 0 && it.hasNext()) {
+    		RankedContent.Single rc = (RankedContent.Single) it.next();
+    		ContentNodeModel node = rc.getModel();
+			if (node instanceof ProductModel
+					&& filter.filter((ProductModel) node) != null) {
+	    		results.add(node);
+	    		topN--;
+			}
     	}
     	return results;
     }
