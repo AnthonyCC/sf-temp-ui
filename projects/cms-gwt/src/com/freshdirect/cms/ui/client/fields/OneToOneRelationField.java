@@ -1,6 +1,6 @@
 package com.freshdirect.cms.ui.client.fields;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -24,13 +24,13 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
     private LabelField valueField;
 
     private ContentNodeModel value;
-    private HashSet<String> allowedTypes;
+    private Set<String> allowedTypes;
     
     protected boolean readonly;
 
 	final static int                       MAIN_LABEL_WIDTH = 415;
 	
-    public OneToOneRelationField(HashSet<String> aTypes, boolean readonly) {
+    public OneToOneRelationField(Set<String> aTypes, boolean readonly) {
         super();
         allowedTypes = aTypes;
         this.readonly = readonly;
