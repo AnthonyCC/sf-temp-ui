@@ -97,11 +97,18 @@ public class TransparentBoxTag extends BodyTagSupport {
 				JspWriter out = pageContext.getOut();
 				out.write(buf.toString());
 			} catch (IOException e) {}
+		} else if (this.style != null) {
+			StringBuffer buf = new StringBuffer();
+			buf.append("<div style=\"" + this.style + "\">");
+			try {
+				JspWriter out = pageContext.getOut();
+				out.write(buf.toString());
+			} catch (IOException e) {}
 		}
 	}
 
 	public int doAfterBody() throws JspException {
-		if (!this.disabled) {
+		if (!this.disabled || this.style != null) {
 			StringBuffer buf = new StringBuffer();
 			buf.append("</div>");
 

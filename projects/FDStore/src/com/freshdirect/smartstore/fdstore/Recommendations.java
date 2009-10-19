@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.fdstore;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -131,6 +132,11 @@ public class Recommendations implements Serializable {
 		return products.subList(p, Math.min(p+wsize, products.size()) );
 	}
 	
+	
+	public Collection<ProductModel> getAllProducts() {
+		return products;
+	}
+
 	/**
 	 * Get variant.
 	 * @return variant

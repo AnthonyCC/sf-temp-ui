@@ -82,34 +82,25 @@
 			ConfigurationContext confContext = new ConfigurationContext();
 			confContext.setFDUser( pip_u );
 			boolean hasAnyItemAddable = false;
-
+			
 			// [APPREQ-689] product ID -> recommender mapping (SmartYMAL) otherwise null
 			final Map<String,String> prd2recommendation = (Map<String,String>) request.getAttribute("map_prd2recommender");
 
 			// List<ProductImpression> impressions : configured products enlisted in 'Your Favourites' table
 			List<ProductImpression> impressions = new ArrayList<ProductImpression>();
 	
-			// List<SkuModel> skus : SKUs required by the pricing engine
-			List<SkuModel> skus = new ArrayList<SkuModel>();
-			
 			if ( recommendations != null && recommendations.getProducts().size() > 0 ) {
 							
 		        request.setAttribute("recommendationsRendered","true");
 				ConfigurationStrategy cUtil = SmartStoreConfigurationStrategy.getInstance();
 		
-				List<ProductModel> products = recommendations.getProducts();
-				
-		
 				// 'configure' products.
-				Iterator<ProductModel> it = products.iterator();
-				while ( it.hasNext() ) {
-					ProductModel prd = (ProductModel) it.next();
+				for (ProductModel prd : recommendations.getProducts()) {
 					ProductImpression pi = cUtil.configure(prd, confContext);
 					if (pi.isTransactional())
 						hasAnyItemAddable = true;
 		
 					impressions.add(pi);
-					skus.add(pi.getSku());
 				}
 		
 			}
@@ -117,16 +108,20 @@
 		
 		<%
 			if ( impressions!=null && impressions.size() > 0 ) {
+				int maxPrdHeight = 0;
 				BrowserInfo bi = new BrowserInfo(request);
 				
-				boolean isVariantSavings = false;
 				
-				Map pvMap = pip_u.getPromoVariantMap();
-				PromoVariantModel pvm = (PromoVariantModel) pvMap.get(genericRecommendationsVariant.getId());
-				if (pvm != null) {
-					// variant is savings
-					isVariantSavings = true;
+				PromoVariantModel pvm = (PromoVariantModel) pip_u.getPromoVariantMap().get(genericRecommendationsVariant.getId());
+				// variant is savings
+				final boolean isVariantSavings = pvm != null;
+
+				
+				// calculate max height in box
+				for (ProductModel prd : recommendations.getAllProducts()) {
+					maxPrdHeight = Math.max(maxPrdHeight, prd.getProdImage().getHeight());
 				}
+				
 		%>
 				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= formUri %>#cartRec" style="margin:0px">
 					<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
@@ -209,7 +204,7 @@
 										<!-- CELL CONTAINER -->
 										<table align="center" >
 											<tr>
-												<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
+												<td style="padding: 0; height: <%= maxPrdHeight %>px; vertical-align: bottom; text-align: center">
 													<% if (isVariantSavings) { %>
 														<display:ProductImage product="<%= product %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" opacity="<%= shouldDimProduct ? 0.5 : 1.0 %>" showRolloverImage="true"/>
 													<% } else {%>
@@ -248,7 +243,7 @@
 											<% } // !transactional %>
 										</table>
 																							
-										<display:TransparentBox disabled="<%= !shouldDimProduct %>">
+										<display:TransparentBox disabled="<%= !shouldDimProduct %>" style="min-height: 85px;">
 											<display:ProductRating product="<%= product %>"/>
 											<display:ProductName product="<%= product %>" action="<%= actionURI %>" disabled="<%= shouldDimProduct %>"/>
 											<display:ProductPrice impression="<%= recommendations_row %>" savingsPercentage="<%= isVariantSavings ? pvm.getPercentageOff() : 0 %>" />
@@ -290,7 +285,7 @@
 											<td>
 												<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>
 												<input type="hidden" name="itemCount" value="<%= txProdCount %>"/>
-												<input type="image" name="addMultipleToCart" style="padding: 8px 6px; border: 0" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" alt="ADD SELECTED TO CART"/>
+												<input type="image" name="addMultipleToCart" style="padding: 0px 6px; border: 0" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" alt="ADD SELECTED TO CART"/>
 											</td>
 											<% } %>
 											
