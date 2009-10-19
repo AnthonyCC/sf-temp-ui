@@ -123,6 +123,9 @@
 				}
 				
 		%>
+<script type="text/javascript">
+var origFormState = [];
+</script>
 				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= formUri %>#cartRec" style="margin:0px">
 					<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
 					<input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1#cartRec"/>
@@ -271,8 +274,16 @@
 												<img id="ra_bwd_<%= genericRecommendationsVariant.getId() %>" src="/media_stat/images/buttons/tab_prev.gif" style="width: 57px; height: 16px; cursor: pointer;"/>
 <script type="text/javascript">
 	$E.on('ra_bwd_<%= genericRecommendationsVariant.getId() %>', 'click', function(e) {
-		$E.preventDefault(e);
-		PIP.goToPage('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true, <%= recommendations.getOffset() %>-1);
+		var b = checkFormState($('id_<%= tx_pricing_FormName %>'));
+
+		if (b) {
+			b = !confirm('Are you sure you want to continue?\n\nYou will lose any changes you have made to quantities on this page.\n\nClick OK to continue, or Cancel to stay on this page.');
+		}
+
+		if (!b) {
+			$E.preventDefault(e);
+			PIP.goToPage('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true, <%= recommendations.getOffset() %>-1);
+		}
 	});
 </script>
 											</td>
@@ -294,8 +305,16 @@
 												<img id="ra_fwd_<%= genericRecommendationsVariant.getId() %>" src="/media_stat/images/buttons/tab_next.gif" style="width: 57px; height: 16px; cursor: pointer;"/>
 <script type="text/javascript">
 	$E.on('ra_fwd_<%= genericRecommendationsVariant.getId() %>', 'click', function(e) {
-		$E.preventDefault(e);
-		PIP.goToPage('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true, <%= recommendations.getOffset() %>+1);
+		var b = checkFormState($('id_<%= tx_pricing_FormName %>'));
+
+		if (b) {
+			b = !confirm('Are you sure you want to continue?\n\nYou will lose any changes you have made to quantities on this page.\n\nClick OK to continue, or Cancel to stay on this page.');
+		}
+
+		if (!b) {
+			$E.preventDefault(e);
+			PIP.goToPage('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true, <%= recommendations.getOffset() %>+1);
+		}
 	});
 </script>
 											</td>
@@ -314,8 +333,26 @@
 					<script type="text/javascript">
 						<%= tx_pricing_JSNameSpace %>.updateTotal();
 					</script>
-				</form>		
-				
+				</form>
+<script type="text/javascript">
+var f = $('id_<%= tx_pricing_FormName %>');
+for (k=0; k<f.elements.length; k++) {
+	origFormState[f.elements[k].name] = f.elements[k].value;
+}
+
+checkFormState = function(thisForm) {
+	for (k=0; k<thisForm.elements.length; k++) {
+		if (origFormState[thisForm.elements[k].name] == null)
+			return true;
+
+		if (origFormState[thisForm.elements[k].name] != thisForm.elements[k].value)
+			return true;
+	}
+	return false;
+};
+
+</script>
+
 		<%	} else { // impressions is empty %>
 				<br/><br/>
 				<p class="tab_text_simple">	Oops! It looks like we've run out of items to recommend. </p>
