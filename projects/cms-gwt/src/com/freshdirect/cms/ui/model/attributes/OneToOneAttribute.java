@@ -1,7 +1,7 @@
 package com.freshdirect.cms.ui.model.attributes;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.Set;
 
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 
@@ -9,8 +9,8 @@ public class OneToOneAttribute extends BaseAttribute implements ModifiableAttrib
 
 	private static final long serialVersionUID = 6321196833240254522L;
 	
-	private ContentNodeModel value;	
-	private HashSet<String> allowedTypes;	
+	protected ContentNodeModel value;	
+	protected Set<String> allowedTypes;	
 	
 	public OneToOneAttribute() {
 		value = null;		
@@ -28,11 +28,11 @@ public class OneToOneAttribute extends BaseAttribute implements ModifiableAttrib
 		value = v;
 	}
 	
-	public void setAllowedTypes(HashSet<String> aTypes) {
+	public void setAllowedTypes(Set<String> aTypes) {
 		allowedTypes = aTypes;
 	}
 	
-	public HashSet<String> getAllowedTypes() {
+	public Set<String> getAllowedTypes() {
 		return allowedTypes;
 	}
 
