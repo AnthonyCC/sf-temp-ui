@@ -1,188 +1,285 @@
-<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
+<%@ page import='com.freshdirect.fdstore.content.util.SortStrategyElement' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
-<%@ page import="java.util.Collection"%>
-<%@ page import="java.util.Comparator"%>
-<%@ page import="java.util.List"%>
-<%@ page import="java.util.Collections"%>
-<%@ page import="java.util.Iterator"%>
 
-<%@ taglib uri="template" prefix="tmpl" %>
-<%@ taglib uri="logic" prefix="logic" %>
-<%@ taglib uri="freshdirect" prefix="fd" %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
-<fd:ProduceRatingCheck>
-
 <%
-  //var defines
-  int ppTarget = 6;
-  int ppVeg = 0;
-  int ppFru = 0;
 
-  Collection vegCol = null;
-  Collection fruCol = null;
+	//var defines
+
+	int ppTarget = 6;
+	int ppVeg = 0;
+	int ppFru = 0;
+	int tempCounter = 0;
+
+	Collection vegColl = null;
+	Collection fruColl = null;
 
 	rowColl = new ArrayList();
   
-  catId = "picks_pres";
-  //request.getParameter("catId");
-  currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
-  isDept = (currentFolder instanceof DepartmentModel);
-  isCat = (currentFolder instanceof CategoryModel);
-  trkCode= "";
-  //** pass the code that should be used as the tracking code **/
-  if (isDept) {
-    trkCode = "dpage";
-    request.setAttribute("trk","dpage");
-  } else if(isCat) {
-    trkCode = "cpage";
-    request.setAttribute("trk","cpage");
-  }
-
-%>
-
-
-
+	currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+	isDept = (currentFolder instanceof DepartmentModel);
+	isCat = (currentFolder instanceof CategoryModel);
+	trkCode= "";
   
-  <fd:GetPeakProduce deptId='fru' id='peakProduces' useMinCount='false'>
-    <% fruCol = peakProduces; %>
-  </fd:GetPeakProduce>
-
-  <fd:GetPeakProduce deptId='veg' id='peakProduces' useMinCount='false'>
-    <% vegCol = peakProduces; %>
-  </fd:GetPeakProduce>
-
-  <%
-    //iterate over vegCol and remove dupes contained in fruCol or globalColl
-    Iterator iteratorVeg = vegCol.iterator();
-    while (iteratorVeg.hasNext()) {
-      Object element = iteratorVeg.next();
-      if (fruCol.contains(element) || globalColl.contains(element)) {
-        iteratorVeg.remove();
-      }
-    }
-	//now iterate over fruCol and remove dupes contained in globalColl
-    Iterator iteratorFru = fruCol.iterator();
-    while (iteratorFru.hasNext()) {
-      Object element = iteratorFru.next();
-      if (globalColl.contains(element)) {
-        iteratorFru.remove();
-      }
-    }
-    //set sizes
-    ppVeg = vegCol.size();
-    ppFru = fruCol.size();
-
-    //logic to determine products from each dept to show
-    if (ppVeg > 3) {
-      //veg = 3
-      ppVeg = 3;
-      if (ppFru > 3){
-        //veg = 3, fru = 3
-        ppVeg = 3;
-        ppFru = 3;
-        //done
-      }else{
-        //fru<3
-        //veg = tar-fru
-        ppVeg = ppTarget-ppFru;
-      }
-    }else{
-      //fru = tar - veg
-      ppFru = ppTarget-ppVeg;
-    }
-    %>
-
-    <% if (ppFru > 0 || ppVeg > 0) { // min to require to display section %>
-      <fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
-      <fd:IncludeMedia name= "/media/editorial/whats_good/whats_good_GRN_above.html"/>
-      <table cellpadding="0" cellspacing="0" border="0">
-      <tr valign="bottom">
-        <logic:iterate id="peakProduce" collection="<%= fruCol %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
-        <% if (idx.intValue() >= ppFru || globalColl.contains(peakProduce.getProductModel())) { continue; }
-          String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-          DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response, 
-              peakProduce.getProductModel().getParentNode().getContentName(), 
-              peakProduce.getProductModel(), prodNameAttribute, 
-              true);
-          int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-          String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), trkCode );
-
-			//add to global collection for dupe check
-			globalColl.add(peakProduce.getProductModel());
-			//add to pageColl for prices ref
-			rowColl.add(peakProduce.getProductModel());
-        %>
-          
-          <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
-            <display:ProductImage product="<%= peakProduce.getProductModel() %>" hideDeals="false" showRolloverImage="false" action="<%= actionUrl %>"/>
-          </td>
-        </logic:iterate>
-        <logic:iterate id="peakProduce" collection="<%= vegCol %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
-        <% if (idx.intValue() >= ppVeg || globalColl.contains(peakProduce.getProductModel())) { continue; }
-          String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-          DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response, 
-              peakProduce.getProductModel().getParentNode().getContentName(), 
-              peakProduce.getProductModel(), prodNameAttribute, 
-              true);
-          int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-          String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), trkCode );
-
-			//add to global collection for dupe check
-			globalColl.add(peakProduce.getProductModel());
-			//add to pageColl for prices ref
-			rowColl.add(peakProduce.getProductModel());
-        %>
-          
-          <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
-            <display:ProductImage product="<%= peakProduce.getProductModel() %>" hideDeals="true" showRolloverImage="false" action="<%= actionUrl %>"/>
-          </td>
-        </logic:iterate>
-      </tr>
-      <tr valign="top">
-        <logic:iterate id="peakProduce" collection="<%= fruCol %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
-        
-        <% if (idx.intValue() >= ppFru || !rowColl.contains(peakProduce.getProductModel())) { continue; }
-          String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-		  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(), peakProduce.getProductModel(), prodNameAttribute, true);
-          int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-          String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), trkCode );
-        %>
-          
-          <td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
-            <div class="WG_deals">
-	            <display:ProductRating product="<%= peakProduce.getProductModel() %>" action="<%= actionUrl %>"/>
-				<display:ProductName product="<%= peakProduce.getProductModel() %>" action="<%= actionUrl %>"/>
-				<display:ProductPrice impression="<%= new ProductImpression(peakProduce.getProductModel()) %>" showDescription="false"/>
-            </div>
-          </td>
-        </logic:iterate>
-
-
-
-        <logic:iterate id="peakProduce" collection="<%= vegCol %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
-        <% if (idx.intValue() >= ppVeg || !rowColl.contains(peakProduce.getProductModel())) { continue; }
-          String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-		  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(), peakProduce.getProductModel(), prodNameAttribute, true);
-          int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-          String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), trkCode );
-        %>
-          
-          <td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
-            
-
-            <div style="font-weight: normal; font-size: 8pt; width: 100px; text-align: center">
-            	<display:ProductRating product="<%= peakProduce.getProductModel() %>" action="<%= actionUrl %>"/>
-				<display:ProductName product="<%= peakProduce.getProductModel() %>" action="<%= actionUrl %>"/>
-				<display:ProductPrice impression="<%= new ProductImpression(peakProduce.getProductModel()) %>" showDescription="false"/>
-            </div>
-
-          </td>
-        </logic:iterate>
-      </tr>
-      </table>
-    <%
-	} 
-	
+	/* pass the code that should be used as the tracking code */
+	if (isDept) {
+		trkCode = "dpage";
+		request.setAttribute("trk","dpage");
+	} else if(isCat) {
+		trkCode = "cpage";
+		request.setAttribute("trk","cpage");
+	}
 %>
-</fd:ProduceRatingCheck>
+
+<% log(myDebug, "-=-=-=-=-= in peak produce row currentFolder : "+currentFolder); %>
+<% log(myDebug, "-=-=-=-=-= isDept : "+isDept); %>
+<% log(myDebug, "-=-=-=-=-= isCat : "+isCat); %>
+
+<%
+	layoutSettings = new Settings();
+	layoutSettings.setGrabberDepth(0);
+	layoutSettings.setIgnoreDuplicateProducts(true);
+	layoutSettings.setIgnoreShowChildren(false);
+	layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
+	layoutSettings.setReturnHiddenFolders(false);
+
+	List tmpList=new ArrayList();
+%>
+	<fd:ItemGrabber
+		category='<%=currentFolder %>' 
+		id='rtnColl' 
+		depth='<%=layoutSettings.getGrabberDepth()%>'
+		ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+		filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+		returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+		ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+		returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
+		returnSkus='<%=layoutSettings.isReturnSkus()%>'
+		workSet='<%=tmpList%>'
+	>
+		<%
+			sortedColl = rtnColl;
+			request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+		%>
+	</fd:ItemGrabber>
+ 
+	<% log(myDebug, "-=-=-=-=-= in peak produce row fruColl : "+fruColl); %>
+
+<%
+	/*
+	 *	sortedColl should now contain the subcats
+	 *	iterate through and determine fru or veg
+	 */
+%>
+<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
+	<%
+		if (contentNode instanceof CategoryModel) {
+			if ((contentNode.toString().toLowerCase()).indexOf("fru")>-1) {
+				//fruit subcat
+				log(myDebug, "-=-=-=-=-= in peak produce row fruit subcat found : "+contentNode);
+					catId = contentNode.toString();
+					currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+					tmpList=new ArrayList();
+			%>
+				<fd:ItemGrabber
+					category='<%=currentFolder %>' 
+					id='FRUrtnColl' 
+					depth='<%=layoutSettings.getGrabberDepth()%>'
+					ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+					filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+					returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+					ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+					returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
+					returnSkus='<%=layoutSettings.isReturnSkus()%>'
+					workSet='<%=tmpList%>'
+				>
+					<% fruColl = FRUrtnColl; %>
+				</fd:ItemGrabber>
+			<%
+				log(myDebug, "-=-=-=-=-= in peak produce row fruColl : "+fruColl);
+			}else if ((contentNode.toString().toLowerCase()).indexOf("veg")>-1) {
+				//veg subcat
+				log(myDebug, "-=-=-=-=-= in peak produce row veg subcat found : "+contentNode);
+
+				catId = contentNode.toString();
+				currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+
+				tmpList=new ArrayList();
+			%>
+				<fd:ItemGrabber
+					category='<%=currentFolder %>' 
+					id='VEGrtnColl' 
+					depth='<%=layoutSettings.getGrabberDepth()%>'
+					ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+					filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+					returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+					ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+					returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
+					returnSkus='<%=layoutSettings.isReturnSkus()%>'
+					workSet='<%=tmpList%>'
+				>
+					<% vegColl = VEGrtnColl; %>
+				</fd:ItemGrabber>
+			<%
+				log(myDebug, "-=-=-=-=-= in peak produce row vegColl : "+vegColl);
+			}else{
+				//other subcat
+				log(myDebug, "-=-=-=-=-= in peak produce row other subcat found : "+contentNode);
+			}
+		}
+	%>
+</logic:iterate>
+
+<% log(myDebug, "peak produce sortedColl"+sortedColl); %>
+<% log(myDebug, "peak produce fruColl"+fruColl); %>
+<% log(myDebug, "peak produce vegColl"+vegColl); %>
+
+<%
+	//iterate over vegColl and remove dupes contained in fruColl or globalColl
+	Iterator iteratorVeg = vegColl.iterator();
+	while (iteratorVeg.hasNext()) {
+		Object element = iteratorVeg.next();
+		if (fruColl.contains(element) || globalColl.contains(element)) {
+			iteratorVeg.remove();
+		}
+	}
+
+	//now iterate over fruColl and remove dupes contained in globalColl
+	Iterator iteratorFru = fruColl.iterator();
+	while (iteratorFru.hasNext()) {
+		Object element = iteratorFru.next();
+		if (globalColl.contains(element)) {
+			iteratorFru.remove();
+		}
+	}
+
+	//set sizes
+	ppVeg = vegColl.size();
+	ppFru = fruColl.size();
+
+	//logic to determine products from each dept to show
+	if (ppVeg > 3) {
+		//veg = 3
+		ppVeg = 3;
+		if (ppFru > 3) {
+			//veg = 3, fru = 3
+			ppVeg = 3;
+			ppFru = 3;
+			//done
+		}else{
+			//fru<3
+			//veg = tar-fru
+			ppVeg = ppTarget-ppFru;
+		}
+	}else{
+		//fru = tar - veg
+		ppFru = ppTarget-ppVeg;
+	}
+%>
+
+<% log(myDebug, "-=-=-=-=-= peak produce fruColl.size()"+ fruColl.size()+" using "+ppFru); %>
+<% log(myDebug, "-=-=-=-=-= peak produce vegColl.size()"+ vegColl.size()+" using "+ppVeg); %>
+
+<% if (ppFru+ppVeg > 0) { // min to require to display section %>
+	<logic:iterate id="contentNode" collection="<%= fruColl %>" type="java.lang.Object" indexId="idx">
+		<%
+			// skip if more than we want for fruit, is a category or already used on page
+			if (tempCounter >= ppFru || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode)) { continue; }
+			ProductModel pm = (ProductModel) contentNode;
+			//skip if discontinued or unavailable
+			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
+
+			//add to global collection for dupe check
+			globalColl.add(contentNode);
+			//add to pageColl for prices ref
+			rowColl.add(contentNode);
+
+			tempCounter++;
+		%>
+	</logic:iterate>
+
+	<% tempCounter = 0; %>
+
+	<logic:iterate id="contentNode" collection="<%= vegColl %>" type="java.lang.Object" indexId="idx">
+		<%
+			// skip if more than we want for fruit, is a category or already used on page
+			if (tempCounter >= ppVeg || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode)) { continue; }
+			ProductModel pm = (ProductModel) contentNode;
+			//skip if discontinued or unavailable
+			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
+
+			//add to global collection for dupe check
+			globalColl.add(contentNode);
+			//add to pageColl for prices ref
+			rowColl.add(contentNode);
+
+			tempCounter++;
+		%>
+	</logic:iterate>
+
+
+	<%
+		//rowColl should now have the collection of products to use
+
+		//if we have any items to show, display them
+		if (rowColl.size() > 0) {
+	%>
+
+		<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
+		<fd:IncludeMedia name= "/media/editorial/whats_good/whats_good_GRN_above.html"/>
+
+			<table cellpadding="0" cellspacing="0" border="0">
+			<tr valign="bottom">
+
+				<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
+
+				<%
+					log(myDebug, "-=-=-=-=-= peak produce contentNode : "+contentNode);
+					log(myDebug, "-=-=-=-=-= peak produce instanceof CategoryModel : "+(contentNode instanceof CategoryModel));
+					log(myDebug, "-=-=-=-=-= peak produce globalColl.contains : "+globalColl.contains(contentNode));
+					
+					//we don't need checks here, we did it previously
+
+					ProductModel pm = (ProductModel) contentNode;
+					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
+					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,false);
+					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+					String actionURI = FDURLUtil.getProductURI( pm, trkCode );			
+				%>
+
+					<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
+						<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionURI %>" />
+					</td>
+				
+				</logic:iterate>
+			</tr>
+			<tr>
+				<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
+				<%
+
+					log(myDebug, "-=-=-=-=-= in generic row contentNode2 : "+contentNode);
+					log(myDebug, "-=-=-=-=-= in generic row contentNode2 : "+(contentNode instanceof CategoryModel));
+					log(myDebug, "-=-=-=-=-= in generic row instanceof globalColl.contains2 : "+rowColl.contains(contentNode));
+
+					ProductModel pm = (ProductModel) contentNode;
+					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
+					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
+					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+					String actionURI = FDURLUtil.getProductURI( pm, trkCode );
+				%>
+
+					<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
+						<div class="WG_deals">
+							<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
+							<display:ProductName product="<%= pm %>" action="<%= actionURI %>" />
+							<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="false" />
+						</div>
+					</td>
+				</logic:iterate>
+			</tr>
+			</table>
+		<% } %>
+<% } %>

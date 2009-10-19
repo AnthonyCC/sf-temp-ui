@@ -23,11 +23,21 @@
 
 
 <fd:CheckLoginStatus />
+
+<%!
+	void log (boolean debug, String strToPrint) {
+		if (debug) { System.out.println(strToPrint); }
+	}
+%>
+
 <%
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 String custFirstName = user.getFirstName();
 int validOrderCount = user.getAdjustedValidOrderCount();
 boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
+
+boolean myDebug = false;
+
 String deptId = null;
 String showInContextOf = null;
 String catId="";
@@ -95,7 +105,7 @@ if (deptId==null) { deptId="wgd"; }
 		<tr>
 			<td valign="bottom">
 
-	<%}%>
+	<% } %>
 	
 	<% //START top section %>
 		<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
@@ -127,8 +137,7 @@ if (deptId==null) { deptId="wgd"; }
 
 			//get current row
 			curRow=result[rowId];
-			System.out.println("=============row curRow :"+curRow);
-			System.out.println("=============row indexOf :"+(curRow.indexOf(":")));
+			//System.out.println("=============row curRow :"+curRow);
 
 			//check here for row limits
 			if (curRow.indexOf(":") > 0) { //zero since it can't START with a colon (correctly)
@@ -139,8 +148,8 @@ if (deptId==null) { deptId="wgd"; }
 				if(resultSub.length>2){ maxRows=Integer.parseInt(resultSub[2]); }
 			}
 
-			//System.out.println("=============row :"+rowId);
-			//System.out.println("=============row strWGRows :"+curRow);
+			log(myDebug, "=============row :"+rowId);
+			log(myDebug, "=============row strWGRows :"+curRow);
 
 
 			//first, check for specials
@@ -150,9 +159,21 @@ if (deptId==null) { deptId="wgd"; }
 
 				//do peak produce stuff
 				//START Great Right Now 
+
+				//see if row is a category
+				currentFolder = ContentFactory.getInstance().getContentNode(curRow);
+				if(currentFolder instanceof CategoryModel) {
+					//is a category
+					log(myDebug, "==============pp : IS cat");
+
+					//we know it's a category, so use it in the generic row
+					catId = curRow;
 				
-					System.out.println("=============row in wg_peakproduce :");
+					log(myDebug, "=============row in wg_peakproduce :");
 					%><%@ include file="/includes/department_peakproduce_whatsgood.jspf" %><%
+				}else{
+					log(myDebug, "==============pp : IS NOT cat");
+				}
 				//END Great Right Now
 
 			//special : deals
@@ -177,7 +198,7 @@ if (deptId==null) { deptId="wgd"; }
 					//...and the dept context (if null, not used)
 					showInContextOf = "wgd";
 
-					//System.out.println("=============row in wg_deals :");
+					log(myDebug, "=============row in wg_deals :");
 					%><%@ include file="/includes/layouts/i_featured_products_whatsgood.jspf" %><%
 				//END Grocery Deals
 
@@ -187,7 +208,7 @@ if (deptId==null) { deptId="wgd"; }
 				//do ad row
 				//START AD spots
 
-					//System.out.println("=============row in wg_ads :");
+					log(myDebug, "=============row in wg_ads :");
 
 					%><fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" /><%
 
@@ -225,12 +246,12 @@ if (deptId==null) { deptId="wgd"; }
 			//no specials
 			}else{
 				//see if row is a category
-				ContentNodeModel currentFolderTemp = ContentFactory.getInstance().getContentNode(curRow);
-				System.out.println(curRow);
+				currentFolder = ContentFactory.getInstance().getContentNode(curRow);
+				//System.out.println(curRow);
 
-				if(currentFolderTemp instanceof CategoryModel) {
+				if(currentFolder instanceof CategoryModel) {
 					//is a category
-					System.out.println("==============cat : IS cat");
+					log(myDebug, "==============cat : IS cat");
 
 					//we know it's a category, so use it in the generic row
 					catId = curRow;
@@ -238,7 +259,7 @@ if (deptId==null) { deptId="wgd"; }
 
 				}else{
 					//is NOT a category
-					System.out.println("==============cat : IS NOT cat");
+					log(myDebug, "==============cat : IS NOT cat");
 
 					//try using it as media instead
 					String mediaPathTemp="/media/editorial/whats_good/"+curRow;
@@ -255,7 +276,7 @@ if (deptId==null) { deptId="wgd"; }
 		}
 	//no rows were found
 	}else{
-		//System.out.println("=============* strWGRows returning null/empty:");
+		log(myDebug, "=============* strWGRows returning null/empty:");
 	}
 
 

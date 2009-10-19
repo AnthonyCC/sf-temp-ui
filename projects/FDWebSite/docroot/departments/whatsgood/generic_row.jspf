@@ -1,23 +1,31 @@
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings' %>
-<%@ page import='com.freshdirect.fdstore.content.util.SortStrategyElement' %>
 <%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.display.*' %>
+<%@ page import='com.freshdirect.fdstore.content.util.SortStrategyElement' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%
-int tempCounter=0;
-rowColl = new ArrayList();
-sortedColl = null; 
-onlyOneProduct = false;
-theOnlyProduct = null;
-currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
-isDept = (currentFolder instanceof DepartmentModel);
-isCat = (currentFolder instanceof CategoryModel);
-trkCode= "";
-//** pass the code that should be used as the tracking code **/
+
+	int tempCounter=0;
+	rowColl = new ArrayList();
+	sortedColl = null; 
+	onlyOneProduct = false;
+	theOnlyProduct = null;
+	currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+	isDept = (currentFolder instanceof DepartmentModel);
+	isCat = (currentFolder instanceof CategoryModel);
+	trkCode= "";
+	boolean usePerRowLimit = true;
+	boolean useRowLimit = true;
+	usePerRowLimit = (perRow>0)?true:false;
+	useRowLimit = (maxRows>0)?true:false;
+	int maxToShow = 0;
+
+	maxToShow = (useRowLimit) ? perRow*maxRows : 999999999;
+
+
+/* pass the code that should be used as the tracking code */
 if (isDept) {
 	trkCode = "dpage";
 	request.setAttribute("trk","dpage");
@@ -37,9 +45,9 @@ layoutSettings.setReturnHiddenFolders(false);
 
 List tmpList=new ArrayList();
 %>
-<% System.out.println("-=-=-=-=-= in generic row currentFolder : "+currentFolder); %>
-<% System.out.println("-=-=-=-=-= isDept : "+isDept); %>
-<% System.out.println("-=-=-=-=-= isCat : "+isCat); %>
+<% log(myDebug, "-=-=-=-=-= in generic row currentFolder : "+currentFolder); %>
+<% log(myDebug, "-=-=-=-=-= in generic row isDept : "+isDept); %>
+<% log(myDebug, "-=-=-=-=-= in generic row isCat : "+isCat); %>
 
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
@@ -58,7 +66,7 @@ List tmpList=new ArrayList();
         
         request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
 		
-		System.out.println("-=-=-=-=-= in generic row ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts());
+		log(myDebug, "-=-=-=-=-= in generic row ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts());
 %>
     </fd:ItemGrabber> 
  
@@ -66,8 +74,10 @@ List tmpList=new ArrayList();
 
 	<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 		<%
+				log(myDebug, "-=-=-=-=-= in generic row maxToShow1 "+maxToShow);
+				log(myDebug, "-=-=-=-=-= in generic row tempCounter1 "+tempCounter);
 			// skip if more than 5, is a category or already used on page
-			if (tempCounter >= 5 || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode)) { continue; }
+			if (tempCounter >= maxToShow || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode)) { continue; }
 			ProductModel pm = (ProductModel) contentNode;
 			//skip if discontinued or unavailable
 			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
@@ -80,7 +90,6 @@ List tmpList=new ArrayList();
 			tempCounter++;
 		%>
 	</logic:iterate>
-	<% tempCounter=0; %>
 
 	<%
 		//rowColl should now have the collection of products to use
@@ -95,18 +104,19 @@ List tmpList=new ArrayList();
 		<table cellpadding="0" cellspacing="0" border="0">
 		<tr valign="bottom">
 
-			<% System.out.println("-=-=-=-=-= in generic row rowColl : "+catId+" : "+(List)rowColl); %>
+			<% log(myDebug, "-=-=-=-=-= in generic row rowColl : "+catId+" : "+(List)rowColl); %>
 			<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
+
 			<%
-				System.out.println("-=-=-=-=-= in generic row contentNode : "+contentNode);
-				System.out.println("-=-=-=-=-= in generic row instanceof CategoryModel : "+(contentNode instanceof CategoryModel));
-				System.out.println("-=-=-=-=-= in generic row instanceof globalColl.contains : "+globalColl.contains(contentNode));
+				log(myDebug, "-=-=-=-=-= in generic row contentNode : "+contentNode);
+				log(myDebug, "-=-=-=-=-= in generic row instanceof CategoryModel : "+(contentNode instanceof CategoryModel));
+				log(myDebug, "-=-=-=-=-= in generic row instanceof globalColl.contains : "+globalColl.contains(contentNode));
 				
 				//we don't need checks here, we did it previously
 
 				ProductModel pm = (ProductModel) contentNode;
 				String prodNameAttribute = JspMethods.getProductNameToUse(pm);
-				DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
+				DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,false);
 				int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
 				String actionURI = FDURLUtil.getProductURI( pm, trkCode );			
 			%>
@@ -121,9 +131,9 @@ List tmpList=new ArrayList();
 			<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
 			<%
 
-				System.out.println("-=-=-=-=-= in generic row contentNode2 : "+contentNode);
-				System.out.println("-=-=-=-=-= in generic row contentNode2 : "+(contentNode instanceof CategoryModel));
-				System.out.println("-=-=-=-=-= in generic row instanceof globalColl.contains2 : "+rowColl.contains(contentNode));
+				log(myDebug, "-=-=-=-=-= in generic row contentNode2 : "+contentNode);
+				log(myDebug, "-=-=-=-=-= in generic row contentNode2 : "+(contentNode instanceof CategoryModel));
+				log(myDebug, "-=-=-=-=-= in generic row instanceof globalColl.contains2 : "+rowColl.contains(contentNode));
 
 				ProductModel pm = (ProductModel) contentNode;
 				String prodNameAttribute = JspMethods.getProductNameToUse(pm);
@@ -146,4 +156,4 @@ List tmpList=new ArrayList();
 		}
 	%>
 	
-	<% System.out.println("-=-=-=-=-= in generic row END : "); %>
+	<% log(myDebug, "-=-=-=-=-= in generic row END : "); %>
