@@ -187,7 +187,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			if(isGiftCardBuyer) {
 				customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
 			} else {
-				customer = new CustomerAdapter(false, erpCustomer, null, (ErpAddressModel) erpCustomer.getShipToAddresses().get(0));
+				if(erpCustomer.getShipToAddresses() != null && erpCustomer.getShipToAddresses().size() > 0) {
+					customer = new CustomerAdapter(false, erpCustomer, null, (ErpAddressModel) erpCustomer.getShipToAddresses().get(0));
+				} else {
+					customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
+				}
 			}
 
 			SapGatewaySB sapSB = this.getSapGatewayHome().create();
