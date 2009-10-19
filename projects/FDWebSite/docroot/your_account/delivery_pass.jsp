@@ -176,7 +176,7 @@
 								<% if(!DeliveryPassUtil.getAutoRenewalDate(user).equals("")) {%>
 									<font class="text12bold">Unlimited DeliveryPass Renewal</font>
 									<font class="text12"> Your membership will be renewed automatically on the day your current membership expires.
-									<A HREF="javascript:pop('/about/aboutRenewal.jsp?term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>&price=<%=user.getDlvPassInfo().getAutoRenewPriceAsText()%>',400,560)">	
+									<A HREF="javascript:pop('/about/aboutRenewal.jsp?sku=<%=user.getDlvPassInfo().getAutoRenewDPType().getCode()%>&term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>',400,560)">	
 										Click here to learn more about renewals.
 									</A>
 									<br><br>Your membership is set to renew on <%=DeliveryPassUtil.getAutoRenewalDate(user)%>.
@@ -201,7 +201,7 @@
 
 								<font class="text12bold">Unlimited DeliveryPass Renewal</font>
 								<font class="text12"> Passes can be renewed automatically when your current pass (or refill) expires.
-								<A HREF="javascript:pop('/about/aboutRenewal.jsp?term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>&price=<%=user.getDlvPassInfo().getAutoRenewPriceAsText()%>',400,560)">								Click here to learn more about renewals.
+								<A HREF="javascript:pop('/about/aboutRenewal.jsp?sku=<%=user.getDlvPassInfo().getAutoRenewDPType().getCode()%>&term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>&price=<%=user.getDlvPassInfo().getAutoRenewPriceAsText()%>',400,560)">								Click here to learn more about renewals.
 								</A><br><br>
 								<form name="autoRenew" method="POST">
 									<% if(!DeliveryPassUtil.getExpDate(user).equals("")) {%>
