@@ -125,6 +125,19 @@
 		%>
 <script type="text/javascript">
 var origFormState = [];
+
+var confirmedPage = function(e, pageFn) {
+	var b = checkFormState($('id_<%= tx_pricing_FormName %>'));
+
+	if (b) {
+		b = !confirm('Are you sure you want to continue?\n\nYou will lose any changes you have made to quantities on this page.\n\nClick OK to continue, or Cancel to stay on this page.');
+	}
+
+	if (!b) {
+		$E.preventDefault(e);
+		pageFn.call();
+	}
+};
 </script>
 				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= formUri %>#cartRec" style="margin:0px">
 					<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
@@ -273,17 +286,8 @@ var origFormState = [];
 											<td>
 												<img id="ra_bwd_<%= genericRecommendationsVariant.getId() %>" src="/media_stat/images/buttons/tab_prev.gif" style="width: 57px; height: 16px; cursor: pointer;"/>
 <script type="text/javascript">
-	$E.on('ra_bwd_<%= genericRecommendationsVariant.getId() %>', 'click', function(e) {
-		var b = checkFormState($('id_<%= tx_pricing_FormName %>'));
-
-		if (b) {
-			b = !confirm('Are you sure you want to continue?\n\nYou will lose any changes you have made to quantities on this page.\n\nClick OK to continue, or Cancel to stay on this page.');
-		}
-
-		if (!b) {
-			$E.preventDefault(e);
-			PIP.goToPage('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true, <%= recommendations.getOffset() %>-1);
-		}
+	$E.on('ra_bwd_<%= genericRecommendationsVariant.getId() %>', 'click', confirmedPage, function() {
+		PIP.goToPage('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true, <%= recommendations.getOffset() %>-1);
 	});
 </script>
 											</td>
@@ -304,17 +308,8 @@ var origFormState = [];
 											<td>
 												<img id="ra_fwd_<%= genericRecommendationsVariant.getId() %>" src="/media_stat/images/buttons/tab_next.gif" style="width: 57px; height: 16px; cursor: pointer;"/>
 <script type="text/javascript">
-	$E.on('ra_fwd_<%= genericRecommendationsVariant.getId() %>', 'click', function(e) {
-		var b = checkFormState($('id_<%= tx_pricing_FormName %>'));
-
-		if (b) {
-			b = !confirm('Are you sure you want to continue?\n\nYou will lose any changes you have made to quantities on this page.\n\nClick OK to continue, or Cancel to stay on this page.');
-		}
-
-		if (!b) {
-			$E.preventDefault(e);
-			PIP.goToPage('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true, <%= recommendations.getOffset() %>+1);
-		}
+	$E.on('ra_fwd_<%= genericRecommendationsVariant.getId() %>', 'click', confirmedPage, function() {
+		PIP.goToPage('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true, <%= recommendations.getOffset() %>+1);
 	});
 </script>
 											</td>
