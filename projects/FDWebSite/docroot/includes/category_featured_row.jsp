@@ -18,7 +18,7 @@
 	int dealProductsCount = 2;
 	int edlpProductsCount = 2;
 	String parentCat = request.getParameter("parentCat");
-	String catId_1 = parentCat+"_deals";
+	String catId_1 = parentCat+"_feat";
 	String catId_2 = parentCat+"_edlp"; 
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_1);
 	System.out.println("category_featured_row>> catId_1: " + catId_1 + " catId_2: " + catId_2);
