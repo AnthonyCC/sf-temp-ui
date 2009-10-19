@@ -55,9 +55,11 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
     public class DropDownRenderer implements GridCellRenderer<OneToManyModel> {
 
         String domain;
+        String columnLabel;
         
-        DropDownRenderer (String modelProperty) {
-            this.domain = modelProperty;
+        DropDownRenderer (String domain, String columnLabel) {
+            this.domain = domain;
+            this.columnLabel = columnLabel;
         }
         
         @Override
@@ -114,6 +116,14 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
             return field;
         }
         
+        public String getDomain() {
+        	return domain;
+        }
+        
+        @Override
+        public String toString() {
+        	return columnLabel;
+        }
     }
 
     private final static String SKU_DOMAIN_VALUES = "VARIATION_MATRIX";
@@ -160,6 +170,8 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
         }
         
         initialize();
+        
+        grid.setHideHeaders( false );
     }
 
     void reloadDomains(List<ContentNodeModel> domains, final boolean refreshColumns) {
@@ -180,9 +192,10 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
         });
 
         this.extraColumns = new ArrayList<GridCellRenderer<OneToManyModel>>();
-        this.extraColumns.add(new Renderers.LabelRenderer("label"));
+        // TODO Variation Matrix is only used for Sku-s, may need to customize this in the future
+        this.extraColumns.add(new Renderers.LabelRenderer("label", "Sku"));
         for (ContentNodeModel domain : domains) {
-            extraColumns.add(new DropDownRenderer(domain.getKey()));
+			extraColumns.add( new DropDownRenderer( domain.getKey(), domain.getId() ) );
         }
         
     }

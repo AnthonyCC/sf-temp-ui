@@ -24,24 +24,33 @@ import com.google.gwt.user.client.ui.Widget;
 public class CustomGridField extends OneToManyRelationField implements SaveListenerField {
 
     public static class TextFieldRenderer implements GridCellRenderer<OneToManyModel> {
-        String modelProperty;
+        String columnName;
         
         TextFieldRenderer (String modelProperty) {
-            this.modelProperty = modelProperty;
+            this.columnName = modelProperty;
         }
         
         @Override
         public Object render(final OneToManyModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<OneToManyModel> store,
                 Grid<OneToManyModel> grid) {
             final TextField<String> txt = new TextField<String>();
-            txt.setValue((String)model.get(modelProperty));
+            txt.setValue((String)model.get(columnName));
             txt.addListener(Events.Blur, new Listener<BaseEvent>() {
                @Override
                 public void handleEvent(BaseEvent be) {
-                    model.set(modelProperty, txt.getValue());
+                    model.set(columnName, txt.getValue());
                 } 
             });
             return txt;
+        }
+        
+        public String getColumnName() {
+        	return columnName;
+        }
+        
+        @Override
+        public String toString() {
+        	return getColumnName();
         }
     }
 
@@ -51,13 +60,14 @@ public class CustomGridField extends OneToManyRelationField implements SaveListe
     public CustomGridField(String attributeKey, Set<String> allowedTypes, boolean navigable, CustomFieldDefinition customFields, boolean readonly ) {
         super(attributeKey, allowedTypes, navigable, createExtraColumns(customFields), readonly);
         this.customFields = customFields;
+        grid.setHideHeaders( false );
     }
     
     static List<GridCellRenderer<OneToManyModel>> createExtraColumns(CustomFieldDefinition customFields) {
         List<GridCellRenderer<OneToManyModel>> extraColumns = new ArrayList<GridCellRenderer<OneToManyModel>>();
         if (customFields.getGridColumns()!=null) {
-            for (String col : customFields.getGridColumns()) {
-                extraColumns.add(new CustomGridField.TextFieldRenderer(col));
+            for (String colName : customFields.getGridColumns()) {
+                extraColumns.add(new CustomGridField.TextFieldRenderer(colName));
             }
         }
         return extraColumns;

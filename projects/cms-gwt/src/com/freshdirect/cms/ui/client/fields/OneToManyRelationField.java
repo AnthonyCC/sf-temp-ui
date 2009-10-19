@@ -28,7 +28,8 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.ContentIdWindow;
 import com.freshdirect.cms.ui.client.ContentTypeSelectorPopup;
@@ -99,61 +100,79 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		ContentPanel cp = new ContentPanel();		
 		cp.setWidth(MAIN_LABEL_WIDTH + 50);
 		cp.addStyleName("one-to-many");
+		cp.setHeaderVisible( false );
+		
+		ToolBar tbar = new ToolBar();
+		cp.setTopComponent( tbar );
 		
 		if ( !readonly ) {
 
-			// ==================================== COPY ====================================
-			copyButton = new ToolButton("copy-button");
-			copyButton.setToolTip( new ToolTipConfig( "COPY", "Copy selected relations to another node." ) );		
-			copyButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-				public void handleEvent(BaseEvent be) {
-					
-					final List<OneToManyModel> selectedList = selection.getSelectedItems();
-					
-					final ContentTreePopUp popup = ContentTreePopUp.getInstance( null, false );		
-					popup.setHeading( "Copy " + selectedList.size() + " item(s) to :" );
-					
-					popup.addListener( Events.Select, new Listener<BaseEvent>() {
-						
-						public void handleEvent( BaseEvent be ) {
-							ContentNodeModel targetNode = popup.getSelectedItem();
-							addRelationshipsToNode( targetNode.getKey(), attributeKey, selectedList );
-							MainLayout.setStatus( "" + selectedList.size() + " item(s) copied to " + targetNode.getLabel() );
-						}					
-					});		
-					popup.show();
-	
-				}			
-			});
-			cp.getHeader().addTool( copyButton );
+			// ==================================== CREATE ====================================
+			if (navigable && allowedTypes.size() > 0) {
+			    createButton = new ToolButton("create-relation");
+				createButton.setToolTip( new ToolTipConfig( "CREATE", "Create new node..." ) );
+			    createButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			        @Override
+			        public void handleEvent(BaseEvent be) {
+			            if (OneToManyRelationField.this.allowedTypes.size() == 1) {
+			                generateUniqueIdForType(OneToManyRelationField.this.allowedTypes.iterator().next());
+			                return;
+			            }
+			            
+			            final ContentTypeSelectorPopup typeSelector = new ContentTypeSelectorPopup(OneToManyRelationField.this.allowedTypes);
+		                typeSelector.addListener(Events.Select, new Listener<BaseEvent>() {
+		                    @Override
+		                    public void handleEvent(BaseEvent be) {
+		                        String type = typeSelector.getSelectedType();
+		                        generateUniqueIdForType(type);
+		                    } 
+		                });
+		                typeSelector.show();
+			        }
+			    });
+				tbar.add( createButton );
+			}
 			
-							
-			// ==================================== MOVE ====================================
-			moveButton = new ToolButton("move-button");
-			moveButton.setToolTip( new ToolTipConfig( "MOVE", "Move selected relations to another node." ) );		
-			moveButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-				public void handleEvent(BaseEvent be) {
-					
-					final List<OneToManyModel> selectedList = selection.getSelectedItems();
-					
-					final ContentTreePopUp popup = ContentTreePopUp.getInstance( null, false );		
-					popup.setHeading( "Move " + selectedList.size() + " item(s) to :" );
-					
-					popup.addListener( Events.Select, new Listener<BaseEvent>() {
+			
+			// ==================================== ADD ====================================
+			if ( !( this instanceof CustomGridField ) ) {
+				addButton = new ToolButton("add-relation");		
+				addButton.setToolTip( new ToolTipConfig( "ADD", "Add a relation..." ) );		
+				addButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+					public void handleEvent(BaseEvent be) {
+						final ContentTreePopUp popup = ContentTreePopUp.getInstance( getAllowedTypes(), true );		
+						popup.setHeading(getFieldLabel());
+						popup.addListener(Events.Select, new Listener<BaseEvent>() {
+							public void handleEvent(BaseEvent be) {
+								addOneToManyModels( popup.getSelectedItems() );
+	//							MainLayout.getMainTree().invalidate();
+	//					        MainLayout.scrollHack();
+							}					
+						});		
 						
-						public void handleEvent( BaseEvent be ) {
-							ContentNodeModel targetNode = popup.getSelectedItem();
-							addRelationshipsToNode( targetNode.getKey(), attributeKey, selectedList );
-							removeRelationships( selectedList );
-							MainLayout.setStatus( "" + selectedList.size() + " item(s) moved to " + targetNode.getLabel() );
-						}					
-					});		
-					popup.show();
-	
-				}			
+						popup.show();					
+					}			
+				});
+				
+				tbar.add( addButton );
+			}
+			
+			
+			// ==================================== SORT ====================================		
+			sortButton = new ToolButton("sort-button");
+			sortButton.setToolTip( new ToolTipConfig( "SORT", "Sort the relations alphabetically." ) );		
+			sortButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+				public void handleEvent(BaseEvent be) {
+					store.sort( "label", SortDir.ASC );
+					grid.getView().refresh( false );
+					store.setStoreSorter(null);
+				}
 			});
-			cp.getHeader().addTool( moveButton );
-	
+			tbar.add( sortButton );
+
+			
+			tbar.add( new FillToolItem() );
+			
 			
 			// ==================================== DELETE ====================================		
 			deleteButton = new ToolButton("delete-button");
@@ -181,96 +200,81 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 					} );
 				}			
 			});
-			cp.getHeader().addTool( deleteButton );
+			tbar.add( deleteButton );
+
 			
-			
-			// ==================================== SORT ====================================		
-			sortButton = new ToolButton("sort-button");
-			sortButton.setToolTip( new ToolTipConfig( "SORT", "Sort the relations alphabetically." ) );		
-			sortButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+			// ==================================== COPY ====================================
+			copyButton = new ToolButton("copy-button");
+			copyButton.setToolTip( new ToolTipConfig( "COPY", "Copy selected relations to another node." ) );		
+			copyButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
 				public void handleEvent(BaseEvent be) {
-					store.sort( "label", SortDir.ASC );
-					grid.getView().refresh( false );
-					store.setStoreSorter(null);
-				}
-			});
-			cp.getHeader().addTool( sortButton );
-	
-			
-			
-			// TODO separatortoolitem doesnt work in header, need to add separator with different method
-			cp.getHeader().addTool( new SeparatorToolItem() );
-			
-			
-			// ==================================== ADD ====================================
-			addButton = new ToolButton("add-relation");		
-			addButton.setToolTip( new ToolTipConfig( "ADD", "Add a relation..." ) );		
-			addButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-				public void handleEvent(BaseEvent be) {
-					final ContentTreePopUp popup = ContentTreePopUp.getInstance( getAllowedTypes(), true );		
-					popup.setHeading(getFieldLabel());
-					popup.addListener(Events.Select, new Listener<BaseEvent>() {
-						public void handleEvent(BaseEvent be) {
-							addOneToManyModels( popup.getSelectedItems() );
-//							MainLayout.getMainTree().invalidate();
-//					        MainLayout.scrollHack();
+					
+					final List<OneToManyModel> selectedList = selection.getSelectedItems();
+					
+					final ContentTreePopUp popup = ContentTreePopUp.getInstance( null, false );		
+					popup.setHeading( "Copy " + selectedList.size() + " item(s) to :" );
+					
+					popup.addListener( Events.Select, new Listener<BaseEvent>() {
+						
+						public void handleEvent( BaseEvent be ) {
+							ContentNodeModel targetNode = popup.getSelectedItem();
+							addRelationshipsToNode( targetNode.getKey(), attributeKey, selectedList );
+							MainLayout.setStatus( "" + selectedList.size() + " item(s) copied to " + targetNode.getLabel() );
 						}					
 					});		
-					
-					popup.show();					
+					popup.show();
+	
 				}			
 			});
+			tbar.add( copyButton );
 			
-			cp.getHeader().addTool(addButton);
-			
-			
-			// ==================================== CREATE ====================================
-			if (navigable && allowedTypes.size() > 0) {
-			    createButton = new ToolButton("create-relation");
-				createButton.setToolTip( new ToolTipConfig( "CREATE", "Create new node..." ) );
-			    createButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
-			        @Override
-			        public void handleEvent(BaseEvent be) {
-			            if (OneToManyRelationField.this.allowedTypes.size() == 1) {
-			                generateUniqueIdForType(OneToManyRelationField.this.allowedTypes.iterator().next());
-			                return;
-			            }
-			            
-			            final ContentTypeSelectorPopup typeSelector = new ContentTypeSelectorPopup(OneToManyRelationField.this.allowedTypes);
-		                typeSelector.addListener(Events.Select, new Listener<BaseEvent>() {
-		                    @Override
-		                    public void handleEvent(BaseEvent be) {
-		                        String type = typeSelector.getSelectedType();
-		                        generateUniqueIdForType(type);
-		                    } 
-		                });
-		                typeSelector.show();
-			        }
-			    });
-			    cp.getHeader().addTool(createButton);
-			}
-			
-			cp.getHeader().addTool( new SeparatorToolItem() );
+							
+			// ==================================== MOVE ====================================
+			moveButton = new ToolButton("move-button");
+			moveButton.setToolTip( new ToolTipConfig( "MOVE", "Move selected relations to another node." ) );		
+			moveButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+				public void handleEvent(BaseEvent be) {
+					
+					final List<OneToManyModel> selectedList = selection.getSelectedItems();
+					
+					final ContentTreePopUp popup = ContentTreePopUp.getInstance( null, false );		
+					popup.setHeading( "Move " + selectedList.size() + " item(s) to :" );
+					
+					popup.addListener( Events.Select, new Listener<BaseEvent>() {
+						
+						public void handleEvent( BaseEvent be ) {
+							ContentNodeModel targetNode = popup.getSelectedItem();
+							addRelationshipsToNode( targetNode.getKey(), attributeKey, selectedList );
+							removeRelationships( selectedList );
+							MainLayout.setStatus( "" + selectedList.size() + " item(s) moved to " + targetNode.getLabel() );
+						}					
+					});		
+					popup.show();
+	
+				}			
+			});
+			tbar.add( moveButton );
+	
 			
 			// ==================================== SELECT CHECKBOX ====================================
-		    Listener<BaseEvent> selectListener = new Listener<BaseEvent>() {
-		        public void handleEvent( BaseEvent event ) {
-		            if ( selectCheckbox.getValue() ) {
-		            	selection.selectAll();
-		            } else {
-		            	selection.deselectAll();
-		            }
-		        }
-		    };
-		    selectCheckbox = new CheckBox();
-		    selectCheckbox.setToolTip( new ToolTipConfig( "Select all/none", "Select all/none relations." ) );
-		    selectCheckbox.addListener( Events.OnClick, selectListener );
-		    selectCheckbox.addListener( Events.OnKeyPress, selectListener );
-		    cp.getHeader().addTool(selectCheckbox);
-		    
+			if ( ! ( this instanceof VariationMatrixField || this instanceof CustomGridField ) ) {
+			    Listener<BaseEvent> selectListener = new Listener<BaseEvent>() {
+			        public void handleEvent( BaseEvent event ) {
+			            if ( selectCheckbox.getValue() ) {
+			            	selection.selectAll();
+			            } else {
+			            	selection.deselectAll();
+			            }
+			        }
+			    };
+			    selectCheckbox = new CheckBox();
+			    selectCheckbox.setToolTip( new ToolTipConfig( "Select all/none", "Select all/none relations." ) );
+			    selectCheckbox.addListener( Events.OnClick, selectListener );
+			    selectCheckbox.addListener( Events.OnKeyPress, selectListener );
+				tbar.add( selectCheckbox );
+			}
 		}
-		
-		
+
 		store = new ListStore<OneToManyModel>();
 		store.removeAll();
 
@@ -326,6 +330,8 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
         {
             ColumnConfig indexColumn = new ColumnConfig();  
                 indexColumn.setId("idx");
+                indexColumn.setHeader( "No." );
+                indexColumn.setSortable( false );
                 indexColumn.setMenuDisabled(true);
                 indexColumn.setWidth(25);
                 indexColumn.setStyle("vertical-align: middle;");
@@ -337,6 +343,8 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
         if ( extraColumns == null || extraColumns.size()==0 ) {
 		    ColumnConfig column = new ColumnConfig();  
 		    column.setId("label");
+		    column.setHeader( "label" );
+		    column.setSortable( false );
             column.setMenuDisabled(true);
             column.setWidth(MAIN_LABEL_WIDTH);
             column.setRenderer(Renderers.GRID_LINK_RENDERER);
@@ -347,6 +355,8 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
             for (GridCellRenderer<OneToManyModel> renderer : extraColumns) {
                 ColumnConfig extraColumn = new ColumnConfig();
                 extraColumn.setId("extra_" + idx);
+                extraColumn.setHeader( renderer.toString() );
+                extraColumn.setSortable( false );
                 extraColumn.setMenuDisabled(true);
                 extraColumn.setWidth(size);
                 extraColumn.setStyle("vertical-align: middle;");

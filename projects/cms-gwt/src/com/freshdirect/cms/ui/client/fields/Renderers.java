@@ -16,15 +16,22 @@ public class Renderers {
 
     public static class LabelRenderer implements GridCellRenderer<OneToManyModel> {
         String modelProperty;
+        String columnLabel;
 
-        LabelRenderer(String modelProperty) {
+        LabelRenderer(String modelProperty, String columnLabel) {
             this.modelProperty = modelProperty;
+            this.columnLabel = columnLabel;
         }
 
         @Override
         public Object render(OneToManyModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<OneToManyModel> store,
                 Grid<OneToManyModel> grid) {
             return model.get(modelProperty);
+        }
+        
+        @Override
+        public String toString() {
+        	return columnLabel;
         }
     }
 
