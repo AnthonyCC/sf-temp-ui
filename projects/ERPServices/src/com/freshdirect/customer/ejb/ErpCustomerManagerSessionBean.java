@@ -186,11 +186,14 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			SapCustomerI customer = null;
 			if(isGiftCardBuyer) {
 				customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
+				
 			} else {
 				if(erpCustomer.getShipToAddresses() != null && erpCustomer.getShipToAddresses().size() > 0) {
 					customer = new CustomerAdapter(false, erpCustomer, null, (ErpAddressModel) erpCustomer.getShipToAddresses().get(0));
 				} else {
-					customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
+					if(null !=erpCustomer.getPaymentMethods() && !erpCustomer.getPaymentMethods().isEmpty()){
+						customer = new CustomerAdapter(false, erpCustomer, null, ((ErpPaymentMethodI)erpCustomer.getPaymentMethods().get(0)).getAddress());
+					}
 				}
 			}
 
