@@ -24,6 +24,9 @@
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_1);
 	System.out.println("multi_cat_dept>> catId_1: " + catId_1 + " catId_2: " + catId_2);
 	List edlpProducts=new ArrayList();
+	List prodList=new ArrayList();
+	int totalDealProds = 0;
+	int totalEDLPProds = 0;
 	Collection dealCol = null;
 	Collection edlpCol = null;
 	Settings layoutSettings = new Settings();
@@ -31,7 +34,7 @@
 	List tmpList=new ArrayList();
 %>
 <%-- Grab items on deals --%>
-<% if(currentFolder instanceof CategoryModel){ %>
+<% if(currentFolder != null && currentFolder instanceof CategoryModel){ %>
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
 	id='rtnColl' 
@@ -48,6 +51,7 @@
 		dealCol = rtnColl;        
 		System.out.println("Deals>> dealCol size: " + dealCol.size());
 		System.out.println("Deals>> dealCol: " + dealCol);
+		totalDealProds = dealCol.size();
         request.setAttribute("itemGrabberResult",dealCol); //** expose result of item grabber to the layout **
 %>
 </fd:ItemGrabber>
@@ -56,7 +60,7 @@
 
 <%-- Grab edlp items --%>
 <% currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_2); %>
-<% if(currentFolder instanceof CategoryModel){ %>
+<% if(currentFolder != null && currentFolder instanceof CategoryModel){ %>
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
 	id='rtnColl' 
@@ -71,7 +75,8 @@
 <%
 		edlpCol = rtnColl;        
 		System.out.println("EDLP>> edlpCol size: " + edlpCol.size());
-		System.out.println("EDLP>> edlpCol: " + edlpCol.size());
+		System.out.println("EDLP>> edlpCol: " + edlpCol);
+		totalEDLPProds = edlpCol.size();
         request.setAttribute("itemGrabberResult",edlpCol); //** expose result of item grabber to the layout **
 %>
 </fd:ItemGrabber>
@@ -88,6 +93,7 @@
 			<% 
 			  if(contentNode instanceof CategoryModel) { continue; }
 			  else if(contentNode instanceof ProductModel){
+				  prodList.add(contentNode);
 				  ProductModel dealProduct = (ProductModel) contentNode;
 				  String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
 				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_1,dealProduct,prodNameAttribute,true);
@@ -95,14 +101,34 @@
 				  String actionUrl = FDURLUtil.getProductURI( dealProduct, "dept" );
 			 %>
 			 <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
-				<display:ProductImage product="<%= dealProduct %>" showRolloverImage="false" action="<%= actionUrl %>"/><br>
-				<display:ProductName product="<%= dealProduct %>" action="<%= actionUrl %>"/><br>								
-				<display:ProductPrice impression="<%= new ProductImpression( dealProduct ) %>" showAboutPrice="false" showDescription="false"/>
+				<display:ProductImage product="<%= dealProduct %>" showRolloverImage="false" action="<%= actionUrl %>"/>
 			 </td>
-			 <% if(idx.intValue() > 0 && (idx.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE-1){ %>
-			 	</tr><tr><td><img src="/media_stat/images/layout/clear.gif" width="25" height="25"></td></tr></table>
+			 <% if((idx.intValue() > 0 && (idx.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE-1) ||
+					 idx.intValue() == totalDealProds-1){ %>
+			 	</tr>
+			 	<tr valign="top">
+			 		<logic:iterate id="tmpContentNode" collection="<%= prodList %>" type="java.lang.Object" indexId="idx1">
+			 			<% 
+						  if(tmpContentNode instanceof CategoryModel) { continue; }
+						  else if(tmpContentNode instanceof ProductModel){
+							  ProductModel pm = (ProductModel) tmpContentNode;
+							  DisplayObject displayObjTmp = JspMethods.loadLayoutDisplayStrings(response,catId_1,pm,JspMethods.getProductNameToUse(pm),true);
+							  int adjustedImgWidthTmp = displayObjTmp.getImageWidthAsInt()+6+10;
+							  String actionUrlTmp = FDURLUtil.getProductURI( pm, "dept" );
+						 %>
+						 <td align="center" width="<%=adjustedImgWidthTmp%>" style="padding-left:5px; padding-right:5px;">
+							<display:ProductName product="<%= pm %>" action="<%= actionUrlTmp %>"/>								
+							<display:ProductPrice impression="<%= new ProductImpression( pm ) %>" showAboutPrice="false" showDescription="false"/>
+						 </td>
+						 <% if(idx1.intValue() > 0 && (idx1.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE){ break; } %>
+						 <%} %>
+			 		</logic:iterate>
+			 	</tr>
+			 	<tr><td><img src="/media_stat/images/layout/clear.gif" width="25" height="25"></td></tr>
+			 	</table>
 			 	<table cellpadding="0" cellspacing="0" border="0"><tr>
-			 <% } 
+			 <% prodList = new ArrayList(); //create a new list for the next row of products
+			 	} 
 			 } %>
 		</logic:iterate>
 		</tr>
@@ -121,6 +147,7 @@
 			<% 
 			  if(contentNode instanceof CategoryModel) { continue; }
 			  else if(contentNode instanceof ProductModel){
+				  prodList.add(contentNode);
 				  ProductModel edlpProduct = (ProductModel) contentNode;
 				  String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
 				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
@@ -128,14 +155,35 @@
 				  String actionUrl = FDURLUtil.getProductURI( edlpProduct, "dept" );
 			 %>
 			 <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
-				<display:ProductImage product="<%= edlpProduct %>" showRolloverImage="false" action="<%= actionUrl %>"/><br>
-				<display:ProductName product="<%= edlpProduct %>" action="<%= actionUrl %>"/><br>								
-				<display:ProductPrice impression="<%= new ProductImpression( edlpProduct ) %>" showAboutPrice="false" showDescription="false"/>
+				<display:ProductImage product="<%= edlpProduct %>" showRolloverImage="false" action="<%= actionUrl %>"/>
 			 </td>
-			 <% if(idx.intValue() > 0 && (idx.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE-1){ %>
-			 	</tr><tr><td><img src="/media_stat/images/layout/clear.gif" width="25" height="25"></td></tr></table>
+			 <% if((idx.intValue() > 0 && (idx.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE-1) ||
+					 idx.intValue() == totalEDLPProds-1){ %>
+			 	</tr>
+			 	<tr valign="top">
+				<logic:iterate id="tmpContentNode" collection="<%= prodList %>" type="java.lang.Object" indexId="idx1">
+					<%//if(idx.intValue()==MAX_PROD2SHOW) break; %>
+					<% 
+					  if(tmpContentNode instanceof CategoryModel) { continue; }
+					  else if(tmpContentNode instanceof ProductModel){
+						  ProductModel pm = (ProductModel) tmpContentNode;
+						  DisplayObject displayObjTmp = JspMethods.loadLayoutDisplayStrings(response,catId_2,pm,JspMethods.getProductNameToUse(pm),true);
+						  int adjustedImgWidthTmp = displayObjTmp.getImageWidthAsInt()+6+10;
+						  String actionUrlTmp = FDURLUtil.getProductURI( pm, "dept" );
+					 %>
+					 <td align="center" width="<%=adjustedImgWidthTmp%>" style="padding-left:5px; padding-right:5px;">
+						<display:ProductName product="<%= pm %>" action="<%= actionUrl %>"/>								
+						<display:ProductPrice impression="<%= new ProductImpression( pm ) %>" showAboutPrice="false" showDescription="false"/>
+					 </td>
+					 <% if(idx.intValue() > 0 && (idx.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE){ break; }%> 
+					 <% } %>
+				</logic:iterate>
+				</tr>
+			 	<tr><td><img src="/media_stat/images/layout/clear.gif" width="25" height="25"></td></tr>
+			 	</table>
 			 	<table cellpadding="0" cellspacing="0" border="0"><tr>
-			 <% } 
+			 <% prodList = new ArrayList(); //create a new list for the next row of products
+			 	} 
 			 } %>
 		</logic:iterate>
 		</tr>
