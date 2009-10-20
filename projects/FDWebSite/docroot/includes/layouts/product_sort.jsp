@@ -101,40 +101,49 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 		showRelatedRatingImage = true; 
     } 
 %><fd:FeaturedItemsRecommendations id="recommendations"  currentNode="<%= currentFolder %>" itemCount="4"><%
-	if (recommendations != null && recommendations.getProducts().size() > 0) {
-		request.setAttribute("recommendationsRendered","true");
-		int ord = 1;
-%><TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= tablewidth %>">
-	<TR VALIGN="TOP"><TD CLASS="text12bold" WIDTH="<%=tablewidth%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"><BR><%= recommendations.getVariant().getServiceConfig().getFILabel() %><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3"></TD>
-	</TR>
-</TABLE>
-<font class="space4pix"><BR></font>
-<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= tablewidth %>">
-	<TR VALIGN="TOP" ALIGN="CENTER">
-<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
-		ProductModel productNode = contentNode;
-		ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode);
-		String fiProdPrice = null;
-%><fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>"><%
-		fiProdPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
-%></fd:FDProductInfo><%
-		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
-%><%-- display a product --%>
-		<td width="<%= tdwidth %>">
-			<p style="border: 0px; padding: 0px; margin: 0px;">
-			<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>"/></p>
-			<display:ProductRating product="<%= productNode %>" />
-<%			// product name
-		if (productNode.isDisplayable()) { %>
-			<div><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
-<%		} else { %>
-			<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
-<%		} %>
-			<div class="favoritePrice"><%= fiProdPrice %></div>
-		</td>
-		<td width="10"><img src="/media_stat/images/layout/clear.gif" width="8" height="1"></td><%
-		++ord;
-%></logic:iterate>
+		if (recommendations != null && recommendations.getProducts().size() > 0) {
+				
+				request.setAttribute("recommendationsRendered","true");
+				List products = recommendations.getProducts();
+				int ord = 1;
+		%>
+
+		<table cellspacing="0" cellpadding="1" border="0" width="<%= tablewidth %>">
+		
+			<tr valign="top">
+	    		<td CLASS="text12bold" width="<%= tablewidth %>" colspan="<%= tablewidth %>">
+	    			<%= recommendations.getVariant().getServiceConfig().getFILabel() %> <BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3"></TD>
+	    		</td>
+			</tr>
+		</table>
+		<font class="space4pix"><BR></font>
+		<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= tablewidth %>">
+			<TR VALIGN="TOP" ALIGN="CENTER">
+				<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
+						
+						ProductModel productNode = contentNode;
+						ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode);
+						
+						String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
+						
+						%>	<%-- display a product --%>
+					<td width="<%= tdwidth %>">
+						<p style="border: 0px; padding: 0px; margin: 0px;">
+							<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>"/></p>
+							<display:ProductRating product="<%= productNode %>" />
+			<%			// product name
+					if (productNode.isDisplayable()) { %>
+						<div><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
+			<%		} else { %>
+						<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
+			<%		} %>
+						<div class="favoritePrice">	<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/></div>
+					</td>
+				<td width="10">
+					<img src="/media_stat/images/layout/clear.gif" width="8" height="1">
+			   </td>
+			<%++ord;%>
+			</logic:iterate>
 	</tr>
 </table>
 <font class="space4pix"><BR></font>
@@ -320,8 +329,8 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
 %><td align="left"><%=itmImage%></td><%
         if (prod.isUnavailable()) {
             prodPrice = "Not Available";
-%><TD WIDTH="<%= nameColWidth %>"><A HREF="<%=url%>"><font color="#999999"><%=prod.getFullName()%></font></A></TD>
-<%      } else { %><TD WIDTH="<%= nameColWidth %>"><A HREF="<%=url%>"><%=prod.getFullName()%></A></TD>
+%><TD WIDTH="<%= nameColWidth %>"><font color="#999999"><display:ProductName product="<%= prod %>" action="<%= url %>"/></font></TD>
+<%      } else { %><TD WIDTH="<%= nameColWidth %>"><display:ProductName product="<%= prod %>" action="<%= url %>"/></TD>
 <%      }
     //We've got a products. Now locate each display attribute on the product
         int colCounter = 2;
@@ -402,7 +411,7 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
 <%      }else{%>
 <TD WIDTH="<%=priceColWidth%>" ALIGN="CENTER" bgcolor="<%=bgcolor%>">
 <%      }%>
-<%= prodPrice %>&nbsp;</TD></TR>
+	<div><display:ProductPrice impression="<%= new ProductImpression(prod) %>" showDescription="false"/></div>&nbsp;</TD></TR>
 <%
 } // end of loop on the sortedColl
 %>
