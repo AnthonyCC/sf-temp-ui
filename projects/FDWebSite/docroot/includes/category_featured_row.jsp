@@ -23,8 +23,8 @@
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_1);
 	System.out.println("category_featured_row>> catId_1: " + catId_1 + " catId_2: " + catId_2);
 	List edlpProducts=new ArrayList();
-	Collection dealCol = null;
-	Collection edlpCol = null;
+	Collection dealCol = new ArrayList();
+	Collection edlpCol = new ArrayList();
 	Settings layoutSettings = new Settings();
 	layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
 	List tmpList=new ArrayList();
