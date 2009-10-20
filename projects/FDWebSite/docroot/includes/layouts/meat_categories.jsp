@@ -234,7 +234,7 @@
 	if (FDStoreProperties.isAdServerEnabled()) {
 		//--------OAS Page Variables-----------------------
 		request.setAttribute("sitePage", "www.freshdirect.com/category");
-		request.setAttribute("listPos", "MeaCatLeft,MeaCatRight");
+		request.setAttribute("listPos", request.getAttribute("listPos")+",MeaCatLeft,MeaCatRight");
 %>	
 		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%= maxWidth %>" height="1" border="0"><br />
 		<table style="text-align: center;">
