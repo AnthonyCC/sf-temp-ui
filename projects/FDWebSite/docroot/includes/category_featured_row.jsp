@@ -30,7 +30,7 @@
 	List tmpList=new ArrayList();
 %>
 <%-- Grab items on deals --%>
-<% if(currentFolder instanceof CategoryModel){ %>
+<% if(currentFolder != null && currentFolder instanceof CategoryModel){ %>
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
 	id='rtnColl' 
@@ -53,7 +53,7 @@
 <% } %>
 <%-- Grab edlp items --%>
 <% currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_2); %>
-<% if(currentFolder instanceof CategoryModel){ %>
+<% if(currentFolder != null && currentFolder instanceof CategoryModel){ %>
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
 	id='rtnColl' 
