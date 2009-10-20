@@ -79,6 +79,10 @@ public class ContentNodeComparator implements Comparator<ContentNodeI> {
 			i = node1.getLabel().toLowerCase().compareTo( node2.getLabel().toLowerCase() );
 		}
 
+		if ( i == 0 ) {
+			i = node1.getKey().getEncoded().toLowerCase().compareTo( node2.getKey().getEncoded().toLowerCase() );
+		}
+		
 		return i;
 	}
 
