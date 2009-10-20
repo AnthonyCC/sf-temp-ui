@@ -82,7 +82,7 @@
     <FONT CLASS="text10bold"><%= unAvailableFontStart %><%= thisProdBrandLabel %><%= unAvailableFontEnd %></FONT>
     <FONT CLASS="text10"><%= unAvailableFontStart %><%= displayProduct.getFullName().substring(thisProdBrandLabel.length()).trim()+prodMatrix %><%= unAvailableFontEnd %></FONT>
     </A>
-    <%= unAvailableFontStart %> <NOBR><%= !"nm".equalsIgnoreCase(salesUnitDescription) ? "- " + salesUnitDescription  : "" %><%= unAvailableFontEnd %><%="nutrition".equalsIgnoreCase(sortBy)?"&nbsp;<b>" + JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) + "</b>":"" %></NOBR><BR>
+    <%= unAvailableFontStart %> <NOBR><%= !"nm".equalsIgnoreCase(salesUnitDescription) ? "- " + salesUnitDescription  : "" %><%= unAvailableFontEnd %><%="nutrition".equalsIgnoreCase(sortBy)?"&nbsp;<b>" + JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) + "</b>":"" %></NOBR>
 <%
     Date earliestDate = sku.getEarliestAvailability();
     Calendar testDate = new GregorianCalendar();
@@ -98,7 +98,13 @@
         %><b><font color="#999999">Earliest Delivery - <%= sf.format(earliestDate) %></font></b><%
     }
 %>
-<%  if (skuAvailable) { %>&nbsp;&nbsp;<span class="text10"><%@include file="/includes/product/i_scaled_prices_nobr.jspf"%></span><% } %>
+<%  if (skuAvailable) { %>&nbsp;&nbsp;<table border="0">
+					<tr><td>
+					<display:ProductPrice impression="<%= new ProductImpression(displayProduct) %>"  showScalePricing="false" showRegularPrice="false" showWasPrice="true" showDescription="false"/> 
+					</td>
+					<td><display:ProductPrice impression="<%= new ProductImpression(displayProduct) %>"  showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false"/>
+					</td></tr></table> 
+<% } %>
 </TD>
 <% if ("kosher".equalsIgnoreCase(sortBy)) { %>
     <td width="44" align="center">
