@@ -80,7 +80,7 @@ public class ContentNodeComparator implements Comparator<ContentNodeI> {
 		}
 
 		if ( i == 0 ) {
-			i = node1.getKey().getEncoded().toLowerCase().compareTo( node2.getKey().getEncoded().toLowerCase() );
+			i = key1.getId().toLowerCase().compareTo( key2.getId().toLowerCase() );
 		}
 		
 		return i;
