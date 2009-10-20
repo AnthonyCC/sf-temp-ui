@@ -57,7 +57,7 @@ public class ContentNodeModelUtil {
 		CONTENT_TO_TYPE_MAP.put("StarterList", ContentNodeI.TYPE_STARTER_LIST);
 		CONTENT_TO_TYPE_MAP.put("FavoriteList", ContentNodeI.TYPE_FAVORITE_LIST);
 		CONTENT_TO_TYPE_MAP.put("Recommender", ContentNodeI.TYPE_RECOMMENDER);
-		CONTENT_TO_TYPE_MAP.put("RecommenderStrategy", ContentNodeI.TYPE_RECOMMENDER_STRATEGY);
+		CONTENT_TO_TYPE_MAP.put("RecommenderStrategy", ContentNodeI.TYPE_RECOMMENDER_STRATEGY);		
 	}
 
 	public static LinkedHashMap TYPE_MODEL_MAP = new LinkedHashMap();

@@ -37,7 +37,7 @@ public interface ContentNodeI {
 	String TYPE_STARTER_LIST = "SL";
 	String TYPE_FAVORITE_LIST = "FL";
 	String TYPE_RECOMMENDER = "RDR";
-	String TYPE_RECOMMENDER_STRATEGY = "RDS";
+	String TYPE_RECOMMENDER_STRATEGY = "RDS";	
 
 	//
 	//

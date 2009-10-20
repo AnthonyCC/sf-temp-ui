@@ -482,7 +482,7 @@
 			<AttributeDef type="D" name="CONTAINER_WEIGHT_PINT" label="Container Weight Pint"/>
 			<AttributeDef type="D" name="CONTAINER_WEIGHT_QUART" label="Container Weight Quart"/>
 			<!-- more stuff -->
-			<AttributeDef type="B" name="INCREMENT_MAX_ENFORCE" label="Increment Max Enforce" inheritable="true"/>
+			<AttributeDef type="B" name="INCREMENT_MAX_ENFORCE" label="Increment Max Enforce" inheritable="true"/>			
 			<AttributeDef type="D" name="QUANTITY_MINIMUM" label="Quantity Minimum" inheritable="true"/>
 			<AttributeDef type="D" name="QUANTITY_MAXIMUM" label="Quantity Maximum" inheritable="true"/>
 			<AttributeDef type="D" name="QUANTITY_INCREMENT" label="Quantity Increment" inheritable="true"/>
@@ -493,6 +493,8 @@
 			<AttributeDef type="S" name="PROD_PAGE_RATINGS" inheritable="true"  label="Prod Page Ratings" />
 			<AttributeDef type="S" name="PROD_PAGE_TEXT_RATINGS" inheritable="true"   label="Prod Page Text Ratings" />
 			<AttributeDef type="S" name="RATING_PROD_NAME"  label="Prod Page Rating Name" inheritable="true"/>
+			<!-- IPhone related -->           
+			<AttributeDef type="B" name="HIDE_IPHONE" label="Hide from IPhone" inheritable="true"/>         
             
             <!--  USQ changes  -->                  
             <AttributeDef type="S" name="WINE_CLASSIFICATION" label="Wine Classification Text" />
@@ -515,6 +517,8 @@
 				<EnumValue value="5" label="5"/>
 			</EnumDef>
 		</AttributeDefs>
+		
+		
 		<RelationshipDefs>
 			<RelationshipDef name="skus" cardinality="Many" navigable="true">
 				<DestinationDef contentType="Sku" />
@@ -625,7 +629,7 @@
 			<!-- image media -->
 			<RelationshipDef name="PROD_IMAGE" label="Prod Image" inheritable="true">
 				<DestinationDef contentType="Image" />
-			</RelationshipDef>
+			</RelationshipDef>			
 			<RelationshipDef name="PROD_IMAGE_CONFIRM" label="Prod Image Confirm">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
@@ -648,6 +652,10 @@
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 			<RelationshipDef name="PROD_IMAGE_ROLLOVER" label="Prod Image Rollover">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<!-- iPhone related -->
+			<RelationshipDef name="ALTERNATE_PROD_IMAGE" label="Alternate Product Image">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 			<!-- text media -->
@@ -1483,6 +1491,6 @@
 			<AttributeDef type="D" name="top_percent" label="Top percent" required="false" />
 			<AttributeDef type="D" name="exponent" label="Exponent (for power sampling)" required="false" />
 		</AttributeDefs>
-	</ContentTypeDef>
+	</ContentTypeDef>	
 	
 </CMSDef>
