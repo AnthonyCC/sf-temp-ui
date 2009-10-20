@@ -43,7 +43,7 @@ layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElemen
 List tmpList=new ArrayList();
 %>
 <% //check if the category exists
-	if(node instanceof CategoryModel){ %>
+	if(node != null && node instanceof CategoryModel){ %>
 
 <fd:ItemGrabber
 	category='<%=node %>' 
