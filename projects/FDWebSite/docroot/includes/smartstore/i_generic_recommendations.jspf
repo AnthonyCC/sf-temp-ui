@@ -124,20 +124,43 @@
 				
 		%>
 <script type="text/javascript">
-var origFormState = [];
-
-var confirmedPage = function(e, pageFn) {
-	var b = checkFormState($('id_<%= tx_pricing_FormName %>'));
-
-	if (b) {
-		b = !confirm('Are you sure you want to continue?\n\nYou will lose any changes you have made to quantities on this page.\n\nClick OK to continue, or Cancel to stay on this page.');
-	}
-
-	if (!b) {
-		$E.preventDefault(e);
-		pageFn.call();
-	}
-};
+if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
+	OST_<%= tx_pricing_FormName %> = {
+		state: [],
+	
+		init: function() {
+			var thisForm = $('id_<%= tx_pricing_FormName %>');
+			for (k=0; k<thisForm.elements.length; k++) {
+				this.state[thisForm.elements[k].name] = thisForm.elements[k].value;
+			}
+		},
+		
+		checkFormState: function() {
+			var thisForm = $('id_<%= tx_pricing_FormName %>');
+			for (k=0; k<thisForm.elements.length; k++) {
+				if (this.state[thisForm.elements[k].name] == null)
+					return true;
+	
+				if (this.state[thisForm.elements[k].name] != thisForm.elements[k].value)
+					return true;
+			}
+			return false;
+		},
+		
+		confirmedPage: function(e, pageFn) {
+			var b = OST_<%= tx_pricing_FormName %>.checkFormState();
+	
+			if (b) {
+				b = !confirm('Are you sure you want to continue?\n\nYou will lose any changes you have made to quantities on this page.\n\nClick OK to continue, or Cancel to stay on this page.');
+			}
+	
+			if (!b) {
+				$E.preventDefault(e);
+				pageFn.call();
+			}
+		}	
+	};
+}
 </script>
 				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= formUri %>#cartRec" style="margin:0px">
 					<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
@@ -286,7 +309,7 @@ var confirmedPage = function(e, pageFn) {
 											<td>
 												<img id="ra_bwd_<%= genericRecommendationsVariant.getId() %>" src="/media_stat/images/buttons/tab_prev.gif" style="width: 57px; height: 16px; cursor: pointer;"/>
 <script type="text/javascript">
-	$E.on('ra_bwd_<%= genericRecommendationsVariant.getId() %>', 'click', confirmedPage, function() {
+	$E.on('ra_bwd_<%= genericRecommendationsVariant.getId() %>', 'click', OST_<%= tx_pricing_FormName %>.confirmedPage, function() {
 		PIP.goToPage('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true, <%= recommendations.getOffset() %>-1);
 	});
 </script>
@@ -308,7 +331,7 @@ var confirmedPage = function(e, pageFn) {
 											<td>
 												<img id="ra_fwd_<%= genericRecommendationsVariant.getId() %>" src="/media_stat/images/buttons/tab_next.gif" style="width: 57px; height: 16px; cursor: pointer;"/>
 <script type="text/javascript">
-	$E.on('ra_fwd_<%= genericRecommendationsVariant.getId() %>', 'click', confirmedPage, function() {
+	$E.on('ra_fwd_<%= genericRecommendationsVariant.getId() %>', 'click', OST_<%= tx_pricing_FormName %>.confirmedPage, function() {
 		PIP.goToPage('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true, <%= recommendations.getOffset() %>+1);
 	});
 </script>
@@ -330,22 +353,7 @@ var confirmedPage = function(e, pageFn) {
 					</script>
 				</form>
 <script type="text/javascript">
-var f = $('id_<%= tx_pricing_FormName %>');
-for (k=0; k<f.elements.length; k++) {
-	origFormState[f.elements[k].name] = f.elements[k].value;
-}
-
-checkFormState = function(thisForm) {
-	for (k=0; k<thisForm.elements.length; k++) {
-		if (origFormState[thisForm.elements[k].name] == null)
-			return true;
-
-		if (origFormState[thisForm.elements[k].name] != thisForm.elements[k].value)
-			return true;
-	}
-	return false;
-};
-
+OST_<%= tx_pricing_FormName %>.init();
 </script>
 
 		<%	} else { // impressions is empty %>
