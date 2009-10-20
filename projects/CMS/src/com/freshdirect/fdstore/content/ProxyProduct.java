@@ -7,6 +7,7 @@ import java.util.Set;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.DayOfWeekSet;
@@ -609,11 +610,15 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getWineClassifications();
 	}
 	
-	public String getProductRating() throws FDResourceException{
+	public String getProductRating() throws FDResourceException {
 		return getProduct().getProductRating();
 	}
+
+	public EnumOrderLineRating getProductRatingEnum() throws FDResourceException {
+		return getProduct().getProductRatingEnum();
+	}
 	
-	public List getCountryOfOrigin() throws FDResourceException{
+	public List getCountryOfOrigin() throws FDResourceException {
 		return getProduct().getCountryOfOrigin();
 	}
 	

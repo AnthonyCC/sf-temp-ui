@@ -12,6 +12,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -635,6 +636,13 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     public String getProductRating() throws FDResourceException {
         // TODO Auto-generated method stub
         return null;
+    }
+    
+    @Override
+    public EnumOrderLineRating getProductRatingEnum()
+    		throws FDResourceException {
+    	// TODO Auto-generated method stub
+    	return null;
     }
 
     /* (non-Javadoc)
