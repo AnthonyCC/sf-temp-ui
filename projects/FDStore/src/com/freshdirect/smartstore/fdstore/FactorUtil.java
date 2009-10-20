@@ -67,13 +67,10 @@ public class FactorUtil {
             public double calculateVariable(ContentNodeModel contentNode) {
                 try {
                     if (contentNode instanceof ProductModel) {
-                        String productRating = ((ProductModel) contentNode).getProductRating();
-                        EnumOrderLineRating e = EnumOrderLineRating.getEnumByStatusCode(productRating);
-                        if (e != null) {
-                            return e.getQualityRating();
-                        }
+                        EnumOrderLineRating e = ((ProductModel) contentNode).getProductRatingEnum();
+                        return e.getQualityRating();
                     }
-                    return 0;
+                    return 0.0;
                 } catch (FDResourceException e) {
                     return 0.0;
                 }

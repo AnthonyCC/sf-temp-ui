@@ -1494,8 +1494,8 @@ inner:
 		return classifications;
 	}
 
-    public String getProductRating() throws FDResourceException {
-        String rating = "";
+    public EnumOrderLineRating getProductRatingEnum() throws FDResourceException {
+        EnumOrderLineRating rating = EnumOrderLineRating.NO_RATING;
 
         List skus = getSkus();
         SkuModel sku = null;
@@ -1567,7 +1567,7 @@ inner:
                                 // LOG.debug(" enumRating :"+enumRating);
 
                                 if (enumRating != null && enumRating.isEligibleToDisplay()) {
-                                    rating = enumRating.getStatusCodeInDisplayFormat();
+                                    rating = enumRating;
                                     // LOG.debug(" rating in display format  :"+rating);
                                 }
                             }
@@ -1589,6 +1589,14 @@ inner:
 
         return rating;
 
+    }
+    
+    public String getProductRating() throws FDResourceException {
+    	EnumOrderLineRating rating = getProductRatingEnum();
+    	if (rating == EnumOrderLineRating.NO_RATING)
+    		return "";
+    	else
+    		return rating.getStatusCodeInDisplayFormat();
     }
 
 	public List getGiftcardType() {
