@@ -165,9 +165,13 @@ public class Recommendations implements Serializable {
 		return buf.toString();
 	}
 
-	public void setImpressionIds(Map<ContentKey,String> impressionIds) {
-		this.impressionIds = impressionIds;
-	}
+        public void addImpressionIds(Map<ContentKey, String> impressionIds) {
+            if (this.impressionIds == null) {
+                this.impressionIds = impressionIds;
+            } else {
+                this.impressionIds.putAll(impressionIds);
+            }
+        }
 	
 	String getImpressionId(ContentKey key) {
 	    Object obj =  impressionIds!=null ? impressionIds.get(key) : null;

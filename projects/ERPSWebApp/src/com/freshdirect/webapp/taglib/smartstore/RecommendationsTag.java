@@ -117,7 +117,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
                 map.put(p.getContentKey(), imp_id);
                 rank++;
             }
-            r.setImpressionIds(map);
+            r.addImpressionIds(map);
         }
         
         AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.set(null);
