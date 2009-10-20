@@ -16,6 +16,8 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
 <%
 //********** Start of Stuff to let JSPF's become JSP's **************
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
@@ -401,7 +403,7 @@ if(productCode!=null && prodCatId !=null ) {
         int deal=0;
         boolean hasWas=false;
         String dealsImage="";
-    String priceUnit = "";
+		String priceUnit = "";
         String firstSalesUnit = null;
         //get the first sku..in the event that this product is unavailabe. Ideally we should only be in this blokc
         // if the product is available
@@ -567,19 +569,32 @@ if(productCode!=null && prodCatId !=null ) {
 <br>
 <%
 	if(hasWas) {
-%>
-    <FONT CLASS="productPageSinglePrice" style="COLOR: #c00"><%=prodPrice%></FONT>
-    <font style="FONT-SIZE: 10pt; COLOR: #333333"><%="(was "+prodBasePrice+")"%>&nbsp;</font><br>
+%>			<div>
+				<table>
+					<tr>
+						<td>
+							<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="true" showRegularPrice="true" showScalePricing="false" showWasPrice="false" showDescription="false"/>
+						</td>
+						<td>
+							<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="true" showRegularPrice="false" showScalePricing="false" showWasPrice="true" showDescription="false"/>
+						</td>
+					</tr>
+				</table>
+						<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false"/>
+			</div>
+			
 <%
 	} else {
 %>    
-    <FONT CLASS="productPageSinglePrice"><%=prodPrice%></FONT><FONT CLASS="productPageSinglePriceUnit">/<%=priceUnit%></font><br>
+			<div>
+					<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/>
+			<br></div>
 <%
 	}
 %>
 
 <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
-<span class="text12"><%@include file="/includes/product/i_scaled_prices_nobr.jspf"%></span>
+
 <br>
         <table border="0" cellspacing="0" cellpadding="1" width="215">
         <tr valign="MIDDLE">
@@ -950,18 +965,18 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 %>
                 <td width="85">
                 <div id="prod_container" style="height: 90px; width: 90px; text-align: left;">
-                <div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;" id="prod_image">
-		            <a id="prod_link_img" name="prod_link_img" href="<%=imgLinkUrl%>" style="display: block;">
-			        <img src="<%=groDeptImage.getPath()%>" width="<%=groDeptImage.getWidth()%>" height="<%=groDeptImage.getHeight()%>" border="0" alt="<%=displayProduct.getFullName()%>" onMouseOver="changeImg(document.bullet<%=imgShownIndex%>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex%>,'out',0)">
-		            </a>
-	            </div>
+					<div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;">
+					
+						<display:ProductImage product="<%= displayProduct %>" action="<%= imgLinkUrl %>" showRolloverImage="true" />
+							
+					</div>
                 <%
-                	if(sku.getProductInfo().getHighestDealPercentage()>0&&!sku.isUnavailable()) {
+                	if(sku.getProductInfo().getHighestDealPercentage()>0 &&!sku.isUnavailable()) {
                 %>
-                    <div style="position: absolute;" id="sale_star">
-			            <a id="prod_link_img" name="prod_link_img" href="<%=imgLinkUrl%>" style="display: block;">
-			            <img alt="<%="SAVE "+sku.getProductInfo().getHighestDealPercentage()+"%"%>" src="<%=_dealImage%>" style="border: 0px none ;" onMouseOver="changeImg(document.bullet<%=imgShownIndex%>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex%>,'out',0)">
-			            </a>
+                    <div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position:absolute;" id="sale_star">
+                    	
+						<display:ProductImage product="<%= displayProduct %>" action="<%= imgLinkUrl %>" showRolloverImage="true" />
+                   
 	                </div>
                 <%
                 	}
