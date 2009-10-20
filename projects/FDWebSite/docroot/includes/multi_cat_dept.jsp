@@ -172,10 +172,10 @@
 						  String actionUrlTmp = FDURLUtil.getProductURI( pm, "dept" );
 					 %>
 					 <td align="center" width="<%=adjustedImgWidthTmp%>" style="padding-left:5px; padding-right:5px;">
-						<display:ProductName product="<%= pm %>" action="<%= actionUrl %>"/>								
+						<display:ProductName product="<%= pm %>" action="<%= actionUrlTmp %>"/>								
 						<display:ProductPrice impression="<%= new ProductImpression( pm ) %>" showAboutPrice="false" showDescription="false"/>
 					 </td>
-					 <% if(idx.intValue() > 0 && (idx.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE){ break; }%> 
+					 <% if(idx1.intValue() > 0 && (idx1.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE){ break; }%> 
 					 <% } %>
 				</logic:iterate>
 				</tr>
