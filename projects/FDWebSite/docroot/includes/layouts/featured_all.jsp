@@ -96,8 +96,8 @@
 		
 		<table cellspacing="0" cellpadding="1" border="0" width="<%= tablewidth %>">
 		
-			<tr valign="top">
-	    		<td CLASS="text12bold" width="<%= tablewidth %>" colspan="<%= products.size()*2 %>">
+			<tr valign="top" align="center">
+	    		<td CLASS="text12bold" width="<%= tablewidth %>" colspan="<%= tablewidth %>">
 	    			<%= recommendations.getVariant().getServiceConfig().getFILabel() %>
 	    		</td>
 			</tr>
@@ -107,14 +107,6 @@
 				
 					ProductModel productNode = contentNode;
 					ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode);
-					String fiRating = "";
-					String fiProdPrice = null;
-					%><fd:ProduceRatingCheck><%
-    					fiRating = JspMethods.getProductRating(productNode);
-					%></fd:ProduceRatingCheck>
-					<fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>"><%
-						fiProdPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
-					%></fd:FDProductInfo><%
 					
 					String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 					
@@ -123,9 +115,8 @@
 					<td width="<%= tdwidth %>">
 						<div>
 							<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" showRolloverImage="true" />
-							<display:ProductRating product="<%= productNode %>" action="<%= actionURI %>"/>
 							<display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/>
-							<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/>
+							<div class="favoritePrice"><display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/></div>
 						</div>
 					</td>
 					
