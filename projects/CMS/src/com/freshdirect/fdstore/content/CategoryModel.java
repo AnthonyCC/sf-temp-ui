@@ -35,23 +35,19 @@ public class CategoryModel extends ContentNodeModelImpl {
 	
 	private static final long TWO_MINUTES = 2l * 60l * 1000l;
 	
-	private static final class RecommendedProductsRef extends BalkingExpiringReference {
-		private static CmsRecommenderService recommenderService;
-		
-		String categoryId;
-		String recommenderId;
-		
-		private RecommendedProductsRef(long refreshPeriod, Executor executor,
-				String categoryId, String recommenderId) {
+	private final class RecommendedProductsRef extends BalkingExpiringReference {
+		private RecommendedProductsRef(long refreshPeriod, Executor executor) {
 			super(refreshPeriod, executor, new ArrayList());
-			this.categoryId = categoryId;
-			this.recommenderId = recommenderId;
 		}
 
 		@Override
 		protected Object load() {
 			CmsRecommenderService recommenderService = getRecommenderService();
-			if (recommenderService != null) {
+			String categoryId = CategoryModel.this.getContentName();
+			String recommenderId = CategoryModel.this.getRecommender() != null ?
+					CategoryModel.this.getRecommender().getContentName()
+					: null;
+			if (recommenderService != null && recommenderId != null) {
 				List prodIds = recommenderService.recommendNodes(recommenderId, categoryId);
 				List products = new ArrayList(prodIds.size());
 				for (Iterator it = prodIds.iterator(); it.hasNext();) {
@@ -72,15 +68,14 @@ public class CategoryModel extends ContentNodeModelImpl {
 			}
 		}
 		
-		private static synchronized CmsRecommenderService getRecommenderService() {
+		private CmsRecommenderService getRecommenderService() {
 			try {
-				if (recommenderService == null)
-					return recommenderService = (CmsRecommenderService) FDRegistry.getInstance()
-							.getService("com.freshdirect.fdstore.CmsRecommenderService", CmsRecommenderService.class);
+				return (CmsRecommenderService) FDRegistry.getInstance()
+						.getService("com.freshdirect.fdstore.CmsRecommenderService", CmsRecommenderService.class);
 			} catch (RuntimeException e) {
 				LOGGER.error("failed to initialize CMS recommender service", e);
 			}
-			return recommenderService;
+			return null;
 		}
 	}
 
@@ -302,8 +297,7 @@ public class CategoryModel extends ContentNodeModelImpl {
 		Recommender recommender = getRecommender();
 		if (recommender != null) {
 			if (recommendedProductsRef == null)
-				recommendedProductsRef = new RecommendedProductsRef(TWO_MINUTES, threadPool, 
-						getContentName(), recommender.getContentName());
+				recommendedProductsRef = new RecommendedProductsRef(TWO_MINUTES, threadPool);
 
 			try {
 				List recProds = (List) recommendedProductsRef.get();

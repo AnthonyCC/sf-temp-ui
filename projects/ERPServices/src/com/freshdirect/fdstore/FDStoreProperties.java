@@ -171,6 +171,8 @@ public class FDStoreProperties {
 	private final static String SMARTSTORE_CACHE_DATA_SOURCES = "fdstore.smartstore.cacheDataSources";
 	private final static String SMARTSTORE_CACHE_DATA_SOURCES_SIZE = "fdstore.smartstore.cacheDataSources.size";
 	public final static String SMARTSTORE_CACHE_ONLINE_FACTORS = "fdstore.smartstore.cacheOnlineFactors";
+
+	public final static String SMARTSTORE_CMS_RECOMM_REFRESH_RATE = "fdstore.smartstore.cmsRecommenderRefreshRate";
 	
 	// maximum number of entries (users) in smartstore personalized scores cache, default 500
 	private final static String SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES = "fdstore.smartstore.personalScores.cache.entries";
@@ -511,6 +513,7 @@ public class FDStoreProperties {
 		defaults.put(SMARTSTORE_CACHE_DATA_SOURCES, "true");
 		defaults.put(SMARTSTORE_CACHE_DATA_SOURCES_SIZE, "150");
 		defaults.put(SMARTSTORE_CACHE_ONLINE_FACTORS, "true");
+		defaults.put(SMARTSTORE_CMS_RECOMM_REFRESH_RATE, Long.toString(Long.MAX_VALUE / 60 / 1000));
 
 		defaults.put(SMARTSTORE_OFFLINE_REC_RECENT_DAYS, "365");
 
@@ -1435,5 +1438,9 @@ public class FDStoreProperties {
 	}
 	public static String getDeptEDLPCatId() {
 		return get(DEPT_EDLP_CATID);
+	}
+
+	public static long getCmsRecommenderRefreshRate() {
+		return Long.parseLong(get(SMARTSTORE_CMS_RECOMM_REFRESH_RATE));
 	}
 }

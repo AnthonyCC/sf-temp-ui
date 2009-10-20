@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.smartstore.CmsRecommenderService;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -11,11 +13,14 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recommender;
 import com.freshdirect.fdstore.content.RecommenderStrategy;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
 
 public class CmsRecommenderServiceImpl implements CmsRecommenderService {
+	private static final Logger LOG = LoggerFactory
+			.getInstance(CmsRecommenderServiceImpl.class);
 	private static final long serialVersionUID = 7555105742910594364L;
 
 	@Override
@@ -45,8 +50,10 @@ public class CmsRecommenderServiceImpl implements CmsRecommenderService {
 					prodIds.add(product.getContentName());
 				}
 				return prodIds;
-			} else
+			} else {
+				LOG.debug("recommender " + recommenderId + " is not found");
 				return Collections.emptyList();
+			}
 		} else
 			return Collections.emptyList();
 	}
