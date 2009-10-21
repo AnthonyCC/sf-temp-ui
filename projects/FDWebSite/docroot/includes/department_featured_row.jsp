@@ -80,6 +80,7 @@ List tmpList=new ArrayList();
 				if (idx.intValue() >= MAX_FAVS2SHOW) { continue; }
 				if(contentNode instanceof CategoryModel) { continue; }
 				else if(contentNode instanceof ProductModel){
+					if(((ProductModel)contentNode).isUnavailable()){ continue;}
 					ProductModel pm = (ProductModel) contentNode;
 					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
 					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
@@ -98,6 +99,7 @@ List tmpList=new ArrayList();
 				if (idx.intValue() >= MAX_FAVS2SHOW) { continue; } 
 				if(contentNode instanceof CategoryModel) { continue; }
 				else if(contentNode instanceof ProductModel){
+					if(((ProductModel)contentNode).isUnavailable()){ continue;}
 					ProductModel pm = (ProductModel) contentNode;
 					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
 					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
