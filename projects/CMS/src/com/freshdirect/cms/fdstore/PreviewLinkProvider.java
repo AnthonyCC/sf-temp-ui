@@ -55,7 +55,10 @@ public class PreviewLinkProvider {
 		} else if (FDContentTypes.RECIPE_SEARCH_PAGE.equals(type)) {
 			return "/recipe_search.jsp?deptId=" + id;
 		} else if(FDContentTypes.TEMPLATE.equals(type)){
-			return "/test/content/preview.jsp?template="+key.getContentNode().getAttribute("path");
+			ContentNodeI node = key.getContentNode(); 
+			if (node != null) {
+				return "/test/content/preview.jsp?template="+node.getAttribute("path");
+			}
 		} else if(FDContentTypes.YMAL_SET.equals(type)){
 			return "/test/content/ymal_set_preview.jsp?ymalSetId=" + id;
 		}
