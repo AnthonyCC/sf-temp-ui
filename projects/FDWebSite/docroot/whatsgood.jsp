@@ -83,6 +83,9 @@ if (deptId==null) { deptId="wgd"; }
 	//	add emailPage to params passed to ftls
 	params.put("emailPage", Boolean.toString(emailPage));
 	params.put("baseUrl", baseUrl);
+
+	
+	log(myDebug, "================WG PAGE :");
 %>
 
 	<tmpl:insert template='<%=templatePath%>'>
@@ -93,7 +96,9 @@ if (deptId==null) { deptId="wgd"; }
 		request.setAttribute("sitePage", "www.freshdirect.com/whatsgood");
 		request.setAttribute("listPos", "WGLeft,WGCenter,WGRight");
 
-	if (emailPage) { %>
+	if (emailPage) {
+		log(myDebug, "================WG PAGE emailPage: "+emailPage);
+	%>
 		<!-- START EMAIL -->
 		<style>
 			body { width: 690px; text-align: center; }
@@ -108,7 +113,11 @@ if (deptId==null) { deptId="wgd"; }
 	<% } %>
 	
 	<% //START top section %>
+
+		<% log(myDebug, "================WG PAGE IncludeMedia: /media/editorial/whats_good/whats_good_line.html"); %>
 		<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
+
+		<% log(myDebug, "================WG PAGE IncludeMedia: /media/editorial/whats_good/whats_good_top_msg.html"); %>
 		<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_top_msg.html" />
 	<% //START end top section %>
 
@@ -117,10 +126,11 @@ if (deptId==null) { deptId="wgd"; }
 
 	String strWGRows = "";
 	
-	//System.out.println("================inside WG :");
 
 	//get property with rows
 	strWGRows = FDStoreProperties.getWhatsGoodRows();
+
+	log(myDebug, "================WG PAGE strWGRows: "+strWGRows);
 
 	//if there are rows, use them
 	if (strWGRows !=null && !"".equals(strWGRows)) {
@@ -155,7 +165,7 @@ if (deptId==null) { deptId="wgd"; }
 			//first, check for specials
 			
 			//special : peak produce
-			if ("wg_peakproduce".equals(curRow)) {
+			if ("wgd_produce".equals(curRow)) {
 
 				//do peak produce stuff
 				//START Great Right Now 
@@ -169,7 +179,7 @@ if (deptId==null) { deptId="wgd"; }
 					//we know it's a category, so use it in the generic row
 					catId = curRow;
 				
-					log(myDebug, "=============row in wg_peakproduce :");
+					log(myDebug, "=============row in wgd_produce :");
 					%><%@ include file="/includes/department_peakproduce_whatsgood.jspf" %><%
 				}else{
 					log(myDebug, "==============pp : IS NOT cat");
@@ -222,12 +232,14 @@ if (deptId==null) { deptId="wgd"; }
 											OAS_AD('WGLeft');
 									</script>
 								</td>
+								<td style="border-right: 1px solid #ccc;"><img src="/media_stat/images/layout/clear.gif" border="0" alt="" style="width: 1px;" /></td>
 								<td>
 									<!-- AD SPOT Center -->
 									<script type="text/javascript">
 											OAS_AD('WGCenter');
 									</script>
 								</td>
+								<td style="border-right: 1px solid #ccc;"><img src="/media_stat/images/layout/clear.gif" border="0" alt="" style="width: 1px;" /></td>
 								<td>
 									<!-- AD SPOT Right -->
 									<script type="text/javascript">
@@ -269,7 +281,11 @@ if (deptId==null) { deptId="wgd"; }
 					params.put("rowId", String.valueOf(rowId) );
 					params.put("rowName", curRow);
 					
-					%><fd:IncludeMedia name="<%= mediaPathTemp %>" parameters="<%=params%>"/><%
+					log(myDebug, "================WG PAGE IncludeMedia S: "+mediaPathTemp);
+
+					%><fd:IncludeMedia name="<%= mediaPathTemp %>" parameters="<%=params%>" withErrorReport="false" /><%
+						
+					log(myDebug, "================WG PAGE IncludeMedia E: "+mediaPathTemp);
 				}
 			}
 

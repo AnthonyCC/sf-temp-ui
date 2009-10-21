@@ -14,8 +14,8 @@
 	int ppFru = 0;
 	int tempCounter = 0;
 
-	Collection vegColl = null;
-	Collection fruColl = null;
+	Collection vegColl = new ArrayList();
+	Collection fruColl = new ArrayList();
 
 	rowColl = new ArrayList();
   
@@ -44,7 +44,7 @@
 	layoutSettings.setIgnoreDuplicateProducts(true);
 	layoutSettings.setIgnoreShowChildren(false);
 	layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
-	layoutSettings.setReturnHiddenFolders(false);
+	layoutSettings.setReturnHiddenFolders(true);
 
 	List tmpList=new ArrayList();
 %>
@@ -66,7 +66,8 @@
 		%>
 	</fd:ItemGrabber>
  
-	<% log(myDebug, "-=-=-=-=-= in peak produce row fruColl : "+fruColl); %>
+	<% log(myDebug, "-=-=-=-=-= in peak produce row : "); %>
+	<% log(myDebug, "-=-=-=-=-= in peak produce row sortedColl: "+sortedColl); %>
 
 <%
 	/*
@@ -260,9 +261,9 @@
 				<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
 				<%
 
-					log(myDebug, "-=-=-=-=-= in generic row contentNode2 : "+contentNode);
-					log(myDebug, "-=-=-=-=-= in generic row contentNode2 : "+(contentNode instanceof CategoryModel));
-					log(myDebug, "-=-=-=-=-= in generic row instanceof globalColl.contains2 : "+rowColl.contains(contentNode));
+					log(myDebug, "-=-=-=-=-= in peak produce contentNode2 : "+contentNode);
+					log(myDebug, "-=-=-=-=-= in peak produce contentNode2 : "+(contentNode instanceof CategoryModel));
+					log(myDebug, "-=-=-=-=-= in peak produce instanceof globalColl.contains2 : "+rowColl.contains(contentNode));
 
 					ProductModel pm = (ProductModel) contentNode;
 					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
