@@ -26,9 +26,11 @@ public class PreviewLinkProvider {
 
 		if (FDContentTypes.PRODUCT.equals(type)) {
 			ContentNodeI productNode = key.lookupContentNode();
-			ContentKey priHome = (ContentKey) productNode.getAttribute("PRIMARY_HOME").getValue();
-			if (priHome != null) {
-				return "/product.jsp?catId=" + priHome.getId() + "&productId=" + id;
+			if (productNode != null) {
+				ContentKey priHome = (ContentKey) productNode.getAttribute("PRIMARY_HOME").getValue();
+				if (priHome != null) {
+					return "/product.jsp?catId=" + priHome.getId() + "&productId=" + id;
+				}
 			}
 			
 		} else if (FDContentTypes.CATEGORY.equals(type)) {
