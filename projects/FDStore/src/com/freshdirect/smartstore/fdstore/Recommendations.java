@@ -48,12 +48,13 @@ public class Recommendations implements Serializable {
 	// array of logged products
 	boolean logged[];
 	
+
 	/**
 	 * Constructor.
 	 * @param variant 
 	 * @param contentKeys List<{@link ProductModel}>
 	 */
-	public Recommendations(Variant variant, List<ContentNodeModel> contentNodes, boolean isRefreshable, boolean isSmartSavings) {
+	public Recommendations(Variant variant, List<ContentNodeModel> contentNodes, boolean isRefreshable, boolean isSmartSavings, int wsize) {
 		this.variant = variant;
 		this.products = new ArrayList<ProductModel>(contentNodes.size());
 		// quick and dirty hack to turn content nodes to products
@@ -61,7 +62,7 @@ public class Recommendations implements Serializable {
 			this.products.add( (ProductModel)m);
 		}
 
-
+		this.wsize = wsize;
 
 		final int S = getNumberOfPages();
 		logged = new boolean[S];
@@ -73,8 +74,12 @@ public class Recommendations implements Serializable {
 		this.isSmartSavings = isSmartSavings;
 	}
 
+	public Recommendations(Variant variant, List<ContentNodeModel> contentNodes, boolean isRefreshable, boolean isSmartSavings) {
+		this(variant, contentNodes, isRefreshable, isSmartSavings, MAX_PRODS);
+	}
+
 	public Recommendations(Variant variant, List<ContentNodeModel> contentNodes) {
-		this(variant, contentNodes, true, false);
+		this(variant, contentNodes, true, false, MAX_PRODS);
 	}
 
 	/**
@@ -109,12 +114,19 @@ public class Recommendations implements Serializable {
 	}
 	
 	
+	/**
+	 * This constructor is called from FDStoreRecommender
+	 * 
+	 * @param variant
+	 * @param products
+	 * @param sessionInput
+	 * @param isRefreshable
+	 * @param isSmartSavings
+	 */
 	public Recommendations(Variant variant, List<ContentNodeModel> products, SessionInput sessionInput,
 			boolean isRefreshable, boolean isSmartSavings) {
-		this(variant, products);
+		this(variant, products, isRefreshable, isSmartSavings, sessionInput != null && sessionInput.getMaxRecommendations() > 0 ? sessionInput.getMaxRecommendations() : MAX_PRODS );
 		this.sessionInput = sessionInput;
-		this.isRefreshable = isRefreshable;
-		this.isSmartSavings = isSmartSavings;
 	}
 
 	/**

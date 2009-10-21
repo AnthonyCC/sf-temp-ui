@@ -76,7 +76,7 @@
 
 	if ( genericRecommendationsVariant != null && !hideSavings) {
 %>
-<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>">
+<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>" itemCount="5">
 		<% 		
 		    isRendered = true;
 			ConfigurationContext confContext = new ConfigurationContext();
