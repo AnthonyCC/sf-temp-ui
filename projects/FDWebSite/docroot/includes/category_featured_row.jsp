@@ -17,6 +17,7 @@
 	int productsTarget = 4;
 	int dealProductsCount = 2;
 	int edlpProductsCount = 2;
+	int displayProdCount = 0;
 	String parentCat = request.getParameter("parentCat");
 	String catId_1 = parentCat+"_feat";
 	String catId_2 = parentCat+"_edlp"; 
@@ -88,11 +89,13 @@
 			dealProductsCount = productsTarget - edlpProductsCount;
 		}
 	}else{
-		edlpProductsCount = productsTarget - dealProductsCount;
+		if(edlpProductsCount > 2)
+			edlpProductsCount = productsTarget - dealProductsCount;
 	}
+	displayProdCount = dealProductsCount + edlpProductsCount;
 %>
 
-<% if(dealProductsCount > 0 || edlpProductsCount > 0){ %>
+<% if(displayProdCount>1){ %>
 	<fd:IncludeMedia name= "/media/editorial/meat/meat_deals_everyday.html"/>
     <table cellpadding="0" cellspacing="0" border="0">
 	<tr valign="bottom">
@@ -100,6 +103,7 @@
 			<%if(idx.intValue()>=dealProductsCount) continue; 
 			  if(contentNode instanceof CategoryModel) { continue; }
 			  else if(contentNode instanceof ProductModel){
+				  if(((ProductModel)contentNode).isUnavailable()){ continue;}
 				  ProductModel dealProduct = (ProductModel) contentNode;
 				  String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
 				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_1,dealProduct,prodNameAttribute,true);
@@ -116,6 +120,7 @@
 			  if(idx.intValue()>=edlpProductsCount) continue;
 			  if(contentNode instanceof CategoryModel) { continue; }
 			  else if(contentNode instanceof ProductModel){
+				  if(((ProductModel)contentNode).isUnavailable()){ continue;}
 				  ProductModel edlpProduct = (ProductModel) contentNode;
 				  String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
 				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
@@ -134,7 +139,8 @@
 				if(idx.intValue()>=dealProductsCount) continue; 
 				if(contentNode instanceof CategoryModel) { continue; }
 				else if(contentNode instanceof ProductModel){
-				    ProductModel dealProduct = (ProductModel) contentNode;
+					if(((ProductModel)contentNode).isUnavailable()){ continue;}
+					ProductModel dealProduct = (ProductModel) contentNode;
 					String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
 					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_1,dealProduct,prodNameAttribute,true);
 					int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
@@ -152,6 +158,7 @@
 				if(idx.intValue()>=edlpProductsCount) continue;
 				if(contentNode instanceof CategoryModel) { continue; }
 				else if(contentNode instanceof ProductModel){
+					if(((ProductModel)contentNode).isUnavailable()){ continue;}
 					ProductModel edlpProduct = (ProductModel) contentNode;
 					String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
 					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId_2,edlpProduct,prodNameAttribute,true);
