@@ -29,6 +29,8 @@
 	int totalEDLPProds = 0;
 	Collection dealCol = null;
 	Collection edlpCol = null;
+	Collection dealProdList = new ArrayList();
+	Collection edlpProdList = new ArrayList();
 	Settings layoutSettings = new Settings();
 	layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
 	List tmpList=new ArrayList();
@@ -56,6 +58,15 @@
 %>
 </fd:ItemGrabber>
 <fd:ItemSorter nodes='<%=(List)dealCol%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
+
+<logic:iterate id="contentNode" collection="<%= dealCol %>" type="java.lang.Object">
+	<%if(contentNode instanceof CategoryModel) { continue; }
+	  else if(contentNode instanceof ProductModel){
+		  if(((ProductModel)contentNode).isUnavailable()){ continue;}
+		  dealProdList.add(contentNode);
+		}%>
+</logic:iterate>
+
 <% } %>
 
 <%-- Grab edlp items --%>
@@ -81,18 +92,27 @@
 %>
 </fd:ItemGrabber>
 <fd:ItemSorter nodes='<%=(List)edlpCol%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
+
+<logic:iterate id="contentNode" collection="<%= edlpCol %>" type="java.lang.Object">
+	<%if(contentNode instanceof CategoryModel) { continue; }
+	  else if(contentNode instanceof ProductModel){
+		  if(((ProductModel)contentNode).isUnavailable()){ continue;}
+		  edlpProdList.add(contentNode);
+		}%>
+</logic:iterate>
 <% } %>
 
-<% if(dealCol.size() >= MIN_PROD2SHOW){ %>
+<% if(dealProdList.size() >= MIN_PROD2SHOW){ %>
 	<% String mediaPath = "/media/editorial/meat/"+catId_1+".html"; %>
 	<fd:IncludeMedia name= "<%= mediaPath %>"/>
     <table cellpadding="0" cellspacing="0" border="0">
 		<tr valign="bottom">
-		<logic:iterate id="contentNode" collection="<%= dealCol %>" type="java.lang.Object" indexId="idx">
+		<logic:iterate id="contentNode" collection="<%= dealProdList %>" type="java.lang.Object" indexId="idx">
 			<%//if(idx.intValue()==MAX_PROD2SHOW) break; %>
 			<% 
 			  if(contentNode instanceof CategoryModel) { continue; }
 			  else if(contentNode instanceof ProductModel){
+				  if(((ProductModel)contentNode).isUnavailable()){ continue;}
 				  prodList.add(contentNode);
 				  ProductModel dealProduct = (ProductModel) contentNode;
 				  String prodNameAttribute = JspMethods.getProductNameToUse(dealProduct);
@@ -120,7 +140,7 @@
 							<display:ProductName product="<%= pm %>" action="<%= actionUrlTmp %>"/>								
 							<display:ProductPrice impression="<%= new ProductImpression( pm ) %>" showAboutPrice="false" showDescription="false"/>
 						 </td>
-						 <% if(idx1.intValue() > 0 && (idx1.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE){ break; } %>
+						 <% if(idx1.intValue() > 0 && (idx1.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE-1){ break; } %>
 						 <%} %>
 			 		</logic:iterate>
 			 	</tr>
@@ -137,16 +157,17 @@
 <%} %>
 
 
-<% if(edlpCol.size() >= MIN_PROD2SHOW){ %>
+<% if(edlpProdList.size() >= MIN_PROD2SHOW){ %>
 	<% String mediaPath = "/media/editorial/meat/"+catId_2+".html"; %>
 	<fd:IncludeMedia name= "<%= mediaPath %>"/>
 	<table cellpadding="0" cellspacing="0" border="0">
 		<tr valign="bottom">
-		<logic:iterate id="contentNode" collection="<%= edlpCol %>" type="java.lang.Object" indexId="idx">
+		<logic:iterate id="contentNode" collection="<%= edlpProdList %>" type="java.lang.Object" indexId="idx">
 			<%//if(idx.intValue()==MAX_PROD2SHOW) break; %>
 			<% 
 			  if(contentNode instanceof CategoryModel) { continue; }
 			  else if(contentNode instanceof ProductModel){
+				  if(((ProductModel)contentNode).isUnavailable()){ continue;}
 				  prodList.add(contentNode);
 				  ProductModel edlpProduct = (ProductModel) contentNode;
 				  String prodNameAttribute = JspMethods.getProductNameToUse(edlpProduct);
@@ -175,7 +196,7 @@
 						<display:ProductName product="<%= pm %>" action="<%= actionUrlTmp %>"/>								
 						<display:ProductPrice impression="<%= new ProductImpression( pm ) %>" showAboutPrice="false" showDescription="false"/>
 					 </td>
-					 <% if(idx1.intValue() > 0 && (idx1.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE){ break; }%> 
+					 <% if(idx1.intValue() > 0 && (idx1.intValue()%PRODUCTS_PER_LINE)==PRODUCTS_PER_LINE-1){ break; }%> 
 					 <% } %>
 				</logic:iterate>
 				</tr>
