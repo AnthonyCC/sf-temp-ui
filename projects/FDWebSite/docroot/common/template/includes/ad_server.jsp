@@ -25,6 +25,7 @@
 %><%@ page import='com.freshdirect.framework.util.QueryStringBuilder'
 %><%@ page import='com.freshdirect.deliverypass.EnumDPAutoRenewalType'
 %><%@ page import='com.freshdirect.smartstore.fdstore.SmartStoreUtil'
+%><%@ taglib prefix="fd" uri="freshdirect"
 %><%!
 
 	private final static String CCL_NONELIGIBLE = "0";
@@ -43,6 +44,8 @@
 
 	if (FDStoreProperties.isAdServerEnabled()) {
 
+%><fd:SmartSavingsUpdate justCheckSavingVariantId="true"></fd:SmartSavingsUpdate><%	    
+		
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
 		QueryStringBuilder queryString = new QueryStringBuilder();
@@ -178,7 +181,9 @@
 					break;
 				}
 			}
-
+			if (smartSavingVariantId != null && smartSavingVariantId.length() > 0) {
+			    queryString.addParam("ssp", smartSavingVariantId);
+			}
 			queryString
 					.addParam("v", metalRating)
 					.addParam("hv", vip)

@@ -3767,7 +3767,12 @@
 		<info></info>
  		<attribute>
 			<name>promoConflictMode</name>
-			<required>true</required>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>justCheckSavingVariantId</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>

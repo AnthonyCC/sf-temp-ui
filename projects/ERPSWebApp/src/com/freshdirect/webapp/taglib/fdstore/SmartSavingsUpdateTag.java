@@ -21,9 +21,14 @@ public class SmartSavingsUpdateTag extends BodyTagSupport {
     
     boolean promoConflictMode = false;
     
+    boolean justCheckSavingVariantId = false;
     
     public void setPromoConflictMode(boolean promoConflictMode) {
         this.promoConflictMode = promoConflictMode;
+    }
+    
+    public void setJustCheckSavingVariantId(boolean flag) {
+        this.justCheckSavingVariantId = flag;
     }
     
     
@@ -32,6 +37,10 @@ public class SmartSavingsUpdateTag extends BodyTagSupport {
         HttpSession session = pageContext.getSession();
         FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
         ServletRequest request = pageContext.getRequest();
+        
+        if (user == null) {
+            return EVAL_BODY_BUFFERED;
+        }
         
         Map savingsLookupTable = (Map) session.getAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
         if(savingsLookupTable == null){
@@ -45,6 +54,16 @@ public class SmartSavingsUpdateTag extends BodyTagSupport {
             user.setSavingsVariantFound(false);
         }
         session.setAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE, savingsLookupTable);
+        
+        
+        pageContext.setAttribute("smartSavingVariantId", usrVariant);
+        
+        if (justCheckSavingVariantId) {
+            // we dont want the confusing calculations to happen ...
+            
+            return EVAL_BODY_BUFFERED;
+        }
+        
         String savingsVariant =  (String) session.getAttribute(SessionName.PREV_SAVINGS_VARIANT);
         Boolean prevVariantFound = (Boolean) session.getAttribute(SessionName.PREV_VARIANT_FOUND);
         boolean usrVariantFound = user.isSavingsVariantFound();
