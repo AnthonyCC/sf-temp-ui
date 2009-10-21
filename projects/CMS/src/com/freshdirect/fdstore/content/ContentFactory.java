@@ -278,9 +278,7 @@ public class ContentFactory {
 		Collection cached = (Collection) newProductsCache.get(cacheKey);
 		if (cached != null) {
 			List list = new ArrayList(cached);
-			LOGGER.info("returning " + list.size() + " new products for (" + days + "," + deptId + "), unfiltered");
 			cf.filterProdsByDept(list, deptId);
-			LOGGER.info("returning " + list.size() + " new products for (" + days + "," + deptId + ")");
 			return new HashSet(list);
 		} else
 			return null;
@@ -314,8 +312,8 @@ public class ContentFactory {
 							Map pn = extractProductNewnesses();
 							newProductsCache.clear();
 							return pn;
-						} catch (FDResourceException e1) {
-							LOGGER.error("", e1);
+						} catch (FDResourceException e) {
+							LOGGER.error("somethin' very error", e);
 							return null;
 						}
 					}
@@ -368,9 +366,7 @@ public class ContentFactory {
 		Collection cached = (Collection) ((BalkingExpiringReference) reintroducedProductsCache.get(cacheKey)).get();
 		if (cached != null) {
 			List list = new ArrayList(cached);
-			LOGGER.info("returning " + list.size() + " reintroduced products for (" + days + "," + deptId + "), unfiltered");
 			cf.filterProdsByDept(list, deptId);
-			LOGGER.info("returning " + list.size() + " reintroduced products for (" + days + "," + deptId + ")");
 			return list;
 		} else
 			return null;
