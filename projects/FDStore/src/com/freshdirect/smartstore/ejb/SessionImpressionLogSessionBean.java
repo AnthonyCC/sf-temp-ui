@@ -48,25 +48,11 @@ public class SessionImpressionLogSessionBean extends SessionBeanSupport {
 				throw new EJBException("failed to insert entry (unknown reason)");
 			}
 		} catch (SQLException e) {
-			LOGGER
-					.error("SessionImpressionLogSessionBean.saveLogEntry failed; exc="
-							+ e);
-			try {
-				if (conn != null) {
-					LOGGER.error("Connection URL: "
-							+ conn.getMetaData().getURL() + "/ User: "
-							+ conn.getMetaData().getUserName());
-				}
-			} catch (SQLException e1) {
-			}
+			LOGGER.error("SessionImpressionLogSessionBean.saveLogEntry failed; exc="
+							+ e, e);
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				throw new EJBException(e);
-			}
+		    close(conn);
 		}
 	}
 
@@ -106,25 +92,11 @@ public class SessionImpressionLogSessionBean extends SessionBeanSupport {
 			// free resources
 			ps.close();			
 		} catch (SQLException e) {
-			LOGGER
-					.error("SessionImpressionLogSessionBean.saveLogEntry failed; exc="
-							+ e);
-			try {
-				if (conn != null) {
-					LOGGER.error("Connection URL: "
-							+ conn.getMetaData().getURL() + "/ User: "
-							+ conn.getMetaData().getUserName());
-				}
-			} catch (SQLException e1) {
-			}
+			LOGGER.error("SessionImpressionLogSessionBean.saveLogEntry failed; exc="
+							+ e, e);
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				throw new EJBException(e);
-			}
+		    close(conn);
 		}
 	}
 }

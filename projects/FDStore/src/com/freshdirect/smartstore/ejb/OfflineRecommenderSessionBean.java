@@ -188,20 +188,10 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 
 			return rowCount;
 		} catch (SQLException e) {
-			LOGGER.error("saving recommendations failed", e);
-			try {
-				LOGGER.error("Connection URL: " + conn.getMetaData().getURL()
-						+ "/ User: " + conn.getMetaData().getUserName());
-			} catch (SQLException e1) {
-			}
+			LOGGER.error("saving recommendations failed : "+ e.getMessage(), e);
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				throw new EJBException(e);
-			}
+		    close(conn);
 		}
 	}
 
@@ -229,20 +219,10 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 			ps = null;
 
 		} catch (SQLException e) {
-			LOGGER.error("retrieving recent customers failed", e);
-			try {
-				LOGGER.error("Connection URL: " + conn.getMetaData().getURL()
-						+ "/ User: " + conn.getMetaData().getUserName());
-			} catch (SQLException e1) {
-			}
+			LOGGER.error("retrieving recent customers failed " + e.getMessage(), e);
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				throw new EJBException(e);
-			}
+		    close(conn);
 		}
 		return customerIds;
 	}
@@ -271,20 +251,10 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 			ps = null;
 
 		} catch (SQLException e) {
-			LOGGER.error("retrieving recent customers failed", e);
-			try {
-				LOGGER.error("Connection URL: " + conn.getMetaData().getURL()
-						+ "/ User: " + conn.getMetaData().getUserName());
-			} catch (SQLException e1) {
-			}
+			LOGGER.error("retrieving recent customers failed : "+e.getMessage(), e);
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				throw new EJBException(e);
-			}
+		    close(conn);
 		}
 		return customerIds;
 	}

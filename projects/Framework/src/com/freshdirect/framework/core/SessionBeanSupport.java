@@ -16,6 +16,10 @@ import javax.ejb.CreateException;
 import javax.ejb.SessionBean;
 import javax.ejb.SessionContext;
 
+import org.apache.log4j.Logger;
+
+import com.freshdirect.framework.util.log.LoggerFactory;
+
 /**
  * an abstract support class providing the functionality that all
  * SessionBeans must at least implement
@@ -23,6 +27,8 @@ import javax.ejb.SessionContext;
  * @author $Author$
  */ 
 public abstract class SessionBeanSupport implements SessionBean {
+    
+    final static Logger LOGGER = LoggerFactory.getInstance(SessionBeanSupport.class);
     
     /** The session context provided by the EJB container */    
     private SessionContext sessionCtx = null;
@@ -108,6 +114,16 @@ public abstract class SessionBeanSupport implements SessionBean {
      */    
     protected String getNextId(Connection conn, String schema) throws SQLException {
     	return SequenceGenerator.getNextId(conn, schema);
+    }
+
+    protected void close(Connection conn) {
+        try {
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (SQLException sqle) {
+            LOGGER.error("problem in closing connection : " + this.getClass().getName() + " err: " + sqle.getMessage(), sqle);
+        }
     }
 
 }

@@ -85,24 +85,15 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 			while (rs.next()) {
 				cohortVariantMap.put(rs.getString(1), rs.getString(2));
 			}
-
+			
 			// free resources
 			rs.close();
 			ps.close();
 		} catch (SQLException e) {
-			LOGGER.error("VariantSelectionSessionBean.getVariantMap failed; exc=" + e);
-			try {
-				LOGGER.error("Connection URL: " + conn.getMetaData().getURL() + "/ User: " + conn.getMetaData().getUserName());
-			} catch (SQLException e1) {
-			}
-            throw new EJBException(e);
-        } finally {
-            try {
-                if (conn != null)
-                	conn.close();
-            } catch (SQLException sqle) {
-                throw new EJBException(sqle);
-            }
+		    LOGGER.error("VariantSelectionSessionBean.getVariantMap failed; exc=" + e, e);
+                    throw new EJBException(e);
+                } finally {
+                    close(conn);
 		}
 
         return cohortVariantMap;
@@ -132,22 +123,12 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 			rs.close();
 			ps.close();
 		} catch (SQLException e) {
-			LOGGER.error("VariantSelectionSessionBean.getCohorts failed; exc=" + e);
-			try {
-				LOGGER.error("Connection URL: " + conn.getMetaData().getURL() + "/ User: " + conn.getMetaData().getUserName());
-			} catch (SQLException e1) {
-			}
-            throw new EJBException(e);
-        } finally {
-            try {
-                if (conn != null)
-                	conn.close();
-            } catch (SQLException sqle) {
-                throw new EJBException(sqle);
-            }
+		    LOGGER.error("VariantSelectionSessionBean.getCohorts failed; exc=" + e, e);
+		    throw new EJBException(e);
+                } finally {
+                    close(conn);
 		}
-
-        return cohortMap;
+                return cohortMap;
 	}
 	
 	/**
@@ -173,23 +154,14 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 			rs.close();
 			ps.close();
 		} catch (SQLException e) {
-			LOGGER.error("VariantSelectionSessionBean.getCohortNames failed; exc=" + e);
-			try {
-				LOGGER.error("Connection URL: " + conn.getMetaData().getURL() + "/ User: " + conn.getMetaData().getUserName());
-			} catch (SQLException e1) {
-			}
-            throw new EJBException(e);
-        } finally {
-            try {
-                if (conn != null)
-                	conn.close();
-            } catch (SQLException sqle) {
-                throw new EJBException(sqle);
+		    LOGGER.error("VariantSelectionSessionBean.getCohortNames failed; exc=" + e, e);
+		    throw new EJBException(e);
+                } finally {
+                    close(conn);
+                }
+        
+                return cohortNames;
             }
-		}
-
-        return cohortNames;
-	}
 	
 	/**
 	 * Returns the list of variant IDs belonging to a site feature
@@ -216,24 +188,14 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 			rs.close();
 			ps.close();
 		} catch (SQLException e) {
-			LOGGER.error("VariantSelectionSessionBean.getVariants failed; exc=" + e);
-			try {
-				LOGGER.error("Connection URL: " + conn.getMetaData().getURL() + "/ User: " + conn.getMetaData().getUserName());
-			} catch (SQLException e1) {
-			}
-            throw new EJBException(e);
-        } finally {
-            try {
-                if (conn != null)
-                	conn.close();
-            } catch (SQLException sqle) {
-                throw new EJBException(sqle);
-            }
+		    LOGGER.error("VariantSelectionSessionBean.getVariants failed; exc=" + e, e);
+                    throw new EJBException(e);
+                } finally {
+                    close(conn);
 		}
-
-        return variantList;
-		
+                return variantList;
 	}
+
 	
 	public List<Date> getStartDates() throws RemoteException {
 		Connection conn = null;
@@ -256,21 +218,11 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 			rs.close();
 			ps.close();
 		} catch (SQLException e) {
-			LOGGER.error("VariantSelectionSessionBean.getStartDates failed; exc=" + e);
-			try {
-				LOGGER.error("Connection URL: " + conn.getMetaData().getURL() + "/ User: " + conn.getMetaData().getUserName());
-			} catch (SQLException e1) {
-			}
-            throw new EJBException(e);
-        } finally {
-            try {
-                if (conn != null)
-                	conn.close();
-            } catch (SQLException sqle) {
-                throw new EJBException(sqle);
-            }
+		    LOGGER.error("VariantSelectionSessionBean.getStartDates failed; exc=" + e, e);
+                    throw new EJBException(e);
+                } finally {
+                    close(conn);
 		}
-
-        return dateList;
+                return dateList;
 	}
 }
