@@ -21,7 +21,7 @@
     <script type="text/javascript" src="/ccassets/javascript/jscalendar-1.0/lang/calendar-en.js"></script>
     <script type="text/javascript" src="/ccassets/javascript/jscalendar-1.0/calendar-setup.js"></script>   
     
-<<script language="javascript">
+<script language="javascript">
 
 function textCounter(field, maxlimit) {
 if (field.value.length > maxlimit) // if too long...trim it!
@@ -246,7 +246,7 @@ if("save".equalsIgnoreCase(actionType))
 <tr>
  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td> 
  <td colspan="2" align="center"> <font color="red">*</font> <b> PROGRAM START DATE : <b></td> 
- <td> <input type="text" name="refProgStartDate" value="<%= (refProg.getStartDate()!=null)?CCFormatter.formatDateYear(refProg.getStartDate()):"" %>" readOnly="true"><a href="#" id="trigger_startDate" style="font-size: 9px;">>></a>
+ <td> <input type="text" id="refProgStartDate" name="refProgStartDate" value="<%= (refProg.getStartDate()!=null)?CCFormatter.formatDateYear(refProg.getStartDate()):"" %>" readOnly="true"><a href="#" id="trigger_startDate" style="font-size: 9px;">>></a>
 <ref:ErrorHandler result='<%= result %>' name='startDate' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></ref:ErrorHandler>
 <script language="javascript">
                             function toggleDate() {
@@ -281,7 +281,7 @@ if("save".equalsIgnoreCase(actionType))
 <tr>
  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td> 
  <td colspan="2" align="center"><font color="red">*</font> <b> PROGRAM EXP DATE : <b></td> 
- <td> <input type="text" name="refProgExpDate" value="<%= (refProg.getExpDate()!=null)?CCFormatter.formatDateYear(refProg.getExpDate()):""%>" readOnly="true"><a href="#" id="trigger_expDate" style="font-size: 9px;">>></a>
+ <td> <input type="text" id="refProgExpDate" name="refProgExpDate" value="<%= (refProg.getExpDate()!=null)?CCFormatter.formatDateYear(refProg.getExpDate()):""%>" readOnly="true"><a href="#" id="trigger_expDate" style="font-size: 9px;">>></a>
 <ref:ErrorHandler result='<%= result %>' name='expDate' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></ref:ErrorHandler>
 <script language="javascript">
                             function toggleDate() {
