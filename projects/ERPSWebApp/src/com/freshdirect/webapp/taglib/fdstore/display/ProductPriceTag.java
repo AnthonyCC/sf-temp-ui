@@ -27,12 +27,24 @@ public class ProductPriceTag extends BodyTagSupport {
 	
 	private static final String styleWas = " style=\"font-weight: normal; color: gray;\"";			// normal, light grey
 	private static final String styleScale = " style=\"line-height:12px; font-weight: bold; color: #C94747;\"";		// bold, red
+	
+	private static final String quickShopStyleRegularOnly = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #555555;\"";			// bold, dark grey
+	private static final String quickShopStyleRegularWithScaled = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #555555;\"";	// normal, dark grey
+	private static final String quickShopStyleRegularWithWas = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #C94747;\"";		// bold, red
+	private static final String quickShopStyleRegularWithBoth = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #C94747;\"";	// normal, red
+	
+	private static final String quickShopStyleWas = " style=\"font-weight: normal; color: gray;\"";			// normal, light grey
+	private static final String quickShopStyleScale = " style=\"line-height:16px; font-size: 13px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;\"";		// bold, red
 
 	
 	private ProductImpression impression;
 	double savingsPercentage = 0 ; // savings % off
 	boolean showDescription = true; // show configuration/size description
 	boolean showAboutPrice = true; //show about price
+	boolean showRegularPrice = true; //show regular pricing
+	boolean showWasPrice = true; //show was pricing
+	boolean showScalePricing = true; //show scale pricing
+	boolean quickShop = false; // special font for quick shop
 	
 	
 	public void setImpression(ProductImpression impression) {
@@ -49,6 +61,22 @@ public class ProductPriceTag extends BodyTagSupport {
 
 	public void setShowAboutPrice( boolean showAboutPrice ) {
 		this.showAboutPrice = showAboutPrice;
+	}
+	
+	public void setShowRegularPrice( boolean showRegularPrice ) {
+		this.showRegularPrice = showRegularPrice;
+	}
+	
+	public void setShowWasPrice( boolean showWasPrice ) {
+		this.showWasPrice = showWasPrice;
+	}
+	
+	public void setShowScalePricing( boolean showScalePricing ) {
+		this.showScalePricing = showScalePricing;
+	}
+	
+	public void setQuickShop(boolean quickShop) {
+		this.quickShop = quickShop;
 	}
 	
 	public int doStartTag() {
@@ -99,37 +127,61 @@ public class ProductPriceTag extends BodyTagSupport {
 			
 			// style for the real price depends on what kind of deals we have
 			String styleRegular;			
-			if ( scaleString != null )
+			if ( scaleString != null && !quickShop)
 				styleRegular = ( wasString != null ) ? styleRegularWithBoth : styleRegularWithScaled;
-			else
+			else if (!quickShop)
 				styleRegular = ( wasString != null ) ? styleRegularWithWas : styleRegularOnly;
+			else if (scaleString != null && quickShop) 
+				styleRegular = ( wasString != null ) ? quickShopStyleRegularWithBoth : quickShopStyleRegularWithScaled;
+			else 
+				styleRegular = ( wasString != null ) ? quickShopStyleRegularWithWas : quickShopStyleRegularOnly;
 			
 						
 			// regular price
-			buf.append(
-					"<div" + styleRegular + ">" +
-					priceString + 
-					"</div>"
-			);
+			if(showRegularPrice) {
+				buf.append(
+						"<div" + styleRegular + ">" +
+						priceString + 
+						"</div>"
+				);
+			}
 			
 			// scaled price
-			if ( scaleString != null ){
+			if ( scaleString != null && showScalePricing){
 				if(scaleString.indexOf(" or ") >= -1){
 					scaleString = scaleString.replaceFirst(" or ", "<br>or ");
 				}
-				buf.append(
-						"<div" + styleScale + ">" +
-						scaleString + 
-						"</div>"
-				);
+				if(quickShop) {
+					buf.append(
+							"<div" + quickShopStyleScale + ">" +
+							scaleString + 
+							"</div>"
+					);
+				} 
+				else {
+					buf.append(
+							"<div" + styleScale + ">" +
+							scaleString + 
+							"</div>"
+					);
+				}
 			}	
 				
 			// was price
-			if ( wasString != null ) buf.append(
-					"<div" + styleWas + ">" + 
-					wasString +
-					"</div>"
-			);
+			if ( showWasPrice && wasString != null ) 
+				if(quickShop) {
+					buf.append(
+						"<div" + quickShopStyleWas + ">" + 
+						wasString +
+						"</div>"
+					);
+				} else {
+					buf.append(
+							"<div" + styleWas + ">" + 
+							wasString +
+							"</div>"
+						);
+				}
 			
 			//about price
 			if(showAboutPrice){
