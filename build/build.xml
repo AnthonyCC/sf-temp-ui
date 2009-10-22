@@ -1508,7 +1508,7 @@
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
-            <pathelement location="${thirdparty.home}/oscache.jar"/>
+            <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/castor-0.9.5.3-xml.jar"/>
 		</path>
 		<makeWebProject
@@ -1526,7 +1526,7 @@
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
-            <pathelement location="${thirdparty.home}/oscache.jar"/>
+            <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 		</path>
 		<makeWebProject
 			project="CRM"
@@ -1855,7 +1855,7 @@
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
-            <pathelement location="${thirdparty.home}/oscache.jar"/>
+            <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 		</path>
 		<makeWebProject
 			project="RefAdmin"
@@ -2196,7 +2196,7 @@
 				<include name="RoutingServices.jar"/>
 			</libraries>
 			<lib>
-				<include name="oscache.jar"/>
+				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="lucene-core-2.2.0.jar"/>
 				<include name="lucene-queries-2.2.0.jar"/>
@@ -2227,7 +2227,7 @@
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
                 <include name="givexclient.jar"/>                
-				<include name="oscache.jar"/>
+				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="poi-3.0-rc4-20070503.jar"/>
 				<include name="lucene-core-2.2.0.jar"/>
@@ -2256,7 +2256,7 @@
 			<lib>
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
-				<include name="oscache.jar"/>
+				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="spring.jar"/>
 				<include name="standard.jar"/>
@@ -2358,7 +2358,7 @@
 				<include name="RoutingServices.jar"/>
 			</libraries>
 			<lib>
-				<include name="oscache.jar"/>
+				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
