@@ -2,11 +2,12 @@
 	StringBuffer departmentNav = new StringBuffer();
 	List storeDepartments = ContentFactory.getInstance().getStore().getDepartments();
 	String currentDepartment = ""; 
+	boolean chosen = false;
 	
 	if (storeDepartments.size() > 0) {
 		Collections.sort(storeDepartments, DepartmentModel.DepartmentNameComparator);
                     
-                    selected = hasDeptId && qsDeptId.equalsIgnoreCase("all");
+                    chosen = hasDeptId && qsDeptId.equalsIgnoreCase("all");
                     showLink = !hasDeptId || !qsDeptId.equalsIgnoreCase("all");
                     
                     if (showLink) { 
@@ -15,10 +16,10 @@
                         departmentNav.append("all");
                         departmentNav.append("\">");
                     }
-                    if (selected) {
+                    if (chosen) {
                             departmentNav.append("<b>");
                     }
-                    if (selected) {
+                    if (chosen) {
                             departmentNav.append("ALL");
                     } else {
                         if(request.getRequestURI().indexOf("index.jsp") != -1 || request.getParameter("qsDeptId") == null){
@@ -27,7 +28,7 @@
                             departmentNav.append("ALL");
                         }
                     }
-                    if (selected) {
+                    if (chosen) {
                             departmentNav.append("</b>");
                     }
                     if (showLink) { 
@@ -39,40 +40,46 @@
 			for (Iterator dIter = storeDepartments.iterator(); dIter.hasNext();) {
 				DepartmentModel thisDept = (DepartmentModel) dIter.next();
 				
-				showLink = !hasDeptId || !thisDept.getContentName().equalsIgnoreCase(qsDeptId);
-				selected = hasDeptId && thisDept.getContentName().equalsIgnoreCase(qsDeptId);
+			%>	<fd:QuickShopController id="qCart" orderId="every" action="">
+			<%      // checks if customer has shopped from this dept.  If not, don't show dept. APPDEV-203
+				if( !qCart.getProducts(thisDept.getContentName()).isEmpty()) {
 				
-				if (selected) {
-					currentDepartment = thisDept.getFullName();
-				}
+					showLink = !hasDeptId || !thisDept.getContentName().equalsIgnoreCase(qsDeptId);
+					chosen = hasDeptId && thisDept.getContentName().equalsIgnoreCase(qsDeptId);
 
-				if (!thisDept.isHidden() && "[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp], [tea], [pas], [cmty]".indexOf("["+thisDept.getContentName().toLowerCase()+"]")== -1 ) {
-					if (showLink) { 
-						departmentNav.append("<a href=\"");
-						departmentNav.append("/quickshop/every_item.jsp?qsDeptId="); 
-						departmentNav.append(thisDept.getContentName());
-						departmentNav.append("\">");
+					if (chosen) {
+						currentDepartment = thisDept.getFullName();
 					}
-					if (selected) {
-						departmentNav.append("<b>");
+
+					if (!thisDept.isHidden() && "[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp], [tea], [pas], [cmty]".indexOf("["+thisDept.getContentName().toLowerCase()+"]")== -1 ) {
+						if (showLink) { 
+							departmentNav.append("<a href=\"");
+							departmentNav.append("/quickshop/every_item.jsp?qsDeptId="); 
+							departmentNav.append(thisDept.getContentName());
+							departmentNav.append("\">");
+						}
+						if (chosen) {
+							departmentNav.append("<b>");
+						}
+						departmentNav.append("<div style=\"margin-left: 5px; text-indent: -5px;\">");
+						if (showLink) departmentNav.append("<u>");
+						if (chosen) {
+							departmentNav.append(thisDept.getFullName().toUpperCase());
+						} else {
+							departmentNav.append(thisDept.getFullName());
+						}
+						if (showLink) departmentNav.append("</u>");
+						departmentNav.append("</div>");
+						if (chosen) {
+							departmentNav.append("</b>");
+						}
+						if (showLink) { 
+							departmentNav.append("</a>");
+						}
+						departmentNav.append("<font class=\"space2pix\"><br><br></font>");
 					}
-					departmentNav.append("<div style=\"margin-left: 5px; text-indent: -5px;\">");
-					if (showLink) departmentNav.append("<u>");
-					if (selected) {
-						departmentNav.append(thisDept.getFullName().toUpperCase());
-					} else {
-						departmentNav.append(thisDept.getFullName());
-					}
-					if (showLink) departmentNav.append("</u>");
-					departmentNav.append("</div>");
-					if (selected) {
-						departmentNav.append("</b>");
-					}
-					if (showLink) { 
-						departmentNav.append("</a>");
-					}
-					departmentNav.append("<font class=\"space2pix\"><br><br></font>");
 				}
+				%></fd:QuickShopController><%
 			} 
 		}
 %>

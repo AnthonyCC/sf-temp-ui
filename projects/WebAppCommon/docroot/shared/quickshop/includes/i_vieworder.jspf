@@ -1,5 +1,8 @@
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@ page import="com.freshdirect.fdstore.util.ProductLabeling"%>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@ page import="com.freshdirect.fdstore.*"%>
 <%@ page import="com.freshdirect.fdstore.content.SkuModel"%>
 <%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
@@ -11,6 +14,9 @@
 <%@ page import="com.freshdirect.framework.util.StringUtil" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Iterator" %>
+
+
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%
 String itemModifyWarning = "If you view an item, you will lose any changes you have made to quantities on this page.";
@@ -261,6 +267,10 @@ String source = ccListIdStr != null && ccListIdStr.length() > 0
 <%
 
     ProductModel productNode = orderLine.lookupProduct();
+    
+    ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode);
+    String actionUrl = FDURLUtil.getProductURI( productNode, pl.getTrackingCode() );
+
     if (hasDeptId) {
         if (!productNode.getDepartment().getContentName().equalsIgnoreCase(qsDeptId)) {
             showProduct = false;
@@ -297,7 +307,7 @@ String source = ccListIdStr != null && ccListIdStr.length() > 0
 			<tr><td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
 			<tr>
 				<td colspan="3">&nbsp;</td>
-				<td align="left" valign="bottom" colspan="6"><a class="title12" style="color: #969; text-decoration: none; text-transform: uppercase; margin-left: 4px"
+				<td align="left" valign="bottom" colspan="6"><a class="title14" style="color: #969; text-decoration: none; text-transform: uppercase; margin-left: 4px"
 					href="/department.jsp?deptId=<%= deptId %>&trk=qslist"><%= lastDept %></a></td>
 			</tr>
 			<%
@@ -362,34 +372,34 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
     // single product just added
 %>
 
-<tr bgcolor="#FF9933">
-    <td colspan="9" class="text11wbold"><a name="recent"></a><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>&nbsp;&nbsp;You have just added to your cart:<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
-</tr>
-<tr>
-<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-<td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
-<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-</tr>
-<tr valign="top">
-    <td bgcolor="#FF9933" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-    <td colspan="3">&nbsp;&nbsp;&nbsp;<%= recentOrderLine.getDisplayQuantity() %><%if (!"".equals(recentOrderLine.getLabel())){%> <%=recentOrderLine.getLabel()%><% } %></td>
-    <td class="text11"><%= recentOrderLine.getDescription() %><% if (!"".equals(recentOrderLine.getConfigurationDesc())) { %> (<%= recentOrderLine.getConfigurationDesc() %>)<% } %> - <%= recentOrderLine.getUnitPrice() %></td>
-    <td align="center"><%=currencyFormatter.format(recentOrderLine.getPrice())%></td>
-    
-    
+	<tr bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="3">
+	    <td colspan="9" class="text11wbold"><a name="recent"></a><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>&nbsp;&nbsp;You have just added to your cart:<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+	</tr>
+	<tr>
+	<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	<td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+	<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	</tr>
+	<tr valign="top">
+	    <td bgcolor="#FF9933" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	    <td colspan="3">&nbsp;&nbsp;&nbsp;<%= recentOrderLine.getDisplayQuantity() %><%if (!"".equals(recentOrderLine.getLabel())){%> <%=recentOrderLine.getLabel()%><% } %></td>
+	    <td class="text11"><%= recentOrderLine.getDescription() %><% if (!"".equals(recentOrderLine.getConfigurationDesc())) { %> (<%= recentOrderLine.getConfigurationDesc() %>)<% } %> - <%= recentOrderLine.getUnitPrice() %></td>
+	    <td align="center"><%=currencyFormatter.format(recentOrderLine.getPrice())%></td>
 
-    <td colspan="2" align="center">&nbsp;</td>
-    <script language="JavaScript">var pricing<%=idx%> = new Pricing();</script>
-    <input type="hidden" name="skuCode_<%=idx%>" value="">
-    <input type="hidden" name="quantity_<%=idx%>" value="">
-    <input type="hidden" name="salesUnit_<%=idx%>" value="">
-    <input type="hidden" name="estPrice_<%=idx%>" value="">
-    <td bgcolor="#FF9933" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-</tr>
-<tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
-<tr bgcolor="#FF9933">
-    <td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
-</tr>
+
+
+	    <td colspan="2" align="center">&nbsp;</td>
+	    <script language="JavaScript">var pricing<%=idx%> = new Pricing();</script>
+	    <input type="hidden" name="skuCode_<%=idx%>" value="">
+	    <input type="hidden" name="quantity_<%=idx%>" value="">
+	    <input type="hidden" name="salesUnit_<%=idx%>" value="">
+	    <input type="hidden" name="estPrice_<%=idx%>" value="">
+	    <td bgcolor="#FF9933" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	</tr>
+	<tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
+	<tr bgcolor="#FF9933">
+	    <td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+	</tr>
 <%
 
 } else if (productNode==null || productNode.getSku(orderLine.getSkuCode()).isUnavailable() || orderLine.isInvalidConfig()) {
@@ -485,9 +495,14 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 <tr bgcolor="<%=rowColor%>">
     <td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
 </tr>
+
+
 <%
     } else { //if prod avail
 %>
+
+
+
 <%--top buffer --%>
 <tr bgcolor="<%=rowColor%>">
     <td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
@@ -537,20 +552,19 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
                 FDProductInfo productInfo = orderLine.lookupFDProductInfo();
                 FDProduct product = orderLine.lookupFDProduct();
                 
-                String prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice());
-                String priceUnit = productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
     %>
     
    <%
      if (QuickCart.PRODUCT_TYPE_CCL == cartType || QuickCart.PRODUCT_TYPE_STARTER_LIST == cartType) {  // CCL or STARTER
    %>
-            <td><font class="text10bold"><a href="<%=qsLink%><%=qsExtra%>" onclick="FormChangeUtil.setWarningMessage('qs_cart','<%=itemModifyWarning%>');  addQuantToLink(this,'<%=qsLink%>',<%=idx%>);"><%= orderLine.getDescription() %></a> -  <%= prodPrice %>/<%=priceUnit%></font>
+            <td><font class="text10bold"><a href="<%=qsLink%><%=qsExtra%>" onclick="FormChangeUtil.setWarningMessage('qs_cart','<%=itemModifyWarning%>');  addQuantToLink(this,'<%=qsLink%>',<%=idx%>);"><%= orderLine.getDescription() %></a></font>
    <% }else{ // not CCL and STARTER%>
-    <td><font class="text10bold"><%= orderLine.getDescription() %> -  <%= prodPrice %>/<%=priceUnit%></font>
+    <td><font class="text13bold"><%= orderLine.getDescription() %></font>
+    
     <% } %>
-    <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
-    <%@include file="/includes/product/i_scaled_prices_nobr.jspf"%>
-    <br>
+    
+  <%--  include file="/includes/product/i_scaled_prices_nobr.jspf" --%>
+    
     <%if(request.getRequestURI().indexOf("makegood")>-1){%>
         <input type="hidden" name="originalOrderLineId_<%=idx%>" value="<%= ((FDCartLineI)orderLine).getOrderLineId() %>">
     <%}%>
@@ -572,23 +586,22 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
     <% } else if (QuickCart.PRODUCT_TYPE_STARTER_LIST == cartType) { %>
     <% } else { %>
         <%if(!(request.getRequestURI().indexOf("makegood")>-1)){%>
-              <a href="<%=qsLink%><%=qsExtra%>" onclick="FormChangeUtil.setWarningMessage('qs_cart','<%=itemModifyWarning%>'); addQuantToLink(this,'<%=qsLink%>',<%=idx%>);" class="text10" onMouseOver="window.status='Customize this product'">VIEW/MODIFY</A>&nbsp;
+              <a href="<%=qsLink%><%=qsExtra%>" onclick="FormChangeUtil.setWarningMessage('qs_cart','<%=itemModifyWarning%>'); addQuantToLink(this,'<%=qsLink%>',<%=idx%>);" class="text10" onMouseOver="window.status='Customize this product'">Modify</A>&nbsp;
         <%}%>      
     <%        if(orderLine.getStatistics() != null ){ %>
 				- <a href="javascript:doDelete('<%=orderLine.getStatistics().getPK().getId()%>')" onClick="return confirm('Are you sure you want to permanently DELETE this item from your Quickshop list?');">Delete</a>
     <%        }
         } 
     %> 
+   
+    <br><br>
+    
+    <display:RatingPlusScalePrice product="<%= productNode %>" action="<%= actionUrl %>" noBr="true"/>
     </td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="4" height="1"><input type="text" style="width: 60px" name="estPrice_<%=idx%>" value="" size="6" class="<%=boxStyle%>" onChange="" onFocus="blur()"></td>
-            <script language="JavaScript">
-            function updatePriceField<%=idx%>() {
-                document.qs_cart.estPrice_<%=idx%>.value = pricing<%=idx%>.getPrice();
-                updateTotal();
-            }
-            pricing<%=idx%>.setCallbackFunction( updatePriceField<%=idx%> );
-            document.qs_cart.estPrice_<%=idx%>.value = pricing<%=idx%>.getPrice();
-            </script>
+    <td><img src="/media_stat/images/layout/clear.gif" width="4" height="1">
+    	<NOBR><display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="true" showDescription="false" showScalePricing="false"/></NOBR>
+    	<%@include file="/includes/product/i_price_taxdeposit.jspf"%></td>
+            
         <input type="hidden" name="skuCode_<%=idx%>" value="<%= orderLine.getSkuCode() %>">
 		<%
 		if (orderLine.getRecipeSourceId() != null) {
@@ -603,6 +616,12 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
     <td align="center"><%--img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><input type="image" name="addSingleToCart_<%=idx%>" src="/media_stat/images/buttons/grocery_addtocart.gif" width="14" height="13" alt="ADD THIS ITEM TO SHOPPING CART" border="0"--%></td>
     <td align="center" colspan="2"><% if (flagList.contains(orderLine)) { %><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br><img src="/media_stat/images/template/quickshop/qs_check_gray.gif" width="9" height="9" border="0" alt="Item already in your cart"><% } else { %>&nbsp;<% } %></td>
 </tr>
+
+<tr bgcolor="<%=rowColor%>">
+	<td colspan="4">&nbsp;</td>
+    	<td colspan="5"></td>
+</tr>
+
 
 <%--bottom buffer--%>
 <tr bgcolor="<%=rowColor%>">

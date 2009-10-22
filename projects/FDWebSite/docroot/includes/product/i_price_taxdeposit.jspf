@@ -3,10 +3,10 @@
 	boolean hasDeposit = product.hasDeposit();
 	if (hasTax || hasDeposit) {
 %>
-<i>Plus
-	<% if (hasTax) { %>Tax<% } %>
+<i>plus
+	<% if (hasTax) { %>tax<% } %>
 	<% if (hasTax && hasDeposit) { %> &amp; <% } %>
-	<% if (hasDeposit) { %>Deposit<% } %>
+	<% if (hasDeposit) { %>deposit<% } %>
 </i>
 <%
 	}

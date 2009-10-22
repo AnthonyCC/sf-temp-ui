@@ -272,6 +272,18 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>RatingPlusScalePrice</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.display.RatingPlusScalePriceTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.display.RatingPlusScalePriceTag$TagEI</teiclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
+		<attribute>
+			<name>savingsPercentage</name><!-- savings item -->
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>TransparentBox</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.display.TransparentBoxTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.display.TransparentBoxTag$TagEI</teiclass>

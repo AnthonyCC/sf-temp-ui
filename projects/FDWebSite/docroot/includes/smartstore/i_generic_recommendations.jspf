@@ -76,8 +76,14 @@
 	boolean hideSavings = genericRecommendationsVariant.isSmartSavings() && SmartStoreUtil.countSavingProductsInCart(genericRecommendationsVariant, pip_u, prevRecs) < 0;
 
 	if ( genericRecommendationsVariant != null && !hideSavings) {
+	
+		int maxItems = 5;
+		// if quickshop -- show only 4 items in smarttabs.
+		if(request.getRequestURI().indexOf("quickshop") > -1) {
+			maxItems = 4;
+		}
 %>
-<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>" itemCount="5">
+<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>" itemCount="<%=maxItems%>">
 		<% 		
 		    isRendered = true;
 			ConfigurationContext confContext = new ConfigurationContext();

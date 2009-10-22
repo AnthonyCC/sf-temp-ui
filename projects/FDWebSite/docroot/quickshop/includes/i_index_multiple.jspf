@@ -4,17 +4,23 @@
 	<tr valign="top">
 		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
 		<td width="237" class="text13">
-<fd:CCLCheck>			
-			<font class="text15"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;<fd:CCLNew/></span>
-			<font class="space2pix"><br><br></font>
-			<font class="text12bold" color="#FF9933">CHANGE OR SHOP FROM YOUR LISTS:</font>
-			<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
-</fd:CCLCheck>
-			<font class="text15"><b>Your Previous Orders</b></font><font class="space2pix"><br><br></font>
-			<font class="text12bold" color="#FF9933">CHOOSE AN ORDER:</font>
+
+			<font class="text15"><b>Shop from Previous Orders</b></font><font class="space2pix"><br><br></font>
+			<font class="text12bold" color="#FF9933">CHOOSE AN ORDER:<br><br></font>
 			<font class="space2pix"><br><br><br></font>
 			<%@ include file="/quickshop/includes/order_nav.jspf" %>
 			<b><%= orderNav.toString() %></b>
+			
+			<img src="/media_stat/images/layout/clear.gif" width="0" height="25">
+			<fd:GetCustomerRecipeList id="recipes">
+				<div class="text15"><b>Your Recipes</b></div>
+				<div class="text12bold" style="color: #FF9933">REORDER YOUR FAVORITES:</div>
+				<div><br>
+					<b><a href="/quickshop/your_recipes.jsp">Click here to shop from your previous recipes</a></b>
+					<br><br><br>
+				</div>
+							
+			</fd:GetCustomerRecipeList>
 		</td>
 		<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
 		<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
@@ -23,43 +29,53 @@
 		String qsDeptId = "";
 		boolean hasDeptId = false;
 		boolean showLink = false;
-		boolean selected = false;
 		String qsMenuLink = "every_item.jsp";
 		%>
 		<td width="247" class="text13">
-			<fd:GetCustomerRecipeList id="recipes">
-				<div class="text15"><b>Your Recipes</b></div>
-				<div class="text12bold" style="color: #FF9933">REORDER YOUR FAVORITES:</div>
-				<div>
-					<b><a href="/quickshop/your_recipes.jsp">Click here to shop from your previous recipes</a></b>
-					<br><br><br>
-				</div>
-				
-			</fd:GetCustomerRecipeList>
 			
+			<div>
 				
 			<font class="text15"><b>Everything You've<br>Ever Ordered!</b></font><font class="space2pix"><br><br></font>
-				<font class="text12bold" color="#FF9933">CHOOSE DEPARTMENT:</font>
-				<font class="space2pix"><br><br><br></font>
-				<%@ include file="/quickshop/includes/department_nav.jspf" %>
-				<b><%= departmentNav.toString() %></b>
+				<font class="text12bold" color="#FF9933">CHOOSE DEPARTMENT: </font>
+				<font class="space2pix"><br><br><br></font><br>&nbsp;&nbsp;
+				<SELECT ONCHANGE="location = this.options[this.selectedIndex].value;">
+					<OPTION>Choose Department...
+	    
+					<%@ include file="/quickshop/includes/department_nav_select_box.jspf" %>
+					<%= departmentNav.toString() %>
+					
+				</SELECT>
+			</div>
+			<div>
+			<img src="/media_stat/images/layout/clear.gif" width="0" height="50">
+			<fd:CCLCheck>			
+						<font class="text15"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;</span>
+						<font class="space2pix"><br><br></font>
+						<font class="text12bold" color="#FF9933">EDIT OR SHOP FROM YOUR LISTS:</font><br><br>
+						<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
+			</fd:CCLCheck>
+			</div>
 		</td>
 	</tr>
 	<tr><td colspan="6"><br></td></tr>
 	<tr><td colspan="6" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
 	<tr><td colspan="6" align="center"><font class="space4pix"><br><br></font>
-            <%if(FDStoreProperties.isAdServerEnabled()) {%>
-                <SCRIPT LANGUAGE=JavaScript>
-                <!--
-                OAS_AD('QSBottom');
-                //-->
-                </SCRIPT>
-            <%}else{%>
-                <%@ include file="/includes/home/i_banners.jspf" %>
-            <%}%>    
+            
                 <font class="space2pix"><br><br><br></font>
         </td></tr>
-	<tr><td colspan="6" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-	<tr><td colspan="6" align="center" class="bodyCopy"><br><a href="/index.jsp"><b>Click here to continue shopping from our homepage!</b></a></td></tr>
-</table>
+	</table>
+
+<!-- ===================================== -->
+<!-- ============ Cart & tabs ============ -->
+<!-- ===================================== -->
+
+<%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
+
+<BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<% if (!"true".equals(request.getAttribute("recommendationsRendered"))) { %>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<% } %>
 					

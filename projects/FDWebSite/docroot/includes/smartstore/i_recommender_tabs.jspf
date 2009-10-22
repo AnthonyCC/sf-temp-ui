@@ -38,6 +38,11 @@
 		int totalWidth = 693;
 		int tabSize = numTabs==3 ? 200 : numTabs==2 ? 300 : 600;
 		
+		if(request.getRequestURI().indexOf("quickshop") > -1) {
+			totalWidth = 535;
+			tabSize = numTabs==3 ? 160 : numTabs==2 ? 250 : 500;
+		}
+		
 		if ( numTabs > 0 ) { %>
 	
 			<%-- TABS ROW --%>
