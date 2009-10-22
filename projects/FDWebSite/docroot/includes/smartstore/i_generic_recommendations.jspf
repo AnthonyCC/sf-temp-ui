@@ -42,7 +42,8 @@
 --%>
 
 
-<script type="text/javascript" src="/assets/javascript/pricing.js"></script>
+
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><script type="text/javascript" src="/assets/javascript/pricing.js"></script>
 
 <%
 {
@@ -55,8 +56,8 @@
 	String vId = genericRecommendationsVariant.getId();
 	
 	// transactional pricing logic - 'template' parameters
-	final String tx_pricing_FormName = "tabform_"+vId; // impression form name
-	final String tx_pricing_JSNameSpace = "document.pr"+vId.replaceAll("[^\\w]", "");
+	final String tx_pricing_FormName = "tabform_"+JspMethods.safeJavaScriptVariable(vId); // impression form name
+	final String tx_pricing_JSNameSpace = "document.pr"+JspMethods.safeJavaScriptVariable(vId);
 	final String tx_input_postfix = "in_"+vId;
 
 	ActionResult pip_result = (ActionResult) request.getAttribute("actionResult");

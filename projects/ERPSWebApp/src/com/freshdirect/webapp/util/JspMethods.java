@@ -872,6 +872,21 @@ public class JspMethods {
 		return displayObj;
 
 	}
+	
+    private final static String ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
+    public static String safeJavaScriptVariable(String s) {
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            if (ALLOWED_CHARS.indexOf(s.charAt(i)) < 0) {
+                buf.append('_');
+                buf.append(Integer.toHexString(s.charAt(i)));
+            } else {
+                buf.append(s.charAt(i));
+            }
+        }
+        return buf.toString();
+    }
 
 	public static ProductModel getFeaturedProduct(ContentRef cr) {
 		if (!cr.getType().equals(ContentNodeI.TYPE_PRODUCT))
