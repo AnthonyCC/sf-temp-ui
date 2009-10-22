@@ -352,17 +352,5 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
             }
         }
 
-    private void close(Connection conn) {
-        try {
-        	if (conn != null) {
-        		conn.close();
-        	}
-        } catch(SQLException e) {
-        	LOGGER.warn("Could not close connection",e);
-        }
-    }
-
-
-
 
 }
