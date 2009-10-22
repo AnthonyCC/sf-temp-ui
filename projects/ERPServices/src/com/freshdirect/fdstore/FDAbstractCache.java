@@ -23,7 +23,7 @@ public abstract class FDAbstractCache {
 	public FDAbstractCache(long refreshDelay) {
 		this.refreshDelay = refreshDelay;
 		this.lastMaxModifiedDate = new Date(0);
-		refresher = new RefreshThread();
+		refresher = new RefreshThread(this.getClass().getName());
 		refresher.start();
 		try{
 			this.serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
@@ -57,6 +57,10 @@ public abstract class FDAbstractCache {
 	
 	
 	private final class RefreshThread extends Thread {
+	        public RefreshThread(String name) {
+    	            super(name);
+                }
+	        
 		public void run() {
 			try {
 				
