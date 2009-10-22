@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.LruCache;
+import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 import java.util.concurrent.Executor;
@@ -54,6 +55,10 @@ public class ContentFactory {
 
 	private static ContentFactory instance = new ContentFactory();
 
+	private static BalkingExpiringReference productNewnesses = null;
+	
+	private static final Object syncPn = new Object();
+	
 	/**
 	 * @label caches
 	 */
@@ -64,6 +69,8 @@ public class ContentFactory {
 
 	/** Map of {@link ContentKey} (IDs) -> {@link com.freshdirect.fdstore.content.ContentNodeI} */
 	private final Map nodesByKey;
+	
+	private final Object sync = new Object();
 
 	/** Map of sku codes / product nodes */
 	private LruCache skuProduct;
@@ -263,22 +270,21 @@ public class ContentFactory {
 
 	private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
 
-	private static final Map newProductsCache = Collections.synchronizedMap(new HashMap());
+	private static final TimedLruCache newProductsCache = new TimedLruCache(10, 1000 * 60 * 60 /* 1hour */);
 	
 	// for linked blocking queue core pool size is the max number of threads
 	private static Executor threadPool = new ThreadPoolExecutor(1, 1, 60,
 			TimeUnit.SECONDS, new LinkedBlockingQueue(), new ThreadPoolExecutor.DiscardPolicy());
 
 	public Collection getNewProducts(int days, String deptId) throws FDResourceException {
-		final ContentFactory cf = ContentFactory.getInstance();
 		final Integer cacheKey = new Integer(days);
-		if (!newProductsCache.containsKey(cacheKey)) {
+		if (newProductsCache.get(cacheKey) != null) {
 			newProductsCache.put(cacheKey, findProductsWithAge(days));
 		}
 		Collection cached = (Collection) newProductsCache.get(cacheKey);
 		if (cached != null) {
 			List list = new ArrayList(cached);
-			cf.filterProdsByDept(list, deptId);
+			filterProdsByDept(list, deptId);
 			return new HashSet(list);
 		} else
 			return null;
@@ -291,19 +297,15 @@ public class ContentFactory {
 			Map.Entry entry = (Map.Entry) it.next();
 			ProductModel p = (ProductModel) entry.getKey();
 			int age = Math.abs(((Integer) entry.getValue()).intValue());
-			if (age <= days)
+			if (age <= days && filterProduct(p) != null)
 				products.add(p);
 		}
 		return products;
 	}
 
 
-	private static BalkingExpiringReference productNewnesses = null;
-	
-	private static final Object sync = new Object();
-	
 	public Map getProductNewnesses() throws FDResourceException {
-		synchronized (sync) {
+		synchronized (syncPn) {
 			if (productNewnesses == null) {
 				Map pn = extractProductNewnesses();
 				productNewnesses = new BalkingExpiringReference(DAY_IN_MILLIS, threadPool, pn) {
@@ -324,21 +326,24 @@ public class ContentFactory {
 	}
 
 	private Map extractProductNewnesses() throws FDResourceException {
-		final ContentFactory cf = ContentFactory.getInstance();
 		Map so = FDCachedFactory.getSkusOldness();
 		Map pn = new HashMap(so.size());
 		Iterator it = so.entrySet().iterator();
 		while (it.hasNext()) {
-			Map.Entry e = (Map.Entry) it.next();
-			ProductModel key = cf.filterProduct(e.getKey().toString());
-			if (key != null) {
-				int nv = -((Integer) e.getValue()).intValue();
-				if (pn.containsKey(key)) {
-					int ov = ((Integer) pn.get(key)).intValue();
-					if (nv > ov)
+			Map.Entry entry = (Map.Entry) it.next();
+			ProductModel key;
+			try {
+				key = this.getProduct(entry.getKey().toString());
+				if (key != null) {
+					int nv = -((Integer) entry.getValue()).intValue();
+					if (pn.containsKey(key)) {
+						int ov = ((Integer) pn.get(key)).intValue();
+						if (nv > ov)
+							pn.put(key, new Integer(nv));
+					} else
 						pn.put(key, new Integer(nv));
-				} else
-					pn.put(key, new Integer(nv));
+				}
+			} catch (FDSkuNotFoundException e) {
 			}
 		}
 		return pn;
@@ -348,13 +353,12 @@ public class ContentFactory {
 	
 	public Collection getReintroducedProducts(final int days, final String deptId) throws FDResourceException {
 		final Integer cacheKey = new Integer(days);
-		final ContentFactory cf = ContentFactory.getInstance();
 		if (!reintroducedProductsCache.containsKey(cacheKey)) {
 			reintroducedProductsCache.put(cacheKey, new BalkingExpiringReference(DAY_IN_MILLIS, threadPool) {
 				protected Object load() {
 					try {
 				    	Collection skus = FDCachedFactory.getReintroducedSkuCodes(days);
-						List prods = skus != null ? cf.filterWholeProducts(skus) : Collections.EMPTY_LIST;
+						List prods = skus != null ? ContentFactory.this.filterWholeProducts(skus) : Collections.EMPTY_LIST;
 						return prods;
 					} catch (FDResourceException e) {
 						LOGGER.info("failed to retrieve new sku codes for " + days + " days");
@@ -366,7 +370,7 @@ public class ContentFactory {
 		Collection cached = (Collection) ((BalkingExpiringReference) reintroducedProductsCache.get(cacheKey)).get();
 		if (cached != null) {
 			List list = new ArrayList(cached);
-			cf.filterProdsByDept(list, deptId);
+			filterProdsByDept(list, deptId);
 			return list;
 		} else
 			return null;
@@ -423,21 +427,13 @@ public class ContentFactory {
 		return prods;
 	}
 
-	private ProductModel filterProduct(String skuCode) {
-		try {
-			ProductModel prod = this.getProduct(skuCode);
-
-			if (prod.isHidden() || !prod.isSearchable() || prod.isUnavailable()) {
-				return null;
-			}
-			
-			return prod;
-		} catch (FDSkuNotFoundException fdsnfe) {
-			LOGGER.info("No matching product node for sku " + skuCode);
+	private ProductModel filterProduct(ProductModel prod) {
+		if (prod.isHidden() || !prod.isSearchable() || prod.isUnavailable()) {
 			return null;
-		}
+		} else
+			return prod;
 	}
-	
+
 	private void filterProdsByDept(List prods, String dept) {
 		if (dept == null) {
 			return;
@@ -622,6 +618,7 @@ public class ContentFactory {
 				model = ContentNodeModelUtil.constructModel(key, true);
 			}
 		}
+			
 		return model;
 	}
 	

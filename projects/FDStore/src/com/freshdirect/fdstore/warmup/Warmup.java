@@ -78,14 +78,19 @@ public class Warmup {
 					// Warmup
 					warmupProducts();
 					
+					warmupProductNewness();
+					
 					if (FDStoreProperties.isPreloadSmartStore()) {
+						LOGGER.info("preloading Smart Store");
 						VariantRegistry.getInstance().reload();
 						CmsRecommenderRegistry.getInstance().reload();
 						SearchScoringRegistry.getInstance().load();
+					} else {
+						LOGGER.info("skipped preloading Smart Store");
 					}
 
 					warmupSmartCategories();
-					
+
 					LOGGER.info("Warmup done");
 				} catch (FDResourceException e) {
 					LOGGER.error("Warmup failed", e);
@@ -125,13 +130,14 @@ public class Warmup {
 		for (int i = 0; i < MAX_THREADS; i++) {
 			Thread t = new Thread("Warmup " + i) {
 				public void run() {
+					LOGGER.info("started " + Thread.currentThread().getName());
 					while (true) {
 						FDSku[] skus;
 						synchronized (prodInfos) {
 							int pSize = prodInfos.size();
 							if (pSize == 0) {
 								// nothing left to process
-								return;
+								break;
 							}
 							// grab some items, and remove from prodInfos list
 							List subList = prodInfos.subList(0, Math.min(pSize, GRAB_SIZE));
@@ -145,30 +151,42 @@ public class Warmup {
 							LOGGER.warn("Error during warmup", ex);
 						}
 					}
+					LOGGER.info("completed " + Thread.currentThread().getName());
 				}
 			};
 			t.setDaemon(true);
 			t.start();
 		}
+	}
 
+	private void warmupProductNewness() throws FDResourceException {
 		// initiating the asynchronous load of new and reintroduced products cache
 		if (FDStoreProperties.isPreloadNewness()) {
+			LOGGER.info("preloading product newness");
 			contentFactory.getProductNewnesses();
+			LOGGER.info("preloading product newness, phase #2");
 			contentFactory.getNewProducts(60, null);
 			contentFactory.getNewProducts(30, null);
 			contentFactory.getNewProducts(21, null);
 			contentFactory.getNewProducts(15, null);
 			contentFactory.getNewProducts(14, null);
 			contentFactory.getNewProducts(7, null);
+			LOGGER.info("finished preloading product newness");
+		} else {
+			LOGGER.info("skipped preloading product newness");			
 		}
 
 		if (FDStoreProperties.isPreloadReintroduced()) {
+			LOGGER.info("preloading reintroduced products");
 			contentFactory.getReintroducedProducts(60, null);
 			contentFactory.getReintroducedProducts(30, null);
 			contentFactory.getReintroducedProducts(21, null);
 			contentFactory.getReintroducedProducts(15, null);
 			contentFactory.getReintroducedProducts(14, null);
 			contentFactory.getReintroducedProducts(7, null);
+			LOGGER.info("finished preloading reintroduced products");
+		} else {
+			LOGGER.info("skipped preloading reintroduced products");			
 		}
 	}
 

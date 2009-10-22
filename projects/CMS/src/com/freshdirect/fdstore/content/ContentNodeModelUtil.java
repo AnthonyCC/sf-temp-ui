@@ -184,15 +184,15 @@ public class ContentNodeModelUtil {
 					cache = refModel.getContentKey().equals(priHome);
 				}
 				CmsContentNodeAdapter  m;
+				m = (CmsContentNodeAdapter) ContentFactory.getInstance().getContentNodeByKey(key);
 				if (setParent) {
-					m = (CmsContentNodeAdapter) constructModel(key, cache);
-					if (m==null) continue;
+					if (m == null || !refModel.equals(m.getParentNode())) {
+						m = (CmsContentNodeAdapter) constructModel(key, cache);
+						if (m == null)
+							continue;
+						m.setParentNode(refModel);
+					}
 					m.setPriority(i);
-					m.setParentNode(refModel);
-						
-				} else {
-					m = (CmsContentNodeAdapter) ContentFactory.getInstance().getContentNodeByKey(key);
-					
 				}
 				
 				

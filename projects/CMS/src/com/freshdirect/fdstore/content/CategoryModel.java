@@ -37,7 +37,7 @@ public class CategoryModel extends ContentNodeModelImpl {
 	
 	private final class RecommendedProductsRef extends BalkingExpiringReference {
 		private RecommendedProductsRef(long refreshPeriod, Executor executor) {
-			super(refreshPeriod, executor, new ArrayList());
+			super(refreshPeriod, executor);
 		}
 
 		@Override
@@ -47,6 +47,7 @@ public class CategoryModel extends ContentNodeModelImpl {
 			String recommenderId = CategoryModel.this.getRecommender() != null ?
 					CategoryModel.this.getRecommender().getContentName()
 					: null;
+			LOGGER.debug("loader started for category " + categoryId + ", recommender: " + recommenderId);
 			if (recommenderService != null && recommenderId != null) {
 				List prodIds = recommenderService.recommendNodes(recommenderId, categoryId);
 				List products = new ArrayList(prodIds.size());
@@ -57,14 +58,15 @@ public class CategoryModel extends ContentNodeModelImpl {
 							!products.contains(product))
 						products.add(product);
 				}
-				LOGGER.warn("found " + products.size() + " products for category " + categoryId);
+				LOGGER.debug("found " + products.size() + " products for category " + categoryId);
 				return products;
 			} else {
 				LOGGER.warn("recommender service ("
 						+ recommenderId
 						+ ") not found, returning previous recommendations for category "
 						+ categoryId);
-				return referent;
+				// fallback
+				throw new RuntimeException();
 			}
 		}
 		
@@ -290,7 +292,7 @@ public class CategoryModel extends ContentNodeModelImpl {
 					}
 				}
 			} catch (Exception ex) {
-
+				LOGGER.warn("exception during category aliasing", ex);
 			}
 		}
 
@@ -315,18 +317,6 @@ public class CategoryModel extends ContentNodeModelImpl {
 				LOGGER.warn("exception during smart category recommendation", e);
 			}
 		}
-		
-		/*
-		ArrayList retList = new ArrayList();
-		for (Iterator iter = prodList.iterator(); iter.hasNext();) {
-			ProductModel p = (ProductModel) iter.next();
-			if ((p.getFullName() != null) && !p.getFullName().equals("")) {
-				retList.add(p);
-			}
-		}
-
-		return retList;
-		*/
 		
 		return new ArrayList(prodList);
 		
