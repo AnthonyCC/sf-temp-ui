@@ -208,8 +208,10 @@
 			// TRKD := recommender ID (if recommender is Smart YMAL) otherwise burst code
 			final String trkd = prd2recommendation != null ? prd2recommendation.get(product.getContentKey().getId()) : pl.getTrackingCode();
 
-			String actionURI = FDURLUtil.getProductURI(product, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), trkd, rank, recmnd!=null ? recmnd.getImpressionId(product) : null,
-					ym_aset.getContentKey().getId(), ym_product != null ? ym_product.getContentName() : null);
+			String actionURI = FDURLUtil.getProductURI(	product, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), trkd, rank,
+					recmnd != null ? recmnd.getImpressionId(product) : null, 
+					ym_aset != null ? ym_aset.getContentKey().getId() : null, 
+					ym_product != null ? ym_product.getContentName() : null );			
 %>							<td class="ymal_product" style="width: <%= Math.round(100.0/rsize) %>%; text-align: center; vertical-align: top;">
 
 								<!-- start of ymal products internal table -->								
