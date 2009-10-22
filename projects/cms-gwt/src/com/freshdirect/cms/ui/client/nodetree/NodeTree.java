@@ -252,6 +252,7 @@ public class NodeTree extends ContentPanel {
 					return;
 				}
 				tree.getElement().setScrollTop(scrollPos);
+				scrollHack();
 				tree.removeListener( Events.Expand, this );
 			}
 		}    	
