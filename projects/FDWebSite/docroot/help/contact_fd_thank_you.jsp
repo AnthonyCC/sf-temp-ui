@@ -13,7 +13,7 @@
 			<div style="font-size: 28px; font-face:Arial,Verdana,Helvetica; color: #FF9933; margin-bottom: 6px;"><b>THANK YOU!</b></div>
 			<span class="text15"><b>We've received your message.</b></span>
 			<br><font class="space8pix"><br></font>
-			  <b> We generally respond within 1 to 3 hours, </b> during our normal business hours.
+			  <b> We generally respond within 1 to 3 hours, </b> during our business day.
 			</td>
 		</tr>
 		<tr>

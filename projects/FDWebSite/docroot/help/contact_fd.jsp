@@ -123,7 +123,7 @@ if(request.getParameter("message")!=null){
 <tr valign="TOP">
 	<td width="670" class="text12">
 		<font class="title18">Contact FreshDirect</font><br>
-		FreshDirect Customer Service is standing by to answer your questions, seven days a week.  <b>We generally respond within 1 to 3 hours, during business hours.</b> Please select an order number and include as much specific information as possible to ensure a prompt
+		FreshDirect Customer Service is standing by to answer your questions, seven days a week.  <b>We generally respond within 1 to 3 hours, during our business day.</b> Please select an order number and include as much specific information as possible to ensure a prompt
         response to your inquiry.
         
           <% if ("CA".equalsIgnoreCase(user.getDepotCode())) { %>
