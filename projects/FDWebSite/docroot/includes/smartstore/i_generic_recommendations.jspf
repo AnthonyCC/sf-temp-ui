@@ -77,11 +77,14 @@
 
 	if ( genericRecommendationsVariant != null && !hideSavings) {
 	
-		int maxItems = 5;
-		// if quickshop -- show only 4 items in smarttabs.
-		if(request.getRequestURI().indexOf("quickshop") > -1) {
-			maxItems = 4;
-		}
+		if(null == session.getAttribute("quickShop") && request.getRequestURI().indexOf("quickshop") > -1 ) {
+			session.setAttribute("quickShop", "true");
+		} 
+		int maxItems = session.getAttribute("quickShop") == null ? 5 : 4;
+		
+		
+		System.out.println("generic recommendations:  maxItems = " + maxItems);
+		System.out.println("generic recommendations:  session.getAttribute(quickShop) = " + session.getAttribute("quickShop"));
 %>
 <fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>" itemCount="<%=maxItems%>">
 		<% 		
