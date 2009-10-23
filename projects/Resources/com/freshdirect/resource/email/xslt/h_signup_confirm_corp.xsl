@@ -56,7 +56,7 @@
                
                <p>See you at the office!<br/>
 			   <br/>
-			   Sincerely,<br/>
+			    Sincerely,<br/>
 			   <br/>
 				FreshDirect At The Office.</p>
                
