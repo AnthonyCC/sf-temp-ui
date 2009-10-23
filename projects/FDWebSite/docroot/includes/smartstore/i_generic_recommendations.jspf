@@ -79,7 +79,9 @@
 	
 		if(null == session.getAttribute("quickShop") && request.getRequestURI().indexOf("quickshop") > -1 ) {
 			session.setAttribute("quickShop", "true");
-		} 
+		} else if(null != session.getAttribute("quickShop") && request.getRequestURI().indexOf("view_cart") > -1) {
+			session.setAttribute("quickShop", null);
+		}
 		int maxItems = session.getAttribute("quickShop") == null ? 5 : 4;
 		
 %>
