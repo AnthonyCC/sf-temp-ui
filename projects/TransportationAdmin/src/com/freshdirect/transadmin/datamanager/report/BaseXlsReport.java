@@ -29,7 +29,10 @@ public class BaseXlsReport {
     protected Map initStyles(HSSFWorkbook wb, short fontHeight) {
         Map result = new HashMap();
         HSSFCellStyle titleStyle = wb.createCellStyle();
+        HSSFCellStyle titlePlainStyle = wb.createCellStyle();
+        
         HSSFCellStyle textStyle = wb.createCellStyle();
+        HSSFCellStyle textStyleHighlight = wb.createCellStyle();
         HSSFCellStyle boldStyle = wb.createCellStyle();
         HSSFCellStyle boldRightAlignStyle = wb.createCellStyle();
         HSSFCellStyle textStyleNoWrap = wb.createCellStyle();
@@ -41,7 +44,9 @@ public class BaseXlsReport {
         HSSFCellStyle textStyle_Totals = wb.createCellStyle();
 
         result.put("titleStyle", titleStyle);
+        result.put("titlePlainStyle",titlePlainStyle);
         result.put("textStyle", textStyle);
+        result.put("textStyleHighlight",textStyleHighlight);
         result.put("boldStyle", boldStyle);
         result.put("boldRightAlignStyle", boldRightAlignStyle);
         result.put("textStyleNoWrap", textStyleNoWrap);
@@ -83,22 +88,43 @@ public class BaseXlsReport {
 
         // Title Style
         titleStyle.setFont(titleFont);
-        titleStyle.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+        titleStyle.setFillForegroundColor(HSSFColor.GREY_50_PERCENT.index);
         titleStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-        titleStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        
+        /*titleStyle.setBorderBottom(HSSFCellStyle.BORDER_THIN);
         titleStyle.setBottomBorderColor(HSSFColor.BLACK.index);
         titleStyle.setBorderLeft(HSSFCellStyle.BORDER_THIN);
         titleStyle.setLeftBorderColor(HSSFColor.BLACK.index);
         titleStyle.setBorderRight(HSSFCellStyle.BORDER_THIN);
         titleStyle.setRightBorderColor(HSSFColor.BLACK.index);
         titleStyle.setBorderTop(HSSFCellStyle.BORDER_THIN);
-        titleStyle.setTopBorderColor(HSSFColor.BLACK.index);
+        titleStyle.setTopBorderColor(HSSFColor.BLACK.index);*/
         titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
         titleStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+        
+     // Title Plain Style
+        titlePlainStyle.setFont(titleFont);
+        titlePlainStyle.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+        titlePlainStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        /*titlePlainStyle.setBorderBottom(HSSFCellStyle.BORDER_MEDIUM);
+        titlePlainStyle.setBottomBorderColor(HSSFColor.BLACK.index);
+        titlePlainStyle.setBorderLeft(HSSFCellStyle.BORDER_MEDIUM);
+        titlePlainStyle.setLeftBorderColor(HSSFColor.BLACK.index);
+        titlePlainStyle.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);
+        titlePlainStyle.setRightBorderColor(HSSFColor.BLACK.index);
+        titlePlainStyle.setBorderTop(HSSFCellStyle.BORDER_MEDIUM);
+        titlePlainStyle.setTopBorderColor(HSSFColor.BLACK.index);*/
+        titlePlainStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        titlePlainStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
 
         // Standard Text Style
         textStyle.setFont(font);
         textStyle.setWrapText(true);
+        
+        textStyleHighlight.setFont(font);
+        //textStyleHighlight.setWrapText(true);
+        textStyleHighlight.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+        textStyleHighlight.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 
         // Standard Text Style
         boldStyle.setFont(fontBold);
@@ -110,8 +136,7 @@ public class BaseXlsReport {
         
         textStyleNoWrap.setFont(font);
         textStyleNoWrap.setWrapText(false);
-          
-        
+                
         
        
         // Numeric Style Total
@@ -151,5 +176,13 @@ public class BaseXlsReport {
 		} catch (ParseException exp) {
 			return "Error Formatting Date";
 		}
+    }
+    
+    protected double getDoubleVal(String str) {
+    	double result = 0.0;
+    	if(TransStringUtil.isValidDecimal(str)) {
+			result = Double.parseDouble(str);
+		}
+		return result;
     }
 }

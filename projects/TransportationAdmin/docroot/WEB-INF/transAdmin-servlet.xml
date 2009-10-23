@@ -107,6 +107,7 @@
 				<prop key="/dispatchprovider.ax">asyncDispatchController</prop>
 				
 				<prop key="/gmap.do">geographyController</prop>
+				<prop key="/gmapexport.do">geographyController</prop>
 				<prop key="/drivingdirection.do">dispatchController</prop>
                 <prop key="/unassignedactiveemployees.do">dispatchController</prop>
                 <prop key="/scrib.do">scribController</prop>
@@ -227,6 +228,7 @@
  		 	<prop key="/deletegeorestriction.do">geoRestrictionDeleteHandler</prop>
 
 			<prop key="/gmap.do">geographicBoundaryHandler</prop>
+			<prop key="/gmapexport.do">geographicBoundaryExportHandler</prop>
 			<prop key="/drivingdirection.do">drivingDirectionsHandler</prop>
             <prop key="/unassignedactiveemployees.do">unassignedPunchedInEmployeeHandler</prop>
             <prop key="/scrib.do">scribHandler</prop>

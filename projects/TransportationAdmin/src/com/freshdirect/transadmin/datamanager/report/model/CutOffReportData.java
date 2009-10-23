@@ -11,6 +11,14 @@ public class CutOffReportData implements  Serializable {
 	private TreeMap summaryData;
 	private TreeMap tripReportData;
 	
+	private TreeMap detailData;
+	
+	public TreeMap getDetailData() {
+		return detailData;
+	}
+	public void setDetailData(TreeMap detailData) {
+		this.detailData = detailData;
+	}
 	public String getCutOff() {
 		return cutOff;
 	}
@@ -22,6 +30,19 @@ public class CutOffReportData implements  Serializable {
 	}
 	public void setReportData(TreeMap reportData) {
 		this.reportData = reportData;
+	}
+	
+	public TreeMap getTripReportData() {
+		return tripReportData;
+	}
+	public void setTripReportData(TreeMap tripReportData) {
+		this.tripReportData = tripReportData;
+	}
+	public TreeMap getSummaryData() {
+		return summaryData;
+	}
+	public void setSummaryData(TreeMap summaryData) {
+		this.summaryData = summaryData;
 	}
 	
 	public void putReportData(Object key , Object value) {
@@ -38,6 +59,13 @@ public class CutOffReportData implements  Serializable {
 		((List)summaryData.get(key)).add(value);
 	}
 	
+	public void putDetailData(Object key , Object value) {
+		if(!detailData.containsKey(key)) {
+			detailData.put(key, new ArrayList());
+		}
+		((List)detailData.get(key)).add(value);
+	}
+	
 	public void putTripReportData(Object key , Object value) {
 		if(!tripReportData.containsKey(key)) {
 			tripReportData.put(key, new ArrayList());
@@ -46,19 +74,8 @@ public class CutOffReportData implements  Serializable {
 	}
 	
 	public String toString() {
-		return cutOff.toString()+"->"+reportData;
+		return cutOff.toString()+"->"+reportData+"->"+detailData;
 	}
-	public TreeMap getTripReportData() {
-		return tripReportData;
-	}
-	public void setTripReportData(TreeMap tripReportData) {
-		this.tripReportData = tripReportData;
-	}
-	public TreeMap getSummaryData() {
-		return summaryData;
-	}
-	public void setSummaryData(TreeMap summaryData) {
-		this.summaryData = summaryData;
-	}
+	
 	
 }

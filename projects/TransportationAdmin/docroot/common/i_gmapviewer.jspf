@@ -7,11 +7,17 @@
       var defaultZoomLevel = 15;
                   
       var jsonrpcClient = new JSONRpcClient("geographyprovider.ax");
+      var currentBoundary;
       
-            
+      function doExport() {   							    
+		    if(currentBoundary != null) {
+		    	location.href = "gmapexport.do?type="+ document.getElementById("gtype").value+"&code="+currentBoundary;	
+			}
+	  }
+  	    
       function init() {
         editPanel = new YAHOO.widget.Panel("panel-1", {       
-                          width: "860px", 
+                          width: "960px", 
                           fixedcenter: true, 
                           close: true, 
                           draggable: false, 
@@ -48,7 +54,7 @@
         
           waitPanel.render(document.body);
           waitPanel.show();
-        
+          
     	  var result = loadData(jsonrpcClient, showBoundaryCallback, boundaryKey); 
       	  
       }
@@ -89,6 +95,8 @@
 		  map.setZoom(defaultZoomLevel); 	                    
           editPanel.render(document.body);    
           //editPanel.moveTo(450, 200);
+          
+          currentBoundary = result.code;
           editPanel.show();
       }
       
@@ -168,9 +176,9 @@
 	    &nbsp;&nbsp;
 	    <input type="text" size="40" id="address" value="2330 BORDEN AVE, 11101, NY"  />
 	    <input type="button" value="Locate!" onclick="javascript:plotPoint('A')" />
-	    
+	    <input type="button" value="Export!" onclick="javascript:doExport()" />
  	 </p>
       
-                <div id="map_canvas" style="width: 840px; height: 600px"></div>
+                <div id="map_canvas" style="width: 940px; height: 600px"></div>
         </div>
     </div>

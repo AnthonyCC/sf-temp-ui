@@ -32,6 +32,35 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 	private String latitude;
 	private String longitude;
 	
+	private String totalDistance;
+	private Date totalTravelTime;
+	private Date totalServiceTime;
+	private Date routeCompleteTime;
+	
+	public String getTotalDistance() {
+		return totalDistance;
+	}
+	public void setTotalDistance(String totalDistance) {
+		this.totalDistance = totalDistance;
+	}
+	public Date getTotalTravelTime() {
+		return totalTravelTime;
+	}
+	public void setTotalTravelTime(Date totalTravelTime) {
+		this.totalTravelTime = totalTravelTime;
+	}
+	public Date getTotalServiceTime() {
+		return totalServiceTime;
+	}
+	public void setTotalServiceTime(Date totalServiceTime) {
+		this.totalServiceTime = totalServiceTime;
+	}
+	public Date getRouteCompleteTime() {
+		return routeCompleteTime;
+	}
+	public void setRouteCompleteTime(Date routeCompleteTime) {
+		this.routeCompleteTime = routeCompleteTime;
+	}
 	public String getDeliveryModel() {
 		return deliveryModel;
 	}

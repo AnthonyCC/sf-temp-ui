@@ -42,6 +42,17 @@
                 <record-element length="12" beanref="rowBean.latitude" type="char"/>
                 <record-element length="12" beanref="rowBean.longitude" type="char"/> 
                 
+                <record-element length="6" beanref="rowBean.totalDistance" type="char"/>
+                
+                <record-element length="5" beanref="rowBean.totalTravelTime" type="time">
+	                <conversion-option name="format" value="HH:mm"/>
+                </record-element>
+                <record-element length="5" beanref="rowBean.totalServiceTime" type="time">
+	                <conversion-option name="format" value="HH:mm"/>
+                </record-element>
+                <record-element length="6" beanref="rowBean.routeCompleteTime" type="time">  
+					 <conversion-option name="format" value="HHmmss"/>
+                </record-element>
             </line>
         </record-definition>
     </record>

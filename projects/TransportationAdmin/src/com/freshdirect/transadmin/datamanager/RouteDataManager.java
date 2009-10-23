@@ -147,6 +147,7 @@ public class RouteDataManager {
 		result.setReportData(new TreeMap());
 		result.setTripReportData(new TreeMap());
 		result.setSummaryData(new TreeMap());
+		result.setDetailData(new TreeMap());
 		
 		if(rnOrderLst != null) {
 			Iterator _iterator = rnOrderLst.iterator();
@@ -163,6 +164,8 @@ public class RouteDataManager {
 																_model.getRouteId()), _model);
 					if(_model.getTripId() != null) {
 						result.putTripReportData(_model.getRouteId(), _model);
+					} else {
+						result.putDetailData(_model.getRouteId(), _model);
 					}
 				}
 			}

@@ -186,7 +186,8 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 			}
 			
 			createSummarySheet(wb, reportData, styles);
-			createTripInfoSheet(wb, reportData, styles);			
+			createTripInfoSheet(wb, reportData, styles);
+			createDetailInfoSheet(wb, reportData, styles);
 		}		 
 
 		new RouteFileManager().generateReportFile(file, wb);
@@ -327,6 +328,458 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
         return rownum;
 	}
 	
+	private short createDetailInfoSheet(HSSFWorkbook wb, CutOffReportData reportData, Map styles) {
+		
+		if(reportData.getDetailData() != null) {
+			Set routeKeys = reportData.getDetailData().keySet();
+			
+			Iterator _routeKeyItr = routeKeys.iterator();
+			
+			short rownum = 0;	
+		    short cellnum = 0;
+		    
+		    HSSFSheet sheet = wb.createSheet("Route Details");
+		    sheet.setDefaultColumnWidth((short)DEFAULT_WIDTH);	
+					    
+		    HSSFPrintSetup ps = sheet.getPrintSetup();
+		    //sheet.setAutobreaks(true);		    
+	        //ps.setFitWidth((short)1);
+	        //ps.setFitHeight((short)1);	
+	        ps.setScale((short)100);
+	        sheet.setGridsPrinted(false);
+	        
+	        ps.setLandscape(true);
+	        
+	        /*sheet.setHorizontallyCenter(true);
+	        ps.setPaperSize(HSSFPrintSetup.LETTER_PAPERSIZE);*/
+	        
+	        ps.setHeaderMargin((double) .25);
+	        ps.setFooterMargin((double) .25);
+	        sheet.setMargin(HSSFSheet.TopMargin, (double) .25);
+	        sheet.setMargin(HSSFSheet.BottomMargin, (double) .25);
+	        sheet.setMargin(HSSFSheet.LeftMargin, (double) .25);
+	        sheet.setMargin(HSSFSheet.RightMargin, (double) .25);
+		    
+		    HSSFRow row = sheet.createRow(rownum++);
+		    HSSFCell hssfCell = row.createCell(cellnum);
+
+	        setCellEncoding(hssfCell);
+
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Route Details"));
+	        			        
+			sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
+			
+			
+			List _detailData = null;
+			while (_routeKeyItr.hasNext()) {
+				String _routeId = (String) _routeKeyItr.next();
+				
+				_detailData = ((List)reportData.getDetailData().get(_routeId));
+				
+				DtlSummaryData _summaryData = getDtlSummaryData(_detailData);
+				
+		        Iterator _colsTripItr = _detailData.iterator();
+	       		
+		        row = sheet.createRow(rownum++);//blank Row
+		        sheet.addMergedRegion(new Region(rownum-1,(short)0,rownum-1,(short)8));
+		        row = sheet.createRow(rownum++);//blank Row
+		        sheet.addMergedRegion(new Region(rownum-1,(short)0,rownum-1,(short)8));
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 0;
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Zone"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.getZoneNumber(_routeId)));
+		        
+		        cellnum = (short)(cellnum+4);
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(CUTOFFREPORT_DATETITLE));
+		        		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(getFormattedDate(_summaryData.getDeliveryDate())));
+		        		        		             
+		        row = sheet.createRow(rownum++);
+		        cellnum = 0;		        
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Route"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(_routeId));
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        sheet.addMergedRegion(new Region(rownum-1,(short)1,rownum-1,(short)7));
+		        hssfCell = row.createCell(cellnum++);
+		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titlePlainStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Route Summary"));
+		        
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Stops"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(""+_summaryData.noOfStops));
+		        
+		        cellnum = (short)(cellnum+3);
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Miles"));
+		        		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(_summaryData.getTotalDistance()+" Miles"));
+		        
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Cartons"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(""+(int)_summaryData.getNoOfCartons()));
+		        		                
+		        cellnum = (short)(cellnum+3);
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Drive Time"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(""+TransStringUtil.formatTime(_summaryData.getTotalTravelTime())));
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 6;
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Service Time"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(""+TransStringUtil.formatTime(_summaryData.getTotalServiceTime())));
+		        
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        sheet.addMergedRegion(new Region(rownum-1,(short)1,rownum-1,(short)7));
+		        hssfCell = row.createCell(cellnum++);
+		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titlePlainStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Route Time ETAs"));
+		        
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Dispatch Time"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTime(addMinutes(_summaryData.getRouteStartTime(), -25))));
+		        
+		        cellnum = (short)(cellnum+3);
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Last Stop Completed"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTime(_summaryData.getLastDepartureTime())));
+		        
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Truck Depart Time"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTime(_summaryData.getRouteStartTime())));
+		        		                
+		        cellnum = (short)(cellnum+3);
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Return to Bldg Time"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTime(_summaryData.getRouteCompleteTime())));
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("1st Stop Start"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTime(_summaryData.getFirstDepartureTime())));
+		        		                
+		        cellnum = (short)(cellnum+3);
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Check in"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTime(addMinutes(_summaryData.getRouteCompleteTime(), -25))));
+		        
+		        row = sheet.createRow(rownum++);//blank Row
+		        
+		        row = sheet.createRow(rownum++);
+		        cellnum = 1;
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Window"));
+	              	        	        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Stop No"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Order No"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("Address"));
+		        
+		        boolean rowStyleSwitch = true;
+		        Date currentWindow = null;
+		        while (_colsTripItr.hasNext()) {
+		        	cellnum = 1;
+		        	OrderRouteInfoModel _model = (OrderRouteInfoModel)_colsTripItr.next();
+		        	
+		        	if(!_model.getTimeWindowStart().equals(currentWindow)) {
+		        		currentWindow = _model.getTimeWindowStart();
+		        		rowStyleSwitch = !rowStyleSwitch;
+		        	}
+		        	
+		        	row = sheet.createRow(rownum++);
+		        	
+					hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTimeRange
+				    												(_model.getTimeWindowStart(), _model.getTimeWindowStop())));
+			    	    				    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(_model.getStopNumber()));
+				    				    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(_model.getOrderNumber()));
+				    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyleNoWrap" : "textStyleHighlight"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(_model.getAddress()+","+_model.getZipcode()));
+				    //sheet.autoSizeColumn((short)(cellnum-1));				
+				}		        			        
+				
+			}
+		}		        
+        return rownum;
+	}
+	
+		
+	protected DtlSummaryData getDtlSummaryData(List rnOrderLst ) {
+		
+		DtlSummaryData result = new DtlSummaryData();
+		double 	noOfCartons = 0.0;	
+		if(rnOrderLst != null) {
+			int size = rnOrderLst.size();
+			result.setNoOfStops(size);
+			OrderRouteInfoModel _model = null;
+			for (int i = 0; i < size; i++) {
+				_model = (OrderRouteInfoModel)rnOrderLst.get(i);
+				if(i == 0) {
+					result.setDeliveryDate(_model.getDeliveryDate());					
+					result.setTotalDistance(getFormattedDistance(_model.getTotalDistance()));
+					result.setTotalServiceTime(_model.getTotalServiceTime());
+					result.setTotalTravelTime(_model.getTotalTravelTime());
+					result.setRouteStartTime(_model.getRouteStartTime());
+					result.setFirstDepartureTime(_model.getStopDepartureTime());
+				} else if(i == (size-1)) {
+					result.setRouteCompleteTime(_model.getRouteCompleteTime());
+					result.setLastDepartureTime(_model.getStopDepartureTime());
+				}
+				noOfCartons += getDoubleVal(_model.getTotalSize1())+getDoubleVal(_model.getTotalSize2());
+			}
+		}
+		result.setNoOfCartons(noOfCartons);		
+		return result;
+	}
+	
+	class DtlSummaryData {
+		
+		int noOfStops;
+		double noOfCartons;
+		double totalDistance;
+		Date totalTravelTime;
+		Date totalServiceTime;
+		Date routeCompleteTime;
+		
+		Date routeStartTime;
+		Date firstDepartureTime;
+		Date lastDepartureTime;
+		Date deliveryDate;
+		
+		public Date getDeliveryDate() {
+			return deliveryDate;
+		}
+		public void setDeliveryDate(Date deliveryDate) {
+			this.deliveryDate = deliveryDate;
+		}
+		public int getNoOfStops() {
+			return noOfStops;
+		}
+		public void setNoOfStops(int noOfStops) {
+			this.noOfStops = noOfStops;
+		}
+		public double getNoOfCartons() {
+			return noOfCartons;
+		}
+		public void setNoOfCartons(double noOfCartons) {
+			this.noOfCartons = noOfCartons;
+		}
+		public double getTotalDistance() {
+			return totalDistance;
+		}
+		public void setTotalDistance(double totalDistance) {
+			this.totalDistance = totalDistance;
+		}
+		public Date getTotalTravelTime() {
+			return totalTravelTime;
+		}
+		public void setTotalTravelTime(Date totalTravelTime) {
+			this.totalTravelTime = totalTravelTime;
+		}
+		public Date getTotalServiceTime() {
+			return totalServiceTime;
+		}
+		public void setTotalServiceTime(Date totalServiceTime) {
+			this.totalServiceTime = totalServiceTime;
+		}
+		public Date getRouteCompleteTime() {
+			return routeCompleteTime;
+		}
+		public void setRouteCompleteTime(Date routeCompleteTime) {
+			this.routeCompleteTime = routeCompleteTime;
+		}
+		public Date getRouteStartTime() {
+			return routeStartTime;
+		}
+		public void setRouteStartTime(Date routeStartTime) {
+			this.routeStartTime = routeStartTime;
+		}
+		public Date getFirstDepartureTime() {
+			return firstDepartureTime;
+		}
+		public void setFirstDepartureTime(Date firstDepartureTime) {
+			this.firstDepartureTime = firstDepartureTime;
+		}
+		public Date getLastDepartureTime() {
+			return lastDepartureTime;
+		}
+		public void setLastDepartureTime(Date lastDepartureTime) {
+			this.lastDepartureTime = lastDepartureTime;
+		}
+	}
+	
+	private double getFormattedDistance(String distance) {
+		
+		double result = 0;
+		try {
+			result = Double.parseDouble(distance)/10;
+		} catch (Exception e) {
+			//Do Nothing
+		}
+		return result;
+	}
+	
+	private Date addMinutes(Date source, int minutes) {
+		
+		Date result = null;
+		try {
+			result = TransStringUtil.addSeconds(source, minutes*60);
+		} catch (Exception e) {
+			//Do Nothing
+		}
+		return result;
+	}
+	
 	private short createSummarySheet(HSSFWorkbook wb, CutOffReportData reportData, Map styles) {
 		
 		if(reportData.getSummaryData() != null) {
@@ -358,7 +811,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 	        hssfCell.setCellValue(new HSSFRichTextString("Route Summary Report"));
 	        			        
-			sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
+			sheet.addMergedRegion(new Region(0,(short)0,0,(short)10));
 			row = sheet.createRow(rownum++);//blank Row
 			
 	        row = sheet.createRow(rownum++);

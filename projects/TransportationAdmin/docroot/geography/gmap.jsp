@@ -42,7 +42,8 @@
   <div align="center"><br/>
   		<b>Please Select a Boundary Type:&nbsp;&nbsp;&nbsp;</b>
 		<input onclick="javascript:handleType('zone');" type="radio" id="gtype" value="zone" <%= "zone".equalsIgnoreCase(type) ? "checked" : "" %> /> <b>Zone</b>&nbsp;&nbsp;&nbsp;
-		<input onclick="javascript:handleType('georestriction');" type="radio" id="gtype" value="georestriction" <%= "georestriction".equalsIgnoreCase(type) ? "checked" : "" %> /> <b>Geo Restriction</b><br/>
+		<input onclick="javascript:handleType('georestriction');" type="radio" id="gtype" value="georestriction" <%= "georestriction".equalsIgnoreCase(type) ? "checked" : "" %> /> <b>Geo Restriction</b>
+		<br/>         
 	</div>
 	
 	<div class="contentroot">
@@ -112,37 +113,38 @@
 		</div>
 	</div>
 		<script>
+		
 		function addAsyncHandler(tableId, rowClassName, columnIndex) {
-	
-				var previousClass = null;
-			    var table = document.getElementById(tableId);
-			    
-			    if(table != null) {
-				    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
-				    for (i = 0; i < rows.length; i++) {	    	
-				        var cells = rows[i].getElementsByTagName("td");
-				        
-				        for (j = 0; j < cells.length; j++) {
-				        	
-				            cells[j].onmouseover = function () {
-				            	previousClass = this.parentNode.className;
-				            	this.parentNode.className = this.parentNode.className + " " + rowClassName ;
-				            };
-				        
-				            cells[j].onmouseout = function () {
-				              	this.parentNode.className = previousClass;
-				            };
-				        
-				           cells[j].onclick = function () {			    		
-							      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];							      		
-							      		showBoundary(cell.innerHTML);
-							      			      		
-						   };
-					    		    	
-				        }
-				    }
-				}
+			
+			var previousClass = null;
+		    var table = document.getElementById(tableId);
+		    
+		    if(table != null) {
+			    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
+			    for (i = 0; i < rows.length; i++) {	    	
+			        var cells = rows[i].getElementsByTagName("td");
+			        
+			        for (j = 0; j < cells.length; j++) {
+			        	
+			            cells[j].onmouseover = function () {
+			            	previousClass = this.parentNode.className;
+			            	this.parentNode.className = this.parentNode.className + " " + rowClassName ;
+			            };
+			        
+			            cells[j].onmouseout = function () {
+			              	this.parentNode.className = previousClass;
+			            };
+			        
+			           cells[j].onclick = function () {			    		
+						      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];							      		
+						      		showBoundary(cell.innerHTML);
+						      			      		
+					   };
+				    		    	
+			        }
+			    }
 			}
+		 }
 			addAsyncHandler('ec_table', 'rowMouseOver', 0);		
 		</script>
   </tmpl:put>

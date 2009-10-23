@@ -1,8 +1,12 @@
 package com.freshdirect.transadmin.web;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +18,8 @@ import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.RestrictionManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
+import com.freshdirect.transadmin.web.model.SpatialBoundary;
+import com.freshdirect.transadmin.web.model.SpatialPoint;
 
 public class GeographyController extends AbstractMultiActionController {
 	
@@ -77,4 +83,57 @@ public class GeographyController extends AbstractMultiActionController {
 		
 		return new ModelAndView("geographyView","boundaries",dataList);
 	}
+	
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView geographicBoundaryExportHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		String type = request.getParameter("type");
+		String code = request.getParameter("code");
+		
+		SpatialBoundary boundary = null;
+		response.setContentType("application/csv");
+		response.setHeader("Content-Disposition", "attachment; filename="+code+".csv");
+		OutputStream out = null;
+		try {
+			if("georestriction".equalsIgnoreCase(type)) {
+				boundary = getRestrictionManagerService().getGeoRestrictionBoundary(code);
+			} else {
+				boundary = getRestrictionManagerService().getZoneBoundary(code);				
+			}
+			
+			if(boundary != null) {
+				
+				out = response.getOutputStream();
+				
+				List points = boundary.getGeoloc();
+				StringBuffer strBuf = new StringBuffer();
+				
+				if(points != null) {
+					int intCount = 0;
+					Iterator itr = points.iterator();
+					SpatialPoint _point = null;					
+					while(itr.hasNext()) {
+						_point = (SpatialPoint)itr.next();
+						strBuf.append(boundary.getCode()).append(",").append(boundary.getName())
+											.append(",").append(_point.getX()).append(",").append(_point.getY())
+											.append(",").append(++intCount).append("\n");
+					}
+					
+				}
+				out.write(strBuf.toString().getBytes());
+				out.flush();				
+			}
+		} catch (IOException e) {
+			//Send Empty File
+		} 
+			
+		return null;
+	}
+	
+	
 }
