@@ -63,9 +63,9 @@ String whatsGood = "/department.jsp?deptId=wgd&trk=home";
 				  <tr align="center" valign="top" class="text11">
 				  	<td width="7"><img src="/media_stat/images/layout/clear.gif" width="7" height="1"></td>
 					<td width="123"><a href="<%=organic%>">Organic & All-Natural</a></td>
-					<td width="116"><a href="<%=localFoods%>">Local Foods</a></td>
+					<td width="122"><a href="<%=localFoods%>">Local Foods</a></td>
 					<td width="1"></td>
-					<td width="112"><a href="<%=kosher%>">Kosher</a></td>
+					<td width="109"><a href="<%=kosher%>">Kosher</a></td>
 					<td width="1"></td>
 					<td width="123"><a href="<%=pasta%>">Pasta</a></td>
 					<td width="14"><img src="/media_stat/images/layout/clear.gif" width="14" height="1"></td>
@@ -137,9 +137,9 @@ String whatsGood = "/department.jsp?deptId=wgd&trk=home";
 		
 		<map name="Row2">
   		<area shape="rect" coords="0,0,110,53" href="<%=organic%>" alt="Organic & All-Natural">
-  		<area shape="rect" coords="111,0,227,53" href="<%=localFoods%>" alt="Local Foods">
-  		<area shape="rect" coords="228,0,341,53" href="<%=kosher%>" alt="Kosher">
-		<area shape="rect" coords="342,0,465,53" href="<%=pasta%>" alt="Pasta">
+  		<area shape="rect" coords="111,0,234,53" href="<%=localFoods%>" alt="Local Foods">
+  		<area shape="rect" coords="235,0,345,53" href="<%=kosher%>" alt="Kosher">
+		<area shape="rect" coords="346,0,465,53" href="<%=pasta%>" alt="Pasta">
 		</map>
 		
 		<map name="Row4">
