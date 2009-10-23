@@ -70,28 +70,12 @@
 		*/
 		if(user.isGiftCardsEnabled()) {
 	%>
-
-<map name="bottomlinks" id="bottomlinks">
-  <area shape="rect" coords="11,0,70,21" href="/department.jsp?deptId=about&amp;trk=bnav" alt="About Us">
-  <area shape="rect" coords="71,0,157,21" href="javascript:popup('/help/freshness.jsp','small')" alt="Our Guarantee">
-  <area shape="rect" coords="158,0,249,21" href="/department.jsp?deptId=cmty&amp;trk=bnav" alt="Our Community">
-  <area shape="rect" coords="250,0,303,21" href="/category.jsp?catId=picks_celeb&amp;trk=bnav" alt="Our Ads">
-  <area shape="rect" coords="304,0,382,21" href="/category.jsp?catId=about_test&amp;trk=bnav" alt="Testimonials">
-  <area shape="rect" coords="383,0,437,21" href="http://jobs-freshdirect.icims.com" alt="Careers">
-  <area shape="rect" coords="438,0,498,21" href="/department.jsp?deptId=our_picks&amp;trk=bnav" alt="Our Picks" />
-  <area shape="rect" coords="499,0,576,21" href="/department.jsp?deptId=COS&amp;trk=bnav" alt="At the Office">
-  <area shape="rect" coords="577,0,647,21" href="/gift_card/purchase/landing.jsp?link=GiftCard&trk=bnav" alt="Gift Cards">
-  <area shape="rect" coords="648,0,745,21" href="/newproducts.jsp?trk=bnav" alt="New Products">
- </map>
-
-
-
 	<map name="bottomlinks" id="bottomlinks">
 		<area shape="rect" coords="11,0,70,21" href="/department.jsp?deptId=about&amp;trk=bnav" alt="About Us">
-		<area shape="rect" coords="70,0,157,21" href="javascript:popup('/help/freshness.jsp','small')" alt="Our Guarantee">
-		<area shape="rect" coords="157,0,249,21" href="/department.jsp?deptId=cmty&amp;trk=bnav" alt="Our Community">
-		<area shape="rect" coords="249,0,303,21" href="/category.jsp?catId=picks_celeb&amp;trk=bnav" alt="Our Ads">
-		<area shape="rect" coords="303,0,382,21" href="/category.jsp?catId=about_test&amp;trk=bnav" alt="Testimonials">
+		<area shape="rect" coords="71,0,157,21" href="javascript:popup('/help/freshness.jsp','small')" alt="Our Guarantee">
+		<area shape="rect" coords="158,0,249,21" href="/department.jsp?deptId=cmty&amp;trk=bnav" alt="Our Community">
+		<area shape="rect" coords="250,0,303,21" href="/category.jsp?catId=picks_celeb&amp;trk=bnav" alt="Our Ads">
+		<area shape="rect" coords="304,0,382,21" href="/category.jsp?catId=about_test&amp;trk=bnav" alt="Testimonials">
 		<area shape="rect" coords="383,0,437,21" href="<%=FDStoreProperties.getCareerLink()%>" alt="Careers">
 		<area shape="rect" coords="438,0,498,21" href="/department.jsp?deptId=our_picks&amp;trk=bnav" alt="Our Picks" />
 		<area shape="rect" coords="499,0,576,21" href="/department.jsp?deptId=COS&amp;trk=bnav" alt="At the Office">
@@ -102,6 +86,7 @@
 		<area shape="rect" coords="577,0,647,21" href="<%=FDStoreProperties.getGiftCardLandingUrl()%><%=(gcUrlHasOtherQueryVals)?"&":"?"%>trk=bnav" alt="Gift Cards">
 		<area shape="rect" coords="648,0,745,21" href="/newproducts.jsp?trk=bnav" alt="New Products">
 	</map>
+	
 <% } else if(FDStoreProperties.isWhatsGoodEnabled()) { %>
 	<map name="bottomlinks">
 		<area shape="rect" coords="10,0,73,21" href="/department.jsp?deptId=about&amp;trk=bnav" alt="About Us" />
