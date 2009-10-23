@@ -27,6 +27,8 @@ public class ProductPriceTag extends BodyTagSupport {
 	
 	private static final String styleWas = " style=\"font-weight: normal; color: gray;\"";			// normal, light grey
 	private static final String styleScale = " style=\"line-height:12px; font-weight: bold; color: #C94747;\"";		// bold, red
+	private static final String styleAboutOnly = " style=\"padding-top:2px; line-height:12px; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, sans-serif; color: #6B6B6B;\"";		// bold, red
+	private static final String styleAboutScaled = " style=\"padding-top:4px; line-height:12px; font-weight: bold; color: #C94747;\"";		// bold, red
 	
 	private static final String quickShopStyleRegularOnly = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #555555;\"";			// bold, dark grey
 	private static final String quickShopStyleRegularWithScaled = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #555555;\"";	// normal, dark grey
@@ -118,9 +120,18 @@ public class ProductPriceTag extends BodyTagSupport {
 
 			/* Display Sales Units price-Apple Pricing[AppDev-209].. */
 			String aboutPriceString = "";
+			String styleAbout = "";
 			
 			try {
 				aboutPriceString = JspMethods.getAboutPriceForDisplay(productInfo);
+				if(null != aboutPriceString && !"".equals(aboutPriceString)){
+					showRegularPrice = false; 
+					showWasPrice = false; 
+					showScalePricing = false; 
+					styleAbout = (scaleString!=null) ?  styleAboutScaled : styleAboutOnly;
+				}else{
+					styleAbout = styleAboutOnly;
+				}
 			} catch (JspException e) {
 			
 			}
@@ -187,7 +198,7 @@ public class ProductPriceTag extends BodyTagSupport {
 			if(showAboutPrice){
 				if(null != aboutPriceString && !"".equals(aboutPriceString)){
 					buf.append(
-							"<div class=\"aboutDisplaySalesUnitCat\">about<br>" + 
+							"<div" + styleAbout + ">about<br>" + 
 							aboutPriceString +
 							"</div>"
 					);
