@@ -55,7 +55,7 @@
 							if (!isSelected) {
 								orderNav.append("</a>");
 								orderNav.append("</td><td class=\"text11\">&nbsp;&nbsp;");
-								
+								orderNav.append(" (" );
 								%>
 								<fd:GetOrder id='qs_order' saleId='<%= orderInfo.getErpSalesId()%>'>
 								<%
