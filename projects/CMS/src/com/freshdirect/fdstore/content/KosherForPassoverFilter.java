@@ -21,7 +21,6 @@ public class KosherForPassoverFilter extends AbstractProductFilter{
 		
 		SkuModel sku=null;
 			boolean result = false;
-			LOGGER.debug("IN Kosher for Passover Filter with product: "+product.getContentName());
 			 for (Iterator iSku = product.getSkus().iterator(); iSku.hasNext() && result==false;) {
 			 	sku = (SkuModel) iSku.next();
 				try {
@@ -35,7 +34,6 @@ public class KosherForPassoverFilter extends AbstractProductFilter{
 					throw fre;
 				}
 			 }
-			LOGGER.debug("product: "+product.getContentName()+"  returning: "+result);
 			return result;
 	}
 

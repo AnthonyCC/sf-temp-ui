@@ -278,8 +278,11 @@ public class ContentFactory {
 
 	public Collection getNewProducts(int days, String deptId) throws FDResourceException {
 		final Integer cacheKey = new Integer(days);
-		if (newProductsCache.get(cacheKey) != null) {
-			newProductsCache.put(cacheKey, findProductsWithAge(days));
+		if (newProductsCache.get(cacheKey) == null) {
+			Collection items;
+			newProductsCache.put(cacheKey, items = findProductsWithAge(days));
+			LOGGER.info("loaded " + days + "-day new products cache with "
+					+ items.size() + " items");
 		}
 		Collection cached = (Collection) newProductsCache.get(cacheKey);
 		if (cached != null) {
