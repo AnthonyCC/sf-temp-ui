@@ -41,6 +41,7 @@ import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.GwtSaveResponse;
 import com.freshdirect.cms.ui.model.GwtUser;
+import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
@@ -487,4 +488,14 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             throw TranslatorToGwt.wrap(e);
         }    	
     }
+    
+    public ProductConfigParams getProductConfigParams( String skuKey ) throws ServerException { 
+    	try {
+    		return TranslatorToGwt.getProductConfigParams( ContentKey.decode( skuKey ) );
+    	} catch ( Throwable e ) {
+            LOG.error("RuntimeException in getProductConfigParams", e);
+            throw TranslatorToGwt.wrap(e);    		
+    	}
+    }
+
 }

@@ -11,6 +11,7 @@ import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.GwtSaveResponse;
 import com.freshdirect.cms.ui.model.GwtUser;
+import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
 import com.freshdirect.cms.ui.model.publish.GwtPublishData;
@@ -43,4 +44,7 @@ public interface ContentServiceAsync {
     void startPublish(String comment, AsyncCallback<String> callback);
     
     void getPreviewUrl( String contentKey, AsyncCallback<String> callback );
+    
+    void getProductConfigParams( String skuKey, AsyncCallback<ProductConfigParams> callback ); 
+
 }

@@ -12,6 +12,7 @@ import com.freshdirect.cms.ui.client.fields.ChangeTrackingField;
 import com.freshdirect.cms.ui.client.fields.SaveListenerField;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
+import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 
@@ -132,36 +133,42 @@ public class GwtNodeData implements Serializable {
 	 * @return the extra, related nodes.
 	 *  
 	 */
-    public void collectValuesFromFields() {
-        for (Map.Entry<String, ContentNodeAttributeI> e : node.getOriginalAttributes().entrySet()) {
-            if (!e.getValue().isReadonly()) {
-                Field<Serializable> fieldObject = e.getValue().getFieldObject();
-                // field object can be null, if the field not rendered
-                if (fieldObject != null) {
-                    getValueFromField(e.getKey(), e.getValue().getFieldObject());
-                } else {
-                    this.node.changeValue(e.getKey(), e.getValue().getValue());
-                }
-            }
-        }
-    }
+	public void collectValuesFromFields() {
+		for ( Map.Entry<String, ContentNodeAttributeI> e : node.getOriginalAttributes().entrySet() ) {
+			if ( !e.getValue().isReadonly() ) {
+				Field<Serializable> fieldObject = e.getValue().getFieldObject();
+				// field object can be null, if the field not rendered
+				if ( fieldObject != null ) {
+					getValueFromField( e.getKey(), e.getValue().getFieldObject() );
+				} 
+			}
+		}
+	}
 	
-    private void getValueFromField(String name, Field<Serializable> fieldObject) {
-        if (fieldObject instanceof SaveListenerField) {
-            // onSave will add nodes to the workingset
-            ((SaveListenerField) fieldObject).onSave();
-        }
-        if (fieldObject instanceof ChangeTrackingField) {
-            if (((ChangeTrackingField) fieldObject).isFieldValueChanged()) {
-                Serializable value = ((ChangeTrackingField) fieldObject).getChangedValue();
-                this.node.changeValue(name, value);
-            }
-        } else {
-            Serializable value = (Serializable) fieldObject.getValue();
-            this.node.changeValue(name, value);
-        }
-    }
-    
+	private void getValueFromField( String name, Field<Serializable> fieldObject ) {
+		if ( fieldObject instanceof SaveListenerField ) {
+			// onSave will add nodes to the workingset
+			( (SaveListenerField)fieldObject ).onSave();
+		}
+		if ( fieldObject instanceof ChangeTrackingField ) {
+			if ( ( (ChangeTrackingField)fieldObject ).isFieldValueChanged() ) {
+				Serializable value = ( (ChangeTrackingField)fieldObject ).getChangedValue();
+				this.node.changeValue( name, value );
+			}
+		} else {
+			Serializable value = (Serializable)fieldObject.getValue();
+			if ( value instanceof ProductConfigAttribute ) {
+				ProductConfigAttribute pcAttr = (ProductConfigAttribute)value; 
+				this.node.changeValue( name, pcAttr.getValue() ); // Sku
+				this.node.changeValue( "QUANTITY", pcAttr.getQuantity() );
+				this.node.changeValue( "SALES_UNIT", pcAttr.getSalesUnit() );
+				this.node.changeValue( "OPTIONS", pcAttr.getConfigOptionsString() );
+			} else {
+				this.node.changeValue( name, value );
+			}
+		}
+	}
+	
     public boolean isChanged() {
         for (Map.Entry<String, ContentNodeAttributeI> e : node.getOriginalAttributes().entrySet()) {
             Field<Serializable> fieldObject = e.getValue().getFieldObject();

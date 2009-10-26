@@ -18,19 +18,22 @@ public class EnumAttribute extends BaseAttribute implements ModifiableAttributeI
         values = new ArrayList<EnumModel>();
     }
 
-    public EnumAttribute(String v, String l, String lab) {
-        value = new EnumModel(v, l);
-        values = new ArrayList<EnumModel>();
-        label = lab;
-    }
-
+	public EnumAttribute( String valueKey, String valueLabel, String label ) {
+		this.value = new EnumModel( valueKey, valueLabel );
+		this.values = new ArrayList<EnumModel>();
+		this.label = label;
+	}
 
     public String getType() {
         return "enum";
     }
 
-    public void addValue(Serializable k, String l) {
-        values.add(new EnumModel(k, l));
+	public void addValue( Serializable k, String l ) {
+		values.add( new EnumModel( k, l ) );
+	}
+    
+    public void addValues( List<EnumModel> list ) {
+    	values.addAll( list );
     }
 
     public Serializable getValue() {

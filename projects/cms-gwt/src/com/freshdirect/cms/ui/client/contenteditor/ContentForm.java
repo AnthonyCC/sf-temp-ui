@@ -22,6 +22,7 @@ import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.fields.OneToManyRelationField;
 import com.freshdirect.cms.ui.client.fields.OneToOneRelationField;
 import com.freshdirect.cms.ui.client.fields.PrimaryHomeSelectorField;
+import com.freshdirect.cms.ui.client.fields.ProductConfigEditor;
 import com.freshdirect.cms.ui.client.fields.TableField;
 import com.freshdirect.cms.ui.client.fields.VariationMatrixField;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
@@ -35,6 +36,8 @@ import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.attributes.EnumAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
+import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
+import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 
 public class ContentForm extends FormPanel {
@@ -186,11 +189,31 @@ public class ContentForm extends FormPanel {
 		CustomFieldDefinition customFieldDefinition = node.getTabDefinition() == null ? null : node.getTabDefinition().getCustomFieldDefinition( attributeKey );
 		String type = attribute.getType();
 
-	    if (customFieldDefinition != null) {
-	        if (customFieldDefinition.getType() == CustomFieldDefinition.Type.PrimaryHomeSelection) {
-	            return new PrimaryHomeSelectorField((ContentNodeModel) value, node.getContexts());
-	        }
-	    }
+		if ( customFieldDefinition != null ) {
+			if ( customFieldDefinition.getType() == CustomFieldDefinition.Type.PrimaryHomeSelection ) {
+				return new PrimaryHomeSelectorField( (ContentNodeModel)value, node.getContexts() );
+			}
+			if ( customFieldDefinition.getType() == CustomFieldDefinition.Type.ProductConfigEditor ) {
+				
+				OneToOneAttribute attr = (OneToOneAttribute) attribute;	//Sku
+				ContentNodeModel model = attr.getValue();
+				Double quantity = (Double)node.getNode().getAttributeValue( "QUANTITY" );
+				String salesUnit = (String)node.getNode().getAttributeValue( "SALES_UNIT" );
+				ProductConfigParams pcp = model.get( "PCE_CONFIG_PARAMS" );
+				String configOptions = (String)node.getNode().getAttributeValue( "OPTIONS" );
+				
+				ProductConfigAttribute pcAttr = new ProductConfigAttribute();
+				pcAttr.setLabel( attr.getLabel() );
+				pcAttr.setValue( model );
+				pcAttr.setReadonly( attr.isReadonly() );				
+            	pcAttr.setConfigParams( pcp );
+            	pcAttr.setQuantity( quantity );
+            	pcAttr.setSalesUnit( salesUnit );
+            	pcAttr.setConfigOptions( configOptions );				
+				
+				return new ProductConfigEditor( readonly, pcAttr );
+			}
+		}
 	    
 		if (type.equals("string")) {
 			TextField<String> field = new TextField<String>();

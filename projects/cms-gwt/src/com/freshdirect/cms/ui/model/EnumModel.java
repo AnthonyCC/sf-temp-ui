@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 
-public class EnumModel extends BaseModel {
+public class EnumModel extends BaseModel implements Comparable<EnumModel> {
 	
 	private static final long serialVersionUID = -6495531896299729410L;
 
@@ -47,6 +47,11 @@ public class EnumModel extends BaseModel {
 	        return (key != null) ? key.equals(otherKey) : (otherKey == null);
 	    }
 	    return false;
+	}
+
+	@Override
+	public int compareTo( EnumModel o ) {
+		return getKey().toString().compareTo( o.getKey().toString() );
 	}
 	
 }

@@ -3,12 +3,14 @@ package com.freshdirect.cms.ui.translator;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
@@ -27,14 +29,17 @@ import com.freshdirect.cms.changecontrol.ContentNodeChange;
 import com.freshdirect.cms.context.Context;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.context.ContextualContentNodeI;
+import com.freshdirect.cms.fdstore.ConfiguredProductValidator;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.cms.meta.EnumDef;
 import com.freshdirect.cms.meta.RelationshipDef;
+import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.publish.Publish;
 import com.freshdirect.cms.publish.PublishMessage;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.BulkEditModel;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
+import com.freshdirect.cms.ui.model.EnumModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeContext;
 import com.freshdirect.cms.ui.model.GwtNodeData;
@@ -47,6 +52,7 @@ import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
 import com.freshdirect.cms.ui.model.attributes.SimpleAttribute;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
+import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeDetail;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
 import com.freshdirect.cms.ui.model.changeset.GwtContentNodeChange;
@@ -89,7 +95,7 @@ public class TranslatorToGwt {
 
 	public static GwtContentNode getGwtNode( ContentNodeI node, TabDefinition tabDefs ) {
 		ContentKey contentKey = node.getKey();
-                GwtContentNode gwtNode = new GwtContentNode( contentKey.getType().getName(), contentKey.getId() );
+		GwtContentNode gwtNode = new GwtContentNode( contentKey.getType().getName(), contentKey.getId() );
 		gwtNode.setLabel( node.getLabel() );
 		
 		for ( String key : (Set<String>)node.getAttributes().keySet() ) {
@@ -251,7 +257,7 @@ public class TranslatorToGwt {
 		for ( String key : attributeMap.keySet() ) {
 		    AttributeI attributeI = attributeMap.get( key );
 		    ModifiableAttributeI attribute = translateAttribute( attributeI.getDefinition(), attributeI.getValue(), tabs != null ? tabs.getCustomFieldDefinition( key ) : null, contentKey );
-                    translatedAttributes.put( key, attribute );
+		    translatedAttributes.put( key, attribute );
 		}
 
 		return translatedAttributes;
@@ -289,20 +295,10 @@ public class TranslatorToGwt {
         } else if (type == EnumAttributeType.BOOLEAN) {
             attr = new SimpleAttribute<Boolean>("boolean", (Boolean) value, name);
         } else if (type == EnumAttributeType.ENUM) {
-            EnumDef enumD = (EnumDef) definition;
-            EnumAttribute enumA = new EnumAttribute();
-            enumA.setLabel(name);
-            Serializable currValue = (Serializable) value;
-
-            for (Map.Entry<Serializable, String> e : ((Map<Serializable, String>) enumD.getValues()).entrySet()) {
-                enumA.addValue(e.getKey(), e.getValue());
-                if (e.getKey().equals(currValue)) {
-                    enumA.setValue(e.getKey(), e.getValue());
-                }
-            }
-
-            attr = enumA;
-        } else if (type == EnumAttributeType.RELATIONSHIP) {
+        	attr = translateEnumDefToEnumAttribute( (EnumDef)definition, name, (Serializable)value );
+        	
+		} else if ( type == EnumAttributeType.RELATIONSHIP ) {
+        	
             RelationshipDef relD = (RelationshipDef) definition;
             HashSet<String> cTypes = new HashSet<String>();
 
@@ -311,17 +307,23 @@ public class TranslatorToGwt {
                 cTypes.add(ct.getName());
             }
 
-            if (relD.isCardinalityOne()) {
-                ContentKey v = (ContentKey) value;
-                OneToOneAttribute ooAttr = new OneToOneAttribute();
-                ooAttr.setLabel(name);
-                if (v != null) {
-                    ContentNodeModel model = toContentNodeModel( v );
-                    ooAttr.setValue(model);
-                }
-                ooAttr.setAllowedTypes(cTypes);
-                attr = ooAttr;
-            } else {
+			if ( relD.isCardinalityOne() ) {
+
+				ContentKey valueKey = (ContentKey)value;
+				OneToOneAttribute ooAttr = new OneToOneAttribute();
+				ooAttr.setLabel( name );
+				if ( valueKey != null ) {
+					ContentNodeModel model = toContentNodeModel( valueKey );
+					ooAttr.setValue( model );
+	                if ( customFieldDefinition != null && customFieldDefinition.getType() == CustomFieldDefinition.Type.ProductConfigEditor ) {
+	                	// extra info for ProductConfigEditor	                	
+	                	model.set( "PCE_CONFIG_PARAMS", getProductConfigParams( valueKey ) );	                		                	
+	                }        
+				}
+				ooAttr.setAllowedTypes( cTypes );				
+				attr = ooAttr;
+
+			} else {
                 Collection<ContentKey> values = (Collection<ContentKey>) value;
                 OneToManyAttribute ooAttr = new OneToManyAttribute(cTypes);
                 ooAttr.setLabel(name);
@@ -365,6 +367,19 @@ public class TranslatorToGwt {
         attr.setReadonly(definition.isReadOnly());
 
         return attr;
+    }
+    
+    @SuppressWarnings( "unchecked" )
+	private static EnumAttribute translateEnumDefToEnumAttribute( EnumDef enumD, String name, Serializable currValue ) {    	
+        EnumAttribute enumA = new EnumAttribute();
+        enumA.setLabel(name);
+        for (Map.Entry<Serializable, String> e : ((Map<Serializable, String>) enumD.getValues()).entrySet()) {
+            enumA.addValue(e.getKey(), e.getValue());
+            if (e.getKey().equals(currValue)) {
+                enumA.setValue(e.getKey(), e.getValue());
+            }
+        }
+        return enumA;    	
     }
 
     /**
@@ -542,9 +557,8 @@ public class TranslatorToGwt {
 		}
 		return gcnc;
     }
-	
-	// =========================== private methods  ===========================
-	
+
+    
     private static ContentNodeI findEditor(ContentType type) {
         String typeName = type.getName();
         Set<ContentKey> editorKeys = CmsManager.getInstance().getContentKeysByType(ContentType.get("CmsEditor"));
@@ -557,6 +571,37 @@ public class TranslatorToGwt {
         return null;
     }
 
+    /**
+     *  Extra infos for ProductConfigEditor component
+     *  Sales units and config parameter enums. 
+     *  
+     * @param skuKey 
+     * @return
+     */
+    public static ProductConfigParams getProductConfigParams( ContentKey skuKey ) {
+		ContentNodeI sku = skuKey.getContentNode();
+		Map<String,String> salesUnitsMap = new TreeMap<String,String>();
+		List<EnumModel> salesUnits = new ArrayList<EnumModel>();
+		for ( ContentNodeI su : ConfiguredProductValidator.getSalesUnits( sku ).values() ) {
+			String id = su.getKey().getId();
+			String label = ContentNodeUtil.getLabel( su );
+			salesUnitsMap.put( id, label );
+			
+			EnumModel em = new EnumModel( id, label );
+			salesUnits.add( em );
+		}
+		Collections.sort( salesUnits );
+    	
+    	
+    	Map<String,EnumDef> enumDefMap = ConfiguredProductValidator.getDefinitionMap( sku );
+    	List<EnumAttribute> enumAttrs = new ArrayList<EnumAttribute>( enumDefMap.size() );
+    	
+    	for ( Map.Entry<String, EnumDef> def : enumDefMap.entrySet() ) {
+    		enumAttrs.add( translateEnumDefToEnumAttribute( def.getValue(), def.getKey(), null ) );                		
+    	}
+
+    	return new ProductConfigParams( salesUnits, enumAttrs );
+    }
 	
 	public static GwtPublishData getPublishData( Publish p ) {
 		GwtPublishData d = new GwtPublishData();

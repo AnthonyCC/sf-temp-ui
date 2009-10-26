@@ -44,6 +44,7 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 	
     @Override
     public void setValue(ContentNodeModel model) {
+    	ContentNodeModel oldValue = this.value;
         this.value = model;
 
         if (value != null) {
@@ -52,6 +53,8 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
         } else {
             valueField.setValue("");
         }
+        
+        fireChangeEvent( oldValue, model );
     }
 	
     private void initialize() {
