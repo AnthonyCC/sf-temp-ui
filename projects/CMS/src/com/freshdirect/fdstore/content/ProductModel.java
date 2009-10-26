@@ -390,7 +390,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	 * Return a list of recommended alternatives.
 	 * @return a list of ProductModel objects 
 	 */
-	public List getRecommendedAlternatives();
+	public List<ProductModel> getRecommendedAlternatives();
 
 	public List getWeRecommendText();
 	
