@@ -1,5 +1,6 @@
 package com.freshdirect.cms.ui.client.nodetree;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -55,7 +56,9 @@ public class ContentTreePopUp extends Window {
             popup.setAllowedTypes(aTypes);
             popup.initialize( multiSelect );
             // need to remove listener, because funny things will happen, if not :)
-            for (Listener<? extends BaseEvent> listener : popup.getListeners(Events.Select)) {
+            // creating a new list for this iteration to avoid ConcurrentModificationException
+            List<Listener<? extends BaseEvent>> selectListeners = new ArrayList<Listener<? extends BaseEvent>>( popup.getListeners(Events.Select) );            	
+            for (Listener<? extends BaseEvent> listener : selectListeners ) {
                 popup.removeListener(Events.Select, listener);
             }
         }
