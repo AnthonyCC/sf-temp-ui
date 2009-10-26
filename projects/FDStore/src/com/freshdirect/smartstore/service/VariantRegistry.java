@@ -1,19 +1,15 @@
 package com.freshdirect.smartstore.service;
 
-import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ejb.CreateException;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -60,15 +56,12 @@ final public class VariantRegistry {
 		return variants;
 	}
 
-	private SmartStoreServiceConfigurationHome getServiceConfigurationHome() {
-		try {
-			return (SmartStoreServiceConfigurationHome) new ServiceLocator(
-					FDStoreProperties.getInitialContext()).getRemoteHome(
-					"freshdirect.smartstore.SmartStoreServiceConfiguration",
-					SmartStoreServiceConfigurationHome.class);
-		} catch (NamingException e) {
-			throw new FDRuntimeException(e);
-		}
+	private SmartStoreServiceConfigurationHome getServiceConfigurationHome()
+			throws NamingException {
+		return (SmartStoreServiceConfigurationHome) new ServiceLocator(
+				FDStoreProperties.getInitialContext()).getRemoteHome(
+				"freshdirect.smartstore.SmartStoreServiceConfiguration",
+				SmartStoreServiceConfigurationHome.class);
 	}
 
 	private void load() {
@@ -107,11 +100,7 @@ final public class VariantRegistry {
 			LOGGER.info("configured variants:" + variantMapTmp.keySet());
 
 			variantMap = variantMapTmp;
-		} catch (RemoteException e) {
-			LOGGER.error("SmartStore Service Configuration", e);
-		} catch (CreateException e) {
-			LOGGER.error("SmartStore Service Configuration", e);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			LOGGER.error("SmartStore Service Configuration", e);
 		}
 	}

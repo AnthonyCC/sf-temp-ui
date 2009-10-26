@@ -46,6 +46,7 @@ String origURL = urlG.build();
 if (urlG.get("refresh") != null) {
 	VariantRegistry.getInstance().reload();
 	CmsRecommenderRegistry.getInstance().reload();
+	VariantSelectorFactory.refresh();
 	urlG.remove("refresh");
 	urlG.set("reloaded", "1");
 	String newURL = urlG.build();

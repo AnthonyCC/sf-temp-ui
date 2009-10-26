@@ -405,36 +405,6 @@ public class SmartStoreUtil {
 		});
 	}
 	
-	/**
-	 * sorts the names with ignored case
-	 * 
-	 * @param names
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-    private static List sortVariantNames(List names) {
-		Collections.sort(names, new Comparator() {
-			public int compare(Object o1, Object o2) {
-				if (o1 == null) {
-					if (o2 == null)
-						return 0;
-					else
-						return -1;
-				} else {
-					if (o2 == null)
-						return -1;
-					else {
-						String s1 = o1.toString();
-						String s2 = o2.toString();
-						return s1.compareToIgnoreCase(s2);
-					}
-				}
-			}
-		});
-		
-		return names;
-	}
-	
 	public static boolean isCohortAssigmentUptodate() {
 		List<EnumSiteFeature > siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
 		Iterator<EnumSiteFeature> it = siteFeatures.iterator();

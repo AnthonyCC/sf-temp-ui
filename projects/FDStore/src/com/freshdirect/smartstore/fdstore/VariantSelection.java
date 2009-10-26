@@ -1,7 +1,6 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.rmi.RemoteException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -67,10 +66,11 @@ public class VariantSelection {
 			return bean.getVariantMap(feature, date);
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection",e);
+			throw new FDRuntimeException(e);
 		} catch (CreateException e) {
 			LOGGER.warn("Variant selection",e);
+			throw new FDRuntimeException(e);
 		}
-		return Collections.EMPTY_MAP;
 	}
 
 	/**
@@ -84,10 +84,11 @@ public class VariantSelection {
 			return bean.getVariantMap(feature);
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection",e);
+			throw new FDRuntimeException(e);
 		} catch (CreateException e) {
 			LOGGER.warn("Variant selection",e);
+			throw new FDRuntimeException(e);
 		}
-		return Collections.EMPTY_MAP;
 	}
 	
 	/**
@@ -101,10 +102,11 @@ public class VariantSelection {
 			return bean.getCohorts();
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection", e);
+			throw new FDRuntimeException(e);
 		} catch (CreateException e) {
 			LOGGER.warn("Variant selection", e);
+			throw new FDRuntimeException(e);
 		}
-		return Collections.EMPTY_MAP;
 	}
 	
 
@@ -116,10 +118,11 @@ public class VariantSelection {
     		    return names;
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection", e);
+			throw new FDRuntimeException(e);
 		} catch (CreateException e) {
 			LOGGER.warn("Variant selection", e);
+			throw new FDRuntimeException(e);
 		}
-		return Collections.EMPTY_LIST;
 	}
 
 	public List<String> getVariants(EnumSiteFeature feature) {
@@ -129,10 +132,11 @@ public class VariantSelection {
 			return bean.getVariants(feature);
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection",e);
+			throw new FDRuntimeException(e);
 		} catch (CreateException e) {
 			LOGGER.warn("Variant selection",e);
+			throw new FDRuntimeException(e);
 		}
-		return Collections.EMPTY_LIST;
 	}
 
 	/**
@@ -146,9 +150,10 @@ public class VariantSelection {
 			return bean.getStartDates();
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection",e);
+			throw new FDRuntimeException(e);
 		} catch (CreateException e) {
 			LOGGER.warn("Variant selection",e);
+			throw new FDRuntimeException(e);
 		}
-		return Collections.EMPTY_LIST;
 	}
 }
