@@ -1,5 +1,6 @@
 package com.freshdirect.smartstore.filter;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 
@@ -16,14 +17,14 @@ public class ProductAvailabilityFilterEx extends ProductAvailabilityFilter {
             return model;
         }
 
-		for (ProductModel alternativeModel : model.getRecommendedAlternatives()) {
-            // if (alternativeModel instanceof ProductModel) {
-            if (available((ProductModel) alternativeModel)) {
-            	return (ProductModel) alternativeModel;
-            } else if (alternativeModel instanceof SkuModel) {
-                return filter((ProductModel) alternativeModel.getParentNode());
+		for (ContentNodeModel alternativeModel : model.getRecommendedAlternatives()) {
+            if (alternativeModel instanceof ProductModel) {
+	            if (available((ProductModel) alternativeModel)) {
+	            	return (ProductModel) alternativeModel;
+	            } else if (alternativeModel instanceof SkuModel) {
+	                return filter((ProductModel) alternativeModel.getParentNode());
+	            }
             }
-            // }
         }
         return null;
 	}

@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumLayoutType;
@@ -757,7 +758,7 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      * @see com.freshdirect.fdstore.content.ProductModel#getRecommendedAlternatives()
      */
     @Override
-    public List<ProductModel> getRecommendedAlternatives() {
+    public List<ContentNodeModel> getRecommendedAlternatives() {
         // TODO Auto-generated method stub
         return null;
     }

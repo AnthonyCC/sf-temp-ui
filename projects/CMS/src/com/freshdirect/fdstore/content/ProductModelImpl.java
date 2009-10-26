@@ -99,7 +99,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	
 	private final List componentGroups = new ArrayList();
 	
-	private final List<ProductModel> recommendedAlternatives = new ArrayList<ProductModel>();
+	private final List<ContentNodeModel> recommendedAlternatives = new ArrayList<ContentNodeModel>();
 	
 	// new wine store related changes
 	
@@ -998,7 +998,7 @@ inner:
 	 * 
 	 * @return list of recommended alternatives
 	 */
-	public List<ProductModel> getRecommendedAlternatives() {
+	public List<ContentNodeModel> getRecommendedAlternatives() {
 		ContentNodeModelUtil.refreshModels(this, "RECOMMENDED_ALTERNATIVES", recommendedAlternatives, false, true);
 		return Collections.unmodifiableList(recommendedAlternatives);
 	}

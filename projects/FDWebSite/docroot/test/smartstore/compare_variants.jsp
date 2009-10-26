@@ -725,7 +725,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 		LOG.info("variant A recommender: " + aRecService.getClass().getName());
 		try {
 			recsA = aRecService.recommendNodes(si);
-			recsA = FDStoreRecommender.getInstance().filterProducts(recsA, null, true);
+			recsA = FDStoreRecommender.getInstance().filterProducts(recsA, null, true, aRecService.getVariant().isUseAlternatives() );
 			LOG.info("Recommender A node count: " + recsA.size());
 		} catch (RuntimeException e) {
 			LOG.error("exception when recommend for A", e);
@@ -736,7 +736,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 		LOG.info("variant B recommender: " + bRecService.getClass().getName());
 		try {
 			recsB = bRecService.recommendNodes(si);
-			recsB = FDStoreRecommender.getInstance().filterProducts(recsB, null, true);
+			recsB = FDStoreRecommender.getInstance().filterProducts(recsB, null, true, bRecService.getVariant().isUseAlternatives());
 			LOG.info("Recommender B node count: " + recsB.size());
 		} catch (RuntimeException e) {
 			LOG.error("exception when recommend for B", e);
