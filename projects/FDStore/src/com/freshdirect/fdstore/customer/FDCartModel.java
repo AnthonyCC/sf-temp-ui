@@ -157,7 +157,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	// "transient" fields below
 	//
 
-	private final List recentOrderLines = new ArrayList();
+	private final List<FDCartLineI> recentOrderLines = new ArrayList<FDCartLineI>();
 	
 	private List recommendedItemList=null;
 		 	
@@ -421,7 +421,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 *  
 	 *  @return an unmodifiable list of FDCartLineModel objects.
 	 */
-	public List getRecentOrderLines() {
+	public List<FDCartLineI> getRecentOrderLines() {
 		return Collections.unmodifiableList(this.recentOrderLines);
 	}
 

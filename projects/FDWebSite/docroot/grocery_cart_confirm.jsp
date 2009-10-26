@@ -19,6 +19,12 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 --%><fd:FDShoppingCart id='cart' result='result'><%
    if (cart.getRecentOrderLines().size() == 0) {
 %><jsp:forward page="/checkout/view_cart.jsp" /><%
+   } else if (cart.getRecentOrderLines().size() == 1) {
+	   // [APPREQ-452] jump to single item cart confirm page if only one item is added
+	   FDCartLineI l = cart.getRecentOrderLines().get(0);
+	   
+	   String redir = "/cart_confirm.jsp?catId="+ request.getParameter("catId") + "&productId=" + l.getProductRef().getProductName();
+%><jsp:forward page="<%= redir %>" /><%
    }
 %></fd:FDShoppingCart><%
 
