@@ -193,16 +193,13 @@ if (brandValue==null) {
         }
 }
 
-ProductModel[] productArray = null; //(ProductModel[])sortedColl.toArray( new ProductModel[0] );
-int skuCount =0;
-List allSkuModels = new ArrayList();
-for (Iterator skuItr=sortedColl.iterator(); skuItr.hasNext();) {
-        ContentNodeModel cn = (ContentNodeModel)skuItr.next();
-        if (cn instanceof SkuModel)  {
-                allSkuModels.add((SkuModel) cn);
-        }
+int totalItems = 0;
+for (Iterator itr=sortedColl.iterator(); itr.hasNext();) {
+    ContentNodeModel cn = (ContentNodeModel)itr.next();
+    if (cn instanceof SkuModel)  {
+            totalItems++;
+    }
 }
-skuCount=allSkuModels.size();
 int itemsToDisplay = 30;
 {
         String reqItemsToDisp = request.getParameter("DisplayPerPage");
@@ -221,7 +218,7 @@ int itemsToDisplay = 30;
                 } else if (sessItemsToDisp!=null) {
                         itemsToDisplay = Integer.valueOf(sessItemsToDisp).intValue();
                 }
-                if (itemsToDisplay!=30 && itemsToDisplay!=60 && itemsToDisplay!=skuCount) {
+                if (itemsToDisplay!=30 && itemsToDisplay!=60 && itemsToDisplay!=totalItems) {
                         itemsToDisplay = 30;
                 }
         } catch (NumberFormatException nfe) {
@@ -304,7 +301,16 @@ for (Iterator itr = sortedColl.iterator(); itr.hasNext(); ){
         }
 }
 
-
+ProductModel[] productArray = null; //(ProductModel[])sortedColl.toArray( new ProductModel[0] );
+int skuCount =0;
+List allSkuModels = new ArrayList();
+for (Iterator skuItr=sortedColl.iterator(); skuItr.hasNext();) {
+        ContentNodeModel cn = (ContentNodeModel)skuItr.next();
+        if (cn instanceof SkuModel)  {
+                allSkuModels.add((SkuModel) cn);
+        }
+}
+skuCount=allSkuModels.size();
 
 
 // get all the brands that in the category that we are in
@@ -403,7 +409,7 @@ if(productCode!=null && prodCatId !=null ) {
         int deal=0;
         boolean hasWas=false;
         String dealsImage="";
-		String priceUnit = "";
+    String priceUnit = "";
         String firstSalesUnit = null;
         //get the first sku..in the event that this product is unavailabe. Ideally we should only be in this blokc
         // if the product is available
@@ -569,7 +575,8 @@ if(productCode!=null && prodCatId !=null ) {
 <br>
 <%
 	if(hasWas) {
-%>			<div>
+%>
+			 <div>
 				<table>
 					<tr>
 						<td>
@@ -582,7 +589,6 @@ if(productCode!=null && prodCatId !=null ) {
 				</table>
 						<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false"/>
 			</div>
-			
 <%
 	} else {
 %>    
@@ -965,17 +971,17 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 %>
                 <td width="85">
                 <div id="prod_container" style="height: 90px; width: 90px; text-align: left;">
-					<div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;">
-					
-						<display:ProductImage product="<%= displayProduct %>" action="<%= imgLinkUrl %>" showRolloverImage="true" />
-							
-					</div>
+                <div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;" id="prod_image">
+
+					  <display:ProductImage product="<%= displayProduct %>" action="<%= imgLinkUrl %>" showRolloverImage="true" />
+	            
+				</div>
                 <%
-                	if(sku.getProductInfo().getHighestDealPercentage()>0 &&!sku.isUnavailable()) {
+                	if(sku.getProductInfo().getHighestDealPercentage()>0&&!sku.isUnavailable()) {
                 %>
-                    <div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position:absolute;" id="sale_star">
-                    	
-						<display:ProductImage product="<%= displayProduct %>" action="<%= imgLinkUrl %>" showRolloverImage="true" />
+                    <div style="position: absolute;" id="sale_star">
+			         
+					  <display:ProductImage product="<%= displayProduct %>" action="<%= imgLinkUrl %>" showRolloverImage="true" />
                    
 	                </div>
                 <%
