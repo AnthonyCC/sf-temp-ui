@@ -9,7 +9,7 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/poi.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/oscache.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/oscache-2.4.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
