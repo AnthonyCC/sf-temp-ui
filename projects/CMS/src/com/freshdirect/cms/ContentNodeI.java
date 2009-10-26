@@ -50,7 +50,7 @@ public interface ContentNodeI extends Serializable {
 	
 	public Object getAttributeValue(String name);
 
-        public boolean setAttributeValue(String name, Object value);
+	public boolean setAttributeValue(String name, Object value);
 	
 	
 	/**
