@@ -757,7 +757,7 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      * @see com.freshdirect.fdstore.content.ProductModel#getRecommendedAlternatives()
      */
     @Override
-    public List getRecommendedAlternatives() {
+    public List<ProductModel> getRecommendedAlternatives() {
         // TODO Auto-generated method stub
         return null;
     }

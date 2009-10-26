@@ -33,17 +33,17 @@ import com.freshdirect.smartstore.ymal.YmalUtil;
 public class FDStoreRecommender {
     private final static Logger LOGGER = Logger.getLogger(FDStoreRecommender.class);
 
-    public List<ContentNodeModel> filterProducts(List<ContentNodeModel> models, final Collection<ContentKey> cartItems, boolean includeCartItems) {
+    public List<ContentNodeModel> filterProducts(List<ContentNodeModel> models, final Collection<ContentKey> cartItems, boolean includeCartItems, boolean useAlternatives) {
         List<ContentNodeModel> newModels = new ArrayList<ContentNodeModel>(models.size());
 
         ProductFilter filter = null;
         if (!includeCartItems) {
-            filter = FilterFactory.createStandardFilter(cartItems);
+            filter = FilterFactory.createStandardFilter(cartItems, useAlternatives);
         } else {
-            filter = FilterFactory.createStandardFilter();
+            filter = FilterFactory.createStandardFilter(useAlternatives);
         }
-        
-        Iterator it = models.iterator();
+
+        Iterator<ContentNodeModel> it = models.iterator();
         while (it.hasNext()) {
             ProductModel model = filter.filter((ProductModel) it.next());
             if (model != null) {
@@ -174,7 +174,7 @@ public class FDStoreRecommender {
 
 		// boolean includeCartItems = Boolean.valueOf(service.getVariant().getServiceConfig().get(SmartStoreServiceConfiguration.CKEY_INCLUDE_CART_ITEMS)).booleanValue();
 		// filter unnecessary models
-		List<ContentNodeModel> renderableProducts = filterProducts(contentModels, cartItems, service.isIncludeCartItems());
+		List<ContentNodeModel> renderableProducts = filterProducts(contentModels, cartItems, service.isIncludeCartItems(), service.getVariant().isUseAlternatives());
 		
 		// shave off the extra ones
 		// NOTE: Recommender no longer trim products to size.

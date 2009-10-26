@@ -6,7 +6,7 @@ import java.io.Serializable;
  * 
  * @author csongor
  */
-public class ConfigurationStatus implements Comparable, Serializable {
+public class ConfigurationStatus implements Comparable<ConfigurationStatus>, Serializable {
 	private static final long serialVersionUID = 5347738460088039431L;
 
 	String name;
@@ -51,7 +51,7 @@ public class ConfigurationStatus implements Comparable, Serializable {
 		return result;
 	}
 	
-	public int compareTo(Object o) {
+	public int compareTo(ConfigurationStatus o) {
 		ConfigurationStatus status = (ConfigurationStatus) o;
 		return this.name.compareTo(status.name);
 	}

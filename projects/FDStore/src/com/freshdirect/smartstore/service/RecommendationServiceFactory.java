@@ -70,7 +70,10 @@ public class RecommendationServiceFactory {
 	public static final String CKEY_GENERATOR = "generator";
 	public static final String CKEY_SCORING = "scoring";
 
-	public static final Map CONFIG_LABELS = new HashMap();
+	public static final String CKEY_USE_ALTS = "useAlternatives";
+	
+	
+	public static final Map<String,String> CONFIG_LABELS = new HashMap<String,String>();
 
 	static {
 		CONFIG_LABELS.put(CKEY_SAMPLING_STRATEGY, "Sampling Strategy");
@@ -89,6 +92,7 @@ public class RecommendationServiceFactory {
 		CONFIG_LABELS.put(CKEY_FAVORITE_LIST_ID, "Favorite List Id");
 		CONFIG_LABELS.put(CKEY_GENERATOR, "Generator Function");
 		CONFIG_LABELS.put(CKEY_SCORING, "Scoring Function");
+		CONFIG_LABELS.put(CKEY_USE_ALTS, "Use Alternative Products");
 	}
 
 	public static final int DEFAULT_TOP_N = 20;
@@ -104,6 +108,8 @@ public class RecommendationServiceFactory {
 	public static final String DEFAULT_COS_FILTER = null;
 	public static final boolean DEFAULT_BRAND_SORTER = false;
 	public static final String DEFAULT_FAVORITE_LIST_ID = "fd_favorites";
+
+	public static final boolean DEFAULT_USE_ALTS = true;
 
 	// Valid sampler names
 	public static final String SAMPLERS[] = { "deterministic", "uniform",
@@ -129,10 +135,10 @@ public class RecommendationServiceFactory {
 		boolean smartSave = DEFAULT_SMART_SAVE;
 		String cosFilter = DEFAULT_COS_FILTER;
 		boolean brandUniqueness = DEFAULT_BRAND_SORTER;
-
-		SortedMap statuses = serviceConfig.getConfigStatus();
+		
+		SortedMap<String,ConfigurationStatus> statuses = serviceConfig.getConfigStatus();
 		if (statuses == null)
-			serviceConfig.setConfigStatus(statuses = new TreeMap());
+			serviceConfig.setConfigStatus(statuses = new TreeMap<String, ConfigurationStatus>());
 
 		if (!RecommendationServiceType.TAB_STRATEGY.equals(serviceType)) {
 			smartSave = extractSmartSave(serviceConfig, statuses, variant
@@ -145,6 +151,10 @@ public class RecommendationServiceFactory {
 			brandUniqueness = extractBrandUniquenessSorter(serviceConfig,
 					statuses);
 			extractCartPresentation(serviceConfig, statuses);
+			
+			extractUseAlternatives(serviceConfig, statuses);
+			
+			variant.setUseAlternatives(extractUseAlternatives(serviceConfig, statuses));
 		}
 
 		if (EnumSiteFeature.FEATURED_ITEMS.equals(variant.getSiteFeature())) {
@@ -199,9 +209,9 @@ public class RecommendationServiceFactory {
 										.setWarning("You might have forgotten to set this value."));
 		}
 
-		Set unused = new HashSet(serviceConfig.keys());
+		Set<String> unused = new HashSet<String>(serviceConfig.keys());
 		unused.removeAll(statuses.keySet());
-		Iterator it = unused.iterator();
+		Iterator<String> it = unused.iterator();
 		while (it.hasNext()) {
 			String param = (String) it.next();
 			statuses.put(param, new ConfigurationStatus(param, serviceConfig
@@ -303,8 +313,8 @@ public class RecommendationServiceFactory {
 		return service;
 	}
 
-	public static boolean extractCategoryAggregation(
-			RecommendationServiceConfig config, Map statuses) {
+	protected static boolean extractCategoryAggregation(
+			RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
 		boolean catAggr = DEFAULT_CAT_AGGR;
 		String catAggrStr = config.get(CKEY_CAT_AGGR);
 		if (catAggrStr != null) {
@@ -329,8 +339,8 @@ public class RecommendationServiceFactory {
 		return catAggr;
 	}
 
-	public static boolean extractIncludeCartItems(
-			RecommendationServiceConfig config, Map statuses, boolean smartSave) {
+	protected static boolean extractIncludeCartItems(
+			RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses, boolean smartSave) {
 		boolean includeCartItems = DEFAULT_INCLUDE_CART_ITEMS;
 		String iciStr = config.get(CKEY_INCLUDE_CART_ITEMS);
 		if (smartSave) {
@@ -386,8 +396,8 @@ public class RecommendationServiceFactory {
 		return includeCartItems;
 	}
 
-	public static boolean extractSmartSave(RecommendationServiceConfig config,
-			Map statuses, EnumSiteFeature siteFeature) {
+	protected static boolean extractSmartSave(RecommendationServiceConfig config,
+			Map<String,ConfigurationStatus> statuses, EnumSiteFeature siteFeature) {
 		boolean smartSave = DEFAULT_SMART_SAVE;
 		String smartSaveStr = config.get(CKEY_SMART_SAVE);
 		if (siteFeature.isSmartSavings()) {
@@ -438,8 +448,8 @@ public class RecommendationServiceFactory {
 		return smartSave;
 	}
 
-	public static String extractCosFilter(RecommendationServiceConfig config,
-			Map statuses) {
+	protected static String extractCosFilter(RecommendationServiceConfig config,
+			Map<String,ConfigurationStatus> statuses) {
 		String cosFilter = DEFAULT_COS_FILTER;
 		String cosFilterStr = config.get(CKEY_COS_FILTER);
 		if (cosFilterStr != null) {
@@ -463,8 +473,8 @@ public class RecommendationServiceFactory {
 		return cosFilter;
 	}
 
-	public static boolean extractBrandUniquenessSorter(
-			RecommendationServiceConfig config, Map statuses) {
+	protected static boolean extractBrandUniquenessSorter(
+			RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
 		boolean brandUniqueness = DEFAULT_BRAND_SORTER;
 		String brandUniquenessStr = config.get(CKEY_BRAND_SORTER);
 		if (brandUniquenessStr != null) {
@@ -491,8 +501,8 @@ public class RecommendationServiceFactory {
 		return brandUniqueness;
 	}
 
-	public static void extractCartPresentation(
-			RecommendationServiceConfig config, Map statuses) {
+	protected static void extractCartPresentation(
+			RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
 		ConfigurationStatus status;
 		if (config.get(CKEY_PREZ_TITLE) != null)
 			status = new ConfigurationStatus(CKEY_PREZ_TITLE, config
@@ -518,8 +528,8 @@ public class RecommendationServiceFactory {
 					EnumConfigurationState.CONFIGURED_OK));
 	}
 
-	public static void extractFeaturedPresentation(
-			RecommendationServiceConfig config, Map statuses) {
+	protected static void extractFeaturedPresentation(
+			RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
 		if (config.get(CKEY_FI_LABEL) != null) {
 			statuses.put(CKEY_FI_LABEL, new ConfigurationStatus(CKEY_FI_LABEL,
 					config.get(CKEY_FI_LABEL),
@@ -533,8 +543,8 @@ public class RecommendationServiceFactory {
 		}
 	}
 
-	public static String extractFavoriteListId(
-			RecommendationServiceConfig config, Map statuses) {
+	protected static String extractFavoriteListId(
+			RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
 		String favoriteListId = DEFAULT_FAVORITE_LIST_ID;
 		if (RecommendationServiceType.FAVORITES.equals(config.getType())) {
 			ConfigurationStatus status;
@@ -551,8 +561,35 @@ public class RecommendationServiceFactory {
 		return favoriteListId;
 	}
 
+	protected static boolean extractUseAlternatives(RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
+		boolean alts = DEFAULT_USE_ALTS; // default value
+		
+		ConfigurationStatus status;
+
+		String value = config.get(CKEY_USE_ALTS);
+		if (value != null) {
+			if ("true".equalsIgnoreCase(value)) {
+				alts = true;
+				status = new ConfigurationStatus(CKEY_USE_ALTS, value, EnumConfigurationState.CONFIGURED_DEFAULT);
+			} else if ("false".equalsIgnoreCase(value)) {
+				alts = false;
+				status = new ConfigurationStatus(CKEY_USE_ALTS, value, EnumConfigurationState.CONFIGURED_OVERRIDDEN);
+			} else {
+				status = new ConfigurationStatus(CKEY_USE_ALTS, value, EnumConfigurationState.CONFIGURED_WRONG);
+			}
+		} else {
+			status = new ConfigurationStatus(CKEY_USE_ALTS, Boolean.toString(alts), EnumConfigurationState.UNCONFIGURED_DEFAULT);
+		}
+		
+		// record configuration status
+		statuses.put(CKEY_USE_ALTS, status);
+		
+		
+		return alts;
+	}
+	
 	public static ImpressionSampler configureSampler(
-			RecommendationServiceConfig config, Map statuses) {
+			RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
 		ImpressionSampler sampler;
 		Random R = new Random();
 
@@ -606,8 +643,8 @@ public class RecommendationServiceFactory {
 		return sampler;
 	}
 
-	public static int extractTopN(RecommendationServiceConfig config,
-			Map statuses) {
+	protected static int extractTopN(RecommendationServiceConfig config,
+			Map<String,ConfigurationStatus> statuses) {
 		int topN = DEFAULT_TOP_N;
 		ConfigurationStatus status;
 		try {
@@ -638,8 +675,8 @@ public class RecommendationServiceFactory {
 		return topN;
 	}
 
-	public static double extractTopPercentage(
-			RecommendationServiceConfig config, Map statuses) {
+	protected static double extractTopPercentage(
+			RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
 		double topP = DEFAULT_TOP_P;
 		ConfigurationStatus status;
 		try {
@@ -670,8 +707,8 @@ public class RecommendationServiceFactory {
 		return topP;
 	}
 
-	public static String extractSamplingStrategy(
-			RecommendationServiceConfig config, Map statuses) {
+	protected static String extractSamplingStrategy(
+			RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
 		ConfigurationStatus status;
 		String samplingStrategy = config.get(CKEY_SAMPLING_STRATEGY);
 		if (samplingStrategy == null) {
@@ -729,8 +766,8 @@ public class RecommendationServiceFactory {
 		return samplingStrategy;
 	}
 
-	public static double extractExponent(RecommendationServiceConfig config,
-			Map statuses, String samplingStrategy) {
+	protected static double extractExponent(RecommendationServiceConfig config,
+			Map<String,ConfigurationStatus> statuses, String samplingStrategy) {
 		String exponentStr = config.get(CKEY_EXPONENT);
 		double exponent = DEFAULT_EXPONENT;
 		ConfigurationStatus status = null;

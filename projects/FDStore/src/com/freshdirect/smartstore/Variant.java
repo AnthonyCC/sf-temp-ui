@@ -32,6 +32,12 @@ public class Variant implements Serializable, Comparable {
 	private boolean isSmartSavings = false;
 
 	private RecommendationService recommender;
+
+
+	/**
+	 * Include alternative products in availability check
+	 */
+	private boolean useAlternatives = true;
 	
 	/**
 	 * Get identifier.
@@ -129,5 +135,13 @@ public class Variant implements Serializable, Comparable {
 
 	public RecommendationService getRecommender() {
 		return recommender;
+	}
+
+	public void setUseAlternatives(boolean useAlternatives) {
+		this.useAlternatives = useAlternatives;
+	}
+
+	public boolean isUseAlternatives() {
+		return useAlternatives;
 	}
 }

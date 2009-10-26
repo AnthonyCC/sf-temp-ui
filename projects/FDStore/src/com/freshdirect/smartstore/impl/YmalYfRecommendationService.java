@@ -55,7 +55,7 @@ public class YmalYfRecommendationService extends AbstractRecommendationService i
 			return Collections.EMPTY_LIST;
 		
 		List<ContentNodeModel> favorites = popularity.recommendNodes(input);
-		favorites = FDStoreRecommender.getInstance().filterProducts(favorites, input.getCartContents(), false);
+		favorites = FDStoreRecommender.getInstance().filterProducts(favorites, input.getCartContents(), false, variant.isUseAlternatives());
 		if (favorites.isEmpty())
 			return Collections.EMPTY_LIST;
 		

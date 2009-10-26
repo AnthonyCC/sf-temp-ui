@@ -33,9 +33,9 @@ public class RecommendationServiceConfig implements Serializable {
 	/** Service type. */
 	protected RecommendationServiceType type;
 
-	protected Map params;
+	protected Map<String,String> params;
 	
-	protected SortedMap configStatus;
+	protected SortedMap<String,ConfigurationStatus> configStatus;
 
 	/**
 	 * Constructor.
@@ -146,21 +146,21 @@ public class RecommendationServiceConfig implements Serializable {
 	
 	public RecommendationServiceConfig set(String key, String value) {
 		if (params == null) {
-			params = new HashMap();
+			params = new HashMap<String,String>();
 		}
 		params.put(key, value);
 		return this;
 	}
 
-	public Set keys() {
+	public Set<String> keys() {
 		return params != null ? params.keySet() : Collections.EMPTY_SET;
 	}
 
-	public SortedMap getConfigStatus() {
+	public SortedMap<String,ConfigurationStatus> getConfigStatus() {
 		return configStatus;
 	}
 
-	public void setConfigStatus(SortedMap configStatus) {
+	public void setConfigStatus(SortedMap<String,ConfigurationStatus> configStatus) {
 		this.configStatus = configStatus;
 	}
 }

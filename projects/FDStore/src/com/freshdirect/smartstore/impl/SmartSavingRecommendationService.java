@@ -67,7 +67,7 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
             	ContentNodeModel node = cartSuggestions.get(i);
             	filterProds.add(node.getContentKey());
             }
-            internalRec = FDStoreRecommender.getInstance().filterProducts(internalRec, filterProds, false);            
+            internalRec = FDStoreRecommender.getInstance().filterProducts(internalRec, filterProds, false, getVariant().isUseAlternatives());            
             cartSuggestions.addAll(internalRec);
         }
         if (cartSuggestions.size() > input.getMaxRecommendations())

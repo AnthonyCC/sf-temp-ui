@@ -27,7 +27,8 @@ public class BrandUniquenessSorter extends WrapperRecommendationService {
 	public List<ContentNodeModel> recommendNodes(SessionInput input) {
 		List nodes = FDStoreRecommender.getInstance().filterProducts(
 				internal.recommendNodes(input), input.getCartContents(),
-				internal.isIncludeCartItems());
+				internal.isIncludeCartItems(),
+				internal.getVariant().isUseAlternatives());
 		LOGGER.debug("Items before brand uniqueness sorting: " + nodes);
 		List<ContentNodeModel> newNodes = new ArrayList<ContentNodeModel>(nodes.size());
 		Set brands = new HashSet(15);
