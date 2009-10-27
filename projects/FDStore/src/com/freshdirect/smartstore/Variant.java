@@ -1,9 +1,11 @@
 package com.freshdirect.smartstore;
 
 import java.io.Serializable;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 
 /**
@@ -38,6 +40,9 @@ public class Variant implements Serializable, Comparable {
 	 * Include alternative products in availability check
 	 */
 	private boolean useAlternatives = true;
+	
+	
+	private Set<EnumBurstType> hideBursts;
 	
 	/**
 	 * Get identifier.
@@ -143,5 +148,17 @@ public class Variant implements Serializable, Comparable {
 
 	public boolean isUseAlternatives() {
 		return useAlternatives;
+	}
+
+	public Set<EnumBurstType> getHideBursts() {
+		return hideBursts;
+	}
+
+	/**
+	 * Specify bursts to hide on front-end
+	 * @param hideBursts
+	 */
+	public void setHideBursts(Set<EnumBurstType> hideBursts) {
+		this.hideBursts = hideBursts;
 	}
 }

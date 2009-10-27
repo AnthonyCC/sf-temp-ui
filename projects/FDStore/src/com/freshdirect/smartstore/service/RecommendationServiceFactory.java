@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.RecommenderStrategy;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -70,7 +71,11 @@ public class RecommendationServiceFactory {
 	public static final String CKEY_GENERATOR = "generator";
 	public static final String CKEY_SCORING = "scoring";
 
+	// APPREQ-734
 	public static final String CKEY_USE_ALTS = "useAlternatives";
+	
+	// APPREQ-735 - list of burst enums separated by comma
+	public static final String CKEY_HIDE_BURSTS = "hideBursts";
 	
 	
 	public static final Map<String,String> CONFIG_LABELS = new HashMap<String,String>();
@@ -93,6 +98,7 @@ public class RecommendationServiceFactory {
 		CONFIG_LABELS.put(CKEY_GENERATOR, "Generator Function");
 		CONFIG_LABELS.put(CKEY_SCORING, "Scoring Function");
 		CONFIG_LABELS.put(CKEY_USE_ALTS, "Use Alternative Products");
+		CONFIG_LABELS.put(CKEY_HIDE_BURSTS, "Hide Bursts");
 	}
 
 	public static final int DEFAULT_TOP_N = 20;
@@ -155,6 +161,10 @@ public class RecommendationServiceFactory {
 			extractUseAlternatives(serviceConfig, statuses);
 			
 			variant.setUseAlternatives(extractUseAlternatives(serviceConfig, statuses));
+
+
+			Set<EnumBurstType> hb = extractHideBursts(serviceConfig, statuses);
+			variant.setHideBursts(hb);
 		}
 
 		if (EnumSiteFeature.FEATURED_ITEMS.equals(variant.getSiteFeature())) {
@@ -586,6 +596,46 @@ public class RecommendationServiceFactory {
 		
 		
 		return alts;
+	}
+
+
+	protected static Set<EnumBurstType> extractHideBursts(RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
+		Set<EnumBurstType> options = new HashSet<EnumBurstType>();
+
+		ConfigurationStatus status;
+
+		String value = config.get(CKEY_HIDE_BURSTS);
+		if (value != null) {
+			Set<String> badVals = new HashSet<String>();
+			for (String s : value.split(",")) {
+				EnumBurstType b = EnumBurstType.valueOf(s);
+				if (b != null) {
+					options.add(b);
+				} else {
+					badVals.add(s);
+				}
+			}
+			
+
+			if (options.size() == 0) {
+				// configured = default
+				status = new ConfigurationStatus(CKEY_HIDE_BURSTS, "", EnumConfigurationState.CONFIGURED_DEFAULT);
+			} else if (badVals.size() > 0) {
+				// found bad burst names in config
+				status = new ConfigurationStatus(CKEY_HIDE_BURSTS, value, EnumConfigurationState.CONFIGURED_WRONG);
+			} else {
+				// good!
+				status = new ConfigurationStatus(CKEY_HIDE_BURSTS, value, EnumConfigurationState.CONFIGURED_OVERRIDDEN);
+			}
+		} else {
+			// default value is empty list
+			status = new ConfigurationStatus(CKEY_HIDE_BURSTS, "", EnumConfigurationState.UNCONFIGURED_DEFAULT);
+		}
+		
+		// record configuration status
+		statuses.put(CKEY_HIDE_BURSTS, status);
+
+		return options;
 	}
 	
 	public static ImpressionSampler configureSampler(
