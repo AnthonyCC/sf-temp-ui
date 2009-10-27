@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,6 +12,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.smartstore.service.VariantRegistry;
 
 public class OverriddenVariantsHelper {
 
@@ -92,7 +94,7 @@ public class OverriddenVariantsHelper {
 	 * @throws FDResourceException
 	 */
 	public String getOverriddenVariant(EnumSiteFeature feature) throws FDResourceException {
-		List variants = VariantSelection.getInstance().getVariants(feature);
+		Collection<String> variants = VariantRegistry.getInstance().getServices(feature).keySet();
 		
 		for (Iterator it=getOverriddenVariants().iterator(); it.hasNext();) {
 			String vID = (String) it.next();

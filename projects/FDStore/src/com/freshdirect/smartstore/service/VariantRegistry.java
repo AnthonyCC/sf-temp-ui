@@ -10,6 +10,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -41,6 +42,8 @@ final public class VariantRegistry {
 	public synchronized Variant getService(String variantId) {
 		if (variantMap == null)
 			load();
+		if (variantMap == null)
+			throw new FDRuntimeException("failed to load variant map, see log for details");
 		return variantMap.get(variantId);
 	}
 
@@ -48,6 +51,8 @@ final public class VariantRegistry {
 			EnumSiteFeature siteFeature) {
 		if (variantMap == null)
 			load();
+		if (variantMap == null)
+			throw new FDRuntimeException("failed to load variant map, see log for details");
 		Map<String, Variant> variants = new HashMap<String, Variant>();
 		for (Variant v : variantMap.values()) {
 			if (v.getSiteFeature().equals(siteFeature))
