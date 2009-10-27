@@ -10,15 +10,14 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.model.EnumModel;
 import com.freshdirect.cms.ui.model.attributes.EnumAttribute;
@@ -72,12 +71,18 @@ public class ProductConfigEditor extends MultiField<ProductConfigAttribute> {
 	
 	private void initFields() {
 		
+		TableLayout quantityLayout = new TableLayout( 3 );
+		quantityLayout.setCellPadding( 2 );
+		ContentPanel quantityPanel = new ContentPanel( quantityLayout );
+		quantityPanel.setBorders( false );
+		quantityPanel.setHeaderVisible( false );
+		
+		
 		// === QUANTITY ===
 		quantityField = new NumberField();
 		quantityField.setPropertyEditorType( Double.class );
 		quantityField.setAllowNegative( false );
 		quantityField.setAllowDecimals( true );
-//		quantityField.setFormat( ... );
 		quantityField.setValue( attribute.getQuantity() );
 		quantityField.setFieldLabel( "Quantity" );
 		quantityField.setHideLabel( false );
@@ -112,9 +117,18 @@ public class ProductConfigEditor extends MultiField<ProductConfigAttribute> {
 			salesUnitField = null;
 		}
 		
+		quantityPanel.add( new Text("Quantity:") );
+		quantityPanel.add( quantityField );
+		if ( salesUnitField != null ) {
+			quantityPanel.add( salesUnitField );
+		}
+		
 		// === CONFIGURATION OPTIONS ===
-		VerticalPanel configPanel = new VerticalPanel();
+		TableLayout configLayout = new TableLayout( 2 );
+		configLayout.setCellPadding( 2 );
+		ContentPanel configPanel = new ContentPanel( configLayout );		
 		configPanel.setBorders( false );
+		configPanel.setHeaderVisible( false );
 		
 		optionFields = new HashMap<String,ComboBox<EnumModel>>();
 				
@@ -149,26 +163,13 @@ public class ProductConfigEditor extends MultiField<ProductConfigAttribute> {
 				
 				optionFields.put( id, configField );
 			
-				HorizontalPanel configRow = new HorizontalPanel();
-				configRow.setBorders( false );	
-				configRow.add( new Text( id ) );
-				configRow.add( configField );
-				
-				configPanel.add( configRow );
+				configPanel.add( new Text( id ) );
+				configPanel.add( configField );
 			}
 		}
 		
-		// === LAYOUT ===
-		
-		HorizontalPanel quantityPanel = new HorizontalPanel();
-		quantityPanel.setBorders( false );	
-		
+		// === LAYOUT ===		
 		mainPanel.add( skuField );
-		quantityPanel.add( new Text("Quantity:") );
-		quantityPanel.add( quantityField );
-		if ( salesUnitField != null ) {
-			quantityPanel.add( salesUnitField );
-		}
 		mainPanel.add( quantityPanel );
 		mainPanel.add( configPanel );		
 	}
