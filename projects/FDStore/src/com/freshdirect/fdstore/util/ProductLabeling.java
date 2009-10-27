@@ -1,5 +1,9 @@
 package com.freshdirect.fdstore.util;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 
@@ -13,31 +17,68 @@ public class ProductLabeling {
 	FDUserI customer;
 	ProductModel product;
 	
-	boolean hideBursts = false;
-	boolean hideNew = false;
-	boolean hideDeals = false;
-	boolean hideYourFave = false;
-
+	Set<EnumBurstType> hideBursts;
+	
 	// display flags
 	boolean displayDeal = false;
 	boolean displayFave = false;
 	boolean displayNew = false;
 
+
+	/**
+	 * @deprecated
+	 * 
+	 * @param customer
+	 * @param product
+	 * 
+	 * @param hideBursts Hide all burst types
+	 * @param hideNew Hide New Prods burst
+	 * @param hideDeals Hide Deals burst
+	 * @param hideYourFave Hide Your Fave burst
+	 */
 	public ProductLabeling(FDUserI customer, ProductModel product, boolean hideBursts, boolean hideNew, boolean hideDeals, boolean hideYourFave) {
 		this.customer = customer;
 		this.product = product;
-		
-		this.hideBursts = hideBursts;
-		this.hideNew = hideNew;
-		this.hideDeals = hideDeals;
-		this.hideYourFave = hideYourFave;
+
+		this.hideBursts = new HashSet<EnumBurstType>();
+
+		if (hideBursts) {
+			// hide all bursts
+			for (EnumBurstType b : EnumBurstType.values()) {
+				this.hideBursts.add(b);
+			}
+		} else {
+			if (hideNew)
+				this.hideBursts.add(EnumBurstType.NEW);
+			if (hideDeals)
+				this.hideBursts.add(EnumBurstType.YOUR_FAVE);
+			if (hideYourFave)
+				this.hideBursts.add(EnumBurstType.DEAL);
+		}
 		
 		setDisplayFlags();
 	}
 
+
+	/**
+	 * @param customer
+	 * @param product
+	 * 
+	 * @param hideBursts Set of burst types to hide. Can be null.
+	 */
+	public ProductLabeling(FDUserI customer, ProductModel product, Set<EnumBurstType> hideBursts) {
+		this.customer = customer;
+		this.product = product;
+
+		this.hideBursts = hideBursts;
+
+		setDisplayFlags();
+	}
+	
+	
 	
 	public ProductLabeling(FDUserI customer, ProductModel product) {
-		this(customer, product, false, false, false, false);
+		this(customer, product, null);
 	}
 
 	
@@ -50,9 +91,9 @@ public class ProductLabeling {
 		displayNew = false;
 
 
-		int deal = !hideBursts && !hideDeals ? product.getHighestDealPercentage() : 0;
-		boolean isNew = !hideBursts && !hideNew && product.isNew();
-		boolean isYourFave = !hideBursts && !hideYourFave && DYFUtil.isFavorite(product, customer);
+		int deal = (hideBursts == null || !hideBursts.contains(EnumBurstType.DEAL) ) ? product.getHighestDealPercentage() : 0;
+		boolean isNew = (hideBursts == null || !hideBursts.contains(EnumBurstType.NEW) ) && product.isNew();
+		boolean isYourFave = (hideBursts == null || !hideBursts.contains(EnumBurstType.YOUR_FAVE) ) && DYFUtil.isFavorite(product, customer);
 
 		// determine what to display
 		if (deal > 0) {
@@ -86,49 +127,29 @@ public class ProductLabeling {
 
 	public String getTrackingCode() {
 		if (displayDeal) {
-			return "deal";
+			return EnumBurstType.DEAL.getCode();
 		} else if (displayFave) {
-			return "fave";
+			return EnumBurstType.YOUR_FAVE.getCode();
 		} else if (displayNew) {
-			return "new";
+			return EnumBurstType.NEW.getCode();
 		}
 		return null;
 	}
-	
+
 
 	public boolean isHideBursts() {
-		return hideBursts;
-	}
-
-	public void setHideBursts(boolean hideBursts) {
-		this.hideBursts = hideBursts;
-		setDisplayFlags();
+		return hideBursts != null && hideBursts.size() == EnumBurstType.values().length ;
 	}
 
 	public boolean isHideNew() {
-		return hideNew;
-	}
-
-	public void setHideNew(boolean hideNew) {
-		this.hideNew = hideNew;
-		setDisplayFlags();
+		return hideBursts != null && hideBursts.contains(EnumBurstType.NEW);
 	}
 
 	public boolean isHideDeals() {
-		return hideDeals;
-	}
-
-	public void setHideDeals(boolean hideDeals) {
-		this.hideDeals = hideDeals;
-		setDisplayFlags();
+		return hideBursts != null && hideBursts.contains(EnumBurstType.DEAL);
 	}
 
 	public boolean isHideYourFave() {
-		return hideYourFave;
-	}
-
-	public void setHideYourFave(boolean hideYourFave) {
-		this.hideYourFave = hideYourFave;
-		setDisplayFlags();
+		return hideBursts != null && hideBursts.contains(EnumBurstType.YOUR_FAVE);
 	}
 }
