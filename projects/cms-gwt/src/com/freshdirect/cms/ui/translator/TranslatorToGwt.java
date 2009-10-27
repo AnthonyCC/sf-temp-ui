@@ -286,14 +286,22 @@ public class TranslatorToGwt {
 
         if (type == EnumAttributeType.STRING) {
             attr = new SimpleAttribute<String>("string", (String) value, name);
+            
         } else if (type == EnumAttributeType.DOUBLE) {
             attr = new SimpleAttribute<Double>("double", (Double) value, name);
+            
         } else if (type == EnumAttributeType.INTEGER) {
             attr = new SimpleAttribute<Integer>("integer", (Integer) value, name);
+            
         } else if (type == EnumAttributeType.DATE) {
             attr = new SimpleAttribute<Date>("date", (Date) value, name);
+            
         } else if (type == EnumAttributeType.BOOLEAN) {
+        	if ( !definition.isInheritable() && value == null ) {
+        		value = new Boolean( false );
+        	}
             attr = new SimpleAttribute<Boolean>("boolean", (Boolean) value, name);
+            
         } else if (type == EnumAttributeType.ENUM) {
         	attr = translateEnumDefToEnumAttribute( (EnumDef)definition, name, (Serializable)value );
         	

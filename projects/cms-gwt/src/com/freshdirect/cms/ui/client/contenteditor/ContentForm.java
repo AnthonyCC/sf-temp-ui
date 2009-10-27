@@ -37,8 +37,8 @@ import com.freshdirect.cms.ui.model.attributes.EnumAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
-import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
+import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
 
 public class ContentForm extends FormPanel {
 	
@@ -132,17 +132,18 @@ public class ContentForm extends FormPanel {
 	 * @return
 	 */
     @SuppressWarnings("unchecked")
-    protected Field<Serializable> createField(String attributeKey, GwtNodeData node, String contextPath) {
+    protected Field<Serializable> createField(String attributeKey, GwtNodeData nodeData, String contextPath) {
 
-        ContentNodeAttributeI attribute = node.getNode().getOriginalAttribute(attributeKey);
-        Serializable value = node.getNode().getAttributeValue(attributeKey);
+    	GwtContentNode node = nodeData.getNode();
+        ContentNodeAttributeI attribute = node.getOriginalAttribute(attributeKey);
+        Serializable value = node.getAttributeValue(attributeKey);
         if (value instanceof Collection && ((Collection) value).isEmpty()) {
             value = null;
         }
-
-        boolean readonly = attribute.isReadonly() || node.isReadonly() ;
         
-		final Field<Serializable> innerField = createFieldInner( attributeKey, node, value, attribute, readonly );
+        boolean readonly = attribute.isReadonly() || nodeData.isReadonly() ;
+        
+		final Field<Serializable> innerField = createFieldInner( attributeKey, nodeData, value, attribute, readonly );
 		if ( innerField == null ) {
 			return null;
 		}
@@ -152,7 +153,7 @@ public class ContentForm extends FormPanel {
         Field<Serializable> field;
 		if ( attribute.isInheritable() ) {
 			field = new InheritanceField<Serializable>( innerField, value == null, attributeKey, readonly );
-			ContentNodeAttributeI attr = node.getContexts() == null ? null : node.getContexts().getInheritedAttribute( contextPath, attributeKey );
+			ContentNodeAttributeI attr = nodeData.getContexts() == null ? null : nodeData.getContexts().getInheritedAttribute( contextPath, attributeKey );
 			Serializable inhvalue = attr == null ? null : attr.getValue();
 			( (InheritanceField<Serializable>)field ).setInheritedValue( inhvalue );
 			

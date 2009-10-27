@@ -169,40 +169,39 @@ public class GwtNodeData implements Serializable {
 		}
 	}
 	
-    public boolean isChanged() {
-        for (Map.Entry<String, ContentNodeAttributeI> e : node.getOriginalAttributes().entrySet()) {
-            Field<Serializable> fieldObject = e.getValue().getFieldObject();
-            // field object can be null, if the field not rendered
-            if (fieldObject != null) {
-                Serializable value = fieldObject.getValue();
-                Serializable oldValue = this.node.getOriginalAttributeValue(e.getKey());
-                if (!equal(value,oldValue)){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+	public boolean isChanged() {
+		for ( Map.Entry<String, ContentNodeAttributeI> e : node.getOriginalAttributes().entrySet() ) {
+			Field<Serializable> fieldObject = e.getValue().getFieldObject();
+			// field object can be null, if the field not rendered
+			if ( fieldObject != null ) {
+				Serializable value = fieldObject.getValue();
+				Serializable oldValue = node.getOriginalAttributeValue( e.getKey() );
+				if ( !equal( value, oldValue ) ) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}    
     
-    
-    private boolean equal(Serializable value, Serializable oldValue) {
-        if (value != null) {
-            if (value instanceof String) {
-                value = ((String) value).replace('\n', ' ');
-            }
-            if (oldValue instanceof String) {
-                oldValue = ((String) oldValue).replace('\n', ' ');
-            }
-            if (value instanceof Date && oldValue instanceof Date) {
-                DateTimeFormat dateFormat = DateTimeFormat.getMediumDateFormat();
-                value = dateFormat.format((Date) value);
-                oldValue = dateFormat.format((Date) oldValue);
-            }            
-            return value.equals(oldValue);
-        } else {
-            return oldValue==null;
-        }
-    }
+	public static boolean equal( Serializable value, Serializable oldValue ) {
+		if ( value != null ) {
+			if ( value instanceof String ) {
+				value = ( (String)value ).replace( '\n', ' ' );
+			}
+			if ( oldValue instanceof String ) {
+				oldValue = ( (String)oldValue ).replace( '\n', ' ' );
+			}
+			if ( value instanceof Date && oldValue instanceof Date ) {
+				DateTimeFormat dateFormat = DateTimeFormat.getMediumDateFormat();
+				value = dateFormat.format( (Date)value );
+				oldValue = dateFormat.format( (Date)oldValue );
+			}
+			return value.equals( oldValue );
+		} else {
+			return oldValue == null;
+		}
+	}
 
     public String getHeaderMarkup() {
         return "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" id=\"pageTitle\">" +

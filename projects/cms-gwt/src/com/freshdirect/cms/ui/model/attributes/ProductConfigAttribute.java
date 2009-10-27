@@ -27,6 +27,7 @@ public class ProductConfigAttribute extends OneToOneAttribute {
 	}
 	
 	private ProductConfigParams			confParams	= new ProductConfigParams();
+	
 	private double						quantity;
 	private String						salesUnit;
 	private Map<String, String>			configOptions;
@@ -140,4 +141,14 @@ public class ProductConfigAttribute extends OneToOneAttribute {
 		return "ProductConfigAttribute[" + label + ',' + value + ',' + quantity + ',' + salesUnit + ',' + configOptions + ']';
 	}
 	
+	@Override
+	public boolean equals( Object obj ) {
+		if ( obj instanceof ProductConfigAttribute ) {
+			ProductConfigAttribute pcAttr = (ProductConfigAttribute)obj;
+			if ( quantity == pcAttr.quantity && salesUnit.equals( pcAttr.salesUnit ) && configOptions.equals( pcAttr.configOptions ) ) {
+				return true;
+			}
+		}
+		return false;
+	}	
 }
