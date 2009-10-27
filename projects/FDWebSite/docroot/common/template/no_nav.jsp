@@ -4,6 +4,9 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%
+request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
+%>
 <html>
 <head>
     <title><tmpl:get name='title'/></title>

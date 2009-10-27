@@ -33,6 +33,11 @@
 <script type="text/javascript" src="/assets/yui/button/button-min.js"></script>
 <%
 			}
+			if (request.getAttribute("__yui_load_dispatcher__") != null) {
+				/* Include Bubbling's dispatcher plugin */
+%><script type="text/javascript" src="/assets/yui/dispatcher/dispatcher.js"></script>
+<%
+			}
 		} else {
 			/*
 			 * Production libs
@@ -56,6 +61,11 @@
 				/* Include buttons API */
 %><script type="text/javascript" src="/assets/yui/element/element-min.js"></script> 
 <script type="text/javascript" src="/assets/yui/button/button-min.js"></script>
+<%
+			}
+			if (request.getAttribute("__yui_load_dispatcher__") != null) {
+				/* Include Bubbling's dispatcher plugin */
+%><script type="text/javascript" src="/assets/yui/dispatcher/dispatcher-min.js"></script> 
 <%
 			}
 		}

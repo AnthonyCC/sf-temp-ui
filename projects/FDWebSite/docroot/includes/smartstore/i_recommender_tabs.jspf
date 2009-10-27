@@ -194,30 +194,12 @@
 					
 				
 					onSuccess: function(resp, tabId) {
-						$('content_'+tabId).innerHTML = resp.responseText;
-						this._execScripts($('content_'+tabId));
+						YAHOO.plugin.Dispatcher.process('content_'+tabId, resp.responseText);
 					},
-				
+
 					onTimeout: function() {
 						window.location.reload(false);
 					},
-				
-					_execScripts: function(e) {
-						if (e.nodeType != 1) 
-							return;
-					 
-						if (e.tagName.toLowerCase() == 'script') {
-							eval(e.text);
-						} else {
-							var n = e.firstChild;
-							while ( n ) {
-								if ( n.nodeType == 1 )
-									this._execScripts( n );
-								n = n.nextSibling;
-							}
-						}
-					},
-				
 				
 					load: function(tab, tabPos) {
 						var ctnt = $('content_'+tab);
