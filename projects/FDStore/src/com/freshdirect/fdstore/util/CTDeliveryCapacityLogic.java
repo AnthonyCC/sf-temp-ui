@@ -10,24 +10,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.TreeSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
-import com.freshdirect.fdstore.FDReservation;
-import com.freshdirect.fdstore.FDResourceException;
+import org.apache.log4j.Category;
+
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.framework.conf.ResourceUtil;
 import com.freshdirect.framework.util.EnumLogicalOperator;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.thoughtworks.xstream.XStream;
 
 public class CTDeliveryCapacityLogic 
 {	
+	private static Category LOGGER = LoggerFactory.getInstance(CTDeliveryCapacityLogic.class);
 	public static boolean loadedCT=false;
 	public static Set<CTProfileConfig> CT_CONFIG;
 	
@@ -81,7 +81,13 @@ public class CTDeliveryCapacityLogic
 				while (true) {
 					try {
 						CTProfileConfig r = (CTProfileConfig) in.readObject();
-						CONFIG.add(r);
+						if(r!=null)
+						{
+							r.config();
+							LOGGER.info(r);
+							if(r.getCode()!=null)
+							CONFIG.add(r);
+						}
 					} catch (EOFException e) {
 						break;
 					}
@@ -324,6 +330,35 @@ class CTProfileConfig implements Comparable
 	private String defaultZoneCapacityCondition;
 	private int defaultZoneCapacityValue;
 	
+	//after loading do config
+	private Date startDateConfig;
+	private Date endDateConfig;
+	
+	public void config()
+	{
+		try {
+			startDateConfig= CTDeliveryCapacityLogic.MONTH_DATE_YEAR_FORMATTER.parse(startDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			endDateConfig= CTDeliveryCapacityLogic.MONTH_DATE_YEAR_FORMATTER.parse(endDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(profiles!=null)
+		{
+			for(Profile p:profiles)
+			{
+				p.config();
+			}
+		}
+	}
+	
 	public int getMin() {
 		return min;
 	}
@@ -353,23 +388,11 @@ class CTProfileConfig implements Comparable
 		}
 	}
 	public Date getStartDate() {
-		try {
-			return CTDeliveryCapacityLogic.MONTH_DATE_YEAR_FORMATTER.parse(startDate);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return startDateConfig;
 	}
 
 	public Date getEndDate() {
-		try {
-			return CTDeliveryCapacityLogic.MONTH_DATE_YEAR_FORMATTER.parse(endDate);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return endDateConfig;
 	}
 	
 	
@@ -432,11 +455,33 @@ class CTProfileConfig implements Comparable
 	public void setAllZonevalue(int allZonevalue) {
 		this.defaultZoneCapacityValue = allZonevalue;
 	}
+	
+	public String toString()
+	{
+		StringBuffer sf=new StringBuffer();
+		sf.append("Code="+code+"\n");
+		sf.append("name="+name+"\n");
+		sf.append("min="+min+"\n");
+		sf.append("max="+max+"\n");
+		sf.append("priority="+priority+"\n");
+		sf.append("startDateConfig="+startDateConfig+"\n");
+		sf.append("endDateConfig="+endDateConfig+"\n");
+		sf.append("startDate="+startDate+"\n");
+		sf.append("endDate="+endDate+"\n");
+		sf.append("matchAllprofiles="+matchAllprofiles+"\n");
+		sf.append("defaultZoneCapacityCondition="+defaultZoneCapacityCondition+"\n");
+		sf.append("defaultZoneCapacityValue="+defaultZoneCapacityValue+"\n");
+		if(profiles!=null)sf.append("profiles="+profiles+"\n");
+		if(zones!=null)sf.append("zones="+zones+"\n");		
+		return sf.toString();
+	}
 }
 class Profile
 {
 	String name;
-	private String value;	
+	private String value;
+	private List<String> values;
+	
 	public String getName() 
 	{
 		return name;
@@ -445,6 +490,11 @@ class Profile
 		this.name = name;
 	}
 	public List<String> getValue() {
+		return values;
+	}
+	
+	public void config()
+	{
 		if(value!=null)
 		{
 			String[] bcc = value.split(",");
@@ -454,12 +504,18 @@ class Profile
 	 			if (addr.length() != 0)
 	 				bccs.add(addr);
 	 		}
-			return bccs;
+	 		values=bccs;
 		}
-		return null;
 	}
 	
-	
+	public String toString()
+	{
+		StringBuffer sf=new StringBuffer();
+		sf.append("name="+name+"\n");
+		sf.append("value="+value+"\n");
+		sf.append("values="+values+"\n");		
+		return sf.toString();
+	}
 }
 
 class Zone
@@ -487,5 +543,13 @@ class Zone
 		this.value = value;
 	}
 	
+	public String toString()
+	{
+		StringBuffer sf=new StringBuffer();
+		sf.append("code="+code+"\n");
+		sf.append("condition="+condition+"\n");
+		sf.append("value="+value+"\n");		
+		return sf.toString();
+	}
 	
 }
