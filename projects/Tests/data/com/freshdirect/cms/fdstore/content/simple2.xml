@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Content>
+	<Store id="FreshDirect">
+		<departments>
+			<Department ref="dep_1"/>
+		</departments>
+	</Store>
+
+	<Department id="dep_1">
+		<FULL_NAME>First department</FULL_NAME>
+		<categories>
+		</categories>
+	</Department>
+
+	<Product id="a1">
+		<skus>
+			<Sku ref="a1sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+	<Product id="a2">
+		<skus>
+			<Sku ref="a2sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+	<Product id="a3">
+		<skus>
+			<Sku ref="a3sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+	<Product id="b1">
+		<skus>
+			<Sku ref="b1sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+	<Product id="bbb">
+		<skus>
+			<Sku ref="bbbsku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+	<Product id="e1">
+		<skus>
+			<Sku ref="e1sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+	<Product id="e2">
+		<skus>
+			<Sku ref="e2sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+	<Product id="e3">
+		<skus>
+			<Sku ref="e3sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+
+	<Sku id="a1sku"/>
+	<Sku id="a2sku"/>
+	<Sku id="a3sku"/>
+	<Sku id="b1sku"/>
+	<Sku id="bbbsku"/>
+	<Sku id="e1sku"/>
+	<Sku id="e2sku"/>
+	<Sku id="e3sku"/>
+
+</Content>

@@ -7,12 +7,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.Context;
+
+import org.mockejb.MockContainer;
+import org.mockejb.interceptor.AspectSystem;
+
 import junit.framework.TestCase;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.service.CompositeTypeService;
+import com.freshdirect.cms.application.service.xml.FlexContentHandler;
+import com.freshdirect.cms.application.service.xml.XmlContentService;
+import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.core.MockProductModel;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -28,6 +39,37 @@ public class DataGeneratorCompilerTest extends TestCase {
     SessionInput          s = new SessionInput("ses1", null);
 
     protected void setUp() throws Exception {
+        {
+            List list = new ArrayList();
+        
+            list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
+    
+            CompositeTypeService typeService = new CompositeTypeService(list);
+    
+            XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/fdstore/content/simple2.xml");
+            
+            CmsManager.setInstance(new CmsManager(service, null));
+        }
+        
+        {
+            Context context = TestUtils.createContext();
+            
+            TestUtils.createTransaction(context);
+            
+            MockContainer mockContainer = TestUtils.createMockContainer(context);
+
+            AspectSystem aspectSystem = TestUtils.createAspectSystem();
+            
+            aspectSystem.add(new FDFactoryProductInfoAspect()
+            		.addAvailableSku("a1sku", 2.0).addAvailableSku("a2sku", 3.0)
+					.addAvailableSku("a3sku", 4.0).addAvailableSku("b1sku", 5.0)
+					.addAvailableSku("bbbsku", 64.0)
+            		.addAvailableSku("b1sku", 2.0).addAvailableSku("b2sku", 3.0)
+					.addAvailableSku("b3sku", 4.0)
+            );
+        	
+        }
+        
         comp = new DataGeneratorCompiler();
         comp.addVariable("set", Expression.RET_SET);
         comp.addVariable("set2", Expression.RET_SET);
@@ -228,12 +270,12 @@ public class DataGeneratorCompilerTest extends TestCase {
     public void testYmalRelated() throws CompileException {
         DataGenerator dataGenerator = comp.createDataGenerator("ymal1", "RecursiveNodes(currentNode)");
         assertNotNull("dataGenerator", dataGenerator);
-        Collection collection = dataGenerator.generate(s, input);
+        dataGenerator.generate(s, input);
     }
     
     public void testYmalValidations() {
         try {
-            DataGenerator dataGenerator = comp.createDataGenerator("ymalVal1", "RecursiveNodes(3)");
+            comp.createDataGenerator("ymalVal1", "RecursiveNodes(3)");
             fail("should fail, with invalid parameter type");
         } catch (CompileException e) {
             assertEquals("type error", CompileException.TYPE_ERROR, e.getCode());
@@ -244,7 +286,7 @@ public class DataGeneratorCompilerTest extends TestCase {
     public void testManuallyOverriddenSlots() throws CompileException {
         DataGenerator dataGenerator = comp.createDataGenerator("mo1", "ManuallyOverriddenSlots(currentNode)");
         assertNotNull("dataGenerator", dataGenerator);
-        Collection collection = dataGenerator.generate(s, input);
+        dataGenerator.generate(s, input);
         try {
         	dataGenerator = comp.createDataGenerator("mo2", "ManuallyOverriddenSlots(content)");
         	fail("should fail with invalid parameter type");
@@ -258,7 +300,7 @@ public class DataGeneratorCompilerTest extends TestCase {
     public void testManuallyOverriddenSlotsP() throws CompileException {
         DataGenerator dataGenerator = comp.createDataGenerator("mo2", "ManuallyOverriddenSlotsP(currentNode)");
         assertNotNull("dataGenerator", dataGenerator);
-        Collection collection = dataGenerator.generate(s, input);
+        dataGenerator.generate(s, input);
     }
 
     public void testPrioritize() throws CompileException {
