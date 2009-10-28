@@ -210,9 +210,14 @@ public class ContentForm extends FormPanel {
             	pcAttr.setConfigParams( pcp );
             	pcAttr.setQuantity( quantity );
             	pcAttr.setSalesUnit( salesUnit );
-            	pcAttr.setConfigOptions( configOptions );				
+            	pcAttr.setConfigOptions( configOptions );		
+            	
+            	ProductConfigEditor editor = new ProductConfigEditor( readonly, pcAttr );
+            	pcAttr.setFieldObject( editor );
+            	
+            	node.getNode().setOriginalAttribute( attributeKey, new ProductConfigAttribute( pcAttr ) );
 				
-				return new ProductConfigEditor( readonly, pcAttr );
+				return editor;
 			}
 		}
 	    

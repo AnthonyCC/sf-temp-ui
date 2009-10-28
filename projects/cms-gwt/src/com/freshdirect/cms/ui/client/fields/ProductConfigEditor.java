@@ -1,5 +1,6 @@
 package com.freshdirect.cms.ui.client.fields;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class ProductConfigEditor extends MultiField<ProductConfigAttribute> {
+public class ProductConfigEditor extends MultiField<Serializable> {
 	
 	private OneToOneRelationField		skuField;
 	private NumberField					quantityField;

@@ -1,6 +1,7 @@
 package com.freshdirect.cms.ui.model.attributes;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +40,18 @@ public class ProductConfigAttribute extends OneToOneAttribute {
 	
 	public ProductConfigAttribute() {
 		super();
+	}	
+	
+	public ProductConfigAttribute( ProductConfigAttribute pcAttr ) {
+		super( pcAttr );
+		this.quantity = pcAttr.quantity;
+		this.salesUnit = pcAttr.salesUnit;
+		this.configOptions = pcAttr.configOptions == null ? null : new HashMap<String, String>( pcAttr.configOptions );
+		List<EnumModel> su = pcAttr.confParams.salesUnits == null ? null : new ArrayList<EnumModel>( pcAttr.confParams.salesUnits );
+		List<EnumAttribute> ce = pcAttr.confParams.configEnums == null ? null : new ArrayList<EnumAttribute>( pcAttr.confParams.configEnums );
+		this.confParams = new ProductConfigParams( su, ce );
 	}
-	
-	
+
 	public ProductConfigParams getConfigParams() {
 		return confParams;
 	}
@@ -150,5 +160,5 @@ public class ProductConfigAttribute extends OneToOneAttribute {
 			}
 		}
 		return false;
-	}	
+	}		
 }

@@ -39,7 +39,7 @@ import com.freshdirect.cms.ui.model.attributes.TableAttribute.ColumnType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class TableField extends MultiField implements ChangeTrackingField {
+public class TableField extends MultiField<Serializable> implements ChangeTrackingField {
 
     static class SerializableArrayComparator implements Comparator<Serializable[]>  {
         int idx;
@@ -297,7 +297,7 @@ public class TableField extends MultiField implements ChangeTrackingField {
     }
     
     @Override
-    public Object getValue() {
+    public Serializable getValue() {
         // return the original value, because no editing is possible with this field.
         return attribute.getValue();
     }

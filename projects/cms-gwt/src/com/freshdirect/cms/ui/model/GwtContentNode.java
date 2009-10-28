@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
+import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
 
 public class GwtContentNode implements Serializable {
 	
@@ -139,6 +140,9 @@ public class GwtContentNode implements Serializable {
      */
     public Serializable getOriginalAttributeValue(String attrKey) {
         ContentNodeAttributeI attributeI = originalAttributes.get(attrKey);
+        if ( attributeI instanceof ProductConfigAttribute ) 
+        	return (ProductConfigAttribute)attributeI;
+        
         return attributeI != null ? attributeI.getValue() : null;
     }
 

@@ -15,6 +15,16 @@ public abstract class BaseAttribute implements Serializable, ContentNodeAttribut
 
     protected transient Field<Serializable> fieldObject;
     
+    public BaseAttribute() {    	
+    }
+    
+    public BaseAttribute( BaseAttribute attr ) {
+    	this.label = attr.label;
+    	this.readonly = attr.readonly;
+    	this.inheritable = attr.inheritable;
+    	this.fieldObject = attr.fieldObject;
+    }
+    
     public Field<Serializable> getFieldObject() {
         return fieldObject;
     }

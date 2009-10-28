@@ -13,7 +13,14 @@ public class OneToOneAttribute extends BaseAttribute implements ModifiableAttrib
 	protected Set<String> allowedTypes;	
 	
 	public OneToOneAttribute() {
+		super();
 		value = null;		
+	}
+	
+	public OneToOneAttribute( OneToOneAttribute attr ) {
+		super( attr );
+		value = attr.value;
+		allowedTypes = attr.allowedTypes;
 	}
 	
 	public String getType() {		
