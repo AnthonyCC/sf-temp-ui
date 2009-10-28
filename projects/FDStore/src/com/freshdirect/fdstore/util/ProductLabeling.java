@@ -137,6 +137,17 @@ public class ProductLabeling {
 	}
 
 
+	public String getBurstCode() {
+		String burst = null;
+		if (isDisplayDeal())
+			burst = Integer.toString(product.getHighestDealPercentage());
+		else if (isDisplayFave())
+			burst = "YF";
+		else if (isDisplayNew())
+			burst = "NE";
+		return burst;
+	}
+
 	public boolean isHideBursts() {
 		return hideBursts != null && hideBursts.size() == EnumBurstType.values().length ;
 	}

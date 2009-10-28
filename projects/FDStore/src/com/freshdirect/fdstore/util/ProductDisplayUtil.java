@@ -1,10 +1,14 @@
 package com.freshdirect.fdstore.util;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProxyProduct;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -23,16 +27,10 @@ public class ProductDisplayUtil {
 
 	public static String getProductBurstCode(FDUserI user,
 			EnumSiteFeature siteFeature, ProductModel product) {
-		String burst = null;
-		ProductLabeling labeling = new ProductLabeling(user, product, false,
-				false, false, EnumSiteFeature.DYF.equals(siteFeature));
-		if (labeling.isDisplayDeal())
-			burst = Integer.toString(product.getHighestDealPercentage());
-		else if (labeling.isDisplayFave())
-			burst = "YF";
-		else if (labeling.isDisplayNew())
-			burst = "NE";
-		return burst;
+		Set<EnumBurstType> hb = new HashSet<EnumBurstType>();
+		if (EnumSiteFeature.DYF.equals(siteFeature))
+			hb.add(EnumBurstType.YOUR_FAVE);
+		return new ProductLabeling(user, product, hb).getBurstCode();
 	}
 
 	public static String getProductRatingCode(FDUserI user, ProductModel product)
