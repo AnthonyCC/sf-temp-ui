@@ -65,7 +65,7 @@
 
 
 		// CUSTOMER ID
-			if(user_NI.getIdentity().getErpCustomerPK() == null || "".equals(user_NI.getIdentity().getErpCustomerPK()) ) {
+			if(user_NI.getIdentity() == null || user_NI.getIdentity().getErpCustomerPK() == null || "".equals(user_NI.getIdentity().getErpCustomerPK()) ) {
 				ni_ci += "ni_ci_cid=&";
 			}else{
 				/*
@@ -101,7 +101,9 @@
 			//ni_ci += "ni_ci_pend="+user_NI.+"&";
 
 		// MARKETING PROMOTION PROFILE
-			if(user_NI.getFDCustomer().getProfile().getAttribute("MarketingPromo") == null) {
+			if(user_NI.getIdentity() == null || user_NI.getFDCustomer() == null ||
+					user_NI.getFDCustomer().getProfile() == null ||
+					user_NI.getFDCustomer().getProfile().getAttribute("MarketingPromo") == null) {
 				ni_ci += "ni_ci_mp=NONE&";
 			}else{
 				ni_ci += "ni_ci_mp="+user_NI.getFDCustomer().getProfile().getAttribute("MarketingPromo")+"&";

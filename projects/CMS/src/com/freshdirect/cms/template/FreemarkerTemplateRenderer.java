@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.template.FreemarkerWriter;
 
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
@@ -49,7 +50,7 @@ public class FreemarkerTemplateRenderer implements ITemplateRenderer {
 		freemarker.template.Template template = cfg.getTemplate(url.toString());
 		exceptions = new ArrayList();
 		try {
-			template.process(context, out);
+			template.process(context, new FreemarkerWriter(out));
 			
 			// render an HTML error report to the end, if requested
 			if (withErrorReport && exceptions.size() > 0) {
