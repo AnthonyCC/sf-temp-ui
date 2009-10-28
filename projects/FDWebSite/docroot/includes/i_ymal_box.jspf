@@ -203,7 +203,7 @@
 			// product cell
 			//
 			ProductModel product = pi.getProductModel();
-			ProductLabeling pl = new ProductLabeling(fd_user, product);
+			ProductLabeling pl = new ProductLabeling(fd_user, product, recmnd.getVariant().getHideBursts());
 			
 			// TRKD := recommender ID (if recommender is Smart YMAL) otherwise burst code
 			final String trkd = prd2recommendation != null ? prd2recommendation.get(product.getContentKey().getId()) : pl.getTrackingCode();

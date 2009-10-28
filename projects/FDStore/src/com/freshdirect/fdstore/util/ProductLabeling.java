@@ -51,9 +51,9 @@ public class ProductLabeling {
 			if (hideNew)
 				this.hideBursts.add(EnumBurstType.NEW);
 			if (hideDeals)
-				this.hideBursts.add(EnumBurstType.YOUR_FAVE);
-			if (hideYourFave)
 				this.hideBursts.add(EnumBurstType.DEAL);
+			if (hideYourFave)
+				this.hideBursts.add(EnumBurstType.YOUR_FAVE);
 		}
 		
 		setDisplayFlags();

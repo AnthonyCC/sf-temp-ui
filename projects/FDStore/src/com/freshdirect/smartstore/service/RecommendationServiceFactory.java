@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.RecommenderStrategy;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.ConfigurationException;
 import com.freshdirect.smartstore.ConfigurationStatus;
@@ -72,10 +73,10 @@ public class RecommendationServiceFactory {
 	public static final String CKEY_SCORING = "scoring";
 
 	// APPREQ-734
-	public static final String CKEY_USE_ALTS = "useAlternatives";
+	public static final String CKEY_USE_ALTS = "use_alternatives";
 	
 	// APPREQ-735 - list of burst enums separated by comma
-	public static final String CKEY_HIDE_BURSTS = "hideBursts";
+	public static final String CKEY_HIDE_BURSTS = "hide_bursts";
 	
 	
 	public static final Map<String,String> CONFIG_LABELS = new HashMap<String,String>();
@@ -116,7 +117,14 @@ public class RecommendationServiceFactory {
 	public static final String DEFAULT_FAVORITE_LIST_ID = "fd_favorites";
 
 	public static final boolean DEFAULT_USE_ALTS = true;
+	public static final Map<EnumSiteFeature,Set<EnumBurstType>> DEF_HBSETS = new HashMap<EnumSiteFeature, Set<EnumBurstType>>();
 
+	static {
+		Set<EnumBurstType> hb = new HashSet<EnumBurstType>(1);
+		hb.add(EnumBurstType.YOUR_FAVE);
+		DEF_HBSETS.put(EnumSiteFeature.DYF, hb);
+	}
+	
 	// Valid sampler names
 	public static final String SAMPLERS[] = { "deterministic", "uniform",
 			"linear", "quadratic", "cubic", "harmonic", "sqrt", "power",
@@ -163,7 +171,7 @@ public class RecommendationServiceFactory {
 			variant.setUseAlternatives(extractUseAlternatives(serviceConfig, statuses));
 
 
-			Set<EnumBurstType> hb = extractHideBursts(serviceConfig, statuses);
+			Set<EnumBurstType> hb = extractHideBursts(serviceConfig, statuses, variant.getSiteFeature());
 			variant.setHideBursts(hb);
 		}
 
@@ -599,11 +607,18 @@ public class RecommendationServiceFactory {
 	}
 
 
-	protected static Set<EnumBurstType> extractHideBursts(RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
+	protected static Set<EnumBurstType> extractHideBursts(RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses, EnumSiteFeature siteFeature) {
 		Set<EnumBurstType> options = new HashSet<EnumBurstType>();
 
 		ConfigurationStatus status;
 
+
+		// default value
+		Set<EnumBurstType> defval = null;
+		if (DEF_HBSETS.keySet().contains(siteFeature))
+			defval = DEF_HBSETS.get(siteFeature);
+		
+		
 		String value = config.get(CKEY_HIDE_BURSTS);
 		if (value != null) {
 			Set<String> badVals = new HashSet<String>();
@@ -617,9 +632,12 @@ public class RecommendationServiceFactory {
 			}
 			
 
-			if (options.size() == 0) {
+			
+			if ( (defval == null && options.size() == 0) || (defval != null && defval.equals(options))) {
 				// configured = default
-				status = new ConfigurationStatus(CKEY_HIDE_BURSTS, "", EnumConfigurationState.CONFIGURED_DEFAULT);
+				String newval = defval != null ? StringUtil.join(defval, ",") : "";
+				
+				status = new ConfigurationStatus(CKEY_HIDE_BURSTS, newval, EnumConfigurationState.CONFIGURED_DEFAULT);
 			} else if (badVals.size() > 0) {
 				// found bad burst names in config
 				status = new ConfigurationStatus(CKEY_HIDE_BURSTS, value, EnumConfigurationState.CONFIGURED_WRONG);
@@ -628,8 +646,10 @@ public class RecommendationServiceFactory {
 				status = new ConfigurationStatus(CKEY_HIDE_BURSTS, value, EnumConfigurationState.CONFIGURED_OVERRIDDEN);
 			}
 		} else {
-			// default value is empty list
-			status = new ConfigurationStatus(CKEY_HIDE_BURSTS, "", EnumConfigurationState.UNCONFIGURED_DEFAULT);
+			if (defval != null)
+				options = defval;
+			String newval = defval != null ? StringUtil.join(defval, ",") : "";
+			status = new ConfigurationStatus(CKEY_HIDE_BURSTS, newval, EnumConfigurationState.UNCONFIGURED_DEFAULT);
 		}
 		
 		// record configuration status

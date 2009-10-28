@@ -3,6 +3,8 @@
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
+<%@page import="java.util.HashSet"%>
+<%@page import="java.util.Set"%>
 <%@page import="java.util.Enumeration"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.List"%>
@@ -23,6 +25,7 @@
 <%@page import="com.freshdirect.fdstore.util.ProductLabeling"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.webapp.util.TransactionalProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.EnumBurstType"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
@@ -219,8 +222,8 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 										// product cell
 											
 										ProductModel product = recommendations_row.getProductModel();
-										ProductLabeling pl = new ProductLabeling(pip_u, product);
-										pl.setHideYourFave(true);
+										ProductLabeling pl = new ProductLabeling(pip_u, product, genericRecommendationsVariant.getHideBursts());
+										// pl.setHideYourFave(true);
 
 										// TRKD := recommender ID (if recommender is Smart YMAL) otherwise burst code
 										String trkd = prd2recommendation != null ? prd2recommendation.get(product.getContentKey().getId()) : pl.getTrackingCode();

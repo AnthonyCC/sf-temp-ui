@@ -106,7 +106,7 @@
 				<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 				
 					ProductModel productNode = contentNode;
-					ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode);
+					ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode, recommendations.getVariant().getHideBursts());
 					
 					String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 					

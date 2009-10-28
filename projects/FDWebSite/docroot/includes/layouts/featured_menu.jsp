@@ -97,7 +97,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %>
 <logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 			ProductModel productNode = contentNode;
-			ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode);
+			ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode, recommendations.getVariant().getHideBursts());
 			String fiRating = "";
 			String fiProdPrice = null;
 			String fiSubtitle = productNode.getSubtitle();
