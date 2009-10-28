@@ -971,7 +971,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 %>
                 <td width="85">
                 <div id="prod_container" style="height: 90px; width: 90px; text-align: left;">
-                <div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;" id="prod_image">
+                <div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;">
 
 					  <display:ProductImage product="<%= displayProduct %>" action="<%= imgLinkUrl %>" showRolloverImage="true" />
 	            
@@ -979,7 +979,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
                 <%
                 	if(sku.getProductInfo().getHighestDealPercentage()>0&&!sku.isUnavailable()) {
                 %>
-                    <div style="position: absolute;" id="sale_star">
+                    <div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position:absolute;" id="sale_star">
 			         
 					  <display:ProductImage product="<%= displayProduct %>" action="<%= imgLinkUrl %>" showRolloverImage="true" />
                    
