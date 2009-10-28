@@ -696,4 +696,24 @@ public class StringUtil {
         return name;
     }
 	
+
+
+    /**
+	 * Useful util to join iterable items to a string
+	 * 
+	 * @param <T>
+	 * @param objs
+	 * @param delimiter
+	 * @return
+	 */
+	public static <T>
+	String join(final Iterable<T> objs, final String delimiter) {
+	    Iterator<T> iter = objs.iterator();
+	    if (!iter.hasNext())
+	        return "";
+	    StringBuffer buffer = new StringBuffer(String.valueOf(iter.next()));
+	    while (iter.hasNext())
+	        buffer.append(delimiter).append(String.valueOf(iter.next()));
+	    return buffer.toString();
+	}
 }
