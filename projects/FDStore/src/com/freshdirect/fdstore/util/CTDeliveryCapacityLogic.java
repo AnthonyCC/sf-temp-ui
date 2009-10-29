@@ -102,7 +102,8 @@ public class CTDeliveryCapacityLogic
 					loadedPR1=true;
 					PR1_CONFIG=CONFIG;
 				}
-			
+				in.close();
+			    is.close();
 			}catch(Exception e)
 			{
 				e.printStackTrace();
