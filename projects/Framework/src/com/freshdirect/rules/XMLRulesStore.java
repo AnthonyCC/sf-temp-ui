@@ -129,14 +129,16 @@ public class XMLRulesStore extends AbstractRuleStore {
 	}
 	
 	private Map loadRules() {
+		InputStream is = null;
+		ObjectInputStream in = null;
 		try {
-			InputStream is = ResourceUtil.openResource(xmlFile);
+			is = ResourceUtil.openResource(xmlFile);
 			if (is == null) {
-				throw new IOException("cannot find the file rules.xml on classpath");
+				throw new IOException("cannot find the file " + xmlFile + " on classpath");
 			}
 			Map rules = new HashMap();
 
-			ObjectInputStream in = xstream.createObjectInputStream(new InputStreamReader(is));
+			in = xstream.createObjectInputStream(new InputStreamReader(is));
 			while (true) {
 				try {
 					Rule r = (Rule) in.readObject();
@@ -152,6 +154,26 @@ public class XMLRulesStore extends AbstractRuleStore {
 			throw new RulesRuntimeException(e);
 		} catch (ClassNotFoundException e) {
 			throw new RulesRuntimeException(e);
+		} finally {
+			if (in != null)
+				try {
+					in.close();
+					in = null;
+					is = null;
+				} catch (IOException e) {
+					if (is != null)
+						try {
+							is.close();
+							is = null;
+						} catch (IOException e1) {
+						}
+				}
+			else if (is != null)
+				try {
+					is.close();
+					is = null;
+				} catch (IOException e1) {
+				}
 		}
 	}
 }
