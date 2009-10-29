@@ -24,8 +24,12 @@ public class SaleComparator extends PopularityComparator {
         super(inverse, products);
     }
 
-    public int compare(ProductModel c1, ProductModel c2) {
+    @Override
+    public int compare(ContentNodeModel n1, ContentNodeModel n2) {
         try {
+        	ProductModel c1 = (ProductModel) n1;
+        	ProductModel c2 = (ProductModel) n2;
+        	
             // Stage 0 -- sort out non-display cases
             //
             {

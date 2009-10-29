@@ -53,10 +53,7 @@ public class PopularityComparator implements Comparator<ContentNodeModel> {
         return globalComparator.getScore(c);
     }
 
-    public int compare(ContentNodeModel o1, ContentNodeModel o2) {
-        ContentNodeModel c1 = (ContentNodeModel) o1;
-        ContentNodeModel c2 = (ContentNodeModel) o2;
-
+    public int compare(ContentNodeModel c1, ContentNodeModel c2) {
         if (hideUnavailable) {
             boolean h1 = isDisplayable(c1.getContentKey());
             boolean h2 = isDisplayable(c2.getContentKey());
