@@ -20,6 +20,7 @@ import com.freshdirect.smartstore.dsl.Expression;
 import com.freshdirect.smartstore.impl.GlobalCompiler;
 import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
+import com.freshdirect.smartstore.service.VariantRegistry;
 import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.mockrunner.mock.web.MockPageContext;
@@ -59,8 +60,7 @@ public class ScriptedRecommendationServiceTest extends RecommendationServiceTest
     
     public void testScriptedRecService() throws CompileException {
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getScriptedRecommendationService("FeaturedItems")));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getScriptedRecommendationService("FeaturedItems").getVariant()));
 
         FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
 
@@ -100,8 +100,7 @@ public class ScriptedRecommendationServiceTest extends RecommendationServiceTest
         
         
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getScriptedRecommendationService("FeaturedItems:between(globalPopularity,0,50)")));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getScriptedRecommendationService("FeaturedItems:between(globalPopularity,0,50)").getVariant()));
 
         FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
 
@@ -135,8 +134,11 @@ public class ScriptedRecommendationServiceTest extends RecommendationServiceTest
     
     RecommendationService getScriptedRecommendationService(String generator) throws CompileException {
         RecommendationServiceConfig config = new RecommendationServiceConfig("yf_fi", RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS);
-        return new ScriptedRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, config),
+        RecommendationService fi = new ScriptedRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, config),
                 RecommendationServiceFactory.configureSampler(config, new java.util.HashMap()), false, false, generator);
+        fi.getVariant().setRecommender(fi);
+        VariantRegistry.getInstance().addService(fi.getVariant());
+        return fi;
     }
 
 }

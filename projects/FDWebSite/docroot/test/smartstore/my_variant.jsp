@@ -7,6 +7,7 @@
 %><%@ page import="com.freshdirect.webapp.taglib.fdstore.UserUtil"
 %><%@ page import="com.freshdirect.fdstore.customer.FDUserI"
 %><%@ page import="com.freshdirect.fdstore.customer.FDUser"
+%><%@ page import="com.freshdirect.smartstore.Variant"
 %><%@ page import="com.freshdirect.smartstore.fdstore.VariantSelector"
 %><%@ page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"
 %><%@ page import="com.freshdirect.smartstore.RecommendationService"
@@ -203,10 +204,8 @@ if (validUserCount == 0) {
 				if (user == null)
 					continue;
 				
-				OverriddenVariantsHelper ovHelper = new OverriddenVariantsHelper(user);
-		
-				List ovariants = ovHelper.getOverriddenVariants();
-				OverriddenVariantsHelper.VariantInfoList vInfoList = ovHelper.consolidateVariantsList(ovariants);
+				List ovariants = OverriddenVariantsHelper.getOverriddenVariantIds(user);
+				OverriddenVariantsHelper.VariantInfoList vInfoList = OverriddenVariantsHelper.consolidateVariantsList(ovariants);
 		%>
 		<tr>
 			<td class="text12"><%= user.getUserId() != null ? user.getUserId() : "&lt;anonymous user&gt;" %></td>
@@ -218,9 +217,9 @@ if (validUserCount == 0) {
 					EnumSiteFeature feature = (EnumSiteFeature) it.next();
 					
 					OverriddenVariantsHelper.VariantInfo vi = vInfoList.get(feature);
-					RecommendationService service = VariantSelectorFactory.getInstance(feature).getService(
+					Variant variant = VariantSelectorFactory.getSelector(feature).getVariant(
 							CohortSelector.getInstance().getCohortName(user.getPrimaryKey()));
-					String origVariant = service != null ? service.getVariant().getId() :
+					String origVariant = variant != null ? variant.getId() :
 							"<span class=\"not-found\">&lt;no variant defined&gt;</span>";
 					String overridden = origVariant;
 					if (vi != null) {

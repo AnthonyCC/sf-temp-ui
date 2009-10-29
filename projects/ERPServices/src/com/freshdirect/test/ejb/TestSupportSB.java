@@ -14,7 +14,7 @@ public interface TestSupportSB extends EJBObject {
 	public boolean ping() throws RemoteException;
 
 	public List getDYFEligibleCustomerIDs() throws RemoteException;
-	public List getCustomerIDs() throws RemoteException;
+	public List getErpCustomerIds() throws RemoteException;
 	public String getFDCustomerIDForErpId(String erpCustomerPK) throws RemoteException;
 	public String getErpIDForUserID(String userID) throws RemoteException;
 }

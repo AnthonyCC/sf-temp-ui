@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.filter.FilterFactory;
 import com.freshdirect.smartstore.filter.ProductFilter;
 import com.freshdirect.smartstore.ymal.YmalUtil;
@@ -102,11 +103,16 @@ public class FDStoreRecommender {
 	 * @throws FDResourceException 
 	 */
 	public Recommendations getRecommendations(EnumSiteFeature siteFeature, FDUserI user, 
-			SessionInput input, String overriddenVariantId) throws FDResourceException {
+			SessionInput input, boolean ignoreOverriddenVariants) throws FDResourceException {
 		Set<ContentKey> cartItems = getShoppingCartContentKeys(user.getShoppingCart());
-		return getRecommendations(siteFeature, user, input, overriddenVariantId, cartItems);
+		return getRecommendations(siteFeature, user, input, ignoreOverriddenVariants, cartItems);
 	}
 
+	public Recommendations getRecommendations(EnumSiteFeature siteFeature, FDUserI user, 
+			SessionInput input) throws FDResourceException {
+		Set<ContentKey> cartItems = getShoppingCartContentKeys(user.getShoppingCart());
+		return getRecommendations(siteFeature, user, input, false, cartItems);
+	}
 
         /**
          * Selects the 'best' fitting product from list.
@@ -126,66 +132,68 @@ public class FDStoreRecommender {
             }
         }
 
-        /**
-         * This method selects a good ymal source product, with it's parent category,
-         * and assign to the given SessionInput.
-         *  
-         * @param input sessionInput
-         * @param products List<ProductModel>
-         */
-        public static void initYmalSource(SessionInput input, FDUserI user, ServletRequest request) {
-            Set<ContentNodeModel> cartContents = FDStoreRecommender.getShoppingCartContents( user ) ;
-            input.setCartContents(SmartStoreUtil.toContentKeySetFromModels(cartContents));
-            YmalSource ymal = resolveYmalSource(cartContents, request);
-            if (ymal!=null) {
-                input.setYmalSource(ymal);
-                if (ymal instanceof ProductModel) {
-                    input.setCategory((CategoryModel) ((ProductModel)ymal).getParentNode());
-                }
-            }
-        }
-	
-	/**
+    /**
+	 * This method selects a good ymal source product, with it's parent
+	 * category, and assign to the given SessionInput.
 	 * 
-	 * @param trigger
-	 * @param user the user
 	 * @param input
-	 * @param overriddenVariantId
-	 * @param cartItems Set<ContentKey> of product keys
-	 * @return
-	 * @throws FDResourceException
+	 *            sessionInput
+	 * @param products
+	 *            List<ProductModel>
 	 */
-	public Recommendations getRecommendations(EnumSiteFeature siteFeature, FDUserI user,
-			SessionInput input, String overriddenVariantId, Set<ContentKey> cartItems) throws FDResourceException
-	{
+	public static void initYmalSource(SessionInput input, FDUserI user,
+			ServletRequest request) {
+		Set<ContentNodeModel> cartContents = FDStoreRecommender.getShoppingCartContents(user);
+		input.setCartContents(SmartStoreUtil.toContentKeySetFromModels(cartContents));
+		YmalSource ymal = resolveYmalSource(cartContents, request);
+		if (ymal != null) {
+			input.setYmalSource(ymal);
+			if (ymal instanceof ProductModel) {
+				input.setCategory((CategoryModel) ((ProductModel) ymal).getParentNode());
+			}
+		}
+	}
+
+	public Recommendations getRecommendations(EnumSiteFeature siteFeature,
+			FDUserI user, SessionInput input, Set<ContentKey> cartItems)
+			throws FDResourceException {
+		return getRecommendations(siteFeature, user, input, false, cartItems);
+	}
+        
+	public Recommendations getRecommendations(EnumSiteFeature siteFeature,
+			FDUserI user, SessionInput input, boolean ignoreOverriddenVariants,
+			Set<ContentKey> cartItems) throws FDResourceException {
+		Variant variant = VariantSelectorFactory.getSelector(siteFeature).select(user, ignoreOverriddenVariants);
+		if (variant == null)
+			throw new FDResourceException("error in configuration, no variant for site feature"
+					+ siteFeature.getName() + " has been found");
+		
+		return getRecommendations(variant, user, input, cartItems);
+	}
+	
+	public Recommendations getRecommendations(Variant variant,
+			FDUserI user, SessionInput input, Set<ContentKey> cartItems) throws FDResourceException {
 		if (cartItems != null) {
-		    input.setCartContents(cartItems);
+			input.setCartContents(cartItems);
 		}
 
-		// select service		
-		RecommendationService service = 
-			SmartStoreUtil.getRecommendationService(user, siteFeature, overriddenVariantId);
-		
-		
+		RecommendationService service = variant.getRecommender();
+		if (service == null)
+			throw new FDResourceException("error in configuration, recommended not configured for variant "
+					+ variant.getId() + " (site feature " + variant.getSiteFeature().getName() + ")");
+
 		List<ContentNodeModel> contentModels = doRecommend(input, service);
 
 		LOGGER.debug("Items before filter: " + contentModels);
 
+		List<ContentNodeModel> renderableProducts = filterProducts(
+				contentModels, cartItems, service.isIncludeCartItems(), variant.isUseAlternatives());
 
-		// boolean includeCartItems = Boolean.valueOf(service.getVariant().getServiceConfig().get(SmartStoreServiceConfiguration.CKEY_INCLUDE_CART_ITEMS)).booleanValue();
-		// filter unnecessary models
-		List<ContentNodeModel> renderableProducts = filterProducts(contentModels, cartItems, service.isIncludeCartItems(), service.getVariant().isUseAlternatives());
-		
-		// shave off the extra ones
-		// NOTE: Recommender no longer trim products to size.
-		/** if (renderableProducts.size() > input.getMaxRecommendations()) { 
-			renderableProducts = renderableProducts.subList(0, input.getMaxRecommendations());
-		} **/
-		
-		LOGGER.debug("Recommended products by " + service.getVariant().getId() + ": " + renderableProducts);
+		LOGGER.debug("Recommended products by "
+				+ variant.getId() + ": " + renderableProducts);
 
-		return new Recommendations(service.getVariant(), renderableProducts, input,
-				service.isRefreshable(), service.isSmartSavings());
+		return new Recommendations(variant, renderableProducts,
+				input, service.isRefreshable(), service.isSmartSavings());
 	}
 
 	// mock point

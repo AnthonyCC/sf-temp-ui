@@ -105,7 +105,7 @@
 						<%-- CONTENT --%><%
 							request.setAttribute("genericRecommendationsVariant", tab.get(selectedTab));
 						    request.setAttribute("parentImpressionId", tab.getParentImpressionId());
-						    request.setAttribute("parentVariantId", tab.getTabRecommender().getVariant().getId());
+						    request.setAttribute("parentVariantId", tab.getTabVariant().getId());
 						
 							for ( int k=0; k < numTabs; k++ ) {
 									boolean selected = selectedTab == k; 
@@ -184,7 +184,7 @@
 					tabs: [],
 					features: [],
 					selected: '<%= tab.get(selectedTab).getId() %>',
-					parentImpressionId : '<%= tab.getParentImpressionId() + ':' + tab.getTabRecommender().getVariant().getId() %>',
+					parentImpressionId : '<%= tab.getParentImpressionId() + ':' + tab.getTabVariant().getId() %>',
 					impressionIds: [],
 				
 				

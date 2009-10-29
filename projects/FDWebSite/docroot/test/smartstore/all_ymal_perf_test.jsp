@@ -2,7 +2,6 @@
     "http://www.w3.org/TR/html4/loose.dtd">
 
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="java.util.ArrayList"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.HashSet"%>
@@ -10,12 +9,9 @@
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
-<%@page import="java.util.StringTokenizer"%>
 <%@page import="com.freshdirect.cms.ContentKey"%>
 <%@page import="com.freshdirect.cms.ContentType"%>
-<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.cms.application.CmsManager"%>
-<%@page import="com.freshdirect.fdstore.FDException"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.content.YmalSet"%>
@@ -27,20 +23,13 @@
 <%@page import="com.freshdirect.mail.EmailUtil"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
+<%@page import="com.freshdirect.smartstore.Variant"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
-<%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
-<%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
-<%@page import="com.freshdirect.smartstore.impl.ClassicYMALRecommendationService"%>
 <%@page import="com.freshdirect.smartstore.impl.SmartYMALRecommendationService"%>
 <%@page import="com.freshdirect.smartstore.ymal.YmalUtil"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
-<%@page import="com.freshdirect.framework.util.CSVUtils"%>
-<%@page import="org.apache.commons.fileupload.servlet.ServletFileUpload"%>
-<%@page import="org.apache.commons.fileupload.FileItemFactory"%>
-<%@page import="org.apache.commons.fileupload.FileItem"%>
-<%@page import="org.apache.commons.fileupload.disk.DiskFileItemFactory"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@page import="org.apache.commons.lang.math.NumberUtils"%>
 <%@ taglib uri="freshdirect" prefix="fd"%><%
@@ -72,14 +61,10 @@ customerId = ts.getErpIDForUserID(customerEmail);
 /* cohort */
 String defaultCohortId = "&lt;unknown&gt;";
 String cohortId = defaultCohortId;
-String defaultUserVariant = "&lt;unknown&gt;";
-String userVariant = defaultUserVariant;
 FDUserI user = null;
 if (customerId != null) {
 	user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
 	cohortId = CohortSelector.getInstance().getCohortName(user.getPrimaryKey());
-	RecommendationService userRs = SmartStoreUtil.getRecommendationService(user, 
-			siteFeature, null);
 }
 
 /* No of Cycles */
@@ -210,18 +195,19 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     	</table>
     </div>
     <%
-		VariantSelector vs = VariantSelectorFactory.getInstance(siteFeature);
-	    List cohortNames = CohortSelector.getCohortNames();
-	    RecommendationService smart = null;
-	    Set recommenders = new HashSet(2);
-	    for (int i = 0; i < cohortNames.size(); i++)
-	    	recommenders.add(vs.getService((String) cohortNames.get(i)));
-	    Iterator rIt = recommenders.iterator();
-	    while (rIt.hasNext()) {
-	    	RecommendationService rs = (RecommendationService) rIt.next();
-	    	if (rs instanceof SmartYMALRecommendationService)
-	    		smart = (SmartYMALRecommendationService) rs;
-	    }
+    	VariantSelector vs = VariantSelectorFactory.getSelector(siteFeature);
+    	    List cohortNames = CohortSelector.getCohortNames();
+    	    RecommendationService smart = null;
+    	    Set recommenders = new HashSet(2);
+    	    for (int i = 0; i < cohortNames.size(); i++)
+    	    	recommenders.add(vs.getVariant((String) cohortNames.get(i)));
+    	    Iterator rIt = recommenders.iterator();
+    	    while (rIt.hasNext()) {
+    	    	Variant v = (Variant) rIt.next();
+    	    	RecommendationService rs = v.getRecommender();
+    	    	if (rs instanceof SmartYMALRecommendationService)
+    	    		smart = (SmartYMALRecommendationService) rs;
+    	    }
     %>
     <% if (user == null) { %>
     <table id="message" class="var-comparator"><tr><td>

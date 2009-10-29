@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.log4j.Category;
 
@@ -20,18 +19,14 @@ import com.freshdirect.fdstore.content.Recommender;
 import com.freshdirect.fdstore.content.RecommenderStrategy;
 import com.freshdirect.fdstore.content.YmalSet;
 import com.freshdirect.fdstore.content.YmalSource;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
-import com.freshdirect.smartstore.RecommendationServiceConfig;
-import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
-import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 
 /**
  * @author csongor
@@ -126,8 +121,6 @@ public class SmartYMALRecommendationService extends
 
 				for (int j = 0; j < recNodes.size(); j++) {
 					ContentNodeModel model = (ContentNodeModel) recNodes.get(j);
-					LOGGER.debug("SmartYMAL["+i+"]: [recServiceAudit] Set " + rec
-							.getContentKey().getId()+ " <== " + model.getContentKey().getId());
 					recServiceAudit.put(model.getContentKey().getId(), rec
 							.getContentKey().getId());
 					recStratServiceAudit.put(model.getContentKey().getId(),
@@ -135,8 +128,6 @@ public class SmartYMALRecommendationService extends
 				}
 				addContentKeys(smartInput.getCartContents(), recNodes);
 				recommendations[i] = recNodes;
-
-				LOGGER.debug("SmartYMAL["+i+"]: [recServiceAudit] logged: " + recServiceAudit);
 			}
 
 			if (recommenders.size() == 1) {

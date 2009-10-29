@@ -35,6 +35,7 @@ import com.freshdirect.smartstore.impl.NullRecommendationService;
 import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 import com.freshdirect.smartstore.impl.YourFavoritesInCategoryRecommendationService;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
+import com.freshdirect.smartstore.service.VariantRegistry;
 import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.mockrunner.mock.web.MockPageContext;
@@ -66,16 +67,21 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
                     RecommendationServiceType.FEATURED_ITEMS)), RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("fi_config",
                     RecommendationServiceType.FEATURED_ITEMS), new java.util.HashMap()),
                     false, false);
+            firs.getVariant().setRecommender(firs);
+            VariantRegistry.getInstance().addService(firs.getVariant());
         }
         return firs;
     }
 
     RecommendationService getDeterministicFeaturedItemsService() {
-        return  new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
+        RecommendationService ds = new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
                     RecommendationServiceType.FEATURED_ITEMS).set(RecommendationServiceFactory.CKEY_SAMPLING_STRATEGY, "deterministic")),
                     RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("fi_config",
                     RecommendationServiceType.FEATURED_ITEMS).set(RecommendationServiceFactory.CKEY_SAMPLING_STRATEGY, "deterministic"), new java.util.HashMap()),
                     false, false);
+        ds.getVariant().setRecommender(ds);
+        VariantRegistry.getInstance().addService(ds.getVariant());
+        return ds;
     }
     
     
@@ -87,6 +93,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
                     RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("apc_config",
                     RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY), new java.util.HashMap()),
                     false, false);
+            apicrs.getVariant().setRecommender(apicrs);
+            VariantRegistry.getInstance().addService(apicrs.getVariant());
         }
         return apicrs;
     }
@@ -99,6 +107,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
                 RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("cpc_config",
                 RecommendationServiceType.CANDIDATE_LIST), new java.util.HashMap()),
                 false, false);
+            cprs.getVariant().setRecommender(cprs);
+            VariantRegistry.getInstance().addService(cprs.getVariant());
         }
         return cprs;
     }
@@ -112,6 +122,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
                 RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("mos_config",
                 RecommendationServiceType.MANUAL_OVERRIDE), new java.util.HashMap()),
                 false, false);
+            mors.getVariant().setRecommender(mors);
+            VariantRegistry.getInstance().addService(mors.getVariant());
         }
         return mors;
     }
@@ -123,6 +135,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
                 RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("mos_config",
                 RecommendationServiceType.SCRIPTED), new java.util.HashMap()),
                 false, false, "ManuallyOverriddenSlotsP(currentNode) + CandidateLists", "Popularity");
+            mors_s.getVariant().setRecommender(mors_s);
+            VariantRegistry.getInstance().addService(mors_s.getVariant());
         }
         return mors_s;
     }
@@ -134,16 +148,21 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
                 RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("yf_fi",
                 RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS), new java.util.HashMap()),
                 false, false);
+            yfrs.getVariant().setRecommender(yfrs);
+            VariantRegistry.getInstance().addService(yfrs.getVariant());
         }
         return yfrs;
     }
     
     RecommendationService getDeterministicYourFavoritesService() {
-        return new YourFavoritesInCategoryRecommendationService(new Variant("yf_fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("yf_fi",
+        RecommendationService yfrsd = new YourFavoritesInCategoryRecommendationService(new Variant("yf_fid", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("yf_fid",
                 RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS).set(RecommendationServiceFactory.CKEY_SAMPLING_STRATEGY, "deterministic")),
-                RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("yf_fi",
+                RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("yf_fid",
                 RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS).set(RecommendationServiceFactory.CKEY_SAMPLING_STRATEGY, "deterministic"), new java.util.HashMap()),
                 false, false);
+        yfrsd.getVariant().setRecommender(yfrsd);
+        VariantRegistry.getInstance().addService(yfrsd.getVariant());
+        return yfrsd;
     }
 
     RecommendationService getScriptedYourFavoritesService() throws CompileException {
@@ -153,6 +172,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
                 RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("mos_config",
                 RecommendationServiceType.SCRIPTED), new java.util.HashMap()),
                 false, false, "(Top(RecursiveNodes(currentNode),Frequency,1):atLeast(Frequency,1):prioritize()) + ManuallyOverriddenSlotsP(currentNode) + CandidateLists", "Popularity");
+            yfrs_s.getVariant().setRecommender(yfrs_s);
+            VariantRegistry.getInstance().addService(yfrs_s.getVariant());
         }
         return yfrs_s;
     }
@@ -164,13 +185,18 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
                 RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("mos_config",
                 RecommendationServiceType.SCRIPTED), new java.util.HashMap()),
                 false, false, "Top(RecursiveNodes(currentNode),Frequency,1):atLeast(Frequency,1):prioritize() + ManuallyOverriddenSlotsP(currentNode) + CandidateLists", "Popularity");
+            yfrs_s2.getVariant().setRecommender(yfrs_s2);
+            VariantRegistry.getInstance().addService(yfrs_s2.getVariant());
         }
         return yfrs_s2;
     }
     
     
     RecommendationService getNullService() { 
-        return new NullRecommendationService(new Variant("nil", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("nil", RecommendationServiceType.NIL)));
+        NullRecommendationService nil = new NullRecommendationService(new Variant("nil", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("nil", RecommendationServiceType.NIL)));
+        nil.getVariant().setRecommender(nil);
+        VariantRegistry.getInstance().addService(nil.getVariant());
+		return nil;
     }
 
     public void testRecommendationService() {
@@ -200,9 +226,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
     public void testFeaturedItemsService() {
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getFeaturedItemsService()));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getFeaturedItemsService().getVariant()));
 
         FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
 
@@ -234,7 +259,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         }
 
     
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getDeterministicFeaturedItemsService()));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getDeterministicFeaturedItemsService().getVariant()));
 
         fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
         fit.setNoShuffle(false);
@@ -270,9 +295,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     public void testAllProductInCategoryService() {
         MockPageContext ctx;
         FeaturedItemsTag fit;
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getAllProductInCategoryService()));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getAllProductInCategoryService().getVariant()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
 
         fit = TestUtils.createFeaturedItemsTag(ctx, "gro_cooki_cooki");
         
@@ -305,9 +329,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     public void testCandidateListService() {
         MockPageContext ctx;
         FeaturedItemsTag fit;
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getCandidateListService()));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getCandidateListService().getVariant()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = TestUtils.createFeaturedItemsTag(ctx, "gro_cooki_cooki");
         
@@ -336,9 +359,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     public void testManualOverrideService() {
         MockPageContext ctx;
         FeaturedItemsTag fit;
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getManualOverrideService()));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getManualOverrideService().getVariant()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = TestUtils.createFeaturedItemsTag(ctx, "gro_cooki_cooki");
         
@@ -424,9 +446,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         MockPageContext ctx;
         FeaturedItemsTag fit;
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS,
-        		new SingleVariantSelector(getScriptedManualOverrideService()));
+        		new SingleVariantSelector(getScriptedManualOverrideService().getVariant()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = TestUtils.createFeaturedItemsTag(ctx, "gro_cooki_cooki");
         
@@ -509,9 +530,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     }
     
     public void testYourFavoritesInFi() {
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getYourFavoritesService()));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getYourFavoritesService().getVariant()));
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         
@@ -544,7 +564,6 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
         
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         
@@ -579,7 +598,6 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         }
 
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods2", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         
@@ -615,10 +633,9 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
         
         // Test the deterministic sampling strategy
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getDeterministicYourFavoritesService()));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getDeterministicYourFavoritesService().getVariant()));
         
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods2", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         fit.setNoShuffle(true);
@@ -651,18 +668,17 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     }
 
     public void testScriptedYourFavoritesInFi() throws CompileException {
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getScriptedYourFavoritesService()));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getScriptedYourFavoritesService().getVariant()));
         doScriptedYourFavoritesInFi();
     }
 
     public void testScriptedYourFavoritesInFi2() throws CompileException {
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getScriptedYourFavoritesService2()));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getScriptedYourFavoritesService2().getVariant()));
         doScriptedYourFavoritesInFi();
     }
     
     private void doScriptedYourFavoritesInFi() throws CompileException {
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         
@@ -695,7 +711,6 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
         
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         
@@ -730,7 +745,6 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         }
 
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods2", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         
@@ -768,7 +782,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     
     public void testCartItemRemoval() {
         FDUser user = TestUtils.createUser("123", "456", "789");
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getFeaturedItemsService()));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getFeaturedItemsService().getVariant()));
 
         ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode("spe_cooki_cooki");
         try {
@@ -780,7 +794,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
             si.setNoShuffle(true);
             si.setMaxRecommendations(5);
             Recommendations recomm = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS,
-            		user, si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, new HashSet());
+            		user, si, new HashSet());
 
             {
                 assertNotNull("default-recommendations", recomm);
@@ -797,7 +811,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
             cartItems.add(ContentKey.create(FDContentTypes.PRODUCT, "spe_moore_lemon"));
             
             recomm = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS, user,
-            		si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, cartItems);
+            		si, cartItems);
             {
                 assertNotNull("exlusion-recommendations", recomm);
                 assertEquals("exlusion-2 recommendation", 2, recomm.getProducts().size());
@@ -815,11 +829,13 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
                         fiConfig),
                         RecommendationServiceFactory.configureSampler(fiConfig, new java.util.HashMap()),
                         false, true);
-                VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(noRemovalService));
+                noRemovalService.getVariant().setRecommender(noRemovalService);
+                VariantRegistry.getInstance().addService(noRemovalService.getVariant());
+                VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(noRemovalService.getVariant()));
             }
 
             recomm = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS, user,
-            		si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, cartItems);
+            		si, cartItems);
             {
                 assertNotNull("include-cart-items-recommendations", recomm);
                 assertEquals("include-cart-items-3 recommendation", 3, recomm.getProducts().size());

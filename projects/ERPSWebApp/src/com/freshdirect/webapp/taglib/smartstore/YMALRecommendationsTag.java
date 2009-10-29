@@ -1,7 +1,5 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
-import java.util.Map;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -12,12 +10,10 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
-import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 import com.freshdirect.smartstore.service.VariantRegistry;
 import com.freshdirect.smartstore.ymal.YmalUtil;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
@@ -71,10 +67,6 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
 			
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 			
-			String overriddenVariantID = request.getParameter("SmartStore.VariantID");
-			if (overriddenVariantID != null)
-			    session.setAttribute("SmartStore.VariantID", overriddenVariantID);
-			
 			// setup an input
 			FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 			SessionInput inp = new SessionInput(user);
@@ -92,7 +84,7 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
 			inp.setMaxRecommendations(itemCount);
 
 
-			results = recommender.getRecommendations(EnumSiteFeature.YMAL, user, inp, overriddenVariantID);
+			results = recommender.getRecommendations(EnumSiteFeature.YMAL, user, inp);
 			persistToSession(results);
         }
 

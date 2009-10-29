@@ -79,24 +79,24 @@
 	TestSupport ts = TestSupport.getInstance();
 	if (useLoggedIn) {
 		if (loggedUser != null) {
-			user = loggedUser;
-			if (user != null && user.getIdentity() != null)
-				customerId = user.getIdentity().getErpCustomerPK();
+	user = loggedUser;
+	if (user != null && user.getIdentity() != null)
+		customerId = user.getIdentity().getErpCustomerPK();
 		}
 	} else {
 		customerId = ts.getErpIDForUserID(customerEmail);
 		try {
-			user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
+	user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
 		} catch (Exception e) {
-			
+	
 		}
 	}
 	if (user != null) {
 		primaryKey = user.getPrimaryKey();
 		if (user.getUserServiceType() != null)
-			userServiceType = user.getUserServiceType().getName();
+	userServiceType = user.getUserServiceType().getName();
 		cohortId = CohortSelector.getInstance().getCohortName(user.getPrimaryKey());
-		userStrategy = VariantSelectorFactory.getInstance(EnumSiteFeature.CART_N_TABS).getService(cohortId).getVariant().getId();
+		userStrategy = VariantSelectorFactory.getSelector(EnumSiteFeature.CART_N_TABS).getVariant(cohortId).getId();
 	}
 	input = new SessionInput(user);
 	
@@ -109,9 +109,9 @@
 	} else {
 		String triggeringProduct = urlG.get("triggeringProduct");
 		if (triggeringProduct != null && triggeringProduct.trim().length() != 0) {
-			ContentNodeModel node = ContentFactory.getInstance().getContentNode(triggeringProduct.trim());
-			if (node != null && node instanceof ProductModel)
-				source = (ProductModel) node; 
+	ContentNodeModel node = ContentFactory.getInstance().getContentNode(triggeringProduct.trim());
+	if (node != null && node instanceof ProductModel)
+		source = (ProductModel) node; 
 		}
 	}
 	if (input != null && source != null) {
@@ -126,7 +126,7 @@
 
 	String noOfCycles = urlG.get("noOfCycles");
 	if (noOfCycles == null || noOfCycles.length() == 0
-			|| !NumberUtils.isNumber(noOfCycles)) {
+	|| !NumberUtils.isNumber(noOfCycles)) {
 		noOfCycles = defaultNoOfCycles;
 	}
 	if (defaultNoOfCycles.equals(noOfCycles)) {
@@ -337,7 +337,7 @@ p.fi{margin:20px 0px;}
 		if (user != null && input != null) {
 			long start = System.currentTimeMillis();
 			for (int i = 0; i < i_noOfCycles; i++) {
-				TabRecommendation tr = CartTabRecommender.recommendTabs(user, input, null);
+				TabRecommendation tr = CartTabRecommender.recommendTabs(user, input);
 				tabs[i] = new EnumSiteFeature[3];
 				for (int j = 0; j < tr.size(); j++) {
 					Variant variant = tr.get(j);

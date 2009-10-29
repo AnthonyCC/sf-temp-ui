@@ -18,6 +18,7 @@
 <%@page import="com.freshdirect.fdstore.util.URLGenerator"%>
 <%@page import="com.freshdirect.mail.EmailUtil"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
+<%@page import="com.freshdirect.smartstore.Variant"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
@@ -25,7 +26,11 @@
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@page import="org.apache.commons.lang.math.NumberUtils"%>
-
+<%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
+<%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
+<%@page import="com.freshdirect.cms.ContentNodeI"%>
+<%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
+<%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -102,11 +107,7 @@
 		response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));
 	}
 %>
-
-<%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
-<%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
-<%@page import="com.freshdirect.cms.ContentNodeI"%>
-<%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%><html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>FEATURED ITEMS DEBUGGER - <%=categoryName%></title>
@@ -316,7 +317,8 @@ p.fi{margin:20px 0px;}
     				<p class="n_weight"
     						title="The Algorithm (Variant) which is assigned to the Cohort the User belongs to">
     					<%
-    						RecommendationService rs = SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.FEATURED_ITEMS, null);
+    						Variant var = VariantSelectorFactory.getSelector(EnumSiteFeature.FEATURED_ITEMS).select(user);
+    						RecommendationService rs = var.getRecommender();
     						if (rs != null) {
     					%>
     					<span><%= rs.getVariant().getId() %></span>

@@ -3,7 +3,10 @@ package com.freshdirect.smartstore.fdstore;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
+import com.freshdirect.smartstore.Variant;
 
 /**
  * Variant selection based on cohort name or user id.
@@ -21,26 +24,64 @@ import com.freshdirect.smartstore.RecommendationService;
  * @author zsombor
  */
 public class VariantSelector {
-	
-    Map services = new HashMap();
+    private Map<String, Variant> services = new HashMap<String, Variant>();
+    private boolean needUpdate;
+
+    private EnumSiteFeature siteFeature;
+
+    public VariantSelector(EnumSiteFeature siteFeature) {
+		super();
+		if (siteFeature == null)
+			throw new IllegalArgumentException("site feature must not be null");
+		needUpdate = false;
+		this.siteFeature = siteFeature;
+	}
     
-    
-    public void addCohort(String cohortName, RecommendationService service) {
-        this.services.put(cohortName, service);
-    }
-    
-    public RecommendationService getService(String cohortName) {
-        return (RecommendationService) services.get(cohortName);
-    }
-	
     /**
-     * Select a variant based on user id.
-     * @param primaryId user id
-     * @return variant
-     */
-    public RecommendationService select(String primaryId) {
-        String cohortName = CohortSelector.getInstance().getCohortName(primaryId);
-        return (RecommendationService) services.get(cohortName);
+	 * helper method to mark the selector to reload
+	 * 
+	 * @param needUpdate
+	 */
+    protected void setNeedUpdate(boolean needUpdate) {
+		this.needUpdate = needUpdate;
+	}
+    
+    protected boolean isNeedUpdate() {
+		return needUpdate;
+	}
+
+	/**
+	 * !!! This method should become protected !!!
+	 * 
+	 * @param cohortName
+	 * @param variant
+	 */
+	public void addCohort(String cohortName, Variant variant) {
+        this.services.put(cohortName, variant);
     }
     
+    public Variant getVariant(String cohortName) {
+        return services.get(cohortName);
+    }
+	
+    public Variant select(FDUserI user) {
+    	return select(user, false);
+    }
+
+    public Variant select(FDUserI user, boolean ignoreOverriddenVariants) {
+    	Variant variant;
+    	
+		if (!ignoreOverriddenVariants) {
+			variant = selectOverridden(user);
+			if (variant != null)
+				return variant;
+		}
+		
+        String cohortName = CohortSelector.getInstance().getCohortName(user.getPrimaryKey());
+        return services.get(cohortName);
+    }
+
+	public Variant selectOverridden(FDUserI user) {
+		return OverriddenVariantsHelper.getOverriddenVariant(user, siteFeature);
+	}
 }

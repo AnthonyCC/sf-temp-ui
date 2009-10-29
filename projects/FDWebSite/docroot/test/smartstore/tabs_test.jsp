@@ -83,25 +83,25 @@
 	TestSupport ts = TestSupport.getInstance();
 	if (useLoggedIn) {
 		if (loggedUser != null) {
-			user = loggedUser;
-			if (user != null && user.getIdentity() != null)
-				customerId = user.getIdentity().getErpCustomerPK();
+	user = loggedUser;
+	if (user != null && user.getIdentity() != null)
+		customerId = user.getIdentity().getErpCustomerPK();
 		}
 	} else {
 		customerId = ts.getErpIDForUserID(customerEmail);
 		try {
-			user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
-			user.updateUserState();
+	user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
+	user.updateUserState();
 		} catch (Exception e) {
-			
+	
 		}
 	}
 	if (user != null) {
 		primaryKey = user.getPrimaryKey();
 		if (user.getUserServiceType() != null)
-			userServiceType = user.getUserServiceType().getName();
+	userServiceType = user.getUserServiceType().getName();
 		cohortId = CohortSelector.getInstance().getCohortName(user.getPrimaryKey());
-		userStrategy = VariantSelectorFactory.getInstance(EnumSiteFeature.CART_N_TABS).getService(cohortId).getVariant().getId();
+		userStrategy = VariantSelectorFactory.getSelector(EnumSiteFeature.CART_N_TABS).getVariant(cohortId).getId();
 	}
 	input = new SessionInput(user);
 	
@@ -114,9 +114,9 @@
 	} else {
 		String triggeringProduct = urlG.get("triggeringProduct");
 		if (triggeringProduct != null && triggeringProduct.trim().length() != 0) {
-			ContentNodeModel node = ContentFactory.getInstance().getContentNode(triggeringProduct.trim());
-			if (node != null && node instanceof ProductModel)
-				source = (ProductModel) node; 
+	ContentNodeModel node = ContentFactory.getInstance().getContentNode(triggeringProduct.trim());
+	if (node != null && node instanceof ProductModel)
+		source = (ProductModel) node; 
 		}
 	}
 	if (input != null && source != null) {
@@ -185,16 +185,23 @@ p.fi{margin:20px 0px;}
 <body class="test-page">
 	<form method="get" action="<%=request.getRequestURI()%>">
     <div class="rec-chooser title14">
-    		<%  if (loggedUser != null) {
-    				if (loggedUser.getIdentity() != null) {
+    		<%
+    			if (loggedUser != null) {
+    		    				if (loggedUser.getIdentity() != null) {
     		%>
-    		Logged in as <%= loggedUser.getUserId() %>.
-    		<%      } else { %>
-    		Not logged in. You are in area  <%= loggedUser.getZipCode() %>.
-    		<% 		}
-    			} else { %>
+    		Logged in as <%=loggedUser.getUserId()%>.
+    		<%
+    			} else {
+    		%>
+    		Not logged in. You are in area  <%=loggedUser.getZipCode()%>.
+    		<%
+    			}
+    		    			} else {
+    		%>
     		Not logged in.
-    		<% 	} %>
+    		<%
+    			}
+    		%>
     </div>
     <div class="rec-options" class="rec-chooser title14">
     	<table style="width: auto;">
@@ -214,23 +221,29 @@ p.fi{margin:20px 0px;}
     						document.getElementById('useLoggedCart').checked = this.checked;"
     						value="true"<%= useLoggedIn ? " checked" : ""%>>
     				</p>
-    				<% if (customerId != null) { %>
+    				<%
+    					if (customerId != null) {
+    				%>
     				<p class="result">
-    					Customer ID: <%= customerId %>
+    					Customer ID: <%=customerId%>
     				</p>
-    				<% } else { %>
+    				<%
+    					} else {
+    				%>
     				<p class="result">
     					Customer ID: <span class="not-found">&lt;not found&gt;</span>
     				</p>
-    				<% } %>
+    				<%
+    					}
+    				%>
     				<p class="result">
-    					Cohort ID: <%= cohortId %>
+    					Cohort ID: <%=cohortId%>
     				</p>
     				<p class="result">
-    					Cart Strategy: <%= userStrategy %>
+    					Cart Strategy: <%=userStrategy%>
     				</p>
     				<p class="result">
-    					Customer Service Type: <%= userServiceType %>
+    					Customer Service Type: <%=userServiceType%>
     				</p>
    				</td>
 				<td>
@@ -246,42 +259,61 @@ p.fi{margin:20px 0px;}
 	   						document.getElementById('useLoggedIn').checked = this.checked;"
 	   						value="true"<%= useLoggedIn ? " checked" : ""%>>
 	   				</p>
-	   				<% if (useLoggedIn && user != null) { %>
-	   					<% Set cartItems = FDStoreRecommender.getShoppingCartContents(user);
-	   					   if (cartItems == null)
-	   						   cartItems = Collections.EMPTY_SET; 
-						   Iterator it = cartItems.iterator(); %>
-	   					<% if (!it.hasNext()) {	%>
+	   				<%
+	   					if (useLoggedIn && user != null) {
+	   				%>
+	   					<%
+	   						Set cartItems = FDStoreRecommender.getShoppingCartContents(user);
+	   						   					   if (cartItems == null)
+	   						   						   cartItems = Collections.EMPTY_SET; 
+	   									   Iterator it = cartItems.iterator();
+	   					%>
+	   					<%
+	   						if (!it.hasNext()) {
+	   					%>
 	   				<p class="result not-found">
 	   						No recent items in cart.
 	   				</p>
-	   					<% } else { %>
+	   					<%
+	   						} else {
+	   					%>
 	   				<p class="result">
 	   						Items in cart:
 	   				</p>
-	   					<% } %>
-	   					<% while (it.hasNext()) {
-	   						ProductModel product = (ProductModel) it.next();
+	   					<%
+	   						}
+	   					%>
+	   					<%
+	   						while (it.hasNext()) {
+	   						   						ProductModel product = (ProductModel) it.next();
 	   					%>
 	   				<p style="font-weight: normal;" title="<%= product.getFullName() %>"
-	   						><%= product.getContentKey().getId() %></p>
-	   					<% } %>
-	   				<% } %>
+	   						><%=product.getContentKey().getId()%></p>
+	   					<%
+	   						}
+	   					%>
+	   				<%
+	   					}
+	   				%>
 	   				<p class="result">
-	   					Triggering item: <% 
-	   						if (source != null) { 
-	   						%><span style="font-weight: normal;" title="<%= source.getFullName() + " (" +
-	   								source.getContentKey().getType().getName() + ")" %>"><%= source.getContentKey().getId() %></span><% 
-	   						} else { 
-	   						%><span class="not-found">&lt;unidentified&gt;</span><% 
-	   						} %>
+	   					Triggering item: <%
+	   					if (source != null) {
+	   				%><span style="font-weight: normal;" title="<%= source.getFullName() + " (" +
+	   								source.getContentKey().getType().getName() + ")" %>"><%=source.getContentKey().getId()%></span><%
+	   					} else {
+	   				%><span class="not-found">&lt;unidentified&gt;</span><%
+	   					}
+	   				%>
 	   				</p>
 	   				<%
-	   				   if (trigError.length() != 0) { %>
+	   					if (trigError.length() != 0) {
+	   				%>
 	   				<p class="not-found result">
-	   					<%= trigError %>
+	   					<%=trigError%>
 	   				</p>
-	   				<% } %>
+	   				<%
+	   					}
+	   				%>
 				</td>
 			</tr>
     		<tr>
@@ -294,10 +326,10 @@ p.fi{margin:20px 0px;}
     	</table>
     </div>
 	</form>
-	<% 
-	RecommendationService rs = VariantSelectorFactory.getInstance(EnumSiteFeature.CART_N_TABS).getService(cohortId);
-	SortedMap priorities = rs != null ? rs.getVariant().getTabStrategyPriorities() : new TreeMap();
-	if (priorities != null) {
+	<%
+		Variant tabVariant = VariantSelectorFactory.getSelector(EnumSiteFeature.CART_N_TABS).getVariant(cohortId);
+		SortedMap priorities = tabVariant != null ? tabVariant.getTabStrategyPriorities() : new TreeMap();
+		if (priorities != null) {
 	%>
 	<table class="priorities">
 		<thead>
@@ -340,7 +372,7 @@ p.fi{margin:20px 0px;}
 		</thead>
 	<%
 		if (user != null && input != null) {
-			TabRecommendation tr = CartTabRecommender.recommendTabs(user, input, null);
+			TabRecommendation tr = CartTabRecommender.recommendTabs(user, input);
 			for (int i = 0; i < tr.size(); i++) {
 				Variant variant = tr.get(i);
 				EnumSiteFeature siteFeature = variant.getSiteFeature();

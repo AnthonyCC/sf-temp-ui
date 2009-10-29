@@ -288,7 +288,7 @@ public class OfflineRecommenderSessionBean extends SessionBeanSupport {
 			input.setMaxRecommendations(5);
 			input.setIncludeCartItems(false);
 			Recommendations recs = FDStoreRecommender.getInstance()
-					.getRecommendations(siteFeature, user, input, null);
+					.getRecommendations(siteFeature, user, input);
 			saveRecommendations(user, recs);
 			n += recs.getProducts().size();
 		}

@@ -22,6 +22,8 @@
 <%@page import="com.freshdirect.fdstore.util.URLGenerator"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
+<%@page import="com.freshdirect.smartstore.Variant"%>
+<%@page import="com.freshdirect.smartstore.service.VariantRegistry"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelector"%>
@@ -311,17 +313,12 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     </td></tr></table>
     <%
     	pageContext.getOut().flush();
-    
-		VariantSelector vs = VariantSelectorFactory.getInstance(siteFeature);
-	    List cohortNames = CohortSelector.getCohortNames();
-	    RecommendationService classic = null;
-	    RecommendationService smart = null;
-	    Set recommenders = new HashSet(2);
-	    for (int i = 0; i < cohortNames.size(); i++)
-	    	recommenders.add(vs.getService((String) cohortNames.get(i)));
-	    Iterator rIt = recommenders.iterator();
+
+		RecommendationService classic = null, smart = null;
+	    Iterator rIt = VariantRegistry.getInstance().getServices(EnumSiteFeature.YMAL).values().iterator();
 	    while (rIt.hasNext()) {
-	    	RecommendationService rs = (RecommendationService) rIt.next();
+	    	Variant variant = (Variant) rIt.next();
+	    	RecommendationService rs = variant.getRecommender();
 	    	if (rs instanceof ClassicYMALRecommendationService)
 	    		classic = (ClassicYMALRecommendationService) rs;
 	    	else if (rs instanceof SmartYMALRecommendationService)

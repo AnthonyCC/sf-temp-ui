@@ -240,10 +240,8 @@ if (assignment.containsKey(cohortId)) {
 }
 if (user != null) {
 	try {
-		OverriddenVariantsHelper ovHelper = new OverriddenVariantsHelper(user);
-	
-		List ovariants = ovHelper.getOverriddenVariants();
-		OverriddenVariantsHelper.VariantInfoList vInfoList = ovHelper.consolidateVariantsList(ovariants);
+		List ovariants = OverriddenVariantsHelper.getOverriddenVariantIds(user);
+		OverriddenVariantsHelper.VariantInfoList vInfoList = OverriddenVariantsHelper.consolidateVariantsList(ovariants);
 	
 		OverriddenVariantsHelper.VariantInfo vi = vInfoList.get(siteFeature);
 

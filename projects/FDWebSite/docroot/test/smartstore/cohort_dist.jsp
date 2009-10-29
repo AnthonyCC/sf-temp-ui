@@ -68,7 +68,7 @@ static class Buckets {
 
 TestSupport s = TestSupport.getInstance();
 VariantSelection helper = VariantSelection.getInstance();
-VariantSelector selector = (VariantSelector)VariantSelectorFactory.getInstance(EnumSiteFeature.DYF);
+VariantSelector selector = (VariantSelector)VariantSelectorFactory.getSelector(EnumSiteFeature.DYF);
 
 // cohort->weight map
 Map cohorts = helper.getCohorts();
@@ -81,6 +81,7 @@ List variant_ids = helper.getVariants(EnumSiteFeature.DYF);
 Buckets b1 = new Buckets(variant_ids);
 
 %>
+<%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -92,14 +93,12 @@ Buckets b1 = new Buckets(variant_ids);
 <body>
 <%
 /// List customerIDs = s.getDYFEligibleCustomerIDs();
-List customerIDs = s.getCustomerIDs();
+List customerIDs = s.getErpCustomerIDs();
 for (Iterator it=customerIDs.iterator(); it.hasNext();) {
 	String cID = ((Long)it.next()).toString();
 	
-
-	RecommendationService rs = selector.select(cID);
-
-	String key = rs.getVariant().getId();
+	FDUserI user = FDCustomerManager.recognize(new FDIdentity(cID));
+	String key = selector.select(user).getId();
 	if (!b1.add(key)) {
 		%>Invalid key: <%= key %> for customer <%= cID %><br/><%
 	}

@@ -23,49 +23,39 @@ import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.VariantSelection;
+import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 
 public class PromoVariantHelper {
 
 	public static Map getPromoVariantMap(FDUserI user, FDPromotionEligibility eligibilities){
-		try{
-			Set recommendedPromos = eligibilities.getRecommendedPromos();
-			eligibilities.setEligiblity(recommendedPromos, false);
-	        VariantSelection helper = VariantSelection.getInstance();
-	        List ssFeatures = EnumSiteFeature.getSmartSavingsFeatureList();
-	        Map promoVariantMap = new HashMap();
-	        
-	        for(Iterator it = ssFeatures.iterator(); it.hasNext();){
-	            // fetch variant assignment (cohort -> variant map)
-	        	EnumSiteFeature siteFeature = (EnumSiteFeature) it.next();
+		Set recommendedPromos = eligibilities.getRecommendedPromos();
+		eligibilities.setEligiblity(recommendedPromos, false);
+        VariantSelection helper = VariantSelection.getInstance();
+        List ssFeatures = EnumSiteFeature.getSmartSavingsFeatureList();
+        Map promoVariantMap = new HashMap();
+        
+        for(Iterator it = ssFeatures.iterator(); it.hasNext();){
+            // fetch variant assignment (cohort -> variant map)
+        	EnumSiteFeature siteFeature = (EnumSiteFeature) it.next();
 
-				// lookup overridden variant
-				OverriddenVariantsHelper vhelper = new OverriddenVariantsHelper(user);
-				String variantId = vhelper.getOverriddenVariant(siteFeature);
-				if(variantId == null){
-		            Map assignment = helper.getVariantMap(siteFeature);
-		            String cohortId = user.getCohortName();
-		            variantId = (String) assignment.get(cohortId);
-				}
-				
-				if(variantId != null) {
-					List promoVariants = PromoVariantCache.getInstance().getAllPromoVariants(variantId);
-		            if(promoVariants != null){
-		                for(Iterator iter = promoVariants.iterator(); iter.hasNext();){
-		                	PromoVariantModel promoVariant = (PromoVariantModel) iter.next();
-		                	String promoCode = promoVariant.getAssignedPromotion().getPromotionCode();
-		                	if(recommendedPromos != null && recommendedPromos.contains(promoCode)) {
-		                		promoVariantMap.put(variantId, promoVariant);
-		                		eligibilities.setEligibility(promoCode, true);
-		                		break;
-		                	}
-		                }
-		            }
-	        	}
-	        }
-	        return promoVariantMap;
-		} catch(FDResourceException fe){
-			throw new RuntimeException(fe);
-		}
+        	String variantId = VariantSelectorFactory.getSelector(siteFeature).select(user).getId();
+			
+			if(variantId != null) {
+				List promoVariants = PromoVariantCache.getInstance().getAllPromoVariants(variantId);
+	            if(promoVariants != null){
+	                for(Iterator iter = promoVariants.iterator(); iter.hasNext();){
+	                	PromoVariantModel promoVariant = (PromoVariantModel) iter.next();
+	                	String promoCode = promoVariant.getAssignedPromotion().getPromotionCode();
+	                	if(recommendedPromos != null && recommendedPromos.contains(promoCode)) {
+	                		promoVariantMap.put(variantId, promoVariant);
+	                		eligibilities.setEligibility(promoCode, true);
+	                		break;
+	                	}
+	                }
+	            }
+        	}
+        }
+        return promoVariantMap;
 	}
 	
 	public static void updateSavingsVariant(FDUserI user, Map savingsLookupTable){
@@ -90,7 +80,7 @@ public class PromoVariantHelper {
 			}else {
 				try {
 
-					Recommendations rec = recommender.getRecommendations(pv.getSiteFeature(), user, input, null);
+					Recommendations rec = recommender.getRecommendations(pv.getSiteFeature(), user, input);
 					recSize = rec.getProducts().size();
 					savingsLookupTable.put(variantId, new Integer(recSize));
 				}catch (FDResourceException e) {
@@ -121,7 +111,7 @@ public class PromoVariantHelper {
 		FDStoreRecommender.initYmalSource(input, user, request);
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(maxRecommendations);
-		tabs = CartTabRecommender.recommendTabs( user, input, null);	
+		tabs = CartTabRecommender.recommendTabs(user, input);	
 		if(tabs == null || tabs.size() == 0) 
 		    user.setSavingsVariantFound(false);
 		for (int i = 0; i < tabs.size(); i++) {

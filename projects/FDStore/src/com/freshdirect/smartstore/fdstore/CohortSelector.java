@@ -17,165 +17,31 @@ import java.util.Map;
  *
  */
 public class CohortSelector {
+	private static Map<String, Integer> cohorts = null;
+	private static int cohortSum = 0;
+	private static List<String> cohortNames = null;
 
-    private static Map            cohorts     = null;
-    private static int            cohortSum   = 0;
-    private static List           cohortNames = null;
+	private static CohortSelector instance;
 
-    private static CohortSelector instance;
+	/**
+	 * Compare variants by mass. Used explicitly to (binary) search the cohort
+	 * the user belongs to.
+	 */
+	protected static Comparator MASS_COMPARATOR = new Comparator() {
+		// get mass as integer
+		private int getMass(Object o) {
+			if (o instanceof Integer) {
+				return ((Integer) o).intValue();
+			} else {
+				return ((CohortAssignment) o).getMass();
+			}
+		}
 
-    /**
-     * Stores a cohort, the corresponding variant, frequency and mass.
-     * 
-     */
-    protected class CohortAssignment {
+		public int compare(Object o1, Object o2) {
+			return getMass(o1) - getMass(o2);
+		}
+	};
 
-        private String cohort;   // id
-        private int    frequency; // cohort freq
-        private int    mass;     // the cumulative mass
-
-        // "to the left"
-
-        /**
-         * Constructor.
-         * 
-         * @param cohort
-         *            id
-         * @param variant
-         *            service
-         * @param frequency
-         *            cohort's
-         */
-        protected CohortAssignment(String cohort, int frequency) {
-            this.cohort = cohort;
-            this.frequency = frequency;
-            this.mass = 0;
-        }
-
-        /**
-         * Get cohort.
-         * 
-         * @return cohort id
-         */
-        public String getCohort() {
-            return cohort;
-        }
-
-        /**
-         * Get mass. Return the cumulative mass of cohorts "to the left"; that
-         * is all cohorts that precede this, plus this frequency.
-         * 
-         * @return mass "to the left"
-         */
-        public int getMass() {
-            return mass;
-        }
-
-        public String toString() {
-            return new StringBuffer().append("[mass = ").append(mass).append(" freq = ").append(frequency).append(" cohort = ").append(cohort).append("]")
-                    .toString();
-        }
-    }
-
-    /**
-     * The Cumulative Distribution of cohorts. The actual sorted list of
-     * variants with cumulative masses in cohort order.
-     */
-    protected List       cdf               = new ArrayList();
-
-    /**
-     * Total mass in all cohorts.
-     */
-    protected int        total             = 0;
-
-    /**
-     * Compare variants by cohort.
-     */
-    protected Comparator variantComparator = new Comparator() {
-                                               public int compare(Object o1, Object o2) {
-                                                   return ((CohortAssignment) o1).getCohort().compareTo(((CohortAssignment) o2).getCohort());
-                                               }
-                                           };
-
-    /**
-     * Compare variants by mass. Used explicitly to (binary) search the cohort
-     * the user belongs to.
-     */
-    protected Comparator massComparator    = new Comparator() {
-                                               // get mass as integer
-                                               private int getMass(Object o) {
-                                                   if (o instanceof Integer) {
-                                                       return ((Integer) o).intValue();
-                                                   } else {
-                                                       return ((CohortAssignment) o).getMass();
-                                                   }
-                                               }
-
-                                               public int compare(Object o1, Object o2) {
-                                                   return getMass(o1) - getMass(o2);
-                                               }
-                                           };
-
-    /**
-     * Add a cohort group definition.
-     * 
-     * @param cohort
-     *            id
-     * @param frequency
-     *            relative frequency of cohort
-     */
-    protected void addCohort(String cohort, int frequency) {
-        CohortAssignment vf = new CohortAssignment(cohort, frequency);
-        int p = Collections.binarySearch(cdf, vf, variantComparator);
-        if (p < 0) { // new
-            p = -p - 1;
-            // shift
-            cdf.add(null);
-            for (int i = cdf.size() - 1; i > p; --i) {
-                cdf.set(i, cdf.get(i - 1));
-            }
-            // fill
-            cdf.set(p, vf);
-            if (p > 0)
-                vf.mass = ((CohortAssignment) cdf.get(p - 1)).getMass();
-        } else { // exists
-            // adjust
-            ((CohortAssignment) cdf.get(p)).frequency += frequency;
-        }
-
-        for (int i = p; i < cdf.size(); ++i) {
-            ((CohortAssignment) cdf.get(i)).mass += frequency;
-        }
-        total += frequency;
-    }
-
-    /**
-     * Select a cohort based on user id.
-     * 
-     * @param erpUserId
-     *            user id
-     * @return variant
-     */
-    public CohortAssignment getCohortAssignment(String erpUserId) {
-        Integer v = new Integer(getCohortIndex(erpUserId));
-        int p = Collections.binarySearch(cdf, v, massComparator);
-        if (p < 0) {
-            p = -p - 1;
-        } else {
-            ++p;
-        }
-        return ((CohortAssignment) cdf.get(p));
-    }
-
-    public String getCohortName(String erpCustomerId) {
-        CohortAssignment cohortAssignment = getCohortAssignment(erpCustomerId);
-        if (cohortAssignment != null) {
-            return cohortAssignment.getCohort();
-       
-        }
-        return null;
-    }
-    
     protected static byte[][] RANDOM_DIGIT_MAP = new byte[10][10];
     
     static {
@@ -201,18 +67,226 @@ public class CohortSelector {
     			RANDOM_DIGIT_MAP[i][j] = tmp;
     		}	
     	}
-    	/*
-    	 for(int i=0; i< RANDOM_DIGIT_MAP.length; ++i) {
-    		for(int j=0; j< RANDOM_DIGIT_MAP[i].length; ++j) {
-    			System.out.print(' ');
-    			System.out.print((int)RANDOM_DIGIT_MAP[i][j]);
-    		}
-    		System.out.println();
-    	}
-    	*/
-    	
     }
 
+    /**
+	 * Stores a cohort, the corresponding variant, frequency and mass.
+	 * 
+	 */
+    protected static class CohortAssignment implements Comparable<CohortAssignment> {
+        private String cohort;   // id
+        private int    frequency; // cohort freq
+        private int    mass;     // the cumulative mass
+
+        // "to the left"
+
+        /**
+		 * Constructor.
+		 * 
+		 * @param cohort
+		 *            id
+		 * @param variant
+		 *            service
+		 * @param frequency
+		 *            cohort's
+		 */
+        protected CohortAssignment(String cohort, int frequency) {
+            this.cohort = cohort;
+            this.frequency = frequency;
+            this.mass = 0;
+        }
+        
+        @Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((cohort == null) ? 0 : cohort.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			final CohortAssignment other = (CohortAssignment) obj;
+			if (cohort == null) {
+				if (other.cohort != null)
+					return false;
+			} else if (!cohort.equals(other.cohort))
+				return false;
+			return true;
+		}
+		
+		@Override
+		public int compareTo(CohortAssignment o) {
+			return cohort.compareTo(o.cohort);
+		}
+
+		/**
+         * Get cohort.
+         * 
+         * @return cohort id
+         */
+        public String getCohort() {
+            return cohort;
+        }
+
+        /**
+         * Get mass. Return the cumulative mass of cohorts "to the left"; that
+         * is all cohorts that precede this, plus this frequency.
+         * 
+         * @return mass "to the left"
+         */
+        public int getMass() {
+            return mass;
+        }
+
+        public String toString() {
+            return new StringBuffer().append("[mass = ").append(mass)
+            		.append(" freq = ").append(frequency).append(" cohort = ")
+            		.append(cohort).append("]").toString();
+        }
+    }
+
+    private static int calculateSum() {
+        int sum = 0;
+        for (Iterator iter = cohorts.values().iterator(); iter.hasNext();) {
+            Integer n = (Integer) iter.next();
+            sum += n.intValue();
+        }
+        return sum;
+    }
+
+    /**
+     * Returns the cohort->weight map
+     * 
+     * @return Map<Cohort,weight>
+     */
+    public static synchronized Map<String, Integer> getCohorts() {
+        if (cohorts == null) {
+            // cache cohort map
+            cohorts = VariantSelection.getInstance().getCohorts();
+            cohortSum = calculateSum();
+        }
+        return cohorts;
+    }
+
+    /**
+     * Return an <b>ordered</b> list of cohort names.
+     * 
+     * @return
+     */
+    public synchronized static List<String> getCohortNames() {
+        if (cohortNames == null) {
+                // cache cohort map
+                cohortNames = VariantSelection.getInstance().getCohortNames();
+        }
+        return cohortNames;
+    }
+    
+    /**
+     * !!! THIS METHOD IS ONLY FOR TESTING PURPOSES - DO NOT USE IT OTHERWISE !!!
+     * 
+     * @param cohortNames
+     */
+    public synchronized static void setCohortNames(List cohortNames) {
+        CohortSelector.cohortNames = cohortNames;
+    }
+
+    /**
+     * !!! THIS METHOD IS ONLY FOR TESTING PURPOSES - DO NOT USE IT OTHERWISE !!!
+     * 
+     * @param cohorts
+     */
+    public static void setCohorts(Map<String, Integer> cohorts) {
+        CohortSelector.cohorts = cohorts;
+        cohortSum = calculateSum();
+    }
+
+    public synchronized static CohortSelector getInstance() {
+        if (instance == null) {
+            Map ch = getCohorts();
+            List cohortNames = CohortSelector.getCohortNames();
+
+            CohortSelector cs = new CohortSelector();
+            
+            for (Iterator iter = cohortNames.iterator(); iter.hasNext();) {
+                String name = (String) iter.next();
+                int freq = ((Number) ch.get(name)).intValue();
+                cs.addCohort(name, freq);
+            }
+            instance = cs;
+        }
+        return instance;
+    }
+
+    /**
+	 * The Cumulative Distribution of cohorts. The actual sorted list of
+	 * variants with cumulative masses in cohort order.
+	 */
+	protected List<CohortAssignment> cdf = new ArrayList<CohortAssignment>();
+
+    /**
+	 * Add a cohort group definition.
+	 * 
+	 * @param cohort
+	 *            id
+	 * @param frequency
+	 *            relative frequency of cohort
+	 */
+    protected void addCohort(String cohort, int frequency) {
+        CohortAssignment vf = new CohortAssignment(cohort, frequency);
+        int p = Collections.binarySearch(cdf, vf);
+        if (p < 0) {
+        	// new
+            p = -p - 1;
+            // shift
+            cdf.add(p, vf);
+            if (p > 0)
+                vf.mass = cdf.get(p - 1).getMass();
+        } else {
+        	// exists
+            // adjust
+            cdf.get(p).frequency += frequency;
+        }
+
+        for (int i = p; i < cdf.size(); ++i) {
+            cdf.get(i).mass += frequency;
+        }
+    }
+
+    /**
+     * Select a cohort based on user id.
+     * 
+     * @param erpUserId
+     *            user id
+     * @return variant
+     */
+    protected CohortAssignment getCohortAssignment(String erpUserId) {
+        Integer v = new Integer(getCohortIndex(erpUserId));
+        int p = Collections.binarySearch(cdf, v, MASS_COMPARATOR);
+        if (p < 0) {
+            p = -p - 1;
+        } else {
+            ++p;
+        }
+        return cdf.get(p);
+    }
+
+    public String getCohortName(String erpCustomerId) {
+        CohortAssignment cohortAssignment = getCohortAssignment(erpCustomerId);
+        if (cohortAssignment != null) {
+            return cohortAssignment.getCohort();
+       
+        }
+        return null;
+    }
+    
     /**
      * Randomize user id.
      * 
@@ -248,86 +322,11 @@ public class CohortSelector {
     }
 	
     /**
-     * Important, this method is overridden in test cases, do not remove!
      * 
      * @param erpUserId
      * @return
      */
     protected int getCohortIndex(String erpUserId) {
-        return erpUserId != null ? randomize(erpUserId) % getCohortWeightSum() : 0;
+        return erpUserId != null ? randomize(erpUserId) % cohortSum : 0;
     }
-
-    /**
-     * Returns the cohort->weight map
-     * 
-     * @return Map<Cohort,weight>
-     */
-    public static synchronized Map getCohorts() {
-        if (cohorts == null) {
-            // cache cohort map
-            cohorts = VariantSelection.getInstance().getCohorts();
-            cohortSum = calculateSum();
-        }
-        return cohorts;
-    }
-
-    static int calculateSum() {
-        int sum = 0;
-        for (Iterator iter = cohorts.values().iterator(); iter.hasNext();) {
-            Integer n = (Integer) iter.next();
-            sum += n.intValue();
-        }
-        return sum;
-    }
-
-    synchronized int getCohortWeightSum() {
-        if (cohorts == null) {
-            getCohorts();
-        }
-        return cohortSum;
-
-    }
-
-    public static void setCohorts(Map cohorts) {
-        CohortSelector.cohorts = cohorts;
-        cohortSum = calculateSum();
-    }
-
-    public synchronized static CohortSelector getInstance() {
-        if (instance == null) {
-            Map ch = getCohorts();
-            List cohortNames = CohortSelector.getCohortNames();
-
-            CohortSelector cs = new CohortSelector();
-            
-            for (Iterator iter = cohortNames.iterator(); iter.hasNext();) {
-                String name = (String) iter.next();
-                int freq = ((Number) ch.get(name)).intValue();
-                cs.addCohort(name, freq);
-            }
-            instance = cs;
-        }
-        return instance;
-    }
-
-    
-
-    /**
-     * Return an <b>ordered</b> list of cohort names.
-     * 
-     * @return
-     */
-    public synchronized static List getCohortNames() {
-        if (cohortNames == null) {
-                // cache cohort map
-                cohortNames = VariantSelection.getInstance().getCohortNames();
-        }
-        return cohortNames;
-    }
-    
-    public synchronized static void setCohortNames(List cohortNames) {
-        CohortSelector.cohortNames = cohortNames;
-    }
-    
-
 }

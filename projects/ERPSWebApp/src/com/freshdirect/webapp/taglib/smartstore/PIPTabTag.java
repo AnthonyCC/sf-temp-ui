@@ -1,9 +1,6 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -15,17 +12,12 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.CartTabRecommender;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.TabRecommendation;
-import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
-import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.smartstore.ymal.YmalUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -36,16 +28,10 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
  * @author treer
  * 
  */
-
 public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
-	
-	private static Logger LOGGER = LoggerFactory.getInstance( PIPTabTag.class );
+	private static final long serialVersionUID = 1654943557811529504L;
 
-	private static final String overriddenVariantId = null; //SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT;	
-	
-	//=============================================================
-	//						Attributes
-	//=============================================================
+	private static Logger LOGGER = LoggerFactory.getInstance( PIPTabTag.class );
 	
 	private int maxTabs = 3;
 	private int maxRecommendations = 5;
@@ -72,20 +58,11 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 	}
 	
 	public TabRecommendation getTabs() {
-            return tabs;
-        }
-	
-	//=============================================================
-	//						Tag support methods
-	//=============================================================
-	
+		return tabs;
+	}
 	
 	public int doStartTag() throws JspException {
-
-		LOGGER.debug( "doStartTag()" );	
-		
-		
-		// ----------- CartTabRecommender ...  -------------
+		LOGGER.debug( "doStartTag()" );
 		
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
@@ -96,7 +73,7 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(maxRecommendations);
 		
-		tabs = CartTabRecommender.recommendTabs( user, input, overriddenVariantId);
+		tabs = CartTabRecommender.recommendTabs(user, input);
 		
 		// it's very similar to RecommendationsTag.persistToSession()
 		if (input.getPreviousRecommendations() != null) {
@@ -111,10 +88,10 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 		}
 		
 		// old db logging..
-                if (user instanceof FDSessionUser) {
-                    FDSessionUser sessionUser = (FDSessionUser) user;
-                    sessionUser.logTabImpression(tabs.getTabRecommender().getVariant().getId(), tabs.size());
-                }
+		if (user instanceof FDSessionUser) {
+			FDSessionUser sessionUser = (FDSessionUser) user;
+			sessionUser.logTabImpression(tabs.getTabVariant().getId(), tabs.size());
+		}
 		
 		if ( tabs.size() < maxTabs ) {
 		    LOGGER.warn( "not enough variants ("+tabs.size()+") for "+maxTabs+" tabs." );
@@ -122,7 +99,7 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
                 Impression imp = Impression.get(user, request);
-		String impressionId = imp.logFeatureImpression(null, null, tabs.getTabRecommender().getVariant(), 
+		String impressionId = imp.logFeatureImpression(null, null, tabs.getTabVariant(), 
 		        input.getCategory(), input.getCurrentNode(), input.getYmalSource());
 		tabs.setParentImpressionId(impressionId);
 		
@@ -174,10 +151,6 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 
             return selectedTab;
 	}
-	
-	//=============================================================
-	//						Tag extra info
-	//=============================================================	
 	
     public static class TagEI extends TagExtraInfo {
         public VariableInfo[] getVariableInfo(TagData data) {

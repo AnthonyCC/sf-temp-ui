@@ -146,7 +146,7 @@ if (user != null) {
 	if (user.getUserServiceType() != null)
 		userServiceType = user.getUserServiceType().getName();
 	cohortId = CohortSelector.getInstance().getCohortName(user.getPrimaryKey());
-	userStrategy = VariantSelectorFactory.getInstance(EnumSiteFeature.CART_N_TABS).getService(cohortId).getVariant().getId();
+	userStrategy = VariantSelectorFactory.getSelector(EnumSiteFeature.CART_N_TABS).getVariant(cohortId).getId();
 }
 input = new SessionInput(user);
 input.setMaxRecommendations(EnumSiteFeature.YMAL.equals(siteFeature) ? 6 : 5);

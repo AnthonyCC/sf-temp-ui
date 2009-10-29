@@ -1,21 +1,19 @@
 package com.freshdirect.test.ejb;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.ejb.EJBException;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-
-import javax.ejb.EJBException;
 
 public class TestSupportSessionBean extends SessionBeanSupport {
 
@@ -83,14 +81,14 @@ public class TestSupportSessionBean extends SessionBeanSupport {
 	}
 	
 	
-	public List getCustomerIDs() throws RemoteException {
+	public List getErpCustomerIds() throws RemoteException {
 		Connection conn = null;
 		ArrayList idArray = new ArrayList();
 		
 		try {
 			conn = getConnection();
 			
-			PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.FDCUSTOMER");
+			PreparedStatement ps = conn.prepareStatement("SELECT ERP_CUSTOMER_ID FROM CUST.FDCUSTOMER");
 			
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {

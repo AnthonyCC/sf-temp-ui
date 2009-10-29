@@ -15,7 +15,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -23,7 +22,6 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
-import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.service.VariantRegistry;
 
@@ -34,100 +32,6 @@ import com.freshdirect.smartstore.service.VariantRegistry;
  * 
  */
 public class SmartStoreUtil {
-
-	/**
-	 * Deduce the product content key.
-	 * 
-	 * If the argument is a product, it will return the argument, if it is a
-	 * sku, it returns the corresponding product. Otherwise, and in case of any
-	 * problems, it returns null.
-	 * 
-	 * @param key
-	 *            query content key
-	 * @return corresponding product
-	 */
-//	public static ContentKey getProductContentKey(ContentKey key) {
-//		try {
-//			if (key.getType().equals(FDContentTypes.PRODUCT))
-//				return key;
-//			else if (key.getType().equals(FDContentTypes.SKU)) {
-//				SkuModel skuModel = (SkuModel) ContentFactory.getInstance()
-//						.getContentNodeByKey(key);
-//				return skuModel.getParentNode().getContentKey();
-//			} else
-//				return null;
-//		} catch (Exception e) {
-//			return null;
-//		}
-//	}
-
-	/**
-	 * Get the product corresponding to a SKU code.
-	 * 
-	 * @param skuCode
-	 * @return product
-	 */
-//	public static ContentKey getProductContentKey(String skuCode) {
-//		return getProductContentKey(new ContentKey(FDContentTypes.SKU, skuCode));
-//	}
-
-	public static final String SKIP_OVERRIDDEN_VARIANT = "__skip_overridden_variant__";
-
-	
-	public static Variant getOveriddenVariant(FDUserI user,
-			EnumSiteFeature feature, String override) throws FDResourceException {
-		
-		String value = null;
-
-		// a., manual override
-		if (override != null) {
-			value = override;
-		}
-		// b., get overridden variant from customer's profile
-		if (value == null) {
-			// lookup overridden variant
-			OverriddenVariantsHelper helper = new OverriddenVariantsHelper(
-					user);
-			value = helper.getOverriddenVariant(feature);
-		}
-
-		return value != null ? VariantRegistry.getInstance().getService(value) : null;
-	}
-	
-	/**
-	 * Get the recommendation service for the user.
-	 * 
-	 * This method checks if the variant was overridden for the user in his
-	 * profile (otherwise it returns the service).
-	 * 
-	 * @param user
-	 * @param feature
-	 * @param overridde
-	 *            variant id to use (forced)
-	 * @return selected recommendation service
-	 * @throws FDResourceException
-	 */
-	public static RecommendationService getRecommendationService(FDUserI user,
-			EnumSiteFeature feature, String override)
-			throws FDResourceException {
-		RecommendationService svc = null;
-
-		if (!SKIP_OVERRIDDEN_VARIANT.equalsIgnoreCase(override)) {
-			Variant var = getOveriddenVariant(user, feature, override);
-			if (var != null)
-				svc = var.getRecommender();
-		}
-
-		// default case - use the basic facility
-		if (svc == null) {
-			String customerPK = user != null ? user.getPrimaryKey() : null;
-			svc = VariantSelectorFactory.getInstance(feature)
-					.select(customerPK);
-		}
-
-		return svc;
-	}
-
 	/**
 	 * Returns label-description couple for variant. This function is used by
 	 * PIP
@@ -358,11 +262,11 @@ public class SmartStoreUtil {
 		final VariantSelection vs = VariantSelection.getInstance();
 		if (current) {
 			List<String> cohorts = vs.getCohortNames();
-			VariantSelector vsr = VariantSelectorFactory.getInstance(feature);
+			VariantSelector vsr = VariantSelectorFactory.getSelector(feature);
 			assignment = new HashMap<String,String>(cohorts.size());
 			for (int i = 0; i < cohorts.size(); i++) {
-				assignment.put(cohorts.get(i), vsr.getService(cohorts.get(i)) == null ? null :
-						vsr.getService(cohorts.get(i)).getVariant().getId());
+				if (vsr.getVariant(cohorts.get(i)) != null)
+					assignment.put(cohorts.get(i), vsr.getVariant(cohorts.get(i)).getId());
 			}
 		} else {
 			assignment = vs.getVariantMap(feature, date);

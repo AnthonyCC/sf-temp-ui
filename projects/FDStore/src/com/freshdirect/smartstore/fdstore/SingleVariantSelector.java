@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore.fdstore;
 
-import com.freshdirect.smartstore.RecommendationService;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.smartstore.Variant;
 
 /**
  * This VariantSelector returns the default variant for all users.
@@ -10,19 +11,29 @@ import com.freshdirect.smartstore.RecommendationService;
  */
 public class SingleVariantSelector extends VariantSelector {
 
-    RecommendationService service;
+    Variant variant;
     
-    public SingleVariantSelector(RecommendationService service) {
-        this.service = service;
+    public SingleVariantSelector(Variant variant) {
+    	super(variant.getSiteFeature());
+        this.variant = variant;
     }
 
     protected void init() {
 
     }
 
-    public RecommendationService select(String erpUserId) {
-        return service;
+    @Override
+    public Variant select(FDUserI user) {
+        return variant;
     }
     
-
+    @Override
+    public Variant select(FDUserI user, boolean ignoreOverriddenVariants) {
+        return variant;
+    }
+    
+    @Override
+    public Variant selectOverridden(FDUserI user) {
+    	return null;
+    }
 }

@@ -1,10 +1,8 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,19 +18,16 @@ import org.mockejb.interceptor.AspectSystem;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.AttributeIndex;
 import com.freshdirect.cms.search.LuceneSearchService;
 import com.freshdirect.cms.search.LuceneSearchServiceTest;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
-import com.freshdirect.fdstore.aspects.ProductStatisticProviderAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticUserProviderAspect;
 import com.freshdirect.fdstore.aspects.ScoreFactorGlobalNameAspect;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
@@ -62,8 +57,10 @@ public class SmartSearchTest extends TestCase {
     SmartSearchTag         sst;
 
     public void setUp() throws Exception {
-        Context context = TestUtils.createContext();
+        ContentSearch.getInstance().setDisableAutocompleter(true);
 
+        Context context = TestUtils.createContext();
+        
         TestUtils.createMockContainer(context);
 
         TestUtils.createTransaction(context);

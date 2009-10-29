@@ -2,35 +2,11 @@
     "http://www.w3.org/TR/html4/loose.dtd">
         
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.Arrays"%>
-<%@page import="java.util.Collections"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="java.util.Locale"%>
-<%@page import="java.util.HashMap"%>
-<%@page import="java.util.HashSet"%>
-<%@page import="java.util.List"%>
-<%@page import="java.util.Map"%>
-<%@page import="java.util.Set"%>
-<%@page import="java.util.SortedMap"%>        
 <%@page import="com.freshdirect.fdstore.promotion.PromoVariantModel"%>    
-<%@page import="com.freshdirect.fdstore.promotion.PromotionI"%>   
 <%@page import="com.freshdirect.fdstore.promotion.*"%>   
 <%@page import="com.freshdirect.fdstore.util.URLGenerator"%>
-<%@page import="com.freshdirect.mail.EmailUtil"%>
-<%@page import="com.freshdirect.smartstore.RecommendationService"%>
-<%@page import="com.freshdirect.smartstore.RecommendationServiceConfig "%>
-<%@page import="com.freshdirect.smartstore.SessionInput"%>
-<%@page import="com.freshdirect.smartstore.Variant"%>
-<%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
-<%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
-<%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
-<%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
-<%@page import="com.freshdirect.smartstore.impl.AbstractRecommendationService"%>
-<%@page import="com.freshdirect.test.TestSupport"%>
-<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@page import="org.apache.commons.lang.math.NumberUtils"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@page import="java.util.Collection"%>
 <html>
@@ -73,10 +49,8 @@ td.no-use{border-color:#999 !important;}
 
 <%
 
-Iterator it;
 URLGenerator urlG = new URLGenerator(request);
-//System.err.println(request.getServletPath());
-String origURL = urlG.build();
+
 PromoVariantCache cache=PromoVariantCache.getInstance();
 if (urlG.get("refresh") != null) {
 	PromoVariantCache.getInstance().refreshAll();
@@ -149,7 +123,7 @@ if(promoList!=null){
 %>
 
 
-
+</div>
 
 </body>
 </html>

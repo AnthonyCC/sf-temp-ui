@@ -298,7 +298,7 @@ if ("recommend".equals(action)) {
 	//
 	SessionInput sessInp = new SessionInput(looser);
 	sessInp.setMaxRecommendations(6);
-	Recommendations recommendations = recommender.getRecommendations(EnumSiteFeature.DYF, looser, sessInp, null);
+	Recommendations recommendations = recommender.getRecommendations(EnumSiteFeature.DYF, looser, sessInp);
 %>
 <center>
 	<span style="font-size: 11px;"><b>Legend</b> <span style="text-decoration: line-through; border: 1px dotted grey;">Unavailable product</span> <span style="color: gray; border: 1px dotted grey;">Product already in cart</span></span> | 

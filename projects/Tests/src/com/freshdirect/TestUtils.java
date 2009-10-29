@@ -35,14 +35,17 @@ import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
 import com.freshdirect.event.ejb.EventLoggerHome;
 import com.freshdirect.event.ejb.EventLoggerSB;
 import com.freshdirect.event.ejb.EventLoggerSessionBean;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.NullEventLogger;
+import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport.MockErpCustomerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
@@ -89,9 +92,19 @@ public class TestUtils {
 
     public static FDUser createUser(String primaryKey, String erpCustomerId, String fdCustomerId) {
         FDUser user = new FDUser(new PrimaryKey(primaryKey)) {
+			private static final long serialVersionUID = 426996618694995328L;
+
+			@Override
             public void updateUserState() {
                 LOG.info("No one can call updateUserState!");
                 this.promotionEligibility=  new FDPromotionEligibility();
+            }
+            
+            @Override
+            public FDCustomerModel getFDCustomer() throws FDResourceException {
+            	FDCustomerModel fdCust = new FDCustomerModel();
+            	fdCust.setProfile(new ProfileModel());
+            	return fdCust;
             }
         };
         user.setIdentity(new FDIdentity(erpCustomerId, fdCustomerId));

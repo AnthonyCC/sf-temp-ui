@@ -8,13 +8,13 @@ public class TabRecommendation {
     public static final String PIP_DEFAULT_DESC = "These are some of the items we recommend you:";
 
     final List variants;
-    final RecommendationService tabRecommender;
+    final Variant tabVariant;
     String parentImpressionId;
     String[] featureImpId;
     int selected;
 
-    public TabRecommendation(RecommendationService tabRecommender, List variants) {
-        this.tabRecommender = tabRecommender;
+    public TabRecommendation(Variant tabVariant, List variants) {
+        this.tabVariant = tabVariant;
         this.variants = variants;
         this.featureImpId = new String[variants.size()];
     }
@@ -68,8 +68,8 @@ public class TabRecommendation {
         return variant.getServiceConfig().getPresentationFooter();
     }
     
-    public RecommendationService getTabRecommender() {
-        return tabRecommender;
+    public Variant getTabVariant() {
+        return tabVariant;
     }
     
     public String getParentImpressionId() {

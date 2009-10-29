@@ -12,7 +12,7 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
+import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 
 public class CartTabRecommender {
 
@@ -25,58 +25,53 @@ public class CartTabRecommender {
      * @param maxRecommendations
      * @return up to 3 variant used to produce cart tab recommendations
      */
-    public static TabRecommendation recommendTabs(FDUserI user, SessionInput input, String overriddenVariantId) {
+    public static TabRecommendation recommendTabs(FDUserI user, SessionInput input) {
         List<Variant> recs = new ArrayList<Variant>();
-        RecommendationService rs = null;
+        Variant tabVariant = null;
         boolean smartSavingsFound = false;
-        try {
-            if (user != null) {
-                rs = SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.CART_N_TABS, overriddenVariantId);
-                if (rs != null) {
-                    SortedMap<Integer, SortedMap<Integer, CartTabStrategyPriority>> prios = rs.getVariant().getTabStrategyPriorities();
+        if (user != null) {
+            tabVariant = VariantSelectorFactory.getSelector(EnumSiteFeature.CART_N_TABS).select(user);
+            if (tabVariant != null) {
+                SortedMap<Integer, SortedMap<Integer, CartTabStrategyPriority>> prios = tabVariant.getTabStrategyPriorities();
 
-                      for (Integer p1 : prios.keySet()) { 
-                        SortedMap<Integer,CartTabStrategyPriority> map = prios.get(p1);
+                  for (Integer p1 : prios.keySet()) { 
+                    SortedMap<Integer,CartTabStrategyPriority> map = prios.get(p1);
 
-                        for (Integer p2 : prios.keySet()) { 
-                            CartTabStrategyPriority strat = map.get(p2);
+                    for (Integer p2 : prios.keySet()) { 
+                        CartTabStrategyPriority strat = map.get(p2);
 
-                            if (strat == null) {
-                                continue;
-                            }
+                        if (strat == null) {
+                            continue;
+                        }
 
-                            try {
-                            	EnumSiteFeature sf = EnumSiteFeature.getEnum(strat.getSiteFeatureId());
-                            	if(sf.isSmartSavings() && smartSavingsFound) {
-                            	    continue;
-                            	}
-                                Recommendations rec = FDStoreRecommender.getInstance().getRecommendations(sf, user, input, overriddenVariantId,
-                                        FDStoreRecommender.getShoppingCartContentKeys(user));
-                                if (rec.getProducts().size() > 0) {
-                                    recs.add(rec.getVariant());
-                                    if(sf.isSmartSavings()) {
-                                        smartSavingsFound = true;
-                                    }
-                                    break;
+                        try {
+                        	EnumSiteFeature sf = EnumSiteFeature.getEnum(strat.getSiteFeatureId());
+                        	if(sf.isSmartSavings() && smartSavingsFound) {
+                        	    continue;
+                        	}
+                            Recommendations rec = FDStoreRecommender.getInstance().getRecommendations(sf, user, input);
+                            if (rec.getProducts().size() > 0) {
+                                recs.add(rec.getVariant());
+                                if(sf.isSmartSavings()) {
+                                    smartSavingsFound = true;
                                 }
-                            } catch (FDResourceException e) {
-
+                                break;
                             }
+                        } catch (FDResourceException e) {
 
                         }
 
-                        if (recs.size() >= 3) {
-                            break;
-                        }
                     }
-                } else {
-                    LOGGER.warn("CartTabRecommender.recommendTabs() failed. Returning empty array.");
+
+                    if (recs.size() >= 3) {
+                        break;
+                    }
                 }
+            } else {
+                LOGGER.warn("failed to retrieve cart recommenders, returning no tabs");
             }
-        } catch (FDResourceException e) {
-            LOGGER.error("unable to query Cart Tab Recommenders", e);
         }
 
-        return new TabRecommendation(rs, recs);
+        return new TabRecommendation(tabVariant, recs);
     }
 }

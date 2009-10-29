@@ -15,7 +15,6 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**
@@ -55,8 +54,7 @@ public class FeaturedItemsTag extends RecommendationsTag {
         si.setMaxRecommendations(itemCount);
         
         Recommendations results = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS, user,
-        		si, (String) pageContext.getAttribute("fi_override_variant"),
-        		shoppingCart != null ? shoppingCart : FDStoreRecommender.getShoppingCartContentKeys(user));
+        		si, shoppingCart != null ? shoppingCart : FDStoreRecommender.getShoppingCartContentKeys(user));
         persistToSession(results);
         return results;
     }

@@ -42,7 +42,6 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
-import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpComplaintException;
@@ -66,7 +65,6 @@ import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ErpSaleModel;
-import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpWebOrderHistory;
@@ -78,6 +76,8 @@ import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.depot.DlvDepotModel;
 import com.freshdirect.delivery.depot.DlvLocationModel;
+import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
+import com.freshdirect.delivery.routing.ejb.RoutingGatewaySB;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
@@ -108,7 +108,6 @@ import com.freshdirect.fdstore.mail.TellAFriendRecipe;
 import com.freshdirect.fdstore.referral.EnumReferralStatus;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
-import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
@@ -125,16 +124,11 @@ import com.freshdirect.giftcard.CardInUseException;
 import com.freshdirect.giftcard.CardOnHoldException;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.InvalidCardException;
-import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
-import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
-import com.freshdirect.delivery.routing.ejb.RoutingGatewaySB;
-import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
-import com.freshdirect.smartstore.fdstore.VariantSelector;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 
 
@@ -2496,17 +2490,7 @@ public class FDCustomerManager {
 		}
 		return dlvPassesInfo;
 	}
-	private static int getCreditCount(Collection creditCol, String dlvPassId) {
-		int credits = 0;
-		Iterator iter = creditCol.iterator();
-		while(iter.hasNext()){
-			ErpActivityRecord activity = (ErpActivityRecord)iter.next();
-			if(activity.getDeliveryPassId().equals(dlvPassId)){
-				credits++;
-			}
-		}
-		return credits;
-	}
+
 	public static FDUserDlvPassInfo getDeliveryPassInfo(FDUserI user) throws FDResourceException {
 		lookupManagerHome();
 		try {
@@ -2681,9 +2665,9 @@ public class FDCustomerManager {
 			for (Iterator it = EnumSiteFeature.getEnumList().iterator(); it.hasNext();) {
 				EnumSiteFeature feature = (EnumSiteFeature) it.next();
 				if (feature.isSmartStore()) {
-					RecommendationService recommendationService = SmartStoreUtil.getRecommendationService(user, feature, null);
-					if (recommendationService != null) {
-						sb.logCustomerVariant(saleId, user.getIdentity(), feature.getName(), recommendationService.getVariant().getId());
+					Variant variant = VariantSelectorFactory.getSelector(feature).select(user);
+					if (variant != null) {
+						sb.logCustomerVariant(saleId, user.getIdentity(), feature.getName(), variant.getId());
 					}
 				}
 			}
@@ -3331,9 +3315,7 @@ public class FDCustomerManager {
 							cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 						}					
 						ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
-//						createOrder.setRecepientsList(repList);
-						String custId=info.getIdentity().getErpCustomerPK();
-//						updateOrderLineInRecipentModels(createOrder,repList,custId);
+
 						createOrder.setTransactionSource(info.getSource());
 						createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
 						//Clear all charges

@@ -12,7 +12,10 @@ import java.util.Random;
 import junit.framework.TestCase;
 
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
@@ -24,8 +27,8 @@ public class VariantSelectorTest extends TestCase {
 
 		private Variant variant;
 		
-		private MockService(String id) {
-			this.variant = new Variant(id, EnumSiteFeature.DYF, null);
+		private MockService(Variant variant) {
+			this.variant = variant;
 		}
 		
 		public Variant getVariant() {
@@ -57,10 +60,16 @@ public class VariantSelectorTest extends TestCase {
 		}
 	};
 	
-	private List userIds;
-	private RecommendationService v1 = new MockService("v1");
-	private RecommendationService v2 = new MockService("v2");
-	private RecommendationService v3 = new MockService("v3");
+	private Variant createMockService(String id) {
+		Variant variant = new Variant(id, EnumSiteFeature.DYF, null);
+		variant.setRecommender(new MockService(variant));
+		return variant;
+	}
+	
+	private List<FDUserI> userIds;
+	private Variant v1 = createMockService("v1");
+	private Variant v2 = createMockService("v2");
+	private Variant v3 = createMockService("v3");
 	
 	private VariantSelector selector;
 	
@@ -70,7 +79,7 @@ public class VariantSelectorTest extends TestCase {
 		userIds = new ArrayList();
 		for(int i=0; i< 10000; ++i) {
 			String id = new StringBuffer(4).append((100*((Math.abs(R.nextInt()) % 900) + 100)) + Math.abs(R.nextInt()) % 30).toString();
-			userIds.add(id);
+			userIds.add(new FDUser(new PrimaryKey(id)));
 		}
 		
                 Map cohorts = new HashMap();
@@ -91,7 +100,7 @@ public class VariantSelectorTest extends TestCase {
                 CohortSelector.setCohortNames(Arrays.asList(new String[] {"C", "A", "E", "F", "G", "B", "H", "D", "J", "I" } ));
 
 		
-		selector = new VariantSelector();
+		selector = new VariantSelector(EnumSiteFeature.DYF);
 
                 selector.addCohort("C", v1);
                 selector.addCohort("A", v1);
@@ -120,18 +129,18 @@ public class VariantSelectorTest extends TestCase {
 		
 		Map counts = new HashMap();
 		
-		for(Iterator i = userIds.iterator(); i.hasNext(); ) {
-			String userId = i.next().toString();
-			Variant v = selector.select(userId).getVariant();
+		for(Iterator<FDUserI> i = userIds.iterator(); i.hasNext(); ) {
+			FDUserI user = i.next();
+			Variant v = selector.select(user, true);
 			Integer f = (Integer)counts.get(v);
 			if (f == null) counts.put(v, new Integer(1));
 			else counts.put(v, new Integer(f.intValue() + 1));
 		}
 		
 		
-		withinTenPercent(((Integer)counts.get(v1.getVariant())).intValue(), (userIds.size()*3)/10);
-		withinTenPercent(((Integer)counts.get(v2.getVariant())).intValue(), (userIds.size()*2)/10);
-		withinTenPercent(((Integer)counts.get(v3.getVariant())).intValue(), (userIds.size()*5)/10);
+		withinTenPercent(((Integer)counts.get(v1)).intValue(), (userIds.size()*3)/10);
+		withinTenPercent(((Integer)counts.get(v2)).intValue(), (userIds.size()*2)/10);
+		withinTenPercent(((Integer)counts.get(v3)).intValue(), (userIds.size()*5)/10);
 		
 	}
 

@@ -23,26 +23,14 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.impl.NullRecommendationService;
+import com.freshdirect.smartstore.service.VariantRegistry;
 
 public class TabRecommenderTest extends RecommendationServiceTestBase {
 	private static class MockService implements RecommendationService {
 		private Variant variant;
 		
-		private MockService(String id) {
-			RecommendationServiceConfig rsc;
-			if (id.startsWith("A")) {
-				rsc = new RecommendationServiceConfig(id, RecommendationServiceType.RANDOM_DYF);
-				this.variant = new Variant(id, EnumSiteFeature.DYF, rsc);
-			} else if (id.startsWith("B")) {
-				rsc = new RecommendationServiceConfig(id, RecommendationServiceType.FAVORITES);
-				this.variant = new Variant(id, EnumSiteFeature.FAVORITES, rsc);				
-			} else if (id.startsWith("C")) {
-				rsc = new RecommendationServiceConfig(id, RecommendationServiceType.FEATURED_ITEMS);
-				this.variant = new Variant(id, EnumSiteFeature.FEATURED_ITEMS, rsc);				
-			} else {
-				rsc = new RecommendationServiceConfig(id, RecommendationServiceType.SMART_YMAL);
-				this.variant = new Variant(id, EnumSiteFeature.YMAL, rsc);
-			}
+		private MockService(Variant variant) {
+			this.variant = variant;
 		}
 		
 		public Variant getVariant() {
@@ -77,16 +65,43 @@ public class TabRecommenderTest extends RecommendationServiceTestBase {
 		}
 	};
 	
-	private RecommendationService v1 = new MockService("A1");
-	private RecommendationService v2 = new MockService("B2");
-	private RecommendationService v3 = new MockService("C3");
-	private RecommendationService v4 = new MockService("D4");
-	private RecommendationService nullDyf = new NullRecommendationService(
-			new Variant("ANULL", EnumSiteFeature.DYF, 
-			new RecommendationServiceConfig("ANULL", RecommendationServiceType.NIL)));
-	private RecommendationService nullFavorites = new NullRecommendationService(
-			new Variant("BNULL", EnumSiteFeature.FAVORITES, 
-			new RecommendationServiceConfig("BNULL", RecommendationServiceType.NIL)));
+	private Variant createMockService(String id) {
+		RecommendationServiceConfig rsc;
+		Variant variant;
+		if (id.startsWith("A")) {
+			rsc = new RecommendationServiceConfig(id, RecommendationServiceType.RANDOM_DYF);
+			variant = new Variant(id, EnumSiteFeature.DYF, rsc);
+		} else if (id.startsWith("B")) {
+			rsc = new RecommendationServiceConfig(id, RecommendationServiceType.FAVORITES);
+			variant = new Variant(id, EnumSiteFeature.FAVORITES, rsc);				
+		} else if (id.startsWith("C")) {
+			rsc = new RecommendationServiceConfig(id, RecommendationServiceType.FEATURED_ITEMS);
+			variant = new Variant(id, EnumSiteFeature.FEATURED_ITEMS, rsc);				
+		} else {
+			rsc = new RecommendationServiceConfig(id, RecommendationServiceType.SMART_YMAL);
+			variant = new Variant(id, EnumSiteFeature.YMAL, rsc);
+		}
+		variant.setRecommender(new MockService(variant));
+		VariantRegistry.getInstance().addService(variant);
+		return variant;
+	}
+	
+	private Variant createNullService(Variant variant) {
+		variant.setRecommender(new NullRecommendationService(variant));
+		VariantRegistry.getInstance().addService(variant);
+		return variant;
+	}
+	
+	private Variant v1 = createMockService("A1");
+	private Variant v2 = createMockService("B2");
+	private Variant v3 = createMockService("C3");
+	private Variant v4 = createMockService("D4");
+	private Variant nullDyf = createNullService(new Variant("ANULL",
+			EnumSiteFeature.DYF, new RecommendationServiceConfig("ANULL",
+					RecommendationServiceType.NIL)));
+	private Variant nullFavorites = createNullService(new Variant("BNULL",
+			EnumSiteFeature.FAVORITES, new RecommendationServiceConfig("BNULL",
+					RecommendationServiceType.NIL)));
 	
 	
 	public void setUp () throws Exception {
@@ -101,28 +116,28 @@ public class TabRecommenderTest extends RecommendationServiceTestBase {
         CohortSelector.setCohortNames(Arrays.asList(new String[] {"A", "B" } ));
 		
     	VariantSelector selector;
-		selector = new VariantSelector();
+		selector = new VariantSelector(EnumSiteFeature.DYF);
 
         selector.addCohort("A", v1);
         selector.addCohort("B", nullDyf);
         
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.DYF, selector);
 
-		selector = new VariantSelector();
+		selector = new VariantSelector(EnumSiteFeature.FAVORITES);
 
         selector.addCohort("A", v2);
         selector.addCohort("B", nullFavorites);
         
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FAVORITES, selector);
 
-		selector = new VariantSelector();
+		selector = new VariantSelector(EnumSiteFeature.FEATURED_ITEMS);
 
         selector.addCohort("A", v3);
         selector.addCohort("B", v3);
         
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, selector);
 
-		selector = new VariantSelector();
+		selector = new VariantSelector(EnumSiteFeature.YMAL);
 
         selector.addCohort("A", v4);
         selector.addCohort("B", v4);
@@ -141,13 +156,15 @@ public class TabRecommenderTest extends RecommendationServiceTestBase {
         ss.put(new Integer(1), new CartTabStrategyPriority("strat-1", "YMAL", 3, 1));
         ps.put(new Integer(3), ss);
         
-    	RecommendationService strat1 = new NullRecommendationService(new Variant("strat-1", EnumSiteFeature.CART_N_TABS, 
-    			new RecommendationServiceConfig("strat-1", RecommendationServiceType.NIL), ps));
+        Variant tabVariant = new Variant("strat-1", EnumSiteFeature.CART_N_TABS, 
+    			new RecommendationServiceConfig("strat-1", RecommendationServiceType.NIL), ps);
+    	RecommendationService strat1 = new NullRecommendationService(tabVariant);
+    	tabVariant.setRecommender(strat1);
 
-    	selector = new VariantSelector();
+    	selector = new VariantSelector(EnumSiteFeature.CART_N_TABS);
 
-        selector.addCohort("A", strat1);
-        selector.addCohort("B", strat1);
+        selector.addCohort("A", tabVariant);
+        selector.addCohort("B", tabVariant);
         
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.CART_N_TABS, selector);       
 	}
@@ -158,7 +175,7 @@ public class TabRecommenderTest extends RecommendationServiceTestBase {
         
         SessionInput input = new SessionInput(user);
         input.setMaxRecommendations(5);
-        TabRecommendation tr = CartTabRecommender.recommendTabs(user, input, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
+        TabRecommendation tr = CartTabRecommender.recommendTabs(user, input);
         assertNotNull("tab recommender always returns an object", tr);
         assertEquals("tab recommender returns 3 tabs / variants", 3, tr.size());
         assertEquals("first Variant is A1", "A1", tr.get(0).getId());
@@ -170,7 +187,7 @@ public class TabRecommenderTest extends RecommendationServiceTestBase {
         
         input = new SessionInput(user);
         input.setMaxRecommendations(5);
-        tr = CartTabRecommender.recommendTabs(user, input, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
+        tr = CartTabRecommender.recommendTabs(user, input);
         assertNotNull("tab recommender always returns an object", tr);
         assertEquals("tab recommender returns 1 tab / variant", 1, tr.size());
         assertEquals("first Variant is D4", "D4", tr.get(0).getId());

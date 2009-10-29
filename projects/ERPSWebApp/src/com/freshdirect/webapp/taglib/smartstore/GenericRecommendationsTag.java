@@ -19,9 +19,8 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
+import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
-import com.freshdirect.smartstore.impl.SmartYMALRecommendationService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
@@ -46,8 +45,6 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
     // ID that makes cache name unique
     String cacheId;
     
-    String overriddenVariantId;
-
     transient boolean shouldLogImpressions = false;
 
 
@@ -63,9 +60,10 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
      * @return
      * @throws FDResourceException
      */
-    protected Variant getOverriddenVariant(Variant v, String override) throws FDResourceException {
+    protected Variant getOverriddenVariant(Variant v) throws FDResourceException {
         HttpSession session = pageContext.getSession();
-        Variant v2 = SmartStoreUtil.getOveriddenVariant((FDUserI) session.getAttribute(SessionName.USER), v.getSiteFeature(), override);
+        Variant v2 = VariantSelectorFactory.getSelector(v.getSiteFeature()).select(
+        		(FDUserI) session.getAttribute(SessionName.USER));
 		return v2 != null ? v2 : v;
     }
 
@@ -118,7 +116,7 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
         }
 
 
-        Recommendations recommendations = getCachedRecommendations(getOverriddenVariant(variant, overriddenVariantId));
+        Recommendations recommendations = getCachedRecommendations(getOverriddenVariant(variant));
 		if (recommendations != null) {
 			Integer n = null;
 			try {
@@ -175,7 +173,7 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(itemCount);
 
-		recommendations = recommender.getRecommendations(sf, user, input, overriddenVariantId);
+		recommendations = recommender.getRecommendations(sf, user, input);
 		
 		return recommendations;
 	}

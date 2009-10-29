@@ -22,10 +22,10 @@ import com.freshdirect.smartstore.fdstore.RecommendationServiceTestBase;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
 import com.freshdirect.smartstore.fdstore.SingleVariantSelector;
-import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.smartstore.impl.FeaturedItemsRecommendationService;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
+import com.freshdirect.smartstore.service.VariantRegistry;
 import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.mockrunner.mock.web.MockPageContext;
@@ -82,15 +82,16 @@ public class ImpressionTest extends RecommendationServiceTestBase {
             firs = new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
                     RecommendationServiceType.FEATURED_ITEMS)), RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("fi_config",
                     RecommendationServiceType.FEATURED_ITEMS), new java.util.HashMap()), false, false);
+            firs.getVariant().setRecommender(firs);
+            VariantRegistry.getInstance().addService(firs.getVariant());
         }
         return firs;
     }
 
     public void testProductImpression() {
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
-        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
 
-        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getFeaturedItemsService()));
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getFeaturedItemsService().getVariant()));
 
         FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
 

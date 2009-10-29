@@ -28,6 +28,7 @@ final public class VariantRegistry {
 	private static VariantRegistry instance;
 
 	private Map<String, Variant> variantMap;
+	private Map<EnumSiteFeature, Map<String, Variant>> siteFeatureMap;
 
 	private VariantRegistry() {
 	}
@@ -47,18 +48,28 @@ final public class VariantRegistry {
 		return variantMap.get(variantId);
 	}
 
+	/**
+	 * THIS IS A MOCK METHOD, STRICTLY FOR TESTING PURPOSES !!!
+	 * @param variant
+	 */
+	public synchronized void addService(Variant variant) {
+		if (variantMap == null) {
+			variantMap = new HashMap<String, Variant>();
+			siteFeatureMap = new HashMap<EnumSiteFeature, Map<String,Variant>>();
+		}
+		variantMap.put(variant.getId(), variant);
+		if (!siteFeatureMap.containsKey(variant.getSiteFeature()))
+			siteFeatureMap.put(variant.getSiteFeature(), new HashMap<String, Variant>());
+		siteFeatureMap.get(variant.getSiteFeature()).put(variant.getId(), variant);
+	}
+	
 	public synchronized Map<String, Variant> getServices(
 			EnumSiteFeature siteFeature) {
 		if (variantMap == null)
 			load();
 		if (variantMap == null)
 			throw new FDRuntimeException("failed to load variant map, see log for details");
-		Map<String, Variant> variants = new HashMap<String, Variant>();
-		for (Variant v : variantMap.values()) {
-			if (v.getSiteFeature().equals(siteFeature))
-				variants.put(v.getId(), v);
-		}
-		return variants;
+		return siteFeatureMap.get(siteFeature);
 	}
 
 	private SmartStoreServiceConfigurationHome getServiceConfigurationHome()
@@ -80,6 +91,8 @@ final public class VariantRegistry {
 
 			Map<String, Variant> variantMapTmp = new HashMap<String, Variant>(
 					variants.size());
+			Map<EnumSiteFeature, Map<String, Variant>> siteFeatureMapTmp = 
+					new HashMap<EnumSiteFeature, Map<String,Variant>>();
 
 			Set factors = new HashSet();
 
@@ -93,6 +106,9 @@ final public class VariantRegistry {
 
 					variant.setRecommender(rs);
 					variantMapTmp.put(variant.getId(), variant);
+					if (!siteFeatureMapTmp.containsKey(variant.getSiteFeature()))
+						siteFeatureMapTmp.put(variant.getSiteFeature(), new HashMap<String, Variant>());
+					siteFeatureMapTmp.get(variant.getSiteFeature()).put(variant.getId(), variant);
 				} catch (Exception e) {
 					LOGGER.warn("failed to configure variant: "
 							+ variant.getId(), e);
@@ -105,6 +121,7 @@ final public class VariantRegistry {
 			LOGGER.info("configured variants:" + variantMapTmp.keySet());
 
 			variantMap = variantMapTmp;
+			siteFeatureMap = siteFeatureMapTmp;
 		} catch (Exception e) {
 			LOGGER.error("SmartStore Service Configuration", e);
 		}

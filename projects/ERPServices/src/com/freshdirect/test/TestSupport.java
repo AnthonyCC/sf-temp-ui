@@ -80,21 +80,20 @@ public class TestSupport {
 			
 			return bean.getDYFEligibleCustomerIDs();
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new FDRuntimeException(e);
 		} catch (CreateException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new FDRuntimeException(e);
 		}
-		return Collections.EMPTY_LIST;
 	}
 
 
-	public List getCustomerIDs() {
+	public List getErpCustomerIDs() {
 		try {
 			TestSupportSB bean = this.getTestSupportHome().create();
 			
-			return bean.getCustomerIDs();
+			return bean.getErpCustomerIds();
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

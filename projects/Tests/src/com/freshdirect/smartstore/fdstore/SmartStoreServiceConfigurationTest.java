@@ -13,7 +13,6 @@ import javax.naming.Context;
 
 import junit.framework.TestCase;
 
-import org.mockejb.MockContainer;
 import org.mockejb.interceptor.AspectSystem;
 
 import com.freshdirect.TestUtils;
@@ -42,7 +41,7 @@ public class SmartStoreServiceConfigurationTest extends TestCase {
         TestUtils.createTransaction(context);
         TestUtils.initFDStoreProperties();
         
-        MockContainer mockContainer = TestUtils.createMockContainer(context);
+        TestUtils.createMockContainer(context);
 
         AspectSystem aspectSystem = TestUtils.createAspectSystem();
 
@@ -85,19 +84,19 @@ public class SmartStoreServiceConfigurationTest extends TestCase {
 
     public void testFeaturedItems() {
         Map<String, Variant> services = VariantRegistry.getInstance().getServices(EnumSiteFeature.FEATURED_ITEMS);
-        RecommendationService service = services.get("test_manual_override").getRecommender();
-        assertNotNull("test_manual_override", service);
-        assertNotNull("test_manual_override variant", service.getVariant());
-        assertEquals("test_manual_override variant", "test_manual_override", service.getVariant().getId());
+        Variant variant = services.get("test_manual_override");
+        assertNotNull("test_manual_override variant", variant);
+        assertNotNull("test_manual_override", variant.getRecommender());
+        assertEquals("test_manual_override variant", "test_manual_override", variant.getId());
 
         for (Iterator iter = services.keySet().iterator(); iter.hasNext();) {
             String key = (String) iter.next();
-            RecommendationService s = services.get(key).getRecommender();
+            Variant v = services.get(key);
             if (key.startsWith("test_")) {
                 String name = key.substring(5);
-                assertNotNull("s variant[" + key + ']', s.getVariant());
-                assertEquals("s variant[" + key + "] id", key, s.getVariant().getId());
-                assertEquals("s variant[" + key + "] type", name, s.getVariant().getServiceConfig().getType().getName());
+                assertNotNull("s variant[" + key + ']', v);
+                assertEquals("s variant[" + key + "] id", key, v.getId());
+                assertEquals("s variant[" + key + "] type", name, v.getServiceConfig().getType().getName());
             }
         }
     }

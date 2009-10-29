@@ -57,7 +57,7 @@
 	inp.setMaxRecommendations(6);
 
 	Recommendations recs = FDStoreRecommender.getInstance().getRecommendations(
-			EnumSiteFeature.YMAL, user, inp, null);
+			EnumSiteFeature.YMAL, user, inp);
 	List relatedProducts	= recs.getProducts();
 	List relatedRecipes		= activeYmalSet.getYmalRecipes();
 	List relatedCategories	= activeYmalSet.getYmalCategories();

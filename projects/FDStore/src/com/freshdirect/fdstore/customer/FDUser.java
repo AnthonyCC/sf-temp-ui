@@ -28,8 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumChargeType;
@@ -51,10 +49,8 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.customer.adapter.PromoVariantHelper;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
-import com.freshdirect.fdstore.giftcard.FDGiftCardI;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.giftcard.FDGiftCardModel;
 import com.freshdirect.fdstore.lists.CclUtils;
@@ -63,7 +59,6 @@ import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.FDPromotionVisitor;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
-import com.freshdirect.fdstore.promotion.PromoVariantModelImpl;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
@@ -76,10 +71,7 @@ import com.freshdirect.fdstore.util.SiteFeatureHelper;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
-import com.freshdirect.giftcard.ErpGiftCardModel;
-import com.freshdirect.giftcard.ErpGiftCardUtil;
-import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
-import org.apache.commons.lang.StringUtils;
+import com.freshdirect.smartstore.fdstore.CohortSelector;
 
 /**
  *
@@ -87,6 +79,8 @@ import org.apache.commons.lang.StringUtils;
  * @author $Author$
  */
 public class FDUser extends ModelSupport implements FDUserI {
+	private static final long serialVersionUID = 8492744405934393676L;
+
 	public static final String SERVICE_EMAIL = "service@freshdirect.com";
 	public final static int CAMPAIGN_MSG_VIEW_LIMIT = 4;
 
@@ -742,7 +736,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		int countTokens = st.countTokens();
 		if (countTokens < 3)
 			return "false";
-		String temp = st.nextToken(); // date token which we don't need
+		st.nextToken(); // date token which we don't need
 		return FDStoreProperties.getWinbackRoot() + st.nextToken()+ "/" + st.nextToken() + ".html";
 	}
 
@@ -1364,7 +1358,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public void createCohortName() throws FDResourceException {
-		this.cohortName = VariantSelectorFactory.getCohortName(getPrimaryKey());
+		this.cohortName = CohortSelector.getInstance().getCohortName(getPrimaryKey());
 		FDCustomerManager.storeCohortName(this);
 	}
 	
@@ -1501,7 +1495,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 			// We don't have an identity 
 			return null;
 		}
-		List recipientList = null;
 		ErpGCDlvInformationHolder holder = null;
 		try {
 			if(null == cachedRecipientInfo){
