@@ -108,25 +108,29 @@ public class ProductConfigAttribute extends OneToOneAttribute {
 	
 	public static Map<String,String> parseConfigOptions( String confOpts ) {
 		Map<String,String> options = new HashMap<String, String>();
-		StringTokenizer tok = new StringTokenizer( confOpts, ",=" );
-		while( tok.hasMoreTokens() ) {
-			String optionName = tok.nextToken().trim();
-			String optionValue = tok.nextToken().trim();
-			options.put( optionName, optionValue );
+		if ( confOpts != null ) {
+			StringTokenizer tok = new StringTokenizer( confOpts, ",=" );
+			while( tok.hasMoreTokens() ) {
+				String optionName = tok.nextToken().trim();
+				String optionValue = tok.nextToken().trim();
+				options.put( optionName, optionValue );
+			}
 		}
 		return options;
 	}
 	
 	public static String buildConfigOptionsString( Map<String,String> confOpts ) {
 		StringBuilder sb = new StringBuilder();
-		for ( Map.Entry<String, String> opt : confOpts.entrySet() ) {
-			sb.append( opt.getKey() );			
-			sb.append( '=' );			
-			sb.append( opt.getValue() );			
-			sb.append( ',' );			
-		}
-		if ( sb.length() > 0 ) {
-			sb.deleteCharAt( sb.length()-1 );
+		if ( confOpts != null ) {
+			for ( Map.Entry<String, String> opt : confOpts.entrySet() ) {
+				sb.append( opt.getKey() );			
+				sb.append( '=' );			
+				sb.append( opt.getValue() );			
+				sb.append( ',' );			
+			}
+			if ( sb.length() > 0 ) {
+				sb.deleteCharAt( sb.length()-1 );
+			}
 		}
 		return sb.toString();
 	}
@@ -155,7 +159,9 @@ public class ProductConfigAttribute extends OneToOneAttribute {
 	public boolean equals( Object obj ) {
 		if ( obj instanceof ProductConfigAttribute ) {
 			ProductConfigAttribute pcAttr = (ProductConfigAttribute)obj;
-			if ( quantity == pcAttr.quantity && salesUnit.equals( pcAttr.salesUnit ) && configOptions.equals( pcAttr.configOptions ) ) {
+			if ( quantity == pcAttr.quantity && 
+				( salesUnit == null ? pcAttr.salesUnit == null : salesUnit.equals( pcAttr.salesUnit ) ) && 
+				( configOptions == null ? pcAttr.configOptions == null : configOptions.equals( pcAttr.configOptions ) )	) {
 				return true;
 			}
 		}

@@ -48,7 +48,8 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 		mainPanel.setWidth( OneToOneRelationField.MAIN_LABEL_WIDTH + 50 );
 		mainPanel.setLayout( new RowLayout( Orientation.VERTICAL ) );
 		mainPanel.setHeaderVisible( false );
-		mainPanel.setBorders( false );	
+		mainPanel.setBorders( true );	
+		mainPanel.addStyleName( "product-config-editor" );
 		
 		// === SKU ===
 		skuField = new OneToOneRelationField( attribute.getAllowedTypes(), readonly );
@@ -72,11 +73,11 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 	
 	private void initFields() {
 		
-		TableLayout quantityLayout = new TableLayout( 3 );
-		quantityLayout.setCellPadding( 2 );
-		ContentPanel quantityPanel = new ContentPanel( quantityLayout );
-		quantityPanel.setBorders( false );
-		quantityPanel.setHeaderVisible( false );
+		TableLayout optionLayout = new TableLayout( 3 );
+		optionLayout.setCellPadding( 2 );
+		ContentPanel optionPanel = new ContentPanel( optionLayout );
+		optionPanel.setBorders( false );
+		optionPanel.setHeaderVisible( false );
 		
 		
 		// === QUANTITY ===
@@ -118,18 +119,13 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 			salesUnitField = null;
 		}
 		
-		quantityPanel.add( new Text("Quantity:") );
-		quantityPanel.add( quantityField );
+		optionPanel.add( new Text("Quantity:") );
+		optionPanel.add( quantityField );
 		if ( salesUnitField != null ) {
-			quantityPanel.add( salesUnitField );
+			optionPanel.add( salesUnitField );
 		}
 		
 		// === CONFIGURATION OPTIONS ===
-		TableLayout configLayout = new TableLayout( 2 );
-		configLayout.setCellPadding( 2 );
-		ContentPanel configPanel = new ContentPanel( configLayout );		
-		configPanel.setBorders( false );
-		configPanel.setHeaderVisible( false );
 		
 		optionFields = new HashMap<String,ComboBox<EnumModel>>();
 				
@@ -164,15 +160,15 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 				
 				optionFields.put( id, configField );
 			
-				configPanel.add( new Text( id ) );
-				configPanel.add( configField );
+				optionPanel.add( new Text( id ) );
+				optionPanel.add( configField );
+				optionPanel.add( new Text("") );
 			}
 		}
 		
 		// === LAYOUT ===		
 		mainPanel.add( skuField );
-		mainPanel.add( quantityPanel );
-		mainPanel.add( configPanel );		
+		mainPanel.add( optionPanel );
 	}
 	
 	private void rebuildFields() {

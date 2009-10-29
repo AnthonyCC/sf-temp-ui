@@ -283,7 +283,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                 contentToolBar.add( contextDropdown );
                 
                 
-                ToolButton synchronizeButton = new ToolButton("x-tool-refresh");                
+                ToolButton synchronizeButton = new ToolButton("synchronize-button");                
                 synchronizeButton.setToolTip( new ToolTipConfig("Synchronize", "Synchronize the node tree with the selected path.") );  
                 synchronizeButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
                     @Override
@@ -457,9 +457,10 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                 popup.setSize(900, 600);
                 popup.setHeading("Change History for : " + label);
 
-                ChangeHistoryPanel panel = new ChangeHistoryPanel(result, null, false);
+                ChangeHistoryPanel panel = new ChangeHistoryPanel(result, null, true);
                 popup.add(panel);
                 popup.show();
+                popup.maximize();
             }
         });
     }

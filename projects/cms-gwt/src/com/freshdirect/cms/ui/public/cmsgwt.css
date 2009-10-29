@@ -271,7 +271,9 @@
 	z-index: 99 ! important;
 }
 
-
+.product-config-editor div {
+	border: none;
+}
 
 .notab-form .x-panel-body form {
 	padding-top: 0px ! important;
