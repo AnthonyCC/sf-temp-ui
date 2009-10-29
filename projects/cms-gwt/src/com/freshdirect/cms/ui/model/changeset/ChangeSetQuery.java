@@ -6,9 +6,6 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 
 public class ChangeSetQuery implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     

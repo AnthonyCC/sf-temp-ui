@@ -6,7 +6,6 @@ package com.freshdirect.cms.changecontrol;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.cms.ContentKey;
@@ -23,14 +22,14 @@ public class ChangeSet extends ModelSupport {
 	private Date modifiedDate;
 
 	/** List of {@link ContentNodeChange} */
-	private List nodeChanges = new ArrayList();
+	private List<ContentNodeChange> nodeChanges = new ArrayList<ContentNodeChange>();
 
 	private String note;
 
 	/**
 	 * @return List of {@link ContentNodeChange}
 	 */
-	public List getNodeChanges() {
+	public List<ContentNodeChange> getNodeChanges() {
 		return nodeChanges;
 	}
 
@@ -42,7 +41,7 @@ public class ChangeSet extends ModelSupport {
 		return userId;
 	}
 
-	public void setNodeChanges(List nodeChanges) {
+	public void setNodeChanges(List<ContentNodeChange> nodeChanges) {
 		this.nodeChanges = nodeChanges;
 	}
 
@@ -72,10 +71,9 @@ public class ChangeSet extends ModelSupport {
 	 * @param key content node key (never null)
 	 * @return List of {@link ContentNodeChange} (never null)
 	 */
-	public List getNodeChangesById(ContentKey key) {
-		List nodeChanges = new ArrayList();
-		for (Iterator i = this.nodeChanges.iterator(); i.hasNext();) {
-			ContentNodeChange cnc = (ContentNodeChange) i.next();
+	public List<ContentNodeChange> getNodeChangesById(ContentKey key) {
+		List<ContentNodeChange> nodeChanges = new ArrayList<ContentNodeChange>();
+		for (ContentNodeChange cnc : nodeChanges) {
 			if (key.equals(cnc.getContentKey())) {
 				nodeChanges.add(cnc);
 			}

@@ -140,7 +140,7 @@ public class ChangeSetGroupingPanel extends ContentPanel {
 						final ContentNodeModel cnModel = (ContentNodeModel)model; 
 						
 						if ( cnModel.getKey().equals( data.group ) ) {							
-							return cnModel.getLabel() + "<span class=\"dimmed\"[" + cnModel.getKey() + "]</span>";		
+							return cnModel.getLabel() + " [" + cnModel.getKey() + "]";		
 						}
 					}
 				} 

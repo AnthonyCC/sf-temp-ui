@@ -226,7 +226,6 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ChangeSetQueryResponse getChangeSets(ChangeSetQuery query) throws ServerException {
         try {

@@ -30,7 +30,7 @@ public interface ChangeLogServiceI {
 	 * 
 	 * @return List of {@link ChangeSet} (never null)
 	 */
-	public List getChangeHistory(ContentKey key);
+	public List<ChangeSet> getChangeHistory(ContentKey key);
 	
 	/**
 	 * Get a change set by primary key.
@@ -49,6 +49,6 @@ public interface ChangeLogServiceI {
 	 * 
 	 * @return List of {@link ChangeSet} (never null)
 	 */
-	public List getChangesBetween(Date startDate, Date endDate);
+	public List<ChangeSet> getChangesBetween(Date startDate, Date endDate);
 
 }

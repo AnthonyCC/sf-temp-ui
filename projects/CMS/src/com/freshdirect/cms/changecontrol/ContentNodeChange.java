@@ -21,7 +21,7 @@ public class ContentNodeChange implements Serializable {
 	private ContentKey contentKey;
 	
 	/** List of {@link com.freshdirect.cms.changecontrol.ChangeDetail} */
-	private List changeDetails = new ArrayList();
+	private List<ChangeDetail> changeDetails = new ArrayList<ChangeDetail>();
 	
 	private EnumContentNodeChangeType changeType;
 
@@ -31,7 +31,7 @@ public class ContentNodeChange implements Serializable {
 	/**
 	 * @return List of {@link ChangeDetail}
 	 */
-	public List getChangeDetails() {
+	public List<ChangeDetail> getChangeDetails() {
 		return changeDetails;
 	}
 
@@ -43,7 +43,7 @@ public class ContentNodeChange implements Serializable {
 		this.contentKey = contentKey;
 	}
 
-	public void setChangeDetails(List changeDetails) {
+	public void setChangeDetails(List<ChangeDetail> changeDetails) {
 		this.changeDetails = changeDetails;
 	}
 

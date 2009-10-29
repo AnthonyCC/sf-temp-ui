@@ -53,7 +53,7 @@ public class DbChangeLogService implements ChangeLogServiceI {
 
 	}
 
-	public List getChangeHistory(ContentKey cKey) {
+	public List<ChangeSet> getChangeHistory(ContentKey cKey) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -91,7 +91,7 @@ public class DbChangeLogService implements ChangeLogServiceI {
 		}
 	}
 
-	public List getChangesBetween(Date startDate, Date endDate) {
+	public List<ChangeSet> getChangesBetween(Date startDate, Date endDate) {
 		Connection conn = null;
 		try {
 			conn = getConnection();

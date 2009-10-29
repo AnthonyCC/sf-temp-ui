@@ -539,9 +539,7 @@ public class TranslatorToGwt {
         return result;
     }
 
-    @SuppressWarnings("unchecked")
-	public static GwtChangeSet getGwtChangeSet(ChangeSet changeSet) {
-    	
+    public static GwtChangeSet getGwtChangeSet(ChangeSet changeSet) {    	
 		GwtChangeSet gwt = new GwtChangeSet();
 		gwt.setChangeSetId( changeSet.getId() );
 		gwt.setUserId( changeSet.getUserId() );
@@ -553,9 +551,7 @@ public class TranslatorToGwt {
         return gwt;
     }
 
-    @SuppressWarnings("unchecked")
-	private static GwtContentNodeChange getGwtContentNodeChange(ContentNodeChange cnc) {
-    	
+    private static GwtContentNodeChange getGwtContentNodeChange(ContentNodeChange cnc) {    	
 		GwtContentNodeChange gcnc = new GwtContentNodeChange( cnc.getContentKey().getEncoded(), cnc.getChangeType().getName() );
 		gcnc.setPreviewLink( PreviewLinkProvider.getLink( cnc.getContentKey() ) );
 		ContentNodeI contentNode = cnc.getContentKey().getContentNode();

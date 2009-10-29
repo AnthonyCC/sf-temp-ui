@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -42,7 +41,7 @@ class ChangeSetDao {
 		return (ChangeSet) buildChangeSets(rs).get(0);
 	}
 
-	public List getChangeHistory(Connection conn, ContentKey key) throws SQLException {
+	public List<ChangeSet> getChangeHistory(Connection conn, ContentKey key) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(SELECT + " AND cnc.contenttype = ? AND cnc.contentnode_id = ?" + ORDER_BY);
 		ps.setString(1, key.getType().getName());
 		ps.setString(2, key.getId());
@@ -50,7 +49,7 @@ class ChangeSetDao {
 		return buildChangeSets(rs);
 	}
 
-	public List getChangesBetween(Connection conn, Date startDate, Date endDate) throws SQLException {
+	public List<ChangeSet> getChangesBetween(Connection conn, Date startDate, Date endDate) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(SELECT + "AND cs.timestamp between ? and ? " + ORDER_BY);
 		System.out.println("start time: " + startDate + "    end time: " + endDate);
 		ps.setTimestamp(1, new Timestamp(startDate.getTime()));
@@ -60,8 +59,8 @@ class ChangeSetDao {
 		return buildChangeSets(rs);
 	}
 
-	private List buildChangeSets(ResultSet rs) throws SQLException {
-		List sets = new ArrayList();
+	private List<ChangeSet> buildChangeSets(ResultSet rs) throws SQLException {
+		List<ChangeSet> sets = new ArrayList<ChangeSet>();
 		String prevNodeId = null;
 		String prevSetId = null;
 
@@ -78,7 +77,7 @@ class ChangeSetDao {
 				prevSetId = rs.getString("CHANGESET_ID");
 			}
 
-			if (!rs.getString("CHANGENODE_ID").equals(prevNodeId)) {
+			if ( !rs.getString("CHANGENODE_ID").equals(prevNodeId) && cs != null ) {
 				cnc = new ContentNodeChange();
 				cnc.setContentKey(new ContentKey(ContentType.get(rs.getString("CONTENTTYPE")), rs.getString("CONTENTNODE_ID")));
 				cnc.setChangeType(EnumContentNodeChangeType.getType(rs.getString("CHANGETYPE")));
@@ -87,7 +86,7 @@ class ChangeSetDao {
 				prevNodeId = rs.getString("CHANGENODE_ID");
 			}
 
-			if (rs.getString("ATTRIBUTENAME") != null) {
+			if ( rs.getString("ATTRIBUTENAME") != null && cnc != null ) {
 				ChangeDetail cd = new ChangeDetail();
 				cd.setAttributeName(rs.getString("ATTRIBUTENAME"));
 				cd.setOldValue(rs.getString("OLDVALUE"));
@@ -114,12 +113,10 @@ class ChangeSetDao {
 		return key;
 	}
 
-	private void insertNodeChanges(Connection conn, List contentNodeChanges, String changeSetId) throws SQLException {
-		PreparedStatement ps = conn
-			.prepareStatement("Insert into cms_contentnodechange(id,changeset_id,contentnode_id,changetype,contenttype) values(?,?,?,?,?)");
-		for (Iterator i = contentNodeChanges.iterator(); i.hasNext();) {
+	private void insertNodeChanges(Connection conn, List<ContentNodeChange> contentNodeChanges, String changeSetId) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("Insert into cms_contentnodechange(id,changeset_id,contentnode_id,changetype,contenttype) values(?,?,?,?,?)");
+		for ( ContentNodeChange nc : contentNodeChanges ) {
 			String key = getNextId(conn);
-			ContentNodeChange nc = (ContentNodeChange) i.next();
 			ps.setString(1, key);
 			ps.setString(2, changeSetId);
 			ps.setString(3, nc.getContentKey().getId());
@@ -131,12 +128,11 @@ class ChangeSetDao {
 		ps.close();
 	}
 
-	private void insertBatchDetails(Connection conn, List changeDetails, String nodeChangeId) throws SQLException {
+	private void insertBatchDetails(Connection conn, List<ChangeDetail> changeDetails, String nodeChangeId) throws SQLException {
 		PreparedStatement ps = conn
 			.prepareStatement("Insert into cms_changedetail(contentnodechange_id,attributename,changetype,oldvalue,newvalue) values (?,?,?,?,?)");
 
-		for (Iterator i = changeDetails.iterator(); i.hasNext();) {
-			ChangeDetail cd = (ChangeDetail) i.next();
+		for (ChangeDetail cd : changeDetails) {
 			ps.setString(1, nodeChangeId);
 			ps.setString(2, cd.getAttributeName());
 			ps.setString(3, "MOD");
