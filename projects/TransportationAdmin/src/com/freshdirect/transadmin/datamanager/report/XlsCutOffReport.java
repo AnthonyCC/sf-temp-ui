@@ -467,7 +467,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		        hssfCell = row.createCell(cellnum++);		        
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
-		        hssfCell.setCellValue(new HSSFRichTextString("Cartons"));
+		        hssfCell.setCellValue(new HSSFRichTextString("Cartons/Cases"));
 		        
 		        hssfCell = row.createCell(cellnum++);		        
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
@@ -585,7 +585,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		        hssfCell = row.createCell(cellnum++);		        
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
-		        hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTime(addMinutes(_summaryData.getRouteCompleteTime(), -25))));
+		        hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTime(addMinutes(_summaryData.getRouteCompleteTime(), 25))));
 		        
 		        row = sheet.createRow(rownum++);//blank Row
 		        
