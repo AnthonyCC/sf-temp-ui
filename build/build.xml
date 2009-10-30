@@ -78,7 +78,7 @@
 		<pathelement location="${thirdparty.home}/cglib-2.1.jar"/>
 		<pathelement location="${thirdparty.home}/ehcache-1.1.jar"/>
 		<pathelement location="${thirdparty.home}/jug-lgpl-2.0.0.jar"/>
-		<pathelement location="${thirdparty.home}/freemarker.jar"/>
+		<pathelement location="${thirdparty.home}/freemarker-2.3.15.jar"/>
 		<pathelement location="${thirdparty.home}/jsonrpc-1.0.jar"/>
 		<pathelement location="${thirdparty.home}/bsh-2.0b4.jar"/>
 		<pathelement location="${thirdparty.home}/jxl.jar"/>
@@ -1203,7 +1203,7 @@
 					<include name="cglib-2.1.jar"/>
 					<include name="ehcache-1.1.jar"/>
 					<include name="jug-lgpl-2.0.0.jar"/>
-					<include name="freemarker.jar"/>
+					<include name="freemarker-2.3.15.jar"/>
 					<include name="jsonrpc-1.0.jar"/>
 					<include name="bsh-2.0b4.jar"/>
                     <include name="jasypt-1.5.jar"/>
