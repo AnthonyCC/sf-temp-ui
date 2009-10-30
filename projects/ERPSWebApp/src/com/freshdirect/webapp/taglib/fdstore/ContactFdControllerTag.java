@@ -235,13 +235,14 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 				}
 				result.addError(firstname.length() < 1, "first_name", SystemMessageList.MSG_REQUIRED);
 				result.addError(lastname.length() < 1, "last_name", SystemMessageList.MSG_REQUIRED);
-				result.addError(homePhone.getPhone().length() > 15, "home_phone", "Phone Number is over the maximum allowed limit.");
-				result.addError(workPhone.getPhone().length() > 15, "work_phone", "Phone Number is over the maximum allowed limit.");
-				result.addError(altPhone.getPhone().length() > 15, "alt_phone", "Phone Number is over the maximum allowed limit.");
-				
-				result.addError(homePhone.getExtension().length() > 6, "home_phone", "Extension is over the maximum allowed limit.");
-				result.addError(workPhone.getExtension().length() > 6, "work_phone", "Extension is over the maximum allowed limit.");
-				result.addError(altPhone.getExtension().length() > 6, "alt_phone", "Extension is over the maximum allowed limit.");
+				//LOGGER.debug(">>> FirstName " + firstname.length());
+				result.addError((null != homePhone.getPhone() && homePhone.getPhone().length() > 15), "home_phone", "Phone Number is over the maximum allowed limit.");
+				result.addError((null != workPhone.getPhone()&& workPhone.getPhone().length() > 15), "work_phone", "Phone Number is over the maximum allowed limit.");
+				result.addError((null != altPhone.getPhone() && altPhone.getPhone().length() > 15), "alt_phone", "Phone Number is over the maximum allowed limit.");
+			
+				result.addError((null != homePhone.getExtension()&& homePhone.getExtension().length() > 6), "home_phone", "Extension is over the maximum allowed limit.");
+				result.addError((null != workPhone.getExtension()&& workPhone.getExtension().length() > 6), "work_phone", "Extension is over the maximum allowed limit.");
+				result.addError((null != altPhone.getExtension() && altPhone.getExtension().length() > 6), "alt_phone", "Extension is over the maximum allowed limit.");
 
 			}
 		}
