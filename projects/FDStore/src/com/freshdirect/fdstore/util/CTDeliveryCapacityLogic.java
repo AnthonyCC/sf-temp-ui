@@ -63,8 +63,10 @@ public class CTDeliveryCapacityLogic
 			xstream.alias("condition", Zone.class);
 			xstream.alias("value", Zone.class);
 			
+			InputStream is=null;
+			ObjectInputStream in=null;
 			try {
-				InputStream is;
+				
 				if(order==1)
 				{
 					is = ResourceUtil.openResource("classpath: "+FDStoreProperties.getCTCapacityFileName());
@@ -75,9 +77,9 @@ public class CTDeliveryCapacityLogic
 				}
 				if (is == null) 
 				{
-					throw new IOException("cannot find the file rules.xml on classpath");
+					throw new IOException("cannot find the file ctprofile.xml or pr1profile.xml on classpath");
 				}
-				ObjectInputStream in = xstream.createObjectInputStream(new InputStreamReader(is));
+				 in = xstream.createObjectInputStream(new InputStreamReader(is));
 				while (true) {
 					try {
 						CTProfileConfig r = (CTProfileConfig) in.readObject();
@@ -102,11 +104,27 @@ public class CTDeliveryCapacityLogic
 					loadedPR1=true;
 					PR1_CONFIG=CONFIG;
 				}
-				in.close();
-			    is.close();
+				
 			}catch(Exception e)
 			{
 				e.printStackTrace();
+			}
+			finally
+			{
+				try
+				{
+					if(is!=null) is.close();
+				}catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+				try
+				{
+					if(in!=null) in.close();
+				}catch(Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 		
