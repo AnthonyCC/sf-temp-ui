@@ -247,19 +247,19 @@ request.removeAttribute("successPage");
         Collection myErrs=((ActionResult)result).getErrors();
 %>
         <table border="0" cellspacing="0" cellpadding="0" width="425">
-	    <div id="error_descriptions">
+	  
 <%
         for (Iterator errItr = myErrs.iterator();errItr.hasNext(); ) {
                 String errDesc = ((ActionError)errItr.next()).getDescription();
 %>
         <tr valign="top">
         <td width="350" valign="middle">
-                <FONT class="text12bold" color="#CC3300"><%=errDesc%></FONT>
+               <div id="error_descriptions">   <FONT class="text12bold" color="#CC3300"><%=errDesc%></FONT></div>
         </td></tr>
  <%
         }
 %>
-        </div>
+       
         </table>
 <%
 }
