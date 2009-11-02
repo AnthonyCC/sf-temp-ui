@@ -8,7 +8,7 @@
 			<font class="text15"><b>Shop from Previous Orders</b></font><font class="space2pix"><br><br></font>
 			<font class="text12bold" color="#FF9933">CHOOSE AN ORDER:<br><br></font>
 			<font class="space2pix"><br><br><br></font>
-			<%@ include file="/quickshop/includes/order_nav.jspf" %>
+			<%@ include file="/quickshop/includes/order_nav_qs_index.jspf" %>
 			<b><%= orderNav.toString() %></b>
 			
 			<img src="/media_stat/images/layout/clear.gif" width="0" height="25">
@@ -64,6 +64,21 @@
                 <font class="space2pix"><br><br><br></font>
         </td></tr>
 	</table>
+	
+	
+<div style="padding-top: 1em">
+<%-- display items just added to cart  --%>
+<%
+	/**
+	 * Display recently added products
+	 */
+	if (cart.getRecentOrderLines().size() > 0 && "1".equalsIgnoreCase(request.getParameter("confirm"))) {
+%><%@ include file="/includes/smartstore/i_recent_orderlines.jspf" %>
+<br/>
+<%
+	}
+%>
+</div>
 
 <!-- ===================================== -->
 <!-- ============ Cart & tabs ============ -->
