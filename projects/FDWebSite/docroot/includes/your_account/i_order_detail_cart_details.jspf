@@ -134,7 +134,7 @@ if (cart.getTaxValue() > 0) {
 if (cart.getDepositValue() > 0) {
 	%>
 	<tr align="right" class="orderSummary">
-		<td colspan="2">Bottle Deposit:</td>
+		<td colspan="2">NYState Bottle Deposit and Handling Fee:</td>
 		<td><%= currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedDepositValue() : cart.getDepositValue()) %></td>
 		<td colspan="3">&nbsp;</td>
 	</tr>
@@ -251,7 +251,7 @@ if (EnumPaymentType.MAKE_GOOD.equals(cart.getPaymentMethod().getPaymentType())) 
 <% } %>
 
 <tr>
-	<td align="right" colspan="6"><br><br><b>T = Taxable Item<br>S = Special Price<br>D = Bottle Deposit</b></td>
+	<td align="right" colspan="6"><br><br><b>T = Taxable Item<br>S = Special Price<br>D = NYState Bottle Deposit and Handling Fee</b></td>
 </tr>
 <% if (cart.isEstimatedPrice()) { %>
 	<tr>
