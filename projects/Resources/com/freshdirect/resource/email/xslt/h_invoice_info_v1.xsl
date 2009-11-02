@@ -150,7 +150,7 @@
 
 	<xsl:if test="order/depositValue > 0">
 		<tr valign="top" class="orderSummary">
-			<td colspan="2" align="right">Bottle Deposit:</td>
+			<td colspan="2" align="right">NYState Bottle Deposit and Handling Fee:</td>
 			<td align="right">$<xsl:value-of select='format-number(order/depositValue, "###,##0.00", "USD")'/></td>
 			<td colspan="3">&nbsp;</td>
 		</tr>
@@ -230,7 +230,7 @@
 		<td colspan="6" align="right"><b>S = Special Price</b></td>
 	</tr>
 	<tr valign="top">
-		<td colspan="6" align="right"><b>D = Bottle Deposit</b></td>
+		<td colspan="6" align="right"><b>D = NYState Bottle Deposit and Handling Fee</b></td>
 	</tr>
 </table>
 </xsl:template>
@@ -361,7 +361,7 @@
 	</tr>
 
 	<tr class="orderViewSummary">
-		<td colspan="5" align="right">Bottle Deposit:</td>
+		<td colspan="5" align="right">NYState Bottle Deposit and Handling Fee:</td>
 		<td colspan="1" align="right"><xsl:value-of select="format-number($view/depositValue, '$###,##0.00', 'USD')"/></td>
 		<td colspan="3">&nbsp;</td>
 	</tr>
