@@ -25,8 +25,8 @@
  	}
     
     
-    
-    if (successPage.startsWith("/index.jsp") && EnumServiceType.CORPORATE.getName().equalsIgnoreCase(corpServiceType))  {
+    //EnumServiceType.CORPORATE.getName().equalsIgnoreCase(corpServiceType)
+    if (successPage.startsWith("/index.jsp") && corpZipcode!=null && corpZipcode.length()==5)  {
 		successPage = "/department.jsp?deptId=COS";
 	}
  
@@ -113,13 +113,13 @@ request.setAttribute("listPos", "CategoryNote");
 			function validate(){
 				var zipcode = document.forms[0].zipcode.value;
 				var corpZipCode = document.forms[0].corpZipcode.value;
+				//alert(document.forms[0].corpServiceType.value);
 				if(zipcode !='' && corpZipCode == ''){
 					if(zipcode.length!=5 || isNaN(zipcode)){
 						document.forms[0].action = '<%=actionURI%>';
 					}else{
 						document.forms[0].action = "/site_access/site_access.jsp";
 					}
-					document.forms[0].corpServiceType.value = '';
 				}else{
 					if(corpZipCode.length != 5 || isNaN(corpZipCode)){
 						document.forms[0].action = '<%=actionURI%>';
@@ -127,6 +127,7 @@ request.setAttribute("listPos", "CategoryNote");
 						document.forms[0].action = "/site_access/site_access.jsp";
 					}
 				}
+				//alert(document.forms[0].corpServiceType.value);
 				
 				return true;
 			}
