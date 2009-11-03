@@ -196,7 +196,7 @@
 		</tr>
 
 		<tr class="orderViewSummary">
-			<td colspan="6" align="right">NYState Bottle Deposit and Handling Fee:</td>
+			<td colspan="6" align="right">NY State Bottle Deposit and Handling Fee:</td>
 			<td colspan="1" align="right"><xsl:value-of select="format-number(depositValue, '$###,##0.00', 'USD')"/></td>
 			<td colspan="4">&nbsp;</td>
 		</tr>
@@ -259,7 +259,7 @@
 
 	<xsl:if test="number(order/depositValue) &gt; 0">
 		<tr valign="top" class="orderSummary">
-			<td colspan="3" align="right">NYState Bottle Deposit and Handling Fee:</td>
+			<td colspan="3" align="right">NY State Bottle Deposit and Handling Fee:</td>
 			<td colspan="1" align="right"><xsl:value-of select="format-number(order/depositValue, '$###,##0.00', 'USD')"/></td>
 			<td colspan="3"></td>
 		</tr>
