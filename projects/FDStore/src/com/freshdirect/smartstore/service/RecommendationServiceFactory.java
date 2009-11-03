@@ -623,10 +623,11 @@ public class RecommendationServiceFactory {
 		if (value != null) {
 			Set<String> badVals = new HashSet<String>();
 			for (String s : value.split(",")) {
-				EnumBurstType b = EnumBurstType.valueOf(s);
-				if (b != null) {
+				try {
+					EnumBurstType b = EnumBurstType.valueOf(s.trim());
 					options.add(b);
-				} else {
+				} catch(IllegalArgumentException exc) {
+					LOGGER.error("Invalid burst type <" + s + "> in hide_burst of variant " + config.getVariantId());
 					badVals.add(s);
 				}
 			}

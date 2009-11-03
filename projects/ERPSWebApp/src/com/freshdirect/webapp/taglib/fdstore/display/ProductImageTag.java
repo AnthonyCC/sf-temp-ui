@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
@@ -8,6 +9,7 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -32,10 +34,6 @@ public class ProductImageTag extends BodyTagSupport {
 	String			action; 					// URL (optional)
 	boolean			disabled = false; 			// Image is not clickable
 	String			prefix; 					// For internal use only! (optional)
-	boolean			hideDeals = false; 			// whether display Deals burst (optional)
-	boolean			hideNew = false; 			// whether display New Product burst (optional)
-	boolean			hideYourFave = false; 		// whether display Your Fave burst (optional)
-	boolean			hideBurst = false; 			// whether display any burst (optional)
 
 	BrowserInfo		browserInfo = null;
 	double			savingsPercentage = 0; 		// savings % off
@@ -44,6 +42,8 @@ public class ProductImageTag extends BodyTagSupport {
 	boolean 		showRolloverImage = true;	// rollover image
 
 	double			opacity = 1; // 1-transparency
+
+	Set<EnumBurstType> hideBursts;
 
 	public void setProduct(ProductModel prd) {
 		this.product = prd;
@@ -69,24 +69,7 @@ public class ProductImageTag extends BodyTagSupport {
 		this.prefix = uriPrefix;
 	}
 	
-	public void setHideDeals(boolean hideDeals) {
-		this.hideDeals = hideDeals;
-	}
 
-	public void setHideNew(boolean hideNew) {
-		this.hideNew = hideNew;
-	}
-
-	public void setHideBurst(boolean hideBurst) {
-		this.hideBurst = hideBurst;
-	}
-
-	public void setHideYourFave(boolean hideYourFave) {
-		this.hideYourFave = hideYourFave;
-	}
-
-
-	
 	public void setBrowserInfo(BrowserInfo browserInfo) {
 		this.browserInfo = browserInfo;
 	}
@@ -113,7 +96,14 @@ public class ProductImageTag extends BodyTagSupport {
 			this.opacity = opacity;
 	}
 	
+
+
 	
+	public void setHideBursts(Set<EnumBurstType> hideBursts) {
+		this.hideBursts = hideBursts;
+	}
+
+
 	public int doStartTag() {
 		try {
 			Image prodImg = product.getProdImage();
@@ -122,8 +112,7 @@ public class ProductImageTag extends BodyTagSupport {
 			
 			StringBuffer buf = new StringBuffer();
 
-			ProductLabeling pl = new ProductLabeling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), product,
-					hideBurst, hideNew, hideDeals, hideYourFave);
+			ProductLabeling pl = new ProductLabeling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), product, hideBursts);
 			
 			if (browserInfo == null)
 				browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());

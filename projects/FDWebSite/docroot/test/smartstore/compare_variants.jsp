@@ -791,20 +791,17 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= aRecService.getDescription() %></td></tr></table>
 					<% } %>
 
-					<p class="not-found">
+					
 					<% if (variantA != null && variantA.equals(userVariant)) { %>
-						<b>This is the user's variant.</b>
+						<p class="not-found"><b>This is the user's variant.</b></p>
 					<% } else if (!assignment.containsValue(variantA)) { %>
-						<i>This variant is not assigned to a cohort.</i>
-					<% } else { %>
-						&nbsp;
+						<p class="not-found"><i>This variant is not assigned to a cohort.</i></p>
 					<% } %>
-					</p>
 				<% } else { %>
 					<span class="title24">A</span>
 				<% }  %>
+					<label style="display: block"><input type="checkbox" name="variantAhideBursts" <%= urlG.get("variantAhideBursts") != null ? "checked=\"checked\"" : null %> onchange="this.form.submit();"/>&nbsp; Hide bursts</label>
 				</div>
-
 			</td>
 			<td class="right">
 				<div class="var-cmp-head">
@@ -865,21 +862,19 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 					<% if (bRecService != null && bRecService.getVariant().getServiceConfig().getType().equals(RecommendationServiceType.SCRIPTED) ) {  %>
 						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= bRecService.getDescription() %></td></tr></table>
 					<% } %>
-					<p class="not-found">
+					
 					<% if (variantB != null && variantB.equals(userVariant)) { %>
-						<b>This is the user's variant.</b>
+						<p class="not-found"><b>This is the user's variant.</b></p>
 					<% } else if (varIds.size() == 1 && varIds.get(0).equals(variantA) && scriptedRecServ == null) { %>
-						<i>No more variants available.</i>
+						<p class="not-found"><i>No more variants available.</i></p>
 					<% } else if (!assignment.containsValue(variantB)) { %>
-						<i>This variant is not assigned to a cohort.</i>
-					<% } else { %>
-						&nbsp;
+						<p class="not-found"><i>This variant is not assigned to a cohort.</i></p>
 					<% } %>
-					</p>
 					<%  } // if (scriptedRecServ)  %>
 				<% } else { %>
 					<span class="title24"><% if (scriptedRecServ != null) { %>Custom<% } else { %>B<% } %></span>
 				<% }  %>
+					<label style="display: block"><input type="checkbox" name="variantBhideBursts" <%= urlG.get("variantBhideBursts") != null ? "checked=\"checked\"" : null %> onchange="this.form.submit();"/>&nbsp; Hide bursts</label>
 				</div>
 			</td> 
 		</tr>
@@ -919,7 +914,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						</td>
 						<% } %>
 						<td class="pic"<%= notFound %>>
-							<display:ProductImage product="<%= pm %>" action="<%= actionURL %>"/>
+							<display:ProductImage product="<%= pm %>" action="<%= actionURL %>" hideBursts="<%= urlG.get(\"variantAhideBursts\") != null ? aRecService.getVariant().getHideBursts() : null %>"/>
 						</td>
 						<td class="info"<%= notFound %>><div>
 								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
@@ -998,7 +993,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 				%>
 					<tr<%= notFound %>>
 						<td class="pic">
-							<display:ProductImage product="<%= pm %>" action="<%= actionURL %>"/>
+							<display:ProductImage product="<%= pm %>" action="<%= actionURL %>" hideBursts="<%= urlG.get(\"variantBhideBursts\") != null ? bRecService.getVariant().getHideBursts() : null  %>"/>
 						</td>
 						<td class="info"><div>
 								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>

@@ -129,7 +129,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 						%>	<%-- display a product --%>
 					<td width="<%= tdwidth %>">
 						<p style="border: 0px; padding: 0px; margin: 0px;">
-							<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>"/></p>
+							<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/></p>
 							<display:ProductRating product="<%= productNode %>" />
 			<%			// product name
 					if (productNode.isDisplayable()) { %>

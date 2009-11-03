@@ -252,7 +252,7 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 													<% if (isVariantSavings) { %>
 														<display:ProductImage product="<%= product %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" opacity="<%= shouldDimProduct ? 0.5 : 1.0 %>" showRolloverImage="true"/>
 													<% } else {%>
-														<display:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="<%= EnumSiteFeature.DYF.equals(recommendations.getVariant().getSiteFeature()) %>" browserInfo="<%= bi %>" showRolloverImage="true"/>
+														<display:ProductImage product="<%= product %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>" browserInfo="<%= bi %>" showRolloverImage="true"/>
 													<% } %>
 												</td>
 											</tr>

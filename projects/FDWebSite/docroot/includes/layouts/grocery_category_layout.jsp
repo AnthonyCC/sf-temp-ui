@@ -157,7 +157,7 @@ if (currentCategory != null) {
 	String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %><%-- display a product --%>
 		<td align="center" width="105" valign="bottom">
-			<display:ProductImage product="<%=productNode%>" action="<%=actionURI%>" />
+			<display:ProductImage product="<%=productNode%>" action="<%=actionURI%>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/>
 		</td>
 		<td width="10">
 			<img src="/media/images/layout/clear.gif" width="8" height="1">

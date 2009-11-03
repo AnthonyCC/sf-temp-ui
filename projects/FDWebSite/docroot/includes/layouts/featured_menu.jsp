@@ -106,7 +106,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %></fd:FDProductInfo><%
 			String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %>			<p style="border: 0px; padding: 0px; margin: 0px;">
-			<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>"/></p>
+			<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/></p>
 			<display:ProductRating product="<%= productNode %>" />
 			<display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/><br/>
 			<% if (fiSubtitle.length() > 0) { %><span class="text12"><%= fiSubtitle %></span><br><% } %>
