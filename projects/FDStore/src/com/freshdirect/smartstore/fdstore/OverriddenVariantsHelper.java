@@ -116,6 +116,9 @@ public class OverriddenVariantsHelper {
 						list.add(ov);
 				}
 			}
+		} catch (IllegalStateException e) {
+			// cannot retrieve FD Customer as it is an anonymouse
+			return list;
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e, "failed to retrieve overridden variant profile");
 		}
