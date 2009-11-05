@@ -6,6 +6,8 @@
 
 package com.freshdirect.fdstore.content;
 
+import weblogic.auddi.util.Logger;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 
@@ -44,7 +46,12 @@ public class ProductRef extends ContentRef {
 
 	public ProductModel lookupProduct() {
 		CategoryModel cm = this.lookupCategory();
-		return cm.getProductByName(this.refName2);
+		if(cm != null) {
+			return cm.getProductByName(this.refName2);
+		} else {
+			Logger.error("ProductRef:  lookupProduct() - CategoryModel is null!");
+		}
+		return null;
 	}
 
 	/**

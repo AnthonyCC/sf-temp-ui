@@ -88,7 +88,7 @@ public class RatingPlusScalePriceTag extends ProductRatingTag {
 					buf.append("<br>");
 				
 				if ( scaleString != null ) {
-					buf.append("&nbsp;&nbsp;" + scaleString + "");
+					buf.append("&nbsp;&nbsp;" + "Save!  " + scaleString + "");
 				}
 				buf.append( "</div></font>" );
 			}
