@@ -58,7 +58,7 @@
 			   <br/>
 			    Sincerely,<br/>
 			   <br/>
-				FreshDirect At The Office.</p>
+				FreshDirect At The Office</p>
                
                <p><xsl:call-template name="h_footer_v1"/></p>
 		</td>
