@@ -50,16 +50,16 @@ public class PunchInfoDaoImpl implements PunchInfoDaoI {
 	        jdbcTemplate.query(creator,
 	       		  new RowCallbackHandler() {
 	       		      public void processRow(ResultSet rs) throws SQLException {
-
-	       		    	while(rs.next()) {
+	       		    	
+	       		    	 do{
 	       		    		String employeeId=rs.getString("PERSONNUM");
 	       		    		Date eventDate=rs.getDate("EVENTDATE");
 	       		    		Date startDTM=rs.getTimestamp("STARTDTM");
 	       		    		Date endDTM=rs.getTimestamp("ENDDTM");
 	       		    		Date inPunchDTM=rs.getTimestamp("INPUNCHDTM");
-	       		    		Date outPunchDTM=rs.getTimestamp("OUTPUNCHDTM");
+	       		    		Date outPunchDTM=rs.getTimestamp("OUTPUNCHDTM");	       		    		
 	       		    		list.add(new PunchInfo(eventDate,employeeId,startDTM,endDTM,inPunchDTM,outPunchDTM));
-	       		    	}
+	       		    	}while(rs.next());
 	       		    	  
 	       		      }
 	       		  }
@@ -87,13 +87,13 @@ public class PunchInfoDaoImpl implements PunchInfoDaoI {
 	       		  new RowCallbackHandler() {
 	       		      public void processRow(ResultSet rs) throws SQLException {
 
-	       		    	while(rs.next()) {
+	       		    	do{
 	       		    		String employeeId=rs.getString("PERSONNUM");
 	       		    		Date eventDate=rs.getDate("shiftstartdate");
 	       		    		Date startDTM=rs.getTimestamp("shiftstarttime");
 	       		    		Date endDTM=rs.getTimestamp("shiftendtime");	       		    		
 	       		    		list.add(new PunchInfo(eventDate,employeeId,startDTM,endDTM,null,null));
-	       		    	}
+	       		    	}while(rs.next()); 
 	       		    	  
 	       		      }
 	       		  }
@@ -121,14 +121,14 @@ public class PunchInfoDaoImpl implements PunchInfoDaoI {
 	       		  new RowCallbackHandler() {
 	       		      public void processRow(ResultSet rs) throws SQLException {
 
-	       		    	while(rs.next()) {
+	       		    	do {
 	       		    		String employeeId=rs.getString("PERSONNUM");
 	       		    		Date eventDate=rs.getDate("shiftstartdate");	  
 	       		    		String paycode=rs.getString("PAYCODENAME");
 	       		    		PunchInfo p=new PunchInfo(eventDate,employeeId,null,null,null,null);
 	       		    		p.setPaycode(paycode);
 	       		    		list.add(p);
-	       		    	}
+	       		    	}while(rs.next());
 	       		    	  
 	       		      }
 	       		  }
