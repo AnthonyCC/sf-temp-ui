@@ -10,6 +10,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -110,9 +111,12 @@ final public class VariantRegistry {
 						siteFeatureMapTmp.put(variant.getSiteFeature(), new HashMap<String, Variant>());
 					siteFeatureMapTmp.get(variant.getSiteFeature()).put(variant.getId(), variant);
 				} catch (Exception e) {
-					LOGGER.warn("failed to configure variant: "
-							+ variant.getId(), e);
-					continue;
+					LOGGER.error("failed to configure variant '"
+							+ variant.getId()
+							+ "' -- variants are not (re)loaded", e);
+					throw new FDRuntimeException(e,
+							"failed to configure variant '" + variant.getId()
+									+ "' -- variants are not (re)loaded");
 				}
 			}
 
@@ -123,7 +127,7 @@ final public class VariantRegistry {
 			variantMap = variantMapTmp;
 			siteFeatureMap = siteFeatureMapTmp;
 		} catch (Exception e) {
-			LOGGER.error("SmartStore Service Configuration", e);
+			LOGGER.error("failed to (re)load variants", e);
 		}
 	}
 
