@@ -42,18 +42,17 @@ Symbols:
 		DATASOURCE
 	-->
 
-	
+<!--	
 	<service-point id="cmsdatasource" interface="javax.sql.DataSource">
 		<invoke-factory service-id="hivemind.BuilderFactory">
 			<construct class="oracle.jdbc.pool.OracleConnectionPoolDataSource">
 				<set property="URL" value="jdbc:oracle:thin:@zetor:1521:DBEU01"/>
-				<set property="user" value="FDSTORE_PRDA"/>
-				<set property="password" value="FDSTORE_PRDA"/>
+				<set property="user" value="FDSTORE"/>
+				<set property="password" value="FDSTORE"/>
 			</construct>
 		</invoke-factory>
 	</service-point>
-	
-<!--
+
 	<service-point id="cmsdatasource" interface="javax.sql.DataSource">
 		<invoke-factory service-id="hivemind.BuilderFactory">
 			<construct class="oracle.jdbc.pool.OracleConnectionPoolDataSource">
@@ -75,7 +74,7 @@ Symbols:
 		</invoke-factory>
 	</service-point>
 -->
-<!-- 
+
 	<service-point id="cmsdatasource" interface="javax.sql.DataSource">
 		<invoke-factory>
 			<construct class="com.freshdirect.framework.conf.JndiDataSource">
@@ -83,7 +82,7 @@ Symbols:
 			</construct>
 		</invoke-factory>
 	</service-point>
- -->	
+	
 	<!--
 		CACHE CONFIGURATIONS
 	-->
