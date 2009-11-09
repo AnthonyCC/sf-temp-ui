@@ -22,4 +22,4 @@
 	String baseUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
 	params.put("baseUrl", baseUrl);
 %>
-<fd:IncludeMedia name="/media/testing/index.ftl" parameters="<%=params%>" withErrorReport="true" />
+<fd:IncludeMedia name="/media/testing/all_info.ftl" parameters="<%=params%>" withErrorReport="false" />
