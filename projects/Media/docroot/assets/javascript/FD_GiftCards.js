@@ -621,7 +621,7 @@ function showDialogs(){$$('div.gcResendBox','div.gcResendBoxContent','div.gcRese
 					method: 'post',
 					title: titleString,
 					loadingString: 'Loading Preview...',
-					closeValue: '<img src="'+this.mediaRoot+this.cards[this.display[1]].id+'/close_preview.gif" />',
+					closeValue: '<img src="'+this.mediaRoot+$('gcTemplateId').value+'/close_preview.gif" />',
 					closeString: 'Close Preview',
 					overlayOpacity: .85,
 					overlayClose: false,
