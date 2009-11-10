@@ -201,17 +201,17 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 		if ( isMediaType() && getPreviewUrl() != null ) {  
 			sb.append( "<a target=\"preview\" href=\"javascript: void(0)\" onclick=\"window.open('" );
 			sb.append( getPreviewUrl() );
-			sb.append( "','preview','directories=no,location=no,menubar=no,status=no,titlebar=no,toolbar=no" );
+			sb.append( "','preview','directories=no,location=no,menubar=no,status=no,titlebar=no,toolbar=no,resizable=yes,scrollbars=yes" );
 			if ( isImageType() ) {
 				sb.append( ",width=" );
 				sb.append( getWidth() );
 				sb.append( ",height=" );
 				sb.append( getHeight() );
 			} else if ( isHtmlType() ) {
-				sb.append( ",width=500" );
-				sb.append( ",height=300" );
+				sb.append( ",width=600" );
+				sb.append( ",height=400" );
 			}
-			sb.append( "'); return false;\"><img src=\"img/image_zoom.gif\"></a>" );
+			sb.append( "', false); return false;\"><img src=\"img/image_zoom.gif\"></a>" );
 		}		
 		return sb.toString();
 	}
