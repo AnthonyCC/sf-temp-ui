@@ -15,7 +15,7 @@ package com.freshdirect.framework.util;
  * @version $Revision$
  * @author $Author$
  */
-public class TimedLruCache extends LruCache {
+public class TimedLruCache<K,V> extends LruCache<K,V> {
 	protected final long expire;
 
 	/**
@@ -28,16 +28,16 @@ public class TimedLruCache extends LruCache {
 		this.expire = expire;
 	}
 
-	public synchronized void put(Object key, Object value) {
-		super.putEntry( new TimedEntry(key, value, this.expire) );
+	public synchronized void put(K key, V value) {
+		super.putEntry( new TimedEntry<K,V>(key, value, this.expire) );
 	}
 
-	public synchronized Object get(Object key) {
-		Entry entry = this.getEntry(key);
+	public synchronized V get(K key) {
+		Entry<K,V> entry = this.getEntry(key);
 		if (entry==null) {
 			return null;
 		}
-		TimedEntry timedEntry = (TimedEntry)entry;
+		TimedEntry<K,V> timedEntry = (TimedEntry<K,V>)entry;
 		if ( timedEntry.isExpired() ) {
 			return this.getExpired(timedEntry);
 		}
@@ -50,15 +50,15 @@ public class TimedLruCache extends LruCache {
 	 *
 	 * @return entry.value or null
 	 */
-	protected Object getExpired(TimedEntry entry) {
+	protected V getExpired(TimedEntry<K,V> entry) {
 		super.removeEntry(entry);
 		return null;
 	}
 
-	protected static class TimedEntry extends LruCache.Entry {
+	protected static class TimedEntry<K,V> extends LruCache.Entry<K,V> {
 		private long expiration;
 
-		public TimedEntry(Object key, Object value, long expire) {
+		public TimedEntry(K key, V value, long expire) {
 			super(key, value);
 			this.renewLease(expire);
 		}

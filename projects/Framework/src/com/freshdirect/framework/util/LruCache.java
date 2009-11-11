@@ -8,7 +8,8 @@
  */
 package com.freshdirect.framework.util;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * "Least-recently-used" cache.
@@ -16,29 +17,29 @@ import java.util.*;
  * @version $Revision$
  * @author $Author$
  */
-public class LruCache {
+public class LruCache<K,V> {
 
 	private final static boolean ASSERTIONS = false;
 
 	private final int capacity;
-	private final Map cache;
+	private final Map<K,Entry<K,V>> cache;
 
 	private int size = 0;
-	private Entry head = null;
-	private Entry tail = null;
+	private Entry<K,V> head = null;
+	private Entry<K,V> tail = null;
 
 	public LruCache(int capacity) {
 		if (capacity<2) throw new IllegalArgumentException("Capacity must be at least 2");
 		this.capacity = capacity;
-		this.cache = new HashMap(capacity);
+		this.cache = new HashMap<K,Entry<K,V>>(capacity);
 	}
 
-	public synchronized void put(Object key, Object value) {
-		this.putEntry( new Entry(key, value) );
+	public synchronized void put(K key, V value) {
+		this.putEntry( new Entry<K,V>(key, value) );
 	}
 
-	protected final void putEntry(Entry entry) {
-		Entry oldEntry = (Entry)this.cache.get(entry.key);
+	protected final void putEntry(Entry<K,V> entry) {
+		Entry<K,V> oldEntry = this.cache.get(entry.key);
 		if (oldEntry!=null) {
 			// remove the old entry
 			this.removeEntry(oldEntry);
@@ -73,8 +74,8 @@ public class LruCache {
 	}
 
 
-	public synchronized Object get(Object key) {
-		Entry e = this.getEntry(key);
+	public synchronized V get(K key) {
+		Entry<K,V> e = this.getEntry(key);
 		return e==null ? null : e.value;
 	}
 
@@ -89,17 +90,17 @@ public class LruCache {
 		tail = null;
 	}
 	
-	protected final Entry getEntry(Object key) {
-		Entry entry = (Entry)this.cache.get(key);
+	protected final Entry<K,V> getEntry(Object key) {
+		Entry<K,V> entry = this.cache.get(key);
 		if (entry==null) {
 			return null;
 		}
 
-		Entry prev = entry.prev;
+		Entry<K,V> prev = entry.prev;
 
 		// move entry to head of LRU list, if it's not already the head (head's prev==null)
 		if (prev != null) {
-			Entry next = entry.next;
+			Entry<K,V> next = entry.next;
 
 			prev.next = next;
 			entry.prev = null;
@@ -117,14 +118,14 @@ public class LruCache {
 		return entry;
 	}
 
-	protected static class Entry {
-		Entry prev;
-		Entry next;
+	protected static class Entry<K,V> {
+		Entry<K,V> prev;
+		Entry<K,V> next;
 
-		final Object key;
-		final Object value;
+		final K key;
+		final V value;
 
-		public Entry(Object key, Object value) {
+		public Entry(K key, V value) {
 			this.key = key;
 			this.value = value;
 		}
@@ -135,10 +136,10 @@ public class LruCache {
 
 	}
 
-	protected final void removeEntry(Entry entry) {
+	protected final void removeEntry(Entry<K,V> entry) {
 		this.size--;
-		Entry prev = entry.prev;
-		Entry next = entry.next;
+		Entry<K,V> prev = entry.prev;
+		Entry<K,V> next = entry.next;
 
 		if (prev != null) {
 	    	prev.next = next;
@@ -159,7 +160,7 @@ public class LruCache {
 	
 	public void debug() {
 		System.out.println("head: "+this.head+" tail: "+this.tail);
-		Entry e = this.head;
+		Entry<K,V> e = this.head;
 		while (e!=null) {
 			System.out.println(e.prev + " <-- " + e + " --> " + e.next);
 			e = e.next;
