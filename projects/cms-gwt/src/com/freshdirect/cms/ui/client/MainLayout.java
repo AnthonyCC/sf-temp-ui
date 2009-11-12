@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
+import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
 import com.freshdirect.cms.ui.client.nodetree.NodeTree;
 import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.client.publish.ChangeHistoryPanel;
@@ -522,6 +523,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
                     //nodeTree.getSelectionModel().deselectAll();
                     setStatus( "Saved succesfully." );
                     stopProgress();
+                    ContentTreePopUp.setForceReload(true);
                     MessageBox.info("Save", "Successful. Saved with id:" + result.getChangesetId(), null);
                     
 //                    getMainTree().invalidate();
@@ -612,7 +614,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             hp.addStyleName("commandLink");
             this.header.addToButtonPanel(hp);
         }
-        
+       
         if (currentUser.isAllowedToWrite()) {
             Hyperlink hp = new Hyperlink("Publish", "publish");
             hp.addStyleName("commandLink");
@@ -655,7 +657,8 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             }
         }
     }
-
+		
+	
 	public static void setContentPanel( ContentPanel panel ) {
 		//TODO save/discard ?
 		mainPanel.removeAll();

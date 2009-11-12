@@ -14,6 +14,20 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype.ImagePrototypeElemen
 public class NodeTreePanel extends TreePanel<TreeContentNodeModel> {
 
 	private NodeTree tree;
+	private boolean masked;
+	
+	@Override
+	public El mask(String message) {
+		El mask = super.mask(message);
+		masked = true;
+		return mask;
+	}
+	
+	@Override
+	public void unmask() {		
+		super.unmask();
+		masked = false;
+	}
 
 	protected class NodeTreeView extends TreePanelView<TreeContentNodeModel> {
 		
@@ -41,8 +55,9 @@ public class NodeTreePanel extends TreePanel<TreeContentNodeModel> {
 	
 	public NodeTreePanel(NodeTree t, TreeStore<TreeContentNodeModel> store) {
 		super(store);
-		this.tree = t;
-		this.setView(new NodeTreeView());
+		tree = t;
+		setView(new NodeTreeView());
+		masked = false;
 	}
 
 	public TreeNode findNode(TreeContentNodeModel m) {
@@ -57,6 +72,10 @@ public class NodeTreePanel extends TreePanel<TreeContentNodeModel> {
 		} else {
 			super.onDoubleClick(tpe);
 		}
+	}
+	
+	public boolean isMasked() {
+		return masked;
 	}
 
 	@Override

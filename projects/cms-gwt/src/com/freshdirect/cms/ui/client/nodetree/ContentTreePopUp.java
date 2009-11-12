@@ -30,6 +30,7 @@ public class ContentTreePopUp extends Window {
     private List<TreeContentNodeModel> selected;
 
     private static ContentTreePopUp popup = null;
+	private static boolean forceReload;
     
     private ContentTreePopUp( Set<String> aTypes, boolean multiSelect ) {
         super();
@@ -161,7 +162,17 @@ public class ContentTreePopUp extends Window {
     @Override
     public void show() {
     	super.show();
-    	treepanel.refresh(treepanel.getExpandedPaths(), false);
-    	treepanel.scrollHack();
+    	if (forceReload) {
+    		treepanel.refresh(treepanel.getExpandedPaths(), true);
+    		forceReload = false;
+    	}
+    	else {    		
+    		treepanel.refresh(treepanel.getExpandedPaths(), false);
+        	treepanel.scrollHack();
+    	}    	
     }
+
+	public static void setForceReload(boolean b) {
+		forceReload = true;
+	}
 }

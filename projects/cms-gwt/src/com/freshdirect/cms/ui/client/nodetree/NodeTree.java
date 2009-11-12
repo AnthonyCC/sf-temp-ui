@@ -104,7 +104,7 @@ public class NodeTree extends ContentPanel {
 		@SuppressWarnings( "unchecked" )
 		public NodeTreeLoader( DataProxy proxy ) {
 			super( proxy );
-		}
+		}			
 		
 		@Override
 		public boolean hasChildren( TreeContentNodeModel parent ) {
@@ -329,7 +329,7 @@ public class NodeTree extends ContentPanel {
 	private NodeTreePanel createTreePanel( boolean multiSelect ) {		 
 		
 		// tree panel
-		NodeTreePanel tree = new NodeTreePanel( this, mainStore );
+		final NodeTreePanel tree = new NodeTreePanel( this, mainStore );
 
 		tree.addStyleName( "node-tree" );
 		tree.setBorders( false );	
@@ -363,6 +363,29 @@ public class NodeTree extends ContentPanel {
 			public void handleEvent(TreePanelEvent<TreeContentNodeModel> be) {				
 				expandedPaths.add(be.getItem().getPath());				
 			}
+			
+		});
+		
+		loader.addLoadListener(new LoadListener(){			
+			@Override
+			public void loaderBeforeLoad(LoadEvent le) {			
+				super.loaderBeforeLoad(le);
+				if (le.getConfig() == null && !tree.isMasked()) {
+					mask("Loading...");
+				}
+			}			
+			
+			@Override
+			public void loaderLoad(LoadEvent le) {
+				super.loaderLoad(le);
+				if (le.getConfig() == null && !tree.isMasked()) {
+					unmask();
+					return;
+				}
+				if (tree.isMasked()) {
+					tree.unmask();
+				}
+			}			
 			
 		});
 		
@@ -510,7 +533,8 @@ public class NodeTree extends ContentPanel {
 		tree.getSelectionModel().deselectAll();
 	}
 	
-    public void loadRootNodes() {
+    public void loadRootNodes() {    	
+    	tree.mask("Loading...");    	
 	    loader.load( null );
 	}
 	
