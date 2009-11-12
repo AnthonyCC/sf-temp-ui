@@ -382,9 +382,9 @@
 						<title>IMAGES</title>
 						<fields>
 							<CmsField><attribute>PROD_IMAGE_CONFIRM</attribute></CmsField>
-							<CmsField><attribute>ALTERNATE_IMAGE</attribute></CmsField>
-							<CmsField><attribute>DESCRIPTIVE_IMAGE</attribute></CmsField>
 							<CmsField><attribute>PROD_IMAGE_ROLLOVER</attribute></CmsField>
+							<CmsField><attribute>ALTERNATE_IMAGE</attribute></CmsField>
+							<CmsField><attribute>DESCRIPTIVE_IMAGE</attribute></CmsField>							
 							<CmsField><attribute>ALTERNATE_PROD_IMAGE</attribute></CmsField>
 							<CmsField><attribute>WE_RECOMMEND_IMAGE</attribute></CmsField>
 						</fields>
