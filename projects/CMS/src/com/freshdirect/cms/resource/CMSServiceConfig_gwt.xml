@@ -1,0 +1,380 @@
+<?xml version="1.0"?>
+<!--
+
+Symbols:
+
+	cms.cache.multicastIP
+
+	cms.media.associate
+		true/false
+
+-->
+<module id="com.freshdirect.cms" version="1.0.0">
+
+	<sub-module descriptor="hivemodule_search.xml"/>
+	<sub-module descriptor="hivemodule_publish.xml"/>
+
+	<!--
+		SCHEMAS
+	-->
+
+	<schema id="serviceList">
+		<element name="service">
+			<attribute name="name" required="true" translator="service"/>
+			<rules>
+				<push-attribute attribute="name"/>
+				<invoke-parent method="addElement"/>
+			</rules>
+		</element>
+	</schema>
+
+	<schema id="objectList">
+		<element name="Object">
+			<attribute name="value" required="true" translator="object"/>
+			<rules>
+				<push-attribute attribute="value"/>
+				<invoke-parent method="addElement"/>
+			</rules>
+		</element>
+	</schema>
+		
+	<!--
+		DATASOURCE
+	-->
+
+	<service-point id="cmsdatasource" interface="javax.sql.DataSource">
+		<invoke-factory service-id="hivemind.BuilderFactory">
+			<construct class="oracle.jdbc.pool.OracleConnectionPoolDataSource">
+				<set property="URL" value="jdbc:oracle:thin:@zetor:1521:DBEU01"/>
+				<set property="user" value="FDSTORE_PRDA"/>
+				<set property="password" value="FDSTORE_PRDA"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+<!--	
+	<service-point id="cmsdatasource" interface="javax.sql.DataSource">
+		<invoke-factory service-id="hivemind.BuilderFactory">
+			<construct class="oracle.jdbc.pool.OracleConnectionPoolDataSource">
+				<set property="URL" value="jdbc:oracle:thin:@db1.dev.nyc1.freshdirect.com:1521:DBDEV01"/>
+				<set property="user" value="FDSTORE_PRDA"/>
+				<set property="password" value="FDSTORE_PRDA"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="cmsdatasource" interface="javax.sql.DataSource">
+		<invoke-factory service-id="hivemind.BuilderFactory">
+			<construct class="oracle.jdbc.pool.OracleConnectionPoolDataSource">
+				<set property="URL" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=vsrac1.nyc1.freshdirect.com)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=vsrac2.nyc1.freshdirect.com)(PORT=1521))(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=appdev.nyc.freshdirect.com)(FAILOVER_MODE=(TYPE=SELECT)(METHOD=BASIC)(RETRIES=180)(DELAY=5))))"/>
+				<set property="user" value="FDSTORE"/>
+				<set property="password" value="FDSTORE"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+-->
+
+
+	<!--
+		CACHE CONFIGURATIONS
+	-->
+
+
+				
+
+
+<!-- Store cache set to unlimited size with infinite expiration: cache all store data in memory -->
+<!-- OSCache definition --> 
+<!--
+  	<service-point id="StoreCache" interface="com.freshdirect.framework.cache.CacheI">
+		<invoke-factory>
+			<construct class="com.freshdirect.framework.cache.OSCache" service-id-property="name">
+				<set property="cacheType" value="com.opensymphony.oscache.base.algorithm.UnlimitedCache"/>
+				<set property="lruCacheSize" value="-1"/>
+				<set property="lruCacheTimeout" value="-1"/>
+			</construct>
+		</invoke-factory>
+	</service-point>  
+-->	
+<!-- EHCache definition --> 
+<!-- 	<service-point id="StoreCache" interface="com.freshdirect.framework.cache.CacheI">
+		<invoke-factory>
+			<construct class="com.freshdirect.framework.cache.EHCache" service-id-property="cacheName">
+				<set property="lruCacheSize" value="10000"/>
+				<set property="timeToLiveSeconds" value="0"/>
+				<set property="timeToIdleSeconds" value="0"/>
+			</construct>
+		</invoke-factory>
+	</service-point>  -->
+
+<!-- SimpleCache definition --> 
+  	<service-point id="StoreCache" interface="com.freshdirect.framework.cache.CacheI">
+		<invoke-factory>
+			<construct class="com.freshdirect.framework.cache.SimpleCache" service-id-property="name">
+			</construct>
+		</invoke-factory>
+	</service-point>  
+
+
+	<service-point id="StoreCacheInterceptor" interface="org.aopalliance.intercept.MethodInterceptor">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.cache.ContentCacheMethodInterceptor">
+				<service>StoreCache</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+ 
+<!-- Store cache set to 10000 elements with 30 second expiration. Do not raise the expiration time above 30 seconds, 
+because otherwise the external modifications of the slide database won't get picked up in CMS in a timely manner. -->
+
+
+<!-- EHCache definition --> 
+<!-- <service-point id="SlideCache" interface="com.freshdirect.framework.cache.CacheI">
+		<invoke-factory>
+			<construct class="com.freshdirect.framework.cache.EHCache" service-id-property="cacheName">
+				<set property="lruCacheSize" value="10000"/>
+				<set property="timeToLiveSeconds" value="30"/>
+				<set property="timeToIdleSeconds" value="30"/>
+			</construct>
+		</invoke-factory>
+	</service-point>  -->
+
+<!-- SimpleLruCache definition --> 
+   	<service-point id="SlideCache" interface="com.freshdirect.framework.cache.CacheI">
+	<invoke-factory>
+			<construct class="com.freshdirect.framework.cache.SimpleLruCache" service-id-property="name">
+				<set property="capacity" value="1000"/>
+				<set property="timeout" value="30"/>
+			</construct>
+		</invoke-factory>
+	</service-point>  
+
+
+	<service-point id="SlideCacheInterceptor" interface="org.aopalliance.intercept.MethodInterceptor">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.cache.ContentCacheMethodInterceptor">
+				<service>SlideCache</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<!--
+		CONTENT TYPE SERVICES
+	-->
+	
+	<service-point id="StoreDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.db.DbTypeService" initialize-method="initialize">
+				<set-service property="dataSource" service-id="cmsdatasource" />
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="FormDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlTypeService">
+				<string>classpath:/com/freshdirect/cms/resource/CMSFormDef.xml</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="CmsQueryDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlTypeService">
+				<string>classpath:/com/freshdirect/cms/application/service/query/CmsQueryDef.xml</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<!--
+		STORE CONTENT SERVICE
+	-->
+
+	<service-point id="StoreContent" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.db.DbContentService" service-id-property="name">
+				<set-service property="contentTypeService" service-id="StoreDef" />
+				<set-service property="dataSource" service-id="cmsdatasource" />
+			</construct>
+		</invoke-factory>
+		
+		<interceptor service-id="hivemind.lib.MethodInterceptorFactory">
+			<impl object="service:StoreCacheInterceptor"/>
+		</interceptor>
+	</service-point>
+
+	<!--
+		MEDIA CONTENT SERVICE
+	-->
+
+	<service-point id="MediaService" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.media.MediaService" service-id-property="name">
+				<service>cmsdatasource</service>
+			</construct>
+		</invoke-factory>
+		
+		<interceptor service-id="hivemind.lib.MethodInterceptorFactory">
+			<impl object="service:SlideCacheInterceptor"/>
+		</interceptor>
+	</service-point>
+
+	<!--
+		CMS EXTRAS
+	-->
+
+	<service-point id="FormContent" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlContentService" service-id-property="name">
+				<service>FormDef</service>
+				<object>instance:com.freshdirect.cms.application.service.xml.FlexContentHandler</object>
+				<string>classpath:/com/freshdirect/cms/resource/FDForms.xml</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="CmsQueries" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlContentService" service-id-property="name">
+				<service>CmsQueryDef</service>
+				<object>instance:com.freshdirect.cms.application.service.xml.FlexContentHandler</object>
+				<string>classpath:/com/freshdirect/cms/application/service/query/CmsQueries.xml</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="DbQueryDecorator" interface="com.freshdirect.cms.application.service.ContentDecoratorI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.query.DbQueryDecorator">
+				<service>cmsdatasource</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	<contribution configuration-id="contentDecorators">
+		<service name="DbQueryDecorator"/>
+	</contribution>
+
+		
+	<service-point id="ResourceInfo" interface="com.freshdirect.cms.application.service.ResourceInfoServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.ResourceInfoService"/>
+		</invoke-factory>
+	</service-point>
+
+	<!--
+		DECORATORS
+	-->
+	
+	<service-point id="ContentDecorator" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.ContentDecoratorService">
+				<service>CompositeService</service>
+				<configuration>contentDecorators</configuration>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<configuration-point id="contentDecorators" schema-id="serviceList"/>
+	
+	<!--
+		COMPOSITE
+	-->
+	
+	<configuration-point id="composedServices" schema-id="serviceList"/>
+	<contribution configuration-id="composedServices">
+		<service name="StoreContent"/>
+		<service name="FormContent"/>
+		<service name="CmsQueries"/>
+		<service name="MediaService"/>
+	</contribution>
+
+	<service-point id="CompositeService" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.CompositeContentService" service-id-property="name">
+				<configuration>composedServices</configuration>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<!--
+		CHANGE TRACKING
+	-->
+
+	<service-point id="ChangeLog" interface="com.freshdirect.cms.changecontrol.ChangeLogServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.changecontrol.DbChangeLogService">
+				<service>cmsdatasource</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="ChangeTracker" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.changecontrol.ContentChangeTrackerService">
+				<service>ContentDecorator</service>
+				<service>ChangeLog</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<!--
+		VALIDATION
+	-->
+	
+	<configuration-point id="contentValidators" schema-id="objectList"/>
+	<contribution configuration-id="contentValidators">
+		<Object value="instance:com.freshdirect.cms.validation.BasicValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.PrimaryHomeValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.StructureValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.UniqueContentKeyValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.RecipeChildNodeValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.ConfiguredProductValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.DateIntervalValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.SearchRelevancyScoreValidator"/>
+	</contribution>
+
+	<service-point id="Validator" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.validation.ValidatingContentService">
+				<service>ChangeTracker</service>
+				<configuration>contentValidators</configuration>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<!--
+		CORE
+	-->
+	
+	<service-point id="CmsManager" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.search.ContentIndexerService">
+				<service>Validator</service>
+				<service>com.freshdirect.cms.search.SearchService</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<!--
+		MEDIA, WEBDAV
+	-->
+	
+	<service-point id="MediaEventHandler" interface="com.freshdirect.cms.listeners.MediaEventHandlerI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.listeners.MediaEventHandler">
+				<set-service property="dataSource" service-id="cmsdatasource" />
+				<set property="autoAssociation" value="${cms.media.associate}"/>
+				<set property="bulkload" value="${cms.media.bulkload}"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="WebDavService" interface="com.freshdirect.cms.application.service.WebDavServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.WebDavService">
+				<set property="repositoryUrl" value="${cms.publish.repositoryUrl}" />
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+</module>
