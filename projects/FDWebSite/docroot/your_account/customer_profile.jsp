@@ -60,7 +60,7 @@ function _submit(p) {
 	<td colspan="10" class="text12">
     
 
-<% request.setAttribute(FDSurveyConstants.SURVEY,EnumSurveyType.CUSTOMER_PROFILE_SURVEY.getName());%>
+<% request.setAttribute(FDSurveyConstants.SURVEY,EnumSurveyType.CUSTOMER_PROFILE_SURVEY.getLabel());%>
 <%@ include file="/includes/your_account/i_customer_profile.jspf" %>
 	</td>
 </tr>

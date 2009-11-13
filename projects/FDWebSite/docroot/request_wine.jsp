@@ -15,6 +15,7 @@
 String successPage = "/request_wine.jsp?"+request.getQueryString();
 String redirectPage = "/login/login_popup.jsp?successPage=" + successPage;
 %>
+
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' redirectPage='<%=redirectPage%>'/>
 <% 
     FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -31,7 +32,7 @@ String redirectPage = "/login/login_popup.jsp?successPage=" + successPage;
 		if (!"thankyou".equalsIgnoreCase(request.getParameter("info"))) hasTaken = true;
 		submitted = true;
 	}
-	FDSurvey Usability = FDSurveyFactory.getInstance().getSurvey("Wine Request Feedback");
+	FDSurvey Usability = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.WINE_REQUEST, user);
 	
     List questions = Usability.getQuestions();
 	

@@ -19,6 +19,7 @@ public enum EnumSurveyType {
     ,MORNING_DELIVERY("MorningDelivery")
     ,ORGANIC_2("Organic2")
     ,USABILITY("Usability")
+    ,WINE_REQUEST("Wine Request Feedback")
     
     ;
     

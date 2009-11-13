@@ -1121,7 +1121,24 @@ public class FDSurveyFactory {
     }
     
 
+    /**
+     * User can't be null !
+     *  
+     * @param user
+     * @return
+     * @throws FDResourceException
+     */
+    public static FDSurveyResponse getCustomerProfileSurveyInfo(FDUserI user) throws FDResourceException {
+        return getCustomerProfileSurveyInfo(user.getIdentity(), extractServiceType(user));
+    }
     
+    /**
+     * user can be null!
+     * @param identity
+     * @param user
+     * @return
+     * @throws FDResourceException
+     */
     public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity, FDUserI user) throws FDResourceException {
         return getCustomerProfileSurveyInfo(identity, extractServiceType(user));
     }
