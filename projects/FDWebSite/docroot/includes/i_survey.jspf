@@ -1,6 +1,10 @@
-<link rel="stylesheet" href="/assets/css/customerprofile.css" type="text/css"><table border="0" cellspacing="1" cellpadding="0" width="675">
+<%@page import="com.freshdirect.fdstore.survey.FDSurvey,
+		com.freshdirect.fdstore.survey.FDSurveyFactory,
+		com.freshdirect.fdstore.survey.EnumSurveyType,
+		com.freshdirect.webapp.taglib.fdstore.FDSessionUser
+		"%><link rel="stylesheet" href="/assets/css/customerprofile.css" type="text/css"><table border="0" cellspacing="1" cellpadding="0" width="675">
 <%  
-FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()));
+FDSurvey Usability = FDSurveyFactory.getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()), FDSessionUser.getFDSessionUser(session));
 request.removeAttribute("Survey");
 	
     List questions = Usability.getQuestions();

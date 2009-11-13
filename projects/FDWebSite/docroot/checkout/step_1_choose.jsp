@@ -37,13 +37,13 @@ if (!yuzer.isSurveySkipped() && yuzer.getAdjustedValidOrderCount()==1 && yuzer.g
 
  if (!alreadyTookFirstSurvey && !alreadyTookSecondSurvey && !skippedSecondSurvey) {
 
- 		if (yuzer.getSelectedServiceType().equals(EnumServiceType.CORPORATE)) {
+        FDSurvey usability = FDSurveyFactory.getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY, yuzer);
+ 		if (usability == null) {
 			response.sendRedirect(response.encodeRedirectURL("/checkout/survey_cos.jsp?successPage=/checkout/step_1_choose.jsp"));
 		} else {
-            FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY);
-	        FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(yuzer.getIdentity());
-           int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(Usability,surveyResponse);
-           if(coverage<Usability.getAcceptableCoverage()) {
+	        FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(yuzer.getIdentity(), yuzer);
+           int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(usability,surveyResponse);
+           if(coverage<usability.getAcceptableCoverage()) {
            
         	    response.sendRedirect(response.encodeRedirectURL("/checkout/survey.jsp?successPage=/checkout/step_1_choose.jsp"));
                 return;

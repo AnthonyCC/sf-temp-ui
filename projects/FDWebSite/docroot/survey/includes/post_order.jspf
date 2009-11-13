@@ -27,7 +27,7 @@ if (submitted) {
    boolean showSurvey = !alreadyTookSecondSurvey  && !"skip_3".equalsIgnoreCase(surveyStatus) && !"FILL".equalsIgnoreCase(surveyStatus)   &   ((FDSessionUser)user).getDeliveredOrderCount()>2;
    FDSurvey survey =null;
    if(showSurvey) {
-        survey = FDSurveyCachedFactory.getSurvey(EnumSurveyType.POST_ORDER_SURVEY);
+        survey = FDSurveyFactory.getSurvey(EnumSurveyType.POST_ORDER_SURVEY, user);
         int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(survey,FDCustomerManager.getCustomerProfileSurveyInfo(user.getIdentity()));
         showSurvey=coverage<survey.getAcceptableCoverage()?true:false;
    }

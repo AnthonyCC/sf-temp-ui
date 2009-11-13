@@ -1,6 +1,5 @@
-
 <%@page import="com.freshdirect.fdstore.survey.FDSurvey"%>
-<%@page import="com.freshdirect.fdstore.survey.FDSurveyCachedFactory"%>
+<%@page import="com.freshdirect.fdstore.survey.FDSurveyFactory"%>
 <%@page import="com.freshdirect.fdstore.survey.EnumSurveyType"%>
 <%@page import="com.freshdirect.fdstore.survey.FDSurveyResponse"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
@@ -93,11 +92,11 @@
 	}
 </script>
 <% int quesCount = 1; 
+FDUserI _user = (FDUserI)session.getAttribute(SessionName.USER);
        String _survey_Name=request.getAttribute("Survey").toString();
-       FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()));
+       FDSurvey Usability = FDSurveyFactory.getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()), _user);
        request.removeAttribute("Survey");
-       FDUserI _user = (FDUserI)session.getAttribute(SessionName.USER);
-       FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(_user.getIdentity());
+       FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(_user.getIdentity(), _user);
        List questions = Usability.getQuestions();
        String questionPostFix=" (Choose one)";
        List previousAnswers=null;
