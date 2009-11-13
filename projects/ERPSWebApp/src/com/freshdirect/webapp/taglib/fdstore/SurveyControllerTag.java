@@ -15,7 +15,6 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -25,8 +24,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurvey;
-import com.freshdirect.fdstore.survey.FDSurveyCachedFactory;
-import com.freshdirect.fdstore.survey.FDSurveyConstants;
+import com.freshdirect.fdstore.survey.FDSurveyFactory;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -89,7 +87,7 @@ public class SurveyControllerTag extends com.freshdirect.framework.webapp.BodyTa
 					//form.validate(result);
 					if (result.isSuccess()) {
 						//FDSurveyResponse survey = form.getFormValues(user.getIdentity(), "second_order_survey");
-						FDSurvey custProfile = FDSurveyCachedFactory.getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY);
+						FDSurvey custProfile = FDSurveyFactory.getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY, user);
                          FDSurveyResponse survey=SurveyHelper.getSurveyResponse(user.getIdentity(), custProfile, result, request.getParameterMap());
 						boolean promoAvailable = PromotionFactory.getInstance().getPromotion("2ND_ORDER_SURVEY") != null;
 						BigInteger id = new BigInteger(user.getIdentity().getFDCustomerPK());
