@@ -84,9 +84,6 @@
 	String ym_hdr			= (String) request.getAttribute("ymal_header"); // [optional]
 	Recommendations recmnd = (Recommendations) request.getAttribute("recommendations"); // [optional]
 
-	// [APPREQ-689] product ID -> recommender mapping (SmartYMAL) otherwise null
-	final Map<String,String> prd2recommendation = (Map<String,String>) request.getAttribute("map_prd2recommender");
-
 	FDUserI fd_user = (FDUserI) session.getAttribute(SessionName.USER);
 
 	if (variant == null) {
@@ -177,12 +174,7 @@
 		}
 %>
 					<input type="hidden" name="base_url" value="<%= base_url %>">
-					<input type="hidden" name="rec_product_ids" value="<%= StringEscapeUtils.escapeHtml(Recommendations.getSerializedProducts(r_prods) ) %>">
-					<input type="hidden" name="rec_current_node" value="<%= recmnd != null && recmnd.getSessionInput() != null && recmnd.getSessionInput().getCurrentNode() != null ? 
-							recmnd.getSessionInput().getCurrentNode().getContentKey().getId() : "(null)" %>">
-					<input type="hidden" name="rec_ymal_source" value="<%= recmnd != null && recmnd.getSessionInput() != null && recmnd.getSessionInput().getCurrentNode() != null ? 
-							recmnd.getSessionInput().getCurrentNode().getContentKey().getId() : "(null)" %>">
-
+					<input type="hidden" name="recs_cached_id" value="<%= recmnd.getRequestId() %>">
 
 					<!-- start of ymal products external table -->
 					<table class="ymal" cellspacing="0" cellpadding="0">
@@ -206,7 +198,9 @@
 			ProductLabeling pl = new ProductLabeling(fd_user, product, recmnd != null ? recmnd.getVariant().getHideBursts() : null);
 			
 			// TRKD := recommender ID (if recommender is Smart YMAL) otherwise burst code
-			final String trkd = prd2recommendation != null ? prd2recommendation.get(product.getContentKey().getId()) : pl.getTrackingCode();
+			final String trkd = recmnd.getRecommenderIdForProduct(product.getContentName()) != null
+					? recmnd.getRecommenderIdForProduct(product.getContentName())
+					: pl.getTrackingCode();
 
 			String actionURI = FDURLUtil.getProductURI(	product, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), trkd, rank,
 					recmnd != null ? recmnd.getImpressionId(product) : null, 

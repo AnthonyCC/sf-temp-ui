@@ -53,44 +53,6 @@ public class StoreRecommendationTag extends BodyTagSupport {
 			out.append("<input type=\"hidden\" name=\"trk\" value=\"");
 			out.append(StringEscapeUtils.escapeHtml(recommendations.getVariant().getSiteFeature().getName().toLowerCase()));
 			out.append("\">\n");
-
-
-			// serialize recommendation
-			out.append("<input type=\"hidden\" name=\"rec_product_ids\" value=\"");
-			out.append(StringEscapeUtils.escapeHtml(recommendations.serializeRecommendation()));
-			out.append("\">\n");
-
-
-			// current product ID
-			out.append("<input type=\"hidden\" name=\"rec_current_node\" value=\"");
-			if (recommendations.getSessionInput() != null && recommendations.getSessionInput().getCurrentNode() != null) {
-				out.append(recommendations.getSessionInput().getCurrentNode().getContentKey().getId());
-			} else {
-				out.append("(null)");
-			}
-			out.append("\">\n");
-
-
-			// YMAL source ID
-			out.append("<input type=\"hidden\" name=\"rec_ymal_source\" value=\"");
-			if (recommendations.getSessionInput() != null && recommendations.getSessionInput().getCurrentNode() != null) {
-				out.append(recommendations.getSessionInput().getCurrentNode().getContentKey().getId());
-			} else {
-				out.append("(null)");
-			}
-			out.append("\">\n");
-
-
-			// refreshable flag
-			out.append("<input type=\"hidden\" name=\"rec_refreshable\" value=\"");
-			out.append(Boolean.toString(recommendations.isRefreshable()));
-			out.append("\">\n");
-
-
-			// rec_smart_savings flag
-			out.append("<input type=\"hidden\" name=\"rec_smart_savings\" value=\"");
-			out.append(Boolean.toString(recommendations.isSmartSavings()));
-			out.append("\">\n");
 		} catch (IOException e) {
 		}
 

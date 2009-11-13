@@ -1,8 +1,6 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -11,10 +9,8 @@ import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.smartstore.service.VariantRegistry;
 import com.freshdirect.smartstore.ymal.YmalUtil;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -40,56 +36,57 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
 	}
 
 	protected Recommendations getRecommendations() throws FDResourceException, InvalidContentKeyException {
-        HttpSession session = pageContext.getSession();
-
         Recommendations results = null;
+		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
         if (errorOccurred) {
-        	ServletRequest request = pageContext.getRequest();
-    		// reconstruct recommendations
-    		String variantId = request.getParameter("variant");
-    		String siteFeatureName = request.getParameter("siteFeature");
-
-    		if (variantId != null && siteFeatureName != null) {
-    			Variant var = VariantRegistry.getInstance().getService(variantId);   			
-    			if (request.getParameter("rec_product_ids") != null)
-    				results = new Recommendations(var,
-    						request.getParameter("rec_product_ids"),
-    						request.getParameter("rec_current_node"),
-    						request.getParameter("rec_ymal_source"),
-    						false, false); 
-    		}
+        	String recsCachedId = request.getParameter("recs_cached_id");
+			if (recsCachedId != null
+					&& recsCachedId.equals(request.getSession().getAttribute("recs_cached_id"))) {
+				results = (Recommendations) request.getSession().getAttribute("recs_cached");
+			}
         }
 
         // get recommendations by recommender
         if (results == null) {
-			FDStoreRecommender recommender = FDStoreRecommender.getInstance();
-			
-			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-			
-			// setup an input
-			FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-			SessionInput inp = new SessionInput(user);
-			initFromSession(inp);
-			if (source != null) {
-				inp.setYmalSource(source);
-				if (source instanceof ProductModel)
-					inp.setCurrentNode(source);
-			} else
-				inp.setYmalSource(YmalUtil.resolveYmalSource(user, null, request));
-			
-			if (inp.getCurrentNode() == null)
-				inp.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
-
-			inp.setMaxRecommendations(itemCount);
-
-
-			results = recommender.getRecommendations(EnumSiteFeature.YMAL, user, inp);
-			persistToSession(results);
+			results = extractRecommendations();
+            request.getSession().setAttribute("recs_cached_id", results.getRequestId());
+			request.getSession().setAttribute("recs_cached", results);
         }
 
         return results;
     }
+
+	private Recommendations extractRecommendations()
+			throws FDResourceException {
+		Recommendations results;
+		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+		
+		// setup an input
+		FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+		SessionInput inp = new SessionInput(user);
+		initFromSession(inp);
+		if (source != null) {
+			inp.setYmalSource(source);
+			if (source instanceof ProductModel)
+				inp.setCurrentNode(source);
+		} else
+			inp.setYmalSource(YmalUtil.resolveYmalSource(user, null, request));
+		
+		if (inp.getCurrentNode() == null)
+			inp.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
+
+		inp.setMaxRecommendations(itemCount);
+
+
+		results = FDStoreRecommender.getInstance().getRecommendations(EnumSiteFeature.YMAL, user, inp);
+		persistToSession(results);
+		if (results.getAllProducts().size() > 0) {
+	        Impression imp = Impression.get(user, request, facility);
+	        results.setRequestId(imp.getRequestId());
+		}
+		return results;
+	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
         protected String getResultType() {

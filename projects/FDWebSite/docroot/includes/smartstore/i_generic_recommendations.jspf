@@ -93,9 +93,6 @@
 			confContext.setFDUser( pip_u );
 			boolean hasAnyItemAddable = false;
 			
-			// [APPREQ-689] product ID -> recommender mapping (SmartYMAL) otherwise null
-			final Map<String,String> prd2recommendation = (Map<String,String>) request.getAttribute("map_prd2recommender");
-
 			// List<ProductImpression> impressions : configured products enlisted in 'Your Favourites' table
 			List<ProductImpression> impressions = new ArrayList<ProductImpression>();
 	
@@ -226,7 +223,9 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 										// pl.setHideYourFave(true);
 
 										// TRKD := recommender ID (if recommender is Smart YMAL) otherwise burst code
-										String trkd = prd2recommendation != null ? prd2recommendation.get(product.getContentKey().getId()) : pl.getTrackingCode();
+										String trkd = recommendations.getRecommenderIdForProduct(product.getContentName()) != null
+												? recommendations.getRecommenderIdForProduct(product.getContentName())
+												: pl.getTrackingCode();
 										String actionURI = FDURLUtil.getProductURI(
 												product, 
 												recommendations.getVariant().getId(), 

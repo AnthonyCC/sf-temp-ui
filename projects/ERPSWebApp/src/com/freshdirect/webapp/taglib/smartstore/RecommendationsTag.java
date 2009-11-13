@@ -7,18 +7,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Category;
-
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.smartstore.impl.AbstractRecommendationService;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -26,8 +22,6 @@ import com.freshdirect.webapp.util.FDEventUtil;
 
 public abstract class RecommendationsTag extends AbstractGetterTag {
 	private static final long serialVersionUID = -7592561069328056899L;
-
-	private static final Category LOGGER = LoggerFactory.getInstance(RecommendationsTag.class);
 
 	// maximum number of recommended items
     protected int     itemCount     = 5;
@@ -118,16 +112,14 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
             String featureImpId = imp.logFeatureImpression(parentFeatureImpressionId, parentVariantId, r);
 
             for (ProductModel p : r.getProducts()) {
-                String imp_id = imp.logProduct(featureImpId, rank, p.getContentKey());
+                String imp_id = imp.logProduct(featureImpId, rank, p.getContentKey(),
+                		r.getRecommenderIdForProduct(p.getContentName()),
+                		r.getRecommenderStrategyIdForProduct(p.getContentName()));
                 map.put(p.getContentKey(), imp_id);
                 rank++;
             }
             r.addImpressionIds(map);
         }
-        
-        AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.set(null);
-        AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.set(null);
-		LOGGER.debug("[recServiceAudit] Cleanup.");
     }
 
     /**

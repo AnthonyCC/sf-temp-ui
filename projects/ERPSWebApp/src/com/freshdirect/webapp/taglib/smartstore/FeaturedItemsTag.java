@@ -5,7 +5,7 @@ package com.freshdirect.webapp.taglib.smartstore;
 
 import java.util.Set;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -42,8 +42,8 @@ public class FeaturedItemsTag extends RecommendationsTag {
         if (nodeModel==null) {
             throw new RuntimeException("CurrentNode not set!");
         }
-        HttpSession session = pageContext.getSession();
-        FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+        FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 
         FDStoreRecommender recommender = FDStoreRecommender.getInstance();
         
@@ -55,6 +55,10 @@ public class FeaturedItemsTag extends RecommendationsTag {
         
         Recommendations results = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS, user,
         		si, shoppingCart != null ? shoppingCart : FDStoreRecommender.getShoppingCartContentKeys(user));
+		if (results.getAllProducts().size() > 0) {
+	        Impression imp = Impression.get(user, request, facility);
+	        results.setRequestId(imp.getRequestId());
+		}
         persistToSession(results);
         return results;
     }

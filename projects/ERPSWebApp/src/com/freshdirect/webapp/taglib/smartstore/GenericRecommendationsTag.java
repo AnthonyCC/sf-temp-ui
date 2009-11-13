@@ -2,7 +2,6 @@ package com.freshdirect.webapp.taglib.smartstore;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -20,7 +19,6 @@ import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
-import com.freshdirect.smartstore.impl.AbstractRecommendationService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
@@ -88,23 +86,7 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 		}
 		return r;
     }
-
-
-    /**
-     * Get overridden variant ID from request and store in session
-     * 
-     * @return
-     */
-    protected String getOverriddenVariantID() {
-        HttpSession session = pageContext.getSession();
-		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-
-		String overriddenVariantID = request.getParameter("SmartStore.VariantID");
-		if (overriddenVariantID != null)
-		    session.setAttribute("SmartStore.VariantID", overriddenVariantID);
-		return overriddenVariantID;
-    }
-    
+   
     protected Recommendations getRecommendations() throws FDResourceException, InvalidContentKeyException {
     	
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -131,20 +113,6 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 			} else if ("prev".equalsIgnoreCase(request.getParameter("page"))) {
 				recommendations.pageBackward();
 			}
-			
-			try {
-				// [APPREQ-689] pass product to recommendation map to request that it will be reused in i_ymal_box.jsp
-				
-				if (AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get() != null) {
-					Map<String,String> recServiceAudit = (Map<String,String>) AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();
-					pageContext.getRequest().setAttribute("map_prd2recommender", recServiceAudit);
-					LOGGER.debug("[recServiceAudit] Pass to request: " + recServiceAudit);
-				} else {
-					LOGGER.debug("[recServiceAudit] Nothing to pass");
-				}
-			} catch(NullPointerException npe) {
-				LOGGER.warn("NPE caught!! Recommendations has no recommender or variant!");
-			}
 		}
 		
 		if (recommendations == null){
@@ -162,8 +130,6 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 	private Recommendations extractRecommendations( HttpSession session, EnumSiteFeature sf ) throws FDResourceException {
 		
 		Recommendations recommendations;
-		FDStoreRecommender recommender = FDStoreRecommender.getInstance();
-
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
@@ -173,7 +139,11 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(itemCount);
 
-		recommendations = recommender.getRecommendations(sf, user, input);
+		recommendations = FDStoreRecommender.getInstance().getRecommendations(sf, user, input);
+		if (recommendations.getAllProducts().size() > 0) {
+	        Impression imp = Impression.get(user, request, facility);
+	        recommendations.setRequestId(imp.getRequestId());
+		}
 		
 		return recommendations;
 	}

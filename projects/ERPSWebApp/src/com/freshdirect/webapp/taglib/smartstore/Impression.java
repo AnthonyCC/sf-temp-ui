@@ -20,34 +20,27 @@ import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
-import com.freshdirect.smartstore.impl.AbstractRecommendationService;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class Impression {
 
     final static Logger LOGGER    = Logger.getLogger(Impression.class);
-    
-    final Map           recServiceAudit;
-    
-    final Map           recStratServiceAudit;
 
-    final String        requestId;
-    
-    final String        facility;
+    private final String requestId;
 
-    int                 lastId    = 0;
+	private final String facility;
 
-    int                 tabId     = 0;
+	private int lastId = 0;
 
-    int                 featureId = 0;
+	private int tabId = 0;
+
+	private int featureId = 0;
     
 
     Impression(FDUserI user, HttpServletRequest httpServletRequest, String facility) {
         this.requestId = SessionImpressionLog.getPageId();
 
-        this.recServiceAudit = (Map) AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();
-        this.recStratServiceAudit = (Map) AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.get();
         this.facility = facility;
 
         FDIdentity identity = user.getIdentity();
@@ -64,8 +57,6 @@ public class Impression {
 
     Impression(String requestId, String userId, String uri, String sessionId, String erpCustomerId, String queryString, Map serviceAudit, Map stratServiceAudit, String facility) {
         this.requestId = requestId;
-        this.recServiceAudit = serviceAudit;
-        this.recStratServiceAudit = stratServiceAudit;
         this.facility = facility;
         init(userId, uri, sessionId, erpCustomerId, queryString, facility);
     }
@@ -152,25 +143,17 @@ public class Impression {
      * @param key
      * @return
      */
-    public String logProduct(String featureImpressionId, int rank, ContentKey key) {
+    public String logProduct(String featureImpressionId, int rank, ContentKey key, String recommenderId, String recommenderStratId) {
         lastId++;
         String impId = filter(requestId + "_p" + lastId);
         String contentId = key.getId();
+        recommenderId = recommenderId != null ? recommenderId : "";
+        recommenderStratId = recommenderStratId != null ? recommenderStratId : "";
         ImpressionLogger.PRODUCT.logEvent(impId + ',' + featureImpressionId + ',' + contentId + ',' + rank + ','
-                + getRecommenderId(contentId)+',' + getRecommenderStratId(contentId));
+                + recommenderId+',' + recommenderStratId);
         return impId;
     }
 
-    private Object getRecommenderId(String contentId) {
-        Object res = (recServiceAudit != null ? recServiceAudit.get(contentId) : null);
-        return res!=null ? res : "";
-    }
-
-    private Object getRecommenderStratId(String contentId) {
-        Object res = (recStratServiceAudit  != null ? recStratServiceAudit.get(contentId) : null);
-        return res!=null ? res : "";
-    }
-    
     public String logTab(String featureImpressionId, int number, String tabName) {
         tabId++;
         String impId = filter(requestId + "_t" + tabId);
@@ -189,4 +172,12 @@ public class Impression {
     private static String filter(String value) {
         return value != null ? (value.replace('\n', ' ').replace('\r', ' ').replace(',', ' ')) : "";
     }
+    
+    public String getRequestId() {
+		return requestId;
+	}
+    
+    public String getFacility() {
+		return facility;
+	}
 }
