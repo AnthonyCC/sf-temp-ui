@@ -3795,7 +3795,6 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	</tag>
 	</tag>        
     <tag>
 		<name>CreateNewGCUser</name>
