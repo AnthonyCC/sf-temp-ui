@@ -7,13 +7,14 @@ public class EnumTransactionSource implements java.io.Serializable {
 	 public final static EnumTransactionSource SYSTEM			= new EnumTransactionSource(1, "SYS", "System");
      public final static EnumTransactionSource CUSTOMER_REP		= new EnumTransactionSource(2, "CSR", "Telephone");
      public final static EnumTransactionSource ADMINISTRATOR	= new EnumTransactionSource(3, "ADM", "Administrator");
-     public final static EnumTransactionSource TRANSPORTATION = new EnumTransactionSource(4, "TRA", "Transportation");
+     public final static EnumTransactionSource TRANSPORTATION   = new EnumTransactionSource(4, "TRA", "Transportation");
+     public final static EnumTransactionSource IPHONE_WEBSITE   = new EnumTransactionSource(5, "IPW", "iPhone");
 
-	private EnumTransactionSource(int id, String code, String name) {
-        this.id = id;
-        this.code = code;
-        this.name = name;
-    }
+     private EnumTransactionSource(int id, String code, String name) {
+    	 this.id = id;
+    	 this.code = code;
+    	 this.name = name;
+     }
 
     public String getCode() {
         return this.code;
@@ -33,6 +34,8 @@ public class EnumTransactionSource implements java.io.Serializable {
 				return CUSTOMER_REP;
 			case 3:
 				return ADMINISTRATOR;
+			case 4:
+				return IPHONE_WEBSITE;
 			default:
 				return null;
 		}
@@ -48,6 +51,8 @@ public class EnumTransactionSource implements java.io.Serializable {
 			return ADMINISTRATOR;
 		}else if(TRANSPORTATION.getCode().equalsIgnoreCase(code)){
 			return TRANSPORTATION;
+		}else if(IPHONE_WEBSITE.getCode().equalsIgnoreCase(code)){
+			return IPHONE_WEBSITE;
 		}else{
 			try {
 				return getTransactionSource( Integer.parseInt(code) );
