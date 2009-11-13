@@ -33,6 +33,8 @@ public class Impression {
     final Map           recStratServiceAudit;
 
     final String        requestId;
+    
+    final String        facility;
 
     int                 lastId    = 0;
 
@@ -41,11 +43,12 @@ public class Impression {
     int                 featureId = 0;
     
 
-    Impression(FDUserI user, HttpServletRequest httpServletRequest) {
+    Impression(FDUserI user, HttpServletRequest httpServletRequest, String facility) {
         this.requestId = SessionImpressionLog.getPageId();
 
         this.recServiceAudit = (Map) AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();
         this.recStratServiceAudit = (Map) AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.get();
+        this.facility = facility;
 
         FDIdentity identity = user.getIdentity();
 
@@ -56,19 +59,20 @@ public class Impression {
         
         String queryString = httpServletRequest.getQueryString();
         
-        init(user.getUserId(), uri, sessionId, erpCustomerId, queryString);
+        init(user.getUserId(), uri, sessionId, erpCustomerId, queryString, facility);
     }
 
-    Impression(String requestId, String userId, String uri, String sessionId, String erpCustomerId, String queryString, Map serviceAudit, Map stratServiceAudit) {
+    Impression(String requestId, String userId, String uri, String sessionId, String erpCustomerId, String queryString, Map serviceAudit, Map stratServiceAudit, String facility) {
         this.requestId = requestId;
         this.recServiceAudit = serviceAudit;
         this.recStratServiceAudit = stratServiceAudit;
-        init(userId, uri, sessionId, erpCustomerId, queryString);
+        this.facility = facility;
+        init(userId, uri, sessionId, erpCustomerId, queryString, facility);
     }
     
-    private void init(String userId, String uri, String sessionId, String erpCustomerId, String queryString) {
+    private void init(String userId, String uri, String sessionId, String erpCustomerId, String queryString, String facility) {
         String message = requestId + "," + createTimestamp() + "," + filter(userId) + ',' + filter(sessionId) + ',' + erpCustomerId + ',' + filter(uri) + ','
-                + filter(queryString);
+                + filter(queryString) + ',' + filter(facility);
         ImpressionLogger.REQUEST.logEvent(message);
     }
     
@@ -83,10 +87,10 @@ public class Impression {
      * @param request
      * @return
      */
-    public static Impression get(FDUserI user, HttpServletRequest request) {
+    public static Impression get(FDUserI user, HttpServletRequest request, String facility) {
         Impression imp = (Impression) request.getAttribute(SessionName.IMPRESSION);
         if (imp == null) {
-            imp = new Impression(user, request);
+            imp = new Impression(user, request, facility);
             request.setAttribute(SessionName.IMPRESSION, imp);
         }
         return imp;

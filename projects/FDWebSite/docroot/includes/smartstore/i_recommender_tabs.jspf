@@ -29,7 +29,7 @@
 		return;
 	}
 %>
-<fd:PIPTab id="tab" maxTabs="3" maxRecommendations="5">
+<fd:PIPTab id="tab" maxTabs="3" maxRecommendations="5" facility="<%= smartStoreFacility %>">
 	<% 
 		final int numTabs = tab.size();
 		
@@ -177,6 +177,7 @@
 				var loadingMessage = "<br/><br/><br/><br/><p class=\"tab_text_simple\">Refreshing, please wait...</p><br/><br/><br/><br/>";
 				var errorMessage = "<br/><br/><br/><br/><p class=\"tab_text_simple\">Sorry, we weren't able to get recommendations.<br/><a href=\"/unsupported.jsp\" onClick=\"window.location.reload(false); return false;\">Click here</a> to refresh with new products. </p><br/><br/><br/><br/>";
 				var loadingLink = "<span class=\"text13bold\" style=\"color: #875087; \">Refreshing...</span>";
+				var smartStoreFacility = "<%= smartStoreFacility %>";
 
 				var prezFormURI = '<%=response.encodeURL(request.getRequestURL().toString().replaceFirst("^[^:]*://[^/]*/", "/")) %>';
 
@@ -238,6 +239,7 @@
 							'&siteFeature='+PIP.features[tabId]+
 							'&formUri='+prezFormURI+'&impId='+PIP.impressionIds[tabPos] +
 							'&pImpId='+PIP.parentImpressionId+
+							'&facility='+smartStoreFacility+
 							(isRefresh?'&refresh=true':'');
 						return uri;
 					},

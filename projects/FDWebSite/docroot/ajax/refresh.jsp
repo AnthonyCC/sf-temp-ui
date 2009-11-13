@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" import="com.freshdirect.webapp.taglib.smartstore.Impression,java.util.Map,
 java.util.Iterator,com.freshdirect.smartstore.RecommendationService,com.freshdirect.framework.webapp.ActionResult,
 com.freshdirect.fdstore.customer.FDUserI,com.freshdirect.smartstore.fdstore.SmartStoreUtil,com.freshdirect.fdstore.util.EnumSiteFeature,
-com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+com.freshdirect.webapp.taglib.fdstore.SessionName,com.freshdirect.smartstore.Variant"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 
 <%--
@@ -59,6 +59,7 @@ com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 		if ( session.isNew() ) {	// session timeout
 			response.setStatus(HttpServletResponse.SC_RESET_CONTENT);
 		} else {
+			String smartStoreFacility = request.getParameter("facility");
 			%><%@ include file='/includes/smartstore/i_generic_recommendations.jspf' %><%
 		}
 	}

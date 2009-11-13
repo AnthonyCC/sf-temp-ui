@@ -84,6 +84,7 @@
 <!-- ============ Cart & tabs ============ -->
 <!-- ===================================== -->
 
+<% String smartStoreFacility = "quickshop"; %>
 <%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
 
 <BR>

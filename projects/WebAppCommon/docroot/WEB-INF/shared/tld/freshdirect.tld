@@ -3063,6 +3063,11 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>facility</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>itemCount</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -3105,6 +3110,11 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>facility</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>itemCount</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -3136,6 +3146,11 @@
 			<name>id</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>facility</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>source</name>
@@ -3528,6 +3543,11 @@
 			<name>id</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>facility</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>maxTabs</name>

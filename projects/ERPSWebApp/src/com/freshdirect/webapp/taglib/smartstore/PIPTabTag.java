@@ -35,6 +35,7 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 	
 	private int maxTabs = 3;
 	private int maxRecommendations = 5;
+	private String facility;
 	
 	public int getMaxTabs() {
 		return maxTabs;
@@ -48,6 +49,10 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 	}	
 	public void setMaxRecommendations( int maxRecommendations ) {
 		this.maxRecommendations = maxRecommendations;
+	}
+	
+	public void setFacility(String facility) {
+		this.facility = facility;
 	}
 
 	private TabRecommendation tabs;
@@ -98,7 +103,7 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 		}
 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-                Impression imp = Impression.get(user, request);
+                Impression imp = Impression.get(user, request, facility);
 		String impressionId = imp.logFeatureImpression(null, null, tabs.getTabVariant(), 
 		        input.getCategory(), input.getCurrentNode(), input.getYmalSource());
 		tabs.setParentImpressionId(impressionId);

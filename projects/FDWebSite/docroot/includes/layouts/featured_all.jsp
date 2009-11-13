@@ -84,7 +84,7 @@
 
 <%-- FEATURED ITEMS DISPLAY START --%>
 
-<fd:FeaturedItemsRecommendations id="recommendations"  currentNode="<%= currentFolder %>" itemCount="4"><%
+<fd:FeaturedItemsRecommendations facility="cat_feat_items" id="recommendations"  currentNode="<%= currentFolder %>" itemCount="4"><%
 
 	if (recommendations != null && recommendations.getProducts().size() > 0) {
 		

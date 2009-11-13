@@ -86,7 +86,7 @@
 		
 		final int maxItems = session.getAttribute("quickShop") == null ? 5 : 4;
 %>
-<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>" itemCount="<%=maxItems%>">
+<fd:GenericRecommendations id="recommendations" facility="<%= smartStoreFacility %>" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>" cacheId="<%= parentImpressionId %>" itemCount="<%=maxItems%>">
 		<% 		
 		    isRendered = true;
 			ConfigurationContext confContext = new ConfigurationContext();

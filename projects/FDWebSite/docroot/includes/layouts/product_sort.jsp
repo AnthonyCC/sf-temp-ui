@@ -100,7 +100,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 	  	tdwidth=96; 
 		showRelatedRatingImage = true; 
     } 
-%><fd:FeaturedItemsRecommendations id="recommendations"  currentNode="<%= currentFolder %>" itemCount="4"><%
+%><fd:FeaturedItemsRecommendations id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="4"><%
 		if (recommendations != null && recommendations.getProducts().size() > 0) {
 				
 				request.setAttribute("recommendationsRendered","true");

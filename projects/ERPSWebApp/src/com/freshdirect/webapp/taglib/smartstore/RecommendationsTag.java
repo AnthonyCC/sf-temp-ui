@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +46,8 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
     
     protected String parentVariantId;
     
+    protected String facility;
+    
     protected abstract Recommendations getRecommendations() throws FDResourceException, InvalidContentKeyException;
 
     public void setItemCount(int cnt) {
@@ -71,6 +72,10 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
     public void setErrorOccurred(boolean flag) {
         this.errorOccurred = flag;
     }
+    
+    public void setFacility(String facility) {
+		this.facility = facility;
+	}
     
     protected void persistToSession(Recommendations r) {
         Map<String, List<ContentKey>> previousRecommendations = r.getSessionInput().getPreviousRecommendations();
@@ -106,7 +111,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
 
 
     	if (ImpressionLogger.isGlobalEnabled()) {
-            Impression imp = Impression.get(user, (HttpServletRequest) pageContext.getRequest());
+            Impression imp = Impression.get(user, (HttpServletRequest) pageContext.getRequest(), facility);
             
             int rank = 1;
             Map<ContentKey,String> map = new HashMap<ContentKey,String>();

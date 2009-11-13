@@ -138,7 +138,7 @@ if (currentCategory != null) {
 	// Favorite Products
 	//
 %>
-<fd:FeaturedItemsRecommendations id="recommendations"  currentNode="<%= currentFolder %>" itemCount="5"><%
+<fd:FeaturedItemsRecommendations id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="5"><%
 	if (recommendations != null && recommendations.getProducts().size() > 0) {
 		request.setAttribute("recommendationsRendered","true");
 	

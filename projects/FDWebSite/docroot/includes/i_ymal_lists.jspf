@@ -27,7 +27,7 @@
 	FDUserI ymal_user = (FDUserI) session.getAttribute(SessionName.USER);
 %>
 <fd:YmalContext id="ymalSource">
-<fd:YMALRecommendations id="recommendations" source="<%= ymalSource %>" errorOccurred="<%=!ymal_result.isSuccess()%>"><%
+<fd:YMALRecommendations id="recommendations" facility="ymal" source="<%= ymalSource %>" errorOccurred="<%=!ymal_result.isSuccess()%>"><%
 	List relatedProducts = recommendations.getProducts();
 	List relatedRecipes = ymalSource.getYmalRecipes();
 	List relatedCategories = ymalSource.getYmalCategories();

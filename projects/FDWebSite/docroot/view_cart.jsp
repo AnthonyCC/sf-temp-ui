@@ -118,6 +118,7 @@ StringBuffer buffer = new StringBuffer(
 <!-- ============ Cart & tabs ============ -->
 <!-- ===================================== -->
 
+<% String smartStoreFacility = "view_cart"; %>
 <%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
 
 <BR>

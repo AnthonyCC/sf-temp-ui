@@ -337,7 +337,7 @@ p.fi{margin:20px 0px;}
 	</form>
 	<% if (category != null) { %>
 	<p class="fi">
-	<fd:FeaturedItemsRecommendations id="recommendations"
+	<fd:FeaturedItemsRecommendations id="recommendations" facility="cat_feat_items_test"  
 			currentNode="<%= category %>" itemCount="<%= i_noOfItems %>">
 		<%
 			if (recommendations.getProducts().size() > 0) {
