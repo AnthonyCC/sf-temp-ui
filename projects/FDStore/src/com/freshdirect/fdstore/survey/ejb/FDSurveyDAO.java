@@ -6,8 +6,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,21 +15,7 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.referral.EnumReferralProgramStatus;
-import com.freshdirect.fdstore.referral.EnumReferralStatus;
-import com.freshdirect.fdstore.referral.FDReferralProgramModel;
-import com.freshdirect.fdstore.referral.FDReferralReportLine;
-import com.freshdirect.fdstore.referral.ReferralCampaign;
-import com.freshdirect.fdstore.referral.ReferralChannel;
-import com.freshdirect.fdstore.referral.ReferralHistory;
-import com.freshdirect.fdstore.referral.ReferralObjective;
-import com.freshdirect.fdstore.referral.ReferralPartner;
-import com.freshdirect.fdstore.referral.ReferralProgram;
-import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
-import com.freshdirect.fdstore.referral.ReferralSearchCriteria;
 import com.freshdirect.fdstore.survey.EnumFormDisplayType;
 import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.EnumViewDisplayType;
@@ -40,8 +24,6 @@ import com.freshdirect.fdstore.survey.FDSurveyAnswer;
 import com.freshdirect.fdstore.survey.FDSurveyQuestion;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.survey.SurveyKey;
-import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -65,24 +47,35 @@ public class FDSurveyDAO {
 	" cust.SURVEY_DEF sd, cust.SURVEY_QUESTION sq, cust.SURVEY_ANSWER sa, cust.SURVEY_SETUP ss, cust.SURVEY_QA sqa WHERE "+
     " sd.NAME=? AND sd.SERVICE_TYPE = ? AND sd.ID=ss.SURVEY AND ss.QUESTION=sq.ID AND ss.ACTIVE='Y' AND sq.ID=sqa.QUESTION AND sqa.ANSWER=sa.ID ORDER BY sd.NAME, ss.SEQUENCE, sqa.SEQUENCE ";
 	
-	public static FDSurvey loadSurvey(Connection conn, SurveyKey key) throws SQLException {
-		
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		FDSurvey survey =null;
-		try {			
-			ps = conn.prepareStatement(LOAD_ACTIVE_SURVEY);
-			ps.setString(1, key.getSurveyType().getLabel());
-			ps.setString(2, key.getUserType().name());
-			rs = ps.executeQuery();
-			 survey = getSurvey(rs, key);						
-		} finally {
-			if (rs != null) rs.close();
-			if (ps != null) ps.close();
-		}
-		
-		return survey;
-	}
+    public static FDSurvey loadSurvey(Connection conn, SurveyKey key) throws SQLException {
+        FDSurvey survey = loadSurvey(conn, key.getSurveyType(), key.getUserType().name(), key);
+        if (survey == null) {
+            survey = loadSurvey(conn, key.getSurveyType(), "ANY", key);
+        }
+        return survey;
+    }	
+
+    private static FDSurvey loadSurvey(Connection conn, EnumSurveyType type, String serviceType, SurveyKey key) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        FDSurvey survey = null;
+        try {
+            ps = conn.prepareStatement(LOAD_ACTIVE_SURVEY);
+            ps.setString(1, type.getLabel());
+            ps.setString(2, serviceType);
+            rs = ps.executeQuery();
+            survey = getSurvey(rs, key);
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (ps != null) {
+                ps.close();
+            }
+        }
+
+        return survey;
+    }	
 	
 	/*private static final String GET_SURVEY_RESPONSE="SELECT sd.SURVEY_ID, sd.QUESTION, sd.ANSWER FROM cust.SURVEYDATA sd "+
 	" WHERE survey_id IN "+

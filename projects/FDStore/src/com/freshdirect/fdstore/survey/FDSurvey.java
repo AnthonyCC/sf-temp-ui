@@ -39,6 +39,17 @@ public class FDSurvey implements java.io.Serializable {
 		this(name, false);
 	}
 
+        public FDSurvey(EnumSurveyType type, boolean isOrderSurvey) {
+            this.key = new SurveyKey(type, null);
+                this.name = type.getLabel();
+                this.isOrderSurvey = isOrderSurvey;
+                this.acceptableCoverage=0;
+        }
+        
+        public FDSurvey(EnumSurveyType type) {
+                this(type, false);
+        }
+
 	
         public FDSurvey(SurveyKey key, boolean isOrderSurvey) {
             this.key = key;

@@ -56,7 +56,7 @@ public class ReceiptSurveyControllerTag  extends AbstractControllerTag implement
 		boolean isMorningDeliverySurvey = "MorningDelivery".equalsIgnoreCase(survey.getName());
 		boolean isUsabilitySurvey = "Usability".equalsIgnoreCase(survey.getName());
 		boolean isNutritionSurvey = EnumSurveyType.DIET_NUTRITION.getLabel().equalsIgnoreCase(survey.getName());
-		boolean isRcptPage2Survey = EnumSurveyType.POST_ORDER_SURVEY.equals(survey.getKey().getSurveyType());//"ReceiptPageSurvey2".equalsIgnoreCase(survey.getName());
+		boolean isRcptPage2Survey = EnumSurveyType.POST_ORDER_SURVEY.equals(survey.getKey().getSurveyType());
 		boolean submitNow = false;
 		
 		List hamptonsPurgeReqQuestions = new ArrayList();

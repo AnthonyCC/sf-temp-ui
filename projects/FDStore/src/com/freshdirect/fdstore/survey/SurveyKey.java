@@ -27,14 +27,14 @@ public class SurveyKey implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof SurveyKey) {
             SurveyKey sk = (SurveyKey) obj;
-            return surveyType.equals(sk.surveyType) && userType.equals(sk.userType);
+            return surveyType == sk.surveyType && userType == sk.userType;
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return surveyType.hashCode() << 4 ^ userType.hashCode();
+        return surveyType.hashCode() << (userType != null ? 4 ^ userType.hashCode() : 0); 
     }
 
     public EnumSurveyType getSurveyType() {
