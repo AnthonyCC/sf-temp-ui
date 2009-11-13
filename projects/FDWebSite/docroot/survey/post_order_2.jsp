@@ -18,7 +18,7 @@ response.setDateHeader ("Expires", 0);
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="true" /> 
 
 <% 
-	FDSurvey postOrderDetail = FDSurveyFactory.getInstance().getSurvey("PostOrderDetail");
+	FDSurvey postOrderDetail = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.POST_ORDER_DETAIL, user);
     List questions = postOrderDetail.getQuestions();
 	
 	List shownQuestions = new ArrayList();

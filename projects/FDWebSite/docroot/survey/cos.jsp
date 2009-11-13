@@ -17,7 +17,7 @@ response.setDateHeader ("Expires", 0);
 <% boolean submitted = "thankyou".equalsIgnoreCase(request.getParameter("info")); %>
 
 <%
-FDSurvey cosFeedback = FDSurveyFactory.getInstance().getSurvey("COS_Feedback_Survey");
+FDSurvey cosFeedback = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.COS_FEEDBACK_SURVEY, FDSessionUser.getFDSessionUser(session));
 List questions = cosFeedback.getQuestions(); 
 
 String successPage = "/survey/cos.jsp?info=thankyou";

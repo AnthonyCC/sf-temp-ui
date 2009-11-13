@@ -32,7 +32,7 @@ request.setAttribute("listPos", "HPLeftTop");
     }
 	
 	FDCustomerModel customer = FDCustomerFactory.getFDCustomer(user.getIdentity());
-	FDSurvey customerProfileSurvey = FDSurveyFactory.getSurvey(EnumSurveyType.CUSTOMER_PROFILE_SURVEY, user);
+	FDSurvey customerProfileSurvey = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.CUSTOMER_PROFILE_SURVEY, user);
 	FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(customerIdentity, user);
     int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(customerProfileSurvey,surveyResponse);
     %>

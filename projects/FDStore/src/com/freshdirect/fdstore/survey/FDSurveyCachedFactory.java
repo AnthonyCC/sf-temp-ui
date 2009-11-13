@@ -23,11 +23,11 @@ public class FDSurveyCachedFactory {
      * 
      */
     public static FDSurvey getSurvey(EnumSurveyType surveyType, EnumServiceType userType) throws FDResourceException {
-        return FDSurveyFactory.getSurvey(surveyType, userType);        
+        return FDSurveyFactory.getInstance().getSurvey(surveyType, userType);        
     }
     
     public static FDSurvey getSurvey(EnumSurveyType surveyType, FDUserI user) throws FDResourceException {
-        return FDSurveyFactory.getSurvey(surveyType, user);        
+        return FDSurveyFactory.getInstance().getSurvey(surveyType, user);        
     }
     
 

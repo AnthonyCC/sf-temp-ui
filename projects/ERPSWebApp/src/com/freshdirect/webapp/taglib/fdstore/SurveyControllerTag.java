@@ -87,7 +87,7 @@ public class SurveyControllerTag extends com.freshdirect.framework.webapp.BodyTa
 					//form.validate(result);
 					if (result.isSuccess()) {
 						//FDSurveyResponse survey = form.getFormValues(user.getIdentity(), "second_order_survey");
-						FDSurvey custProfile = FDSurveyFactory.getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY, user);
+						FDSurvey custProfile = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY, user);
                          FDSurveyResponse survey=SurveyHelper.getSurveyResponse(user.getIdentity(), custProfile, result, request.getParameterMap());
 						boolean promoAvailable = PromotionFactory.getInstance().getPromotion("2ND_ORDER_SURVEY") != null;
 						BigInteger id = new BigInteger(user.getIdentity().getFDCustomerPK());

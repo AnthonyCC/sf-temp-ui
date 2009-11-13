@@ -16,7 +16,7 @@ response.setDateHeader ("Expires", 0);
 %>
 
 <%
-FDSurvey cosFeedback = FDSurveyFactory.getInstance().getSurvey("COS_Feedback_Survey");
+FDSurvey cosFeedback = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.COS_FEEDBACK_SURVEY, FDSessionUser.getFDSessionUser(session));
 List questions = cosFeedback.getQuestions(); 
 
 String successPage = "/checkout/step_1_choose.jsp";

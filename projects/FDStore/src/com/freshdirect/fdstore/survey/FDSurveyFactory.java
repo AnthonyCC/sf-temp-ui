@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.survey;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.CreateException;
@@ -41,7 +40,7 @@ public class FDSurveyFactory {
                 LOGGER.debug("FDSurvey Refresh reloading " + expiredKeys.size() + " survey definitions");
 
                 for (SurveyKey s : expiredKeys) {
-                    FDSurvey fs = FDSurveyFactory.getInstance().getSurvey(s);
+                    FDSurvey fs = FDSurveyFactory.getInstance().getSurveyFromDatabase(s);
                     if (fs != null) {
                         // cache these
                         this.cache.put(s, fs);
@@ -68,12 +67,12 @@ public class FDSurveyFactory {
      * @throws FDResourceException
      * 
      */
-    public synchronized static FDSurvey getSurvey(EnumSurveyType surveyType, EnumServiceType userType) throws FDResourceException {
+    public synchronized FDSurvey getSurvey(EnumSurveyType surveyType, EnumServiceType userType) throws FDResourceException {
         SurveyKey key = new SurveyKey(surveyType, userType);
         FDSurvey cached = surveyDefCache.get(key);
         if (cached == null) {
             FDSurveyFactory _instance = FDSurveyFactory.getInstance();
-            cached = _instance.getSurvey(key);
+            cached = _instance.getSurveyFromDatabase(key);
             if (cached != null) {
                 surveyDefCache.put(key, cached);
             }
@@ -82,7 +81,7 @@ public class FDSurveyFactory {
         return cached;
     }
 
-    public static FDSurvey getSurvey(EnumSurveyType surveyType, FDUserI user) throws FDResourceException {
+    public FDSurvey getSurvey(EnumSurveyType surveyType, FDUserI user) throws FDResourceException {
         return getSurvey(surveyType, extractServiceType(user));
     }
 
@@ -97,7 +96,7 @@ public class FDSurveyFactory {
     /**
      * Return an FDSurvey from the database
      */
-    public FDSurvey getSurvey(SurveyKey key) throws FDResourceException {
+    FDSurvey getSurveyFromDatabase(SurveyKey key) throws FDResourceException {
         try {
             FDSurveySB sb = lookupSurveyHome().create();
             return sb.getSurvey(key);
@@ -1122,16 +1121,6 @@ public class FDSurveyFactory {
     }
     
 
-    Collection getSurveys(SurveyKey[] strings) throws FDResourceException {
-        Collection surveys = new ArrayList(strings.length);
-        for (int i = 0; i < strings.length; i++) {
-            FDSurvey survey = getSurvey(strings[i]);
-            if (survey != null) {
-                surveys.add(survey);
-            }
-        }
-        return surveys;
-    }
     
     public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity, FDUserI user) throws FDResourceException {
         return getCustomerProfileSurveyInfo(identity, extractServiceType(user));

@@ -26,7 +26,7 @@ response.setDateHeader ("Expires", 0);
 		submitted = true;
 	}
 	
-	FDSurvey DietNutrition = FDSurveyFactory.getInstance().getSurvey("DietNutrition");
+	FDSurvey DietNutrition = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.DIET_NUTRITION, user);
     List questions = DietNutrition.getQuestions();
 	
    String[] checkSurveyForm = new String[questions.size()];

@@ -26,7 +26,7 @@ response.setDateHeader ("Expires", 0);
 		submitted = true;
 	}
 	
-	FDSurvey Usability = FDSurveyFactory.getInstance().getSurvey("Usability");
+	FDSurvey Usability = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.USABILITY, user);
     List questions = Usability.getQuestions();
 	
    String[] checkSurveyForm = new String[questions.size()];

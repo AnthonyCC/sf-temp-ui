@@ -22,7 +22,7 @@ response.setDateHeader ("Expires", 0);
     <tmpl:put name='content' direct='true'>
 
 <%
-FDSurvey postOrder = FDSurveyFactory.getInstance().getSurvey("PostOrder");
+FDSurvey postOrder = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.POST_ORDER, FDSessionUser.getFDSessionUser(session));
 List questions = postOrder.getQuestions(); 
 
 List shownQuestions = new ArrayList();

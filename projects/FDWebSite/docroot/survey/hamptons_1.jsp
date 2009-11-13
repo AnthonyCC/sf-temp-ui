@@ -25,7 +25,7 @@ response.setDateHeader ("Expires", 0);
 		if (!"thankyou".equalsIgnoreCase(request.getParameter("info"))) hasTaken = true;
 		submitted = true;
 	}
-	FDSurvey Hamptons05 = FDSurveyFactory.getInstance().getSurvey("Hamptons05");
+	FDSurvey Hamptons05 = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.HAMPTONS, user);
     List questions = Hamptons05.getQuestions();
 	
 	List shownQuestions = new ArrayList();

@@ -94,7 +94,7 @@
 <% int quesCount = 1; 
 FDUserI _user = (FDUserI)session.getAttribute(SessionName.USER);
        String _survey_Name=request.getAttribute("Survey").toString();
-       FDSurvey Usability = FDSurveyFactory.getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()), _user);
+       FDSurvey Usability = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()), _user);
        request.removeAttribute("Survey");
        FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(_user.getIdentity(), _user);
        List questions = Usability.getQuestions();

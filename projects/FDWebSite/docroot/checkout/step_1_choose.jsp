@@ -37,7 +37,7 @@ if (!yuzer.isSurveySkipped() && yuzer.getAdjustedValidOrderCount()==1 && yuzer.g
 
  if (!alreadyTookFirstSurvey && !alreadyTookSecondSurvey && !skippedSecondSurvey) {
 
-        FDSurvey usability = FDSurveyFactory.getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY, yuzer);
+        FDSurvey usability = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY, yuzer);
  		if (usability == null) {
 			response.sendRedirect(response.encodeRedirectURL("/checkout/survey_cos.jsp?successPage=/checkout/step_1_choose.jsp"));
 		} else {

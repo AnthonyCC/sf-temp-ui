@@ -50,12 +50,12 @@ public class ReceiptSurveyControllerTag  extends AbstractControllerTag implement
 		
 		boolean isPostOrderSurvey ="postOrder".equalsIgnoreCase(survey.getName()) || "postOrderDetail".equalsIgnoreCase(survey.getName());
 		boolean toPostOrderDetail = "PROBLEM".equalsIgnoreCase(request.getParameter("q_post_order_response"));
-		boolean isCOSSurvey = "COS_Feedback_Survey".equalsIgnoreCase(survey.getName());
-		boolean isHamptonsSurvey = "Hamptons05".equalsIgnoreCase(survey.getName());
+		boolean isCOSSurvey = EnumSurveyType.COS_FEEDBACK_SURVEY.getLabel().equalsIgnoreCase(survey.getName());
+		boolean isHamptonsSurvey = EnumSurveyType.HAMPTONS.getLabel().equalsIgnoreCase(survey.getName());
 		boolean isOrganicSurvey = "Organic2".equalsIgnoreCase(survey.getName());
 		boolean isMorningDeliverySurvey = "MorningDelivery".equalsIgnoreCase(survey.getName());
 		boolean isUsabilitySurvey = "Usability".equalsIgnoreCase(survey.getName());
-		boolean isNutritionSurvey = "DietNutrition".equalsIgnoreCase(survey.getName());
+		boolean isNutritionSurvey = EnumSurveyType.DIET_NUTRITION.getLabel().equalsIgnoreCase(survey.getName());
 		boolean isRcptPage2Survey = EnumSurveyType.POST_ORDER_SURVEY.equals(survey.getKey().getSurveyType());//"ReceiptPageSurvey2".equalsIgnoreCase(survey.getName());
 		boolean submitNow = false;
 		

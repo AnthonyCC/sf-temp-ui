@@ -28,7 +28,7 @@ response.setDateHeader ("Expires", 0);
 		actionName = "xxx";
 	}
 	
-	FDSurvey Organic = FDSurveyFactory.getInstance().getSurvey("Organic2");
+	FDSurvey Organic = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.ORGANIC_2, user);
     List questions = Organic.getQuestions();
 	
    String[] checkSurveyForm = new String[questions.size()];

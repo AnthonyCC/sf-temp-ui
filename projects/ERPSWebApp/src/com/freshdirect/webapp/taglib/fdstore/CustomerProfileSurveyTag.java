@@ -35,7 +35,7 @@ public class CustomerProfileSurveyTag extends AbstractControllerTag {
 		String actionName = this.getActionName();
 	 	if ("submitSurvey".equalsIgnoreCase(actionName)){
 	 		try {
-				FDSurvey _survey=FDSurveyFactory.getSurvey(EnumSurveyType.getEnum(survey), user);
+				FDSurvey _survey=FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.getEnum(survey), user);
 				FDSurveyResponse surveyResponse=SurveyHelper.getSurveyResponse(user.getIdentity(), _survey, result, request.getParameterMap());
 				if(result.isSuccess()) {
 					FDCustomerManager.storeSurvey(surveyResponse);

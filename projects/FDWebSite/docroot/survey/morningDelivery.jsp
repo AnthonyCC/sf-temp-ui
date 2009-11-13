@@ -26,7 +26,7 @@ response.setDateHeader ("Expires", 0);
 		submitted = true;
 	}
 	
-	FDSurvey MorningDelivery = FDSurveyFactory.getInstance().getSurvey("MorningDelivery");
+	FDSurvey MorningDelivery = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.MORNING_DELIVERY, user);
     List questions = MorningDelivery.getQuestions();
 	
    String[] checkSurveyForm = new String[questions.size()];

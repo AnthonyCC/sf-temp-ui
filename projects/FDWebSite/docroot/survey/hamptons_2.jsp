@@ -27,7 +27,7 @@ response.setDateHeader ("Expires", 0);
 	}
 	String actionName = "";
 	String successPage = null;
-	FDSurvey Hamptons05 = FDSurveyFactory.getInstance().getSurvey("Hamptons05");
+	FDSurvey Hamptons05 = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.HAMPTONS, user);
     List questions = Hamptons05.getQuestions();
 	
 	String destination = request.getParameter("VacationDestination");
