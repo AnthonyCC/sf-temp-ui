@@ -10,7 +10,25 @@
 <%@ taglib uri='logic' prefix='logic' %>
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:CheckLoginStatus />
+
+<%
+FDSessionUser sessionuser1 = (FDSessionUser) session.getAttribute( SessionName.USER );
+if(null ==sessionuser1 || null == sessionuser1.getUser() ||sessionuser1.getUser().getLevel()> FDUserI.GUEST){
+%>
+
+<fd:CreateNewGCUser result='result'> 
+<%
+
+if(result==null) result=new ActionResult();
+%>
+<fd:ErrorHandler result='<%=result%>' name='system' id='errorMsg'>
+
+	<%@ include file="/includes/i_error_messages.jspf" %>	
+</fd:ErrorHandler>
+
+</fd:CreateNewGCUser>
+<% } %>
+
 
 <%!
 java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
@@ -19,7 +37,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 <tmpl:insert template='/common/template/giftcard.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put>
 <tmpl:put name='content' direct='true'>
-<fd:GiftCardBuyerController actionName='registerGiftCardBuyer' result="result" registrationType='10'>
+<fd:GiftCardBuyerController actionName='registerGiftCardBuyer' result="result" registrationType='10' >
 <fd:ErrorHandler result='<%=result%>' field='<%=checkGiftCardBuyerForm%>'>
 	<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>
 	<%@ include file="/includes/i_error_messages.jspf" %>	
@@ -33,6 +51,8 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
             action_name = "deleteSavedRecipient";
         } 
 %>
+
+
 <table width="690" cellspacing="0" cellpadding="0" border="0">
 	<tr>
 		<td class="text11" width="690">
@@ -50,6 +70,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	</tr>
 </table>
 
+
 <fd:AddSavedRecipientController actionName='<%=action_name%>' resultName='result1'>
 </fd:AddSavedRecipientController>
 <%
@@ -58,6 +79,9 @@ request.setAttribute("giftcard", "true");
 UserUtil.initializeGiftCart(sessionuser);
 java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
+
+
+
 
     <%@ include file="/gift_card/purchase/includes/recipient_list.jspf" %>
     <table width="690" cellspacing="0" cellpadding="0" border="0">
@@ -68,10 +92,12 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	</tr>
     </table>
 <form name="address" id="address" method="post" >
+    <input type="hidden" name="firstTimeVisit" value="false">
 	<%@ include file="/gift_card/purchase/includes/i_gc_signup.jspf" %>
 </form>
 
 </fd:GiftCardBuyerController>
 </tmpl:put>
 </tmpl:insert>
+
 

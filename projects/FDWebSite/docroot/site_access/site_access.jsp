@@ -147,6 +147,13 @@ request.setAttribute("listPos", "CategoryNote");
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 		
 		<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
+		<%
+			//When there is an error during posting the request such as invalid zip code error
+			//or technical difficulty error we reset the successpage to index.jsp
+			if(request.getAttribute("failed") !=  null && request.getAttribute("failed").equals("true")) {
+				successPage = "/index.jsp";
+			}
+		%>
 			 <div align="center">
 				<table border="0" cellspacing="0" cellpadding="0" width="745">
 					<tr>
@@ -252,7 +259,7 @@ request.setAttribute("listPos", "CategoryNote");
 							</table>
 							<% if (FDStoreProperties.isGiftCardEnabled() || FDStoreProperties.isRobinHoodEnabled()) { %>
 								<table cellpadding="0" cellspacing="0" border="0">
-									<form name="site_access_gc" id="site_access_gc" method="post" action="/site_access/site_access.jsp">
+									<form name="site_access_gc" id="site_access_gc" method="post" action="/site_access/site_access.jsp" onSubmit="gcValidate();">
 									<input type="hidden" name="successPage" value="<%= successPage %>">
 									<input type="hidden" name="serviceType" value="<%= EnumServiceType.WEB.getName()%>">
 									<input type="hidden" name="newRequest" value="pass">
@@ -275,9 +282,9 @@ request.setAttribute("listPos", "CategoryNote");
 													<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %></font><br /><br />
 												<%}%>
 											<% } %>
-											To get started, please<br /> Enter your zip code:<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><input class="text11" type="text" size="13" style="width: 122px" value="<%= zipcode%>" maxlength="5" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" id="gc_<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" required="true" tabindex="3"></form><br />
+											To get started, please<br /> Enter your zip code:<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><input class="text11" type="text" size="13" style="width: 122px" value="<%= zipcode%>" maxlength="5" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" id="gc_<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" required="true" tabindex="3"><br />
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br />
-											<input type="image" src="/media_stat/images/template/site_access/go.gif" width="27" height="16" name="site_access_gc_go" border="0" value="Check My Area" alt="GO" tabindex="4" onclick="gcValidate();" />
+											<input type="image" src="/media_stat/images/template/site_access/go.gif" width="27" height="16" name="site_access_gc_go" border="0" value="Check My Area" alt="GO" tabindex="4"/>
 										</td>
 									</tr>
 										<td rowspan="2" colspan="2" valign="bottom"><img src="/media_stat/images/layout/qs_bottom_lft_crnr_purp.gif" width="7" height="8"></td>
@@ -288,7 +295,7 @@ request.setAttribute("listPos", "CategoryNote");
 										<td bgcolor="#996699"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 									</tr>
 									<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="50"></td></tr>
-									
+									</form>
 								</table>
 							<% } %>
 						</td>

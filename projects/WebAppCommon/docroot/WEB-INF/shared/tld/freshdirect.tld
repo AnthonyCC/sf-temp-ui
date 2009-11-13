@@ -3796,4 +3796,17 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	</tag>        
+    <tag>
+		<name>CreateNewGCUser</name>
+		<tagclass>com.freshdirect.webapp.taglib.giftcard.CreateNewGCUserTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.giftcard.CreateNewGCUserTagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>	
+		<attribute>
+			<name>result</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>	
+	</tag>        
 </taglib>

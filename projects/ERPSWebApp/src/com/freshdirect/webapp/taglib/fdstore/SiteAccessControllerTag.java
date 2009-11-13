@@ -218,6 +218,10 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		this.validate(result, false);
 
 		if (result.isFailure()) {
+			//Reset successpage to null
+			setSuccessPage(null);
+			//Passing an indicator to the site access page that zip code validation failed.
+			request.setAttribute("failed", "true");
 			return null;
 		}
 

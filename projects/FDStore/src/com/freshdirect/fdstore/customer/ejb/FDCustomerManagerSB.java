@@ -29,6 +29,7 @@ import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintModel;
@@ -616,6 +617,7 @@ public interface FDCustomerManagerSB extends EJBObject {
           ) throws FDResourceException,
           ErpFraudException,
           ErpAuthorizationException,
+          ErpAddressVerificationException,
           RemoteException;
 	
 

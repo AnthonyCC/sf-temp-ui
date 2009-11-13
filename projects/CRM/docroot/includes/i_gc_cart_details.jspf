@@ -179,18 +179,19 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
 							<td>&nbsp;</td>
 						</tr>
 			<%
-				indx++;
-			}
+				     indx++;
+			        }
             } else {
                 ErpGiftCardDlvConfirmModel model = cart.getGCDeliveryInfo();
+                if(model!=null && model.getDlvInfoTranactionList()!=null && model.getDlvInfoTranactionList().size()>0){
                 ListIterator j = model.getDlvInfoTranactionList().listIterator();
                 while(j.hasNext()) {
-				ErpGCDlvInformationHolder recipient = (ErpGCDlvInformationHolder)j.next();
-                ErpRecipentModel recModel =  cart.getGCResendInfoFor(recipient.getGiftCardId());
-                if(recModel != null) {
-                    //Set the latest resend info.
-                    recipient.setRecepientModel(recModel);
-                }
+                    ErpGCDlvInformationHolder recipient = (ErpGCDlvInformationHolder)j.next();
+                    ErpRecipentModel recModel =  cart.getGCResendInfoFor(recipient.getGiftCardId());
+                    if(recModel != null) {
+                        //Set the latest resend info.
+                        recipient.setRecepientModel(recModel);
+                    }
 			%>
             <tr>
                 <td><%= recipient.getCertificationNumber() != null ? recipient.getCertificationNumber() : "" %></td>
@@ -233,7 +234,8 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
             </tr>
 			<%
 				indx++;
-			}
+			   } // end of while
+              }// end of null check if 
             }
             %>            
 </table>

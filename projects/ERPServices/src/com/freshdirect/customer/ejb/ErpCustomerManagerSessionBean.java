@@ -33,7 +33,9 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.common.customer.PaymentMethodI;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
@@ -185,8 +187,8 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			// send the ship-to addr as the bill-to
 			SapCustomerI customer = null;
 			if(isGiftCardBuyer) {
-				customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
-				
+				customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());	
+							
 			} else {
 				if(erpCustomer.getShipToAddresses() != null && erpCustomer.getShipToAddresses().size() > 0) {
 					customer = new CustomerAdapter(false, erpCustomer, null, (ErpAddressModel) erpCustomer.getShipToAddresses().get(0));
@@ -1776,9 +1778,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				
 			}while((sapCustomerId == null || sapCustomerId.length() == 0) && count < 10);
 			
-			if(sapCustomerId == null || sapCustomerId.length() == 0){
+			/*if(sapCustomerId == null || sapCustomerId.length() == 0){
 				throw new ErpTransactionException("Unable to process order due to sap customer id is null");
-			}
+			}*/
 			erpCustomer.setSapId(sapCustomerId);
 			SapOrderAdapter adapter = new SapOrderAdapter(order, erpCustomer, rating);
 			return adapter;
@@ -2628,5 +2630,24 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, null);
 			strategy.generateAppliedGiftCardsInfo();	
 			return strategy.getPerishableBufferAmount();
+		}
+		
+		public List getLastOrderForAddress(AddressModel address)  {
+			Connection conn = null;
+			try {
+				conn = this.getConnection();
+				return ErpSaleInfoDAO.getLastOrderForAddress(conn, address);
+			} catch (SQLException e) {
+				LOGGER.debug("SQLException: ", e);
+				throw new EJBException(e);
+			} finally {
+				try {
+					if (conn != null) {
+						conn.close();
+					}
+				} catch (SQLException e) {
+					LOGGER.warn("SQLException while cleaning: ", e);
+				}
+			}
 		}
 }

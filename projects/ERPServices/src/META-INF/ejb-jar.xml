@@ -324,6 +324,11 @@
                 <home>com.freshdirect.customer.ejb.ErpSaleHome</home>
                 <remote>com.freshdirect.customer.ejb.ErpSaleEB</remote>
             </ejb-ref>
+            <resource-ref>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <res-type>javax.sql.DataSource</res-type>
+                <res-auth>Container</res-auth>
+            </resource-ref>
         </session>
         <session>
             <ejb-name>RestrictedPaymentMethod</ejb-name>

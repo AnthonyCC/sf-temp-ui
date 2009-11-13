@@ -836,12 +836,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 
 	public boolean isCheckEligible()  {
-		return true;
-		/*if (checkEligible == null) {
+//		return true;
+		if (checkEligible == null) {
 			EligibilityCalculator calc = new EligibilityCalculator("ECHECK");
 			checkEligible = new Boolean(calc.isEligible(new FDRulesContextImpl(this)));
 		}
-		return checkEligible.booleanValue();*/
+		return checkEligible.booleanValue();
     }
 
 	public Collection getPaymentMethods() {

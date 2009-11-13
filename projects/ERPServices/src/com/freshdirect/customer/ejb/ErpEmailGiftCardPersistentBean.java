@@ -157,7 +157,8 @@ public class ErpEmailGiftCardPersistentBean extends ErpGiftCardDlvConfirmPersist
 			if(recModel.getTemplateId()!=null){
 				 ps.setString(7, recModel.getTemplateId());
 			}else{
-				  ps.setNull(7, Types.NULL); 	
+				  //ps.setNull(7, Types.NULL);
+				ps.setString(7, "21312312313");
 			}
 
 			if(recModel.getDeliveryMode()!=null){

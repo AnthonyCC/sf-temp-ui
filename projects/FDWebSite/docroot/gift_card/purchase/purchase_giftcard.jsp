@@ -4,6 +4,7 @@
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import='com.freshdirect.payment.*' %>
 <%@ page import='com.freshdirect.payment.fraud.*' %>
+<%@ page import='java.util.*' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -44,7 +45,7 @@
     <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 				<%= SystemMessageList.MSG_GC_SIGNUP_SUCCESS %><br><br>
-                <%= sessionuser.getGcFraudReason() %>
+                <%= SystemMessageList.MSG_GC_CC_INVALID %>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 	</td>
     <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
@@ -64,7 +65,52 @@
 //clear info from session.
 sessionuser.setGCSignupError(false);
 sessionuser.setGcFraudReason("");
-} %>
+} 
+%>
+<%
+if(sessionuser.isAddressVerificationError()) {
+       
+%>    
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr>
+    <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
+    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
+    <td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+</tr>
+<tr>
+    <td rowspan="3" bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
+    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+</tr>
+<tr>
+    <td width="18" bgcolor="#CC3300"><img src="/media_stat/images/template/system_msgs/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"></td>
+    <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
+				<%= SystemMessageList.MSG_GC_SIGNUP_SUCCESS %><br><br>
+                <%= sessionuser.getAddressVerficationMsg() %>
+                
+                
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
+	</td>
+    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+    <td bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+</tr>
+<tr>
+    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
+    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
+</tr>
+<tr>
+    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+</tr>
+</table>
+<br>
+<% 
+//clear info from session.
+sessionuser.setAddressVerificationError(false);
+}
+%>	
 
 <%
         String action_name = "";
@@ -86,13 +132,19 @@ FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER );
 request.setAttribute("giftcard", "true");
 UserUtil.initializeGiftCart(user);
 %>
-<fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="/gift_card/purchase/receipt.jsp" ccdProblemPage="/gift_card/purchase/purchase_giftcard.jsp?ccerror=true">
+<fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="/gift_card/purchase/receipt.jsp" ccdProblemPage="/gift_card/purchase/includes/gc_add_creditcard.jsp?ccerror=true">
         <fd:ErrorHandler result='<%=result%>' name='gc_order_amount_fraud' id='errorMsg'>
             <%@ include file="/includes/i_error_messages.jspf" %>	
-        </fd:ErrorHandler>
+        </fd:ErrorHandler>        
         <fd:ErrorHandler result='<%=result%>' name='gc_order_count_fraud' id='errorMsg'>
             <%@ include file="/includes/i_error_messages.jspf" %>	
         </fd:ErrorHandler>    
+        <fd:ErrorHandler result='<%=result%>' name='address_verification_failed' id='errorMsg'>
+            <%@ include file="/includes/i_error_messages.jspf" %>	
+        </fd:ErrorHandler>
+         <fd:ErrorHandler result='<%=result%>' name='authorization_failed' id='errorMsg'>
+            <%@ include file="/includes/i_error_messages.jspf" %>	
+        </fd:ErrorHandler>
         <fd:ErrorHandler result='<%=result%>' name='fraud_check_failed' id='errorMsg'>
                 <% 
                 StringBuffer sbErrorMsg= new StringBuffer(); 
@@ -120,7 +172,20 @@ UserUtil.initializeGiftCart(user);
 		String errorMsg = "<span class=\"text12\">There was a problem with the credit card you selected.<br>Please choose or add a new payment method.<br><br>If you have tried this and are still experiencing problems, please do not attempt to submit your information again but contact us as soon as possible at" + user.getCustomerServiceContact() + ". A customer service representative will help you to complete your order.</span>";
 	%>
 		<%@ include file="/includes/i_error_messages.jspf" %>
-<% } %>
+<% 
+    }
+    if(user.getOneTimeGCPaymentError()!=null && user.getOneTimeGCPaymentError().size()>0){
+        String errorMsg="";
+           List alist=user.getOneTimeGCPaymentError();
+           for(int k=0;k<alist.size();k++){
+             errorMsg=errorMsg+(String)alist.get(k)+"\n";
+           }  
+           System.out.println("errorMsg:"+errorMsg);
+     %>        
+       <%@ include file="/includes/i_error_messages.jspf" %>
+<%       
+     }
+%>
 	<BR>	
 <form method="post" id="form1" name="order_form">
 <table width="690" cellspacing="0" cellpadding="0" border="0">
@@ -161,6 +226,7 @@ boolean isECheckRestricted = false;
 boolean isCheckEligible = false;
 %>
   <% StringBuffer sbErrorMsg= new StringBuffer(); %>
+
 
 <table width="675" border="0" cellpadding="0" cellspacing="0" class="text11">
     <%

@@ -30,6 +30,7 @@ import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpFraudException;
@@ -368,14 +369,35 @@ public class SubmitOrderAction extends WebActionSupport {
 				if(user.getFailedAuthorizations() >= 8){
 					response.sendRedirect(this.authCutoffPage);
 				}else{
-					response.sendRedirect(this.ccdProblemPage);
-				}
-				return NONE;
+					
+					this.addError("gc_payment_auth_failed", ae.getMessage());
+					//response.sendRedirect(this.ccdProblemPage);
+					
+				}				
 			} catch(IOException ie) {
 				throw new FDResourceException(ie.getMessage());
 			}
 				
-		} 	
+		}
+		catch (ErpAddressVerificationException ae) {
+			//user.incrementFailedAuthorizations();
+			
+				HttpServletResponse response = this.getWebActionContext().getResponse();				
+					//response.sendRedirect(this.ccdProblemPage);
+				
+				user.setAddressVerificationError(true);
+				
+				String message =ae.getMessage();
+				message=message.replace("9999",user.getCustomerServiceContact());
+				System.out.println("ae.getMessage() :"+message);
+				this.addError("address_verification_failed", message);
+				user.setAddressVerficationMsg(message);
+				//response.sendRedirect(this.ccdProblemPage);
+			
+
+		}
+		
+		
 		return this.getResult().isSuccess() ? "SUCCESS" : "ERROR";		
 	
 	}
@@ -968,9 +990,10 @@ public class SubmitOrderAction extends WebActionSupport {
 				if(user.getFailedAuthorizations() >= 8){
 					response.sendRedirect(this.authCutoffPage);
 				}else{
-					response.sendRedirect(this.ccdProblemPage);
+					//response.sendRedirect(this.ccdProblemPage);
+					this.addError("payment_auth_failed", ae.getMessage());
 				}
-				return NONE;
+				//return NONE;
 			} catch(IOException ie) {
 				throw new FDResourceException(ie.getMessage());
 			}

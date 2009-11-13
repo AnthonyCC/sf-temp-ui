@@ -1298,6 +1298,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 					EnumSaleStatus.NEW,
 					EnumSaleStatus.SUBMITTED,
 					EnumSaleStatus.AUTHORIZED,
+					EnumSaleStatus.AVS_EXCEPTION,
 					EnumSaleStatus.MODIFIED,
 					EnumSaleStatus.CANCELED,
 					EnumSaleStatus.POST_AUTH_PENDING

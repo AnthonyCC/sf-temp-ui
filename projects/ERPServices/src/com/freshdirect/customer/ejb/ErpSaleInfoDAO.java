@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumDeliveryType;
@@ -734,6 +735,41 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 		ps.close();
 		
 		return sapcustomerId;
+	}
+	
+	private static final String LAST_ORD_SEARCH_QUERY =
+		"select s.id,s.customer_id, s.stop_sequence, s.status, di.first_name, di.last_name, di.address1, di.apartment, di.zip "
+			+ "from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
+			+ "where s.id=sa.sale_id and sa.id=di.salesaction_id and s.status<>'CAN' "
+			+ "and sa.action_type in ('STL') and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('STL')) "
+			+ "and upper(di.address1) like upper(?) and upper(di.apartment) = UPPER(?) and di.zip = ? and s.type='REG'";
+
+	public static List getLastOrderForAddress(Connection conn, AddressModel address) throws SQLException {
+		List lst = new ArrayList();
+		PreparedStatement ps = conn.prepareStatement(LAST_ORD_SEARCH_QUERY);
+//		ps.setDate(1, new java.sql.Date(date.getTime()));
+		ps.setString(1, "%" + address.getAddress1());
+		ps.setString(2, address.getApartment());
+		ps.setString(3, address.getZipCode());
+
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			DlvSaleInfo info =
+				new DlvSaleInfo(
+					rs.getString("ID"),
+					rs.getString("CUSTOMER_ID"),
+					EnumSaleStatus.getSaleStatus(rs.getString("STATUS")),
+					rs.getString("STOP_SEQUENCE"),
+					rs.getString("FIRST_NAME"),
+					rs.getString("LAST_NAME"));
+			info.setAddress(rs.getString("ADDRESS1"));
+			info.setApartment(rs.getString("APARTMENT"));
+			info.setZipcode(rs.getString("ZIP"));
+
+			lst.add(info);
+		}
+
+		return lst;
 	}
 
 }

@@ -31,6 +31,7 @@ import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -376,7 +377,10 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
             			List repList = convertSavedToErpRecipienntModel(user.getRecipentList().getRecipents(),user.getIdentity().getErpCustomerPK());	
             			
             		    try {
-    						String saleId=FDCustomerManager.placeGiftCardOrder(actionInfo, user.getGiftCart(), Collections.EMPTY_SET, false, rating, EnumDlvPassStatus.NONE, repList,false);
+    						String saleId;
+							
+								saleId = FDCustomerManager.placeGiftCardOrder(actionInfo, user.getGiftCart(), Collections.EMPTY_SET, false, rating, EnumDlvPassStatus.NONE, repList,false);
+							
     						
     						try{
     						   Thread.sleep(30000);
@@ -401,6 +405,11 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
     					}  catch (ErpAuthorizationException ae) {
     						throw new JspException(ae);
     					}
+                    	catch (ErpAddressVerificationException e1) {
+						  // TODO Auto-generated catch block
+                    		e1.printStackTrace();
+                    		result.addError(new ActionError("technical_difficulty", e1.getMessage()));
+                    	}
                     } catch (RemoteException e1) {
 						throw new JspException(e1);
     			   } catch (CreateException e1) {

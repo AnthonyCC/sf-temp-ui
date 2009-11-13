@@ -62,18 +62,43 @@
 			if(null == actionName || "".equals(actionName)){
 				actionName = "gc_submitGiftCardOrder";
 			}
-			FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );
+			FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER );
 			request.setAttribute("giftcard", "true");
 			UserUtil.initializeGiftCart(user);
 		%>
 
 		<%@ include file="/gift_card/purchase/includes/recipient_list.jsp" %>
     
-		<fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="/gift_card/purchase/receipt.jsp">
+		<fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="/gift_card/purchase/receipt.jsp" ccdProblemPage="/gift_card/purchase/includes/gc_add_creditcard.jsp?ccerror=true">
 					<!-- error message handling here -->
 					<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 						<tr>
 							<td width="675" class="text11">
+							<fd:ErrorHandler result='<%=result%>' name='gc_order_amount_fraud' id='errorMsg'>
+					            <%@ include file="/includes/i_error_messages.jspf" %>	
+					        </fd:ErrorHandler>        
+					        <fd:ErrorHandler result='<%=result%>' name='gc_order_count_fraud' id='errorMsg'>
+					            <%@ include file="/includes/i_error_messages.jspf" %>	
+					        </fd:ErrorHandler>    
+					        <fd:ErrorHandler result='<%=result%>' name='address_verification_failed' id='errorMsg'>
+					            <%@ include file="/includes/i_error_messages.jspf" %>	
+					        </fd:ErrorHandler>
+					         <fd:ErrorHandler result='<%=result%>' name='authorization_failed' id='errorMsg'>
+					            <%@ include file="/includes/i_error_messages.jspf" %>	
+					        </fd:ErrorHandler>
+					        <fd:ErrorHandler result='<%=result%>' name='fraud_check_failed' id='errorMsg'>
+					                <% 
+					                StringBuffer sbErrorMsg= new StringBuffer(); 
+					                sbErrorMsg.append("<br>Checkout prevented because:<br>");
+					                sbErrorMsg.append(errorMsg);
+					                sbErrorMsg.append("<br>");
+					                errorMsg = sbErrorMsg.toString();
+					                %>
+					            <%@ include file="/includes/i_error_messages.jspf"%>                 
+					        </fd:ErrorHandler>    
+					        <fd:ErrorHandler result='<%=result%>' name='limitReached' id='errorMsg'>
+					           <%@ include file="/includes/i_error_messages.jspf" %>
+					        </fd:ErrorHandler>
                             <% String[] checkPaymentForm = {"system", "order_minimum", "payment_inadequate", "technical_difficulty", "paymentMethodList", "payment", "declinedCCD", "matching_addresses", "expiration","bil_apartment","bil_address1","cardNum"}; %>
                             		<fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentForm%>' id='errorMsg'>
                             			<%@ include file="/includes/i_error_messages.jspf" %>	
@@ -88,6 +113,26 @@
 							</td>
 						</tr>
 					</table>
+                    
+                    <%
+	if (user.getFailedAuthorizations() > 0) { 
+		String errorMsg = "<span class=\"text12\">There was a problem with the credit card you selected.<br>Please choose or add a new payment method.<br><br>If you have tried this and are still experiencing problems, please do not attempt to submit your information again but contact us as soon as possible at" + user.getCustomerServiceContact() + ". A customer service representative will help you to complete your order.</span>";
+	%>
+		<%@ include file="/includes/i_error_messages.jspf" %>
+<% 
+    }
+    if(user.getOneTimeGCPaymentError()!=null && user.getOneTimeGCPaymentError().size()>0){
+        String errorMsg="";
+           List alist=user.getOneTimeGCPaymentError();
+           for(int k=0;k<alist.size();k++){
+             errorMsg=errorMsg+(String)alist.get(k)+"\n";
+           }  
+           System.out.println("errorMsg:"+errorMsg);
+     %>        
+       <%@ include file="/includes/i_error_messages.jspf" %>
+<%       
+     }
+%>
 
 			<fd:PaymentMethodController actionName='<%=actionName%>' result='result'>
 

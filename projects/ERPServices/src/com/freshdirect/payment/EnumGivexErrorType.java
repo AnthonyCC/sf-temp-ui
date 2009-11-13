@@ -54,11 +54,12 @@ public  class EnumGivexErrorType extends Enum{
 					return errorType;
 				}
 			}
+
 			return EnumGivexErrorType.ERROR_GENERIC;
 		}	
 		return null;
 	}
-	
+	  	
 	public String getDescription() {
 		return this.description;
 	}

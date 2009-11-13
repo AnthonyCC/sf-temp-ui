@@ -64,6 +64,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             FDSessionUser sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
             sessionuser.setInvalidPaymentMethod(paymentMethod);
         }
+                
     }
     
     public static void editPaymentMethod(HttpServletRequest request, ActionResult result, ErpPaymentMethodI paymentMethod) throws FDResourceException {
@@ -272,7 +273,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     }
     
     public static void validatePaymentMethod(HttpServletRequest request, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user) throws FDResourceException {
-
+    	boolean isFiftyStateValidationReqd=true;
     	//check name on card
         result.addError(
         paymentMethod.getName()==null || paymentMethod.getName().trim().length() < 1,
@@ -296,9 +297,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 		        //check expiration date
 				FDCartModel cart = user.getGiftCart();
 				reservation = cart.getDeliveryReservation();
+				isFiftyStateValidationReqd=false;
 	        } if(request.getAttribute("donation") != null){
 	        	FDCartModel cart = user.getDonationCart();
 				reservation = cart.getDeliveryReservation();
+				isFiftyStateValidationReqd=false;
 	        }   else {
 		        //check expiration date
 				FDCartModel cart = user.getShoppingCart();
@@ -367,8 +370,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         //
         // standardize billing address on all credit cards
         //
-        if (result.isSuccess()) {
-        	AddressModel cleanAddress = scrubAddress(paymentMethod.getAddress(), result);
+        if (result.isSuccess()) {        	
+        	AddressModel cleanAddress = scrubAddress(paymentMethod.getAddress(), result,isFiftyStateValidationReqd);
     		paymentMethod.setAddress1(cleanAddress.getAddress1());
     		paymentMethod.setAddress2(cleanAddress.getAddress2());
 
@@ -377,7 +380,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     }
     
     
-    private static AddressModel scrubAddress(AddressModel address, ActionResult result) throws FDResourceException {
+    private static AddressModel scrubAddress(AddressModel address, ActionResult result,boolean isFiftyStateValidationReqd) throws FDResourceException {
 
 		result.addError(address.getCity() == null || "".equals(address.getCity()),
 				EnumUserInfoName.BIL_CITY.getCode(), SystemMessageList.MSG_REQUIRED);
@@ -392,6 +395,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 			//If its a non-tri state address there is no way validate it currently. Accept the address as is.
 			return address;
 		}
+		
+		// this work is temp stalled since qa got problem
+		//if(!isFiftyStateValidationReqd) return address;
+		
 		DlvAddressVerificationResponse response = FDDeliveryManager.getInstance().scrubAddress(address);
         String apartment = address.getApartment();
         

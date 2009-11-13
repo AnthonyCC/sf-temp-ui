@@ -63,6 +63,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpComplaintException;
@@ -4313,7 +4314,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				                      EnumDlvPassStatus status,boolean isBulkOrder
 				                    ) throws FDResourceException,
 				                             ErpFraudException,
-				                             ErpAuthorizationException {
+				                             ErpAuthorizationException,ErpAddressVerificationException {
 
 				PrimaryKey pk = null;
 				try {
@@ -4365,6 +4366,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				  	throw new FDResourceException(re);
 				}
 				catch (RemoteException re) {
+					Exception ex=(Exception)re.getCause();
+					if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;
+					
 					throw new FDResourceException(re);
 				}/*catch(FDAuthenticationException fdae){
 					throw new FDResourceException(fdae);

@@ -100,9 +100,36 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private boolean gcSignupError;
 	private String gcFraudReason;
 	
-
+	private boolean isAddressVerificationError;
+    private String addressVerficationMsg;
+    
+    private List oneTimeGCPaymentError=null;
 	
-    public FDSessionUser(FDUser user, HttpSession session) {
+    public List getOneTimeGCPaymentError() {
+		return oneTimeGCPaymentError;
+	}
+
+	public void setOneTimeGCPaymentError(List oneTimeGCPaymentError) {
+		this.oneTimeGCPaymentError = oneTimeGCPaymentError;
+	}
+
+	public String getAddressVerficationMsg() {
+		return addressVerficationMsg;
+	}
+
+	public void setAddressVerficationMsg(String addressVerficationMsg) {
+		this.addressVerficationMsg = addressVerficationMsg;
+	}
+
+	public boolean isAddressVerificationError() {
+		return isAddressVerificationError;
+	}
+
+	public void setAddressVerificationError(boolean isAddressVerificationError) {
+		this.isAddressVerificationError = isAddressVerificationError;
+	}
+
+	public FDSessionUser(FDUser user, HttpSession session) {
         super();
         this.user = user;
 

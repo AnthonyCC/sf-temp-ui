@@ -25,6 +25,7 @@ import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCaptureModel;
@@ -277,7 +278,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 	}
 	
 	
-	public List authorizeSaleRealtime(String saleId, EnumSaleType saleType) throws ErpAuthorizationException {
+	public List authorizeSaleRealtime(String saleId, EnumSaleType saleType) throws ErpAuthorizationException, ErpAddressVerificationException {
 
 		if(EnumSaleType.REGULAR.equals(saleType)) {
 			return authorizeSaleRealtime(saleId);
@@ -307,26 +308,41 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 					}
 				}
 			}else if(EnumSaleType.GIFTCARD==saleType || EnumSaleType.DONATION==saleType){
-				a:for (Iterator i = auths.iterator(); i.hasNext();) {
-					ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
+				a:for (Iterator i = auths.iterator(); i.hasNext();) {					
+					ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();					
 					if (auth.isApproved() && auth.hasAvsMatched()) {
 						saleEB.addAuthorization(auth);
 					} else {
 						if(auth.isApproved() && !auth.hasAvsMatched()){
 							
 							int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
-							if(count==0){
+							if(count<=1 && EnumSaleType.GIFTCARD==saleType){ 
 								logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
+								
+								CrmSystemCaseInfo info =new CrmSystemCaseInfo(
+										sale.getCustomerPk(),
+									CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),									
+									"AVS Exception : Found Gift Card order for new customer with AVS Exception for saleId "+sale.getId());
+								ErpCreateCaseCommand caseCmd=new ErpCreateCaseCommand(LOCATOR, info);
+								caseCmd.setRequiresNewTx(true);
+								caseCmd.execute(); 
 								SessionContext ctx = getSessionContext();
 								ctx.setRollbackOnly();
-								throw new ErpAuthorizationException("There was a problem with the given payment method Address Verification failed");
+								throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
+								
 							}else{
 								saleEB.addAuthorization(auth);
+								String saleTypeStr="Gift Card";
+								if(EnumSaleType.DONATION==saleType)
+								{
+									saleTypeStr="Donation";
+								}
 								CrmSystemCaseInfo info =new CrmSystemCaseInfo(
-											sale.getCustomerPk(),
-										CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),
-										"Found Gift Card order with AVS Exception for saleId "+sale.getId());								
-								new ErpCreateCaseCommand(LOCATOR, info).execute();
+												sale.getCustomerPk(),
+											CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),
+											"Found "+saleTypeStr+" order with AVS Exception for saleId "+sale.getId());								
+									new ErpCreateCaseCommand(LOCATOR, info).execute();
+								
                                 continue a;
 							}
 						}

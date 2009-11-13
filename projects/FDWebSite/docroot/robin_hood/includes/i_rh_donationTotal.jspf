@@ -17,10 +17,10 @@
 			To complete your donation, please enter the necessary personal and payment info below.
 		</td>
 		<td width="60" valign="middle" align="right" class="text10bold">
-			<input type="image" vspace="2" border="0" alt="CONTINUE TO CHECKOUT" src="/media_stat/images/buttons/continue_orange.gif" name="submit_top_text" onclick="$('address').submit();" />
+			<input type="image" vspace="2" border="0" alt="CONTINUE TO CHECKOUT" src="/media_stat/images/buttons/continue_orange.gif" name="submit_top_text" id="submit_top_text" onclick="displayStatus();$('address').submit();" />
 		</td>
 		<td width="35" valign="middle" align="RIGHT">
-			<input type="image" vspace="2" border="0" alt="GO" src="/media_stat/images/buttons/checkout_arrow.gif" name="submit_top_img"  onclick="$('address').submit();" />
+			<input type="image" vspace="2" border="0" alt="GO" src="/media_stat/images/buttons/checkout_arrow.gif" name="submit_top_img" id="submit_top_img"  onclick="displayStatus();$('address').submit();" />
 		</td>
 	</tr>
 	<tr>

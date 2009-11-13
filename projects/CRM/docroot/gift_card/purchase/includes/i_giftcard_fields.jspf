@@ -196,7 +196,7 @@ if (request.getParameter("fldMessage") !=null) {
     <tr>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
-				Recipient's&nbsp;Email
+				*&nbsp;Recipient's&nbsp;Email
 			</span>
         </td>
         <td colspan="2">

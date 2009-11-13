@@ -15,6 +15,9 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.giftcard.EnumGCDeliveryMode;
 import com.freshdirect.mail.EmailUtil;
+import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -31,6 +34,8 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
 	private static Category LOGGER = LoggerFactory.getInstance(AddSavedRecipientControllerTag.class);
 	private String gcAddCardPage = "/gift_card/purchase/add_giftcard.jsp";
 	private String gcSubmitOrderPage = "/gift_card/purchase/purchase_giftcard.jsp";
+	private static final String GIFTCARD_DEFAULT_ZPCOD="11101";
+	private static final EnumServiceType GIFTCARD_DEFAULT_SERVICE_TYPE=EnumServiceType.PICKUP;
 	
 	FDUser user = null;
 	
@@ -80,7 +85,24 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
         ActionResult result = new ActionResult();
 
         HttpSession session = pageContext.getSession();
+        HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
         FDSessionUser fs_user = (FDSessionUser)session.getAttribute(USER);
+        if(fs_user==null){
+        	try{
+        	FDUser fduser=FDCustomerManager.createNewUser(GIFTCARD_DEFAULT_ZPCOD, GIFTCARD_DEFAULT_SERVICE_TYPE);
+        	fs_user = new FDSessionUser(fduser,request.getSession());        	
+        	fs_user.setSelectedServiceType(GIFTCARD_DEFAULT_SERVICE_TYPE);
+        	DlvServiceSelectionResult s_result=new DlvServiceSelectionResult();
+    		//result.addServiceStatus(EnumServiceType.HOME, EnumDeliveryStatus.DELIVER);
+        	s_result.addServiceStatus(GIFTCARD_DEFAULT_SERVICE_TYPE, EnumDeliveryStatus.DELIVER);
+        	fs_user.setAvailableServices(s_result.getAvailableServices());					
+    		CookieMonster.storeCookie(fs_user, response);
+        	}catch (FDResourceException re) {
+    			LOGGER.warn("FDResourceException occured while trying to create the new Gift Card User", re);
+    			result.addError(true, "technicalDifficulty", SystemMessageList.MSG_TECHNICAL_ERROR);
+    	}
+    	 
+        }
         user = fs_user.getUser();
         boolean isCartChanged = false;
         
@@ -155,8 +177,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
             //
 
             if (result.getErrors().isEmpty() && (successPage != null)) {
-                LOGGER.debug("Success, redirecting to: "+successPage);
-                HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+                LOGGER.debug("Success, redirecting to: "+successPage);                
                 try {
                     response.sendRedirect(response.encodeRedirectURL(successPage));
                     JspWriter writer = pageContext.getOut();
@@ -208,8 +229,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
             //
 
             if (result.getErrors().isEmpty() && (successPage != null)) {
-                LOGGER.debug("Success GET, redirecting to: "+successPage);
-                HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+                LOGGER.debug("Success GET, redirecting to: "+successPage);                
                 try {
                     response.sendRedirect(response.encodeRedirectURL(successPage));
                     JspWriter writer = pageContext.getOut();
@@ -247,7 +267,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
     	fldRecipientEmail =  request.getParameter(EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode());
     	fldDeliveryMethod =  request.getParameter(EnumUserInfoName.DLV_METHOD.getCode());
     	fldMessage =  request.getParameter("fldMessage");
-    	gcTemplateId = request.getParameter("gcTemplateId");
+    	gcTemplateId =request.getParameter("gcTemplateId");
     }
     
     /**
@@ -270,7 +290,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
     	if(fldDeliveryMethod==null || "".equals(fldDeliveryMethod)) {
             result.addError(new ActionError(EnumUserInfoName.DLV_METHOD.getCode(), "Invalid or missing delivery method"));
         }
-    	if(fldDeliveryMethod != null && fldDeliveryMethod.equals("E")){
+    	if(fldDeliveryMethod != null ){//&& fldDeliveryMethod.equals("E")){
     		if(fldRecipientEmail==null || "".equals(fldRecipientEmail)) {
     			result.addError(new ActionError(EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode(), "Invalid or missing email"));
     		} else if(!EmailUtil.isValidEmailAddress(fldRecipientEmail)){

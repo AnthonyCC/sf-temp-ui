@@ -303,23 +303,27 @@ public class UserUtil {
 		ErpInventoryEntryModel inventoryMatch = null;
 		Date lastInventoryDate = null;
 		
-		if(prodInfo != null && prodInfo.getInventory() != null && prodInfo.getInventory().getEntries() != null 
-					&& !prodInfo.getInventory().getEntries().isEmpty()) {
+		if(!FDStoreProperties.getPreviewMode()){
+			if(prodInfo != null && prodInfo.getInventory() != null && prodInfo.getInventory().getEntries() != null 
+						&& !prodInfo.getInventory().getEntries().isEmpty()) {
+						
+				for (Iterator i = prodInfo.getInventory().getEntries().iterator(); i.hasNext();) {
+					ErpInventoryEntryModel e = (ErpInventoryEntryModel) i.next();
+	//				System.out.println("getRobinHoodAvailability >>"+e.getStartDate()+"->"+currentDate+"->"+e.getQuantity());
 					
-			for (Iterator i = prodInfo.getInventory().getEntries().iterator(); i.hasNext();) {
-				ErpInventoryEntryModel e = (ErpInventoryEntryModel) i.next();
-//				System.out.println("getRobinHoodAvailability >>"+e.getStartDate()+"->"+currentDate+"->"+e.getQuantity());
-				
-				if (null!= e.getStartDate() && !e.getStartDate().after(currentDate)) {		
-					if(lastInventoryDate == null || e.getStartDate().after(lastInventoryDate)) {
-						inventoryMatch = e;
-						lastInventoryDate = e.getStartDate();
-					}
-				}				
+					if (null!= e.getStartDate() && !e.getStartDate().after(currentDate)) {		
+						if(lastInventoryDate == null || e.getStartDate().after(lastInventoryDate)) {
+							inventoryMatch = e;
+							lastInventoryDate = e.getStartDate();
+						}
+					}				
+				}
 			}
-		}
-		if(inventoryMatch != null) {
-			quantity = inventoryMatch.getQuantity();
+			if(inventoryMatch != null) {
+				quantity = inventoryMatch.getQuantity();
+			}
+		}else{
+			quantity=15000;//Fixed value for preview mode, to test Robin Hood in preview mode.
 		}
 		return quantity;
 	}

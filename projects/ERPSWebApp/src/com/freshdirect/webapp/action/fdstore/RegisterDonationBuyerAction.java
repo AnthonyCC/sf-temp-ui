@@ -50,7 +50,11 @@ public class RegisterDonationBuyerAction extends RegistrationAction {
 		AccountInfo aInfo = new AccountInfo(request);
 
 		aInfo.validate(actionResult);
-		cInfo.validate(actionResult, EnumServiceType.WEB);
+		cInfo.validate(actionResult, EnumServiceType.HOME);
+		String optinInd = request.getParameter("optinInd");		
+		if(null == optinInd || "".equals(optinInd)){			
+			actionResult.addError(new ActionError("Opt_in_required", SystemMessageList.MSG_RH_OPTIN_REQUIRED));
+		}
 		if (!actionResult.isSuccess()) {
 			return ERROR;
 		}

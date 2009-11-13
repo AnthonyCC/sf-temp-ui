@@ -196,7 +196,7 @@ if (request.getParameter("fldMessage") !=null) {
     				</td>
 					<td width="25%">Email</td>
 					<td width="15">
-						<input type="radio" tabIndex="5"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %> onclick="$('gcRecipientEmail').disabled=true; $('recipEmailStar').innerHTML='';" />
+						<input type="radio" tabIndex="5"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %>  />
 					</td>
 					<td width="70%">I'll Download a PDF and Print It.</td>
 				</tr>
@@ -206,11 +206,11 @@ if (request.getParameter("fldMessage") !=null) {
     <tr>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler> >
-				<span id="recipEmailStar"><%="P".equals(fldDeliveryMethod)?"":"*"%></span>&nbsp;Recipient's&nbsp;Email
+				<span id="recipEmailStar">*</span>&nbsp;Recipient's&nbsp;Email
 			</span>
         </td>
         <td colspan="2">
-			<input type="text" maxlength="80" tabIndex="6"  size="21" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>" <%="P".equals(fldDeliveryMethod)?"disabled=\"true\"":""%> />
+			<input type="text" maxlength="80" tabIndex="6"  size="21" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>" />
 	</td>
 	</tr>
 	<tr>

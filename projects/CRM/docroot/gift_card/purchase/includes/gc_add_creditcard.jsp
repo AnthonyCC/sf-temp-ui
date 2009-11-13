@@ -21,7 +21,7 @@
 
 <%
 	String actionName =  request.getParameter("actionName"); 
-	FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );
+	FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER );
 	String pageName=request.getParameter("pageName");
 	if(pageName==null) pageName="";
 %>
@@ -46,6 +46,98 @@
 		%>
 
 	<fd:PaymentMethodController actionName='addPaymentMethod' result='result' successPage='<%=success_page%>'>
+    
+    <% 
+
+    if(user.isGCSignupError()) {
+       
+%>    
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr>
+    <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
+    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
+    <td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+</tr>
+<tr>
+    <td rowspan="3" bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
+    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+</tr>
+<tr>
+    <td width="18" bgcolor="#CC3300"><img src="/media_stat/images/template/system_msgs/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"></td>
+    <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
+				<%= SystemMessageList.MSG_GC_SIGNUP_SUCCESS %><br><br>
+                <%= SystemMessageList.MSG_GC_CC_INVALID %>
+                
+                
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
+	</td>
+    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+    <td bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+</tr>
+<tr>
+    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
+    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
+</tr>
+<tr>
+    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+</tr>
+</table>
+<br>
+<% 
+//clear info from session.
+user.setGCSignupError(false);
+}
+
+
+
+if(user.isAddressVerificationError()) {
+       
+%>    
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr>
+    <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
+    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
+    <td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+</tr>
+<tr>
+    <td rowspan="3" bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
+    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+</tr>
+<tr>
+    <td width="18" bgcolor="#CC3300"><img src="/media_stat/images/template/system_msgs/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"></td>
+    <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
+				<%= SystemMessageList.MSG_GC_SIGNUP_SUCCESS %><br><br>
+                <%= user.getAddressVerficationMsg() %>
+                
+                
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
+	</td>
+    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+    <td bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+</tr>
+<tr>
+    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
+    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
+</tr>
+<tr>
+    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+</tr>
+</table>
+<br>
+<% 
+//clear info from session.
+user.setAddressVerificationError(false);
+}
+%>
+    
 
 	<fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentMethodForm%>'>
 		<% String errorMsg= SystemMessageList.MSG_MISSING_INFO; %>
@@ -83,9 +175,7 @@
 		</tr>
 	</table>
 
-<%--<table border="0" cellspacing="0" cellpadding="0" width="675">
-<tr valign="top"><td width="640"><%@ include file="/includes/i_footer_account.jspf"%></td></tr>
-</table>--%>
+
 </fd:PaymentMethodController>
 </tmpl:put>
 </tmpl:insert>

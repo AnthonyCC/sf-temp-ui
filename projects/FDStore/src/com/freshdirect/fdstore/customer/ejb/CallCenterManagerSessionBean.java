@@ -660,8 +660,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			//+ "and s.type = 'REG' "
 			+ "and scm.sale_id = sa.sale_id and scm.max_date = sa.action_date "
 			+ "and s.customer_id = ci.customer_id and s.status in ('NSM', 'MOD', 'MOC', 'NEW') "
-			//+ "and sa.requested_date >= sysdate order by action_date ";
-						+"AND ((sa.requested_date >= SYSDATE) OR (s.TYPE='SUB' AND sa.requested_date<=(SYSDATE))) ORDER BY action_date ";
+			//+ "and sa.requested_date >= sysdate order by action_date ";						
+			+" AND ((sa.requested_date >= SYSDATE) OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date<=(SYSDATE))) ORDER BY action_date ";
 
 	public List getNSMOrders() throws FDResourceException {
 		Connection conn = null;

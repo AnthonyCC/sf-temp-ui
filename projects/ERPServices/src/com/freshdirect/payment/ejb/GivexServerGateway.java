@@ -133,8 +133,16 @@ public class GivexServerGateway {
 		try {
 			res = paymentService.registerCard(id,amount,reference);
 		} catch(RemoteException e){
-             EnumGivexErrorType errorType=EnumGivexErrorType.getErrorTypeFromMessage(e.getMessage()); 
-             LOGGER.debug("Error Type :"+errorType);
+			LOGGER.debug(" GivexServerver Gateway caught RemoteException while registerCard() :"+e.getMessage());
+             EnumGivexErrorType errorType=EnumGivexErrorType.getErrorTypeFromMessage(e.getMessage());
+             
+				// dont mind add some more error desc please
+                String extraDesc="";
+                String message=e.getMessage();				
+				int extraLength=message.indexOf(errorType.getDescription());
+				if(extraLength==-1) extraLength=message.length();
+				if(extraLength>90) extraLength=90; 				
+				extraDesc=message.substring(0, extraLength);									             
              
              if(EnumGivexErrorType.ERROR_TIME_OUT==errorType){
             	 Reversal rev=new Reversal();
@@ -152,10 +160,10 @@ public class GivexServerGateway {
 					// TODO Auto-generated catch block
 					// hey can't to much pal 
 					EnumGivexErrorType errorType1=EnumGivexErrorType.getErrorTypeFromMessage(e1.getMessage()); 
-					throw new GivexException(errorType1.getInfo(), errorType1.getErrorCode());
+					throw new GivexException(errorType1.getInfo()+extraDesc, errorType1.getErrorCode());
 					
 				}			            	 
-				throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
+				throw new GivexException(errorType.getInfo()+extraDesc, errorType.getErrorCode());
              }
              if(EnumGivexErrorType.ERROR_FAIL_OVER==errorType){
             	 LOGGER.debug(" ERROR_FAIL_OVER transaction :");                  	             	             	 
@@ -163,12 +171,12 @@ public class GivexServerGateway {
             	 String address=(String)port._getProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY);
             	 if(address!=null && GIVEX_SERVER_BACKUP_URL.equalsIgnoreCase(address)){
             		// second port failed so cant do much
-            		 throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
+            		 throw new GivexException(errorType.getInfo()+extraDesc, errorType.getErrorCode());
             	 }            		
             	 port._setProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY, GIVEX_SERVER_BACKUP_URL);            	             	
             	 return registerCard(amount,reference);            	 
              }else{
-            	 throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
+            	 throw new GivexException(errorType.getInfo()+extraDesc, errorType.getErrorCode());
              }
 		} 
 		return convertGivexResponseModel(res);		
@@ -181,22 +189,30 @@ public class GivexServerGateway {
 		try {			
 			res = paymentService.transferBalance(id, fromMethod, toMethod, amount,reference);
 		} catch(RemoteException e){
-			LOGGER.debug(" RemoteException caught1111 :"+e.getMessage());
+			LOGGER.debug(" GivexServerver Gateway caught RemoteException while transferBalance() : :"+e.getMessage());
              //e.printStackTrace();
-             EnumGivexErrorType errorType=EnumGivexErrorType.getErrorTypeFromMessage(e.getMessage()); 
+             EnumGivexErrorType errorType=EnumGivexErrorType.getErrorTypeFromMessage(e.getMessage());
+         	// dont mind add some more error desc please
+                String extraDesc="";
+                String message=e.getMessage();				
+				int extraLength=message.indexOf(errorType.getDescription());
+				if(extraLength==-1) extraLength=message.length();
+				if(extraLength>90) extraLength=90; 
+				extraDesc=message.substring(0, extraLength);	
+             
                          
              if(EnumGivexErrorType.ERROR_FAIL_OVER==errorType){
             	 TransPortType_Stub port= (TransPortType_Stub)(transport_type);
             	 String address=(String)port._getProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY);
             	 if(address!=null && GIVEX_SERVER_BACKUP_URL.equalsIgnoreCase(address)){
             		// second port failed so cant do much
-            		 throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
+            		 throw new GivexException(errorType.getInfo()+extraDesc, errorType.getErrorCode());
             	 }            		
             	 port._setProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY, GIVEX_SERVER_BACKUP_URL);            	             	
             	 return transferBalance(fromMethod, toMethod, amount,reference);    	 
              }
              else{
-            	 throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
+            	 throw new GivexException(errorType.getInfo()+extraDesc, errorType.getErrorCode());
              }
 		}   
              return convertGivexResponseModel(res);
@@ -210,26 +226,33 @@ public class GivexServerGateway {
 		try {
 			res = paymentService.getBalance(id,paymentMethod);
 		} catch(RemoteException e){
-			LOGGER.debug(" RemoteException caught&&&&&&&&&&&&& :"+e.getCause().getCause());
+			LOGGER.debug(" GivexServerver Gateway caught RemoteException while getBalance() : :"+e.getMessage());
 			System.out.println("Error message $$$$$$$$$$$$ "+e.getMessage());
              //e.printStackTrace();
              EnumGivexErrorType errorType=EnumGivexErrorType.getErrorTypeFromMessage(e.getMessage()); 
-                         
+         	// dont mind add some more error desc please
+             String extraDesc="";
+             String message=e.getMessage();				
+				int extraLength=message.indexOf(errorType.getDescription());
+				if(extraLength==-1) extraLength=message.length();
+				if(extraLength>90) extraLength=90;				
+				extraDesc=message.substring(0, extraLength);	
+				
              if(EnumGivexErrorType.ERROR_FAIL_OVER==errorType){
             	 TransPortType_Stub port= (TransPortType_Stub)(transport_type);
             	 String address=(String)port._getProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY);
             	 if(address!=null && GIVEX_SERVER_BACKUP_URL.equalsIgnoreCase(address)){
             		// second port failed so cant do much
-            		 throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
+            		 throw new GivexException(errorType.getInfo()+extraDesc, errorType.getErrorCode());
             	 }            		
             	 port._setProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY, GIVEX_SERVER_BACKUP_URL);            	             	
             	 return getBalance(paymentMethod);            	 
              }
              else{
-            	 throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
+            	 throw new GivexException(errorType.getInfo()+extraDesc, errorType.getErrorCode());
              }
 		} catch(Exception ex) {
-			System.out.println("Exception Caught getBalance $$$$$$$$$$$$$$$$ ");
+			System.out.println("Exception Caught getBalance $$$$$$$$$$$$$$$$ "+ex.getMessage());
 			ex.printStackTrace();
 		}  
              return convertGivexResponseModel(res);
@@ -243,9 +266,17 @@ public class GivexServerGateway {
 		try {
 			res = paymentService.preAuthGiftCard(id, paymentMethod, amount, reference);
 		} catch(RemoteException e){
-			LOGGER.debug(" RemoteException caught1111 :"+e.getMessage());
-             //e.printStackTrace();
-             EnumGivexErrorType errorType=EnumGivexErrorType.getErrorTypeFromMessage(e.getMessage()); 
+			LOGGER.debug(" GivexServerver Gateway caught RemoteException while preAuthGiftCard() : :"+e.getMessage());
+            //e.printStackTrace();
+            EnumGivexErrorType errorType=EnumGivexErrorType.getErrorTypeFromMessage(e.getMessage()); 
+        	// dont mind add some more error desc please
+            String extraDesc="";
+            String message=e.getMessage();				
+			int extraLength=message.indexOf(errorType.getDescription());
+			if(extraLength==-1) extraLength=message.length();
+			if(extraLength>90) extraLength=90; 
+			extraDesc=message.substring(0, extraLength);
+			
              if(EnumGivexErrorType.ERROR_TIME_OUT==errorType){
             	 LOGGER.debug(" reverse transaction :");
             	 Reversal rev=new Reversal();
@@ -263,9 +294,9 @@ public class GivexServerGateway {
 					// TODO Auto-generated catch block
 					// hey can't to much pal 
 					EnumGivexErrorType errorType1=EnumGivexErrorType.getErrorTypeFromMessage(e1.getMessage()); 
-					throw new GivexException(errorType1.getInfo(), errorType1.getErrorCode());
+					throw new GivexException(errorType1.getInfo()+extraDesc, errorType1.getErrorCode());
 				}			            	 
-				throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
+				throw new GivexException(errorType.getInfo()+extraDesc, errorType.getErrorCode());
              }
              if(EnumGivexErrorType.ERROR_FAIL_OVER==errorType){
             	 LOGGER.debug(" ERROR_FAIL_OVER transaction :");                  	             	             	 
@@ -273,12 +304,12 @@ public class GivexServerGateway {
             	 String address=(String)port._getProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY);
             	 if(address!=null && GIVEX_SERVER_BACKUP_URL.equalsIgnoreCase(address)){
             		// second port failed so cant do much
-            		 throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
+            		 throw new GivexException(errorType.getInfo()+extraDesc, errorType.getErrorCode());
             	 }            		
             	 port._setProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY, GIVEX_SERVER_BACKUP_URL);            	             	
             	 return preAuthGiftCard(paymentMethod, amount,reference);            	 
              }else{
-            	 throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
+            	 throw new GivexException(errorType.getInfo()+extraDesc, errorType.getErrorCode());
              }
 		} 
 		return convertGivexResponseModel(res);				
@@ -292,11 +323,18 @@ public class GivexServerGateway {
 		try {
 			res = paymentService.postAuthGiftCard(id, paymentMethod, amount, authCode, reference);
 		} catch(RemoteException e){
-			LOGGER.debug(" RemoteException caught1111 :"+e.getMessage());
+			LOGGER.debug(" GivexServerver Gateway caught RemoteException while postAuthGiftCard() : :"+e.getMessage());
+			 System.out.println("Error message $$$$$$$$$$$$ "+e.getMessage());
              //e.printStackTrace();
              EnumGivexErrorType errorType=EnumGivexErrorType.getErrorTypeFromMessage(e.getMessage()); 
-             LOGGER.debug("Error Type 1111"+errorType);
-             
+         	// dont mind add some more error desc please
+             String extraDesc="";
+             String message=e.getMessage();				
+			 int extraLength=message.indexOf(errorType.getDescription());
+			 if(extraLength==-1) extraLength=message.length();
+			 if(extraLength>90) extraLength=90; 
+			 extraDesc=message.substring(0, extraLength);	
+				
              if(EnumGivexErrorType.ERROR_TIME_OUT==errorType){
             	 Reversal rev=new Reversal();
             	 rev.setAmount(new BigDecimal(amount));
@@ -313,7 +351,7 @@ public class GivexServerGateway {
 					// TODO Auto-generated catch block
 					// hey can't to much pal 
 					EnumGivexErrorType errorType1=EnumGivexErrorType.getErrorTypeFromMessage(e1.getMessage()); 
-					throw new GivexException(errorType1.getInfo(), errorType1.getErrorCode());
+					throw new GivexException(errorType1.getInfo()+extraDesc, errorType1.getErrorCode());
 				}			            	 
 				throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
              }
@@ -323,12 +361,12 @@ public class GivexServerGateway {
             	 String address=(String)port._getProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY);
             	 if(address!=null && GIVEX_SERVER_BACKUP_URL.equalsIgnoreCase(address)){
             		// second port failed so cant do much
-            		 throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
+            		 throw new GivexException(errorType.getInfo()+extraDesc, errorType.getErrorCode());
             	 }            		
             	 port._setProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY, GIVEX_SERVER_BACKUP_URL);            	             	
             	 return postAuthGiftCard(paymentMethod, amount, authCode,reference);            	 
              }else{
-            	 throw new GivexException(errorType.getInfo(), errorType.getErrorCode());
+            	 throw new GivexException(errorType.getInfo()+extraDesc, errorType.getErrorCode());
              }
 		} 
 		return convertGivexResponseModel(res);

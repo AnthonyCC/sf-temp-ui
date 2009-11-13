@@ -96,6 +96,8 @@ public interface SystemMessageList {
 	// password assistance (siteaccess)
 	public final static String MSG_INVALID_HINT			= "Invalid or missing hint.";
 	
+	public final static String MSG_AUTH_FAILED			= "Payment Authorization Failed.";
+	
 	// redemption promo messages
 	public final static String MSG_INVALID_CODE = "Sorry, this promotion code ({0}) is not valid.";
 	public final static String MSG_REDEMPTION_MIN_NOT_MET = "PLEASE NOTE: offer will be applied when cart subtotal is {0,number,$0.00} or more.";
@@ -149,7 +151,8 @@ public interface SystemMessageList {
 	public final static String MSG_GC_MIN_AMOUNT = "Gift card orders require a minimum value of ${0} per card. Please contact Customer Service for further assistance {1}.";
 	public final static String MSG_GC_MAX_AMOUNT = " Gift card purchases are restricted to a maximum of ${0} per order. Please contact Customer Service for further assistance {1}.";
 	public final static String MSG_GC_ADD_RECIP_SUCCESS = "Your recipient list has been updated. You may enter the details for another gift or place your order by clicking the \"Continue\" button.";
-	public final static String MSG_RH_OPTIN_REQUIRED = "Please select one of the following options:";
+	public final static String MSG_RH_OPTIN_REQUIRED = "Please scroll down and select a tax deduction option below";
+	public final static String MSG_RH_OPTIN_BELOW_REQUIRED = "Please select a tax deduction option ";
 	
 	
 }

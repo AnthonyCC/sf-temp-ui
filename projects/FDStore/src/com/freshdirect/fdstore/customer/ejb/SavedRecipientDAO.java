@@ -43,7 +43,7 @@ public class SavedRecipientDAO {
 			ps.setString(4, nvl(model.getSenderEmail()));
 			ps.setString(5, nvl(model.getRecipientName()));
 			ps.setString(6, nvl(model.getRecipientEmail()));
-			ps.setString(7, nvl(model.getTemplateId()));
+			ps.setString(7, nvl(model.getTemplateId()));			
 			ps.setString(8, nvl(model.getDeliveryMode().getName()));
 			ps.setDouble(9, model.getAmount());
 			ps.setString(10, nvl(model.getPersonalMessage()));

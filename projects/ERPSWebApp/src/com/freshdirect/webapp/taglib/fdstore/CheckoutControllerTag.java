@@ -105,6 +105,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	private String backToViewCart = "/checkout/view_cart.jsp";
 	private String ccdAddCardPage = "/checkout/step_3_card_add.jsp";
 	private String gcFraudPage = "/gift_card/purchase/purchase_giftcard.jsp";
+	private String gcAVSExceptionPage="/gift_card/purchase/purchase_giftcard.jsp";	
 	
 	public void setCcdProblemPage(String ccdProblemPage) {
 		this.ccdProblemPage = ccdProblemPage;
@@ -181,21 +182,29 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 			} else if ("gc_submitGiftCardOrder".equalsIgnoreCase(action) ||("gc_submitGiftCardBulkOrder".equalsIgnoreCase(action)) || ("gc_onestep_submitGiftCardOrder".equalsIgnoreCase(action)) || "rh_submitDonationOrder".equalsIgnoreCase(action) || "rh_onestep_submitDonationOrder".equalsIgnoreCase(action)) {
 				// allane:  added this b/c we skip confirm order page in gc checkout.  payment needs to be set at the same time as checkout.
-				FDSessionUser currentUser = (FDSessionUser) pageContext.getSession().getAttribute( SessionName.USER );
+				FDSessionUser currentUser = (FDSessionUser) pageContext.getSession().getAttribute( SessionName.USER );				
 				if("gc_onestep_submitGiftCardOrder".equalsIgnoreCase(action)) {
-					/*
-					FDIdentity identity = getIdentity();
 					
-					if(identity != null) {
-						request.setAttribute("signup_success", SystemMessageList.MSG_GC_SIGNUP_SUCCESS);
-					}
-					*/
+					
+					
 					if(result.isSuccess()) { 
 						performAddAndSetPaymentMethod(request, result);
 						if(result.getError("payment_method_fraud") != null){
 							currentUser.setGCSignupError(true);
 							redirectTo(this.ccdProblemPage);
+						}else if(result.getErrors()!=null && result.getErrors().size()>0){
+							currentUser.setGCSignupError(true);
+							List errList=new ArrayList();
+							Collection col=result.getErrors();
+							Iterator iterator=col.iterator();
+							while(iterator.hasNext()){
+								ActionError tmpResult=(ActionError)iterator.next();
+								errList.add(tmpResult.getDescription());
+							}
+							currentUser.setOneTimeGCPaymentError(errList);
+							redirectTo(this.ccdProblemPage);
 						}
+						
 					}
 				} else if ("rh_onestep_submitDonationOrder".equalsIgnoreCase(action)){
 					if(result.isSuccess()) { 
@@ -222,6 +231,17 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				if(result.isSuccess()){
 					String outcome = performSubmitOrder(request, result);				
 					saveCart = true;
+					
+					if(result.getError("address_verification_failed") != null){
+						//currentUser.setGCSignupError(true);
+						redirectTo(this.gcAVSExceptionPage);
+					}
+					else if(result.getError("gc_payment_auth_failed") != null){
+						//currentUser.setGCSignupError(true);
+						redirectTo(this.gcAVSExceptionPage);
+					}
+					
+					
 					if (outcome.equals( Action.NONE )) {
 						return false;		// SKIP_BODY
 					} 	

@@ -43,6 +43,7 @@ import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintModel;
@@ -2755,7 +2756,7 @@ public class FDCustomerManager {
 			 EnumDlvPassStatus status,
 			 List repList, boolean isBulkOrder) throws FDResourceException, 
       						  				   ErpFraudException, 
-      						  				   ErpAuthorizationException
+      						  				   ErpAuthorizationException,ErpAddressVerificationException
       						  				    {
 				lookupManagerHome();
 				String orderId="";
@@ -2789,6 +2790,10 @@ public class FDCustomerManager {
 					throw new FDResourceException(ce, "Error creating session bean");
 				} catch (RemoteException re) {
 					invalidateManagerHome();
+					
+					Exception ex=(Exception)re.getCause();
+					if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;
+					
 					throw new FDResourceException(re, "Error talking to session bean");
 				} /*catch (ErpSaleNotFoundException e) {
 					invalidateManagerHome();

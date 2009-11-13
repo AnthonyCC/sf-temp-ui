@@ -77,11 +77,12 @@ public class RegisterGiftCardBuyerAction extends RegistrationAction {
             
         }
         */
+		user.isLoggedIn(false);
 		session.setAttribute(SessionName.USER, user);
 		//System.out.println("user cookie:  " + user.getUser().getCookie() + " user primary key = " + user.getUser().getPrimaryKey() + " identity = " + user.getUser().getIdentity().toString());
 		FDCustomerManager.storeUser(user.getUser());
 		String application = (String) session.getAttribute(SessionName.APPLICATION);
-
+      
 			//
 			// Absence of an FDIdentity in session means this is a new registration.
 			// Presence of an FDIdentity might indicate a registered user but failed predicate function
@@ -99,6 +100,8 @@ public class RegisterGiftCardBuyerAction extends RegistrationAction {
 				
 				erpCustomer.setCustomerInfo(customerInfo);
 				//Set the default billing address provided by customer.
+				
+				
 				ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm(request, actionResult, user.getIdentity());
 				erpCustomer.setSapBillToAddress(paymentMethod.getAddress());
 				FDCustomerModel fdCustomer = new FDCustomerModel();
@@ -106,19 +109,23 @@ public class RegisterGiftCardBuyerAction extends RegistrationAction {
 				fdCustomer.setPasswordHint(aInfo.getPasswordHint());
 
 				try {
-					FDIdentity regIdent = this.doRegistration(fdCustomer, erpCustomer, null, EnumServiceType.HOME);
+					
+					if(actionResult.isSuccess())
+					{
+					   FDIdentity regIdent = this.doRegistration(fdCustomer, erpCustomer, null, EnumServiceType.HOME);
+						user.setIdentity(regIdent);
+						user.invalidateCache();
+						user.isLoggedIn(true);
+						user.updateUserState();
+						//Set the Default Delivery pass status.
+						FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0);
+						user.getUser().setDlvPassInfo(dlvpassInfo);
+						session.setAttribute(SessionName.USER, user);
+					}
 					//user.getShoppingCart().setZoneInfo(zoneInfo);
-					user.setIdentity(regIdent);
-					user.invalidateCache();
-					user.isLoggedIn(true);
-					user.updateUserState();
-					//Set the Default Delivery pass status.
-					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0);
-					user.getUser().setDlvPassInfo(dlvpassInfo);
-					session.setAttribute(SessionName.USER, user);
 				} catch (ErpDuplicateUserIdException de) {
 					LOGGER.warn("User registration failed due to duplicate id", de);
-					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
+					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));					
 				}
 
 			}
@@ -147,11 +154,14 @@ public class RegisterGiftCardBuyerAction extends RegistrationAction {
 					if (actionResult.isSuccess())
 						PaymentMethodUtil.addPaymentMethod(request, actionResult, paymentMethod);
 					
+					
+					
 				} else {
 					LOGGER.debug("NO CARD REDIRECT");
 					this.setSuccessPage("/main/account_details.jsp?cc=no");
 				}
 			}
+						
 			if (actionResult.isSuccess()) {
 				user.isLoggedIn(true);
 			}

@@ -75,5 +75,5 @@ public class CookieMonster {
 		response.addCookie(c);
 		LOGGER.debug("Cleared cookie " + COOKIE_NAME);
 	}
-
+			
 }

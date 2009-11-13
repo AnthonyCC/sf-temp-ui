@@ -73,6 +73,31 @@
 						<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 							<tr>
 								<td width="675" class="text11">
+									<fd:ErrorHandler result='<%=result%>' name='gc_order_amount_fraud' id='errorMsg'>
+							            <%@ include file="/includes/i_error_messages.jspf" %>	
+							        </fd:ErrorHandler>        
+							        <fd:ErrorHandler result='<%=result%>' name='gc_order_count_fraud' id='errorMsg'>
+							            <%@ include file="/includes/i_error_messages.jspf" %>	
+							        </fd:ErrorHandler>    
+							        <fd:ErrorHandler result='<%=result%>' name='address_verification_failed' id='errorMsg'>
+							            <%@ include file="/includes/i_error_messages.jspf" %>	
+							        </fd:ErrorHandler>
+							         <fd:ErrorHandler result='<%=result%>' name='authorization_failed' id='errorMsg'>
+							            <%@ include file="/includes/i_error_messages.jspf" %>	
+							        </fd:ErrorHandler>
+							        <fd:ErrorHandler result='<%=result%>' name='fraud_check_failed' id='errorMsg'>
+							                <% 
+							                StringBuffer sbErrorMsg= new StringBuffer(); 
+							                sbErrorMsg.append("<br>Checkout prevented because:<br>");
+							                sbErrorMsg.append(errorMsg);
+							                sbErrorMsg.append("<br>");
+							                errorMsg = sbErrorMsg.toString();
+							                %>
+							            <%@ include file="/includes/i_error_messages.jspf"%>                 
+							        </fd:ErrorHandler>    
+							        <fd:ErrorHandler result='<%=result%>' name='limitReached' id='errorMsg'>
+							           <%@ include file="/includes/i_error_messages.jspf" %>
+							        </fd:ErrorHandler>  
                                     <% String[] checkPaymentForm = {"system", "order_minimum", "payment_inadequate", "technical_difficulty", "paymentMethodList", "payment", "declinedCCD", "matching_addresses", "expiration","bil_apartment","bil_address1","cardNum"}; %>
                             		<fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentForm%>' id='errorMsg'>
                             			<%@ include file="/includes/i_error_messages.jspf" %>	

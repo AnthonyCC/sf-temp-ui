@@ -13,11 +13,7 @@
 	//giftcard top nav
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 %>
-
-<table width="745" border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td valign="bottom" width="182">
-			<% if (user != null) {
+<% if (user != null) {
 				// ads are enabled
 				if (FDStoreProperties.isAdServerEnabled()) {
 					request.setAttribute("listPos", "SystemMessage");
@@ -41,6 +37,12 @@
 						</logic:iterate>
 					</fd:GetSiteAnnouncements>
 				<% } %>
+				
+			<% } %>
+<table width="745" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td valign="bottom" width="182">
+			<% if (user != null) {%>					
 				<% if (user.isDepotUser()) { %>
 					<a href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif" alt="" border="0" /></a>
 				 <% } else { %>
