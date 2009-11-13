@@ -109,7 +109,9 @@ import com.freshdirect.fdstore.referral.EnumReferralStatus;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
 import com.freshdirect.fdstore.survey.EnumSurveyType;
+import com.freshdirect.fdstore.survey.FDSurveyFactory;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
+import com.freshdirect.fdstore.survey.SurveyKey;
 import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -2920,55 +2922,32 @@ public class FDCustomerManager {
 	    	}
 	    }
 	    
-	    public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity) throws FDResourceException {
-	    	lookupSurveyHome();
-			try {
-				FDSurveySB sb = surveyHome.create();
-				return sb.getCustomerProfile(identity);
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating session bean");
-			} catch (RemoteException re) {
-				invalidateManagerHome();
-				throw new FDResourceException(re, "Error talking to session bean");
-			}
-		}
+
+	    /**
+             * Call FDSurveyFactory directly 
+	     * 
+	     * @param identity
+	     * @param serviceType
+	     * @return
+	     * @throws FDResourceException
+	     */
+	    @Deprecated
+	    public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity, EnumServiceType serviceType) throws FDResourceException {
+	        return FDSurveyFactory.getCustomerProfileSurveyInfo(identity, serviceType);
+            }	    
+
+	    /**
+	     * Call FDSurveyFactory directly 
+	     * @param identity
+	     * @param survey
+	     * @return
+	     * @throws FDResourceException
+	     */
+	    @Deprecated
+            public static FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey survey) throws FDResourceException {
+                return FDSurveyFactory.getSurveyResponse(identity, survey);
+            }
 	    
-	    public static FDSurveyResponse getSurveyResponse(FDIdentity identity, String survey) throws FDResourceException {
-	    	lookupSurveyHome();
-			try {
-				FDSurveySB sb = surveyHome.create();
-				return sb.getSurveyResponse(identity, survey);
-			} catch (CreateException ce) {
-				invalidateManagerHome();
-				throw new FDResourceException(ce, "Error creating session bean");
-			} catch (RemoteException re) {
-				invalidateManagerHome();
-				throw new FDResourceException(re, "Error talking to session bean");
-			}
-	    }
-	    
-	    public static FDSurveyResponse getSurveyResponse(FDIdentity identity, EnumSurveyType survey) throws FDResourceException {
-	        
-	    	return getSurveyResponse(identity, survey.getName());
-	    }
-	    
-	    protected static void lookupSurveyHome() throws FDResourceException {
-			Context ctx = null;
-			try {
-				ctx = FDStoreProperties.getInitialContext();
-				surveyHome = (FDSurveyHome) ctx.lookup( FDStoreProperties.getFDSurveyHome() );
-			} catch (NamingException ne) {
-				throw new FDResourceException(ne);
-			} finally {
-				try {
-					if (ctx != null) {
-						ctx.close();
-					}
-				} catch (NamingException e) {
-				}
-			}
-		}
 	    
 	    public static ContactAddressModel getAddress(FDIdentity identity,String id) throws FDResourceException {
 	    	

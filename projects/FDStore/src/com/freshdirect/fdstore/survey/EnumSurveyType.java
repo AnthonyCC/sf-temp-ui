@@ -1,33 +1,40 @@
 package com.freshdirect.fdstore.survey;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.enums.Enum;
 
-public class EnumSurveyType extends Enum {
+public enum EnumSurveyType {
 
-	public static final EnumSurveyType CUSTOMER_PROFILE_SURVEY = new EnumSurveyType("Customer Profile Survey");
-	public static final EnumSurveyType REGISTRATION_SURVEY = new EnumSurveyType("Registration_survey");
-	public static final EnumSurveyType SECOND_ORDER_SURVEY = new EnumSurveyType("Second Order Survey");
-	public static final EnumSurveyType POST_ORDER_SURVEY = new EnumSurveyType("Post Order Survey");
+    CUSTOMER_PROFILE_SURVEY("Customer Profile Survey"), 
+    REGISTRATION_SURVEY("Registration_survey"), 
+    SECOND_ORDER_SURVEY("Second Order Survey"), 
+    POST_ORDER_SURVEY("Post Order Survey");
 
-	
-	private EnumSurveyType(String name) {
-		super(name);
-	}
+    String label;
 
+    final static Map<String, EnumSurveyType> types = new HashMap<String, EnumSurveyType>();
+    
+    static {
+        for (EnumSurveyType s : values()) {
+            types.put(s.getLabel(), s);
+        }
+    }
+    
+    private EnumSurveyType(String name) {
+        label = name;
+    }
 
-	public static EnumSurveyType getEnum(String name) {
-		return (EnumSurveyType) getEnum(EnumSurveyType.class, name);
-	}
+    public static EnumSurveyType getEnum(String name) {
+        try {
+            return types.get(name);
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
 
-	public static Map getEnumMap() {
-		return getEnumMap(EnumSurveyType.class);
-	}
-
-	public static List getEnumList() {
-		return getEnumList(EnumSurveyType.class);
-	}
+    public String getLabel() {
+        return label;
+    }
+    
 }
-

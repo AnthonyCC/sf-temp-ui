@@ -8,14 +8,16 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBException;
-import org.apache.log4j.Category;
 
+import org.apache.log4j.Logger;
+
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurvey;
 import com.freshdirect.fdstore.survey.FDSurveyConstants;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
-import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.fdstore.survey.SurveyKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -25,11 +27,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDSurveySessionBean extends SessionBeanSupport {
 
-	private static final Category LOGGER = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getInstance(FDSurveySessionBean.class);
 	
-	private final static ServiceLocator LOCATOR = new ServiceLocator();
-
 	public FDSurveySessionBean() {
 		super();
 	}
@@ -45,34 +45,28 @@ public class FDSurveySessionBean extends SessionBeanSupport {
 
 
 	
-	public FDSurvey getSurvey(String surveyName) {
+	public FDSurvey getSurvey(SurveyKey key) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return FDSurveyDAO.loadSurvey(conn, surveyName);
+			return FDSurveyDAO.loadSurvey(conn, key);
 		} catch (SQLException e) {
-			LOGGER.warn("SQLException while loading survey : "+surveyName, e);
+			LOGGER.warn("SQLException while loading survey : "+key, e);
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER.warn("Unknown error while loading survey : "+surveyName, exp);
+			LOGGER.warn("Unknown error while loading survey : "+key, exp);
 			throw new EJBException(exp);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup of getSurvey()", e);
-			}
+		    close(conn);
 		}
 	}
 
-	public FDSurveyResponse getCustomerProfile(FDIdentity identity) {
+	public FDSurveyResponse getCustomerProfile(FDIdentity identity, EnumServiceType serviceType) {
 		Connection conn = null;
 		try {
 		
 			conn = getConnection();
-			List surveys= FDSurveyDAO.getCustomerProfileSurveys(conn, identity);
+			List<String> surveys= FDSurveyDAO.getCustomerProfileSurveys(conn, identity, serviceType);
 			if(surveys==null||surveys.size()==0 )
 				return null;
 			else if(surveys.size()==1) {
@@ -106,35 +100,23 @@ public class FDSurveySessionBean extends SessionBeanSupport {
 			LOGGER.warn("Unknown error while loading survey response : "+FDSurveyConstants.CUSTOMER_PROFILE_SURVEY, exp);
 			throw new EJBException(exp);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup of getCustomerProfile()", e);
-			}
+                    close(conn);
 		}
 	}
 
-	public FDSurveyResponse getSurveyResponse(FDIdentity identity, String survey) {
+	public FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey key) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return FDSurveyDAO.getResponse(conn, identity, EnumSurveyType.getEnum(survey));
+			return FDSurveyDAO.getResponse(conn, identity, key.getSurveyType());
 		} catch (SQLException e) {
-			LOGGER.warn("SQLException while loading survey response: "+survey, e);
+			LOGGER.warn("SQLException while loading survey response: "+key, e);
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER.warn("Unknown error while loading survey response: "+survey, exp);
+			LOGGER.warn("Unknown error while loading survey response: "+key, exp);
 			throw new EJBException(exp);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup of getSurveyResponse()", e);
-			}
+                    close(conn);
 		}
 	}
 	   

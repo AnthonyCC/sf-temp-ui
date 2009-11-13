@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -38,6 +39,7 @@ import com.freshdirect.fdstore.survey.FDSurvey;
 import com.freshdirect.fdstore.survey.FDSurveyAnswer;
 import com.freshdirect.fdstore.survey.FDSurveyQuestion;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
+import com.freshdirect.fdstore.survey.SurveyKey;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.StringUtil;
@@ -61,18 +63,19 @@ public class FDSurveyDAO {
 	" sq.NAME AS Question_Name, sq.DESCRIPTION AS Question_Descr,sq.SHORT_DESCR as Question_Short_Descr, sq.IS_REQUIRED as Required, sq.IS_MULTISELECT as Multiselect, sq.IS_OPENENDED as OpenEnded, sq.IS_RATING as Rating, sq.SHOW_OPTIONAL_TEXT as ShowOptional,sq.IS_PULLDOWN as Pulldown, sq.FORM_DISPLAY_TYPE as FormDisplayType,sq.VIEW_DISPLAY_TYPE as ViewDisplayType, "+
 	" sa.NAME AS Answer_Name, sa.DESCRIPTION AS Answer_Description, sqa.ANSWER_GROUP as Answer_Group FROM "+
 	" cust.SURVEY_DEF sd, cust.SURVEY_QUESTION sq, cust.SURVEY_ANSWER sa, cust.SURVEY_SETUP ss, cust.SURVEY_QA sqa WHERE "+
-    " sd.NAME=? AND sd.ID=ss.SURVEY AND ss.QUESTION=sq.ID AND ss.ACTIVE='Y' AND sq.ID=sqa.QUESTION AND sqa.ANSWER=sa.ID ORDER BY sd.NAME, ss.SEQUENCE, sqa.SEQUENCE ";
+    " sd.NAME=? AND sd.SERVICE_TYPE = ? AND sd.ID=ss.SURVEY AND ss.QUESTION=sq.ID AND ss.ACTIVE='Y' AND sq.ID=sqa.QUESTION AND sqa.ANSWER=sa.ID ORDER BY sd.NAME, ss.SEQUENCE, sqa.SEQUENCE ";
 	
-	public static FDSurvey loadSurvey(Connection conn, String surveyName) throws SQLException {
+	public static FDSurvey loadSurvey(Connection conn, SurveyKey key) throws SQLException {
 		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		FDSurvey survey =null;
 		try {			
 			ps = conn.prepareStatement(LOAD_ACTIVE_SURVEY);
-			ps.setString(1, surveyName);
+			ps.setString(1, key.getSurveyType().getLabel());
+			ps.setString(2, key.getUserType().name());
 			rs = ps.executeQuery();
-			 survey = getSurvey(rs);						
+			 survey = getSurvey(rs, key);						
 		} finally {
 			if (rs != null) rs.close();
 			if (ps != null) ps.close();
@@ -111,13 +114,13 @@ public class FDSurveyDAO {
 		FDSurveyResponse surveyResponse =null;
 		try {			
 			ps = conn.prepareStatement(GET_SURVEY_RESPONSE);
-			ps.setString(1, survey.getName());
-			ps.setString(2, survey.getName());
+			ps.setString(1, survey.getLabel());
+			ps.setString(2, survey.getLabel());
 			ps.setString(3, identity.getErpCustomerPK());
-			ps.setString(4, survey.getName());
+			ps.setString(4, survey.getLabel());
 			ps.setString(5, identity.getErpCustomerPK());
 			rs = ps.executeQuery();
-			surveyResponse = getSurveyResponse(identity,survey.getName(),rs);						
+			surveyResponse = getSurveyResponse(identity,survey.getLabel(),rs);						
 		} finally {
 			if (rs != null) rs.close();
 			if (ps != null) ps.close();
@@ -127,30 +130,35 @@ public class FDSurveyDAO {
 	}
 
 	private static final String GET_CUSTOMER_PROFILE_SURVEYS="SELECT s.ID,s.SURVEY_NAME,s.CREATE_DATE FROM cust.SURVEY s, "+
-	"(SELECT ID,NAME FROM cust.SURVEY_DEF WHERE is_customer_profile_survey='Y') cps "+
+	"(SELECT ID,NAME FROM cust.SURVEY_DEF WHERE is_customer_profile_survey='Y' AND service_type = ?) cps "+
 	" WHERE s.CUSTOMER_ID=(SELECT ID FROM cust.FDCUSTOMER WHERE erp_customer_id=?) "+
 	" AND s.SURVEY_NAME=cps.NAME AND s.CREATE_DATE=(SELECT MAX(create_date) FROM cust.SURVEY WHERE CUSTOMER_ID=s.customer_id AND survey_name=s.survey_name)"+
 	" ORDER BY s.create_date DESC ";
-	public static List getCustomerProfileSurveys(Connection conn, FDIdentity identity) throws SQLException {
-		
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {			
-			ps = conn.prepareStatement(GET_CUSTOMER_PROFILE_SURVEYS);
-			ps.setString(1, identity.getErpCustomerPK());
-			rs = ps.executeQuery();
-			List surveys=new ArrayList();
-            while(rs.next()) {
-            	surveys.add(rs.getString("SURVEY_NAME"));
+    
+        public static List<String> getCustomerProfileSurveys(Connection conn, FDIdentity identity, EnumServiceType serviceType) throws SQLException {
+    
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+            try {
+                ps = conn.prepareStatement(GET_CUSTOMER_PROFILE_SURVEYS);
+                ps.setString(1, serviceType.name());
+                ps.setString(2, identity.getErpCustomerPK());
+                
+                rs = ps.executeQuery();
+                List<String> surveys = new ArrayList<String>();
+                while (rs.next()) {
+                    surveys.add(rs.getString("SURVEY_NAME"));
+                }
+                return surveys;
+            } finally {
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
             }
-			return surveys;						
-		} finally {
-			if (rs != null) rs.close();
-			if (ps != null) ps.close();
-		}
-	}
+        }
 
-	private static FDSurvey getSurvey(ResultSet rs) throws SQLException {
+	private static FDSurvey getSurvey(ResultSet rs, SurveyKey key) throws SQLException {
 		
 		FDSurvey survey=null;
 		FDSurveyQuestion activeQuestion=null;
@@ -159,7 +167,7 @@ public class FDSurveyDAO {
 		while(rs.next()) {
 			if (survey==null) {
 				
-				survey=new FDSurvey(rs.getString(1),getBoolean(rs.getString(2)), rs.getInt("Min_Coverage"));
+				survey=new FDSurvey(key,getBoolean(rs.getString(2)), rs.getInt("Min_Coverage"));
 				//System.out.println("Min Coverage :"+rs.getInt("Min_Coverage"));
 			}
 			question=rs.getString("Question_Name");

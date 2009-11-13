@@ -14,7 +14,11 @@ public class FDSurvey implements java.io.Serializable {
 	private final String name;
 	private final boolean isOrderSurvey;  //property tells whether or not an order number is required
 	private final List questions = new ArrayList();
+	private final SurveyKey key;
+	
     private int acceptableCoverage;
+    
+    
     
 	public int getAcceptableCoverage() {
 		return acceptableCoverage;
@@ -22,20 +26,38 @@ public class FDSurvey implements java.io.Serializable {
 
 	
 
+	@Deprecated
 	public FDSurvey(String name, boolean isOrderSurvey) {
+	    this.key = null;
 		this.name = name;
 		this.isOrderSurvey = isOrderSurvey;
 		this.acceptableCoverage=0;
 	}
-	public FDSurvey(String name, boolean isOrderSurvey,int acceptableCoverage) {
-		this.name = name;
-		this.isOrderSurvey = isOrderSurvey;
-		this.acceptableCoverage=acceptableCoverage;
-	}
 	
+	@Deprecated
 	public FDSurvey(String name) {
 		this(name, false);
 	}
+
+	
+        public FDSurvey(SurveyKey key, boolean isOrderSurvey) {
+            this.key = key;
+                this.name = key.getSurveyType().getLabel();
+                this.isOrderSurvey = isOrderSurvey;
+                this.acceptableCoverage=0;
+        }
+        public FDSurvey(SurveyKey key, boolean isOrderSurvey,int acceptableCoverage) {
+            this.key = key;
+                this.name = key.getSurveyType().getLabel();
+                this.isOrderSurvey = isOrderSurvey;
+                this.acceptableCoverage=acceptableCoverage;
+        }
+        
+        public FDSurvey(SurveyKey key) {
+                this(key, false);
+        }
+        
+	
 	
 	public String getName(){
 		return name;
@@ -91,4 +113,7 @@ public class FDSurvey implements java.io.Serializable {
 		return requiredQuests;
 	}
 
+	public SurveyKey getKey() {
+            return key;
+        }
 }
