@@ -16,12 +16,6 @@
 
 // Load YUI dependencies for smartstore tabs
 %>
-<%@ include file="/shared/template/includes/yui.jspf" %>
-
-<script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
-<script type="text/javascript" src="/assets/javascript/jsonrpc-min.js"></script>
-<script type="text/javascript" src="/assets/javascript/ccl-min.js"></script>
-
 
 <tmpl:insert template='/common/template/quick_shop.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop</tmpl:put>
