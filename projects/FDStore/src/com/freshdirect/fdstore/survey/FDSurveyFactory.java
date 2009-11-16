@@ -70,6 +70,7 @@ public class FDSurveyFactory {
      * 
      */
     public synchronized FDSurvey getSurvey(EnumSurveyType surveyType, EnumServiceType userType) throws FDResourceException {
+        userType = correctServiceType(userType);
         SurveyKey key = new SurveyKey(surveyType, userType);
         FDSurvey cached = surveyDefCache.get(key);
         if (cached == null) {
@@ -83,6 +84,15 @@ public class FDSurveyFactory {
             return cached;
         }
         return cached;
+    }
+
+    /**
+     * Return CORPORATE if the userType is CORPORATE, HOME otherwise.
+     * @param userType
+     * @return
+     */
+    private static EnumServiceType correctServiceType(EnumServiceType userType) {
+        return (userType != EnumServiceType.CORPORATE) ? EnumServiceType.HOME : userType;
     }
 
     public FDSurvey getSurvey(EnumSurveyType surveyType, FDUserI user) throws FDResourceException {
@@ -164,7 +174,7 @@ public class FDSurveyFactory {
     public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity, EnumServiceType serviceType) throws FDResourceException {
         try {
             FDSurveySB sb = lookupSurveyHome().create();
-            return sb.getCustomerProfile(identity, serviceType);
+            return sb.getCustomerProfile(identity, correctServiceType(serviceType));
         } catch (CreateException ce) {
             invalidateSurveyHome();
             throw new FDResourceException(ce, "Error creating session bean");

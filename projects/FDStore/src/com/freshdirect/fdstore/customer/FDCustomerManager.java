@@ -2927,33 +2927,6 @@ public class FDCustomerManager {
 	    	}
 	    }
 	    
-
-	    /**
-             * Call FDSurveyFactory directly 
-	     * 
-	     * @param identity
-	     * @param serviceType
-	     * @return
-	     * @throws FDResourceException
-	     */
-	    @Deprecated
-	    public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity, EnumServiceType serviceType) throws FDResourceException {
-	        return FDSurveyFactory.getCustomerProfileSurveyInfo(identity, serviceType);
-            }	    
-
-	    /**
-	     * Call FDSurveyFactory directly 
-	     * @param identity
-	     * @param survey
-	     * @return
-	     * @throws FDResourceException
-	     */
-	    @Deprecated
-            public static FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey survey) throws FDResourceException {
-                return FDSurveyFactory.getSurveyResponse(identity, survey);
-            }
-	    
-	    
 	    public static ContactAddressModel getAddress(FDIdentity identity,String id) throws FDResourceException {
 	    	
 	    	lookupManagerHome();
