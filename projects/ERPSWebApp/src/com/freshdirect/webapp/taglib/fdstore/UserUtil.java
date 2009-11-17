@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.common.customer.EnumWebServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
@@ -32,21 +30,16 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
-import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDBulkRecipientList;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
-import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.util.DateRange;
-import com.freshdirect.giftcard.ErpRecipentModel;
 
 public class UserUtil {
 
