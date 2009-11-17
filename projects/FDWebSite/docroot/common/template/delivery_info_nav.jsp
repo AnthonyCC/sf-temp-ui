@@ -35,9 +35,9 @@
 					<td><img src="/media_stat/images/layout/clear.gif" width="8" height="1" border="0"></td>
 					<td class="text9_lh12">
                         <a href="/help/delivery_info.jsp">Home Delivery</a><br>
-                        <a href="/help/delivery_info_cos.jsp">Corporate Delivery</a><br>
-						<a href="/help/delivery_info_depot.jsp">Depot Delivery</a>
-					</td>
+                        <a href="/help/delivery_info_cos.jsp">Corporate Delivery</a><br><br>
+						<!--<a href="/help/delivery_info_depot.jsp">Depot Delivery</a>
+					--></td>
                                         
                                         <td><img src="/media_stat/images/layout/clear.gif" width="8" height="1" border="0"></td>
                                         <td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
