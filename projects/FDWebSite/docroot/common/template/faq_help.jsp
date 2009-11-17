@@ -54,6 +54,7 @@ faqPage = request.getParameter("page");
 			    <TD WIDTH="141" valign=top><br><br>
 				<A HREF="faq_home.jsp?page=faqHome" TARGET="_top"><img src="/media_stat/images/template/help/faq_catnav.gif" width="91" height="58" alt="" border="0"></A><BR>
 				<font class="space4pix"><br></font>
+				
 				<%if(faqPage.equals("about")){%><b>What We Do</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}else{%><A HREF="faq_home.jsp?page=about" TARGET="_top">What We Do</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}%>	
@@ -68,23 +69,31 @@ faqPage = request.getParameter("page");
 				
 				<%if(faqPage.equals("shopping")){%><b>Shopping</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}else{%><A HREF="faq_home.jsp?page=shopping" TARGET="_top">Shopping</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}%>	
+				<%}%>
 				
 				<%if(faqPage.equals("payment")){%><b>Payment</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}else{%><A HREF="faq_home.jsp?page=payment" TARGET="_top">Payment</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}%>	
+               
                 <%if(faqPage.equals("deliveryHome")){%><b>Home Delivery</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}else{%><A HREF="faq_home.jsp?page=deliveryHome" TARGET="_top">Home Delivery</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}%>	
+				
+				<!-- APPDEV-335 ChefsTable FAQ moved to CMS --> 
 				<%if(faqPage.equals("cos")){%><b>Corporate Delivery</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}else{%><A HREF="faq_home.jsp?page=cos" TARGET="_top">Corporate Delivery</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}%>
 
-<%if(faqUser.isDepotUser()){%>	
-				<%if(faqPage.equals("deliveryDepot")){%><b>Depot Delivery</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=deliveryDepot" TARGET="_top">Depot Delivery</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
+				<!--<%if(faqUser.isDepotUser()){%>	
+								<%if(faqPage.equals("deliveryDepot")){%><b>Depot Delivery</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
+								<%}else{%><A HREF="faq_home.jsp?page=deliveryDepot" TARGET="_top">Depot Delivery</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
+								<%}%>	
+				<%}%>-->
+				
+				<!-- APPDEV-335 ChefsTable FAQ moved to CMS --> 
+				<%if(faqPage.equals("chefstable")){%><b>Chef's Table</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
+				<%}else{%><A HREF="faq_home.jsp?page=chefstable" TARGET="_top">Chef's Table</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}%>	
-<%}%>	
 				
 				<%if(faqPage.equals("inside")){%><b>Jobs &amp; Corporate Info</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}else{%><A HREF="faq_home.jsp?page=inside" TARGET="_top">Jobs &amp; Corporate Info</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
@@ -97,10 +106,10 @@ faqPage = request.getParameter("page");
 	
 	</TD>
 	<TD width="570" align="center" colspan=2>
-	<img src="/media_stat/images/layout/clear.gif" height="15" width="570"><br>
-	<!-- content lands here -->
-	<tmpl:get name='content'/>
-	<!-- content ends above here-->
+		<img src="/media_stat/images/layout/clear.gif" height="15" width="570"><br>
+		<!-- content lands here -->
+			<tmpl:get name='content'/>
+		<!-- content ends above here-->
 	<br><br>
 	</TD>
 	<TD WIDTH="5" VALIGN="BOTTOM"><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></TD>
