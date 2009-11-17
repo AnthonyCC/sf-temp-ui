@@ -115,6 +115,7 @@
 					<td width="<%= tdwidth %>">
 						<div>
 							<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" showRolloverImage="true" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/>
+							<display:ProductRating product="<%= productNode %>" action="<%= actionURI %>"/>
 							<display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/>
 							<div class="favoritePrice"><display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/></div>
 						</div>

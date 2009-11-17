@@ -98,12 +98,12 @@
         %><b><font color="#999999">Earliest Delivery - <%= sf.format(earliestDate) %></font></b><%
     }
 %>
-<%  if (skuAvailable) { %>&nbsp;&nbsp;<table border="0">
-					<tr><td>
-					<display:ProductPrice impression="<%= new ProductImpression(displayProduct) %>"  showScalePricing="false" showRegularPrice="false" showWasPrice="true" showDescription="false"/> 
-					</td>
-					<td><display:ProductPrice impression="<%= new ProductImpression(displayProduct) %>"  showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false"/>
-					</td></tr></table> 
+<%  if (skuAvailable) { %>&nbsp;&nbsp;<table>
+			<tr><td>
+			<display:ProductPrice impression="<%= new ProductImpression(displayProduct) %>"  showScalePricing="false" showRegularPrice="false" showWasPrice="true" showDescription="false"/> 
+			</td>
+			<td><display:ProductPrice impression="<%= new ProductImpression(displayProduct) %>"  showScalePricing="true" showRegularPrice="false" showWasPrice="false" showDescription="false"/>
+			</td></tr></table> 
 <% } %>
 </TD>
 <% if ("kosher".equalsIgnoreCase(sortBy)) { %>
