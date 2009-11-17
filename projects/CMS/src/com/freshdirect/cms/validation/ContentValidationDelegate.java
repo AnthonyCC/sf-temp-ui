@@ -15,7 +15,7 @@ import com.freshdirect.cms.ContentKey;
 public class ContentValidationDelegate implements Serializable {
 
 	/** List of {@link ContentValidationMessage} */
-	private final List messages = new ArrayList();
+	private final List<ContentValidationMessage> messages = new ArrayList<ContentValidationMessage>();
 
 	public void record(String message) {
 		this.messages.add(new ContentValidationMessage(message));
@@ -32,7 +32,7 @@ public class ContentValidationDelegate implements Serializable {
 	/**
 	 * @return List of {@link ContentValidationMessage}
 	 */
-	public List getValidationMessages() {
+	public List<ContentValidationMessage> getValidationMessages() {
 		return messages;
 	}
 

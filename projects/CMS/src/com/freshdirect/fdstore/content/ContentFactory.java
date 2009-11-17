@@ -1,11 +1,3 @@
-/*
- * $Workfile:ContentFactory.java$
- *
- * $Date:8/21/2003 3:29:55 PM$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
@@ -44,8 +36,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
- *
  * @version $Revision:18$
  * @author $Author:Robert Gayle$
  */
@@ -65,15 +55,15 @@ public class ContentFactory {
 	private StoreModel store;
 
 	/** Map of String (IDs) -> ContentNodeModel */
-	private final Map contentNodes;
+	private final Map<String, ContentNodeModel> contentNodes;
 
 	/** Map of {@link ContentKey} (IDs) -> {@link com.freshdirect.fdstore.content.ContentNodeI} */
-	private final Map nodesByKey;
+	private final Map<ContentKey, com.freshdirect.fdstore.content.ContentNodeI> nodesByKey;
 	
 	private final Object sync = new Object();
 
 	/** Map of sku codes / product nodes */
-	private LruCache skuProduct;
+	private LruCache<String,ProductModel> skuProduct;
 
 	public static ContentFactory getInstance() {
 		return instance;
@@ -89,9 +79,9 @@ public class ContentFactory {
 		this.store = null;
 
 		// ISTVAN, chagned HashMap to ConcurrentHashMap
-		this.contentNodes = new ConcurrentHashMap();
-		this.nodesByKey = new ConcurrentHashMap();
-		this.skuProduct = new LruCache(5000);
+		this.contentNodes = new ConcurrentHashMap<String, ContentNodeModel>();
+		this.nodesByKey = new ConcurrentHashMap<ContentKey, com.freshdirect.fdstore.content.ContentNodeI>();
+		this.skuProduct = new LruCache<String,ProductModel>(5000);
 	}
 
 	private StoreModel loadStore() {

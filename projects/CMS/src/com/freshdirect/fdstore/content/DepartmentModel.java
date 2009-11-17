@@ -11,7 +11,7 @@ public class DepartmentModel extends ContentNodeModelImpl {
 
 	private final List featuredProductModels = new ArrayList();
 
-	private final List categoryModels = new ArrayList();
+	private final List<CategoryModel> categoryModels = new ArrayList<CategoryModel>();
 
 	public DepartmentModel(ContentKey cKey) {
 		super(cKey);
@@ -46,6 +46,10 @@ public class DepartmentModel extends ContentNodeModelImpl {
 		return (Image) getAttribute("DEPT_NAVBAR_ROLLOVER", (Image) null);
 	}
 	
+	public List getDeptNav() {
+		return (List)getAttribute( "DEPT_NAV", (Object)null );
+	}
+	
 	/**
 	 * @return List of Html
 	 */
@@ -75,10 +79,10 @@ public class DepartmentModel extends ContentNodeModelImpl {
 		return getAttribute("MAX_ROWCOUNT", 1);
 	}
 
-	public List getCategories() {
+	public List<CategoryModel> getCategories() {
 		ContentNodeModelUtil.refreshModels(this, "categories", categoryModels, true);
 
-		return new ArrayList(categoryModels);
+		return new ArrayList<CategoryModel>(categoryModels);
 	}
 
 	public List getFeaturedProducts() {

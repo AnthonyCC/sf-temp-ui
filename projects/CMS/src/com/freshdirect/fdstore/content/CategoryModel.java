@@ -158,6 +158,11 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return (Image)getAttribute("CAT_PHOTO", (Object)null);
 	}
 	
+	public List<Object> getCategoryTopMedia() {
+		return (List<Object>)getAttribute( "CATEGORY_TOP_MEDIA", (Object)null );		
+	}
+
+	
 	public EnumShowChildrenType getShowChildren() {
 		return EnumShowChildrenType.getShowChildrenType(getAttribute("SHOWCHILDREN", EnumShowChildrenType.ALWAYS_FOLDERS.getId()));
 	}

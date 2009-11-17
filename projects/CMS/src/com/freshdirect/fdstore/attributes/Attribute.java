@@ -1,21 +1,8 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore.attributes;
 
 import java.io.Serializable;
 
-/**
- *
- *
- * @version $Revision$
- * @author $Author$
- */
+
 public class Attribute implements Serializable {
     
 	private final EnumAttributeType type;

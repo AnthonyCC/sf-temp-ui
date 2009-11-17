@@ -1,22 +1,12 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.fdstore.attributes;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 public class MultiAttribute extends Attribute {
     
-	private List valueList;
+	private List<Object> valueList;
 
     public MultiAttribute(EnumAttributeType type, String key) {
 		this(type, key, false);
@@ -24,42 +14,52 @@ public class MultiAttribute extends Attribute {
 
     public MultiAttribute(EnumAttributeType type, String key, boolean inheritable) {
 		super(type, key, inheritable);
-		this.valueList = new ArrayList();
+		valueList = new ArrayList<Object>();
     }
     
+    @Override
     public Object getValue() {
-		return this.getValues();
+		return getValues();
     }
     
     public int numberOfValues() {
-        return this.valueList.size();
+        return valueList.size();
     }
 
-	public Object getValue(int idx) {
-		return this.valueList.get(idx);
+	public Object getValue( int idx ) {
+		if ( idx < valueList.size() )
+			return valueList.get(idx);
+		else 
+			return null;
 	}
 	
-	public void setValue(Object valueList){
-		this.valueList = (List) valueList;
+    @SuppressWarnings( "unchecked" )
+	@Override
+	public void setValue(Object valueList) {
+    	if ( valueList instanceof List<?> ) {
+    		this.valueList = (List<Object>)valueList;
+    	}
 	}
 
 	public void addValue(Object value) {
 		// !!! check value for EnumAttributeType -> throw new IllegalArgumentException();
-		this.valueList.add(value);
+		valueList.add(value);
 	}
     
-    public List getValues() {
-        return Collections.unmodifiableList( this.valueList );
+    public List<Object> getValues() {
+        return Collections.unmodifiableList( valueList );
     }
 	
+    @Override
     public String toString() {
-        return "MultiAttribute[" + this.getKey() + " - " + this.getType().getName() + " - " + this.numberOfValues() + " values ]";
+        return "MultiAttribute[" + getKey() + " - " + getType().getName() + " - " + numberOfValues() + " values ]";
     }
 	
+    @Override
 	public Attribute copy() {
-		MultiAttribute ma = new MultiAttribute(this.getType(),this.getKey(),this.isInheritable());
-		for (Iterator vItr = this.valueList.iterator(); vItr.hasNext();) {
-			ma.addValue(vItr.next());
+		MultiAttribute ma = new MultiAttribute(getType(),getKey(),isInheritable());
+		for (Object o : valueList ) {
+			ma.addValue( o );
 		}
 		return ma;
 	}
