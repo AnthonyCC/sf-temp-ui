@@ -92,6 +92,4 @@ public class DeptNavTag extends AbstractGetterTag {
 				};
 		}
 	}
-
-
 }
