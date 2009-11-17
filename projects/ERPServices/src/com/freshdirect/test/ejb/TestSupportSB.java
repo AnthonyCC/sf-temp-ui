@@ -13,8 +13,8 @@ import javax.ejb.EJBObject;
 public interface TestSupportSB extends EJBObject {
 	public boolean ping() throws RemoteException;
 
-	public List getDYFEligibleCustomerIDs() throws RemoteException;
-	public List getErpCustomerIds() throws RemoteException;
+	public List<Long> getDYFEligibleCustomerIDs() throws RemoteException;
+	public List<Long> getErpCustomerIds() throws RemoteException;
 	public String getFDCustomerIDForErpId(String erpCustomerPK) throws RemoteException;
 	public String getErpIDForUserID(String userID) throws RemoteException;
 }

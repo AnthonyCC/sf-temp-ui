@@ -48,9 +48,9 @@ public class TestSupportSessionBean extends SessionBeanSupport {
 	 * @return List<Long> List of customer IDs
 	 * @throws RemoteException
 	 */
-	public List getDYFEligibleCustomerIDs() throws RemoteException {
+	public List<Long> getDYFEligibleCustomerIDs() throws RemoteException {
 		Connection conn = null;
-		ArrayList idArray = new ArrayList();
+		ArrayList<Long> idArray = new ArrayList<Long>();
 		
 		try {
 			conn = getConnection();
@@ -81,9 +81,9 @@ public class TestSupportSessionBean extends SessionBeanSupport {
 	}
 	
 	
-	public List getErpCustomerIds() throws RemoteException {
+	public List<Long> getErpCustomerIds() throws RemoteException {
 		Connection conn = null;
-		ArrayList idArray = new ArrayList();
+		ArrayList<Long> idArray = new ArrayList<Long>();
 		
 		try {
 			conn = getConnection();

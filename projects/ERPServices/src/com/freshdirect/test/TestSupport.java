@@ -74,7 +74,7 @@ public class TestSupport {
 
 
 
-	public List getDYFEligibleCustomerIDs() {
+	public List<Long> getDYFEligibleCustomerIDs() {
 		try {
 			TestSupportSB bean = this.getTestSupportHome().create();
 			
@@ -89,7 +89,7 @@ public class TestSupport {
 	}
 
 
-	public List getErpCustomerIDs() {
+	public List<Long> getErpCustomerIDs() {
 		try {
 			TestSupportSB bean = this.getTestSupportHome().create();
 			
@@ -101,7 +101,7 @@ public class TestSupport {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return Collections.EMPTY_LIST;
+		return Collections.emptyList();
 		
 	}
 
