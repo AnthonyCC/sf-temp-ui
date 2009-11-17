@@ -72,11 +72,15 @@
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=deliveryHome">Home Delivery</a><br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=cos">Corporate Delivery</a><br>
-<%	if(user.isDepotUser()){%>	
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
+					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=chefstable">Chef's Table</a><br>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
+		
+		<!--<%	if(user.isDepotUser()){%>	
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=deliveryDepot">Depot Delivery</a><br>
-<%	}%>	
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
+		<%}%>-->
+					
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=inside">Jobs &amp; Corporate Info</a>
 					</font>
 	    </td>

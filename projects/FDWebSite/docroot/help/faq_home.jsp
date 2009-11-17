@@ -10,7 +10,7 @@ if (request.getParameter("page")!= null){
 
 //set up template parameters
 params.put("isPage", new Boolean(request.getParameter("page") != null) );
-params.put("isPageNull", new Boolean(request.getParameter("page") == null) );
+params.put("isPopup", false );
 %><%@ taglib uri='template' prefix='tmpl' 
 %><%@ taglib uri='logic' prefix='logic'
 %><%@ taglib uri='bean' prefix='bean'
@@ -52,8 +52,7 @@ if (user2 != null) {
                     params.put("eligibleForSignupPromotion", Boolean.FALSE);
                     params.put("maxSignupPromotion", "" );
 				}
-			%>
-				<fd:IncludeMedia name="/media/editorial/faq/signup.ftl" parameters="<%=params%>" withErrorReport="true"/>
+			%><fd:IncludeMedia name="/media/editorial/faq/signup.ftl" parameters="<%=params%>" withErrorReport="true"/>
 			<%}else if(faqPage.equals("security")){%>
 				<fd:IncludeMedia name="/media/editorial/faq/security.ftl" parameters="<%=params%>" withErrorReport="true"/>
 			<%}else if(faqPage.equals("shopping")){
@@ -62,18 +61,23 @@ if (user2 != null) {
 				<!-- APPDEV-335 Shopping FAQ moved to CMS -->
 				<fd:IncludeMedia name="/media/editorial/faq/shopping.ftl" parameters="<%=params%>" withErrorReport="true"/>
 				<!-- leave as-is --><%//@ include file="/help/shopping.jsp"%>
+			<%}else if(faqPage.equals("chefstable")){%>
+				<!-- APPDEV-335 ChefsTable FAQ moved to CMS -->
+				<fd:IncludeMedia name="/media/editorial/faq/chefstable.ftl" parameters="<%=params%>" withErrorReport="true"/>
 			<%}else if(faqPage.equals("payment")){%>
 				<fd:IncludeMedia name="/media/editorial/faq/payment.ftl" parameters="<%=params%>" withErrorReport="true"/>
 			<%}else if(faqPage.equals("deliveryHome")){
                 boolean flag = request.getRequestURI().toLowerCase().endsWith("delivery_info_faq.jsp");
                 params.put("deliveryInfoFaq", new Boolean(flag) );
-			%>
-				<fd:IncludeMedia name="/media/editorial/faq/delivery_home.ftl" parameters="<%=params%>" withErrorReport="true"/>
-			<%}else if(faqPage.equals("deliveryDepot")){%>
-				<!-- leave as-is --><%@ include file="/help/delivery_depot.jsp"%>				
+			%>	<fd:IncludeMedia name="/media/editorial/faq/delivery_home.ftl" parameters="<%=params%>" withErrorReport="true"/>
+			<!--<%
+				}else if(faqPage.equals("deliveryDepot")){%>
+				 leave as-is <%@ include file="/help/delivery_depot.jsp"%>				
+			-->
+			
 			<%}else if(faqPage.equals("inside")){
 				params.put("careerLink", FDStoreProperties.getCareerLink());
-			%><fd:IncludeMedia name="/media/editorial/faq/inside.ftl" parameters="<%=params%>" withErrorReport="true"/>
+			%> <fd:IncludeMedia name="/media/editorial/faq/inside.ftl" parameters="<%=params%>" withErrorReport="true"/>
             <%}else if(faqPage.equals("cos")){
             	boolean flag = request.getRequestURI().toLowerCase().endsWith("delivery_info_faq.jsp");
             	params.put("deliveryInfoFaq", new Boolean(flag) );
