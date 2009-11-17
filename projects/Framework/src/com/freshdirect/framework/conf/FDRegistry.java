@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,7 +45,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class FDRegistry {
 
 	private static Registry instance;
-	private static List configLocations = new ArrayList();
+	private static List<String> configLocations = new ArrayList<String>();
 
 	private final static String SYSPROP_REGISTRY = "com.freshdirect.registry";
 	private final static String DEFAULT_REGISTRY = "classpath:/freshdirect.registry";
@@ -59,10 +58,9 @@ public class FDRegistry {
 			builder.addDefaultModuleDescriptorProvider();
 
 			ClassResolver resolver = new DefaultClassResolver();
-			List confs = getAllConfigurations();
-			System.out.println("Loading configurations " + confs);
-			for (Iterator i = confs.iterator(); i.hasNext();) {
-				String location = (String) i.next();
+			List<String> confs = getAllConfigurations();
+			LOGGER.info( "Loading configurations " + confs );
+			for ( String location : confs ) {
 				Resource res = ResourceUtil.getResource(location);
 				if (res.getResourceURL() == null) {
 					LOGGER.error("Resource not found: " + location);
@@ -85,8 +83,8 @@ public class FDRegistry {
 		System.setProperty(SYSPROP_REGISTRY, location);
 	}
 
-	private static List getAllConfigurations() {
-		List l = new ArrayList();
+	private static List<String> getAllConfigurations() {
+		List<String> l = new ArrayList<String>();
 
 		l.addAll(configLocations);
 
@@ -103,17 +101,16 @@ public class FDRegistry {
 		return l;
 	}
 
-	private static List loadRegistry(String registry) throws IOException {
+	private static List<String> loadRegistry(String registry) throws IOException {
 		Resource res = ResourceUtil.getResource(registry);
 		URL url = res.getResourceURL();
 		if (url == null) {
-			// return Collections.EMPTY_LIST;
 			throw new IOException("Resource not found: " + registry);
 		}
 		InputStream is = url.openStream();
 		BufferedReader r = new BufferedReader(new InputStreamReader(is));
 		String line;
-		List l = new ArrayList();
+		List<String> l = new ArrayList<String>();
 		while ((line = r.readLine()) != null) {
 			line = line.trim();
 			if ("".equals(line) || line.startsWith("#")) {
