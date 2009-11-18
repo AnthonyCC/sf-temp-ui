@@ -273,6 +273,13 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public String getRatingProdName();
 	
+	/*
+	 * iPhone related
+	 */
+	public Image getAlternateProductImage();
+	
+	public boolean hideIphone();
+	
 	
 	/**
 	 * Can the product be recommended?

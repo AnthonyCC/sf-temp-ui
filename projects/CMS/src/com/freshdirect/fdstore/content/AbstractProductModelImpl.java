@@ -542,4 +542,17 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		}
 		return temp.toString();
 	}
+
+	/*
+	 * iPhone related
+	 */
+	@Override
+	public Image getAlternateProductImage() {
+		return (Image) getAttribute("ALTERNATE_PROD_IMAGE", (Image) null); 
+	}
+
+	@Override
+	public boolean hideIphone() {
+		return getAttribute("HIDE_IPHONE", false);
+	}
 }
