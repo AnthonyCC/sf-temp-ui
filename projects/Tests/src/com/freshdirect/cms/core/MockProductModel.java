@@ -1531,4 +1531,17 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
 	public List getGiftcardType() {
 		return null;
 	}
+
+	/*
+	 * iPhone related
+	 */
+	@Override
+	public Image getAlternateProductImage() {
+		return null;
+	}
+
+	@Override
+	public boolean hideIphone() {
+		return false;
+	}
 }
