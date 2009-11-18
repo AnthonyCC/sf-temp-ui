@@ -721,6 +721,22 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 		
 		return orderCount;
 	}
+	
+	private static final String QUERY_SETTLED_ORDER_HISTORY_FOR_CUST="select count(*) from cust.sale s  where s.customer_id =? and s.status='STL'";
+	
+	public static int getPreviousSettledOrderHistory(Connection conn, String erpCustomerId) throws SQLException{
+		int orderCount =0;
+		PreparedStatement ps = conn.prepareStatement(QUERY_SETTLED_ORDER_HISTORY_FOR_CUST);
+		ps.setString(1, erpCustomerId);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()){
+			orderCount = rs.getInt(1);	
+		}
+		rs.close();
+		ps.close();
+		
+		return orderCount;
+	}
 	private static final String QUERY_SAP_CUSTOMER_ID="select sap_id from cust.customer c  where c.id =?";
 	
 	public static String getSapCustomerId(Connection conn, String erpCustomerId) throws SQLException {
