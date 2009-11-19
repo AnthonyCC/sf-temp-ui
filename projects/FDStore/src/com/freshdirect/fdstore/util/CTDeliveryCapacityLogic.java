@@ -60,8 +60,8 @@ public class CTDeliveryCapacityLogic
 			xstream.alias("zones", List.class);
 			xstream.alias("zone", Zone.class);
 			xstream.alias("code", String.class);
-			xstream.alias("condition", Zone.class);
-			xstream.alias("value", Zone.class);
+			xstream.alias("condition", String.class);
+			xstream.alias("value", String.class);
 			
 			InputStream is=null;
 			ObjectInputStream in=null;
