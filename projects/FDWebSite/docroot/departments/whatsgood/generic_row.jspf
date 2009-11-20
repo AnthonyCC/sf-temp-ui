@@ -2,11 +2,11 @@
 <%@ page import='com.freshdirect.fdstore.content.util.SortStrategyElement' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import="com.freshdirect.webapp.util.ProductImpression" %>
+<%@ page import="com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy" %>
 
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-
 <%
-
 	int tempCounter=0;
 	rowColl = new ArrayList();
 	sortedColl = null; 
@@ -16,144 +16,295 @@
 	isDept = (currentFolder instanceof DepartmentModel);
 	isCat = (currentFolder instanceof CategoryModel);
 	trkCode= "";
-	boolean usePerRowLimit = true;
-	boolean useRowLimit = true;
-	usePerRowLimit = (perRow>0)?true:false;
-	useRowLimit = (maxRows>0)?true:false;
-	int maxToShow = 0;
 
-	maxToShow = (useRowLimit) ? perRow*maxRows : 999999999;
+	/* row specifics are not implemented */
+		//boolean usePerRowLimit = true;
+		//boolean useRowLimit = true;
+
+		//usePerRowLimit = (perRow>0)?true:false;
+		//useRowLimit = (maxRows>0)?true:false;
+
+	int maxToShow = perRow;
+		//maxToShow = (useRowLimit) ? perRow*maxRows : 999999999;
+
+	boolean skipExecution = false; //used for skipping sections of code
+	
+	log(myDebug, "ROW "+curRow+": maxToShow : "+maxToShow);
+
+	//needed for transactional
+		impressions = new ArrayList();
+		pi = null;
+		nConfProd = 0;
+	
+		confContext = new ConfigurationContext();
+		confContext.setFDUser(user);
+		cUtil = SmartStoreConfigurationStrategy.getInstance();
+
+		// added rowId here to keep these unique in case the same cat is used again
+		TX_FORM_NAME        = catId+rowId+"_form"; // impression form name
+		TX_JS_NAMESPACE     = catId+rowId+"_JSnamespace"; // impression javascript namespace
 
 
-/* pass the code that should be used as the tracking code */
-if (isDept) {
-	trkCode = "dpage";
-	request.setAttribute("trk","dpage");
-} else if(isCat) {
-	trkCode = "cpage";
-    request.setAttribute("trk","cpage");
-}
-sortDescending = "true".equalsIgnoreCase(request.getParameter("sortDescending"));
-sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
-    
-layoutSettings = new Settings();
-layoutSettings.setGrabberDepth(0);
-layoutSettings.setIgnoreDuplicateProducts(true);
-layoutSettings.setIgnoreShowChildren(false);
-layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
-layoutSettings.setReturnHiddenFolders(false);
 
-List tmpList=new ArrayList();
+	/* pass the code that should be used as the tracking code */
+	if (isDept) {
+		trkCode = "dpage";
+		request.setAttribute("trk","dpage");
+	} else if(isCat) {
+		trkCode = "cpage";
+		request.setAttribute("trk","cpage");
+	}
+
+
+	List tmpList=new ArrayList();
 %>
-<% log(myDebug, "-=-=-=-=-= in generic row currentFolder : "+currentFolder); %>
-<% log(myDebug, "-=-=-=-=-= in generic row isDept : "+isDept); %>
-<% log(myDebug, "-=-=-=-=-= in generic row isCat : "+isCat); %>
-
-<fd:ItemGrabber
-	category='<%=currentFolder %>' 
-	id='rtnColl' 
-	depth='<%=layoutSettings.getGrabberDepth()%>'
-	ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
-	filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
-	returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
-	ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
-	returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
-	returnSkus='<%=layoutSettings.isReturnSkus()%>'
-	workSet='<%=tmpList%>'
->
-<%
-        sortedColl = rtnColl;
-        
-        request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
-		
-		log(myDebug, "-=-=-=-=-= in generic row ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts());
-%>
-    </fd:ItemGrabber> 
- 
-    <fd:ItemSorter nodes='<%=(List)sortedColl%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
-
-	<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
-		<%
-				log(myDebug, "-=-=-=-=-= in generic row maxToShow1 "+maxToShow);
-				log(myDebug, "-=-=-=-=-= in generic row tempCounter1 "+tempCounter);
-			// skip if more than 5, is a category or already used on page
-			if (tempCounter >= maxToShow || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode)) { continue; }
-			ProductModel pm = (ProductModel) contentNode;
-			//skip if discontinued or unavailable
-			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
-
-			//add to global collection for dupe check
-			globalColl.add(contentNode);
-			//add to pageColl for prices ref
-			rowColl.add(contentNode);
-
-			tempCounter++;
-		%>
-	</logic:iterate>
+<% log(myDebug, "ROW "+curRow+": currentFolder : "+currentFolder); %>
+<% log(myDebug, "ROW "+curRow+": isDept : "+isDept); %>
+<% log(myDebug, "ROW "+curRow+": isCat : "+isCat); %>
 
 	<%
-		//rowColl should now have the collection of products to use
+		/* check if we only want featured items */
+		if (featuredOnly) {
+			//featured only
 
-		//if we have any items to show, display them
-		if (rowColl.size() > 0) {
-	%>
-		<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
-		<% mediaPath = "/media/editorial/whats_good/whats_good_"+ catId + "_above.html"; %>
-		<fd:IncludeMedia name="<%=mediaPath%>" />
+			if (isCat) { currentCAT = (CategoryModel)currentFolder; sortedColl = currentCAT.getFeaturedProducts(); }
+			if (isDept) { currentDEPT = (DepartmentModel)currentFolder; sortedColl = currentDEPT.getFeaturedProducts(); }
+			log(myDebug, "ROW "+curRow+": feats list : "+sortedColl);
+			request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
 
-		<table cellpadding="0" cellspacing="0" border="0">
-		<tr valign="bottom">
 
-			<% log(myDebug, "-=-=-=-=-= in generic row rowColl : "+catId+" : "+(List)rowColl); %>
-			<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
+		}else{
+			//all products
 
-			<%
-				log(myDebug, "-=-=-=-=-= in generic row contentNode : "+contentNode);
-				log(myDebug, "-=-=-=-=-= in generic row instanceof CategoryModel : "+(contentNode instanceof CategoryModel));
-				log(myDebug, "-=-=-=-=-= in generic row instanceof globalColl.contains : "+globalColl.contains(contentNode));
+			sortDescending = "true".equalsIgnoreCase(request.getParameter("sortDescending"));
+			sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
 				
-				//we don't need checks here, we did it previously
-
-				ProductModel pm = (ProductModel) contentNode;
-				String prodNameAttribute = JspMethods.getProductNameToUse(pm);
-				DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,false);
-				int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-				String actionURI = FDURLUtil.getProductURI( pm, trkCode );			
-			%>
-
-				<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
-					<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionURI %>" />
-				</td>
+			layoutSettings = new Settings();
+			layoutSettings.setGrabberDepth(grabberDepth); //use passed value
+			layoutSettings.setIgnoreDuplicateProducts(true);
+			layoutSettings.setIgnoreShowChildren(false);
+			layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
+			layoutSettings.setReturnHiddenFolders(false);
+	%>
+			<fd:ItemGrabber
+				category='<%=currentFolder %>' 
+				id='rtnColl' 
+				depth='<%=layoutSettings.getGrabberDepth()%>'
+				ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+				filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+				returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+				ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+				returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
+				returnSkus='<%=layoutSettings.isReturnSkus()%>'
+				workSet='<%=tmpList%>'
+			>
+				<%
+					sortedColl = rtnColl;
+					
+					request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+					
+					log(myDebug, "ROW "+curRow+": ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts());
+				%>
+			</fd:ItemGrabber>
 			
-			</logic:iterate>
-		</tr>
-		<tr>
-			<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
-			<%
-
-				log(myDebug, "-=-=-=-=-= in generic row contentNode2 : "+contentNode);
-				log(myDebug, "-=-=-=-=-= in generic row contentNode2 : "+(contentNode instanceof CategoryModel));
-				log(myDebug, "-=-=-=-=-= in generic row instanceof globalColl.contains2 : "+rowColl.contains(contentNode));
-
-				ProductModel pm = (ProductModel) contentNode;
-				String prodNameAttribute = JspMethods.getProductNameToUse(pm);
-				DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
-				int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-				String actionURI = FDURLUtil.getProductURI( pm, trkCode );
-			%>
-
-				<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
-					<div class="WG_deals">
-						<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
-						<display:ProductName product="<%= pm %>" action="<%= actionURI %>" />
-						<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="false" />
-					</div>
-				</td>
-			</logic:iterate>
-		</tr>
-		</table>
+			<fd:ItemSorter nodes='<%=(List)sortedColl%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
 	<%
 		}
 	%>
+
 	
-	<% log(myDebug, "-=-=-=-=-= in generic row END : "); %>
+	<%
+		/* check returned list size first to see if we're above minmum needed before we start removing products */
+		if (minForRowVisibility > 0 && sortedColl.size() < minForRowVisibility ) { skipExecution=true; }
+	%>
+ 
+
+	<%
+		if (skipExecution) {
+			log(myDebug, "ROW "+curRow+": skipExecution 00 : "+skipExecution);
+		}else{
+			/*
+			 *	We need to loop twice here, the first time to make sure we have a min for the row
+			 */
+			
+			/* check to see if we need to check for a min */
+			if (minForRowVisibility>0) {
+				//we do
+				int minCheckTempCount = 0;
+				/* loop 1 */
+			%>
+					<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
+						<%
+							if (minCheckTempCount >= maxToShow || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode)) { continue; }
+							ProductModel pm = (ProductModel) contentNode;
+							//skip if discontinued or unavailable
+							if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
+							//if dealsOnly is true, skip if not a deal
+							if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) { continue; }
+							minCheckTempCount++;
+						%>
+					</logic:iterate>
+				<%
+				//now check count vs min and turn on skip if less
+				if ( minCheckTempCount < minForRowVisibility ) { skipExecution=true; }
+			}
+		}
+	%>
+
+	<%
+		if (skipExecution) {
+			log(myDebug, "ROW "+curRow+": skipExecution 01 : "+skipExecution);
+		}else{
+			/* loop 2 */
+	%>
+			<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
+				<%
+						//log(myDebug, "ROW "+curRow+": maxToShow1 : "+maxToShow);
+						//log(myDebug, "ROW "+curRow+": tempCounter1 : "+tempCounter);
+					// skip if more than 5, is a category or already used on page
+					if (tempCounter >= maxToShow || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode)) { continue; }
+					ProductModel pm = (ProductModel) contentNode;
+					//skip if discontinued or unavailable
+					if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
+					//if dealsOnly is true, skip if not a deal
+					if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) { continue; }
+
+					//add to global collection for dupe check
+					globalColl.add(contentNode);
+					//add to pageColl for prices ref
+					rowColl.add(contentNode);
+
+
+					pi = cUtil.configure((ProductModel) pm, confContext);
+					impressions.add(pi);
+					
+					if (pi.isTransactional()) {
+						++nConfProd;
+					}
+
+					tempCounter++;
+				%>
+			</logic:iterate>
+
+			<% if (isTransactionalRow) { %>
+				<%-- PRICING PART --%>
+				<fd:TxProductPricingSupport formName="<%= TX_FORM_NAME %>" namespace="<%= TX_JS_NAMESPACE %>" customer="<%= user %>" impressions="<%= impressions %>"/>
+			<% } %>
+			<%
+				String base_url = request.getParameter("base_url");
+				if (base_url == null) {
+					base_url = request.getRequestURI()+(request.getQueryString() == null ? "" : "?" + request.getQueryString());
+				}
+			%>
+			<%
+				//rowColl should now have the collection of products to use
+
+				//if we have any items to show, display them
+				if (rowColl.size() > 0) {
+			%>
+				<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
+				<% mediaPath = "/media/editorial/whats_good/whats_good_"+ catId + "_above.html"; %>
+				<fd:IncludeMedia name="<%=mediaPath%>" />
+				
+				<% if (isTransactionalRow) { %>
+					<form class="wgForm" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
+					<input name="catId" type="hidden" value="<%=showInContextOf%>" />
+				<% } %>
+
+
+				<table cellpadding="0" cellspacing="0" border="0">
+				<tr valign="bottom">
+
+					<% log(myDebug, "ROW "+curRow+": rowColl : "+catId+" : "+(List)rowColl); %>
+					<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
+
+					<%
+						//log(myDebug, "ROW "+curRow+": contentNode : "+contentNode);
+						//log(myDebug, "ROW "+curRow+": instanceof CategoryModel : "+(contentNode instanceof CategoryModel));
+						//log(myDebug, "ROW "+curRow+": instanceof globalColl.contains : "+globalColl.contains(contentNode));
+						
+						//we don't need checks here, we did it previously
+
+						ProductModel pm = (ProductModel) contentNode;
+						String prodNameAttribute = JspMethods.getProductNameToUse(pm);
+						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,showInContextOf,pm,prodNameAttribute,false);
+						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+						String actionURI = FDURLUtil.getProductURI( pm, trkCode );
+						if (showInContextOf != catId) {
+								actionURI = actionURI.replace(catId, showInContextOf+"&prodCatId="+catId);
+								actionURI = actionURI.replace("product.jsp", "category.jsp");
+						}
+					%>
+
+						<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
+							<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionURI %>" />
+						</td>
+					
+					</logic:iterate>
+				</tr>
+				<tr>
+					
+					<% int txCount = 0; %>
+					<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
+					<%
+
+						//log(myDebug, "ROW "+curRow+": contentNode2 : "+contentNode);
+						//log(myDebug, "ROW "+curRow+": contentNode2 : "+(contentNode instanceof CategoryModel));
+						//log(myDebug, "ROW "+curRow+": instanceof globalColl.contains2 : "+rowColl.contains(contentNode));
+
+						ProductModel pm = (ProductModel) contentNode;
+						
+
+						String prodNameAttribute = JspMethods.getProductNameToUse(pm);
+						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,showInContextOf,pm,prodNameAttribute,true);
+						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+						String actionURI = FDURLUtil.getProductURI( pm, trkCode );
+						if (showInContextOf != catId) {
+								actionURI = actionURI.replace(catId, showInContextOf+"&prodCatId="+catId);
+								actionURI = actionURI.replace("product.jsp", "category.jsp");
+						}
+
+					%>
+
+						<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
+							<div class="WG_deals">
+								<% if (impressions.get(idx) instanceof TransactionalProductImpression && isTransactionalRow) { %>
+									<fd:TxProductControl txNumber="<%= txCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(idx) %>"/>
+								<% 
+									txCount++;
+								} else { %>
+									<!-- non trans -->
+								<% } %>
+								<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
+								<display:ProductName product="<%= pm %>" action="<%= actionURI %>" />
+								<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="false" />
+
+							</div>
+						</td>
+					</logic:iterate>
+				</tr>
+				<% if (isTransactionalRow) { %>
+				<tr>
+					<td class="wgd_addtocart" class="text11bold" colspan="<%=maxToShow%>">
+						<table width="100%">
+							<tr>
+								<td align="center">
+									<input type="hidden" name="itemCount" value="<%= nConfProd %>">
+									<input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART">
+									<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()" />
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<% } %>
+				</table>
+
+				<% if (isTransactionalRow) { %></form><% } %>
+
+			<%
+				}
+			%>
+			
+			<% log(myDebug, "ROW "+curRow+": END : "); %>
+		<% } %>

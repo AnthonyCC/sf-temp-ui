@@ -11,6 +11,7 @@
     <title><tmpl:get name='title'/></title>
     <%@ include file="/common/template/includes/metatags.jspf" %>
     <script language="javascript" type="text/javascript" src="/assets/javascript/common_javascript.js"></script>
+	<script type="text/javascript" src="/assets/javascript/pricing.js"></script>
      <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
      <%@ include file="/shared/template/includes/ccl.jspf" %>
 </head>

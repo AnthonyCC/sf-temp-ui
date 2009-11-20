@@ -9,10 +9,17 @@
 
 	//var defines
 
-	int ppTarget = 6;
-	int ppVeg = 0;
-	int ppFru = 0;
-	int tempCounter = 0;
+	//perRowPP = target number of products to hit
+
+	int ppVeg = 0; //counter for vegetables
+	int ppVegTarget = perRowPP/2;
+	int ppFru = 0; //counter for fruit
+	int ppFruTarget = perRowPP/2;
+	
+	int tempCounter = 0; //reusable temp counter
+
+	
+	boolean skipExecution = false; //used for skipping sections of code
 
 	Collection vegColl = new ArrayList();
 	Collection fruColl = new ArrayList();
@@ -23,6 +30,19 @@
 	isDept = (currentFolder instanceof DepartmentModel);
 	isCat = (currentFolder instanceof CategoryModel);
 	trkCode= "";
+
+	//needed for transactional
+		impressions = new ArrayList();
+		pi = null;
+		nConfProd = 0;
+	
+		confContext = new ConfigurationContext();
+		confContext.setFDUser(user);
+		cUtil = SmartStoreConfigurationStrategy.getInstance();
+
+		// added rowId here to keep these unique in case the same cat is used again
+		TX_FORM_NAME        = catId+rowId+"_form"; // impression form name
+		TX_JS_NAMESPACE     = catId+rowId+"_JSnamespace"; // impression javascript namespace
   
 	/* pass the code that should be used as the tracking code */
 	if (isDept) {
@@ -34,13 +54,13 @@
 	}
 %>
 
-<% log(myDebug, "-=-=-=-=-= in peak produce row currentFolder : "+currentFolder); %>
-<% log(myDebug, "-=-=-=-=-= isDept : "+isDept); %>
-<% log(myDebug, "-=-=-=-=-= isCat : "+isCat); %>
+<% log(myDebug, "ROW "+curRow+": in peak produce row currentFolder : "+currentFolder); %>
+<% log(myDebug, "ROW "+curRow+": isDept : "+isDept); %>
+<% log(myDebug, "ROW "+curRow+": isCat : "+isCat); %>
 
 <%
 	layoutSettings = new Settings();
-	layoutSettings.setGrabberDepth(0);
+	layoutSettings.setGrabberDepth(grabberDepth); //use passed value
 	layoutSettings.setIgnoreDuplicateProducts(true);
 	layoutSettings.setIgnoreShowChildren(false);
 	layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
@@ -66,8 +86,8 @@
 		%>
 	</fd:ItemGrabber>
  
-	<% log(myDebug, "-=-=-=-=-= in peak produce row : "); %>
-	<% log(myDebug, "-=-=-=-=-= in peak produce row sortedColl: "+sortedColl); %>
+	<% log(myDebug, "ROW "+curRow+": in peak produce row : "); %>
+	<% log(myDebug, "ROW "+curRow+": in peak produce row sortedColl: "+sortedColl); %>
 
 <%
 	/*
@@ -80,55 +100,77 @@
 		if (contentNode instanceof CategoryModel) {
 			if ((contentNode.toString().toLowerCase()).indexOf("fru")>-1) {
 				//fruit subcat
-				log(myDebug, "-=-=-=-=-= in peak produce row fruit subcat found : "+contentNode);
+				log(myDebug, "ROW "+curRow+": in peak produce row fruit subcat found : "+contentNode);
 					catId = contentNode.toString();
 					currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
 					tmpList=new ArrayList();
+					
+				/* check if we only want featured items */
+				if (featuredOnly) {
+					//featured only
+
+					currentCAT = (CategoryModel)currentFolder; fruColl = currentCAT.getFeaturedProducts();
+					log(myDebug, "ROW "+curRow+": FRU feats list : "+fruColl);
+
+				}else{
+					//all products
 			%>
-				<fd:ItemGrabber
-					category='<%=currentFolder %>' 
-					id='FRUrtnColl' 
-					depth='<%=layoutSettings.getGrabberDepth()%>'
-					ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
-					filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
-					returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
-					ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
-					returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
-					returnSkus='<%=layoutSettings.isReturnSkus()%>'
-					workSet='<%=tmpList%>'
-				>
-					<% fruColl = FRUrtnColl; %>
-				</fd:ItemGrabber>
+					<fd:ItemGrabber
+						category='<%=currentFolder %>' 
+						id='FRUrtnColl' 
+						depth='<%=layoutSettings.getGrabberDepth()%>'
+						ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+						filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+						returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+						ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+						returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
+						returnSkus='<%=layoutSettings.isReturnSkus()%>'
+						workSet='<%=tmpList%>'
+					>
+						<% fruColl = FRUrtnColl; %>
+					</fd:ItemGrabber>
 			<%
-				log(myDebug, "-=-=-=-=-= in peak produce row fruColl : "+fruColl);
+				}
+				log(myDebug, "ROW "+curRow+": in peak produce row fruColl : "+fruColl);
 			}else if ((contentNode.toString().toLowerCase()).indexOf("veg")>-1) {
 				//veg subcat
-				log(myDebug, "-=-=-=-=-= in peak produce row veg subcat found : "+contentNode);
+				log(myDebug, "ROW "+curRow+": in peak produce row veg subcat found : "+contentNode);
 
 				catId = contentNode.toString();
 				currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
 
 				tmpList=new ArrayList();
+					
+				/* check if we only want featured items */
+				if (featuredOnly) {
+					//featured only
+
+					currentCAT = (CategoryModel)currentFolder; vegColl = currentCAT.getFeaturedProducts();
+					log(myDebug, "ROW "+curRow+": VEG feats list : "+vegColl);
+
+				}else{
+					//all products
 			%>
-				<fd:ItemGrabber
-					category='<%=currentFolder %>' 
-					id='VEGrtnColl' 
-					depth='<%=layoutSettings.getGrabberDepth()%>'
-					ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
-					filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
-					returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
-					ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
-					returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
-					returnSkus='<%=layoutSettings.isReturnSkus()%>'
-					workSet='<%=tmpList%>'
-				>
-					<% vegColl = VEGrtnColl; %>
-				</fd:ItemGrabber>
+					<fd:ItemGrabber
+						category='<%=currentFolder %>' 
+						id='VEGrtnColl' 
+						depth='<%=layoutSettings.getGrabberDepth()%>'
+						ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+						filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+						returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+						ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+						returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
+						returnSkus='<%=layoutSettings.isReturnSkus()%>'
+						workSet='<%=tmpList%>'
+					>
+						<% vegColl = VEGrtnColl; %>
+					</fd:ItemGrabber>
 			<%
-				log(myDebug, "-=-=-=-=-= in peak produce row vegColl : "+vegColl);
+				}
+				log(myDebug, "ROW "+curRow+": in peak produce row vegColl : "+vegColl);
 			}else{
 				//other subcat
-				log(myDebug, "-=-=-=-=-= in peak produce row other subcat found : "+contentNode);
+				log(myDebug, "ROW "+curRow+": in peak produce row other subcat found : "+contentNode);
 			}
 		}
 	%>
@@ -161,30 +203,41 @@
 	ppVeg = vegColl.size();
 	ppFru = fruColl.size();
 
-	//logic to determine products from each dept to show
-	if (ppVeg > 3) {
-		//veg = 3
-		ppVeg = 3;
-		if (ppFru > 3) {
-			//veg = 3, fru = 3
-			ppVeg = 3;
-			ppFru = 3;
-			//done
+	int offBy = (perRowPP-(ppFruTarget+ppVegTarget));
+
+	//logic to determine products from each cat/dept to show
+	if (ppVeg > ppVegTarget) {
+		if (ppFru > ppFruTarget){
+			//veg = perRowPP/2, fru = perRowPP/2
+			ppFru = ppFruTarget;
+			ppVeg = ppVegTarget;
 		}else{
-			//fru<3
-			//veg = tar-fru
-			ppVeg = ppTarget-ppFru;
+			ppVeg = perRowPP-ppFru;
 		}
 	}else{
-		//fru = tar - veg
-		ppFru = ppTarget-ppVeg;
+		ppFru = perRowPP-ppVeg;
+	}
+	int k = 10; //k is a killswitch jik to prevent runaway while
+	while (offBy>0 && k > 0) {
+		if ( (ppFru+ppVeg) < perRowPP ) {
+			if ( fruColl.size() >= (ppFru+1) ) {
+				ppFru++;
+			}else{
+				if ( vegColl.size() >= (ppVeg+1) ) {
+					ppVeg++;
+				}
+			}
+			offBy--;
+		}
+		k--;
 	}
 %>
 
-<% log(myDebug, "-=-=-=-=-= peak produce fruColl.size()"+ fruColl.size()+" using "+ppFru); %>
-<% log(myDebug, "-=-=-=-=-= peak produce vegColl.size()"+ vegColl.size()+" using "+ppVeg); %>
+<% log(myDebug, "ROW "+curRow+": fruColl.size()"+ fruColl.size()+" using "+ppFru); %>
+<% log(myDebug, "ROW "+curRow+": vegColl.size()"+ vegColl.size()+" using "+ppVeg); %>
+<% log(myDebug, "ROW "+curRow+": ppFru+ppVeg:"+(ppFru+ppVeg)+" min: "+minForRowVisibility); %>
 
-<% if (ppFru+ppVeg > 0) { // min to require to display section %>
+<% if (ppFru+ppVeg > minForRowVisibility) { // min to require to display section %>
 	<logic:iterate id="contentNode" collection="<%= fruColl %>" type="java.lang.Object" indexId="idx">
 		<%
 			// skip if more than we want for fruit, is a category or already used on page
@@ -192,11 +245,22 @@
 			ProductModel pm = (ProductModel) contentNode;
 			//skip if discontinued or unavailable
 			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
+			//if dealsOnly is true, skip if not a deal
+			if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) { continue; }
 
 			//add to global collection for dupe check
 			globalColl.add(contentNode);
 			//add to pageColl for prices ref
 			rowColl.add(contentNode);
+
+
+			//needed for transactional
+				pi = cUtil.configure((ProductModel) pm, confContext);
+				impressions.add(pi);
+				
+				if (pi.isTransactional()) {
+					++nConfProd;
+				}
 
 			tempCounter++;
 		%>
@@ -211,26 +275,51 @@
 			ProductModel pm = (ProductModel) contentNode;
 			//skip if discontinued or unavailable
 			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
+			//if dealsOnly is true, skip if not a deal
+			if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) { continue; }
 
 			//add to global collection for dupe check
 			globalColl.add(contentNode);
 			//add to pageColl for prices ref
 			rowColl.add(contentNode);
 
+
+			//needed for transactional
+				pi = cUtil.configure((ProductModel) pm, confContext);
+				impressions.add(pi);
+				
+				if (pi.isTransactional()) {
+					++nConfProd;
+				}
+
 			tempCounter++;
 		%>
 	</logic:iterate>
 
+	<%-- PRICING PART --%>
+	<fd:TxProductPricingSupport formName="<%= TX_FORM_NAME %>" namespace="<%= TX_JS_NAMESPACE %>" customer="<%= user %>" impressions="<%= impressions %>"/>
+	<%
+		//needed for transactional
+		String base_url = request.getParameter("base_url");
+		if (base_url == null) {
+			base_url = request.getRequestURI()+(request.getQueryString() == null ? "" : "?" + request.getQueryString());
+		}
+	%>
 
 	<%
 		//rowColl should now have the collection of products to use
 
-		//if we have any items to show, display them
-		if (rowColl.size() > 0) {
+		//if we have enough items to show, display them
+		if (rowColl.size() > minForRowVisibility) {
 	%>
 
 		<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
 		<fd:IncludeMedia name= "/media/editorial/whats_good/whats_good_GRN_above.html"/>
+
+		<% if (isTransactionalRow) { %>
+			<form class="wgForm" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
+			<input name="catId" type="hidden" value="<%=catId%>" />
+		<% } %>
 
 			<table cellpadding="0" cellspacing="0" border="0">
 			<tr valign="bottom">
@@ -238,9 +327,9 @@
 				<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
 
 				<%
-					log(myDebug, "-=-=-=-=-= peak produce contentNode : "+contentNode);
-					log(myDebug, "-=-=-=-=-= peak produce instanceof CategoryModel : "+(contentNode instanceof CategoryModel));
-					log(myDebug, "-=-=-=-=-= peak produce globalColl.contains : "+globalColl.contains(contentNode));
+					log(myDebug, "ROW "+curRow+": contentNode : "+contentNode);
+					log(myDebug, "ROW "+curRow+": instanceof CategoryModel : "+(contentNode instanceof CategoryModel));
+					log(myDebug, "ROW "+curRow+": globalColl.contains : "+globalColl.contains(contentNode));
 					
 					//we don't need checks here, we did it previously
 
@@ -261,9 +350,9 @@
 				<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
 				<%
 
-					log(myDebug, "-=-=-=-=-= in peak produce contentNode2 : "+contentNode);
-					log(myDebug, "-=-=-=-=-= in peak produce contentNode2 : "+(contentNode instanceof CategoryModel));
-					log(myDebug, "-=-=-=-=-= in peak produce instanceof globalColl.contains2 : "+rowColl.contains(contentNode));
+					log(myDebug, "ROW "+curRow+": contentNode2 : "+contentNode);
+					log(myDebug, "ROW "+curRow+": contentNode2 : "+(contentNode instanceof CategoryModel));
+					log(myDebug, "ROW "+curRow+": instanceof globalColl.contains2 : "+rowColl.contains(contentNode));
 
 					ProductModel pm = (ProductModel) contentNode;
 					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
@@ -274,6 +363,11 @@
 
 					<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
 						<div class="WG_deals">
+							<% if (impressions.get(idx) instanceof TransactionalProductImpression && isTransactionalRow) { %>
+								<fd:TxProductControl txNumber="<%= idx %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(idx) %>"/>
+							<% } else { %>
+								<!-- non trans -->
+							<% } %>
 							<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
 							<display:ProductName product="<%= pm %>" action="<%= actionURI %>" />
 							<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="false" />
@@ -281,6 +375,23 @@
 					</td>
 				</logic:iterate>
 			</tr>
+			<% if (isTransactionalRow) { %>
+			<tr>
+				<td class="wgd_addtocart" class="text11bold" colspan="<%= perRowPP %>">
+					<table width="100%">
+						<tr>
+							<td align="center">
+								<input type="hidden" name="itemCount" value="<%= nConfProd %>">
+								<input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART">
+								<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()" />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<% } %>
 			</table>
+
+		<% if (isTransactionalRow) { %></form><% } %>
 		<% } %>
 <% } %>

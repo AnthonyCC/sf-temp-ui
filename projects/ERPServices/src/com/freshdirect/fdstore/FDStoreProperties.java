@@ -359,6 +359,10 @@ public class FDStoreProperties {
 	private final static String DEPT_MEAT_DEALS_CATID = "fdstore.department.meatdeals.catId";
 	private final static String DEPT_EDLP_CATID = "fdstore.department.edlp.catId";
 	
+	//Mobile
+	private final static String MOBILE_IPHONE_LANDING_ENABLED = "fdstore.mobile.iPhone.landingEnabled";
+	private final static String MOBILE_IPHONE_LANDING_PAGE = "fdstore.mobile.iPhone.landingPage";
+	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -618,6 +622,11 @@ public class FDStoreProperties {
 		defaults.put(DEPT_EDLP, "true");
 		defaults.put(DEPT_MEAT_DEALS_CATID, "");
 		defaults.put(DEPT_EDLP_CATID, "");
+		
+		//Mobile
+		defaults.put(MOBILE_IPHONE_LANDING_ENABLED, "false");
+		defaults.put(MOBILE_IPHONE_LANDING_PAGE, "/media/mobile/supported.ftl");
+		
 		refresh();
 	}
 
@@ -1442,5 +1451,13 @@ public class FDStoreProperties {
 
 	public static long getCmsRecommenderRefreshRate() {
 		return Long.parseLong(get(SMARTSTORE_CMS_RECOMM_REFRESH_RATE));
+	}
+	
+	//Mobile
+	public static boolean isIphoneLandingEnabled() {
+		return Boolean.valueOf(get(MOBILE_IPHONE_LANDING_ENABLED)).booleanValue();
+	}
+	public static String getIphoneLandingPage() {
+		return get(MOBILE_IPHONE_LANDING_PAGE);
 	}
 }
