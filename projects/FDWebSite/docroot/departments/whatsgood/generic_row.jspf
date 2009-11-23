@@ -208,9 +208,9 @@
 				
 				<% if (isTransactionalRow) { %>
 					<form class="wgForm" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
-					<input name="catId" type="hidden" value="<%=showInContextOf%>" />
+						<input name="catId" type="hidden" value="<%= (showInContextOf == null)?catId:showInContextOf %>" />
 				<% } %>
-
+				
 
 				<table cellpadding="0" cellspacing="0" border="0">
 				<tr valign="bottom">
@@ -230,7 +230,8 @@
 						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,showInContextOf,pm,prodNameAttribute,false);
 						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
 						String actionURI = FDURLUtil.getProductURI( pm, trkCode );
-						if (showInContextOf != catId) {
+						log(myDebug, "ROW "+curRow+": showInContextOf: "+showInContextOf+" | catId: "+catId);
+						if (showInContextOf != catId && showInContextOf != null) {
 								actionURI = actionURI.replace(catId, showInContextOf+"&prodCatId="+catId);
 								actionURI = actionURI.replace("product.jsp", "category.jsp");
 						}
@@ -259,7 +260,7 @@
 						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,showInContextOf,pm,prodNameAttribute,true);
 						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
 						String actionURI = FDURLUtil.getProductURI( pm, trkCode );
-						if (showInContextOf != catId) {
+						if (showInContextOf != catId && showInContextOf != null) {
 								actionURI = actionURI.replace(catId, showInContextOf+"&prodCatId="+catId);
 								actionURI = actionURI.replace("product.jsp", "category.jsp");
 						}

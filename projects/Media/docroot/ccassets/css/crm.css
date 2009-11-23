@@ -1572,3 +1572,4 @@ font-size: 10pt;
 /* fix for IE 7-8 and exception pages */
 body div.content_fixed { float: left; }
 div#prod_container div { position: relative; }
+div.content_scroll { clear: left; }

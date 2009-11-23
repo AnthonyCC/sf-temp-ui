@@ -166,6 +166,14 @@ log(myDebug, "PAGE : Starting What's Good...");
 			<td valign="bottom">
 
 	<% } %>
+
+
+	<% //START error messaging %>
+		<fd:ErrorHandler result='<%=result%>' name='quantity' id='errorMsg'>
+			<img src="/media_stat/images/layout/clear.gif" width="20" height="12" alt="" border="0">
+			<%@ include file="/includes/i_error_messages.jspf" %>
+		</fd:ErrorHandler>
+	<% //END error messaging %>
 	
 	<% //START top section %>
 
@@ -345,7 +353,10 @@ log(myDebug, "PAGE : Starting What's Good...");
 							}
 						}
 						//set context
-						if (catId != null && showInContextOf == null) { showInContextOf = catId; }
+						if (catId != null && showInContextOf == null) {
+							showInContextOf = catId;
+							log(myDebug, "PAGE property: set showInContextOf: "+showInContextOf);
+						}
 					}
 				}
 			}catch(Exception e){
