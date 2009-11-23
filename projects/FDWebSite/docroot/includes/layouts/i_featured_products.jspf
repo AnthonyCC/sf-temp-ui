@@ -90,7 +90,7 @@ if (_featCats!=null) {
          CategoryRef catRef= (CategoryRef)_featuredCats.get(0);
         dealsCat= catRef.getCategoryName();
 }
-			String productPageLink_ = response.encodeURL("/deals.jsp?catId=" + dealsCat
+			String productPageLink_ = response.encodeURL("/category.jsp?catId=" + dealsCat
             +"&sortBy=name&showThumbnails=true&DisplayPerPage=30&sortDescending=false&disp=null&prodCatId="+prodParent
             +"&productId="+product.getContentName()+"&trk=trans");
 
