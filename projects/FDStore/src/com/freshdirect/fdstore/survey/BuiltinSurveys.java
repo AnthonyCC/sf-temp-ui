@@ -5,22 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.common.customer.EnumServiceType;
+
 public class BuiltinSurveys {
 
     Map<EnumSurveyType, FDSurvey> defaults = new HashMap<EnumSurveyType, FDSurvey>();
+    Map<SurveyKey, FDSurvey> override = new HashMap<SurveyKey, FDSurvey>();
 
+    
     BuiltinSurveys() {
-        {
-            // FDSurvey lastOrderSurvey = createLastOrderSurvey();
-
-            // addSurvey(lastOrderSurvey);
-        }
-        {
-            //FDSurvey summerCheckout = createSummerCheckoutSurvey();
-
-            //addSurvey(summerCheckout);
-        }
-        
         List<FDSurveyAnswer> radioOptions_yesNo = new ArrayList<FDSurveyAnswer>();
         radioOptions_yesNo.add(new FDSurveyAnswer("Yes", "Yes"));
         radioOptions_yesNo.add(new FDSurveyAnswer("No", "No"));
@@ -111,6 +104,12 @@ public class BuiltinSurveys {
 
             addSurvey(prodReqFeedback);
         }
+
+        // this is for testing purposes
+        addOverrideSurvey(createCorporateProfileSurvey());
+        addOverrideSurvey(createCorporateSignup());
+        addOverrideSurvey(createCorporateSecondOrderSurvey());
+        
     }
 
     private FDSurvey createWineRequestFeedbackSurvey() {
@@ -1085,14 +1084,220 @@ public class BuiltinSurveys {
         return hamptons05;
     }
 
+    public static FDSurvey createCorporateSignup() {
+        FDSurvey surv = new FDSurvey(new SurveyKey(EnumSurveyType.REGISTRATION_SURVEY, EnumServiceType.HOME));
+
+        {
+            FDSurveyQuestion q = createEmployeCountQuestion();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createIndustryQuestion();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createRegularProductsQuestion();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = new FDSurveyQuestion("cos_reg_how_hear", "How did you hear about FreshDirect?", "", false, false, false,false,false, false,EnumFormDisplayType.SINGLE_ANS_PER_ROW, null);
+            q.addAnswer(new FDSurveyAnswer("hear_flyer","Flyer"));
+            q.addAnswer(new FDSurveyAnswer("hear_news","Newspaper"));
+            q.addAnswer(new FDSurveyAnswer("hear_mag","Magazine"));
+            q.addAnswer(new FDSurveyAnswer("hear_tv","TV"));
+            q.addAnswer(new FDSurveyAnswer("hear_radio","Radio"));
+            q.addAnswer(new FDSurveyAnswer("hear_email","Email"));
+            q.addAnswer(new FDSurveyAnswer("hear_fr","Friend/Colleague"));
+            q.addAnswer(new FDSurveyAnswer("hear_post","Poster/Billboard"));
+            q.addAnswer(new FDSurveyAnswer("hear_mail","Direct Mail"));
+            q.addAnswer(new FDSurveyAnswer("hear_web","Internet/Web Ad"));
+            q.addAnswer(new FDSurveyAnswer("hear_truck","FreshDirect Truck"));
+            q.addAnswer(new FDSurveyAnswer("hear_taxi","Taxi Tops"));
+            surv.addQuestion(q);
+        }
+        return surv;
+    }
+
+    private static FDSurveyQuestion createIndustryQuestion() {
+        FDSurveyQuestion q = new FDSurveyQuestion("cos_reg_industry", "In what Industry is your company?", "", false, false, false,false,false, false,EnumFormDisplayType.SINGLE_ANS_PER_ROW, null);
+        q.addAnswer(new FDSurveyAnswer("comp_inv","Investment Services"));
+        q.addAnswer(new FDSurveyAnswer("comp_hotel","Hotel"));
+        q.addAnswer(new FDSurveyAnswer("comp_ret","Retail"));
+        q.addAnswer(new FDSurveyAnswer("comp_bank","Banking"));
+        q.addAnswer(new FDSurveyAnswer("comp_edu","Education"));
+        q.addAnswer(new FDSurveyAnswer("comp_ins","Insurance"));
+        q.addAnswer(new FDSurveyAnswer("comp_acc","Accounting"));
+        q.addAnswer(new FDSurveyAnswer("comp_tech","Technology"));
+        q.addAnswer(new FDSurveyAnswer("comp_arc","Architecture/Design"));
+        q.addAnswer(new FDSurveyAnswer("comp_real","Real Estate"));
+        q.addAnswer(new FDSurveyAnswer("comp_manu","Manufacturing"));
+        q.addAnswer(new FDSurveyAnswer("comp_med","Media/Arts/Entertainment"));
+        q.addAnswer(new FDSurveyAnswer("comp_tele","Telecommunications"));
+        q.addAnswer(new FDSurveyAnswer("comp_att","Attorney/Legal Services"));
+        q.addAnswer(new FDSurveyAnswer("comp_ob","Other Business Services"));
+        q.addAnswer(new FDSurveyAnswer("comp_pr","Public Relations/Ad Agencies"));
+        q.addAnswer(new FDSurveyAnswer("comp_np","Non-Profit"));
+        q.addAnswer(new FDSurveyAnswer("comp_garm","Garment/Fashion Industry"));
+        q.addAnswer(new FDSurveyAnswer("comp_other","Other"));
+        return q;
+    }
+
+    private static FDSurveyQuestion createEmployeCountQuestion() {
+        FDSurveyQuestion q = new FDSurveyQuestion("cos_reg_employee_count", "How many employees in your office?", "", false, false, false,false,false, false,EnumFormDisplayType.SINGLE_ANS_PER_ROW, null);
+        q.addAnswer(new FDSurveyAnswer("emp_1_9","1 - 9"));
+        q.addAnswer(new FDSurveyAnswer("emp_10_49","10 - 49"));
+        q.addAnswer(new FDSurveyAnswer("emp_50_74","50 - 74"));
+        q.addAnswer(new FDSurveyAnswer("emp_75_99","75 - 99"));
+        q.addAnswer(new FDSurveyAnswer("emp_100_499","100 - 499"));
+        q.addAnswer(new FDSurveyAnswer("emp_500p","500 +"));
+        return q;
+    }
+
+    public static FDSurvey createCorporateProfileSurvey() {
+        FDSurvey surv = new FDSurvey(new SurveyKey(EnumSurveyType.CUSTOMER_PROFILE_SURVEY, EnumServiceType.CORPORATE));
+
+        {
+            FDSurveyQuestion q = createEmployeCountQuestion();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createIndustryQuestion();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createRegularProductsQuestion();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createCustomerProfileRole();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createCorporateProfileImportant();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createCorporateProfileLearnQuestion();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createCorporateEventsQuestion();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createCorporateReimburseQuestion();
+            surv.addQuestion(q);
+        }
+        return surv;
+    }
+
+    private static FDSurveyQuestion createRegularProductsQuestion() {
+        FDSurveyQuestion q = new FDSurveyQuestion("cos_reg_regular_products", "Which of the following products does your office buy on a regular basis?", "", false, false, false,false,false, false,EnumFormDisplayType.SINGLE_ANS_PER_ROW, null);
+        q.addAnswer(new FDSurveyAnswer("regp_cold","Cold Beverages (bottled water, soda, juice, iced tea, etc)"));
+        q.addAnswer(new FDSurveyAnswer("regp_hot","Hot Beverages (coffee, tea, etc)"));
+        q.addAnswer(new FDSurveyAnswer("regp_dairy","Dairy (milk, creamer, etc)"));
+        q.addAnswer(new FDSurveyAnswer("regp_yogurt","Yogurt"));
+        q.addAnswer(new FDSurveyAnswer("regp_nonp","Non-Perishable Snacks (chips)"));
+        q.addAnswer(new FDSurveyAnswer("regp_peris","Perishable Snacks (fruit, yogurt)"));
+        q.addAnswer(new FDSurveyAnswer("regp_break","Breakfast Items (Cereal, etc)"));
+        q.addAnswer(new FDSurveyAnswer("regp_cat","Catering Platters"));
+        q.addAnswer(new FDSurveyAnswer("regp_ind","Individual Meals"));
+        return q;
+    }        
+
+    public static FDSurvey createCorporateSecondOrderSurvey() {
+        FDSurvey surv = new FDSurvey(new SurveyKey(EnumSurveyType.SECOND_ORDER_SURVEY, EnumServiceType.CORPORATE));
+        {
+            FDSurveyQuestion q = createCustomerProfileRole();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createCorporateProfileImportant();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createCorporateProfileLearnQuestion();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createCorporateEventsQuestion();
+            surv.addQuestion(q);
+        }
+        {
+            FDSurveyQuestion q = createCorporateReimburseQuestion();
+            surv.addQuestion(q);
+        }
+        return surv;
+        
+
+    }
+
+    private static FDSurveyQuestion createCorporateReimburseQuestion() {
+        FDSurveyQuestion q = new FDSurveyQuestion("cos_profile_reimburse", "Does your company reimburse employees for meals when they work late at night or through lunchtime?", "", false, false, true,false,false, false,EnumFormDisplayType.SINGLE_ANS_PER_ROW, null);
+        q.addAnswer(new FDSurveyAnswer("reimburse_yes","Yes"));
+        q.addAnswer(new FDSurveyAnswer("reimburse_yes","No"));
+        return q;
+    }
+
+    private static FDSurveyQuestion createCorporateEventsQuestion() {
+        FDSurveyQuestion q = new FDSurveyQuestion("cos_profile_events", "Which of the following office events do you buy food/beverage for:", "", false, false, true,false,false, false,EnumFormDisplayType.SINGLE_ANS_PER_ROW, null);
+        q.addAnswer(new FDSurveyAnswer("event_summer","Summer Fridays/Happy Hour"));
+        q.addAnswer(new FDSurveyAnswer("event_birth","Birthdays"));
+        q.addAnswer(new FDSurveyAnswer("event_wedd","Wedding/Baby Shower"));
+        q.addAnswer(new FDSurveyAnswer("event_holiday","Holidays"));
+        q.addAnswer(new FDSurveyAnswer("event_comp","Company celebrations"));
+        q.addAnswer(new FDSurveyAnswer("event_other","Other"));
+        return q;
+    }
+
+    private static FDSurveyQuestion createCorporateProfileLearnQuestion() {
+        FDSurveyQuestion q = new FDSurveyQuestion("cos_profile_learn", "I am interested in learning more about:", "", false, false, true,false,false, false,EnumFormDisplayType.SINGLE_ANS_PER_ROW, null);
+        q.addAnswer(new FDSurveyAnswer("learn_health","Healthy items for the office"));
+        q.addAnswer(new FDSurveyAnswer("learn_deals","Special deals & great prices"));
+        q.addAnswer(new FDSurveyAnswer("learn_savings","Time savings tips related to ordering food and beverages"));
+        q.addAnswer(new FDSurveyAnswer("learn_other","Other"));
+        return q;
+    }
+
+    private static FDSurveyQuestion createCorporateProfileImportant() {
+        FDSurveyQuestion q = new FDSurveyQuestion("cos_profile_important", "What is most important to you when shopping for food and/or beverages for the office?", "", false, false, true,false,false, false,EnumFormDisplayType.SINGLE_ANS_PER_ROW, null);
+        q.addAnswer(new FDSurveyAnswer("imp_low","Low prices"));
+        q.addAnswer(new FDSurveyAnswer("imp_vendor","Convenience of getting all of the products I need from one vendor"));
+        q.addAnswer(new FDSurveyAnswer("imp_quality","Quality of perishable food and long expiration dates on products"));
+        q.addAnswer(new FDSurveyAnswer("imp_other","Other"));
+        return q;
+    }
+
+    private static FDSurveyQuestion createCustomerProfileRole() {
+        FDSurveyQuestion q = new FDSurveyQuestion("cos_profile_role", "What is your role in the company?", "", false, false, true,false,false, false,EnumFormDisplayType.SINGLE_ANS_PER_ROW, null);
+        q.addAnswer(new FDSurveyAnswer("role_assist","Administrative Assistant or Receptionist"));
+        q.addAnswer(new FDSurveyAnswer("role_offman","Office Manager"));
+        q.addAnswer(new FDSurveyAnswer("role_fac","Facilities"));
+        q.addAnswer(new FDSurveyAnswer("role_hr","Human Resources"));
+        q.addAnswer(new FDSurveyAnswer("role_owner","Owner"));
+        q.addAnswer(new FDSurveyAnswer("role_other","Other"));
+        return q;
+    }
+    
     void addSurvey(FDSurvey survey) {
         if (survey.getKey() != null) {
             defaults.put(survey.getKey().getSurveyType(), survey);
         }
     }
+
+    void addOverrideSurvey(FDSurvey survey) {
+        if (survey.getKey() != null) {
+            override.put(survey.getKey(), survey);
+        }
+    }
+
     
     public FDSurvey getDefaultSurvey(SurveyKey key) {
         return defaults.get(key.getSurveyType());
+    }
+
+    public FDSurvey getOverrideSurvey(SurveyKey key) {
+        return override.get(key);
     }
     
 

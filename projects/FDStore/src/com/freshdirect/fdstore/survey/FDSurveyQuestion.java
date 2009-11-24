@@ -208,4 +208,69 @@ public class FDSurveyQuestion implements java.io.Serializable {
 		return (shortDescr==null ||"".equals(shortDescr))? description:shortDescr;
 	}
 	
+    String toSqlInserts() {
+        String surveyQuestion = "insert into CUST.SURVEY_QUESTION "
+                + "(ID,NAME,DESCRIPTION,IS_MULTISELECT,IS_OPENENDED,IS_RATING,SHOW_OPTIONAL_TEXT,IS_REQUIRED,IS_PULLDOWN,SHORT_DESCR,FORM_DISPLAY_TYPE,VIEW_DISPLAY_TYPE,DATE_MODIFIED) " 
+                + "values (" 
+                + toMaxSelect("SURVEY_QUESTION")
+                + ','
+                + escape(name)
+                + ','
+                + escape(description)
+                + ','
+                + bool(multiselect)
+                + ','
+                + bool(openEnded)
+                + ','
+                + bool(rating)
+                + ','
+                + bool(showOptionalText)
+                + ','
+                + bool(required)
+                + ','
+                + bool(pulldown)
+                + ','
+                + escape(shortDescr)
+                + ','
+                + (formDisplayType != null ? formDisplayType.getName() : "null")
+                + ','
+                + (viewDisplayType != null ? viewDisplayType.getName() : "null")
+                + ",SYSDATE);";
+
+        String sqId = toSelectSqlId();
+
+        StringBuilder s = new StringBuilder(surveyQuestion);
+
+        int sequence = 1;
+        for (Iterator it = answers.iterator(); it.hasNext();) {
+            FDSurveyAnswer answer = (FDSurveyAnswer) it.next();
+
+            String surveyAnswer = "insert into CUST.SURVEY_ANSWER (ID,NAME,DESCRIPTION,DATE_MODIFIED) values ("+toMaxSelect("SURVEY_ANSWER")+"," + escape(answer.getName()) + ','
+                    + escape(answer.getDescription()) + ",SYSDATE);";
+            String saId = "(select id from CUST.SURVEY_ANSWER where NAME = " + escape(answer.getName()) + ")";
+            String surveyQA = "insert into CUST.SURVEY_QA (ID,QUESTION, ANSWER, SEQUENCE, ANSWER_GROUP, DATE_MODIFIED) values (" + toMaxSelect("SURVEY_QA")+','+sqId + ',' + saId + ','
+                    + sequence + ',' + escape(answer.getGroup()) + ", SYSDATE);";
+
+            s.append("\n").append(surveyAnswer).append("\n").append(surveyQA);
+            sequence ++;
+        }
+        return s.toString();
+    }
+
+    String toSelectSqlId() {
+        return "(select id from CUST.SURVEY_QUESTION q where q.name = " + escape(name) + ")";
+    }
+    
+    String toMaxSelect(String name) {
+        return "(select max(to_number(id))+1 from CUST."+name+")";
+    }
+
+    private static String escape(String name2) {
+        return "'" + name2 + '\'';
+    }
+
+    private static String bool(boolean b) {
+        return b ? "'Y'" : "'N'";
+    }	
+	
 }

@@ -127,4 +127,31 @@ public class FDSurvey implements java.io.Serializable {
 	public SurveyKey getKey() {
             return key;
         }
+	
+    public String toSqlString(int id) {
+        String def = "INSERT INTO CUST.SURVEY_DEF (ID,NAME,DESCR,CREATE_DATE,IS_ORDER_SURVEY,IS_CUSTOMER_PROFILE_SURVEY,MIN_COVERAGE,SERVICE_TYPE) values (" +
+            id +',' +
+            escape(key.surveyType.getLabel()) + ',' + escape(name) + ",SYSDATE,NULL,'Y', NULL, "+escape(key.getUserType().name())+");\n";
+        
+	StringBuilder s = new StringBuilder(def);
+	int sequence = 1;
+        for(Iterator i = this.questions.iterator(); i.hasNext();){
+            FDSurveyQuestion q = (FDSurveyQuestion) i.next();
+            s.append("\n").append(q.toSqlInserts());
+            s.append('\n');
+            s.append('\n').append("insert into CUST.SURVEY_SETUP (SURVEY,SEQUENCE,ACTIVE,QUESTION, ID, DATE_MODIFIED) values (" +
+                    id+","+sequence+",'Y',"+q.toSelectSqlId()+",(select max(to_number(id))+1 from CUST.SURVEY_SETUP),SYSDATE);");
+            s.append('\n');
+        }        
+	return s.toString();
+    }
+
+    private static String escape(String name2) {
+        return "'" + name2 + '\'';
+    }
+
+    private static String bool(boolean b) {
+        return b ? "'Y'" : "'N'";
+    }
+
 }

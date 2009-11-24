@@ -72,18 +72,23 @@ public class FDSurveyFactory {
     public synchronized FDSurvey getSurvey(EnumSurveyType surveyType, EnumServiceType userType) throws FDResourceException {
         userType = correctServiceType(userType);
         SurveyKey key = new SurveyKey(surveyType, userType);
-        FDSurvey cached = surveyDefCache.get(key);
-        if (cached == null) {
-            cached = getSurveyFromDatabase(key);
-            if (cached == null) {
-                cached = builtinSurveys.getDefaultSurvey(key);
-            }
-            if (cached != null) {
-                surveyDefCache.put(key, cached);
-            }
-            return cached;
+        // just for testing ...
+        FDSurvey survey = builtinSurveys.getOverrideSurvey(key);
+        if (survey != null) {
+            return survey;
         }
-        return cached;
+        survey = surveyDefCache.get(key);
+        if (survey == null) {
+            survey = getSurveyFromDatabase(key);
+            if (survey == null) {
+                survey = builtinSurveys.getDefaultSurvey(key);
+            }
+            if (survey != null) {
+                surveyDefCache.put(key, survey);
+            }
+            return survey;
+        }
+        return survey;
     }
 
     /**
@@ -100,6 +105,7 @@ public class FDSurveyFactory {
     }
 
     private static EnumServiceType extractServiceType(FDUserI user) {
+        //return EnumServiceType.CORPORATE; 
         return user != null ? user.getSelectedServiceType() : EnumServiceType.HOME;
     }
 
