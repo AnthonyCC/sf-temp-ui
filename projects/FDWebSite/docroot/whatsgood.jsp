@@ -206,7 +206,8 @@ log(myDebug, "PAGE : Starting What's Good...");
 	 *		SPECIAL (one of the following three)
 	 *			wgd_produce	-> /includes/department_peakproduce_whatsgood.jspf
 	 *			wg_deals	-> /includes/layouts/i_featured_products_whatsgood.jspf
-	 *			wg_ads		-> (if email) mediaPathTempBase+whats_good_AD_space.ftl
+	 *			wg_ads		-> (if email) mediaPathTempBase+whats_good_ads_off_space.ftl
+	 *						   (if NOT email) mediaPathTempBase+whats_good_ads_on_space.ftl
 	 *		CATEGORY
 	 *			ANY_CATID	-> /departments/whatsgood/generic_row.jspf
 	 *		MEDIA FILE

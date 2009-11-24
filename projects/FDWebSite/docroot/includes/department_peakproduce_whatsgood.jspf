@@ -366,7 +366,7 @@
 							<% if (impressions.get(idx) instanceof TransactionalProductImpression && isTransactionalRow) { %>
 								<fd:TxProductControl txNumber="<%= idx %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(idx) %>"/>
 							<% } else { %>
-								<!-- non trans -->
+								<div style="margin: 0pt; padding: 0pt; height: 28px; text-align: center; vertical-align: middle;"><span class="text8">(click name to buy)</span></div>
 							<% } %>
 							<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
 							<display:ProductName product="<%= pm %>" action="<%= actionURI %>" />
