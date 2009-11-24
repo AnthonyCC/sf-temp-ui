@@ -10,7 +10,6 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -86,6 +85,7 @@ final public class VariantRegistry {
 			SmartStoreServiceConfigurationSB sb;
 
 			sb = getServiceConfigurationHome().create();
+			@SuppressWarnings("unchecked")
 			Collection<Variant> variants = sb.getVariants(null);
 
 			LOGGER.info("loading variants:" + variants);
@@ -94,8 +94,11 @@ final public class VariantRegistry {
 					variants.size());
 			Map<EnumSiteFeature, Map<String, Variant>> siteFeatureMapTmp = 
 					new HashMap<EnumSiteFeature, Map<String,Variant>>();
+			
+			for (EnumSiteFeature feature : EnumSiteFeature.getSmartStoreEnumList())
+				siteFeatureMapTmp.put(feature, new HashMap<String, Variant>());
 
-			Set factors = new HashSet();
+			Set<String> factors = new HashSet<String>();
 
 			for (Variant variant : variants) {
 				try {
@@ -107,8 +110,6 @@ final public class VariantRegistry {
 
 					variant.setRecommender(rs);
 					variantMapTmp.put(variant.getId(), variant);
-					if (!siteFeatureMapTmp.containsKey(variant.getSiteFeature()))
-						siteFeatureMapTmp.put(variant.getSiteFeature(), new HashMap<String, Variant>());
 					siteFeatureMapTmp.get(variant.getSiteFeature()).put(variant.getId(), variant);
 				} catch (Exception e) {
 					LOGGER.error("failed to configure variant '"
