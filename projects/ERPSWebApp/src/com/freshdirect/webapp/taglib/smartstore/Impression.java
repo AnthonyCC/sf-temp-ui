@@ -88,9 +88,9 @@ public class Impression {
     }
 
     public String logFeatureImpression(String parentFeatureImpId, String parentVariantId, Recommendations recommendations) {
-        CategoryModel category = recommendations.getSessionInput().getCategory();
-        ContentNodeModel trigger = recommendations.getSessionInput().getCurrentNode();
-        YmalSource ymalSource = recommendations.getSessionInput().getYmalSource();
+        CategoryModel category = recommendations.getCategory();
+        ContentNodeModel trigger = recommendations.getCurrentNode();
+        YmalSource ymalSource = recommendations.getYmalSource();
         
         return logFeatureImpression(parentFeatureImpId, parentVariantId, recommendations.getVariant(), category, trigger, ymalSource);
     }

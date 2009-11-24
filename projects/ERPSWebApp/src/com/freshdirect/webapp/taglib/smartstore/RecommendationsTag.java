@@ -72,7 +72,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
 	}
     
     protected void persistToSession(Recommendations r) {
-        Map<String, List<ContentKey>> previousRecommendations = r.getSessionInput().getPreviousRecommendations();
+        Map<String, List<ContentKey>> previousRecommendations = r.getPreviousRecommendations();
         if (previousRecommendations!=null) {
             pageContext.getSession().setAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS, previousRecommendations);
         }

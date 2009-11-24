@@ -13,10 +13,11 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.promotion.PromoVariantModel;
 
 /**
  * Represents session information.
+ * 
+ * It's not serializable ! BY DESIGN !
  * 
  * @author istvan
  * 

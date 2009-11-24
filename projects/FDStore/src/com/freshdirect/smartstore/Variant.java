@@ -16,9 +16,7 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
  * @author istvan
  *
  */
-public class Variant implements Serializable, Comparable {
-	// generated id
-	private static final long serialVersionUID = -2411779130333500328L;
+public class Variant implements Comparable {
 
 	// site feature
 	private EnumSiteFeature siteFeature;

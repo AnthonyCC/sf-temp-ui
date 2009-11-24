@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.util;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,8 +10,13 @@ import javax.servlet.http.HttpSession;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 
-public class RecommendationsCache {
+public class RecommendationsCache implements Serializable {
 	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
 	 * Simple queue to keep at most 'size' amount of page impression IDs.
 	 * At new arrivals it drops the oldest entry and puts the new one to the top of queue.
 	 */
