@@ -57,36 +57,34 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
         return results;
     }
 
-	private Recommendations extractRecommendations()
-			throws FDResourceException {
-		Recommendations results;
-		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-		
-		// setup an input
-		FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
-		SessionInput inp = new SessionInput(user);
-		initFromSession(inp);
-		if (source != null) {
-			inp.setYmalSource(source);
-			if (source instanceof ProductModel)
-				inp.setCurrentNode(source);
-		} else
-			inp.setYmalSource(YmalUtil.resolveYmalSource(user, null, request));
-		
-		if (inp.getCurrentNode() == null)
-			inp.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
+    private Recommendations extractRecommendations() throws FDResourceException {
+        Recommendations results;
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
-		inp.setMaxRecommendations(itemCount);
+        // setup an input
+        FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+        SessionInput inp = new SessionInput(user);
+        initFromSession(inp);
+        if (source != null) {
+            inp.setYmalSource(source);
+            if (source instanceof ProductModel) {
+                inp.setCurrentNode(source);
+            }
+        } else {
+            inp.setYmalSource(YmalUtil.resolveYmalSource(user, null, request));
+        }
 
+        if (inp.getCurrentNode() == null) {
+            inp.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
+        }
 
-		results = FDStoreRecommender.getInstance().getRecommendations(EnumSiteFeature.YMAL, user, inp);
-		persistToSession(results);
-		if (results.getAllProducts().size() > 0) {
-	        Impression imp = Impression.get(user, request, facility);
-	        results.setRequestId(imp.getRequestId());
-		}
-		return results;
-	}
+        inp.setMaxRecommendations(itemCount);
+
+        results = FDStoreRecommender.getInstance().getRecommendations(EnumSiteFeature.YMAL, user, inp);
+        persistToSession(results);
+        collectRequestId(request, results, user);
+        return results;
+    }
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
         protected String getResultType() {

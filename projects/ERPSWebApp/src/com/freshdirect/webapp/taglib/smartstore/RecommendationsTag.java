@@ -144,6 +144,14 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
     	return true;
     }
 
+    protected void collectRequestId(HttpServletRequest request, Recommendations recommendations, FDUserI user) {
+        if (recommendations.getAllProducts().size() > 0) {
+            Impression imp = Impression.get(user, request, facility);
+            recommendations.setRequestId(imp.getRequestId());
+        }
+    }
+
+
 
     public static class TagEI extends AbstractGetterTag.TagEI {
         protected String getResultType() {

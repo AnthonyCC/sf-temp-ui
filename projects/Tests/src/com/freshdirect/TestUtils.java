@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.mockejb.EntityBeanDescriptor;
@@ -69,6 +70,7 @@ import com.freshdirect.smartstore.ejb.ScoreFactorSessionBean;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSessionBean;
+import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
 import com.mockrunner.mock.ejb.MockUserTransaction;
@@ -189,7 +191,12 @@ public class TestUtils {
     }
 
     public static FeaturedItemsTag createFeaturedItemsTag(MockPageContext ctx, String contentKey) {
-        FeaturedItemsTag fit = new FeaturedItemsTag();
+        FeaturedItemsTag fit = new FeaturedItemsTag() {
+            @Override
+            protected void collectRequestId(HttpServletRequest request, Recommendations recommendations, FDUserI user) {
+                LOG.info("collectRequestId called "+recommendations);
+            }
+        };
         fit.setPageContext(ctx);
         fit.setId("recommendations");
         fit.setItemCount(5);

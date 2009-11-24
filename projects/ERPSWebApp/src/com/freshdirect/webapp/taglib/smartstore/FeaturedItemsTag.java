@@ -55,10 +55,9 @@ public class FeaturedItemsTag extends RecommendationsTag {
         
         Recommendations results = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS, user,
         		si, shoppingCart != null ? shoppingCart : FDStoreRecommender.getShoppingCartContentKeys(user));
-		if (results.getAllProducts().size() > 0) {
-	        Impression imp = Impression.get(user, request, facility);
-	        results.setRequestId(imp.getRequestId());
-		}
+
+        collectRequestId(request, results, user);
+
         persistToSession(results);
         return results;
     }

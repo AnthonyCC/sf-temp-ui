@@ -127,26 +127,23 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
         return recommendations;
     }
 
-	private Recommendations extractRecommendations( HttpSession session, EnumSiteFeature sf ) throws FDResourceException {
-		
-		Recommendations recommendations;
-		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+    private Recommendations extractRecommendations(HttpSession session, EnumSiteFeature sf) throws FDResourceException {
 
-		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-		SessionInput input = new SessionInput(user);
-		initFromSession(input);
-		FDStoreRecommender.initYmalSource(input, user, request);
-		input.setCurrentNode( input.getYmalSource() );
-		input.setMaxRecommendations(itemCount);
+        Recommendations recommendations;
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
-		recommendations = FDStoreRecommender.getInstance().getRecommendations(sf, user, input);
-		if (recommendations.getAllProducts().size() > 0) {
-	        Impression imp = Impression.get(user, request, facility);
-	        recommendations.setRequestId(imp.getRequestId());
-		}
-		
-		return recommendations;
-	}
+        FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+        SessionInput input = new SessionInput(user);
+        initFromSession(input);
+        FDStoreRecommender.initYmalSource(input, user, request);
+        input.setCurrentNode(input.getYmalSource());
+        input.setMaxRecommendations(itemCount);
+
+        recommendations = FDStoreRecommender.getInstance().getRecommendations(sf, user, input);
+        collectRequestId(request, recommendations, user);
+
+        return recommendations;
+    }
 
 
 
