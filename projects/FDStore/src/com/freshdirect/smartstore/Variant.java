@@ -16,7 +16,7 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
  * @author istvan
  *
  */
-public class Variant implements Comparable {
+public class Variant implements Comparable, Serializable {
 
 	// site feature
 	private EnumSiteFeature siteFeature;
