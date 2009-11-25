@@ -13,7 +13,10 @@
     while ( skui.hasNext() ) {
         SkuModel sku = (SkuModel)skui.next();
         MultiAttribute skuMatrix = (MultiAttribute)sku.getAttribute("VARIATION_MATRIX");
-        DomainValue key = ((DomainValueRef)skuMatrix.getValue(0)).getDomainValue();
+        DomainValueRef dvr = (DomainValueRef)skuMatrix.getValue(0);
+        if ( dvr == null ) 
+        	continue;
+        DomainValue key = dvr.getDomainValue();
         if ( matrix.containsKey(key) ) {
             List coll = (List)matrix.get(key);
             coll.add(sku);
@@ -65,7 +68,8 @@
 <%-- ============================================================================================================================================= --%>
         
         <%-- Nested Table 2 Options list - radio buttions/ multiple SKUs --%>
-        <table width="185" cellpadding="0" cellspacing="2" border="0"> 
+        
+		<table width="185" cellpadding="0" cellspacing="2" border="0"> 
          <% if ( hasSecondaryDomain ) { %>
              <tr valign="bottom">
                  <td colspan="2" align="right"><br/>

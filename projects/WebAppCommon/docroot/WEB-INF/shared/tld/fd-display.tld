@@ -76,6 +76,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>useAlternateImage</name><!-- alternate image -->
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>opacity</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -482,6 +487,11 @@
 		</attribute>
 		<attribute>
 			<name>tableWidth</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>useAlternateImage</name><!-- alternate image -->
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
