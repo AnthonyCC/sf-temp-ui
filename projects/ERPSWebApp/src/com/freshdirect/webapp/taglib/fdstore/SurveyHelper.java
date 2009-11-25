@@ -21,7 +21,7 @@ public class SurveyHelper {
 	
 	public static FDSurveyResponse getSurveyResponse(FDIdentity identity, FDSurvey survey,ActionResult result, Map responses) {
 		
-		FDSurveyResponse surveyResponse=new FDSurveyResponse(identity, survey.getName());
+		FDSurveyResponse surveyResponse=new FDSurveyResponse(identity, survey.getKey());
 		List reqQuests = null;
 		reqQuests = survey.getRequiredQuestions();
        	

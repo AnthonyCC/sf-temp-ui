@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurvey;
 import com.freshdirect.fdstore.survey.FDSurveyConstants;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
@@ -70,12 +69,12 @@ public class FDSurveySessionBean extends SessionBeanSupport {
 			if(surveys==null||surveys.size()==0 )
 				return null;
 			else if(surveys.size()==1) {
-				return FDSurveyDAO.getResponse(conn, identity, EnumSurveyType.getEnum(surveys.get(0).toString()));
+				return FDSurveyDAO.getResponse(conn, identity, new SurveyKey(surveys.get(0), serviceType));
 			} else {
-				FDSurveyResponse surveyResponse=FDSurveyDAO.getResponse(conn, identity, EnumSurveyType.getEnum(surveys.get(0).toString()));
+				FDSurveyResponse surveyResponse=FDSurveyDAO.getResponse(conn, identity, new SurveyKey(surveys.get(0), serviceType));
 				FDSurveyResponse additionalResponse=null;
 				for(int i=1;i<surveys.size();i++) {
-					additionalResponse=FDSurveyDAO.getResponse(conn, identity, EnumSurveyType.getEnum(surveys.get(i).toString()));
+					additionalResponse=FDSurveyDAO.getResponse(conn, identity, new SurveyKey(surveys.get(i), serviceType));
 					if(additionalResponse!=null) {
 						if(surveyResponse==null) {
 							surveyResponse=additionalResponse;
@@ -108,7 +107,7 @@ public class FDSurveySessionBean extends SessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return FDSurveyDAO.getResponse(conn, identity, key.getSurveyType());
+			return FDSurveyDAO.getResponse(conn, identity, key);
 		} catch (SQLException e) {
 			LOGGER.warn("SQLException while loading survey response: "+key, e);
 			throw new EJBException(e);

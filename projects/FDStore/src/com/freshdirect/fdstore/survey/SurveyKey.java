@@ -23,6 +23,13 @@ public class SurveyKey implements Serializable {
         this.userType = userType;
     }
 
+    public SurveyKey(String surveyType, EnumServiceType userType) {
+        super();
+        this.surveyType = EnumSurveyType.getEnum(surveyType);
+        this.userType = userType;
+    }
+    
+    
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof SurveyKey) {

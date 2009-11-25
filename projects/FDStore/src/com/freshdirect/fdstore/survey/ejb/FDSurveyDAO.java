@@ -100,20 +100,20 @@ public class FDSurveyDAO {
 	 " customer_id=(SELECT ID FROM cust.FDCUSTOMER WHERE erp_customer_id=?) "+ 
 	 " AND create_date=(SELECT MAX(create_date) FROM cust.SURVEY WHERE survey_name=? AND customer_id=(SELECT ID FROM cust.FDCUSTOMER WHERE erp_customer_id=?))) "+ 
 	 " AND sd.QUESTION=t.question(+) AND sd.ANSWER=t.AnswerName(+)	 ORDER BY QuestionNumber,AnswerNumber";
-	public static FDSurveyResponse getResponse(Connection conn,FDIdentity identity, EnumSurveyType survey) throws SQLException {
+	public static FDSurveyResponse getResponse(Connection conn,FDIdentity identity, SurveyKey key) throws SQLException {
 		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		FDSurveyResponse surveyResponse =null;
 		try {			
 			ps = conn.prepareStatement(GET_SURVEY_RESPONSE);
-			ps.setString(1, survey.getLabel());
-			ps.setString(2, survey.getLabel());
+			ps.setString(1, key.getSurveyType().getLabel());
+			ps.setString(2, key.getSurveyType().getLabel());
 			ps.setString(3, identity.getErpCustomerPK());
-			ps.setString(4, survey.getLabel());
+			ps.setString(4, key.getSurveyType().getLabel());
 			ps.setString(5, identity.getErpCustomerPK());
 			rs = ps.executeQuery();
-			surveyResponse = getSurveyResponse(identity,survey.getLabel(),rs);						
+			surveyResponse = getSurveyResponse(identity,key,rs);						
 		} finally {
 			if (rs != null) rs.close();
 			if (ps != null) ps.close();
@@ -184,7 +184,7 @@ public class FDSurveyDAO {
 		return survey;		
 	}
 	
-private static FDSurveyResponse getSurveyResponse(FDIdentity identity,String survey,ResultSet rs) throws SQLException {
+private static FDSurveyResponse getSurveyResponse(FDIdentity identity,SurveyKey survey,ResultSet rs) throws SQLException {
 		
 		FDSurveyResponse surveyResponse=null;
 		Map qa=new HashMap();
