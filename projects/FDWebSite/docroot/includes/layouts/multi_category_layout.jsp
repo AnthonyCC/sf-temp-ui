@@ -22,7 +22,6 @@
 <%@page import="org.apache.log4j.Logger"%>
 
 <display:InitLayout/>
-
 <%
 	// create separate lists for each category
 	List multiList = new ArrayList();
@@ -55,6 +54,7 @@
 	}
 	
 	int maxWidth = isDepartment.booleanValue() ? 550 : 380;
+	boolean useAlternate = false;
 	
 	for ( int i = 0; i < multiList.size(); i++ ) {		
 		Object obj = multiList.get( i );
@@ -73,9 +73,9 @@
 			}			    
 			
 			// get the category_top attribute to display
-			MultiAttribute catTop = (MultiAttribute)( (CategoryModel)obj ).getAttribute( "CATEGORY_TOP_MEDIA" );
-			if ( catTop != null ) {
-				MediaI catTopMedia = (MediaI)catTop.getValue( 0 );
+			List<Object> catTop =( (CategoryModel)obj ).getCategoryTopMedia();
+			if ( catTop != null && catTop.size() > 0 ) {
+				MediaI catTopMedia = (MediaI)catTop.get( 0 );
 				if ( catTopMedia instanceof Image ) { 
 					%><img src="<%=catTopMedia.getPath()%>" <%=JspMethods.getImageDimensions( (Image)catTopMedia )%> /><% 
 				} else { 
@@ -83,6 +83,8 @@
 				}
 				%><br/><br/><%
 			} 
+			
+			useAlternate = ((CategoryModel)obj).isUseAlternateImages();
 			
 		} else if ( obj instanceof List ) {
 
@@ -93,15 +95,17 @@
 					folderCellWidth="136" 
 					productCellWidth="105" 
 					itemsToShow="<%= (List)obj %>" 
-					useLayoutPattern="<%= hasAnyProducts %>"
-					dynamicSize="<%= !hasAnyProducts %>"
+					useLayoutPattern="<%= hasAnyProducts && !useAlternate %>"
+					dynamicSize="<%= useAlternate || !hasAnyProducts %>"
 					tableWidth="<%= maxWidth %>"
-					showCategories="true"
+					showCategories="true" 
+					showProducts="true"
+					maxColumns="4"
+					useAlternateImage="<%= useAlternate %>"
 				>
 				
 					<table cellspacing="0" cellpadding="0" width="<%=tableWidth%>">
-						<tr align="center" valign="top">
-						
+						<tr align="center" valign="bottom">						
 							<display:PatternRow id="patternRow" itemsToShow="<%= rowList %>">
 							
 								<% if ( currentItem instanceof ProductModel ) {		
@@ -109,9 +113,34 @@
 									String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
 									%>
 								
-									<td width="<%= horizontalPattern.getFolderCellWidth() %>" style="padding-bottom: 15px;"><font class="catPageProdNameUnderImg">
+									<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 5px;">										
+										<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="<%= useAlternate %>"/>										
+									</td>
+								
+								<% } else { // is a category 
+									CategoryModel category = (CategoryModel)currentItem;
+									String actionUrl = FDURLUtil.getCategoryURI( category, trackingCode );
+									%>
+									
+									<td width="<%= horizontalPattern.getFolderCellWidth() %>" style="padding-bottom: 5px;">									
+										<display:CategoryImage category="<%= category %>" action="<%= actionUrl %>"/>										
+									</td>
+								
+								<% } %> 
+									
+							</display:PatternRow>							
+						</tr>
+						
+						<tr align="center" valign="top">						
+							<display:PatternRow id="patternRow" itemsToShow="<%= rowList %>">
+							
+								<% if ( currentItem instanceof ProductModel ) {		
+									ProductModel product = (ProductModel)currentItem;
+									String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
+									%>
+								
+									<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 20px; padding-left: 2px; padding-right: 2px;"><font class="catPageProdNameUnderImg">
 										
-										<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"/><br/>
 										<display:ProductRating product="<%= product %>" action="<%= actionUrl %>"/>
 										<display:ProductName product="<%= product %>" action="<%= actionUrl %>"/>
 										<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false"/>
@@ -123,17 +152,15 @@
 									String actionUrl = FDURLUtil.getCategoryURI( category, trackingCode );
 									%>
 									
-									<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 15px;"><font class="text11">
+									<td width="<%= horizontalPattern.getFolderCellWidth() %>" style="padding-bottom: 20px; padding-left: 2px; padding-right: 2px;"><font class="text11">
 										
-										<display:CategoryImage category="<%= category %>" action="<%= actionUrl %>"/><br/>
 										<display:CategoryName category="<%= category %>" action="<%= actionUrl %>" style="font-weight:normal;"/>
 										
 									</font></td>
 								
 								<% } %> 
 									
-							</display:PatternRow>
-							
+							</display:PatternRow>							
 						</tr>
 					</table>
 							

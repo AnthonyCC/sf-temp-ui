@@ -20,7 +20,6 @@
 </script>
 
 <display:InitLayout/>
-
 <%
 	//**************************************************************
 	//***          the GENERIC_LAYOUT Pattern                    ***
@@ -59,6 +58,7 @@
 	if ( ( (ContentNodeModel)currentFolder ).getFullName().toUpperCase().indexOf( "VEGETABLES" ) >= 0 || ( (ContentNodeModel)currentFolder ).getFullName().toUpperCase().indexOf( "SEAFOOD" ) >= 0 ) {
 		showOnlyFolders = true;
 	}
+	
 %>
 <jsp:include page="/includes/department_peakproduce.jsp" flush="true"/>
 
@@ -75,50 +75,74 @@
 	folderCellWidth="137" 
 	currentFolder="<%= currentFolder %>" 
 	useLayoutPattern="false" 
-	maxColumns="<%= isDepartment.booleanValue() ? 5 : 4 %>" 
 	dynamicSize="true" 
+	maxColumns="<%= isDepartment.booleanValue() ? 5 : 4 %>" 
 	tableWidth="<%= isDepartment.booleanValue() ? 550 : 410 %>"
+	useAlternateImage="<%= useAlternateImages.booleanValue() %>"
 	>		
 		
 	<table cellspacing="0" cellpadding="0" width="<%=tableWidth%>">
-	<tr align="center" valign="top">	
-		
-		<display:PatternRow id="patternRow" itemsToShow="<%= rowList %>">
-		
-			<% if ( currentItem instanceof ProductModel ) { 				// ===== PRODUCT =====
-				
-				ProductModel product = (ProductModel)currentItem;
-				String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
-				%>
+		<tr align="center" valign="bottom">		
+			<display:PatternRow id="patternRow" itemsToShow="<%= rowList %>">
 			
-				<td width="<%= horizontalPattern.getProductCellWidth() %>"><font class="catPageProdNameUnderImg">
+				<% if ( currentItem instanceof ProductModel ) { 				// ===== PRODUCT =====
 					
-					<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"/><br/>
-					<display:ProductRating product="<%= product %>" action="<%= actionUrl %>"/>
-					<display:ProductName product="<%= product %>" action="<%= actionUrl %>"/>
-					<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false"/>
+					ProductModel product = (ProductModel)currentItem;
+					String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
+					%>
+				
+					<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 5px;">						
+						<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="<%= useAlternateImages.booleanValue() %>"/>						
+					</td> 
 					
-				</font></td> 
-				
-			<% } else if ( currentItem instanceof CategoryModel ) { 		// ===== CATEGORY ===== 
-				
-				CategoryModel category = (CategoryModel) currentItem;
-				String actionUrl = FDURLUtil.getCategoryURI( category, trackingCode ); 
-				%>
-				
-				<td width="<%= horizontalPattern.getFolderCellWidth() %>"><font class="text11">
-				
-					<display:CategoryImage category="<%= category %>" action="<%= actionUrl %>"/>
-					<display:CategoryName category="<%= category %>" action="<%= actionUrl %>" style="font-style:normal"/>		
+				<% } else if ( currentItem instanceof CategoryModel ) { 		// ===== CATEGORY ===== 
 					
-				</font></td> 
-				
-			<% } else { // TODO remove debug info display %>
-				[ ERROR : <%= currentItem.getFullName() %> is a <%= currentItem.getClass().toString() %> ]<br/>				
-			<% } %>
+					CategoryModel category = (CategoryModel) currentItem;
+					String actionUrl = FDURLUtil.getCategoryURI( category, trackingCode ); 
+					%>
+					
+					<td width="<%= horizontalPattern.getFolderCellWidth() %>" style="padding-bottom: 5px;">				
+						<display:CategoryImage category="<%= category %>" action="<%= actionUrl %>"/>						
+					</td> 
+					
+				<% } %>
+			
+			</display:PatternRow>			
+		</tr>
 		
-		</display:PatternRow>			
-	</tr>
+		<tr align="center" valign="top">		
+			<display:PatternRow id="patternRow" itemsToShow="<%= rowList %>">
+			
+				<% if ( currentItem instanceof ProductModel ) { 				// ===== PRODUCT =====
+					
+					ProductModel product = (ProductModel)currentItem;
+					String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
+					%>
+				
+					<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 20px; padding-left: 2px; padding-right: 2px;"><font class="catPageProdNameUnderImg">
+						
+						<display:ProductRating product="<%= product %>" action="<%= actionUrl %>"/>
+						<display:ProductName product="<%= product %>" action="<%= actionUrl %>"/>
+						<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false"/>
+						
+					</font></td> 
+					
+				<% } else if ( currentItem instanceof CategoryModel ) { 		// ===== CATEGORY ===== 
+					
+					CategoryModel category = (CategoryModel) currentItem;
+					String actionUrl = FDURLUtil.getCategoryURI( category, trackingCode ); 
+					%>
+					
+					<td width="<%= horizontalPattern.getFolderCellWidth() %>" style="padding-bottom: 20px; padding-left: 2px; padding-right: 2px;"><font class="text11">
+					
+						<display:CategoryName category="<%= category %>" action="<%= actionUrl %>" style="font-style:normal"/>		
+						
+					</font></td> 
+					
+				<% } %>
+			
+			</display:PatternRow>			
+		</tr>
 	</table>
 	
 	<font class="space4pix"><br/>&nbsp;<br/></font>
