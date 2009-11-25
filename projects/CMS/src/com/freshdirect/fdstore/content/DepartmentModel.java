@@ -50,6 +50,10 @@ public class DepartmentModel extends ContentNodeModelImpl {
 		return (List)getAttribute( "DEPT_NAV", (Object)null );
 	}
 	
+	public boolean isUseAlternateImages() {
+		return getAttribute( "USE_ALTERNATE_IMAGES", false );
+	}
+	
 	/**
 	 * @return List of Html
 	 */

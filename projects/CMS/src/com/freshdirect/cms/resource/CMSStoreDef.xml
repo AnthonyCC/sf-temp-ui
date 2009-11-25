@@ -103,6 +103,7 @@
 			</EnumDef>
 			<AttributeDef type="I" name="MAX_ROWCOUNT"  label="Max Rowcount" />
 			<AttributeDef type="I" name="PRIORITY"  label="Priority" />
+			<AttributeDef type="B" name="USE_ALTERNATE_IMAGES" label="Use Alternate Images" inheritable="true"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">
@@ -188,6 +189,7 @@
 			<AttributeDef type="I" name="TEMPLATE_TYPE"   label="Template Type" inheritable="true"/>
 			<AttributeDef type="I" name="COLUMN_NUM"  label="Column Number" inheritable="true"/>
 			<AttributeDef type="I" name="COLUMN_SPAN"  label="Column Span"/>
+			<AttributeDef type="B" name="USE_ALTERNATE_IMAGES" label="Use Alternate Images" inheritable="true"/>
 			<AttributeDef type="B" name="FAKE_ALL_FOLDER" label="Fake All Folder"/>
 			<AttributeDef type="B" name="SHOW_SIDE_NAV"  label="Show Side Nav" inheritable="true"/>
 			<AttributeDef type="B" name="TREAT_AS_PRODUCT"  label="Treat as Product" inheritable="true"/>

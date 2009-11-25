@@ -51,6 +51,7 @@
 							<CmsField><attribute>HIDE_URL</attribute></CmsField>
 							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
                             <CmsField><attribute>MEDIA_CONTENT</attribute></CmsField><!-- [APPREQ-77] -->
+							<CmsField><attribute>USE_ALTERNATE_IMAGES</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -143,6 +144,7 @@
 						<fields>
 							<CmsField><attribute>COLUMN_NUM</attribute></CmsField>
 							<CmsField><attribute>COLUMN_SPAN</attribute></CmsField>
+							<CmsField><attribute>USE_ALTERNATE_IMAGES</attribute></CmsField>
 							<CmsField><attribute>FAVORITE_ALL_SHOW_PRICE</attribute></CmsField>
 							<CmsField><attribute>FAKE_ALL_FOLDER</attribute></CmsField>
 							<CmsField><attribute>CONTAINS_BEER</attribute></CmsField>

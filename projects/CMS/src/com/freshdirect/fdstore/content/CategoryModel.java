@@ -30,7 +30,7 @@ public class CategoryModel extends ContentNodeModelImpl {
 	private static final Category LOGGER = LoggerFactory.getInstance(CategoryModel.class);
 
 	private static final Executor threadPool = new ThreadPoolExecutor(5, 5, 60,
-			TimeUnit.SECONDS, new LinkedBlockingQueue(),
+			TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
 			new ThreadPoolExecutor.DiscardPolicy());
 	
 	private static final long TWO_MINUTES = 2l * 60l * 1000l;
@@ -48,17 +48,15 @@ public class CategoryModel extends ContentNodeModelImpl {
 					CategoryModel.this.getRecommender().getContentName()
 					: null;
 			LOGGER.debug("loader started for category " + categoryId + ", recommender: " + recommenderId);
-			if (recommenderService != null && recommenderId != null) {
-				List prodIds = recommenderService.recommendNodes(recommenderId, categoryId);
-				List products = new ArrayList(prodIds.size());
-				for (Iterator it = prodIds.iterator(); it.hasNext();) {
-					String productId = (String) it.next();
-					ContentNodeModel product = ContentFactory.getInstance().getContentNode(productId);
-					if (product instanceof ProductModel &&
-							!products.contains(product))
-						products.add(product);
+			if ( recommenderService != null && recommenderId != null ) {
+				List<String> prodIds = recommenderService.recommendNodes( recommenderId, categoryId );
+				List<ProductModel> products = new ArrayList<ProductModel>( prodIds.size() );
+				for ( String productId : prodIds ) {
+					ContentNodeModel product = ContentFactory.getInstance().getContentNode( productId );
+					if ( product instanceof ProductModel && !products.contains( product ) )
+						products.add( (ProductModel)product );
 				}
-				LOGGER.debug("found " + products.size() + " products for category " + categoryId);
+				LOGGER.debug( "found " + products.size() + " products for category " + categoryId );
 				return products;
 			} else {
 				LOGGER.warn("recommender service ("
@@ -119,6 +117,10 @@ public class CategoryModel extends ContentNodeModelImpl {
 			start = start.getParentNode();
 		}
 		return (DepartmentModel) start;
+	}
+	
+	public boolean isUseAlternateImages() {
+		return getAttribute( "USE_ALTERNATE_IMAGES", false );
 	}
 
 	public boolean getSideNavBold() {
