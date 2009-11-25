@@ -9,7 +9,7 @@
 			<font class="text12bold" color="#FF9933">CHOOSE AN ORDER:<br><br></font>
 			<font class="space2pix"><br><br><br></font>
 			<%@ include file="/quickshop/includes/order_nav_qs_index.jspf" %>
-			<b><%= orderNav.toString() %></b>
+			<%= orderNav.toString() %>
 			
 			<img src="/media_stat/images/layout/clear.gif" width="0" height="25">
 			<fd:GetCustomerRecipeList id="recipes">

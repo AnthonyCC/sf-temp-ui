@@ -27,7 +27,7 @@
        <span id="list:<%=CCList.getId()%>,<%=n%>">
        <b>
        <a href="/quickshop/shop_from_list.jsp?ccListId=<%=CCList.getId()%>"><%= StringUtil.escapeHTML(CCList.getName())%></a></td>
-       <td class="text13">&nbsp;&nbsp;(<%=n%> <%=(n == 1 ? " Item" : " Items")%>)</b>
+       <td class="text11">&nbsp;&nbsp;(<%=n%> <%=(n == 1 ? " Item" : " Items")%>)</b>
        </span>
        </td></tr>
 <%
