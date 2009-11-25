@@ -82,7 +82,7 @@ public class FDSurvey implements java.io.Serializable {
 		questions.add(question);
 	}
 
-	public List getQuestions() {
+	public List<FDSurveyQuestion> getQuestions() {
 		return Collections.unmodifiableList(questions);
 	}
 
@@ -113,7 +113,7 @@ public class FDSurvey implements java.io.Serializable {
 		return null;
 	}
 	
-	public List getRequiredQuestions(){
+	public List<FDSurveyQuestion> getRequiredQuestions(){
 		List requiredQuests = new ArrayList();
 		for(Iterator i = this.questions.iterator(); i.hasNext();){
 			FDSurveyQuestion question = (FDSurveyQuestion) i.next();
@@ -127,6 +127,14 @@ public class FDSurvey implements java.io.Serializable {
 	public SurveyKey getKey() {
             return key;
         }
+	
+	public String getHtmlFriendlyKey() {
+	    if (key != null) {
+	        return key.getSurveyType().name().toLowerCase() +'_'+ key.getUserType().name().toLowerCase();
+	    } else {
+	        return name.replace(' ', '_').toLowerCase();
+	    }
+	}
 	
     public String toSqlString(int id) {
         String def = "INSERT INTO CUST.SURVEY_DEF (ID,NAME,DESCR,CREATE_DATE,IS_ORDER_SURVEY,IS_CUSTOMER_PROFILE_SURVEY,MIN_COVERAGE,SERVICE_TYPE) values (" +

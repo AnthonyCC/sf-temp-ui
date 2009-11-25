@@ -69,9 +69,13 @@ public class FDSurveyFactory {
      * @throws FDResourceException
      * 
      */
-    public synchronized FDSurvey getSurvey(EnumSurveyType surveyType, EnumServiceType userType) throws FDResourceException {
+    public FDSurvey getSurvey(EnumSurveyType surveyType, EnumServiceType userType) throws FDResourceException {
         userType = correctServiceType(userType);
         SurveyKey key = new SurveyKey(surveyType, userType);
+        return getSurvey(key);
+    }
+
+    public synchronized FDSurvey getSurvey(SurveyKey key) throws FDResourceException {
         // just for testing ...
         FDSurvey survey = builtinSurveys.getOverrideSurvey(key);
         if (survey != null) {

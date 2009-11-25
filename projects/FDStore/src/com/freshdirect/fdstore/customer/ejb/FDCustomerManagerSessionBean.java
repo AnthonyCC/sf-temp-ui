@@ -312,7 +312,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 			if (survey != null) {
 				// recreate survey with proper identity
-				FDSurveyResponse s = new FDSurveyResponse(identity, survey.getName());
+				FDSurveyResponse s = new FDSurveyResponse(identity, survey.getKey());
 				s.setAnswers(survey.getAnswers());
 				storeSurvey(s);
 			}

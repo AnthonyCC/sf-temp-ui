@@ -23,7 +23,7 @@ import com.freshdirect.fdstore.survey.FDSurveyResponse;
 public class FDSurveyDAO {
 
 	public static void storeSurvey(Connection conn, String id, FDSurveyResponse survey) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SURVEY(ID,CUSTOMER_ID,SURVEY_NAME,SALE_ID,CREATE_DATE) VALUES(?, ?, ?, ?, SYSDATE)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SURVEY(ID,CUSTOMER_ID,SURVEY_NAME,SALE_ID,CREATE_DATE, SERVICE_TYPE) VALUES(?, ?, ?, ?, SYSDATE, ?)");
 		ps.setString(1, id);
 		
 		if (survey.getIdentity() == null) {
@@ -39,6 +39,7 @@ public class FDSurveyDAO {
 		} else {
 			ps.setString(4, survey.getSalePk().getId());
 		}
+		ps.setString(5, survey.getKey().getUserType().name());
 		
 		ps.executeUpdate();
 		ps.close();

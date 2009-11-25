@@ -187,7 +187,6 @@ public class FDCustomerManager {
 		lookupManagerHome();
 
 		try {
-			System.out.println("FDCustomerManager: register() ");
 			FDCustomerManagerSB sb = managerHome.create();
 			return sb.register(info, erpCustomer, fdCustomer, cookie, pickupOnly, eligibleForPromotion, survey, serviceType, isGiftCardBuyer);
 		} catch (CreateException ce) {

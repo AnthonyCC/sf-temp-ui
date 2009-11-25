@@ -27,7 +27,12 @@ import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.survey.EnumSurveyType;
+import com.freshdirect.fdstore.survey.FDSurvey;
+import com.freshdirect.fdstore.survey.FDSurveyFactory;
+import com.freshdirect.fdstore.survey.FDSurveyQuestion;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
+import com.freshdirect.fdstore.survey.SurveyKey;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -51,6 +56,7 @@ public class RegistrationAction extends WebActionSupport {
 
 	private static Category LOGGER = LoggerFactory.getInstance(RegistrationAction.class);
 
+	private static boolean ALLOW_ALL = false;
 	private final int regType;
 	private String statusChangePage;
 	private boolean signupFromCheckout;
@@ -83,6 +89,7 @@ public class RegistrationAction extends WebActionSupport {
 	}
 
 	public String execute() throws Exception {
+	    //ALLOW_ALL = true;
 		HttpSession session = this.getWebActionContext().getSession();
 		HttpServletRequest request = this.getWebActionContext().getRequest();
 		ActionResult actionResult = this.getResult();
@@ -101,7 +108,7 @@ public class RegistrationAction extends WebActionSupport {
 		addInfo.validate(actionResult);
 		cInfo.validate(actionResult, serviceType);
 
-		if (!actionResult.isSuccess()) {
+		if (!actionResult.isSuccess() /*&& !ALLOW_ALL*/) {
 			return ERROR;
 		}
 
@@ -117,19 +124,19 @@ public class RegistrationAction extends WebActionSupport {
 		DeliveryAddressValidator validator = new DeliveryAddressValidator(dlvAddress, user.isHomeUser() || user.isCorporateUser());
 		
 		boolean addressValid = validator.validateAddress(actionResult);
-		if (!actionResult.isSuccess()) {
+		if (!actionResult.isSuccess()  /*&& !ALLOW_ALL*/) {
 			return ERROR;
 		}
 
 		AddressModel address = validator.getScrubbedAddress();
 
 
-		if (validator.getServiceResult().isServiceRestricted()) {
+		if (validator.getServiceResult() != null && validator.getServiceResult().isServiceRestricted()) {
 			restrictedAddress = true;
 			session.setAttribute(SessionName.BLOCKED_ADDRESS_WARNING, Boolean.TRUE);
 		}
 
-		if (addressValid) {
+		if (addressValid /*|| ALLOW_ALL*/) {
 
 			this.reclassifyUser(user, address, serviceType, validator.getServiceResult());
 
@@ -170,7 +177,7 @@ public class RegistrationAction extends WebActionSupport {
 				fdCustomer.setDefaultDepotLocationPK(addInfo.getLocationId());
 				fdCustomer.setDepotCode(user.getDepotCode());
 
-				FDSurveyResponse survey = aInfo.getMarketingSurvey(null, "Registration_survey");
+				FDSurveyResponse survey = aInfo.getMarketingSurvey(new SurveyKey(EnumSurveyType.REGISTRATION_SURVEY, serviceType), request);
 
 				try {
 					FDIdentity regIdent = this.doRegistration(fdCustomer, erpCustomer, survey, serviceType);
@@ -249,6 +256,11 @@ public class RegistrationAction extends WebActionSupport {
 		
 		HttpSession session = this.getWebActionContext().getSession();
 
+		/*if (serviceResult == null && ALLOW_ALL) {
+		    serviceResult = new DlvServiceSelectionResult();
+		    serviceResult.addServiceStatus(serviceType, EnumDeliveryStatus.DELIVER);
+		}*/
+		
 		// user.setZipCode(address.getZipCode());
 		user.setAddress(address);
 
@@ -274,7 +286,6 @@ public class RegistrationAction extends WebActionSupport {
 
 		HttpSession session = this.getWebActionContext().getSession();
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-		System.out.println("RegistrationAction: doRegistration() - user being registered...");
 		RegistrationResult regResult = FDCustomerManager.register(AccountActivityUtil.getActionInfo(session), erpCustomer,
 			fdCustomer, user.getCookie(), user.isPickupOnly(), user.isEligibleForSignupPromotion(), survey, serviceType);
 		FDIdentity identity = regResult.getIdentity();
@@ -325,8 +336,6 @@ public class RegistrationAction extends WebActionSupport {
 			this.cellPhoneExt = NVL.apply(request.getParameter("cellphoneext"), "").trim();
 			this.department = NVL.apply(request.getParameter("workDepartment"), "").trim();
 			this.employeeId = NVL.apply(request.getParameter("employeeId"), "").trim();
-			System.out.println("RegistrationAction: ContactInfo: initialize()");
-
 		}
 
 		public void validate(ActionResult actionResult, EnumServiceType serviceType) {
@@ -364,7 +373,6 @@ public class RegistrationAction extends WebActionSupport {
 					actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
 				}
 			}
-			System.out.println("RegistrationAction: ContactInfo: validate()");
 		}
 		
 		private boolean validatePhoneNumber(String phoneNumber){
@@ -385,7 +393,6 @@ public class RegistrationAction extends WebActionSupport {
 			customerInfo.setHomePhone(new PhoneNumber(this.homePhone, this.homePhoneExt));
 			customerInfo.setWorkDepartment(this.department);
 			customerInfo.setEmployeeId(this.employeeId);
-			System.out.println("RegistrationAction: ContactInfo: decorateCustomerInfo()");
 		}
 	}
 
@@ -399,10 +406,6 @@ public class RegistrationAction extends WebActionSupport {
 		private String passwordHint;
 
 		private String deliveryInstructions;
-		
-		private String household;
-		private String shoppingConsideration;
-		private String howDidYouHear;
 
 		private boolean receiveNews;
 		private boolean plainTextEmail;
@@ -412,7 +415,8 @@ public class RegistrationAction extends WebActionSupport {
 			this.initialize(request);
 		}
 
-		private void initialize(HttpServletRequest request) {
+
+        private void initialize(HttpServletRequest request) {
 			this.emailAddress = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "").trim();
 			this.repeatEmailAddress = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_EMAIL.getCode()), "").trim();
 			this.altEmailAddress = NVL.apply(request.getParameter(EnumUserInfoName.ALT_EMAIL.getCode()), "").trim();
@@ -424,15 +428,11 @@ public class RegistrationAction extends WebActionSupport {
 			this.receiveNews = true;
 			this.plainTextEmail = false;
 			
-			this.household = request.getParameter("household");
-			this.shoppingConsideration = request.getParameter("Important_Consideration");
-			this.howDidYouHear = request.getParameter("howDidYouHear");
 			this.termsAccepted = request.getParameter("terms") != null;
 
 			this.deliveryInstructions = NVL.apply(request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()),
 				"none").trim();
 			
-			System.out.println("RegistrationAction: AccountInfo: initialize()");
 
 		}
 
@@ -458,7 +458,6 @@ public class RegistrationAction extends WebActionSupport {
 				.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
 
 			actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
-		System.out.println("RegistrationAction: AccountInfo: validate()");
 		}
 
 		public void decorateCustomerInfo(ErpCustomerInfoModel customerInfo) {
@@ -467,7 +466,6 @@ public class RegistrationAction extends WebActionSupport {
 			customerInfo.setAlternateEmail(altEmailAddress.trim());
 			customerInfo.setReceiveNewsletter(this.receiveNews);
 			customerInfo.setEmailPlaintext(this.plainTextEmail);
-			System.out.println("RegistrationAction: AccountInfo: decorateCustomerInfo()");
 		}
 
 		public ErpCustomerModel getErpCustomerModel() {
@@ -475,32 +473,22 @@ public class RegistrationAction extends WebActionSupport {
 			erpCustomer.setUserId(this.emailAddress);
 			erpCustomer.setPasswordHash(MD5Hasher.hash(this.password));
 			erpCustomer.setActive(true);
-			System.out.println("RegistrationAction: AccountInfo: getErpCustomerModel()" + erpCustomer);
 			return erpCustomer;
 		}
 
-		public FDSurveyResponse getMarketingSurvey(FDIdentity identity, String name) {
+		public FDSurveyResponse getMarketingSurvey(SurveyKey surveyKey, HttpServletRequest request) throws FDResourceException {
 
-			FDSurveyResponse survey = new FDSurveyResponse(identity, name);
+			FDSurveyResponse surveyResponse = new FDSurveyResponse(null, surveyKey);
+			FDSurvey survey = FDSurveyFactory.getInstance().getSurvey(surveyKey);
 			
-			if (!"".equals(this.household)) {
-				survey.addAnswer("household", this.household);
-			}
-
-			if (!"".equals(this.shoppingConsideration)) {
-				survey.addAnswer("Important_Consideration", this.shoppingConsideration);
-			}
-
-			if (!"".equals(this.howDidYouHear)) {
-				survey.addAnswer("howDidYouHear", this.howDidYouHear);	
+			for (FDSurveyQuestion q : survey.getQuestions()) {
+			    String value = request.getParameter(q.getName());
+			    if (!"".equals(value)) {
+			        surveyResponse.addAnswer(q.getName(), value);
+			    }
 			}
 			
-			
-			if ((survey.getAnswers()).size() > 0) {
-				return survey;
-			}
-			
-			return null;
+                        return surveyResponse.getAnswers().isEmpty() ? null : surveyResponse;
 		}
 
 		public String getPasswordHint() {

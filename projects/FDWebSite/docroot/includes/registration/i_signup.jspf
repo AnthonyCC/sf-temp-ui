@@ -330,7 +330,7 @@ if(user.isDepotUser()){
 
 <BR>
 <br>
-<% if(!user.isCorporateUser()){%>
+<!--  survey header -->
 <table border="0" cellspacing="0" cellpadding="2" width="693">
 	<td width="693">
 		<img src="/media_stat/images/navigation/help_us_serve_you.gif" width="169" height="9" border="0" alt="HELP US SERVE YOU"><BR>
@@ -339,9 +339,35 @@ if(user.isDepotUser()){
 </tr>
 </table>
 <font class="space4pix"><br></font>
-<% request.setAttribute("Survey","Registration_survey");%>
+<script type="text/javascript">
+function setVisible(id, value) {
+			if (value) {
+				document.getElementById(id).style.display = "block"
+			} else {
+				document.getElementById(id).style.display = "none"
+			}
+		}
+function showSurveys(element) {
+	var home = element.value == "<%=EnumServiceType.HOME.getName()%>" ? element.checked : !element.checked; 
+	
+	setVisible("survey_registration_survey_home", home);
+	setVisible("survey_registration_survey_corporate", !home);
+}
+</script>
+
+<!-- survey header end -->
+<% request.setAttribute("Survey","Registration_survey"); 
+   request.setAttribute("userType", com.freshdirect.common.customer.EnumServiceType.CORPORATE);
+   request.setAttribute("HideSurvey", serviceType == com.freshdirect.common.customer.EnumServiceType.CORPORATE ? "false" : "true");
+%>
 <%@ include file="/includes/i_survey.jspf" %>
-<% } %>
+
+<% request.setAttribute("Survey","Registration_survey"); 
+   request.setAttribute("userType", com.freshdirect.common.customer.EnumServiceType.HOME);
+   request.setAttribute("HideSurvey", serviceType == com.freshdirect.common.customer.EnumServiceType.HOME ? "false" : "true");
+%>
+<%@ include file="/includes/i_survey.jspf" %>
+
 <BR>
 <table border="0" cellspacing="0" cellpadding="2" width="693">
 <tr valign="top">

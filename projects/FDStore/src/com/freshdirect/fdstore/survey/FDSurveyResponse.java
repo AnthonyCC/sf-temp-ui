@@ -14,17 +14,17 @@ import com.freshdirect.framework.core.PrimaryKey;
 public class FDSurveyResponse implements Serializable {
 
 	private final FDIdentity identity;
-	private final String name;
+	private final SurveyKey key;
 	private final Map answers = new HashMap();
 	private final PrimaryKey salePk;
 
-	public FDSurveyResponse(FDIdentity identity, String name) {
-		this(identity, name, null);
+	public FDSurveyResponse(FDIdentity identity, SurveyKey key) {
+		this(identity, key, null);
 	}
 
-	public FDSurveyResponse(FDIdentity identity, String name, PrimaryKey salePk) {
+	public FDSurveyResponse(FDIdentity identity, SurveyKey key, PrimaryKey salePk) {
 		this.identity = identity;
-		this.name = name;
+		this.key = key;
 		this.salePk = salePk;
 	}
 
@@ -32,8 +32,12 @@ public class FDSurveyResponse implements Serializable {
 		return identity;
 	}
 
+        public SurveyKey getKey() {
+            return key;
+    }
+	
 	public String getName() {
-		return name;
+		return key.getSurveyType().getLabel();
 	}
 
 	public PrimaryKey getSalePk() {

@@ -1085,7 +1085,7 @@ public class BuiltinSurveys {
     }
 
     public static FDSurvey createCorporateSignup() {
-        FDSurvey surv = new FDSurvey(new SurveyKey(EnumSurveyType.REGISTRATION_SURVEY, EnumServiceType.HOME));
+        FDSurvey surv = new FDSurvey(new SurveyKey(EnumSurveyType.REGISTRATION_SURVEY, EnumServiceType.CORPORATE));
 
         {
             FDSurveyQuestion q = createEmployeCountQuestion();
