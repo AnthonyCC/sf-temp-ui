@@ -40,6 +40,7 @@ public class ProductImageTag extends BodyTagSupport {
 	boolean			isInCart = false; 			// display savings - in cart
 	
 	boolean 		showRolloverImage = true;	// rollover image
+	boolean 		useAlternateImage = false;	// alternate image
 
 	double			opacity = 1; // 1-transparency
 
@@ -87,6 +88,10 @@ public class ProductImageTag extends BodyTagSupport {
 		this.showRolloverImage = showRolloverImage;
 	}
 	
+	public void setUseAlternateImage( boolean useAlternateImage ) {
+		this.useAlternateImage = useAlternateImage;
+	}
+	
 	public void setOpacity(double opacity) {
 		if (opacity < 0)
 			this.opacity = 0;
@@ -106,7 +111,17 @@ public class ProductImageTag extends BodyTagSupport {
 
 	public int doStartTag() {
 		try {
-			Image prodImg = product.getProdImage();
+			Image prodImg = null;
+			
+			if ( useAlternateImage ) {
+				prodImg = product.getAlternateImage();
+			}			
+			if ( prodImg == null ) {
+				prodImg = product.getProdImage();
+			}			
+			if ( prodImg == null ) {
+				return SKIP_BODY;
+			}
 			
 			JspWriter out = pageContext.getOut();
 			
@@ -244,8 +259,8 @@ public class ProductImageTag extends BodyTagSupport {
 	 * @param supportsPNG Is PNG supported?
 	 * @param shouldGenerateAction Should add link to image
 	 */
-	private void appendBurst(StringBuffer buf, ProductLabeling pl,
-			final boolean supportsPNG, final boolean shouldGenerateAction) {
+	private void appendBurst(StringBuffer buf, ProductLabeling pl, final boolean supportsPNG, final boolean shouldGenerateAction) {
+		
 		// burst image
 		final boolean displayBurst = savingsPercentage > 0 || pl.isDisplayAny();
 		if (displayBurst) {

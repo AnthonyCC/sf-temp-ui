@@ -19,8 +19,8 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 public class PatternRowTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
 	// === ATTRIBUTES ===
-	private String				id					= null;
-	private List				itemsToShow			= null;
+	private String					id						= null;
+	private List<ContentNodeModel>	itemsToShow				= null;
 
 	// work variables
 	private int			itemsToShowIndex	= 0;
@@ -33,7 +33,7 @@ public class PatternRowTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 	}	
 	
 	
-	public void setItemsToShow( List itemsToShow ) {
+	public void setItemsToShow( List<ContentNodeModel> itemsToShow ) {
 		this.itemsToShow = itemsToShow;
 	}
 

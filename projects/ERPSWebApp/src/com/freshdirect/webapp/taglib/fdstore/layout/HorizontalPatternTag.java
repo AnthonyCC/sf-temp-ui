@@ -2,7 +2,6 @@ package com.freshdirect.webapp.taglib.fdstore.layout;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.jsp.JspException;
@@ -20,17 +19,18 @@ import com.freshdirect.fdstore.content.ProductModel;
 public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
 	// === ATTRIBUTES ===
-	private String				id					= null;
-	private Collection			itemsToShow			= null;
-	private int					productCellWidth	= 0;
-	private int					folderCellWidth		= 0;
-	private int					tableWidth			= 0;
-	private ContentNodeModel 	currentFolder 		= null;
-	private boolean				showCategories		= false;
-	private boolean				showProducts		= true;
-	private boolean				useLayoutPattern	= true;
-	private boolean				dynamicSize			= false;
-	private int					maxColumns			= 4;
+	private String							id							= null;
+	private Collection<ContentNodeModel>	itemsToShow					= null;
+	private int								productCellWidth			= 0;
+	private int								folderCellWidth				= 0;
+	private int								tableWidth					= 0;
+	private ContentNodeModel				currentFolder				= null;
+	private boolean							showCategories				= false;
+	private boolean							showProducts				= true;
+	private boolean							useLayoutPattern			= true;
+	private boolean							dynamicSize					= false;
+	private int								maxColumns					= 4;
+	boolean									useAlternateImage			= false;			// alternate image
 	
 	// === JSP VARIABLES created ===
 	public static final String rowListVariableName 			= "rowList";
@@ -39,14 +39,13 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 	public static final String theOnlyProductVariableName 	= "theOnlyProduct";
 
 	// === work variables ===
-	private List			itemList			= null;
-	private int[]			patternArray		= null;
-	private int				patternIndex		= 0;
-	private int				itemsToShowIndex	= 0;
-//	private int				tableWidth			= 0;
-	private boolean			onlyOneProduct 		= false;
-	private ProductModel	theOnlyProduct		= null;
-	
+	private List<ContentNodeModel>			itemList					= null;
+	private int[]							patternArray				= null;
+	private int								patternIndex				= 0;
+	private int								itemsToShowIndex			= 0;
+	// private int tableWidth = 0;
+	private boolean							onlyOneProduct				= false;
+	private ProductModel					theOnlyProduct				= null;	
 	
 	// pattern layout for 4 columns
 	public static int[][] displayPattern = { 
@@ -147,7 +146,14 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 		return tableWidth;
 	}
 	
-	public void setItemsToShow( Collection items ) {
+	public void setUseAlternateImage( boolean useAlternateImage ) {
+		this.useAlternateImage = useAlternateImage;
+	}
+	public boolean isUseAlternateImage() {
+		return useAlternateImage;
+	}
+	
+	public void setItemsToShow( Collection<ContentNodeModel> items ) {
 		itemsToShow = items;
 		itemList = null;
 	}
@@ -178,7 +184,7 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 
 	public int doAfterBody() throws JspException {
 
-		List returnItems = buildReturnArray();		
+		List<ContentNodeModel> returnItems = buildReturnArray();		
 		
 		if ( returnItems.size() == 0 ) {
 			return SKIP_BODY;
@@ -198,15 +204,13 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 			return;
 		}
 		
-		itemList = new ArrayList( itemsToShow.size() );
+		itemList = new ArrayList<ContentNodeModel>( itemsToShow.size() );
 		
 		onlyOneProduct = false;
 		theOnlyProduct = null;
 		int productCounter = 0;
 		
-		Iterator i = itemsToShow.iterator();
-		while ( i.hasNext() ) {			
-			Object obj = i.next();
+		for ( ContentNodeModel obj : itemsToShow ) {
 			
 			// skip if not Product or Category, or null 
 			if ( obj == null || ! ( obj instanceof ProductModel || obj instanceof CategoryModel ) )
@@ -253,9 +257,9 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 		}		
 	}
 	
-	private List buildReturnArray() {
+	private List<ContentNodeModel> buildReturnArray() {
 		
-		ArrayList returnItems = new ArrayList();
+		ArrayList<ContentNodeModel> returnItems = new ArrayList<ContentNodeModel>();
 		int numOfItemsOnRow; 
 		
 		if ( useLayoutPattern ) {
@@ -275,12 +279,17 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 				ContentNodeModel node = (ContentNodeModel)itemList.get( i++ );
 				
 				Image img = null;
-				if ( node instanceof ProductModel ) {				
-					img = ( (ProductModel)node ).getProdImage();					
-					w += img == null ? productCellWidth : img.getWidth();				
+				if ( node instanceof ProductModel ) {
+					if ( useAlternateImage ) {
+						img = ( (ProductModel)node ).getAlternateImage();
+					}
+					if ( img == null ) {
+						img = ( (ProductModel)node ).getProdImage();
+					}
+					w += img == null ? productCellWidth : img.getWidth();
 				} else if ( node instanceof CategoryModel ) {
 					img = ( (CategoryModel)node ).getCategoryPhoto();
-					w += img == null ? folderCellWidth : img.getWidth();				
+					w += img == null ? folderCellWidth : img.getWidth();
 				}				
 			}
 			
@@ -316,7 +325,7 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 		return returnItems;
 	}
 	
-	private void setVariables( List returnItems ) {
+	private void setVariables( List<ContentNodeModel> returnItems ) {
 		pageContext.setAttribute( id, this );
 		pageContext.setAttribute( rowListVariableName, returnItems );
 		pageContext.setAttribute( tableWidthVariableName, new Integer(tableWidth) );		

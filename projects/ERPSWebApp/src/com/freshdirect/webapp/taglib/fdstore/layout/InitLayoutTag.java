@@ -8,8 +8,10 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
 
 
 /**
@@ -26,6 +28,7 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 	public static final String trackingCodeVariableName 	= "trackingCode";
 	public static final String currentFolderVariableName 	= "currentFolder";
 	public static final String sortedCollectionVariableName = "sortedCollection";	
+	public static final String useAlternateVariableName 	= "useAlternateImages";	
 	
 		
 	public int doStartTag() throws JspException {
@@ -34,6 +37,7 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 	}
 	
 		
+	@SuppressWarnings( "unchecked" )
 	private void setVariables() {
 		
 		String catId = pageContext.getRequest().getParameter( "catId" );
@@ -51,9 +55,9 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 			trackingCode = "cpage";
 		}
 		
-		Collection sortedColl = (Collection)pageContext.getRequest().getAttribute( "itemGrabberResult" );
+		Collection<ContentNodeModel> sortedColl = (Collection<ContentNodeModel>)pageContext.getRequest().getAttribute( "itemGrabberResult" );
 		if ( sortedColl == null )
-			sortedColl = new ArrayList();
+			sortedColl = new ArrayList<ContentNodeModel>();
 
 		
 		if ( catId != null )
@@ -65,8 +69,19 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 		pageContext.setAttribute( isDepartmentVariableName, new Boolean(isDepartment) );
 		pageContext.setAttribute( trackingCodeVariableName, trackingCode );
 		
-		if ( currentFolder != null )
+		if ( currentFolder != null ) {
 			pageContext.setAttribute( currentFolderVariableName, currentFolder );
+			boolean useAlternate = false;
+			if ( currentFolder instanceof CategoryModel )
+				useAlternate = ((CategoryModel)currentFolder).isUseAlternateImages();
+			else if ( currentFolder instanceof DepartmentModel )
+				useAlternate = ((DepartmentModel)currentFolder).isUseAlternateImages();			
+			pageContext.setAttribute( useAlternateVariableName, new Boolean( useAlternate ) );			
+		} else {
+			pageContext.setAttribute( currentFolderVariableName, null );			
+			pageContext.setAttribute( useAlternateVariableName, new Boolean( false ) );			
+		}
+		
 		
 		pageContext.setAttribute( sortedCollectionVariableName, sortedColl );
 		
@@ -109,6 +124,11 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 	            		"java.util.Collection",
 	            		true, 
 	            		VariableInfo.AT_END ),
+	            new VariableInfo(
+	            		useAlternateVariableName,
+	            		"java.lang.Boolean",
+	            		true, 
+	            		VariableInfo.AT_END )
 	        };
 	    }
 	}
