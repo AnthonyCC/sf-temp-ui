@@ -173,8 +173,8 @@
 <%			}
 		}
 %>
-					<input type="hidden" name="base_url" value="<%= base_url %>">
-					<input type="hidden" name="recs_cached_id" value="<%= recmnd.getRequestId() %>">
+					<input type="hidden" name="base_url" value="<%= base_url %>"><% if (recmnd != null) { %>
+					<input type="hidden" name="recs_cached_id" value="<%= recmnd.getRequestId() %>"><% } %>
 
 					<!-- start of ymal products external table -->
 					<table class="ymal" cellspacing="0" cellpadding="0">
@@ -198,7 +198,7 @@
 			ProductLabeling pl = new ProductLabeling(fd_user, product, recmnd != null ? recmnd.getVariant().getHideBursts() : null);
 			
 			// TRKD := recommender ID (if recommender is Smart YMAL) otherwise burst code
-			final String trkd = recmnd.getRecommenderIdForProduct(product.getContentName()) != null
+			final String trkd = recmnd != null && recmnd.getRecommenderIdForProduct(product.getContentName()) != null
 					? recmnd.getRecommenderIdForProduct(product.getContentName())
 					: pl.getTrackingCode();
 
@@ -212,7 +212,7 @@
 								<table align="center" style="border-collapse: collapse; border-spacing: 0px">
 									<tr>
 										<td style="padding: 0; margin: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-											<display:ProductImage product="<%= product %>" action="<%= actionURI %>" hideBursts="<%= recmnd.getVariant().getHideBursts() %>"/>
+											<display:ProductImage product="<%= product %>" action="<%= actionURI %>" hideBursts="<%= recmnd != null ? recmnd.getVariant().getHideBursts() : Collections.EMPTY_SET %>"/>
 										</td>
 									</tr>
 <%
