@@ -801,6 +801,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setCampaignMsgViewed(int campaignMsgViewed) {
 		user.setCampaignMsgViewed(campaignMsgViewed);
 	}
+	
+	@Override
+	public boolean hasService(EnumServiceType type) {
+	    return user.hasService(type);
+	}
 
 	public static FDUserI getFDSessionUser(HttpSession session) {
 	    if (session==null) {

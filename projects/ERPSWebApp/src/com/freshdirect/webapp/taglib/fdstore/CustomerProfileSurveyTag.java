@@ -8,6 +8,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -28,25 +29,26 @@ public class CustomerProfileSurveyTag extends AbstractControllerTag {
 	}
 	private static Category LOGGER = LoggerFactory.getInstance(CustomerProfileSurveyTag.class);
 
-	 protected boolean performAction(HttpServletRequest request, ActionResult result) throws JspException {
-	 	
-		HttpSession session = pageContext.getSession();
-		FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-		String actionName = this.getActionName();
-	 	if ("submitSurvey".equalsIgnoreCase(actionName)){
-	 		try {
-				FDSurvey _survey=FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.getEnum(survey), user);
-				FDSurveyResponse surveyResponse=SurveyHelper.getSurveyResponse(user.getIdentity(), _survey, result, request.getParameterMap());
-				if(result.isSuccess()) {
-					FDCustomerManager.storeSurvey(surveyResponse);
-				}
-			} catch (FDResourceException e) {
-				LOGGER.error(e.toString());
-				throw new JspException(e.getMessage());
-			}
-	 	}
-	 	return true;
-	 }
+    protected boolean performAction(HttpServletRequest request, ActionResult result) throws JspException {
+
+        HttpSession session = pageContext.getSession();
+        FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+        String actionName = this.getActionName();
+        if ("submitSurvey".equalsIgnoreCase(actionName)) {
+            try {
+                EnumServiceType st = FDSurveyFactory.getServiceType(user, request);
+                FDSurvey _survey = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.getEnum(survey), st);
+                FDSurveyResponse surveyResponse = SurveyHelper.getSurveyResponse(user.getIdentity(), _survey, result, request.getParameterMap());
+                if (result.isSuccess()) {
+                    FDCustomerManager.storeSurvey(surveyResponse);
+                }
+            } catch (FDResourceException e) {
+                LOGGER.error(e.toString());
+                throw new JspException(e.getMessage());
+            }
+        }
+        return true;
+    }
     
     public static class TagEI extends AbstractControllerTag.TagEI {
         // default impl

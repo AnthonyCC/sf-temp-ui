@@ -806,6 +806,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setAvailableServices(Set availableServices) {
 		this.availableServices = Collections.unmodifiableSet(availableServices);
 	}
+	
+	public boolean hasService(EnumServiceType type) {
+	    return type != null && availableServices.contains(type); 
+	}
 
 	public String getCustomerServiceContact() {
 		try {

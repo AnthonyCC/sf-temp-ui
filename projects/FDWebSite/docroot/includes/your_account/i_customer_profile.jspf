@@ -8,7 +8,8 @@
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@page import="com.freshdirect.fdstore.survey.SurveyHtmlHelper"%>
 <%@page import="com.freshdirect.fdstore.survey.EnumFormDisplayType"%>
-<link rel="stylesheet" href="/assets/css/customerprofile.css" type="text/css">
+
+<%@page import="com.freshdirect.common.customer.EnumServiceType"%><link rel="stylesheet" href="/assets/css/customerprofile.css" type="text/css">
 <script type="text/javascript">
 	/*
 	 *	this probably isn't a good idea usabilty-wise
@@ -93,10 +94,11 @@
 </script>
 <% int quesCount = 1; 
 FDUserI _user = (FDUserI)session.getAttribute(SessionName.USER);
+	EnumServiceType serviceType = FDSurveyFactory.getServiceType(_user, request);
        String _survey_Name=request.getAttribute("Survey").toString();
-       FDSurvey Usability = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()), _user);
+       FDSurvey Usability = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()), serviceType);
        request.removeAttribute("Survey");
-       FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(_user.getIdentity(), _user);
+       FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(_user.getIdentity(), serviceType);
        List questions = Usability.getQuestions();
        String questionPostFix=" (Choose one)";
        List previousAnswers=null;
@@ -107,6 +109,7 @@ FDUserI _user = (FDUserI)session.getAttribute(SessionName.USER);
     <% } else {%>
         <div class="container">
     <%}%>
+	<input type="hidden" name="serviceType" value="<%= serviceType.name() %>">
 	
 	    <logic:iterate id="question" collection="<%= questions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
         

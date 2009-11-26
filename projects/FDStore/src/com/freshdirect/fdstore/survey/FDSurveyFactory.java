@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.CreateException;
 import javax.naming.Context;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -108,6 +109,23 @@ public class FDSurveyFactory {
         return getSurvey(surveyType, extractServiceType(user));
     }
 
+    public static EnumServiceType getServiceType(FDUserI user, EnumServiceType override) {
+        return override != null ? override : (user != null ? user.getSelectedServiceType() : EnumServiceType.HOME);
+    }
+    
+    public static EnumServiceType getServiceType(FDUserI user, HttpServletRequest request) {
+        EnumServiceType serviceType = null;
+        String serviceTypeParam = request.getParameter("serviceType");
+        if (serviceTypeParam != null) {
+            serviceType = EnumServiceType.getEnum(serviceTypeParam);
+        }
+        if (!user.hasService(serviceType)) {
+            serviceType = null;
+        }
+        serviceType = FDSurveyFactory.getServiceType(user, serviceType);
+        return serviceType;
+    }
+    
     private static EnumServiceType extractServiceType(FDUserI user) {
         //return EnumServiceType.CORPORATE; 
         return user != null ? user.getSelectedServiceType() : EnumServiceType.HOME;
