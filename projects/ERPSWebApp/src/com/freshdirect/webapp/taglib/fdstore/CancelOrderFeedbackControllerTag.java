@@ -20,7 +20,9 @@ import org.apache.log4j.Category;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
+import com.freshdirect.fdstore.survey.SurveyKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -43,10 +45,11 @@ public class CancelOrderFeedbackControllerTag extends AbstractControllerTag impl
         }
             
         HttpSession session = pageContext.getSession();
-        FDIdentity identity = ((FDSessionUser) session.getAttribute(USER)).getIdentity();
+        FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+        FDIdentity identity = user.getIdentity();
         try{
 
-            FDCustomerManager.storeSurvey(form.getSurvey(identity, "Cancel_order_feedback"));
+            FDCustomerManager.storeSurvey(form.getSurvey(identity, new SurveyKey(EnumSurveyType.CANCEL_ORDER_FEEDBACK, user.getSelectedServiceType())));
 
         } catch(FDResourceException re) {
             LOGGER.warn("FDResourceException", re);
@@ -77,7 +80,7 @@ public class CancelOrderFeedbackControllerTag extends AbstractControllerTag impl
 	        }	        
 	    }
 
-		public FDSurveyResponse getSurvey(FDIdentity identity, String name) {
+		public FDSurveyResponse getSurvey(FDIdentity identity, SurveyKey name) {
             FDSurveyResponse survey = new FDSurveyResponse(identity,  name);
 			survey.addAnswer("orderId", this.orderId);
 			survey.addAnswer("reason", this.reason);

@@ -19,7 +19,9 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
+import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
+import com.freshdirect.fdstore.survey.SurveyKey;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -191,7 +193,7 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 			FDIdentity identity = user.getIdentity();		
 	
-			FDSurveyResponse surveyResponse = new FDSurveyResponse(identity, "COS_Survey_v2");
+			FDSurveyResponse surveyResponse = new FDSurveyResponse(identity, new SurveyKey(EnumSurveyType.COS_SURVEY_V2, user.getSelectedServiceType()));
 			for(Iterator i = request.getParameterMap().entrySet().iterator(); i.hasNext();){
 				Entry e = (Entry) i.next();
 				String question = (String)e.getKey();

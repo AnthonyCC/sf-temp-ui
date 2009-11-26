@@ -79,7 +79,7 @@ public class ReceiptSurveyControllerTag  extends AbstractControllerTag implement
 			
 			if("validateSurvey".equals(this.getActionName())){
 				PrimaryKey saleId = null;
-				 surveyResponse = new FDSurveyResponse(user.getIdentity(), survey.getName(), saleId);
+				 surveyResponse = new FDSurveyResponse(user.getIdentity(), survey.getKey(), saleId);
 				 reqQuests = survey.getRequiredQuestions();
 				
 				successPage.append(this.getSuccessPage());
@@ -157,7 +157,7 @@ public class ReceiptSurveyControllerTag  extends AbstractControllerTag implement
 						}
 					}
 						
-					surveyResponse = new FDSurveyResponse(user.getIdentity(), survey.getName(), saleId);
+					surveyResponse = new FDSurveyResponse(user.getIdentity(), survey.getKey(), saleId);
 					reqQuests = survey.getRequiredQuestions();
 			
 					

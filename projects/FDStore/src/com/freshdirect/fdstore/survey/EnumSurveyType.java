@@ -20,7 +20,8 @@ public enum EnumSurveyType {
     ,ORGANIC_2("Organic2")
     ,USABILITY("Usability")
     ,WINE_REQUEST("Wine Request Feedback")
-    
+    ,CANCEL_ORDER_FEEDBACK("Cancel_order_feedback") // this is not used, I believe
+    ,COS_SURVEY_V2("COS_Survey_v2")
     ;
     
     String label;

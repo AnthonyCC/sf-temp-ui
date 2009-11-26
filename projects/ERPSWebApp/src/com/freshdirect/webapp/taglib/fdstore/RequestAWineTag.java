@@ -20,22 +20,18 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.request.FDProductRequest;
+import com.freshdirect.fdstore.survey.FDSurvey;
+import com.freshdirect.fdstore.survey.FDSurveyQuestion;
+import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
-import com.freshdirect.fdstore.customer.FDCustomerRequest;
-import com.freshdirect.fdstore.request.FDProductRequest;
-import com.freshdirect.fdstore.survey.FDSurvey;
-import com.freshdirect.fdstore.survey.FDSurveyQuestion;
-import com.freshdirect.fdstore.survey.FDSurveyAnswer;
-import com.freshdirect.fdstore.survey.FDSurveyResponse;
 
 public class RequestAWineTag extends AbstractControllerTag {
 	
@@ -61,7 +57,7 @@ public class RequestAWineTag extends AbstractControllerTag {
 			if( productRequests.size()>0) {
 				hasProductReq=true;
 			}
-			FDSurveyResponse surveyResponse = new FDSurveyResponse(user.getIdentity(), survey.getName());
+			FDSurveyResponse surveyResponse = new FDSurveyResponse(user.getIdentity(), survey.getKey());
 			List reqQuests = null;
 			reqQuests = survey.getRequiredQuestions();
            	Map parameters = request.getParameterMap();

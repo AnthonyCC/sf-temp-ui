@@ -69,7 +69,7 @@ public class IntermediateSurveyControllerTag extends AbstractControllerTag imple
 			if("filled_survey".equalsIgnoreCase(response)){
 				
 				if("submitSurvey".equals(this.getActionName())){
-					FDSurveyResponse surveyResponse = new FDSurveyResponse(user.getIdentity(), survey.getName()); //, saleId
+					FDSurveyResponse surveyResponse = new FDSurveyResponse(user.getIdentity(), survey.getKey()); //, saleId
 					List reqQuests = survey.getRequiredQuestions();
 					Map parameters = request.getParameterMap();
 						for(Iterator i = parameters.entrySet().iterator(); i.hasNext();){

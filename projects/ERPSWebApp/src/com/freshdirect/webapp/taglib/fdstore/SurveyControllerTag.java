@@ -374,20 +374,20 @@ public class SurveyControllerTag extends com.freshdirect.framework.webapp.BodyTa
 
 		}
 
-		public FDSurveyResponse getFormValues(FDIdentity identity, String name) {
-			FDSurveyResponse survey = new FDSurveyResponse(identity, name);
-			for (Iterator i = this.getValues().iterator(); i.hasNext();) {
-				PElement element = (PElement) i.next();
-				String[] values = element.getValues();
-
-				if ("question14_additional_comments".equals(element.getName()) && values[0].length() > 1000) {
-					values[0] = values[0].toString().substring(0, 1000);
-					survey.addAnswer(element.getName(), values);
-				} else {
-					survey.addAnswer(element.getName(), values);
-				}
-			}
-			return survey;
-		}
+//		public FDSurveyResponse getFormValues(FDIdentity identity, String name) {
+//			FDSurveyResponse survey = new FDSurveyResponse(identity, name);
+//			for (Iterator i = this.getValues().iterator(); i.hasNext();) {
+//				PElement element = (PElement) i.next();
+//				String[] values = element.getValues();
+//
+//				if ("question14_additional_comments".equals(element.getName()) && values[0].length() > 1000) {
+//					values[0] = values[0].toString().substring(0, 1000);
+//					survey.addAnswer(element.getName(), values);
+//				} else {
+//					survey.addAnswer(element.getName(), values);
+//				}
+//			}
+//			return survey;
+//		}
 	}
 }
