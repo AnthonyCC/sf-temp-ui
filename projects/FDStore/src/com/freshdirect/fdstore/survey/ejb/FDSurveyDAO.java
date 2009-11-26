@@ -94,7 +94,7 @@ public class FDSurveyDAO {
 	private static final String GET_SURVEY_RESPONSE=" SELECT sd.SURVEY_ID, sd.QUESTION, sd.ANSWER,QuestionNumber,AnswerNumber FROM cust.SURVEYDATA sd, "+ 
 	 " (SELECT ss.SEQUENCE AS QuestionNumber, sq.NAME AS question,sqa.SEQUENCE AS AnswerNumber,sa.name as AnswerName  FROM "+
      " cust.SURVEY_SETUP ss, cust.SURVEY_QUESTION sq,cust.SURVEY_ANSWER sa,cust.SURVEY_QA sqa WHERE "+ 
-     " ss.SURVEY=(SELECT ID FROM cust.SURVEY_DEF WHERE NAME=?) AND "+
+     " ss.SURVEY=(SELECT ID FROM cust.SURVEY_DEF WHERE NAME=? AND SERVICE_TYPE = ?) AND "+
      " ss.QUESTION=sq.ID AND ss.QUESTION=sqa.QUESTION AND sqa.ANSWER=sa.ID) t "+ 
 	 " WHERE sd.survey_id IN (SELECT ID FROM cust.SURVEY WHERE survey_name=? AND "+ 
 	 " customer_id=(SELECT ID FROM cust.FDCUSTOMER WHERE erp_customer_id=?) "+ 
@@ -108,10 +108,11 @@ public class FDSurveyDAO {
 		try {			
 			ps = conn.prepareStatement(GET_SURVEY_RESPONSE);
 			ps.setString(1, key.getSurveyType().getLabel());
-			ps.setString(2, key.getSurveyType().getLabel());
-			ps.setString(3, identity.getErpCustomerPK());
-			ps.setString(4, key.getSurveyType().getLabel());
-			ps.setString(5, identity.getErpCustomerPK());
+			ps.setString(2, key.getUserType().name());
+			ps.setString(3, key.getSurveyType().getLabel());
+			ps.setString(4, identity.getErpCustomerPK());
+			ps.setString(5, key.getSurveyType().getLabel());
+			ps.setString(6, identity.getErpCustomerPK());
 			rs = ps.executeQuery();
 			surveyResponse = getSurveyResponse(identity,key,rs);						
 		} finally {

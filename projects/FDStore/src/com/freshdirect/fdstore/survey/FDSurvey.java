@@ -150,6 +150,7 @@ public class FDSurvey implements java.io.Serializable {
             s.append('\n').append("insert into CUST.SURVEY_SETUP (SURVEY,SEQUENCE,ACTIVE,QUESTION, ID, DATE_MODIFIED) values (" +
                     id+","+sequence+",'Y',"+q.toSelectSqlId()+",(select max(to_number(id))+1 from CUST.SURVEY_SETUP),SYSDATE);");
             s.append('\n');
+            sequence ++;
         }        
 	return s.toString();
     }
