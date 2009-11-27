@@ -40,15 +40,11 @@ public class RatingPlusScalePriceTag extends ProductRatingTag {
 			HttpSession session = pageContext.getSession();
 			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 			
-			if ( user == null || !user.isProduceRatingEnabled() ) {
+			if ( user == null || !user.isProduceRatingEnabled() || product == null ) {
 				return SKIP_BODY;
 			}
 			
-			ProductImpression impression = null;
-			
-			if ( product != null ) {
-				impression = new ProductImpression(product);
-			}
+			ProductImpression impression = new ProductImpression(product);			
 			
 			String scaleString = impression.getProductModel().getTieredPrice(savingsPercentage);
 			
