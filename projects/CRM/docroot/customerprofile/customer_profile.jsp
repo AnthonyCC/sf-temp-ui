@@ -27,16 +27,15 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
         } %>
 </crm:GetLockedCase>
 <% 
-    
     FDIdentity customerIdentity = null;
     ErpCustomerInfoModel customerInfo = null;
     if (user!=null && user.getLevel() == 2){
         customerIdentity = user.getIdentity();
         customerInfo = FDCustomerFactory.getErpCustomerInfo(customerIdentity);	
     }
-response.setHeader("Pragma", "no-cache");
-response.setHeader("Cache-Control", "no-cache");
-String department = request.getParameter("department");
+    response.setHeader("Pragma", "no-cache");
+    response.setHeader("Cache-Control", "no-cache");
+    String department = request.getParameter("department");
 
 %>
 <script type="text/javascript">
@@ -57,24 +56,21 @@ function _submit(p) {
 }
 </script>
 <tmpl:insert template='/template/top_nav.jsp'>
-
-	<tmpl:put name='title' direct='true'>Customer Profile</tmpl:put><tmpl:put name='content' direct='true'>
+<tmpl:put name='title' direct='true'>Customer Profile</tmpl:put>
+<tmpl:put name='content' direct='true'>
 
 <fd:CustomerProfileSurveyTag actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="Customer Profile Survey">
  <form name="request_product" method="POST">	
 <table cellpadding="0" cellspacing="0" border="0" class="text12">
 <tr><td colspan="10">
     
-    <input type="hidden" name="department" value="<%=department%>">
+<input type="hidden" name="department" value="<%=department%>">
     <br>
     
 
-
-<% request.setAttribute("Survey","Customer Profile Survey");%>
+<% request.setAttribute(FDSurveyConstants.SURVEY,EnumSurveyType.CUSTOMER_PROFILE_SURVEY.getLabel());%>
 <%@ include file="/includes/customerprofile/i_customer_profile.jspf" %>
-	
-
-</td>
+    </td>
 </tr>
 	<tr>
 		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>

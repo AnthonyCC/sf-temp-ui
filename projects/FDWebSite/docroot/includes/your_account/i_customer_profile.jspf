@@ -8,7 +8,6 @@
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@page import="com.freshdirect.fdstore.survey.SurveyHtmlHelper"%>
 <%@page import="com.freshdirect.fdstore.survey.EnumFormDisplayType"%>
-
 <%@page import="com.freshdirect.common.customer.EnumServiceType"%><link rel="stylesheet" href="/assets/css/customerprofile.css" type="text/css">
 <script type="text/javascript">
 	/*

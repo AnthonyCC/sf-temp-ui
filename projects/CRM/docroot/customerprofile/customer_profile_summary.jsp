@@ -7,7 +7,7 @@
 <%@ page import="com.freshdirect.customer.*"%>
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
-
+<%@page import="com.freshdirect.common.customer.EnumServiceType"%>
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import='java.text.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -25,8 +25,10 @@
     }
 	
 	FDCustomerModel customer = FDCustomerFactory.getFDCustomer(user.getIdentity());
-	FDSurvey customerProfileSurvey = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.CUSTOMER_PROFILE_SURVEY, user);
-	FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(customerIdentity, user);
+	EnumServiceType serviceType = FDSurveyFactory.getServiceType(user, request);
+
+	FDSurvey customerProfileSurvey = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.CUSTOMER_PROFILE_SURVEY, serviceType);
+	FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(customerIdentity, serviceType);
     int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(customerProfileSurvey,surveyResponse);
     %>
     <% if(coverage==0) {%>
@@ -189,6 +191,15 @@ response.setHeader("Cache-Control", "no-cache");
 	<!-- end center column -->
 	<!-- right column -->
 		<td class="padL20px vTop tLeft t11px">
+			<% if (user.isHomeUser() && user.isCorporateUser()) { %>
+		    <table id="profileSwitcher">
+		    	<tr>
+		    	 <td><a href="?serviceType=HOME">Home Profile</a></td>
+		    	 <td><a href="?serviceType=CORPORATE">Corporate Profile</a></td>
+		    	</tr>
+		    </table>
+		    <img width="120" height="10" src="/media_stat/images/layout/clear.gif"/>
+		    <% } %>
 			<table cellpadding="0" cellspacing="0" border="0" width="100%">
 
 			<!-- header row -->

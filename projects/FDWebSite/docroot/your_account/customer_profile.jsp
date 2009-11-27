@@ -62,7 +62,7 @@ function _submit(p) {
 
 <% request.setAttribute(FDSurveyConstants.SURVEY,EnumSurveyType.CUSTOMER_PROFILE_SURVEY.getLabel());%>
 <%@ include file="/includes/your_account/i_customer_profile.jspf" %>
-	</td>
+    </td>
 </tr>
 	<tr>
 		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="28"></td>
