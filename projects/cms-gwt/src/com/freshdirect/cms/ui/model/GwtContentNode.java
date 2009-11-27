@@ -114,7 +114,8 @@ public class GwtContentNode implements Serializable {
 	    if ( changedValues.containsKey( attributeKey ) ) {
             return changedValues.get( attributeKey );
         } else {
-            return originalAttributes.get( attributeKey ).getValue();
+        	ContentNodeAttributeI attr = originalAttributes.get( attributeKey ); 
+            return attr == null ? null : attr.getValue();
         }
 	}
 	
