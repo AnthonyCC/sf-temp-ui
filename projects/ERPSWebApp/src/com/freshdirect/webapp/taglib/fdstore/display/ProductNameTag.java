@@ -1,14 +1,19 @@
 package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 
 /**
@@ -25,7 +30,14 @@ public class ProductNameTag extends BodyTagSupport {
 	String			brandStyle 	= "font-weight:bold;";	// CSS style modification for brand name (optional)
 	boolean			disabled 	= false;				// Not clickable (optional)
 	boolean         showNew     = false;                // Show NEW! label right after name
+	boolean			showFavourite=false;
 	
+	Set<EnumBurstType> hideBursts;
+	
+	public void setHideBursts(Set<EnumBurstType> hideBursts) {
+		this.hideBursts = hideBursts;
+	}
+
 	public void setProduct(ProductModel product) {
 		this.product = product;
 	}
@@ -38,6 +50,10 @@ public class ProductNameTag extends BodyTagSupport {
 		this.disabled = disabled;
 	}
 	
+	public void setShowFavourite(boolean showFavourite) {
+		this.showFavourite = showFavourite;
+	}
+
 	public void setStyle( String style ) {
 		this.style = style;
 	}
@@ -66,6 +82,8 @@ public class ProductNameTag extends BodyTagSupport {
 		}
 		
 		StringBuffer buf = new StringBuffer();
+	
+		ProductLabeling pl = new ProductLabeling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), product, hideBursts);
 		
 		String styleStr = "";
 		if ( style != null && !"".equals( style ) ) {
@@ -90,10 +108,10 @@ public class ProductNameTag extends BodyTagSupport {
 
 		if ( !this.disabled && action != null )
 			buf.append("</a>");
-
-		if (showNew && product.isNew())
-			buf.append("&nbsp;&nbsp;<span class=\"save-price\">NEW!</span>");
-			
+		if (showNew && pl.isDisplayNew())
+			buf.append("&nbsp;&nbsp;<span class=\"text10rbold\">NEW!</span>");
+		if (showFavourite && pl.isDisplayFave())
+			buf.append("&nbsp;&nbsp;<span class=\"text11prpbold\">YOUR FAVOURITE</span>");	
 		buf.append("</span>");
 
 		try {
@@ -105,7 +123,7 @@ public class ProductNameTag extends BodyTagSupport {
 
 		return EVAL_BODY_INCLUDE;
 	}
-
+	
 	public static class TagEI extends TagExtraInfo {
 		public VariableInfo[] getVariableInfo(TagData data) {
 			return new VariableInfo[] {};
