@@ -212,9 +212,7 @@ public class FDStoreProperties {
 	private final static String SKU_AVAILABILITY_REFRESH_PERIOD = "fdstore.sku.availability.refresh";
 
 	private static long lastRefresh = 0;
-	//not to be checked in, change to refresh every 30 secs 
-	private final static long REFRESH_PERIOD = 30 * 1000;
-	//private final static long REFRESH_PERIOD = 5 * 60 * 1000;
+	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 
 	//Added for controlling number of orders processed during Mass Cancellation and Mass Returns.
 	private final static String PROP_CRM_ORDER_PRC_LIMIT = "fdstore.orderProcessingLimit";
