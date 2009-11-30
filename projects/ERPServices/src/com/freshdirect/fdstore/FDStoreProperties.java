@@ -212,7 +212,9 @@ public class FDStoreProperties {
 	private final static String SKU_AVAILABILITY_REFRESH_PERIOD = "fdstore.sku.availability.refresh";
 
 	private static long lastRefresh = 0;
-	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
+	//not to be checked in, change to refresh every 30 secs 
+	private final static long REFRESH_PERIOD = 30 * 1000;
+	//private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 
 	//Added for controlling number of orders processed during Mass Cancellation and Mass Returns.
 	private final static String PROP_CRM_ORDER_PRC_LIMIT = "fdstore.orderProcessingLimit";
@@ -319,6 +321,9 @@ public class FDStoreProperties {
 	private final static String PROP_FDWHATSGOOD_BBLOCK_ENABLED			= "fdstore.fdwhatsgood_bblock.enabled";
 	//new prop to set dynamic rows
 	private final static String PROP_FDWHATSGOOD_ROWS					= "fdstore.fdwhatsgood.rows";
+	//allow debug messages via property (default to false : off)
+	private final static String PROP_FDWHATSGOOD_DEBUG_ENABLED			= "fdstore.fdwhatsgood.debugEnabled";
+	
 	
 	
 	//Smart Savings
@@ -590,6 +595,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED, "true");
 		defaults.put(PROP_FDWHATSGOOD_BBLOCK_ENABLED, "false");
 		defaults.put(PROP_FDWHATSGOOD_ROWS, "");
+		defaults.put(PROP_FDWHATSGOOD_DEBUG_ENABLED, "false");
 		
 		defaults.put(DYNAMIC_ROUTING_ENABLED, "true");
 
@@ -1313,10 +1319,10 @@ public class FDStoreProperties {
 		return Boolean.valueOf(get(SMART_SAVINGS_FEATURE_ENABLED)).booleanValue();
 	}
 
+	//What's Good
 	public static boolean isWhatsGoodEnabled() {
 		return Boolean.valueOf(get(PROP_FDWHATSGOOD_ENABLED)).booleanValue();
 	}
-	
 	public static boolean isWhatsGoodPeakProduceEnabled() {
 		return Boolean.valueOf(get(PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED)).booleanValue();
 	}
@@ -1325,6 +1331,9 @@ public class FDStoreProperties {
 	}
 	public static String getWhatsGoodRows() {
 		return get(PROP_FDWHATSGOOD_ROWS);
+	}
+	public static boolean isWhatsGoodDebugOn() {
+		return Boolean.valueOf(get(PROP_FDWHATSGOOD_DEBUG_ENABLED)).booleanValue();
 	}
 	
 	

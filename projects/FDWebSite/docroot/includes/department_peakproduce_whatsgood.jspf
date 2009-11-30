@@ -370,7 +370,7 @@
 							<% } %>
 							<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
 							<display:ProductName product="<%= pm %>" action="<%= actionURI %>" />
-							<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="false" />
+							<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="<%= showDescrips %>" />
 						</div>
 					</td>
 				</logic:iterate>

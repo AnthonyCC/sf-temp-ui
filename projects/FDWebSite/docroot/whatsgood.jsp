@@ -46,7 +46,9 @@
 	boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
 
 /* control page and row-wide debug messages */
-	boolean myDebug = true;
+	//boolean myDebug = true;
+	//move to property-based
+	boolean myDebug = FDStoreProperties.isWhatsGoodDebugOn();
 
 /* */
 	String deptId = null; //department ID
@@ -61,6 +63,7 @@
 	int grabberDepth        = 0; //set by "depth" sub attribute
 	boolean dealsOnly       = false; //set by "deals" sub attribute
 	boolean featuredOnly    = false; //set by "feats" sub attribute
+	boolean showDescrips    = true; //set by "descrips" sub attribute
 	int perRow              = 5; //used in generic_row
 	int perRowPP            = 6; //used in peak_produce
 	String dealsFrom        = "gro"; //set by "from" sub attritbute
@@ -243,6 +246,9 @@ log(myDebug, "PAGE : Starting What's Good...");
 	 *		feats = [true|false]   DEFAULT: false
 	 *			Show featured products instead of normal children products
 	 *			on (true) or off (false)
+	 *		descrips = [true|false]   DEFAULT: true
+	 *			Show descriptions (each/4pk/fillet/etc)
+	 *			on (true) or off (false)
 	 */
 
 	String strWGRows = "";
@@ -292,6 +298,7 @@ log(myDebug, "PAGE : Starting What's Good...");
 				showInContextOf = null;
 				dealsOnly = false;
 				featuredOnly = false;
+				showDescrips = true;
 
 
 			//get current row
@@ -348,6 +355,10 @@ log(myDebug, "PAGE : Starting What's Good...");
 									log(myDebug, "found feats: "+resultSubSub[1]);
 										if ("true".equalsIgnoreCase(resultSubSub[1])) {featuredOnly = true;} 
 										if ("false".equalsIgnoreCase(resultSubSub[1])) {featuredOnly = false;}
+								}else if ("descrips".equalsIgnoreCase(resultSubSub[0])) {
+									log(myDebug, "found descrips: "+resultSubSub[1]);
+										if ("true".equalsIgnoreCase(resultSubSub[1])) {showDescrips = true;} 
+										if ("false".equalsIgnoreCase(resultSubSub[1])) {showDescrips = false;}
 								}else{
 									log(myDebug, "found ???=???: "+resultSubSub[0]+"="+resultSubSub[1]);
 								}

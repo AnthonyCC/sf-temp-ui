@@ -277,8 +277,8 @@
 									<div style="margin: 0pt; padding: 0pt; height: 28px; text-align: center; vertical-align: middle;"><span class="text8">(click name to buy)</span></div>
 								<% } %>
 								<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
-								<display:ProductName product="<%= pm %>" action="<%= actionURI %>" />
-								<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="false" />
+								<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
+								<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="<%= showDescrips %>" />
 
 							</div>
 						</td>
