@@ -970,7 +970,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
                                 + "&productId="+displayProduct.getContentName())+"&trk=trans";
 %>
                 <td width="85">
-                <div id="prod_container" style="height: 90px; width: 90px; text-align: left;">
+                <div id="prod_container" style="height: 90px; width: 90px; text-align: left;" onMouseOver="changeImg(document.bullet<%=imgShownIndex%>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex%>,'out',0)">
 					<div>
 
 						  <display:ProductImage product="<%= displayProduct %>" action="<%= imgLinkUrl %>" showRolloverImage="true" />

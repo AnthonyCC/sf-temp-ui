@@ -329,8 +329,8 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
 %><td align="left"><%=itmImage%></td><%
         if (prod.isUnavailable()) {
             prodPrice = "Not Available";
-%><TD WIDTH="<%= nameColWidth %>"><font color="#999999"><display:ProductName product="<%= prod %>" action="<%= url %>"/></font></TD>
-<%      } else { %><TD WIDTH="<%= nameColWidth %>"><display:ProductName product="<%= prod %>" action="<%= url %>"/></TD>
+%><TD WIDTH="<%= nameColWidth %>"><font color="#999999"><display:ProductName product="<%= prod %>" action="<%= url %>" showNew="true" showFavourite="true"/></font></TD>
+<%      } else { %><TD WIDTH="<%= nameColWidth %>"><display:ProductName product="<%= prod %>" action="<%= url %>" showNew="true" showFavourite="true"/></TD>
 <%      }
     //We've got a products. Now locate each display attribute on the product
         int colCounter = 2;
