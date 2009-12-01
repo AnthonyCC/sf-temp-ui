@@ -44,17 +44,27 @@ public abstract class TabHelperTag extends BodyTagSupport {
         }
 
         if (selectedTab == -1) {
+            shouldStoreTabPos = true;
             // try to calculate a good tab index
             if (session.getAttribute(SessionName.SS_SELECTED_VARIANT) != null) {
                 String tabId = (String) session.getAttribute(SessionName.SS_SELECTED_VARIANT);
+                
                 selectedTab = tabs.getTabIndex(tabId);
+                if (selectedTab == -1 && tabId.indexOf(',') != -1) {
+                    String[] variants = tabId.split(",");
+                    for (int i=0;i<variants.length && selectedTab == -1; i++) {
+                        selectedTab = tabs.getTabIndex(variants[i]);
+                        if (selectedTab != -1) {
+                            session.setAttribute(SessionName.SS_SELECTED_VARIANT, variants[i]);
+                        }
+                    }
+                }
             }
             // no success, fallback to 0
             if (selectedTab == -1) {
                 selectedTab = 0;
             }
             // store in the session
-            session.setAttribute(SessionName.SS_SELECTED_TAB, selectedTab);
         }
 
         // tab explicitly set

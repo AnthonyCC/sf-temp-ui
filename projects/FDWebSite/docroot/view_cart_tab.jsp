@@ -9,7 +9,6 @@
 	    session.setAttribute(SessionName.SS_SELECTED_TAB, Integer.valueOf(-1));
 	    session.setAttribute(SessionName.SS_SELECTED_VARIANT, variantId);
 	}
-	System.err.println("new url:"+u.build());
 	response.sendRedirect(u.build());
 	return;
 %>
