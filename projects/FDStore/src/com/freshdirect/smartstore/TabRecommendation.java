@@ -7,7 +7,7 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 public class TabRecommendation {
     public static final String PIP_DEFAULT_DESC = "These are some of the items we recommend you:";
 
-    final List variants;
+    final List<Variant> variants;
     final Variant tabVariant;
     String parentImpressionId;
     String[] featureImpId;
@@ -86,6 +86,16 @@ public class TabRecommendation {
     
     public int getSelected() {
         return selected;
+    }
+
+    public int getTabIndex(String tabId) {
+        for (int i = 0; i <variants.size(); i++) {
+            Variant v = variants.get(i);
+            if (v.getId().equals(tabId)) {
+                return i;
+            }
+        }
+        return -1;
     }
     
 }

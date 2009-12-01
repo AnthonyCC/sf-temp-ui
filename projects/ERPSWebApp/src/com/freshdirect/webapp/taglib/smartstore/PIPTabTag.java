@@ -2,7 +2,6 @@ package com.freshdirect.webapp.taglib.smartstore;
 
 import java.util.Map;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
@@ -28,7 +27,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
  * @author treer
  * 
  */
-public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
+public class PIPTabTag extends TabHelperTag {
 	private static final long serialVersionUID = 1654943557811529504L;
 
 	private static Logger LOGGER = LoggerFactory.getInstance( PIPTabTag.class );
@@ -55,28 +54,13 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 		this.facility = facility;
 	}
 
-	private TabRecommendation tabs;
-
-	// @return number of tabs recommended
-	public int getRecommendedTabs() {
-		return this.tabs.size()/*  nTabs */;
-	}
-	
-	public TabRecommendation getTabs() {
-		return tabs;
-	}
 	
 	public int doStartTag() throws JspException {
 		LOGGER.debug( "doStartTag()" );
 		
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-		SessionInput input = new SessionInput(user);
-		input.setPreviousRecommendations((Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
-
-		FDStoreRecommender.initYmalSource(input, user, pageContext.getRequest());
-		input.setCurrentNode( input.getYmalSource() );
-		input.setMaxRecommendations(maxRecommendations);
+		SessionInput input = createSessionInput(session, user, maxRecommendations);
 		
 		tabs = CartTabRecommender.recommendTabs(user, input);
 		
@@ -120,44 +104,7 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 		return EVAL_BODY_INCLUDE; 
 	}
 	
-	protected int getSelectedTab(HttpSession session, ServletRequest req) {
-            final int numTabs = tabs.size();
-            
-            int selectedTab = 0; // default value
-            Object selectedTabAttribute = session.getAttribute(SessionName.SS_SELECTED_TAB);
-            
-            boolean shouldStoreTabPos = selectedTabAttribute == null; // true == not stored yet
-            if (selectedTabAttribute != null) {
-                // get the stored one if exist
-                selectedTab = ((Integer) selectedTabAttribute).intValue();
-            }
-
-            // tab explicitly set
-            String value = req.getParameter("tab");
-            if (value != null && !"".equals(value)) {
-                selectedTab = Integer.parseInt(value);
-                shouldStoreTabPos = true;
-            }
-
-            if (selectedTab >= numTabs || (session.getAttribute(SessionName.SS_SELECTED_VARIANT) != null &&
-            		!tabs.get(selectedTab).getId().equals( session.getAttribute(SessionName.SS_SELECTED_VARIANT) ) )) {
-                // reset if selection is out of tab range or the variant of selected tab has changed
-                selectedTab = 0;
-                shouldStoreTabPos = true;
-            }
-
-            Integer iSelectedTab = new Integer(selectedTab);
-            if (shouldStoreTabPos) {
-                // store changed tab position in session
-                session.setAttribute(SessionName.SS_SELECTED_TAB, iSelectedTab);
-                session.setAttribute(SessionName.SS_SELECTED_VARIANT, tabs.get(selectedTab).getId());
-            }
-            pageContext.setAttribute("selectedTabIndex", iSelectedTab);
-
-            return selectedTab;
-	}
-	
-    public static class TagEI extends TagExtraInfo {
+	public static class TagEI extends TagExtraInfo {
         public VariableInfo[] getVariableInfo(TagData data) {
             return new VariableInfo[] { 
                     new VariableInfo(

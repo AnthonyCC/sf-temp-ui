@@ -27,6 +27,7 @@ public class URLGenerator {
     String              requestUri;
     Map                 parameters = new HashMap();
     Set                 extraKeys  = new HashSet();
+    boolean             escapeAndSign = true; 
 
     public URLGenerator(HttpServletRequest request) {
     	// This is necessary to avoid clash when invoking remove(key) on
@@ -42,17 +43,25 @@ public class URLGenerator {
 
 
 
-    private URLGenerator(Map requestParams, String requestUri, Map parameters, Set extraKeys) {
+    private URLGenerator(Map requestParams, String requestUri, Map parameters, Set extraKeys, boolean escapeSign) {
         this.requestParams = requestParams;
         this.requestUri = requestUri;
+        this.escapeAndSign = escapeSign;
     	
         this.parameters = new HashMap(parameters);
         this.extraKeys = new HashSet(extraKeys);
     }
     
+    public void setEscapeAndSign(boolean escapeAndSign) {
+        this.escapeAndSign = escapeAndSign;
+    }
+    
+    public boolean isEscapeAndSign() {
+        return escapeAndSign;
+    }
     
     public Object clone() {
-    	return new URLGenerator(requestParams, requestUri, parameters, extraKeys);
+    	return new URLGenerator(requestParams, requestUri, parameters, extraKeys, escapeAndSign);
     }
 
     /**
@@ -339,7 +348,11 @@ public class URLGenerator {
                 buffer.append('?');
             } else {
             	// Note: HTML 4.01 requires ampersand as entity
-                buffer.append("&amp;");
+                if (escapeAndSign) {
+                    buffer.append("&amp;");
+                } else {
+                    buffer.append('&');
+                }
             }
             try {
                 buffer.append(key).append('=').append(URLEncoder.encode(value, "UTF-8"));
