@@ -593,7 +593,7 @@ if(productCode!=null && prodCatId !=null ) {
 	} else {
 %>    
 			<div>
-					<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/>
+					<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="true" showDescription="false"/>
 			<br></div>
 <%
 	}
