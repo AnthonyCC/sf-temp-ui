@@ -1,11 +1,3 @@
-<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
-<%@ page import='com.freshdirect.fdstore.content.util.SortStrategyElement' %>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings' %>
-<%@ page import='com.freshdirect.webapp.util.*' %>
-<%@ page import="com.freshdirect.webapp.util.ProductImpression" %>
-<%@ page import="com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy" %>
-
-<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%
 	int tempCounter=0;
 	rowColl = new ArrayList();
@@ -271,15 +263,19 @@
 							<div class="WG_deals">
 								<% if (impressions.get(idx) instanceof TransactionalProductImpression && isTransactionalRow) { %>
 									<fd:TxProductControl txNumber="<%= txCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(idx) %>"/>
+									
+									<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
+									<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
+									<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(idx) %>" showDescription="<%= showDescrips %>" />
 								<% 
 									txCount++;
 								} else { %>
 									<div style="margin: 0pt; padding: 0pt; height: 28px; text-align: center; vertical-align: middle;"><span class="text8">(click name to buy)</span></div>
-								<% } %>
-								<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
-								<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
-								<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="<%= showDescrips %>" />
 
+									<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
+									<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
+									<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="<%= showDescrips %>" />
+								<% } %>
 							</div>
 						</td>
 					</logic:iterate>
