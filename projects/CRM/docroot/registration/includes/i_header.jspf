@@ -42,7 +42,17 @@
 			formObj.<%= AddressName.BIL_ZIPCODE %>.value = "<%= request.getParameter(AddressName.BIL_ZIPCODE) %>";
 		}
 	}
-
+	function enablePaymentFeilds(formObj){
+		// make the billing address fields writeable
+		formObj.<%= AddressName.BIL_ADDRESS_1 %>.readOnly = false;
+		formObj.<%= AddressName.BIL_ADDRESS_2 %>.readOnly = false;
+		formObj.<%= AddressName.BIL_APARTMENT %>.readOnly = false;
+		formObj.<%= AddressName.BIL_CITY %>.readOnly = false;
+		formObj.<%= AddressName.BIL_STATE %>.readOnly = false;
+		formObj.<%= AddressName.BIL_ZIPCODE %>.readOnly = false;
+	
+	}
+	
 	function updateNameFields(formObj) {
 		updateAddrNames(formObj);
 		updateCCName(formObj);

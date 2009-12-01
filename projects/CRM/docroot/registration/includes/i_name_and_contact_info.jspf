@@ -84,7 +84,7 @@
 					<td width="60%"><INPUT SIZE="15" type="password" name="repeat_password" value="<%= request.getParameter("repeat_password") %>"><fd:ErrorHandler result='<%=result%>' name='repeat_password' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler><br /><font class="note"><i>Must be at least 4 characters. Case sensitive.</i></font><br /></td>
 				</tr>
 				<tr>
-					<td width="40%" align="right">Town of Birth or&nbsp;<br />Mother's Maiden Name:&nbsp;</td>
+					<td width="40%" align="right">* Town of Birth or&nbsp;<br />Mother's Maiden Name:&nbsp;</td>
 					<td width="60%"><input type="text" SIZE="15" name="password_hint" value="<%= request.getParameter("password_hint") %>"><fd:ErrorHandler result='<%=result%>' name='password_hint' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
 				</tr>
 				<tr>

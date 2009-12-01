@@ -1,4 +1,4 @@
-<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="register_header" style="padding: 3px; margin-bottom: 8px;"><tr><td>&nbsp;&nbsp;Payment Information: <span class="register_header_detail">(Optional)</span></td></tr></table>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="register_header" style="padding: 3px; margin-bottom: 8px;"><tr><td>&nbsp;&nbsp;Payment Information: <span class="register_header_detail">* Required </span></td></tr></table>
 
 
 <table width="35%" cellpadding="2" cellspacing="0" border="0" class="register">
@@ -79,7 +79,11 @@
 	</tr>
 	<tr>
 		<td width="35%" align="right">* State:&nbsp;&nbsp;</td>
-		<td width="65%"><input type="text" readOnly="false" size="2" name="<%= AddressName.BIL_STATE %>" value="NY"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.BIL_STATE %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;* Zip <input type="text" SIZE="6" name="<%= AddressName.BIL_ZIPCODE %>" value="<%= request.getParameter(AddressName.BIL_ZIPCODE) %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.BIL_ZIPCODE %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+		<%if (EnumServiceType.WEB.equals(selected)) {%>
+		<td width="65%"><input type="text" readOnly="false" size="2" maxlength="2" name="<%= AddressName.BIL_STATE %>" value="<%=request.getParameter(AddressName.BIL_STATE)%>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.BIL_STATE %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;* Zip <input type="text" SIZE="6" name="<%= AddressName.BIL_ZIPCODE %>" value="<%= request.getParameter(AddressName.BIL_ZIPCODE) %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.BIL_ZIPCODE %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+		<%}else {%>
+		<td width="65%"><input type="text" readOnly="false" size="2" maxlength="2" name="<%= AddressName.BIL_STATE %>" value="NY"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.BIL_STATE %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;* Zip <input type="text" SIZE="6" name="<%= AddressName.BIL_ZIPCODE %>" value="<%= request.getParameter(AddressName.BIL_ZIPCODE) %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.BIL_ZIPCODE %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+		<%} %>
 	</tr>
 </table>
 
@@ -151,10 +155,11 @@
 		</tr>
 		<tr>
 			<td width="35%" align="right">* State:</td>
-			<td width="65%">&nbsp;&nbsp;<input type="text" readOnly="false" size="2" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.BIL_STATE.getCode())%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;* Zip <input type="text" SIZE="6" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode())%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+			<td width="65%">&nbsp;&nbsp;<input type="text" readOnly="false" size="2" maxlength="2" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.BIL_STATE.getCode())%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;* Zip <input type="text" SIZE="6" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode())%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
 		</tr>
 	</table>
 	<br />
 	</div>
 <% } %>
 <% //CHECKING ACCT ADD !! REMOVE DISPLAY STYLE !! %>
+<% if (EnumServiceType.WEB.equals(selected)) {%><script>enablePaymentFeilds(document.registration);</script><%}%>
