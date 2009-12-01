@@ -111,7 +111,7 @@ public class ProductNameTag extends BodyTagSupport {
 		if (showNew && pl.isDisplayNew())
 			buf.append("&nbsp;&nbsp;<span class=\"text10rbold\">NEW!</span>");
 		if (showFavourite && pl.isDisplayFave())
-			buf.append("&nbsp;&nbsp;<span class=\"text11prpbold\">YOUR FAVOURITE</span>");	
+			buf.append("&nbsp;&nbsp;<span class=\"text11prpbold\">YOUR FAVORITE</span>");	
 		buf.append("</span>");
 
 		try {
