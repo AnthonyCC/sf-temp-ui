@@ -722,14 +722,7 @@ public class ScoreProvider implements DataAccess {
 			FactorRangeConverter converter = (FactorRangeConverter)rangeConverters.get(entry.getKey().toString());
 			double[] values = converter.map(null,globalScoreRangeProvider);
 			
-			if (values.length != products.size()) {
-				throw new FDRuntimeException(
-					"Product list length and range values size differ: " + values.length + " and " + products.size());
-			}
-			for(int j=0; j< values.length; ++j) {
-				double[] productScores = ((double[])result.get(new ContentKey(FDContentTypes.PRODUCT,products.get(j).toString())));
-				productScores[((Number)entry.getValue()).intValue()] = values[j];
-			}
+			storeScores(products, result, entry, values);
 		}
 		globalScoreRangeProvider.purge();
 		return result;
@@ -754,17 +747,21 @@ public class ScoreProvider implements DataAccess {
 			FactorRangeConverter converter = (FactorRangeConverter)rangeConverters.get(entry.getKey().toString());
 			double[] values = converter.map(erpCustomerId,personalScores);
 			
-			if (values.length != products.size()) {
-				throw new FDRuntimeException(
-					"Product list length and range values size differ: " + values.length + " and " + products.size());
-			}
-			for(int j=0; j< values.length; ++j) {
-				double[] productScores = ((double[])result.get(new ContentKey(FDContentTypes.PRODUCT,products.get(j).toString())));
-				productScores[((Number)entry.getValue()).intValue()] = values[j];
-			}
+			storeScores(products, result, entry, values);
 		}
 		return result;
 	}
+
+    private void storeScores(List products, Map result, Map.Entry entry, double[] values) {
+        if (values.length != products.size()) {
+        	throw new FDRuntimeException(
+        		"Product list length and range values size differ: " + values.length + " and " + products.size());
+        }
+        for(int j=0; j< values.length; ++j) {
+        	double[] productScores = ((double[])result.get(new ContentKey(FDContentTypes.PRODUCT,products.get(j).toString())));
+        	productScores[((Number)entry.getValue()).intValue()] = values[j];
+        }
+    }
 	
 	/**
 	 * Get all scores for the given users.

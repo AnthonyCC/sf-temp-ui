@@ -42,7 +42,7 @@ if (!yuzer.isSurveySkipped() && yuzer.getAdjustedValidOrderCount()==1 && yuzer.g
 			response.sendRedirect(response.encodeRedirectURL("/checkout/survey_cos.jsp?successPage=/checkout/step_1_choose.jsp"));
 		} else {
 	        FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(yuzer.getIdentity(), yuzer);
-           int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(usability,surveyResponse);
+           int coverage=SurveyHtmlHelper.getResponseCoverage(usability,surveyResponse);
            if(coverage<usability.getAcceptableCoverage()) {
            
         	    response.sendRedirect(response.encodeRedirectURL("/checkout/survey.jsp?successPage=/checkout/step_1_choose.jsp"));

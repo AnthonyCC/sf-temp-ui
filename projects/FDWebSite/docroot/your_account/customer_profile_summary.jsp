@@ -37,7 +37,7 @@ request.setAttribute("listPos", "HPLeftTop");
 
 	FDSurvey customerProfileSurvey = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.CUSTOMER_PROFILE_SURVEY, serviceType);
 	FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(customerIdentity, serviceType);
-    int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(customerProfileSurvey,surveyResponse);
+    int coverage=SurveyHtmlHelper.getResponseCoverage(customerProfileSurvey,surveyResponse);
     %>
     <% if(coverage==0) {%>
     <jsp:forward page='<%="/your_account/customer_profile.jsp?"+request.getQueryString()%>' />

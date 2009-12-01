@@ -115,33 +115,5 @@ public class FDSurveyResponse implements Serializable {
 		}
 		
 	}
-	
-	public static boolean hasActiveAnswers(FDSurveyQuestion question, List response) {
-		
-		if(response==null || response.isEmpty()) return false;
-		List answers=question.getAnswers();
-		if(answers==null || answers.isEmpty()) return false;
-		boolean hasActiveAns=false;
-		Iterator it=answers.iterator();
-		List ansGroups=question.getAnswerGroups();
-
-		while(!hasActiveAns && it.hasNext()) {
-			FDSurveyAnswer _validAns=(FDSurveyAnswer)it.next();//
-			if((EnumFormDisplayType.GROUPED_RADIO_BUTTON.equals(question.getFormDisplayType())||EnumFormDisplayType.DISPLAY_PULLDOWN_GROUP.equals(question.getFormDisplayType())) && response.contains(_validAns.getName())) {
-				hasActiveAns=true;
-			}else if(ansGroups.size()==0 && response.contains(_validAns.getName())) {
-				hasActiveAns=true;
-			}else if(ansGroups.size()>0){
-				Iterator _it=ansGroups.iterator();
-				while(!hasActiveAns&& _it.hasNext()) {
-					String ansGroup=_it.next().toString();
-					if(response.contains(_validAns.getName()+ansGroup)) {
-						hasActiveAns=true;
-					}
-				}
-			}
-		}
-		return hasActiveAns;
-	}
 
 }

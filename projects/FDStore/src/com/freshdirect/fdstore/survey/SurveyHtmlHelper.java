@@ -618,4 +618,26 @@ public class SurveyHtmlHelper {
 			FDSurveyQuestion question) {
 		return previousResponse != null?previousResponse.getAnswerAsList(question.getName()):new ArrayList();
 	}
+	
+	       public static int getResponseCoverage(FDSurvey survey, FDSurveyResponse response) {
+	                
+	                if(survey==null || response==null)
+	                        return 0;
+	                
+	                if(survey.getQuestions()==null || survey.getQuestions().isEmpty()||response.getAnswers()==null || response.getAnswers().isEmpty())
+	                        return 0;
+	                
+	                int responseCount=0;
+	                FDSurveyQuestion question=null;
+	                for (Iterator it=survey.getQuestions().iterator();it.hasNext();) {
+	                        question=(FDSurveyQuestion)it.next();
+	                        if(response.getAnswers().containsKey(question.getName())) {
+	                                
+	                                if(hasActiveAnswers(question,response.getAnswerAsList(question.getName())))
+	                                        responseCount++;
+	                        }
+	                }
+	                return (int)((responseCount*100)/survey.getQuestions().size());
+	        }
+
 }

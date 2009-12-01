@@ -1,7 +1,5 @@
 package com.freshdirect.giftcard;
 
-import com.freshdirect.fdstore.FDException;
-
 public class ServiceUnavailableException extends Exception {
 
     public ServiceUnavailableException() {
@@ -19,7 +17,5 @@ public class ServiceUnavailableException extends Exception {
     public ServiceUnavailableException(Throwable cause) {
         super(cause);
     }
-    
-    
 
 }

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.survey.EnumFormDisplayType;
 import com.freshdirect.fdstore.survey.FDSurvey;
 import com.freshdirect.fdstore.survey.FDSurveyAnswer;
 import com.freshdirect.fdstore.survey.FDSurveyConstants;
@@ -94,53 +93,4 @@ public class SurveyHelper {
 		
 	}
 	
-	public static int getResponseCoverage(FDSurvey survey, FDSurveyResponse response) {
-		
-		if(survey==null || response==null)
-			return 0;
-		
-		if(survey.getQuestions()==null || survey.getQuestions().isEmpty()||response.getAnswers()==null || response.getAnswers().isEmpty())
-			return 0;
-		
-		int responseCount=0;
-		FDSurveyQuestion question=null;
-		for (Iterator it=survey.getQuestions().iterator();it.hasNext();) {
-			question=(FDSurveyQuestion)it.next();
-			if(response.getAnswers().containsKey(question.getName())) {
-				
-				if(hasActiveAnswers(question,response.getAnswerAsList(question.getName())))
-					responseCount++;
-			}
-		}
-		return (int)((responseCount*100)/survey.getQuestions().size());
-	}
-	
-	public static boolean hasActiveAnswers(FDSurveyQuestion question, List response) {
-		
-		if(response==null || response.isEmpty()) return false;
-		List answers=question.getAnswers();
-		if(answers==null || answers.isEmpty()) return false;
-		boolean hasActiveAns=false;
-		Iterator it=answers.iterator();
-		List ansGroups=question.getAnswerGroups();
-
-		while(!hasActiveAns && it.hasNext()) {
-			FDSurveyAnswer _validAns=(FDSurveyAnswer)it.next();//
-			if((EnumFormDisplayType.GROUPED_RADIO_BUTTON.equals(question.getFormDisplayType())||EnumFormDisplayType.DISPLAY_PULLDOWN_GROUP.equals(question.getFormDisplayType())) && response.contains(_validAns.getName())) {
-				hasActiveAns=true;
-			}else if(ansGroups.size()==0 && response.contains(_validAns.getName())) {
-				hasActiveAns=true;
-			}else if(ansGroups.size()>0){
-				Iterator _it=ansGroups.iterator();
-				while(!hasActiveAns&& _it.hasNext()) {
-					String ansGroup=_it.next().toString();
-					if(response.contains(_validAns.getName())||response.contains(_validAns.getName()+ansGroup)) {
-						hasActiveAns=true;
-					}
-				}
-			}
-		}
-		
-		return hasActiveAns;
-	}
 }
