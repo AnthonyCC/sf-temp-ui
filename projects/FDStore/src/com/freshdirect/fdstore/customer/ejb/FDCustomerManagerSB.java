@@ -90,6 +90,7 @@ import com.freshdirect.giftcard.CardOnHoldException;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.giftcard.ServiceUnavailableException;
 
 /**
  *
@@ -614,7 +615,7 @@ public interface FDCustomerManagerSB extends EJBObject {
             CustomerRatingI cra,
             CrmAgentRole agentRole,
             EnumDlvPassStatus status,boolean isBulkOrder
-          ) throws FDResourceException,
+          ) throws ServiceUnavailableException, FDResourceException,
           ErpFraudException,
           ErpAuthorizationException,
           ErpAddressVerificationException,
@@ -649,7 +650,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) throws RemoteException, FDResourceException;
     
     //For Gift Cards
-    public ErpGiftCardModel applyGiftCard(FDIdentity identity, String givexNum, FDActionInfo info) throws InvalidCardException, CardInUseException, CardOnHoldException, FDResourceException, RemoteException;
+    public ErpGiftCardModel applyGiftCard(FDIdentity identity, String givexNum, FDActionInfo info) throws ServiceUnavailableException, InvalidCardException, CardInUseException, CardOnHoldException, FDResourceException, RemoteException;
     
     /**
      * Get all the Gift cards of the customer.

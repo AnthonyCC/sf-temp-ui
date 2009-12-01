@@ -153,6 +153,6 @@ public interface SystemMessageList {
 	public final static String MSG_GC_ADD_RECIP_SUCCESS = "Your recipient list has been updated. You may enter the details for another gift or place your order by clicking the \"Continue\" button.";
 	public final static String MSG_RH_OPTIN_REQUIRED = "Please scroll down and select a tax deduction option below";
 	public final static String MSG_RH_OPTIN_BELOW_REQUIRED = "Please select a tax deduction option ";
-	
+	public final static String MSG_GC_SERVICE_UNAVAILABLE	= "This service is unavailable at this time. Please try again later.";
 	
 }

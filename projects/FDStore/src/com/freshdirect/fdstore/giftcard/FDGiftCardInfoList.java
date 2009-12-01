@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 
 import java.util.Collections;
@@ -45,7 +46,7 @@ public class FDGiftCardInfoList implements Serializable {
 		List selectedCards = new ArrayList();
 		for(Iterator it = this.giftcards.iterator(); it.hasNext();) {
 			FDGiftCardModel gc = (FDGiftCardModel) it.next();
-			if(!gc.isRedeemable() || !gc.isSelected() || gc.getBalance() <= 0) {
+			if(FDStoreProperties.isGivexBlackHoleEnabled()|| !gc.isRedeemable() || !gc.isSelected() || gc.getBalance() <= 0 ) {
 				continue;
 			} 
 			//Clone Gift card model object.
@@ -79,7 +80,7 @@ public class FDGiftCardInfoList implements Serializable {
 		double balance = 0.0;
 		for(Iterator it = this.giftcards.iterator(); it.hasNext();) {
 			FDGiftCardI gc = (FDGiftCardI) it.next();
-			if(!gc.isRedeemable() || !gc.isSelected()) {
+			if(FDStoreProperties.isGivexBlackHoleEnabled() || !gc.isRedeemable() || !gc.isSelected()) {
 				continue;
 			}
 			balance += gc.getBalance();
@@ -119,7 +120,7 @@ public class FDGiftCardInfoList implements Serializable {
 		double balance = 0.0;
 		for(Iterator it = this.giftcards.iterator(); it.hasNext();) {
 			FDGiftCardI gc = (FDGiftCardI) it.next();
-			if(!gc.isRedeemable()) {
+			if(FDStoreProperties.isGivexBlackHoleEnabled() || !gc.isRedeemable()) {
 				continue;
 			}
 			balance += gc.getBalance();

@@ -108,7 +108,9 @@ function gcNumberSubmit(){
 										<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 										<td><%= giftcard.getCertificateNumber() %></td>
 										<td><% if(giftcard.isRedeemable()){ %>$<%= giftcard.getFormattedBalance() %><% } %></td>
-                                        <td><% if(giftcard.isRedeemable() && giftcard.getBalance() > 0) {%>
+                                        <td><% if(giftcard.isRedeemable() && FDStoreProperties.isGivexBlackHoleEnabled()) { %>
+                                        Unavailable
+                                        <% } else if(giftcard.isRedeemable() && giftcard.getBalance() > 0) {%>
                                             Active
                                         <%
                                          } else { %>
@@ -222,7 +224,9 @@ function gcNumberSubmit(){
 					}
 					%>
 						<fd:GiftCardController actionName='<%=actionName%>' result='result'>
-						
+                            <fd:ErrorHandler result="<%=result%>" name="service_unavailable" id="errorMsg">
+                                <%@ include file="/includes/i_error_messages.jspf" %>   
+                            </fd:ErrorHandler>
 							<fd:ErrorHandler result="<%=result%>" name="account_locked" id="errorMsg">
 				                <%@ include file="/includes/i_error_messages.jspf" %>   
 				            </fd:ErrorHandler>

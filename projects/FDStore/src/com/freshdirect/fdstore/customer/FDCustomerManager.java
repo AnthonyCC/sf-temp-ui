@@ -129,6 +129,7 @@ import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.smartstore.Variant;
@@ -2753,7 +2754,7 @@ public class FDCustomerManager {
 			 boolean sendEmail,
 			 CustomerRatingI cra,
 			 EnumDlvPassStatus status,
-			 List repList, boolean isBulkOrder) throws FDResourceException, 
+			 List repList, boolean isBulkOrder) throws ServiceUnavailableException, FDResourceException, 
       						  				   ErpFraudException, 
       						  				   ErpAuthorizationException,ErpAddressVerificationException
       						  				    {
@@ -2941,7 +2942,7 @@ public class FDCustomerManager {
 			}	
 	    }
 
-		public static ErpGiftCardModel applyGiftCard(FDIdentity identity, String givexNum, FDActionInfo info) throws InvalidCardException, CardInUseException, 
+		public static ErpGiftCardModel applyGiftCard(FDIdentity identity, String givexNum, FDActionInfo info) throws ServiceUnavailableException, InvalidCardException, CardInUseException, 
 							CardOnHoldException, FDResourceException {
 			lookupManagerHome();
 			try {

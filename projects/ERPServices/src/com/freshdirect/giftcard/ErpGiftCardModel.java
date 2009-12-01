@@ -9,7 +9,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class ErpGiftCardModel extends ErpPaymentMethodModel {
 
-	private double balance; 
+	private double balance = 0.0; 
 	private double originalAmount;
 	private String purchaseSaleId;
 	private Date purchaseDate;

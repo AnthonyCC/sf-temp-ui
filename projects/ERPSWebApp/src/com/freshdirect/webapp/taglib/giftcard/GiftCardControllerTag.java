@@ -28,6 +28,7 @@ import com.freshdirect.giftcard.CardInUseException;
 import com.freshdirect.giftcard.CardOnHoldException;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.callcenter.ComplaintCreatorTag;
@@ -99,7 +100,11 @@ public class GiftCardControllerTag extends AbstractControllerTag{
 					}
 					user.getGiftCardList().addGiftCard(new FDGiftCardModel(gcModel));
 					user.resetGCRetryCount();
-				} catch(InvalidCardException e){
+				} 
+				catch(ServiceUnavailableException se){
+					actionResult.addError(new ActionError("service_unavailable",SystemMessageList.MSG_GC_SERVICE_UNAVAILABLE));
+				}
+				catch(InvalidCardException e){
 					user.incrementGCRetryCount();
 					if(user.getGCRetryCount() >= GC_RETRY_COUNT){
 						//Lock the customer account from applying gift card.

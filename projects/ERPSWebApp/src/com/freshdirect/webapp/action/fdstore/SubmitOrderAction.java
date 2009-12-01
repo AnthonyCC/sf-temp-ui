@@ -36,6 +36,7 @@ import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.giftcard.ErpRecipentModel;
+import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.delivery.DlvZoneInfoModel;
@@ -310,9 +311,9 @@ public class SubmitOrderAction extends WebActionSupport {
 	        // make sure we're not using stale order history data.
 			user.invalidateOrderHistoryCache();
 			//Now store the user to update the service_Type		
-			if(user.getTotalRegularOrderCount()<=0){
+			/*if(user.getTotalRegularOrderCount()<=0){
 				user.setSelectedServiceType(EnumServiceType.PICKUP);
-			}
+			}*/
 			FDCustomerManager.storeUser(fdUser);
 			session.setAttribute(SessionName.USER, user);
 			
@@ -378,8 +379,9 @@ public class SubmitOrderAction extends WebActionSupport {
 				throw new FDResourceException(ie.getMessage());
 			}
 				
-		}
-		catch (ErpAddressVerificationException ae) {
+		}catch(ServiceUnavailableException se){
+			this.addError("service_unavailable", SystemMessageList.MSG_GC_SERVICE_UNAVAILABLE);
+		}catch (ErpAddressVerificationException ae) {
 			//user.incrementFailedAuthorizations();
 			
 				HttpServletResponse response = this.getWebActionContext().getResponse();				
@@ -929,9 +931,9 @@ public class SubmitOrderAction extends WebActionSupport {
 	        // make sure we're not using stale order history data.
 			user.invalidateOrderHistoryCache();
 			//Now store the user to update the service_Type	
-			if(user.getTotalRegularOrderCount()<=0){
+			/*if(user.getTotalRegularOrderCount()<=0){
 				user.setSelectedServiceType(EnumServiceType.PICKUP);
-			}
+			}*/
 			FDCustomerManager.storeUser(fdUser);
 			session.setAttribute(SessionName.USER, user);
 			

@@ -76,6 +76,10 @@
 			}
 		%>
         <fd:GiftCardController actionName='applyGiftCard' result='result' successPage='<%=sPage%>'>
+        	<fd:ErrorHandler result="<%=result%>" name="service_unavailable" id="errorMsg">
+                <%@ include file="/includes/i_error_messages.jspf" %>   
+            </fd:ErrorHandler>
+        
             <fd:ErrorHandler result="<%=result%>" name="account_locked" id="errorMsg">
                 <%@ include file="/includes/i_error_messages.jspf" %>   
             </fd:ErrorHandler>
@@ -141,11 +145,13 @@
                         <logic:iterate id="giftcard" collection="<%= giftcards %>" type="com.freshdirect.fdstore.giftcard.FDGiftCardModel">
 						<tr>
 							<td><%= giftcard.getCertificateNumber() %></td>
-							<td><%= DateUtil.formatDate(giftcard.getGiftCardModel().getPurchaseDate()) %></td>
+							<td><%= giftcard.getGiftCardModel().getPurchaseDate() != null ? DateUtil.formatDate(giftcard.getGiftCardModel().getPurchaseDate()) : "-" %></td>
 							<td><%= user.getGCSenderName(giftcard.getCertificateNumber(),giftcard.getPurchaseSaleId()) %></td>
 							<td>$<%= giftcard.getFormattedOrigAmount() %></td>
 							<td><% if(giftcard.isRedeemable()){ %>$<%= giftcard.getFormattedBalance() %><% } %></td>
-							<td><% if(giftcard.isRedeemable() && giftcard.getBalance() > 0) { if(!giftcard.isSelected()) {%>
+							<td><% if(giftcard.isRedeemable() && FDStoreProperties.isGivexBlackHoleEnabled()) {%>
+									Unavailable at this time										
+								<% } else if(giftcard.isRedeemable() && giftcard.getBalance() > 0) { if(!giftcard.isSelected()) {%>
                                 <a href="<%= request.getRequestURI() %>?action=applyGiftCard&certNum=<%= giftcard.getCertificateNumber() %>&value=true" class="note">Apply to the order</a>
                                 <% } else {%>
                                 <a href="<%= request.getRequestURI() %>?action=applyGiftCard&certNum=<%= giftcard.getCertificateNumber() %>&value=false" class="note">Do not apply to the order</a>

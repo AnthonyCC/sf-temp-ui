@@ -184,6 +184,7 @@ import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.GiftCardApplicationStrategy;
 import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.giftcard.ejb.GiftCardPersistanceDAO;
@@ -4312,12 +4313,18 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				                      CustomerRatingI cra,
 				                      CrmAgentRole agentRole,
 				                      EnumDlvPassStatus status,boolean isBulkOrder
-				                    ) throws FDResourceException,
+				                    ) throws ServiceUnavailableException,
+				                    		 FDResourceException,
 				                             ErpFraudException,
 				                             ErpAuthorizationException,ErpAddressVerificationException {
 
 				PrimaryKey pk = null;
 				try {
+					if(FDStoreProperties.isGivexBlackHoleEnabled() && createOrder.getSubTotal() <= 0.0){
+						//THis is $0 card with no value created for balance transfer. At this point reject the
+						//user action since register transaction will not go through.
+						throw new ServiceUnavailableException("This service is unavailable at this time. Please try again later.");
+					}
 					ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 					String customerPk = identity.getErpCustomerPK();
 					pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole,null,EnumSaleType.GIFTCARD);
@@ -4602,10 +4609,14 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 		
-		public ErpGiftCardModel applyGiftCard(FDIdentity identity, String givexNum,FDActionInfo info) throws InvalidCardException, CardInUseException, CardOnHoldException, FDResourceException {
+		public ErpGiftCardModel applyGiftCard(FDIdentity identity, String givexNum,FDActionInfo info) throws ServiceUnavailableException, InvalidCardException, CardInUseException, CardOnHoldException, FDResourceException {
 
 			try {
-				
+				if(FDStoreProperties.isGivexBlackHoleEnabled()){
+					//THis is $0 card with no value created for balance transfer. At this point reject the
+					//user action since register transaction will not go through.
+					throw new ServiceUnavailableException("This service is unavailable at this time. Please try again later.");
+				}
 				//Check if this gift card is already  attached to a customer account.
 				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
 				ErpGiftCardModel giftCard = sb.validate(givexNum); 
@@ -4650,8 +4661,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getErpCustomerPK()));
 				//return erpCustomerEB.getGiftCards();
 				List giftCards = erpCustomerEB.getGiftCards();
-				GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
-				return verifyStatusAndBalance(giftCards, true);
+				if(FDStoreProperties.isGivexBlackHoleEnabled()){
+					return giftCards;
+				} else {
+					GiftCardManagerSB sb = (GiftCardManagerSB) this.getGiftCardGManagerHome().create();
+					return verifyStatusAndBalance(giftCards, true);
+				}
 			} catch (RemoteException re) {
 				throw new FDResourceException(re);
 			} catch (FinderException ce) {

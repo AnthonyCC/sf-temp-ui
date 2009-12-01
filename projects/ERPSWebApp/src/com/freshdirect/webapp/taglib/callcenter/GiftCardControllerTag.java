@@ -72,6 +72,7 @@ import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.mail.EmailUtil;
@@ -343,8 +344,6 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
             		if(agent == null){            			
             			result.addError(new ActionError("technical_difficulty", "Could not update profile due to technical difficulty."));            			
             		}
-            		
-            		
                     try{
                     	SavedRecipientModel model=new SavedRecipientModel();
                     	model.setAmount(0);
@@ -400,6 +399,8 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
     		        			request.setAttribute("saleId",saleId);
     		        		}    						   
     						
+    					} catch(ServiceUnavailableException se){
+    						result.addError(new ActionError("service_unavailable",SystemMessageList.MSG_GC_SERVICE_UNAVAILABLE));
     					} catch (ErpFraudException e) {
     						throw new JspException(e);
     					}  catch (ErpAuthorizationException ae) {

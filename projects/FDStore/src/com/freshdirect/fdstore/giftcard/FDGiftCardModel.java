@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.giftcard;
 import java.io.Serializable;
 
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.giftcard.EnumGiftCardStatus;
@@ -38,7 +39,7 @@ public class FDGiftCardModel implements FDGiftCardI {
 	}
 
 	public double getBalance() {
-		if(getStatus().equals(EnumGiftCardStatus.UNKNOWN)){
+		if(getStatus().equals(EnumGiftCardStatus.UNKNOWN) && !FDStoreProperties.isGivexBlackHoleEnabled()){
 			try{
 				ErpGiftCardModel model = FDCustomerManager.verifyStatusAndBalance(giftCardModel, true);
 				giftCardModel.setStatus(model.getStatus());
@@ -60,11 +61,13 @@ public class FDGiftCardModel implements FDGiftCardI {
 	}
 	
 	public EnumGiftCardStatus verifyStatus() {
-		try{
-			ErpGiftCardModel model = FDCustomerManager.verifyStatusAndBalance(giftCardModel, false);
-			giftCardModel.setStatus(model.getStatus());
-		}catch (Exception e) {
-			throw new FDRuntimeException(e);
+		if(getStatus().equals(EnumGiftCardStatus.UNKNOWN) && !FDStoreProperties.isGivexBlackHoleEnabled()){
+			try{
+				ErpGiftCardModel model = FDCustomerManager.verifyStatusAndBalance(giftCardModel, false);
+				giftCardModel.setStatus(model.getStatus());
+			}catch (Exception e) {
+				throw new FDRuntimeException(e);
+			}
 		}
 		return giftCardModel.getStatus();
 	}

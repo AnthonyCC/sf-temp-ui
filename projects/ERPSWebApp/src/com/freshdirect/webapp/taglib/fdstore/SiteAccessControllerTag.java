@@ -121,15 +121,24 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					//System.out.println(" WEB result :"+result);
 					if (result.isSuccess()) {
 						newSession();
-						EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
+						
 						if("WEB".equals(this.serviceType.getName())){
-							this.createUser(this.serviceType, serviceResult.getAvailableServices());
-
-
-							//System.out.println(" WEB this.serviceType :"+this.serviceType);
+							EnumDeliveryStatus homeDlvStatus = serviceResult.getServiceStatus(EnumServiceType.HOME);
 							
+							if (EnumDeliveryStatus.DELIVER.equals(homeDlvStatus)) {
+								this.createUser(EnumServiceType.HOME, serviceResult.getAvailableServices());
+							} else {
+								EnumDeliveryStatus corpDlvStatus = serviceResult.getServiceStatus(EnumServiceType.CORPORATE);
+								if (EnumDeliveryStatus.DELIVER.equals(corpDlvStatus)) {
+									this.createUser(EnumServiceType.CORPORATE, serviceResult.getAvailableServices());
+								}else { 
+									this.createUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices());
+								}
+							}
+							//System.out.println(" WEB this.serviceType :"+this.serviceType);
 							doRedirect(successPage);
 						} else {
+							EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
 							//System.out.println(" NOTWEB this.serviceType :"+this.serviceType);
 							
 							if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
@@ -170,7 +179,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 								//return doRedirect(moreInfoPage);
 							}
 						
-							if (EnumServiceType.HOME.equals(this.serviceType)) {
+							if (EnumServiceType.HOME.equals(this.serviceType)) { 
 								if(EnumDeliveryStatus.RARELY_DELIVER.equals(dlvStatus)){								
 									// forward to /site_access/delivery.jsp with rarely deliver message( not required now)
 									return doRedirect(failureHomePage);

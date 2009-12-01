@@ -60,6 +60,7 @@ import com.freshdirect.giftcard.ejb.GCGatewaySB;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.giftcard.ejb.GiftCardPersistanceDAO;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -194,9 +195,15 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 					if(EnumSaleType.GIFTCARD.equals(saleType)) {
 						saleEB.cutoff();
 						addInvoice(saleEB,saleId,((SapCreateSalesOrder) command).getInvoiceNumber());
-						//Send register message to register queue.
-						GCGatewaySB gateway = getGCGatewayHome().create();
-						gateway.sendRegisterGiftCard(saleId, saleEB.getCurrentOrder().getSubTotal());
+						//Set the status in register pending.
+						saleEB.setGiftCardRegPending();
+						if(!FDStoreProperties.isGivexBlackHoleEnabled()){
+							//Send register message to register queue only if blackhole is disabled.
+							//otherwise leave it in register pending so register cron picks up
+							//after blackhole is disabled.
+							GCGatewaySB gateway = getGCGatewayHome().create();
+							gateway.sendRegisterGiftCard(saleId, saleEB.getCurrentOrder().getSubTotal());
+						}
 					}
 
 				} else if (command instanceof SapCancelSalesOrder) {

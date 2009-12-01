@@ -342,7 +342,7 @@ public class FDStoreProperties {
 	private static final String PROP_GC_DEPTID="fdstore.giftCardDeptId";
 	private static final String PROP_GC_CATID="fdstore.giftCardCatId";
 	private static final String PROP_GC_PRODNAME="fdstore.giftCardProdName";
-	
+	private static final String GIVEX_BLACK_HOLE_ENABLED="givex.black.hole.enabled";
 	// Robin Hood
 	private static final String ROBIN_HOOD_ENABLED="fdstore.isRobinHoodEnabled";
 	private static final String ROBIN_HOOD_LANDING_URL="fdstore.robinHoodLandingUrl";
@@ -610,6 +610,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_GC_DEPTID, "GC_testDept");
 		defaults.put(PROP_GC_CATID, "GC_testCat");
 		defaults.put(PROP_GC_PRODNAME, "GC_testProd");
+		defaults.put(GIVEX_BLACK_HOLE_ENABLED, "false");
 		
 		// Robin Hood
 		defaults.put(ROBIN_HOOD_ENABLED, "false");
@@ -1390,6 +1391,10 @@ public class FDStoreProperties {
 	}
 	public static boolean isDynamicRoutingEnabled() {
         return (new Boolean(get(DYNAMIC_ROUTING_ENABLED))).booleanValue();
+    }
+	
+	public static boolean isGivexBlackHoleEnabled() {
+        return (new Boolean(get(GIVEX_BLACK_HOLE_ENABLED))).booleanValue();
     }
 	
 	public static String getRoutingProviderURL() {

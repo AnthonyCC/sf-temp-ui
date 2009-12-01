@@ -287,7 +287,7 @@ public class ErpOrderHistoryUtil {
 		if(erpSaleInfos != null) {
 			for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
 				ErpSaleInfo saleInfo = (ErpSaleInfo) i.next(); 			
-				Date deliveryDate = saleInfo.getRequestedDate();
+				//Date deliveryDate = saleInfo.getRequestedDate();
 				if (saleInfo.getSaleType().equals(EnumSaleType.REGULAR)) {
 					intCount++;
 				}

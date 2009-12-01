@@ -119,6 +119,10 @@
 				<tr>
 					<td width="50%" class="gc_table_footer">
 						<fd:GiftCardController actionName='applyGiftCard' result='result' successPage='/gift_card/giftcard_addused.jsp'>
+                            <fd:ErrorHandler result="<%=result%>" name="service_unavailable" id="errorMsg">
+                                <%@ include file="/includes/i_error_messages.jspf" %>   
+                            </fd:ErrorHandler>
+                        
 							<fd:ErrorHandler result='<%=result%>' name='invalid_card' id='errorMsg'>
 								<%@ include file="/includes/i_error_messages.jspf" %>   
 							</fd:ErrorHandler>
@@ -183,7 +187,9 @@
 								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
 								<td><a href="javascript:showHint('<%= giftcard.getCertificateNumber() %>')">  <%= giftcard.getCertificateNumber() %></a></td>
                                 <td class="gc_balance"><% if(giftcard.isRedeemable()){ %>$<%= giftcard.getFormattedBalance() %>&nbsp;&nbsp;<% } %></td>
-                                <td><% if(giftcard.isRedeemable() && giftcard.getBalance() > 0) {%>
+                                <td><% if(giftcard.isRedeemable() && FDStoreProperties.isGivexBlackHoleEnabled()) {%>
+									Unavailable										
+								    <% } else if(giftcard.isRedeemable() && giftcard.getBalance() > 0) {%>
                                     Active
                                 <%
                                  } else { %>

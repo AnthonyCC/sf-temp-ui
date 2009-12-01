@@ -88,6 +88,7 @@
 								</td>
 							</tr>
 						</table>
+						<fd:ErrorHandler result='<%=result%>' name='service_unavailable' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 						<fd:ErrorHandler result='<%=result%>' name='generate_error' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 
 						<form name="generateGC2" id="generateGC2" method="get">

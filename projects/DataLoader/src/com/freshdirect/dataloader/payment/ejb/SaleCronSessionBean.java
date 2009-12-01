@@ -24,6 +24,7 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.delivery.DlvProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -218,6 +219,11 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	}
 
 	public void preAuthorizeSales(long timeout) {
+		if(FDStoreProperties.isGivexBlackHoleEnabled()){
+			//Pre auth is not performed at this point.
+			return;
+		}
+			
 		Connection con = null;
 		List saleIds = new ArrayList();
 
@@ -291,6 +297,11 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	 * clearing pending reverse auths due to cancelled orders.  
 	 */
 	public void reverseAuthorizeSales(long timeout) {
+		if(FDStoreProperties.isGivexBlackHoleEnabled()){
+			//Reverse Pre auth is not performed at this point.
+			return;
+		}
+		
 		Connection con = null;
 		List saleIds = new ArrayList();
 
@@ -689,6 +700,10 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	}
 
 	public void postAuthSales(long timeout) {
+		if(FDStoreProperties.isGivexBlackHoleEnabled()){
+			//Post auth is not performed at this point.
+			return;
+		}
 
 		Connection con = null;
 		UserTransaction utx = null;
@@ -757,6 +772,11 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	}
 
 	public void registerGiftCards(long timeout) {
+		if(FDStoreProperties.isGivexBlackHoleEnabled()){
+			//Pending register transactions are not sent to Givex at this point.
+			return;
+		}
+
 		Connection con = null;
 		UserTransaction utx = null;
 

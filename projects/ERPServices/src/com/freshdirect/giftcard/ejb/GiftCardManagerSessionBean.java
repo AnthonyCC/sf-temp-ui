@@ -191,10 +191,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 						cancelOrder.setTransactionInitiator("");
 						saleEB.cancelGCOrder(cancelOrder);
 						saleEB.cancelOrderComplete();
-					} else {
-						//Set the status in register pending.
-						saleEB.setGiftCardRegPending();
-					}
+					} 
 				}				
 		} catch (FinderException ce) {
 			throw new EJBException(ce);

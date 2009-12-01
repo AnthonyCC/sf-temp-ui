@@ -163,8 +163,9 @@
 									<tr valign="top" <%if(counterTmp.intValue()%2==0){%>class="list_odd_row"<%}%>>
 										<td style="vertical-align: middle; text-align: center; width: 16px;">
 											<div style="background-color: #fff; padding: 0px; margin: 0px; border: 0px;">
-
-												<% if(!giftcard.isSelected()) { %>
+                                                <% if(FDStoreProperties.isGivexBlackHoleEnabled()) {%>
+									                Unavailable										
+								                <% } else if(!giftcard.isSelected()) { %>
 													<a href="<%= request.getRequestURI() %>?action=applyGiftCard&certNum=<%= giftcard.getCertificateNumber() %>&value=true" class="note"><img width="16" height="16" alt="hide" src="/media_stat/crm/images/icon_minus.gif" id="m<%=counterTmp%>" class="gcIcon" style="display: block; border: 0px;" /></a>
 												<% } else {%>
 													<a href="<%= request.getRequestURI() %>?action=applyGiftCard&certNum=<%= giftcard.getCertificateNumber() %>&value=false" class="note"><img width="16" height="16" alt="show" src="/media_stat/crm/images/icon_plus.gif" id="p<%=counterTmp%>" style="display: block; border: 0px;" /></a>
