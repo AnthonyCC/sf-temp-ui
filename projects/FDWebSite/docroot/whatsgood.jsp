@@ -1,17 +1,22 @@
 <%@ page import='com.freshdirect.*' %>
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
-<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.FDReservation' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
+<%@ page import='com.freshdirect.fdstore.content.util.SortStrategyElement' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*' %>
 <%@ page import='com.freshdirect.framework.util.log.LoggerFactory' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.webapp.util.ProductImpression' %>
+<%@ page import='com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy' %>
 <%@ page import='java.text.*' %>
 <%@ page import='java.util.Collection' %>
 <%@ page import='java.util.HashMap' %>
@@ -23,7 +28,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
-
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <fd:CheckLoginStatus />
 
