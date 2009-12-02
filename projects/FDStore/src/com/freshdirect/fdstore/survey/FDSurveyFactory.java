@@ -119,7 +119,7 @@ public class FDSurveyFactory {
         if (serviceTypeParam != null) {
             serviceType = EnumServiceType.getEnum(serviceTypeParam);
         }
-        if (!user.hasService(serviceType)) {
+        if (!user.hasServiceBasedOnUserAddress(serviceType)) {
             serviceType = null;
         }
         serviceType = FDSurveyFactory.getServiceType(user, serviceType);

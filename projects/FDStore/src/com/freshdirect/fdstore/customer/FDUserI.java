@@ -172,7 +172,8 @@ public interface FDUserI extends java.io.Serializable {
 
     public boolean isHomeUser();
 
-    public boolean hasService(EnumServiceType type);
+    public boolean hasServiceBasedOnUserAddress(EnumServiceType type);
+    
     
     public FDReservation getReservation();
 

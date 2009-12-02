@@ -803,8 +803,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 	
 	@Override
-	public boolean hasService(EnumServiceType type) {
-	    return user.hasService(type);
+	public boolean hasServiceBasedOnUserAddress(EnumServiceType type) {
+	    return user.hasServiceBasedOnUserAddress(type);
 	}
 
 	public static FDUserI getFDSessionUser(HttpSession session) {

@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author ekracoff
@@ -15,7 +13,7 @@ public class FDSurveyQuestion implements java.io.Serializable {
 	private final String name;
 	private final String description;
 	private final String shortDescr;
-	private List answers = new ArrayList();
+	private List<FDSurveyAnswer> answers = new ArrayList<FDSurveyAnswer>();
 	private final boolean multiselect;
 	private final boolean required;
 	private final boolean openEnded;
@@ -72,11 +70,11 @@ public class FDSurveyQuestion implements java.io.Serializable {
 		answers.add(answer);
 	}
 
-	public List getAnswers() {
+	public List<FDSurveyAnswer> getAnswers() {
 		return Collections.unmodifiableList(answers);
 	}
 	
-	public void setAnswers(List answers){
+	public void setAnswers(List<FDSurveyAnswer> answers){
 		this.answers = answers;
 	}
 	
@@ -122,7 +120,7 @@ public class FDSurveyQuestion implements java.io.Serializable {
 		return openEnded;
 	}
 	
-	public void sortAnswers(Comparator c){
+	public void sortAnswers(Comparator<FDSurveyAnswer> c){
 		Collections.sort(answers, c);
 	}
 	
@@ -130,38 +128,36 @@ public class FDSurveyQuestion implements java.io.Serializable {
 		this.sortAnswers(ANSWER_COMAPARATOR);
 	}
 	
-	public boolean isValidAnswer(String[] answer) {
-
-		if (this.required && answer.length==0) {
-			return false;
-		}
-		if (!this.multiselect && answer.length>1){
-			return false;
-		}
-		
-		//check to see if answer is an expected answer
-		if(!this.openEnded){
-			HashSet names = new HashSet();
-			for (Iterator i=this.answers.iterator(); i.hasNext(); ) {
-				names.add( ((FDSurveyAnswer)i.next()).getName() );
-			}
+        public boolean isValidAnswer(String[] answer) {
+    
+            if (this.required && answer.length == 0) {
+                return false;
+            }
+            if (!this.multiselect && answer.length > 1) {
+                return false;
+            }
+    
+            // check to see if answer is an expected answer
+            if (!this.openEnded) {
+                HashSet<String> names = new HashSet<String>();
+                for (FDSurveyAnswer i : this.answers) {
+                    names.add(i.getName());
+                }
+    
+                for (int i = 0; i < answer.length; i++) {
+                    if (!names.remove(answer[i])) {
+                        return false;
+                    }
+                }
+            }
+    
+            return true;
+    
+        }
 	
-			for (int i=0; i<answer.length; i++) {
-				if (!names.remove(answer[i])) {
-					return false;
-				}
-			}
-		}
-			
-		return true;
-		
-	}
-	
-	public final static Comparator ANSWER_COMAPARATOR = new Comparator() {
-		public int compare(Object obj1, Object obj2) {
-			FDSurveyAnswer an1 = (FDSurveyAnswer) obj1;
-			FDSurveyAnswer an2 = (FDSurveyAnswer) obj2;
-			return an1.getDescription().compareTo(an2.getDescription());
+	public final static Comparator<FDSurveyAnswer> ANSWER_COMAPARATOR = new Comparator<FDSurveyAnswer>() {
+		public int compare(FDSurveyAnswer obj1, FDSurveyAnswer obj2) {
+			return obj1.getDescription().compareTo(obj2.getDescription());
 		}
 	};
 
@@ -177,33 +173,30 @@ public class FDSurveyQuestion implements java.io.Serializable {
 		return viewDisplayType;
 	}
 	
-	public List getAnswerGroups() {
-		List answerGroup=new ArrayList();
-		List answers=getAnswers();
-		FDSurveyAnswer answer=null;
-		for(Iterator it=answers.iterator();it.hasNext();) {
-			answer=(FDSurveyAnswer)it.next();
-			if(answer.getGroup()!=null && !"".equals(answer.getGroup()) && !answerGroup.contains(answer.getGroup()))
-				answerGroup.add(answer.getGroup());
-		}
-		return answerGroup;
-	}
+        public List<String> getAnswerGroups() {
+            List<String> answerGroup = new ArrayList<String>();
+            List<FDSurveyAnswer> answers = getAnswers();
+            for (FDSurveyAnswer answer : answers) {
+                if (answer.getGroup() != null && !"".equals(answer.getGroup()) && !answerGroup.contains(answer.getGroup())) {
+                    answerGroup.add(answer.getGroup());
+                }
+            }
+            return answerGroup;
+        }
 	
-	public List getAnswersByGroup(String answerGroup) {
-		
-		if(answerGroup==null ||"".equals(answerGroup))
-			return new ArrayList();
-		List answers=getAnswers();
-		List filteredList=new ArrayList(2);
-		FDSurveyAnswer answer=null;
-		for(Iterator it=answers.iterator();it.hasNext();) {
-			answer=(FDSurveyAnswer)it.next();
-			if(answerGroup.equals(answer.getGroup()))
-				filteredList.add(answer);
-		}
-		return filteredList;
-		
-	}
+        public List<FDSurveyAnswer> getAnswersByGroup(String answerGroup) {
+            if (answerGroup == null || "".equals(answerGroup))
+                return new ArrayList<FDSurveyAnswer> ();
+            List<FDSurveyAnswer> answers = getAnswers();
+            List<FDSurveyAnswer> filteredList = new ArrayList<FDSurveyAnswer>(2);
+            for (FDSurveyAnswer answer : answers) {
+                if (answerGroup.equals(answer.getGroup())) {
+                    filteredList.add(answer);
+                }
+            }
+            return filteredList;
+        }
+	
 	public String getShortDescr() {
 		return (shortDescr==null ||"".equals(shortDescr))? description:shortDescr;
 	}
@@ -242,8 +235,7 @@ public class FDSurveyQuestion implements java.io.Serializable {
         StringBuilder s = new StringBuilder(surveyQuestion);
 
         int sequence = 1;
-        for (Iterator it = answers.iterator(); it.hasNext();) {
-            FDSurveyAnswer answer = (FDSurveyAnswer) it.next();
+        for (FDSurveyAnswer answer : answers) {
 
             String surveyAnswer = "insert into CUST.SURVEY_ANSWER (ID,NAME,DESCRIPTION,DATE_MODIFIED) values ("+toMaxSelect("SURVEY_ANSWER")+"," + escape(answer.getName()) + ','
                     + escape(answer.getDescription()) + ",SYSDATE);";
@@ -272,5 +264,20 @@ public class FDSurveyQuestion implements java.io.Serializable {
     private static String bool(boolean b) {
         return b ? "'Y'" : "'N'";
     }	
-	
+
+    public static FDSurveyQuestion radio(String name, String description) {
+        return new FDSurveyQuestion(name, description, "", false, false, false,false,false, false,EnumFormDisplayType.SINGLE_ANS_PER_ROW, null);
+    }
+    
+    public static FDSurveyQuestion pulldown(String name, String description) {
+        return new FDSurveyQuestion(name, description, "", false, false, false,false,true, false,EnumFormDisplayType.SINGLE_ANS_PER_ROW, null);
+    }
+
+    public static FDSurveyQuestion multi(String name, String description, EnumFormDisplayType type) {
+        return new FDSurveyQuestion(name, description, "", false, true, false, false, false, false, type, null);
+    }
+
+
+
+    
 }

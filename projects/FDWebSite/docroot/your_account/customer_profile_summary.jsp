@@ -139,10 +139,6 @@ response.setHeader("Cache-Control", "no-cache");
 						<img src=<%="/media_stat/images/profile/"+profileImagePath+".jpg"%>><br />
 					</td>
 				<%}%>
-					<td width="18">
-						<img src="/media_stat/images/template/youraccount/edit_profile.gif" width="15" height="15" border="0">
-					</td>
-					<td class="t11px bolded tLeft"><a href="/your_account/customer_profile.jsp">Edit my profile</a></td>
 				</tr>
 				<%if("".equals(profileImagePath)){%><tr><td colspan="2" style="padding-bottom:10px;"><img height="1" width="1" src="/media_stat/images/layout/clear.gif"/></td></tr><%}%>
 			</table>
@@ -218,15 +214,21 @@ response.setHeader("Cache-Control", "no-cache");
 	<!-- end center column -->
 	<!-- right column -->
 		<td class="padL20px vTop tLeft t11px">
-			<% if (user.isHomeUser() && user.isCorporateUser()) { %>
 		    <table id="profileSwitcher">
-		    	<tr>
-		    	 <td><a href="?serviceType=HOME">Home Profile</a></td>
-		    	 <td><a href="?serviceType=CORPORATE">Corporate Profile</a></td>
+		    	<tr class="t11px bolded tLeft">
+			<% if ((user.hasServiceBasedOnUserAddress(EnumServiceType.HOME) && user.hasServiceBasedOnUserAddress(EnumServiceType.CORPORATE)) || (request.getParameter("KRIKSZKRAKSZ")!=null)) { %>
+		    	 <td nowrap><% if (serviceType!=EnumServiceType.HOME) { %><a href="?serviceType=HOME">PERSONAL</a><% } else { %>PERSONAL<% } %></td>
+		    	 <td>|</td>
+		    	 <td nowrap><% if (serviceType!=EnumServiceType.CORPORATE) { %><a href="?serviceType=CORPORATE">CORPORATE</a><% } else { %>CORPORATE<% } %></td>
+		    <% } %>
+		       <td width="100%"></td>
+				 <td  nowrap>
+				 	<a href="/your_account/customer_profile.jsp">Edit my profile</a>
+				 </td>
+		    	 
 		    	</tr>
 		    </table>
 		    <img width="120" height="10" src="/media_stat/images/layout/clear.gif"/>
-		    <% } %>
 			<table cellpadding="0" cellspacing="0" border="0" width="100%">
 
 			<!-- header row -->

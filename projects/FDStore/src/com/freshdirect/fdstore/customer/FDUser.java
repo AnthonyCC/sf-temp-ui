@@ -32,6 +32,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
@@ -88,6 +89,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     private String depotCode;
 
     private Set availableServices = new HashSet();
+    private Collection<EnumServiceType> servicesBasedOnAddress;
     private EnumServiceType selectedServiceType = null;
     // for new COS customers
     private EnumServiceType userServiceType = null;
@@ -807,9 +809,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.availableServices = Collections.unmodifiableSet(availableServices);
 	}
 	
-	public boolean hasService(EnumServiceType type) {
-	    return type != null && availableServices.contains(type); 
-	}
+	@Override
+        public boolean hasServiceBasedOnUserAddress(EnumServiceType type) {
+            try {
+                return type != null && getUserServicesBasedOnAddresses().contains(type);
+            } catch (FDResourceException e) {
+                throw new FDRuntimeException(e);
+            }
+        }
 
 	public String getCustomerServiceContact() {
 		try {
@@ -1634,5 +1641,17 @@ public class FDUser extends ModelSupport implements FDUserI {
 	 public int getTotalRegularOrderCount() throws FDResourceException {
 	        return this.getOrderHistory().getTotalRegularOrderCount();
 	    }
+
+	 public Collection<EnumServiceType> getUserServicesBasedOnAddresses() throws FDResourceException {
+	     if (servicesBasedOnAddress==null) {
+	         ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(getIdentity().getErpCustomerPK());	     
+	         List<ErpAddressModel> shipToAddresses = erpCustomer.getShipToAddresses();
+	         servicesBasedOnAddress = new HashSet<EnumServiceType> ();
+	         for (ErpAddressModel m : shipToAddresses) {
+	             servicesBasedOnAddress.add(m.getServiceType());
+	         }
+	     }
+	     return servicesBasedOnAddress;
+	 }
 }
 

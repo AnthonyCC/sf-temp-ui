@@ -219,6 +219,8 @@ public class SurveyHtmlHelper {
 				return getGroupedSelection(question,previousAnswers);
 			}else if(EnumFormDisplayType.IMAGE_DISPLAY.equals(question.getFormDisplayType())) {
 				return getImageDisplay(question,previousAnswers);
+			} else {
+			    throw new RuntimeException("question: "+question.getName()+" form display:"+question.getFormDisplayType());
 			}
 		}
 		return response.toString();
