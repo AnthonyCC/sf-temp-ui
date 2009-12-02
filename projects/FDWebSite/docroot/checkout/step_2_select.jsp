@@ -3,6 +3,7 @@
 <%@ page import='com.freshdirect.customer.ErpAddressModel'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ page import='com.freshdirect.delivery.depot.*' %>
 <%@ page import="com.freshdirect.delivery.restriction.DlvRestrictionsList"%>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
@@ -308,8 +309,8 @@ if (errorMsg!=null) {%>
 	<%if(easterMealRestriction){%>
 	<tr valign="top">
 		<td colspan="2" class="text12">
-		<fd:IncludeMedia name='/media/editorial/holiday/easter/eastermeals_chkout_msg.htm'/>
-		</td>
+		<fd:IncludeMedia name='/media/editorial/holiday/easter/eastermeals_chkout_msg.htm'/> 
+		
 	</tr>
 	<%}%>
 
@@ -474,7 +475,14 @@ if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) {
 	<%}%>
 </TR>
 </TABLE>
+<%
+if(ClickToCallUtil.isBusinessHour()) {
+%>
+	<%@ include file="/checkout/includes/i_click2call_footer_text.jspf" %>
+<% } else { %>
 	<%@ include file="/checkout/includes/i_footer_text.jspf" %>
+<% } %>
+
 </FORM>
 </fd:CheckoutController>
 </tmpl:put>

@@ -3,6 +3,7 @@
 <%@ page import='java.text.MessageFormat' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
+<%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import="java.net.*"%>
@@ -174,7 +175,14 @@ if (errorMsg!=null) {%>
     <td width="35" align="right" valign="middle"><font class="space2pix"><br></font><input type="image" name="checkout_delivery_address_select" src="/media_stat/images/buttons/checkout_arrow.gif" width="29" height="29" border="0" alt="CONTINUE CHECKOUT" vspace="0"></td>
     </tr>
 </table>
-<%@ include file="/checkout/includes/i_footer_text.jspf" %>
+
+<%
+if(ClickToCallUtil.isBusinessHour()) {
+%>
+	<%@ include file="/checkout/includes/i_click2call_footer_text.jspf" %>
+<% } else { %>
+	<%@ include file="/checkout/includes/i_footer_text.jspf" %>
+<% } %>
 </form>
 </fd:CheckoutController>
 </tmpl:put>

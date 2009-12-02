@@ -209,6 +209,25 @@ public class FDStoreProperties {
 
 	private static final String CUT_OFF_TIME_SAT="fdstore.cut_off_day_7";
 
+	
+	// customer service hours properties
+
+	private static final String CUST_SERV_HOURS_SUN="fdstore.cust_serv_day_1";
+
+	private static final String CUST_SERV_HOURS_MON="fdstore.cust_serv_day_2";
+
+	private static final String CUST_SERV_HOURS_TUES="fdstore.cust_serv_day_3";
+
+	private static final String CUST_SERV_HOURS_WED="fdstore.cust_serv_day_4";
+
+	private static final String CUST_SERV_HOURS_THUS="fdstore.cust_serv_day_5";
+
+	private static final String CUST_SERV_HOURS_FRI="fdstore.cust_serv_day_6";
+
+	private static final String CUST_SERV_HOURS_SAT="fdstore.cust_serv_day_7";
+
+	
+	
 	private final static String SKU_AVAILABILITY_REFRESH_PERIOD = "fdstore.sku.availability.refresh";
 
 	private static long lastRefresh = 0;
@@ -330,6 +349,10 @@ public class FDStoreProperties {
 	
 	private static final String DYNAMIC_ROUTING_ENABLED = "fdstore.dynamicrouting.enabled";
 	
+	// iPhone non-customer email media path
+	private final static String PROP_MEDIA_IPHONE_TEMPLATE_PATH	= "fdstore.media.iphone.template.path"; //Location of different ftl template of iphone.
+	private final static String IPHONE_EMAIL_SUBJECT = "fdstore.media.iphone.email.subject";
+	
 	//Gift Cards
 	private static final String PROP_GIFT_CARD_SKU_CODE = "fdstore.giftcard.skucode";
 	private final static String PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH	= "fdstore.media.giftcard.template.path"; //Location of different ftl templates of giftcards.
@@ -414,7 +437,17 @@ public class FDStoreProperties {
 		defaults.put(CUT_OFF_TIME_THUS, "0-20");
 		defaults.put(CUT_OFF_TIME_FRI, "0-17");
 		defaults.put(CUT_OFF_TIME_SAT, "0-20");
-		defaults.put(CUT_OFF_TIME_SUN, "0-20");
+		
+		// customer service hours
+		
+		defaults.put(CUST_SERV_HOURS_SUN, "07:30-11:59");
+		defaults.put(CUST_SERV_HOURS_MON, "06:30-11:59");
+		defaults.put(CUST_SERV_HOURS_TUES, "06:30-11:59");
+		defaults.put(CUST_SERV_HOURS_WED, "06:30-11:59");
+		defaults.put(CUST_SERV_HOURS_THUS, "06:30-11:59");
+		defaults.put(CUST_SERV_HOURS_FRI, "06:30-23:00");
+		defaults.put(CUST_SERV_HOURS_SAT, "07:30-22:00");
+
 
 
 		defaults.put(PROP_AD_SERVER_PROFILE_ATTRIBS, "");
@@ -597,6 +630,9 @@ public class FDStoreProperties {
 		
 		defaults.put(DYNAMIC_ROUTING_ENABLED, "true");
 
+		// iphone 
+		defaults.put(PROP_MEDIA_IPHONE_TEMPLATE_PATH," /media/mobile/iphone/");
+		defaults.put(IPHONE_EMAIL_SUBJECT, "FreshDirect SmartPhone Shopping");
 		
 		// Gift Card
 		defaults.put(PROP_GC_ENABLED, "false");
@@ -1091,8 +1127,11 @@ public class FDStoreProperties {
 	public static String getCutOffTimeRange(int day) {
 		return get("fdstore.cut_off_day_"+day);
 	}
-
-
+	
+	// customer service hours
+	public static String getCustServHoursRange(int day) {
+		return get("fdstore.cust_serv_day_"+day);
+	}
 
 	public static boolean isNewGeocodeFormat() {
         return (new Boolean(get(PROP_GEOCODE_ISNEWFORMAT))).booleanValue();
@@ -1164,6 +1203,15 @@ public class FDStoreProperties {
 	    return get(TEMP_DIR);
 	}
 
+	// iphone email template non-customer 
+	public static String getMediaIPhoneTemplatePath() {
+		return get(PROP_MEDIA_IPHONE_TEMPLATE_PATH);
+	}
+	
+	public static String getIPhoneEmailSubject() {
+		return get(IPHONE_EMAIL_SUBJECT);
+	}
+	
 	// Gift Card
 	public static boolean isGiftCardEnabled() {
 		return Boolean.valueOf(get(PROP_GC_ENABLED)).booleanValue();
