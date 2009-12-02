@@ -1,22 +1,16 @@
 <%@ page import='com.freshdirect.delivery.model.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+<%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ page import='java.util.Calendar'%>
 
 
 <%
-Calendar calNow=Calendar.getInstance();
-		calNow.setTime(new java.util.Date());
-	    String hourRange=(String)FDStoreProperties.getCutOffTimeRange(calNow.get(Calendar.DAY_OF_WEEK));
-		String startHour=hourRange.substring(0,hourRange.indexOf('-'));
-		String endHour=hourRange.substring(hourRange.indexOf('-')+1,hourRange.length());
-		//System.out.println("startHour :"+startHour);
-		//System.out.println("endHour :"+endHour);
-%>
+	
 
-<% if (user.isChefsTable() && zoneCtActive ) { 
+if (user.isChefsTable() && zoneCtActive ) { 
 	%>
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-	<table cellspacing="0" cellpadding="0" border="0" width="695">
+		<table cellspacing="0" cellpadding="0" border="0" width="695">
 		<tr>
 			<td colspan="3" align="center"><br />
 			<%
@@ -43,35 +37,41 @@ Calendar calNow=Calendar.getInstance();
 		<tr>
 			<td colspan="3" align="center">
 			<%
-	    	if (!chefsTable) {
+	    	if (!chefsTable ) {
 	    		%> If the time you're looking for is full, click the button below
 					for Chef's Table preferred access.
 				<%	
 	    	} else {
             
             
-                if(calNow.get(Calendar.HOUR_OF_DAY)>=Integer.parseInt(startHour) && calNow.get(Calendar.HOUR_OF_DAY)<=Integer.parseInt(endHour))
-                {
-                    System.out.println("before cutoff");
-                    
-                %>
-                <fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre.html" />            
-                <%        
-                    
-                }else
-                {
-                    System.out.println("after cutoff");
-                %>
-                <fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" />                        
-                <%                            
-		        }            
-            }
+		       if(ClickToCallUtil.isBusinessHour())
+			{
+			%>
+				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre.html" />            
+			<%        
+
+			}else
+			{
+
+			%>
+				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" />                        
+			<%                            
+			}   
+           	}
     	   %>			
 			</td>
 		</tr>
 	</table>
 
 	<%
+} else {
+	if(ClickToCallUtil.isBusinessHour())
+        {
+		%>
+		<fd:IncludeMedia name="/media/editorial/site_pages/click_to_call/timeslot_note_click2call.html" />            
+		<%        
+                    
+        }
 }
 %>
 
