@@ -16,7 +16,7 @@ if (isSmall) width="630";
 		Or reach out to us at:  <%=user.getCustomerServiceContact()%> or <a href="mailto:<%=user.getCustomerServiceEmail()%> "><%=user.getCustomerServiceEmail()%> </a>
 		<br><br>
 		</font>
-		<img src="/media_stat/images/layout/ff9933.gif" width="380" height="1"><br><br>
+		<img src="/media_stat/images/layout/redB75959.gif" width="380" height="1"><br><br>
 		<font class="text12">
 		Service Hours:  Monday through Thursday 6:30 a.m. to Midnight, Friday from 6:30 a.m. to 11 p.m., <br>
 		Saturday from 7:30 a.m. to 8 p.m., and Sunday from 7:30 a.m. to Midnight.
