@@ -8,8 +8,11 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.util.ConfigurationUtil;
 import com.freshdirect.webapp.util.JspMethods;
@@ -37,7 +40,8 @@ public class ProductPriceTag extends BodyTagSupport {
 	
 	private static final String quickShopStyleWas = " style=\"font-weight: normal; color: gray;\"";			// normal, light grey
 	private static final String quickShopStyleScale = " style=\"line-height:16px; font-size: 13px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;\"";		// bold, red
-
+	
+	private final static Category LOGGER = LoggerFactory.getInstance("ProductPriceTag.java");
 	
 	private ProductImpression impression;
 	double savingsPercentage = 0 ; // savings % off
@@ -107,23 +111,32 @@ public class ProductPriceTag extends BodyTagSupport {
 		}
 
 		// display price
-		FDProductInfo productInfo = impression.getProductInfo();		
+		FDProductInfo productInfo = impression.getProductInfo();
+		//LOGGER.debug("productInfo: "+productInfo);		
 		
 		if ( productInfo != null ) {	
 			String priceString = impression.getProductModel().getPriceFormatted(savingsPercentage);
+			//LOGGER.debug("priceString: "+priceString);
 			
 			String scaleString = impression.getProductModel().getTieredPrice(savingsPercentage);
+			//LOGGER.debug("scaleString: "+scaleString);
 			
 			String wasString = impression.getProductModel().getWasPriceFormatted(savingsPercentage);
+			//LOGGER.debug("wasString: "+wasString);
+			
 			if (wasString != null)
 				wasString = "(was " + wasString + ")";
 
 			/* Display Sales Units price-Apple Pricing[AppDev-209].. */
 			String aboutPriceString = "";
 			String styleAbout = "";
+			//LOGGER.debug("styleAbout before aboutPriceString: |"+styleAbout+"|");
 			
 			try {
 				aboutPriceString = JspMethods.getAboutPriceForDisplay(productInfo);
+				//LOGGER.debug("showWasPrice: |"+showWasPrice+"|");
+				//LOGGER.debug("aboutPriceString: |"+aboutPriceString+"|");
+				
 				if(null != aboutPriceString && !"".equals(aboutPriceString)){
 					showRegularPrice = false; 
 					showWasPrice = false; 
@@ -135,9 +148,11 @@ public class ProductPriceTag extends BodyTagSupport {
 			} catch (JspException e) {
 			
 			}
+			//LOGGER.debug("styleAbout after aboutPriceString: |"+styleAbout+"|");
 			
 			// style for the real price depends on what kind of deals we have
-			String styleRegular;			
+			String styleRegular = "";
+			//LOGGER.debug("styleRegular before : |"+styleRegular+"|");			
 			if ( scaleString != null && !quickShop)
 				styleRegular = ( wasString != null ) ? styleRegularWithBoth : styleRegularWithScaled;
 			else if (!quickShop)
@@ -146,6 +161,8 @@ public class ProductPriceTag extends BodyTagSupport {
 				styleRegular = ( wasString != null ) ? quickShopStyleRegularWithBoth : quickShopStyleRegularWithScaled;
 			else 
 				styleRegular = ( wasString != null ) ? quickShopStyleRegularWithWas : quickShopStyleRegularOnly;
+
+			//LOGGER.debug("styleRegular after : |"+styleRegular+"|");	
 			
 						
 			// regular price
@@ -160,7 +177,7 @@ public class ProductPriceTag extends BodyTagSupport {
 			// scaled price
 			if ( scaleString != null && showScalePricing){
 				if(scaleString.indexOf(" or ") >= -1){
-					scaleString = scaleString.replaceFirst(" or ", "<br>or ");
+					scaleString = scaleString.replaceFirst(" or ", "<br />or ");
 				}
 				if(quickShop) {
 					buf.append(
@@ -197,14 +214,19 @@ public class ProductPriceTag extends BodyTagSupport {
 			//about price
 			if(showAboutPrice){
 				if(null != aboutPriceString && !"".equals(aboutPriceString)){
+					//check here if we have a was price - fix for Defect # 409
+					if (wasString!=null && wasString!="") { styleAbout = styleRegularWithWas; }
+					
 					buf.append(
-							"<div" + styleAbout + ">about<br>" + 
+							"<div" + styleAbout + ">about<br />" + 
 							aboutPriceString +
 							"</div>"
 					);
 				}
 			}
 		}
+
+		//LOGGER.debug("end of product price tag");		
 
 		buf.append( "</font>" );
 		
