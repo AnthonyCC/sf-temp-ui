@@ -47,7 +47,7 @@ if (user.isChefsTable() && zoneCtActive ) {
 		       if(ClickToCallUtil.isBusinessHour())
 			{
 			%>
-				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre.html" />            
+				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre_click2call.html" />            
 			<%        
 
 			}else
