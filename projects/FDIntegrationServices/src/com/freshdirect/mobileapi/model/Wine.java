@@ -10,6 +10,7 @@ import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.mobileapi.exception.ModelException;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.mobileapi.util.ProductUtil;
 import com.freshdirect.smartstore.Variant;
 
@@ -112,12 +113,12 @@ public class Wine extends Product {
         reviews.add(ProductUtil.readHtml(productNode.getWineReview2()));
         reviews.add(ProductUtil.readHtml(productNode.getWineReview3()));
 
-        wineTypeIcons.addAll(getIconPath(wineType, "/media/editorial/win_usq/icons/", ".gif"));
-        wineTypeIcons.addAll(getIconPath(ratings, "/media/editorial/win_usq/icons/", ".gif"));
+        wineTypeIcons.addAll(getIconPath(wineType, MobileApiProperties.getMediaPath()+"/media/editorial/win_usq/icons/", ".gif"));
+        wineTypeIcons.addAll(getIconPath(ratings, MobileApiProperties.getMediaPath()+"/media/editorial/win_usq/icons/", ".gif"));
 
-        ratingIcons.addAll(getIconPath(wineRating1, "/media/editorial/win_usq/icons/rating/", ".gif"));
-        ratingIcons.addAll(getIconPath(wineRating2, "/media/editorial/win_usq/icons/rating/", ".gif"));
-        ratingIcons.addAll(getIconPath(wineRating3, "/media/editorial/win_usq/icons/rating/", ".gif"));
+        ratingIcons.addAll(getIconPath(wineRating1, MobileApiProperties.getMediaPath()+"/media/editorial/win_usq/icons/rating/", ".gif"));
+        ratingIcons.addAll(getIconPath(wineRating2, MobileApiProperties.getMediaPath()+"/media/editorial/win_usq/icons/rating/", ".gif"));
+        ratingIcons.addAll(getIconPath(wineRating3, MobileApiProperties.getMediaPath()+"/media/editorial/win_usq/icons/rating/", ".gif"));
     }
 
     public String getWineCountry() {

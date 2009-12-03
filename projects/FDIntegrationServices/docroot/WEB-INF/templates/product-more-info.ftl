@@ -8,7 +8,7 @@
 
 	<div id="main">
 		<div id="header">
-			<img src="${mediaPath}${productImage.path}" class"productImage" />
+			<img src="${productImage.path}" class"productImage" />
 			<h1>${product.productTitle}</h1>
 
 <#if product.layout != "wine" >
@@ -24,21 +24,21 @@
 	</#if>
 	<#if moreInfo.kosherSymbol?has_content >
 			<div class="productIcons">
-				<img src="${mediaPath}${moreInfo.kosherSymbol.source}" />
+				<img src="${moreInfo.kosherSymbol.source}" />
 			</div>
 	</#if>
 <#else>
 	<#if product.wineTypeIcons?has_content >
 			<div class="productIcons">
 		<#list product.wineTypeIcons as wineTypeIcon>
-			<img src="${mediaPath}${wineTypeIcon}" />
+			<img src="${wineTypeIcon}" />
 		</#list>				
 			</div>
 	</#if>
 	<#if product.ratingIcons?has_content >	
 			<div class="productIcons">
 		<#list product.ratingIcons as ratingIcon>
-			<img src="${mediaPath}${rating}" />
+			<img src="${rating}" />
 		</#list>				
 			</div>
 	</#if>			
