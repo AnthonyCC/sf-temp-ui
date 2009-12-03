@@ -17,6 +17,10 @@ import java.util.StringTokenizer;
 import org.apache.lucene.analysis.LowerCaseTokenizer;
 import org.apache.lucene.analysis.PorterStemFilter;
 import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.tokenattributes.TermAttribute;
+
 
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.SearchQuery;
@@ -52,14 +56,13 @@ public class StemAnalyser extends QueryFrequencies {
 	public static Stemmer porterStemmer = new Stemmer() {
 		
 		public String getStem(String s) {
-			PorterStemFilter porterFilter = new PorterStemFilter(new LowerCaseTokenizer(new StringReader(s)));
-			
-			try {
-				Token t = porterFilter.next();
-				return t.termText();
-			} catch (Exception e) {
-				return s;
-			}
+		    TokenStream ts =  new PorterStemFilter(new ISOLatin1AccentFilter(new LowerCaseTokenizer(new StringReader(s))));
+		    try {
+		        ts.incrementToken();
+                        } catch (IOException e) {
+                            return LowerCase.stemToken(s);
+                        }
+		    return ts.getAttribute(TermAttribute.class).term();
 		}
 	};
 	
