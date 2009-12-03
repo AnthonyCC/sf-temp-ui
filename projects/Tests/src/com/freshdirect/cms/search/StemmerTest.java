@@ -27,8 +27,8 @@ public class StemmerTest extends TestCase {
 		
 		Set S = new HashSet();
 		
-		while((t = stream.next()) != null) {
-			String term = t.termText();
+		while(stream.incrementToken()) {
+			String term = ts.getAttribute(TermAttribute.class).term();
 			if ("x".equals(term)) {
 				S.clear();
 				continue;
