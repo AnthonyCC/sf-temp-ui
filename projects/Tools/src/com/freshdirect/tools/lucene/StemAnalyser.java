@@ -60,7 +60,7 @@ public class StemAnalyser extends QueryFrequencies {
 		    try {
 		        ts.incrementToken();
                         } catch (IOException e) {
-                            return LowerCase.stemToken(s);
+                            return s.toLowerCase();
                         }
 		    return ts.getAttribute(TermAttribute.class).term();
 		}
