@@ -23,6 +23,7 @@ import javax.ejb.ObjectNotFoundException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.customer.FDCustomerI;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.ProfileModel;
@@ -203,7 +204,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	}
 
 
-	public PrimaryKey ejbFindByUserId(String email) throws FinderException {
+	public PrimaryKey ejbFindByUserId(String email, EnumServiceType type) throws FinderException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -212,8 +213,12 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 			ps = conn.prepareStatement("SELECT F.ID FROM CUST.CUSTOMER C, CUST.FDCUSTOMER F WHERE C.USER_ID LIKE LOWER(?) AND F.ERP_CUSTOMER_ID = C.ID");
 			ps.setString(1, email);
 			rs = ps.executeQuery();
-			if (!rs.next()) {
+			if (!rs.next() && (null == type || !EnumServiceType.IPHONE.equals(type))) {
 				throw new ObjectNotFoundException("Unable to find FDCustomer with email " + email);
+			} else if(!rs.next() && null != type && EnumServiceType.IPHONE.equals(type) ) {
+				// this is expected behavior for non-customers visiting iphone app
+				// no need to throw ObjectNotFoundException, just return null to verify customer does not exist
+				return null;
 			}
 			return new PrimaryKey(rs.getString(1));
 		} catch (SQLException sqle) {
@@ -233,9 +238,13 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 				// eat it
 			}
 		}
-
 	}
 
+
+	public PrimaryKey ejbFindByUserId(String email) throws FinderException {
+		return ejbFindByUserId(email, null);
+
+	}
 
 	public PrimaryKey ejbFindByUserIdAndPasswordRequest(String email, String passReq) throws FinderException {
 		Connection conn = null;
@@ -456,20 +465,20 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.defaultPaymentMethodPK = pmPK;
 		this.setModified();
 	}
-	
+
 	public String getDefaultDepotLocationPK(){
 		return this.defaultDepotLocationPK;
 	}
-	
+
 	public void setDefaultDepotLocationPK(String locationId){
 		this.defaultDepotLocationPK = locationId;
 		this.setModified();
 	}
-	
+
 	public String getDepotCode(){
 		return this.depotCode;
 	}
-	
+
 	public void setDepotCode(String depotCode){
 		this.depotCode = depotCode;
 		this.setModified();

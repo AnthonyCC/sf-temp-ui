@@ -227,9 +227,10 @@
 		<checkoutLabeled dir="projects/listadmin"/>
 		<checkoutLabeled dir="projects/ocf-adm"/>
 		<checkoutLabeled dir="projects/RefAdmin"/>
-        	<checkoutLabeled dir="projects/MarketingAdmin"/>
-        	<checkoutLabeled dir="projects/TransportationAdmin"/>
-        	<checkoutLabeled dir="projects/RoutingServices"/>
+    <checkoutLabeled dir="projects/MarketingAdmin"/>
+    <checkoutLabeled dir="projects/TransportationAdmin"/>
+    <checkoutLabeled dir="projects/RoutingServices"/>
+		<checkoutLabeled dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->
 		<checkoutLabeled dir="applications"/>
 		<!--	<checkoutLabeled dir="release"/> -->
 	</target>
@@ -289,6 +290,7 @@
         	<checkoutLatest dir="projects/MarketingAdmin"/>
         	<checkoutLatest dir="projects/TransportationAdmin"/>
         	<checkoutLatest dir="projects/RoutingServices"/>
+		<checkoutLatest dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->        	
 		<checkoutLatest dir="applications"/>
 		<!--	<checkoutLatest dir="release"/> -->
 
@@ -334,7 +336,7 @@
 		-->
 	</target>
 
-	<target name="webapps" depends="fdwebsite,crm,erpsadmin,dlvadmin,rulesadmin,dlvconfirm,cms-tap,cms-gwt,listadmin-lib,listadmin,ocf-adm,refAdmin,mrktAdmin,transportAdmin" description="Build all WAR files">
+	<target name="webapps" depends="fdwebsite,crm,erpsadmin,dlvadmin,rulesadmin,dlvconfirm,cms-tap,cms-gwt,listadmin-lib,listadmin,ocf-adm,refAdmin,mrktAdmin,transportAdmin,fdintegrationservices" description="Build all WAR files">
 	</target>
 
 	<target name="all" depends="clean,prereq,build" description="Build everything, no checkout, no tests">
@@ -357,6 +359,7 @@
 		<mkdir dir="${work.dir}/FDStore" />
 		<mkdir dir="${work.dir}/DataLoader" />
 		<mkdir dir="${work.dir}/ERPSWebApp" />
+		<mkdir dir="${work.dir}/FDIntegrationServices"/> <!-- Added: Schematic rsung -->
 		<mkdir dir="${work.dir}/FDWebSite" />
 		<mkdir dir="${work.dir}/CRM" />
 		<mkdir dir="${work.dir}/RulesAdmin" />
@@ -2382,7 +2385,7 @@
 	</target>
 
 	<target name="ears" description="build all apps"
-		depends="backend-app,sap-app,storefront-app,crm-app,dlv-app,erps-app,cms-app,fdadmin-app">
+		depends="backend-app,sap-app,storefront-app,crm-app,dlv-app,erps-app,cms-app,fdadmin-app,fdintegrationservices-app">
 	</target>
 
 	<target name="media-checkout" >
@@ -2404,6 +2407,7 @@
 	</target>
 
 	<target name="client" description="build jar that combines all the classes needed to run a client of the system">
+		<mkdir dir="${release.dir}/applications" />
 		<jar destfile="${release.dir}/applications/FDClient.jar">
 			<!-- specify the manifest -->
             <manifest>
@@ -2660,4 +2664,144 @@
 			
 	</target>
 
+
+	<!-- FD Integration Services -->
+  <!-- Added: Schematic rsung  -->
+  <path id="fdintg.src.filter.ref">
+     <pathelement path="${projects.dir}/FDIntegrationServices/src" />
+     <pathelement path="${projects.dir}/FDIntegrationServices/test" />
+  </path>
+	<target name="fdintegrationservices" description="Build Transportation Admin" depends="erpswebapp,client">
+    <property name="fdintg.src.filter.ref" refid="fdintg.src.filter.ref"/>
+		<!-- directory for compiled stuff -->
+		<mkdir dir="${work.dir}/FDIntegrationServices/WEB-INF/classes" />
+
+		<!-- compile spring components -->
+		<path id="fdintegrationservices.classpath">
+			<path refid="j2ee.classpath"/>
+			<path refid="common.classpath"/>
+			<path refid="oracle.classpath"/>
+			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
+			<pathelement location="${release.dir}/applications/FDClient.jar"/>
+			<pathelement location="${thirdparty.home}/freemarker-2.3.15.jar"/>
+      <pathelement location="${thirdparty.home}/jackson-core-lgpl-1.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/jackson-mapper-lgpl-1.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/javawebparts-filter-1.2.jar"/>
+			<pathelement location="${thirdparty.home}/spring-2.5.jar"/>
+			<pathelement location="${thirdparty.home}/spring-webmvc.jar"/>
+      <pathelement location="${thirdparty.home}/javaee-api-5.jar"/>
+      <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
+      <pathelement location="${thirdparty.home}/commons-lang-2.3.jar"/>
+		</path>
+		<trycatch>
+			<try>
+				<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="info"/>
+				<tstamp>
+					<format property="compileStart" pattern="MM/dd/yyyy HH:mm" />
+				</tstamp>
+				<echo message="Started Compiling FDIntegration Services at:${compileStart}"/>
+				<javac srcdir="${fdintg.src.filter.ref}" destdir="${work.dir}/FDIntegrationServices/WEB-INF/classes"
+  			       deprecation="${javac.deprecation}"
+			         optimize="${javac.optimize}"
+			         debug="${javac.debug}"
+  			       source="${javac.source}">
+					<classpath>
+						<path refid="fdintegrationservices.classpath"/>
+					</classpath>
+				</javac>
+				<record name="${work.dir}/logs/log.txt" action="stop"/>
+			</try>
+			<catch>
+				<record name="${work.dir}/logs/log.txt" action="stop"/>
+				<!-- send email...compilation failed -->
+				<emailCompilationError projectName="FDIntegrationServices"/>
+				<fail/>
+			</catch>
+		</trycatch>
+		
+		<!-- copy non-java resources -->
+		<copy todir="${work.dir}/FDIntegrationServices/WEB-INF/classes">
+			<fileset dir="${projects.dir}/FDIntegrationServices/src" excludes="**/*.java"/>
+		</copy>
+
+		<!-- copy JSPs, html, etc... -->
+		<copy todir="${work.dir}/FDIntegrationServices/">
+			<fileset dir="${projects.dir}/FDIntegrationServices/docroot">
+			</fileset>
+		</copy>
+
+
+		<!-- copy dependent jar files -->
+  	<copy todir="${work.dir}/FDIntegrationServices/WEB-INF/lib">
+			
+			<fileset dir="${thirdparty.home}"           includes="freemarker-2.3.15.jar"/>
+      <fileset dir="${thirdparty.home}"            includes="jackson-core-lgpl-1.2.0.jar"/>
+			<fileset dir="${thirdparty.home}" includes="jackson-mapper-lgpl-1.2.0.jar"/>
+			<fileset dir="${thirdparty.home}" includes="javawebparts-filter-1.2.jar"/>
+			<fileset dir="${thirdparty.home}" includes="spring-2.5.jar"/>
+			<fileset dir="${thirdparty.home}" includes="spring-webmvc.jar"/>
+      <fileset dir="${thirdparty.home}" includes="javaee-api-5.jar"/>
+      <fileset dir="${thirdparty.home}" includes="oscache-2.4.1.jar"/>
+      <fileset dir="${thirdparty.home}" includes="commons-lang-2.3.jar"/>
+      <fileset dir="${thirdparty.home}" includes="urlrewrite-2.6.0.jar"/>
+		</copy>
+
+		<!-- create .war file -->
+		<jar destfile="${work.dir}/FDIntegrationServices.war">
+            <manifest>
+                <attribute name="Specification-Version" value="${build.counter}"/>
+                <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
+                <attribute name="Implementation-Title" value="FDIntegrationServices"/>
+                <attribute name="Implementation-Version" value="${build.counter}"/>
+                <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
+                <attribute name="Build-Id" value="${build.prefix}.${build.counter}"/>
+            </manifest>
+			<fileset dir="${work.dir}/FDIntegrationServices">
+			</fileset>
+		</jar>
+
+	</target>
+
+	<target name="fdintegrationservices-app"  description="EAR that contains all the code and resources for the fdintegrationservices)">
+		<makeFDAdminEar application="FDIntegrationServices">
+			<ejbs>
+				<include name="FDIntegrationServices.war"/>
+			</ejbs>
+			
+			<libraries>
+				<include name="Framework.jar"/>
+				<include name="Resources.jar"/>
+				<include name="ERPSWebApp.jar"/>
+				<include name="ERPServicesEJB-WL.jar"/>
+				<include name="DeliveryEJB-WL.jar"/>
+				<include name="FDStoreEJB-WL.jar"/>
+				<include name="FDStore.jar"/>
+				<include name="CMS.jar"/>
+				<include name="RoutingServices.jar"/>
+			</libraries>
+			<lib>
+				<include name="lcc.jar"/>
+				<include name="sapjco.jar"/>
+				<include name="oscache-2.4.1.jar"/>
+				<include name="struts.jar"/>
+				<include name="spring.jar"/>
+				<include name="standard.jar"/>
+				<include name="jstl.jar"/>				
+				<include name="poi-3.0-rc4-20070503.jar"/>
+				<include name="lucene-core-2.2.0.jar"/>
+				<include name="lucene-queries-2.2.0.jar"/>
+				<include name="lucene-spellchecker-2.2.0.jar"/>
+				<include name="opencsv-1.8.jar"/>
+				
+				<include name="commons-discovery-0.2.jar"/>
+				<include name="commons-logging-1.0.4.jar"/>
+								
+				<include name="JFEP-0.1.0.jar"/>
+				<include name="antlr-2.7.5H3.jar"/>
+
+				<include name="urlrewrite-2.6.0.jar"/>
+			</lib>
+		
+		</makeFDAdminEar>
+	</target>
 </project>

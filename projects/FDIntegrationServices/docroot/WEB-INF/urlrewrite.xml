@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 2.6//EN"
+        "http://tuckey.org/res/dtds/urlrewrite2.6.dtd">
+
+	<!--
+
+		Configuration file for UrlRewriteFilter http://tuckey.org/urlrewrite/
+	-->
+<urlrewrite>
+
+	<!--
+		disabled because it's conflicting with "/search/query/(.*)" <rule>
+		<from>/search/query/(.*)/page/(.*)/max/(.*)</from>
+		<to>/search.do?searchTerm=$1&amp;page=$2&amp;max=$3</to> </rule>
+	-->
+
+	<!-- Search Autocomplete -->
+	<rule>
+		<from>/search/autocomplete/(.*)</from>
+		<to>/search.do?action=autocomplete&amp;searchTerm=$1</to>
+	</rule>
+
+	<!-- Search -->
+	<rule>
+		<from>/search/query/(.*)</from>
+		<to>/search.do?searchTerm=$1</to>
+	</rule>
+
+	<!-- Search with payload -->
+	<rule>
+		<from>/search/</from>
+		<to>/search.do</to>
+	</rule>
+
+	<!-- View Product -->
+	<rule>
+		<from>/product/catid/(.*)/id/(.*)</from>
+		<to>/product.do?productId=$2&amp;categoryId=$1</to>
+	</rule>
+
+	<!-- View More Info -->
+	<rule>
+		<from>/product/moreinfo/catid/(.*)/id/(.*)</from>
+		<to>/product.do?productId=$2&amp;categoryId=$1&amp;action=moreInfo</to>
+	</rule>
+
+	<rule>
+		<from>/product/getprice/catid/(.*)/id/(.*)</from>
+		<to>/product.do?productId=$2&amp;categoryId=$1&amp;action=getprice</to>
+	</rule>
+
+	<!-- Login -->
+	<rule>
+		<from>/(.*)/login/$</from>
+		<to>/login.do?action=login</to>
+	</rule>
+
+	<!-- Cart : Apply Promo : Deprecated -->
+	<rule>
+		<from>/(.*)/cart/applypromo/</from>
+		<to>/cart.do?action=applypromo</to>
+	</rule>
+	<!-- Cart : Apply Promo : New and Improved -->
+	<rule>
+		<from>/(.*)/cart/promo/apply/(.*)$</from>
+		<to>/cart.do?action=applypromo&amp;promoId=$2</to>
+	</rule>
+
+	<!-- Cart : Remove Promo : Deprecated -->
+	<rule>
+		<from>/(.*)/cart/removepromo/</from>
+		<to>/cart.do?action=removepromo</to>
+	</rule>
+	<!-- Cart : Remove Promo : New and Improved -->
+	<rule>
+		<from>/(.*)/cart/promo/remove/(.*)$</from>
+		<to>/cart.do?action=removepromo&amp;promoId=$2</to>
+	</rule>
+
+	<!-- Cart : Add Item -->
+	<rule>
+		<from>/(.*)/cart/add/</from>
+		<to>/cart.do?action=additem</to>
+	</rule>
+
+	<!-- Cart : Add Multiple Items -->
+	<rule>
+		<from>/(.*)/cart/addmultiple/</from>
+		<to>/cart.do?action=addmultipleitems</to>
+	</rule>
+
+	<!-- Cart : Update Item -->
+	<rule>
+		<from>/(.*)/cart/update/</from>
+		<to>/cart.do?action=updateitem</to>
+	</rule>
+
+	<!-- Cart : Remove an Item : Deprecated -->
+	<rule>
+		<from>/(.*)/cart/removeitem/</from>
+		<to>/cart.do?action=removeitem</to>
+	</rule>
+	<!-- Cart : Remove an Item : New -->
+	<rule>
+		<from>/(.*)/cart/remove/(.*)$</from>
+		<to>/cart.do?action=removeitem&amp;cartLineId=$2</to>
+	</rule>
+	<!-- Cart : Remove all items -->
+	<rule>
+		<from>/(.*)/cart/removeallitems/</from>
+		<to>/cart.do?action=removeallitems</to>
+	</rule>
+
+	<!-- Cart : Get Items -->
+	<rule>
+		<from>/(.*)/cart/getdetail/</from>
+		<to>/cart.do?action=getcartdetail</to>
+	</rule>
+
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Get Delivery Addresses -->
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<rule>
+		<from>/(.*)/checkout/init/$</from>
+		<to>/checkout.do?action=initcheckout</to>
+	</rule>
+
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Get Delivery Addresses -->
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Deprecated -->
+	<rule>
+		<from>/(.*)/deliveryaddresses/getall/</from>
+		<to>/checkout.do?action=getdeliveryaddresses</to>
+	</rule>
+	<!-- New -->
+	<rule>
+		<from>/(.*)/checkout/deliveryaddresses/getall/$</from>
+		<to>/checkout.do?action=getdeliveryaddresses</to>
+	</rule>
+
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Set Delivery Address -->
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Deprecated -->
+	<rule>
+		<from>/(.*)/deliveryaddresses/set/</from>
+		<to>/checkout.do?action=setdeliveryaddress</to>
+	</rule>
+	<!-- New -->
+	<rule>
+		<from>/(.*)/checkout/deliveryaddresses/set/$</from>
+		<to>/checkout.do?action=setdeliveryaddress</to>
+	</rule>
+
+
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Set Delivery Slot -->
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Deprecated -->
+	<rule>
+		<from>/(.*)/deliverytimeslot/reserve/$</from>
+		<to>/checkout.do?action=reservetimeslot</to>
+	</rule>
+	<!-- New -->
+	<rule>
+		<from>/(.*)/checkout/deliverytimeslot/reserve/(.*)/$</from>
+		<to>/checkout.do?action=reservetimeslot&amp;slotId=$2</to>
+	</rule>
+	<!-- Deprecated -->
+	<rule>
+		<from>/(.*)/deliverytimeslot/reserve/(.*)$</from>
+		<to>/checkout.do?action=reservetimeslot&amp;slotId=$2</to>
+	</rule>
+
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Get Payment Methods -->
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Deprecated-->
+	<rule>
+		<from>/(.*)/paymentmethods/getall/</from>
+		<to>/checkout.do?action=getpaymentmethods</to>
+	</rule>
+	<!-- New -->
+	<rule>
+		<from>/(.*)/checkout/paymentmethod/getall/</from>
+		<to>/checkout.do?action=getpaymentmethods</to>
+	</rule>
+
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Set Payment Methods -->
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Deprecated -->
+	<rule>
+		<from>/(.*)/paymentmethod/set/</from>
+		<to>/checkout.do?action=setpaymentmethod</to>
+	</rule>
+	<!-- New -->
+	<rule>
+		<from>/(.*)/checkout/paymentmethod/set/</from>
+		<to>/checkout.do?action=setpaymentmethod</to>
+	</rule>
+
+	<!-- Submit Order -->
+	<rule>
+		<from>/(.*)/checkout/ordersubmit/</from>
+		<to>/checkout.do?action=submitorder</to>
+	</rule>
+
+	<!-- Order Detail -->
+	<rule>
+		<from>/(.*)/checkout/orderdetail/</from>
+		<to>/checkout.do?action=revieworderdetail</to>
+	</rule>
+
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- ATP Error Detail -->
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Deprecated -->
+	<rule>
+		<from>/(.*)/atp/error/</from>
+		<to>/checkout.do?action=getatperrordetail</to>
+	</rule>
+	<!-- New -->
+	<rule>
+		<from>/(.*)/checkout/atp/error/</from>
+		<to>/checkout.do?action=getatperrordetail</to>
+	</rule>
+
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- ATP Remove Items -->
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Deprecated -->
+	<rule>
+		<from>/(.*)/atp/removeitems/</from>
+		<to>/checkout.do?action=removeunavailableitems</to>
+	</rule>
+	<!-- New -->
+	<rule>
+		<from>/(.*)/checkout/atp/removeitems/</from>
+		<to>/checkout.do?action=removeunavailableitems</to>
+	</rule>
+
+	<!-- Verify Age for Alcohol Purchase -->
+	<rule>
+		<from>/(.*)/alcohol/verifyage/</from>
+		<to>/checkout.do?action=alcoholageverify</to>
+	</rule>
+
+	<!-- Remove all alcohol items from cart -->
+	<rule>
+		<from>/(.*)/alcohol/removefromcart/</from>
+		<to>/cart.do?action=removealcoholfromcart</to>
+	</rule>
+
+	<!-- Get previous order detail : Deprecated -->
+	<rule>
+		<from>/(.*)/order/detail/</from>
+		<to>/order.do?action=getorderdetail</to>
+	</rule>
+	<!-- Get previous order detail : New -->
+	<rule>
+		<from>/(.*)/order/(.*)/detail$</from>
+		<to>/order.do?action=getorderdetail&amp;orderId=$2</to>
+	</rule>
+
+	<!-- Cancel pending order -->
+	<rule>
+		<from>/(.*)/order/(.*)/cancel$</from>
+		<to>/order.do?action=cancelorder&amp;orderId=$2</to>
+	</rule>
+
+	<!-- Order history for Quick Shop -->
+	<rule>
+		<from>/(.*)/orders/quickshop/</from>
+		<to>/order.do?action=getquickshoporders</to>
+	</rule>
+
+
+	<!-- Modify Order -->
+	<rule>
+		<from>/(.*)/order/(.*)/modify$</from>
+		<to>/order.do?action=modifyorder&amp;orderId=$2</to>
+	</rule>
+
+	<!-- Cancel Order Modify -->
+	<rule>
+		<from>/(.*)/order/cancelmodify/</from>
+		<to>/order.do?action=cancelmodify</to>
+	</rule>
+
+	<!-- Logout -->
+	<rule>
+		<from>/(.*)/logout/</from>
+		<to>/login.do?action=logout</to>
+	</rule>
+
+	<!-- Ping -->
+	<rule>
+		<from>/(.*)/ping/</from>
+		<to>/login.do?action=ping</to>
+	</rule>
+
+	<!-- Refresh -->
+	<rule>
+		<from>/(.*)/login/refresh/</from>
+		<to>/login.do?action=ping</to>
+	</rule>
+
+	<!-- QuickShop from Previous Order -->
+	<rule>
+		<from>/(.*)/order/id/(.*)/quickshop/</from>
+		<to>/order.do?orderId=$2&amp;action=quickshop</to>
+	</rule>
+
+	<!-- List Shopping lists -->
+	<rule>
+		<from>/(.*)/shoppinglists/</from>
+		<to>/shoppinglist.do?action=getshoppinglists</to>
+	</rule>
+
+	<!-- List Shopping lists -->
+	<rule>
+		<from>/(.*)/shoppinglist/id/(.*)/quickshop/</from>
+		<to>/shoppinglist.do?cclId=$2&amp;action=quickshop</to>
+	</rule>
+
+	<rule>
+		<from>/(.*)/cart/removemultipleitems/</from>
+		<to>/cart.do?action=removemultipleitems</to>
+	</rule>
+
+	<!-- Smart Store -->
+	<rule>
+		<from>/(.*)/smartstore/youmightalsolike/</from>
+		<to>/smartstore.do?action=getymal</to>
+	</rule>
+	<rule>
+		<from>/(.*)/smartstore/favorite/$</from>
+		<to>/smartstore.do?action=favorite</to>
+	</rule>
+	<rule>
+		<from>/(.*)/smartstore/yourfavorite/more/$</from>
+		<to>/smartstore.do?action=getyourfavorite&amp;page=next</to>
+	</rule>
+	<rule>
+		<from>/(.*)/smartstore/yourfavorite/$</from>
+		<to>/smartstore.do?action=getyourfavorite</to>
+	</rule>
+	<rule>
+		<from>/(.*)/smartstore/fdfavorite/$</from>
+		<to>/smartstore.do?action=getfdfavorite</to>
+	</rule>
+	<rule>
+		<from>/(.*)/smartstore/fdfavorite/more/$</from>
+		<to>/smartstore.do?action=getfdfavorite&amp;page=next</to>
+	</rule>
+
+	<!-- Contact Us : Get -->
+	<rule>
+		<from>/(.*)/contactus/get/</from>
+		<to>/contactus.do?action=getformdata</to>
+	</rule>
+	<!-- Contact Us : Post -->
+	<rule>
+		<from>/(.*)/contactus/send/</from>
+		<to>/contactus.do?action=submit</to>
+	</rule>
+
+	<!-- What's Good - Presidents Pick-->
+	<rule>
+		<from>/product/presidentspick/</from>
+		<to>/product.do?action=wsgpresidentspick</to>
+	</rule>
+
+	<!-- What's Good - Butcher's Block-->
+	<rule>
+		<from>/product/butchersblock/</from>
+		<to>/product.do?action=wsgbutchers</to>
+	</rule>
+
+	<!-- What's Good - Brand-Name Deals-->
+	<rule>
+		<from>/product/brandnamedeals/</from>
+		<to>/product.do?action=wsgdeals</to>
+	</rule>
+
+	<!-- What's Good - Brand-Name Deals-->
+	<rule>
+		<from>/product/peakproduce/</from>
+		<to>/product.do?action=wsgproduce</to>
+	</rule>
+
+	<!-- Delivery Info : Get Delivery Addresses -->
+	<rule>
+		<from>/(.*)/account/addresses/</from>
+		<to>/account.do?action=getaddresses</to>
+	</rule>
+	<!-- Delivery Info : Get Timeslots -->
+	<rule>
+		<from>/(.*)/account/timeslots$</from>
+		<to>/account.do?action=gettimeslots</to>
+	</rule>
+	<!-- Delivery Info : Cancel Reservation -->
+	<rule>
+		<from>/(.*)/account/timeslots/cancel$</from>
+		<to>/account.do?action=cancelreservation</to>
+	</rule>
+	<!-- Delivery Info : Reserve Timeslot -->
+	<rule>
+		<from>/(.*)/account/timeslots/reserve$</from>
+		<to>/account.do?action=reservetimeslot</to>
+	</rule>
+	<!-- Delivery Info : Get Timeslots -->
+	<rule>
+		<from>/(.*)/account/timeslots/(.*)$</from>
+		<to>/account.do?action=gettimeslots&amp;addressId=$2</to>
+	</rule>
+
+	<!-- Order history for all order -->
+	<rule>
+		<from>/(.*)/account/orders/</from>
+		<to>/account.do?action=getorders</to>
+	</rule>
+
+	<!-- Email capture -->
+	<rule>
+		<from>/emailcapture/(.*)</from>
+		<to>/emailcapture.do?email=$1</to>
+	</rule>
+
+	<!-- config -->
+	<rule>
+		<from>/configvalue/(.*)</from>
+		<to>/configvalue.do?key=$1</to>
+	</rule>
+
+	<!-- Help -->
+	<rule>
+		<from>/help/(.*)</from>
+		<to>/help.do?action=$1</to>
+	</rule>
+
+	<!-- Test -->
+	<rule>
+		<from>^/test/$</from>
+		<to>/test.do</to>
+	</rule>
+
+</urlrewrite>
+

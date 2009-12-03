@@ -135,9 +135,18 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 		String app = (String) session.getAttribute(SessionName.APPLICATION);
 		EnumTransactionSource src = EnumTransactionSource.WEBSITE;
-		if (app!=null && "callcenter".equalsIgnoreCase(app)) {
-			src = EnumTransactionSource.CUSTOMER_REP;
-		}
+    //Rsung(Schematic): Adding new application type detection. no longer binary (web or csr) 
+    //
+    //              if (app!=null && "callcenter".equalsIgnoreCase(app)) {
+    //                      src = EnumTransactionSource.CUSTOMER_REP;
+    //              }
+    if (app != null) {
+        if ("callcenter".equalsIgnoreCase(app)) {
+            src = EnumTransactionSource.CUSTOMER_REP;
+        } else if (EnumTransactionSource.IPHONE_WEBSITE.getCode().equals(app)) {
+            src = EnumTransactionSource.IPHONE_WEBSITE;
+        } //else get defaulted to website
+    }
 		this.user.setApplication(src);
 
         lastCartSaveTime = System.currentTimeMillis();

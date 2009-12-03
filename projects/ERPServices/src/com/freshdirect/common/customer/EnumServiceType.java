@@ -3,7 +3,7 @@ package com.freshdirect.common.customer;
 
 public enum EnumServiceType {
 
-    HOME, CORPORATE, DEPOT, PICKUP, WEB;
+    HOME, CORPORATE, DEPOT, PICKUP, WEB, IPHONE;
 
     public String getName() {
         return name();

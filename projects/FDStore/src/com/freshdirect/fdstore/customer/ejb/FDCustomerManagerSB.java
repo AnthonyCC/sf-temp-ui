@@ -676,6 +676,8 @@ public interface FDCustomerManagerSB extends EJBObject {
     
     public double getOutStandingBalance(ErpAbstractOrderModel order) throws FDResourceException, RemoteException;
     
+    public boolean iPhoneCaptureEmail(String emailId) throws FDResourceException, RemoteException;
+
     public void doEmail(FTLEmailI email) throws RemoteException, FDResourceException;
     
     public void preAuthorizeSales(String salesId) throws RemoteException, FDResourceException;

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="baseController" class="com.freshdirect.mobileapi.controller.BaseController"
+		init-method="init" abstract="true">
+		<property name="file" value="classpath:config.json" />
+	</bean>
+
+	<bean id="loginController" class="com.freshdirect.mobileapi.controller.LoginController"
+		parent="baseController" />
+
+	<bean id="searchController" class="com.freshdirect.mobileapi.controller.SearchController"
+		parent="baseController" />
+
+	<bean id="productController" class="com.freshdirect.mobileapi.controller.ProductController"
+		parent="baseController" />
+
+	<bean id="cartController" class="com.freshdirect.mobileapi.controller.CartController"
+		parent="baseController" />
+
+	<bean id="checkoutController" class="com.freshdirect.mobileapi.controller.CheckoutController"
+		parent="baseController" />
+
+	<bean id="orderController" class="com.freshdirect.mobileapi.controller.OrderController"
+		parent="baseController" />
+
+	<bean id="shoppingListController"
+		class="com.freshdirect.mobileapi.controller.CustomerCreatedListController"
+		parent="baseController" />
+
+	<bean id="smartStoreController"
+		class="com.freshdirect.mobileapi.controller.SmartStoreController"
+		parent="baseController" />
+
+	<bean id="contactUsController"
+		class="com.freshdirect.mobileapi.controller.ContactUsController"
+		parent="baseController" />
+
+	<bean id="accountController" class="com.freshdirect.mobileapi.controller.AccountController"
+		parent="baseController" />
+
+	<bean id="emailCaptureController"
+		class="com.freshdirect.mobileapi.controller.EmailCaptureController"
+		parent="baseController" />
+
+	<bean id="configurationController"
+		class="com.freshdirect.mobileapi.controller.ConfigurationController"
+		parent="baseController" />
+
+	<bean id="testController" class="com.freshdirect.mobileapi.controller.TestController" />
+
+	<bean id="helpController" class="com.freshdirect.mobileapi.controller.HelpController">
+		<property name="contactUsFile" value="classpath:customer_service_hours.json" />
+		<property name="helpFile" value="classpath:help.json" />
+		<property name="learnMorePromoFile" value="classpath:learn_more_promo.json" />
+	</bean>
+
+
+	<bean id="urlMapping"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/shoppinglist.do">shoppingListController</prop>
+				<prop key="/checkout.do">checkoutController</prop>
+				<prop key="/order.do">orderController</prop>
+				<prop key="/cart.do">cartController</prop>
+				<prop key="/search.do">searchController</prop>
+				<prop key="/product.do">productController</prop>
+				<prop key="/login.do">loginController</prop>
+				<prop key="/smartstore.do">smartStoreController</prop>
+				<prop key="/account.do">accountController</prop>
+				<prop key="/contactus.do">contactUsController</prop>
+				<prop key="/emailcapture.do">emailCaptureController</prop>
+				<prop key="/configvalue.do">configurationController</prop>
+				<prop key="/test.do">testController</prop>
+				<prop key="/help.do">helpController</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="actionResolver"
+		class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver">
+		<property name="paramName">
+			<value>action</value>
+		</property>
+		<property name="defaultMethodName" value="list" />
+	</bean>
+	<!--
+
+		View resolvers can also be configured with ResourceBundles or XML
+		files. If you need different view resolving based on Locale, you have
+		to use the resource bundle resolver.
+	-->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="cache" value="true" />
+		<property name="prefix" value="" />
+		<property name="suffix" value=".ftl" />
+		<!--
+			if you want to use the Spring FreeMarker macros, set this property to
+			true
+		-->
+		<property name="exposeSpringMacroHelpers" value="true" />
+		<property name="exposeSessionAttributes" value="true" />
+	</bean>
+
+	<bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/templates/" />
+		<property name="freemarkerVariables">
+			<map>
+				<entry key="xml_escape" value-ref="fmXmlEscape" />
+			</map>
+		</property>
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="number_format">0.######</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
+</beans>

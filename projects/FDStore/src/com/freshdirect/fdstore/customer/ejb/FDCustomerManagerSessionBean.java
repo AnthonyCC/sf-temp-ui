@@ -189,6 +189,8 @@ import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.giftcard.ejb.GiftCardPersistanceDAO;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.mail.EmailUtil;
+import com.freshdirect.mail.ErpEmailFactory;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -4865,6 +4867,43 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			} catch(FinderException fe){
 				throw new FDResourceException(fe);
 			}
+		}
+
+		/**
+		 * Captures email address from non-customer visiting iphone app
+		 * @param emailId
+		 * @return
+		 * @throws FDResourceException
+		 */
+		public boolean iPhoneCaptureEmail(String emailId) throws FDResourceException {
+
+			if(null == emailId || "".equals(emailId)) {
+				return false;
+			}
+
+			try {
+				// Check if email format is correct. @ with . domain
+				if(!EmailUtil.isValidEmailAddress(emailId.trim())) {
+					return false;
+				}
+				//	Check if email already exists in customer base
+				FDCustomerEB custEB = getFdCustomerHome().findByUserId(emailId, EnumServiceType.IPHONE);
+				if(custEB != null) {
+					return false;
+				}
+
+				//  If unknown email, save it in dlv.zonenotification table
+				FDDeliveryManager.getInstance().saveFutureZoneNotification(emailId, "iphone", EnumServiceType.IPHONE);
+
+				//	Send notification email with content managed in CMS.
+				this.doEmail(ErpEmailFactory.getInstance().createIPhoneEmail(emailId));
+			}
+			catch (RemoteException re) {
+				throw new FDResourceException(re);
+			}catch (FinderException fe) {
+				throw new FDResourceException(fe);
+			}
+			return true; //success
 		}
 
 		

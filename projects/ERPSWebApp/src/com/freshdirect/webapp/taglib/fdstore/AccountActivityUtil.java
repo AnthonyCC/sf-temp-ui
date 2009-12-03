@@ -29,6 +29,10 @@ public class AccountActivityUtil implements SessionName {
 				initiator = ccUser.getId();
 			}
 
+                } else if (app != null && app.equalsIgnoreCase(EnumTransactionSource.IPHONE_WEBSITE.getCode())) { 
+                    src = EnumTransactionSource.IPHONE_WEBSITE;
+                    agent = null;
+                    initiator = "CUSTOMER";                    
 		} else {
 			src = EnumTransactionSource.WEBSITE;
 			agent = null;

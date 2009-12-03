@@ -1,0 +1,16 @@
+{
+    "cartLineId" : "1234567890",
+	"productConfiguration" : {
+		"product" : { 
+			"id" : "bstk_rbeye_bnls", 
+			"categoryId" : "bgril", 
+			"sku" : {
+				"code" : "MEA0004675" 
+			}
+		},
+		"quantity" : "1",
+		"salesUnit" : "E04",
+		"options" : { "C_MT_BF_MAR" : "N" , "C_MT_BF_PAK" : "VP" } 
+	}
+}
+	

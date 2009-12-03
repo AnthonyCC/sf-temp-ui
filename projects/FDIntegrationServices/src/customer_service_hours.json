@@ -1,0 +1,16 @@
+{
+	"customerServiceHours" : [ 
+		{
+			"Monday-Thursday" : "6:30 AM to 12 AM"
+		},
+		{
+			"Friday" : "6:30 AM to 11 PM"
+		},
+		{
+			"Saturday" : "7:30 AM to 8 PM"
+		},
+		{
+			"Sunday" : "7:30 AM to 12 AM"
+		}
+	]
+}

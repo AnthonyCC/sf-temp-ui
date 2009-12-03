@@ -18,6 +18,7 @@ public class ErpEmailFactory  {
 	public static final String GENERAL_LABEL = "FreshDirect";
 	public static final SimpleDateFormat df = new SimpleDateFormat("EEEE, MMM d yyyy");
 	public static final String GC_FTL_TEMPLATE_NAME = "email_template.ftl";
+	public static final String IPHONE_FTL_TEMPLATE_NAME = "email_promo_template.ftl";
 	
 	private static ErpEmailFactory _sharedInstance = new ErpEmailFactory(); 
 	
@@ -50,6 +51,26 @@ public class ErpEmailFactory  {
 		}
 	}
 	
+
+
+	/**
+	 * Creating Email using FreeMarker Templates(FTL), for iPhone module.
+	 * @param String emailId
+	 * @return
+	 */
+	public FTLEmailI createIPhoneEmail(String emailId) {
+
+		String iPhoneMediaPath = FDStoreProperties.getMediaIPhoneTemplatePath();//&& !"".equalsIgnoreCase(FDStoreProperties.getMediaGiftCardTemplatePath()))?FDStoreProperties.getMediaGiftCardTemplatePath():"media/editorial/giftcards/");
+		String ftlPath = FDStoreProperties.getMediaIPhoneTemplatePath()+"/"+IPHONE_FTL_TEMPLATE_NAME;
+		FDFtlEmail email = new FDFtlEmail();
+		email.setFromAddress(new EmailAddress("FreshDirect", "service@freshdirect.com"));
+		email.getParameters().put(MailName.IPHONE_FTL_PATH, ftlPath);
+		email.getParameters().put("iPhoneMediaRoot", iPhoneMediaPath);
+		email.setSubject(FDStoreProperties.getIPhoneEmailSubject());
+		return email;
+	}
+
+
 	/**
 	 * Creating Email using FreeMarker Templates(FTL), for GiftCards module.
 	 * @param giftCardInfo

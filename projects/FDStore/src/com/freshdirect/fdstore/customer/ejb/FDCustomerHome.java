@@ -12,6 +12,7 @@ package com.freshdirect.fdstore.customer.ejb;
 import java.rmi.RemoteException;
 import javax.ejb.*;
 
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.framework.core.*;
 
 /**
@@ -33,6 +34,8 @@ public interface FDCustomerHome extends EJBHome {
 	public FDCustomerEB findByCookie(String cookie) throws FinderException, RemoteException;
 
 	public FDCustomerEB findByUserId(String email) throws FinderException, RemoteException;
+
+	public FDCustomerEB findByUserId(String email, EnumServiceType type) throws FinderException, RemoteException;
 
 	public FDCustomerEB findByUserIdAndPasswordRequest(String email, String passReq) throws FinderException, RemoteException;
 
