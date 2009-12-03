@@ -132,8 +132,9 @@ function loadStuff() {
   	$("#payload").val('');
   	$("#result").val("");  	
   } else if (loaddata == "Search") {
-  	$("#url").val("/mobileapi/search/query/coffee");
-  	$("#payload").val("");
+  	$("#url").val("/mobileapi/search/");
+	var postdata = '{"query": "coffee", "page" : "1"}';
+  	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "SearchSort") {
   	$("#url").val("/mobileapi/search/");
