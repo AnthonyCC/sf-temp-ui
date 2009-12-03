@@ -322,10 +322,12 @@
                 // burst related stuff ->
                 
                 int deal = (product == null) ? 0 : product.getHighestDealPercentage();
-                
+                ProductLabeling prodLabel = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), product);
+				
 				col1.append("<div style=\"position: absolute; top: 0px; left: 0px\">\n");
                 
-				String burstImage = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : clearImage;
+				String burstImage = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : prodLabel.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif"):prodLabel.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif"):clearImage;
+
 				col1.append("<img name=\"" + burstImgName + "\" src=\"" + burstImage + "\" width=\"35px\" height=\"35px\" style=\"border: 0; " + ( deal > 0 ? "" : "display: none;" ) + "\">");                
                 
                 col1.append( "</div>" );                
@@ -426,7 +428,10 @@
                 // burst related stuff ->
                 
 				int deal = product.getHighestDealPercentage();				
-				String burstUrl = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : clearImage;
+				ProductLabeling prdLbl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), product);
+				
+				String burstUrl = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : prdLbl.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif"):prdLbl.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif"): clearImage;
+
 				appendColumn.append( "swapImageAndBurst(\"" + imgName + "\",\"" + ((Image)product.getCategoryImage()).getPath() + "\"," + imgS + ",\"" + 
 						(deal > 0) + "\",\"" + burstImgName  + "\",\"" + burstUrl + "\"" + ")" );
 				
