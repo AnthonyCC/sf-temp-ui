@@ -8,7 +8,7 @@
 
 	<div id="main">
 		<div id="header">
-			<img src="${productImage.path}" class"productImage" />
+			<img src="${mediaPath}${productImage.path}" class"productImage" width="320" />
 			<h1>${product.productTitle}</h1>
 
 <#if product.layout != "wine" >
@@ -49,7 +49,7 @@
 	
 		<div class="detail">
 		<p>
-			${moreInfo.description}</p>
+			${moreInfo.description?replace("\"/media","\"http://www.freshdirect.com/media")}}</p>
 		<#if product.platter >
 			<p class="warning">
 				<b>Cancellation Notice</b><br/>
@@ -148,14 +148,14 @@
 		<#if product.partiallyFrozen?has_content>
 		<div class="detail">
 			<h3>May Arrive Frozen</h3>
-			<p>${product.partiallyFrozen}</p>
+			<p>${product.partiallyFrozen?replace("\"/media","\"http://www.freshdirect.com/media")}}</p>
 		</div>
 		</#if>
 		</#if>
 		<#if moreInfo.heatingInstructions?has_content >
 		<div class="detail">
 			<h3>Heating Instructions</h3>
-			<p>${moreInfo.heatingInstructions}</p>
+			<p>${moreInfo.heatingInstructions?replace("\"/media","\"http://www.freshdirect.com/media")}</p>
 		</div>
 		</#if>
 	
