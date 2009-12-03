@@ -32,6 +32,7 @@ import com.freshdirect.mobileapi.model.Sku;
 import com.freshdirect.mobileapi.model.Product.ImageType;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 import freemarker.template.TemplateException;
 
@@ -190,7 +191,7 @@ public class ProductController extends BaseController {
             model.addObject("moreInfo", productMoreInfo);
             model.addObject("product", product);
             model.addObject("productImage", product.getImage(ImageType.ZOOM));
-            model.addObject("mediaPath", mediaPath);
+            model.addObject("mediaPath", MobileApiProperties.getMediaPath());
             model.addObject("request", request);
 
         } catch (ModelException e) {

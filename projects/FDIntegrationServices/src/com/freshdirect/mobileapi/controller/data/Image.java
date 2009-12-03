@@ -1,5 +1,7 @@
 package com.freshdirect.mobileapi.controller.data;
 
+import com.freshdirect.mobileapi.util.MobileApiProperties;
+
 /**
  * Media file for images, related to product, logos, maps, etc. The width and height may be not available for every image
  * @author fgarcia
@@ -7,15 +9,15 @@ package com.freshdirect.mobileapi.controller.data;
  */
 public class Image {
 
-    public Image() {        
+    public Image() {
     }
-    
+
     public Image(String source, int height, int width) {
-        this.source = source;
-        this.height = height;
-        this.width = width;
+        setSource(source);
+        setHeight(height);
+        setWidth(width);
     }
-    
+
     /**
      * Relative path were the image is stored
      */
@@ -36,6 +38,9 @@ public class Image {
     }
 
     public void setSource(String source) {
+        if (source != null && source.matches("^/media.*$")) {
+            source = MobileApiProperties.getMediaPath() + source;
+        }
         this.source = source;
     }
 

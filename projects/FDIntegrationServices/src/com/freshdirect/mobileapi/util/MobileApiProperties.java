@@ -48,6 +48,8 @@ public class MobileApiProperties {
 
     private final static String PROP_CART_MISC_CHARGE_LABEL = "mobileapi.cart.misc.label";
 
+    private final static String PROP_MEDIA_PATH = "mobileapi.media.path";
+
     private static long lastRefresh = 0;
 
     private final static long REFRESH_PERIOD = 5 * 60 * 1000;
@@ -58,6 +60,7 @@ public class MobileApiProperties {
 
     static {
         defaults.put(PROP_CART_MISC_CHARGE_LABEL, "Fuel Surcharge");
+        defaults.put(PROP_MEDIA_PATH, "http://www.freshdirect.com");
         //        defaults.put(PROP_AD_SERVER_ENABLED, "false");
         //        defaults.put(DEPT_EDLP_CATID, "");
         refresh();
@@ -92,4 +95,7 @@ public class MobileApiProperties {
         return get(PROP_VERSION_ACTION + version);
     }
 
+    public static String getMediaPath(){
+        return get(PROP_MEDIA_PATH);
+    }
 }

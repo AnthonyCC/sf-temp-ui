@@ -14,12 +14,12 @@
 <#if product.layout != "wine" >
 	<#if product.partiallyFrozen?has_content && product.department.name?upper_case == "BAKERY" >
 			<div class="notice">
-				<img src="/media_stat/images/template/bakery/parbaked_frozen_prod.gif" />
+				<img src="${mediaPath}/media_stat/images/template/bakery/parbaked_frozen_prod.gif" />
 			</div>
 	</#if>
 	<#if product.partiallyFrozen?has_content && product.department.name?upper_case == "SEAFOOD" >
 			<div class="notice">
-				<img src="/media_stat/images/template/bakery/snowflake_grey.gif" />
+				<img src="${mediaPath}/media_stat/images/template/bakery/snowflake_grey.gif" />
 			</div>
 	</#if>
 	<#if moreInfo.kosherSymbol?has_content >
@@ -58,7 +58,11 @@
 		</#if>
 		</div>
 		<div class="detail">
-	<#if product.layout == "wine" >
+	<#if product.layout != "wine" >
+		<#if product.origin?has_content >
+			<p><b>Origin:</b><#list product.origin as origin>${origin}</#list></p>
+		</#if>
+	</#if>	<#if product.layout == "wine" >
 		<#if product.wineRegionLabel?has_content >
 			<p><b>Region:</b> ${product.wineCountry} &gt; ${product.wineRegionLabel}</p>
 		</#if>
@@ -119,7 +123,7 @@
 	<#list cgpMoreinfo.skuCodes as skuCode>		
 			<#if cgpMoreinfo.ingredients?size &gt; 0 >
 			<div class="detail">
-				<h3>Ingredients</h3>
+				<h4>Ingredients</h4>
 				<p>${cgpMoreinfo.ingredients[skuCode]}</p>
 					<ul>
 						<#list cgpMoreinfo.allergens as allergen>
@@ -131,7 +135,7 @@
 			
 			<#if cgpMoreinfo.nutritionFacts?size &gt; 0 >
 			<div class="detail">
-				<h3>Nutrition Facts</h3>
+				<h4>Nutrition Facts</h4>
 				<div class="nutrition">
 					${cgpMoreinfo.nutritionFacts[skuCode]}
 				</div>
@@ -151,7 +155,7 @@
 		<#if moreInfo.heatingInstructions?has_content >
 		<div class="detail">
 			<h3>Heating Instructions</h3>
-			${moreInfo.heatingInstructions}
+			<p>${moreInfo.heatingInstructions}</p>
 		</div>
 		</#if>
 	

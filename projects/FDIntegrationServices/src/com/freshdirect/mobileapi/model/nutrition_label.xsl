@@ -22,7 +22,7 @@
             </td>
           </tr>
           <tr>
-            <td> <img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="6"/></td>
+            <td> <img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="6"/></td>
           </tr>
         </table>
 
@@ -30,7 +30,7 @@
           <tr>
             <td COLSPAN="2" CLASS="text9">
                 <b>Amount Per Serving</b> <br/>
-                 <img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/>
+                 <img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/>
             </td>
           </tr>
           <tr>
@@ -52,13 +52,13 @@
             </td>
           </tr>
           <tr>
-            <td COLSPAN="2"> <img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="4"/></td>
+            <td COLSPAN="2"> <img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="4"/></td>
           </tr>
         </table>
 
         <table BORDER="0" CELLSPACING="0" CELLPADDING="1" WIDTH="220">
           <tr><td COLSPAN="2" ALIGN="right" CLASS="text8" WIDTH="220">% Daily Value *</td></tr>
-          <tr><td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td></tr>
+          <tr><td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td></tr>
           <tr>
             <td CLASS="text9"><b>Total Fat</b><xsl:text> </xsl:text>
             <xsl:choose>
@@ -87,10 +87,10 @@
             </b></td>
           </tr>
           <tr>
-            <td COLSPAN="2" align="right"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="210" HEIGHT="1"/></td>
+            <td COLSPAN="2" align="right"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="210" HEIGHT="1"/></td>
           </tr>
           <tr>
-            <td CLASS="text9"><img SRC="/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Saturated Fat 
+            <td CLASS="text9"><img SRC="http://www.freshdirect.com/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Saturated Fat 
             <xsl:choose>
                 <xsl:when test="nutrition[name='Saturated Fat quantity']">
                     <xsl:apply-templates select="nutrition[name='Saturated Fat quantity']"/>
@@ -118,10 +118,10 @@
           </tr>
           <xsl:if test="nutrition[name='Trans Fat quantity']">
 		  <tr>
-		    <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="210" HEIGHT="1"/></td>
+		    <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="210" HEIGHT="1"/></td>
 		  </tr>
 		  <tr>
-		    <td CLASS="text9"><img SRC="/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Trans Fat
+		    <td CLASS="text9"><img SRC="http://www.freshdirect.com/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Trans Fat
 			    <xsl:apply-templates select="nutrition[name='Trans Fat quantity']"/>
 		    </td>
 		    <td ALIGN="right" CLASS="text9"> </td>
@@ -129,10 +129,10 @@
 	  </xsl:if>		  
           <xsl:if test="nutrition[name='Stearic Acid quantity']">
           <tr>
-            <td COLSPAN="2" align="right"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="210" HEIGHT="1"/></td>
+            <td COLSPAN="2" align="right"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="210" HEIGHT="1"/></td>
           </tr>
           <tr>
-            <td CLASS="text9"><img SRC="/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Stearic Acid 
+            <td CLASS="text9"><img SRC="http://www.freshdirect.com/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Stearic Acid 
             <xsl:apply-templates select="nutrition[name='Stearic Acid quantity']"/>
             </td>
             <td> </td>
@@ -140,10 +140,10 @@
           </xsl:if>
           <xsl:if test="nutrition[name='Polyunsaturated Fat quantity']">
           <tr>
-            <td COLSPAN="2" align="right"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="210" HEIGHT="1"/></td>
+            <td COLSPAN="2" align="right"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="210" HEIGHT="1"/></td>
           </tr>
           <tr>
-            <td CLASS="text9"><img SRC="/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Polyunsaturated Fat 
+            <td CLASS="text9"><img SRC="http://www.freshdirect.com/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Polyunsaturated Fat 
             <xsl:apply-templates select="nutrition[name='Polyunsaturated Fat quantity']"/>
             </td>
             <td> </td>
@@ -151,17 +151,17 @@
           </xsl:if>
           <xsl:if test="nutrition[name='Monounsaturated Fat quantity']">
           <tr>
-            <td COLSPAN="2" align="right"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="210" HEIGHT="1"/></td>
+            <td COLSPAN="2" align="right"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="210" HEIGHT="1"/></td>
           </tr>
           <tr>
-            <td CLASS="text9"><img SRC="/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Monounsaturated Fat 
+            <td CLASS="text9"><img SRC="http://www.freshdirect.com/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Monounsaturated Fat 
             <xsl:apply-templates select="nutrition[name='Monounsaturated Fat quantity']"/>
             </td>
             <td> </td>
           </tr>
           </xsl:if>
           <tr>
-            <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td>
+            <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td>
           </tr>
           <tr>
             <td CLASS="text9"><b>Cholesterol</b><xsl:text> </xsl:text>
@@ -191,7 +191,7 @@
             </b></td>
           </tr>
           <tr>
-            <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td>
+            <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td>
           </tr>
           <tr>
             <td CLASS="text9"><b>Sodium</b><xsl:text> </xsl:text>
@@ -222,7 +222,7 @@
           </tr>
           <xsl:if test="nutrition[name='Potassium quantity']">
           <tr>
-            <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td>
+            <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td>
           </tr>
           <tr>
             <td CLASS="text9"><b>Potassium</b><xsl:text> </xsl:text>
@@ -241,7 +241,7 @@
           </tr>
           </xsl:if>
           <tr>
-            <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td>
+            <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td>
           </tr>
           <tr>
             <td CLASS="text9"><b>Total Carbohydrate</b><xsl:text> </xsl:text>
@@ -271,10 +271,10 @@
             </b></td>
           </tr>
           <tr>
-            <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="210" HEIGHT="1"/></td>
+            <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="210" HEIGHT="1"/></td>
           </tr>
           <tr>
-            <td CLASS="text9"><img SRC="/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Dietary Fiber 
+            <td CLASS="text9"><img SRC="http://www.freshdirect.com/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Dietary Fiber 
             <xsl:choose>
                 <xsl:when test="nutrition[name='Dietary Fiber quantity']">
                     <xsl:apply-templates select="nutrition[name='Dietary Fiber quantity']"/>
@@ -302,10 +302,10 @@
           </tr>
           <xsl:if test="nutrition[name='Soluble Fiber quantity']">
           <tr>
-            <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="200" HEIGHT="1"/></td>
+            <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="200" HEIGHT="1"/></td>
           </tr>
           <tr>
-            <td CLASS="text9"><img SRC="/media_stat/images/layout/clear.gif" ALT="" WIDTH="20" HEIGHT="9"/>Soluble Fiber 
+            <td CLASS="text9"><img SRC="http://www.freshdirect.com/media_stat/images/layout/clear.gif" ALT="" WIDTH="20" HEIGHT="9"/>Soluble Fiber 
                 <xsl:apply-templates select="nutrition[name='Soluble Fiber quantity']"/>
             </td>
             <td> </td>
@@ -313,20 +313,20 @@
           </xsl:if>
           <xsl:if test="nutrition[name='Insoluble Fiber quantity']">
           <tr>
-            <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="200" HEIGHT="1"/></td>
+            <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="200" HEIGHT="1"/></td>
           </tr>
           <tr>
-            <td CLASS="text9"><img SRC="/media_stat/images/layout/clear.gif" ALT="" WIDTH="20" HEIGHT="9"/>Insoluble Fiber 
+            <td CLASS="text9"><img SRC="http://www.freshdirect.com/media_stat/images/layout/clear.gif" ALT="" WIDTH="20" HEIGHT="9"/>Insoluble Fiber 
                 <xsl:apply-templates select="nutrition[name='Insoluble Fiber quantity']"/>
             </td>
             <td> </td>
           </tr>
           </xsl:if>
           <tr>
-            <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="210" HEIGHT="1"/></td>
+            <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="210" HEIGHT="1"/></td>
           </tr>
           <tr>
-            <td CLASS="text9"><img SRC="/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Sugars
+            <td CLASS="text9"><img SRC="http://www.freshdirect.com/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Sugars
             <xsl:choose>
                 <xsl:when test="nutrition[name='Sugars quantity']">
                     <xsl:apply-templates select="nutrition[name='Sugars quantity']"/>
@@ -338,10 +338,10 @@
           </tr>
           <xsl:if test="nutrition[name='Sugar Alcohol quantity']">
           <tr>
-            <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="210" HEIGHT="1"/></td>
+            <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="210" HEIGHT="1"/></td>
           </tr>
           <tr>
-            <td CLASS="text9"><img SRC="/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Sugar Alcohol
+            <td CLASS="text9"><img SRC="http://www.freshdirect.com/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Sugar Alcohol
                 <xsl:apply-templates select="nutrition[name='Sugar Alcohol quantity']"/>
             </td>
             <td> </td>
@@ -349,17 +349,17 @@
           </xsl:if>
           <xsl:if test="nutrition[name='Other Carbohydrates quantity']">
           <tr>
-            <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="210" HEIGHT="1"/></td>
+            <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" align="right" ALT="" WIDTH="210" HEIGHT="1"/></td>
           </tr>
           <tr>
-            <td CLASS="text9"><img SRC="/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Other Carbohydrates
+            <td CLASS="text9"><img SRC="http://www.freshdirect.com/media_stat/images/layout/clear.gif" ALT="" WIDTH="10" HEIGHT="9"/>Other Carbohydrates
                 <xsl:apply-templates select="nutrition[name='Other Carbohydrates quantity']"/>
             </td>
             <td> </td>
           </tr>
           </xsl:if>
           <tr>
-            <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td>
+            <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td>
           </tr>
           <tr>
             <td CLASS="text9"><b>Protein</b><xsl:text> </xsl:text>
@@ -373,7 +373,7 @@
             <td ALIGN="right" CLASS="text9"> </td>
           </tr>
           <tr>
-            <td COLSPAN="2"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="6"/></td>
+            <td COLSPAN="2"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="6"/></td>
           </tr>
         </table>
         
@@ -389,7 +389,7 @@
                 <xsl:otherwise>0%</xsl:otherwise>
               </xsl:choose>
               </td></tr>
-              <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+              <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
               <tr><td CLASS="text9" WIDTH="110">Calcium
               <xsl:choose>
                 <xsl:when test="nutrition[name='Calcium']">
@@ -401,67 +401,67 @@
               </xsl:choose>
               </td></tr>
               <xsl:if test="nutrition[name='Vitamin D']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Vitamin D <xsl:apply-templates select="nutrition[name='Vitamin D']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Vitamin K']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Vitamin K <xsl:apply-templates select="nutrition[name='Vitamin K']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Riboflavin']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Riboflavin <xsl:apply-templates select="nutrition[name='Riboflavin']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Vitamin B6']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Vitamin B6 <xsl:apply-templates select="nutrition[name='Vitamin B6']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Vitamin B12']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Vitamin B12 <xsl:apply-templates select="nutrition[name='Vitamin B12']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Pantothenic Acid']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Pantothenic Acid <xsl:apply-templates select="nutrition[name='Pantothenic Acid']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Iodine']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Iodine <xsl:apply-templates select="nutrition[name='Iodine']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Zinc']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Zinc <xsl:apply-templates select="nutrition[name='Zinc']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Copper']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Copper <xsl:apply-templates select="nutrition[name='Copper']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Chromium']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Chromium <xsl:apply-templates select="nutrition[name='Chromium']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Chloride']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Chloride <xsl:apply-templates select="nutrition[name='Chloride']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
@@ -477,7 +477,7 @@
                 <xsl:otherwise>0%</xsl:otherwise>
               </xsl:choose>
               </td></tr>
-              <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+              <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
               <tr><td CLASS="text9" WIDTH="110">Iron
               <xsl:choose>
                 <xsl:when test="nutrition[name='Iron']">
@@ -489,61 +489,61 @@
               </xsl:choose>
               </td></tr>
               <xsl:if test="nutrition[name='Vitamin E']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Vitamin E <xsl:apply-templates select="nutrition[name='Vitamin E']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Thiamin']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Thiamin <xsl:apply-templates select="nutrition[name='Thiamin']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Niacin']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Niacin <xsl:apply-templates select="nutrition[name='Niacin']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Folate']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Folate <xsl:apply-templates select="nutrition[name='Folate']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Biotin']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Biotin <xsl:apply-templates select="nutrition[name='Biotin']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Phosphorous']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Phosphorous <xsl:apply-templates select="nutrition[name='Phosphorous']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Magnesium']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Magnesium <xsl:apply-templates select="nutrition[name='Magnesium']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Selenium']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Selenium <xsl:apply-templates select="nutrition[name='Selenium']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Manganese']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Manganese <xsl:apply-templates select="nutrition[name='Manganese']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
               </xsl:if>
               <xsl:if test="nutrition[name='Molybdenum']">
-                  <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
+                  <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="110" HEIGHT="1"/></td></tr>
                   <tr><td CLASS="text9" WIDTH="110">Molybdenum <xsl:apply-templates select="nutrition[name='Molybdenum']">
                         <xsl:with-param name="vitamin">true</xsl:with-param>
                     </xsl:apply-templates></td></tr>
@@ -552,12 +552,12 @@
         </table>
         <table BORDER="0" CELLSPACING="0" CELLPADDING="1" WIDTH="220">
           <tr>
-            <img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/>
+            <img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/>
           </tr>
           <tr>
             <td CLASS="text9">** Contains less than 2 percent of the Daily Value of these nutrients.</td>
           </tr>
-          <tr><td><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td></tr>
+          <tr><td><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td></tr>
           <tr>
             <td CLASS="text9">* Percent Daily Values are based on a 2,000 calorie diet.  Your daily values may be
             higher or lower depending on your calorie needs:</td>
@@ -570,7 +570,7 @@
             <td CLASS="text9">2,000</td>
             <td CLASS="text9">2,500</td>
         </tr>
-        <tr><td colspan="4"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td></tr>
+        <tr><td colspan="4"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td></tr>
         <tr>
             <td CLASS="text9">Total&nbsp;Fat</td>
             <td CLASS="text9">Less&nbsp;than</td>
@@ -605,7 +605,7 @@
             <td CLASS="text9">25g</td>
             <td CLASS="text9">30g</td>
         </tr>
-        <tr><td colspan="4"><img SRC="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td></tr>
+        <tr><td colspan="4"><img SRC="http://www.freshdirect.com/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="1"/></td></tr>
         <tr><td CLASS="text9" colspan="4">Calories per gram:</td></tr>
         <tr><td CLASS="text9" colspan="4" align="center">Fat 9 &dot; Carbohydrate 4 &dot; Protein 4</td></tr>
         </table>
