@@ -25,10 +25,12 @@ request.removeAttribute("Survey");
 				    
 			    <div class="question_text">
                     <% 
-                       String _response=request.getParameter(question.getName());
-                       if(_response!=null && !"".equals(_response)) {
+                       String[] _response=request.getParameterValues(question.getName());
+                       if(_response!=null) {
                           surveyResponse=new ArrayList();
-                          surveyResponse.add(_response);
+                          for (int i=0;i<_response.length;i++) {
+                          	surveyResponse.add(_response[i]);
+                          }
                        }
                     %>
                     

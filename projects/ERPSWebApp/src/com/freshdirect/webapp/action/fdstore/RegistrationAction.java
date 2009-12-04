@@ -482,8 +482,8 @@ public class RegistrationAction extends WebActionSupport {
 			FDSurvey survey = FDSurveyFactory.getInstance().getSurvey(surveyKey);
 			
 			for (FDSurveyQuestion q : survey.getQuestions()) {
-			    String value = request.getParameter(q.getName());
-			    if (!"".equals(value)) {
+			    String[] value = request.getParameterValues(q.getName());
+			    if (value != null && value.length > 0) {
 			        surveyResponse.addAnswer(q.getName(), value);
 			    }
 			}
