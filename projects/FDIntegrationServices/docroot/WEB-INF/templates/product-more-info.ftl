@@ -49,7 +49,7 @@
 	
 		<div class="detail">
 		<p>
-			${moreInfo.description?replace("\"/media","\"http://www.freshdirect.com/media")}}</p>
+			${moreInfo.description?replace("\"/media","\"http://www.freshdirect.com/media")}</p>
 		<#if product.platter >
 			<p class="warning">
 				<b>Cancellation Notice</b><br/>
