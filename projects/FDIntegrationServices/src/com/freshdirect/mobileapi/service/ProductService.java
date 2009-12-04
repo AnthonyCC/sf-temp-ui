@@ -17,7 +17,7 @@ public interface ProductService {
     public Product getProduct(String categoryId, String productId) throws ServiceException;
 
     public List<Product> search(String searchTerm, Integer page, Integer max, ProductModelSortUtil.SortType sortType, String brandId,
-            String categoryId, SessionUser user) throws ServiceException;
+            String categoryId, String departmentId, SessionUser user) throws ServiceException;
 
     public List<String> getAutoSuggestions(String searchTerm);
 }

@@ -66,8 +66,9 @@ public class SearchController extends BaseController {
         int page = (StringUtils.isNumeric(request.getParameter("page")) ? Integer.parseInt(request.getParameter("page")) : 1);
         int resultMax = (StringUtils.isNumeric(request.getParameter("max")) ? Integer.parseInt(request.getParameter("max")) : 25);
         ProductModelSortUtil.SortType sortType = null;
-        String brandToFilter = null;
-        String categoryToFilter = null;
+        String brandToFilter = "";
+        String categoryToFilter = "";
+        String departmentToFilter = "";
 
         // Retrieving any possible payload
         String postData = getPostData(request, response);
@@ -81,6 +82,7 @@ public class SearchController extends BaseController {
             sortType = ProductModelSortUtil.SortType.valueFromString(requestMessage.getSortBy());
             brandToFilter = requestMessage.getBrand();
             categoryToFilter = requestMessage.getCategory();
+            departmentToFilter = requestMessage.getDepartment();
         }
 
         // If there is no searchTerm, default is blank string (will retrieve everything)
@@ -91,7 +93,7 @@ public class SearchController extends BaseController {
         ProductServiceImpl productService = new ProductServiceImpl();
         FilterOptionLabelComparator filterComparator = new FilterOptionLabelComparator();
 
-        List<Product> products = productService.search(searchTerm, page, resultMax, sortType, brandToFilter, categoryToFilter,
+        List<Product> products = productService.search(searchTerm, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
                 getUserFromSession(request, response));
 
         // Data required for filtering: Brands
