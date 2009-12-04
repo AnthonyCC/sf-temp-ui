@@ -29,6 +29,16 @@ public class DeliveryTimeslots extends CheckoutResponse {
 
     private String selectedTimeslotId;
 
+    private String reservedTimeslotId;
+
+    public String getReservedTimeslotId() {
+        return reservedTimeslotId;
+    }
+
+    public void setReservedTimeslotId(String reservedTimeslotId) {
+        this.reservedTimeslotId = reservedTimeslotId;
+    }
+
     private List<Timeslot> timeSlots = new ArrayList<Timeslot>();
 
     private List<Restriction> restrictions = new ArrayList<Restriction>();
@@ -61,7 +71,8 @@ public class DeliveryTimeslots extends CheckoutResponse {
         for (String restrictionMessage : restrictionMessages) {
             this.restrictions.add(new Restriction(restrictionMessage));
         }
-        this.selectedTimeslotId = result.getReservationTimeslotId();
+        this.selectedTimeslotId = result.getPreselectedTimeslotId();
+        this.reservedTimeslotId = result.getReservationTimeslotId();
     }
 
 }

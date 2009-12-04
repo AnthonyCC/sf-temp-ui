@@ -152,6 +152,8 @@ public class DeliveryTimeslots {
             this.messages = messages;
         }
 
+        private String preselectedTimeslotId = null;
+
         private String reservationTimeslotId = null;
 
         public void setReservationTimeslotId(String reservationTimeslotId) {
@@ -160,6 +162,14 @@ public class DeliveryTimeslots {
 
         public String getReservationTimeslotId() {
             return reservationTimeslotId;
+        }
+
+        public String getPreselectedTimeslotId() {
+            return preselectedTimeslotId;
+        }
+
+        public void setPreselectedTimeslotId(String preselectedTimeslotId) {
+            this.preselectedTimeslotId = preselectedTimeslotId;
         }
 
     }

@@ -228,11 +228,8 @@ public class CheckoutController extends BaseController {
             DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
             TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user);
 
-            String preselectedTimeslotId = checkout.getPreselectedTimeslotId(timeSlotResult);
-
             com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
                     timeSlotResult);
-            slotResponse.setSelectedTimeslotId(preselectedTimeslotId);
             slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
             responseMessage = slotResponse;
             responseMessage.setSuccessMessage("Order delivery Address have been set successfully.");

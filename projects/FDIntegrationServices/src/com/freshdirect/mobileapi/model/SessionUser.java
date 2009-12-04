@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.exception.ModelException;
+import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 import com.freshdirect.mobileapi.model.tagwrapper.FDCustomerCreatedListTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.GetCutoffInfoTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.GetOrderTagWrapper;
@@ -317,9 +318,10 @@ public class SessionUser {
      * @return
      * @throws FDResourceException
      */
-    public String getReservationTimeslotId(List<FDTimeslotList> timeslotLists) throws FDResourceException {
-        String timeSlotId = null;
-        FDReservation rsv = getReservation();
+    public void setReservationAndPreselectedTimeslotIds(List<FDTimeslotList> timeslotLists,
+            TimeSlotCalculationResult timeSlotCalculationResult) throws FDResourceException {
+        FDReservation reservation = getReservation();
+        
         /*
         * DUP: FDWebSite/docroot/your_account/reserve_timeslot.jsp
         * LAST UPDATED ON: 11/13/2009
@@ -328,7 +330,10 @@ public class SessionUser {
         * WHAT: Looping logic to determine timeslot ID of reoccuring reservation
         */
         //        if (rsv == null && hasWeeklyReservation) { //Removed "hasWeeklyReservation" condition because we don't care about it here.
-        if (rsv == null) {
+        if (reservation != null) {
+            timeSlotCalculationResult.setReservationTimeslotId(reservation.getTimeslotId());
+        } else {
+            //Specific reservation doesn't exist. try to match by day of week and time range.
             String foundId = "";
             ErpCustomerInfoModel customerInfo = FDCustomerFactory.getErpCustomerInfo(sessionUser.getIdentity());
             boolean hasWeeklyReservation = customerInfo.getRsvAddressId() != null && !"".equals(customerInfo.getRsvAddressId());
@@ -358,12 +363,15 @@ public class SessionUser {
                 }
             }
             if (!"".equals(foundId)) {
-                timeSlotId = foundId;
+                timeSlotCalculationResult.setReservationTimeslotId(foundId);
             }
-        } else {
-            timeSlotId = rsv.getTimeslotId();
         }
-        return timeSlotId;
+        
+        //Set timeslot for checkout         
+        FDReservation deliveryReservation = this.sessionUser.getShoppingCart().getDeliveryReservation();
+        if (deliveryReservation != null) {
+            timeSlotCalculationResult.setPreselectedTimeslotId(deliveryReservation.getTimeslotId());
+        }
     }
 
     public String getDefaultShipToAddress() throws FDResourceException {

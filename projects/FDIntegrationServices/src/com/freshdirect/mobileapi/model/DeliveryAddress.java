@@ -146,9 +146,7 @@ public class DeliveryAddress {
         DeliveryTimeSlotTagWrapper wrapper = new DeliveryTimeSlotTagWrapper(user);
         Result result = wrapper.getDeliveryTimeSlotResult(this.address);
         TimeSlotCalculationResult timeSlotCalculationResult = new TimeSlotCalculationResult(result, user.isChefsTable());
-        String reservationTimeslotId = user.getReservationTimeslotId(result.getTimeslots());
-
-        timeSlotCalculationResult.setReservationTimeslotId(reservationTimeslotId);
+        user.setReservationAndPreselectedTimeslotIds(result.getTimeslots(), timeSlotCalculationResult);
         return timeSlotCalculationResult;
     }
 
