@@ -37,7 +37,6 @@
 	
 	<property name="log4j.jar"				value="log4j.jar"/>
 
-        <property name="lucene.version" value="3.0.0" />
         <property name="gwt.compiler.style"             value="PRETTY"/>
 
 	<path id="j2ee.classpath">
@@ -537,9 +536,9 @@
 						<path refid="testing.classpath" />
 
 		                <pathelement location="${thirdparty.home}/lcc.jar"/>
-						<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
-						<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
-						<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
+						<pathelement location="${thirdparty.home}/lucene-core-2.2.0.jar"/>
+						<pathelement location="${thirdparty.home}/lucene-queries-2.2.0.jar"/>
+						<pathelement location="${thirdparty.home}/lucene-spellchecker-2.2.0.jar"/>
 
 		                <pathelement location="${work.dir}/Framework-emma.jar"/>
 		                <pathelement location="${work.dir}/ERPServices-emma.jar"/>
@@ -578,9 +577,9 @@
 		   				<path refid="testing.classpath"/>
 
 		                <pathelement location="${thirdparty.home}/lcc.jar"/>
-						<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
-						<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
-						<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
+						<pathelement location="${thirdparty.home}/lucene-core-2.2.0.jar"/>
+						<pathelement location="${thirdparty.home}/lucene-queries-2.2.0.jar"/>
+						<pathelement location="${thirdparty.home}/lucene-spellchecker-2.2.0.jar"/>
 
 		   				<pathelement location="${work.dir}/Framework.jar"/>
 		   				<pathelement location="${work.dir}/ERPServices.jar"/>
@@ -1216,7 +1215,7 @@
 					<!-- additional -->
 					
 					
-                    <include name="lucene-core-${lucene.version}.jar"/>
+                    <include name="lucene-core-2.2.0.jar"/>
                     <include name="XmlSchema-1.4.3.jar"/>  
                     <include name="axis2-transport-http-1.5.jar"/>  
                     <include name="axiom-dom-1.2.8.jar"/>
@@ -1320,7 +1319,7 @@
 					<include name="jsonrpc-1.0.jar"/>
 					<!-- additional -->
                     
-                    <include name="lucene-core-${lucene.version}.jar"/>
+                    <include name="lucene-core-2.2.0.jar"/>
                     <include name="XmlSchema-1.4.3.jar"/>  
                     <include name="axis2-transport-http-1.5.jar"/>  
                     <include name="axiom-dom-1.2.8.jar"/>
@@ -1386,7 +1385,7 @@
 			<path id="routing.classpath">
 				<pathelement location="${work.dir}/Framework.jar"/>							
 				<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
-				<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
+				<pathelement location="${thirdparty.home}/lucene-core-2.2.0.jar"/>
 				<pathelement location="${thirdparty.home}/commons-discovery-0.2.jar"/>
 				<pathelement location="${thirdparty.home}/commons-logging-1.0.4.jar"/>
 				<pathelement location="${thirdparty.home}/jaxrpc.jar"/>
@@ -1423,9 +1422,9 @@
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
-			<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
-			<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
-			<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-core-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-queries-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-spellchecker-2.2.0.jar"/>
 
 			<pathelement location="${thirdparty.home}/slide/jakarta-slide-webdavlib-2.1.jar"/>
                         <pathelement location="${thirdparty.home}/poi.jar"/>
@@ -2045,9 +2044,9 @@
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStore.jar"/>
 
-			<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
-			<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
-			<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-core-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-queries-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-spellchecker-2.2.0.jar"/>
 		</path>
 
 		<makeProject
@@ -2079,9 +2078,9 @@
 						<path refid="testing.classpath"/>
 						<pathelement path="${thirdparty.home}/lcc.jar"/>
 						<pathelement path="${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-						<pathelement path="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
-						<pathelement path="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
-						<pathelement path="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
+						<pathelement path="${thirdparty.home}/lucene-core-2.2.0.jar"/>
+						<pathelement path="${thirdparty.home}/lucene-queries-2.2.0.jar"/>
+						<pathelement path="${thirdparty.home}/lucene-spellchecker-2.2.0.jar"/>
 						<pathelement path="${work.dir}/Framework.jar"/>
 						<pathelement path="${work.dir}/ERPServicesEJB-WL.jar"/>
 						<pathelement path="${work.dir}/DeliveryEJB-WL.jar"/>
@@ -2147,9 +2146,9 @@
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
                 <include name="givexclient.jar"/>
-				<include name="lucene-core-${lucene.version}.jar"/>
-				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-core-2.2.0.jar"/>
+				<include name="lucene-queries-2.2.0.jar"/>
+				<include name="lucene-spellchecker-2.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2175,10 +2174,10 @@
 				<!-- <include name="oscache-2.4.jar"/> -->
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
-				<include name="lucene-core-${lucene.version}.jar"/>
+				<include name="lucene-core-2.2.0.jar"/>
                 <include name="givexclient.jar"/>                
-				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-queries-2.2.0.jar"/>
+				<include name="lucene-spellchecker-2.2.0.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2202,9 +2201,9 @@
 			<lib>
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
-				<include name="lucene-core-${lucene.version}.jar"/>
-				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-core-2.2.0.jar"/>
+				<include name="lucene-queries-2.2.0.jar"/>
+				<include name="lucene-spellchecker-2.2.0.jar"/>
 				<include name="jxl.jar"/>
 			</lib>
 		</makeEar>
@@ -2234,9 +2233,9 @@
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="poi-3.0-rc4-20070503.jar"/>
-				<include name="lucene-core-${lucene.version}.jar"/>
-				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-core-2.2.0.jar"/>
+				<include name="lucene-queries-2.2.0.jar"/>
+				<include name="lucene-spellchecker-2.2.0.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
 			</lib>
 		</makeEar>
@@ -2266,9 +2265,9 @@
 				<include name="standard.jar"/>
 				<include name="jstl.jar"/>				
 				<include name="poi-3.0-rc4-20070503.jar"/>
-				<include name="lucene-core-${lucene.version}.jar"/>
-				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-core-2.2.0.jar"/>
+				<include name="lucene-queries-2.2.0.jar"/>
+				<include name="lucene-spellchecker-2.2.0.jar"/>
 				<include name="opencsv-1.8.jar"/>
 				
 				<include name="commons-discovery-0.2.jar"/>
@@ -2373,9 +2372,9 @@
 				<include name="tapestry-contrib-4.0.2.jar"/>
 				<include name="tacos-core-4.0.2-20070420.095420-14.jar"/>
 
-				<include name="lucene-core-${lucene.version}.jar"/>
-				<include name="lucene-queries-${lucene.version}.jar"/>
-				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="lucene-core-2.2.0.jar"/>
+				<include name="lucene-queries-2.2.0.jar"/>
+				<include name="lucene-spellchecker-2.2.0.jar"/>
 				<include name="jgroups-2.2.7.jar"/>
 				<include name="jxl.jar"/>
 			</lib>
@@ -2427,9 +2426,9 @@
 			<zipfileset src="${thirdparty.home}/commons-net-1.0.jar" excludes="META-INF/*"/>
 
 
-			<zipfileset src="${thirdparty.home}/lucene-core-${lucene.version}.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/lucene-queries-${lucene.version}.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/lucene-core-2.2.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/lucene-queries-2.2.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/lucene-spellchecker-2.2.0.jar" excludes="META-INF/*"/>
 
 			<!-- zipfileset src="${thirdparty.home}/commons-fileupload-1.0.jar" excludes="META-INF/*"/ -->
 			<zipfileset src="${thirdparty.home}/commons-fileupload-1.1.1.jar" excludes="META-INF/*"/>

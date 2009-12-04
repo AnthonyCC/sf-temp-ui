@@ -1,6 +1,5 @@
 package com.freshdirect.cms.search;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,10 +18,11 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Hit;
+import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.spell.Dictionary;
 import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.search.spell.SpellChecker;
@@ -30,7 +30,6 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -44,7 +43,7 @@ public class LuceneSpellingSuggestionService {
 	final static Category LOGGER = LoggerFactory.getInstance(LuceneSpellingSuggestionService.class);
 	
 	// Do not try to search for these
-	private final static Set<String> stopWords = new HashSet(Arrays.asList(new String[] {"with","and","of","or"}));
+	private final static Set stopWords = new HashSet(Arrays.asList(new String[] {"with","and","of","or"}));
 	
 	// spell checker instance, created at construction
 	private SpellChecker checker;
@@ -96,7 +95,7 @@ public class LuceneSpellingSuggestionService {
 	 */
 	public LuceneSpellingSuggestionService(String indexLocation, List indexes, IndexReader reader) throws IOException {
 		
-		directory = FSDirectory.open(new File(indexLocation));
+		directory = FSDirectory.getDirectory(indexLocation);
 		
 		this.indexes = indexes;
 		
@@ -112,7 +111,7 @@ public class LuceneSpellingSuggestionService {
 			LOGGER.debug(
 					"Directory index exists, OK the spell checker will just use it");
 		}
-		this.checker = new SpellChecker(directory, new EditDistanceCalculator.ModifiedLevenshtein());
+		this.checker = new SpellChecker(directory);
 		
 		searcher = new IndexSearcher(directory);
 	}
@@ -150,9 +149,9 @@ public class LuceneSpellingSuggestionService {
 	 * @param contentHits data structure to hold content hits (hits that come about by popular content, only for multi-term queries)
 	 * @throws IOException
 	 */
-	private void collectRawSpellingHits(
-		final String query, int totalTerms, int totalChars, int actualTerms, int termIndex, int maxHits, final AcceptableEditDistanceFilter df, 
-		final EditDistanceCalculator ED, Map<String,SpellingHit.GrammaticalMatch> grammarHits, Map<ContentKey,SpellingHit.ContentKeyMatch> contentHits) throws IOException {
+	private void getRawSpellingHits(
+		String query, int totalTerms, int totalChars, int actualTerms, int termIndex, int maxHits, AcceptableEditDistanceFilter df, 
+		EditDistanceCalculator ED, Map grammarHits, Map contentHits) throws IOException {
 		
 		// get suggestions
 		String[] words = checker.suggestSimilar(query,maxHits);
@@ -166,51 +165,32 @@ public class LuceneSpellingSuggestionService {
 				String index = (String)idx.next();
 				tquery.add(new TermQuery(new Term(index,query)),BooleanClause.Occur.SHOULD);
 			}
-			if (searcher.search(tquery, 1).totalHits > 0) {
+			if (searcher.search(tquery).length() > 0) {
 				String[] newWords = new String[words.length + 1];
 				System.arraycopy(words,0, newWords, 0, words.length);
 				newWords[words.length] = query;
 				words = newWords;
 			}
-		} else {
-		    // if not multi term, try to find it in the autocompleter
-		    if (query.length()>2) {
-		        String prefix = query.substring(0, 2);
-		        List<String> autocompletions = ContentSearch.getInstance().getAutocompletions(prefix, new AutocompleteService.Predicate() {
-                            
-                            @Override
-                            public boolean allow(String s) {
-                                int distance = ED.calculate(query,s);
-                                return df.accept(query,s,distance);
-                            }
-                        });
-		        if (autocompletions != null && autocompletions.size() > 0) {
-		            for (String word : autocompletions) {
-		                String normedWord = word.toLowerCase();
-	                        // calculate distance
-	                        int distance = ED.calculate(query,normedWord);
-	                        
-	                        createGrammaticalMatch(grammarHits, query, normedWord, distance, totalTerms, totalChars, actualTerms);
-		            }
-		        }
-		    }
 		}
-		
-		
 		
 		// for each suggestion
 		for(int i = 0; i< words.length; ++i) {
 			String normedWord = words[i].toLowerCase();
 			
 			// calculate distance
-			int distance = ED.calculate(query,normedWord);
+			int d = ED.calculate(query,normedWord);
 			
 			// reject if too far
-			if (!df.accept(query,words[i],distance)) {
-			    continue;
-			}
+			if (!df.accept(query,words[i],d)) continue;
 			
-			createGrammaticalMatch(grammarHits, query, normedWord, distance, totalTerms, totalChars, actualTerms);
+			// Produce a grammatical hit
+			SpellingHit.GrammaticalMatch gm = (SpellingHit.GrammaticalMatch)grammarHits.get(normedWord);
+			if (gm == null) {
+				gm = new SpellingHit.GrammaticalMatch(words[i],totalChars - query.length() + d,actualTerms,totalTerms);
+				grammarHits.put(normedWord, gm);
+			} else if (d < gm.getDistance()) {
+				grammarHits.put(normedWord, gm);
+			}
 			
 			// if multi-term
 			if (termIndex != -1) {
@@ -222,47 +202,35 @@ public class LuceneSpellingSuggestionService {
 				}
 				
 				// retrieve docs
-				TopDocs topDocs = searcher.search(tquery, maxHits);
+				Hits hits = searcher.search(tquery);
 			
-				if (topDocs.totalHits > 0) {
-                                    // for each doc (content key)
-                                    for (int j = 0; j < topDocs.scoreDocs.length; j++) {
-                                        ContentKey key = null;
-                
-                                        try {
-                                            key = ContentKey.decode(searcher.doc(topDocs.scoreDocs[j].doc).get(LuceneSearchService.FIELD_CONTENT_KEY));
-                                            if (key != null) {
-                                                // produce a content hit
-                                                SpellingHit.ContentKeyMatch cm = contentHits.get(key);
-                                                if (cm == null) {
-                                                    cm = new SpellingHit.ContentKeyMatch(key, totalTerms);
-                                                    contentHits.put(key, cm);
-                                                }
-                                                cm.addMatchTerm(termIndex, words[i], query, distance);
-                                            }
-                                        } catch (Exception e) {
-                                            LOGGER.debug(e);
-                                        }
-                
-                                    }
-                                }
+				if (hits.length() == 0) continue;
+				
+				// for each doc (content key)
+				for(Iterator it = hits.iterator(); it.hasNext(); ) {
+					Hit hit = (Hit)it.next();
+					ContentKey key = null;
+				
+					try {
+						key = ContentKey.decode(hit.getDocument().get(LuceneSearchService.FIELD_CONTENT_KEY));
+						if (key == null) continue;
+					} catch(Exception e) {
+						LOGGER.debug(e);
+						continue;
+					}
+				
+					// produce a content hit
+					SpellingHit.ContentKeyMatch cm = (SpellingHit.ContentKeyMatch)contentHits.get(key);
+					if (cm == null) {
+						cm = new SpellingHit.ContentKeyMatch(key,totalTerms);
+						contentHits.put(key,cm);
+					} 
+					cm.addMatchTerm(termIndex, words[i], query, d);
+				}
 				
 			}
 		}	
 	}
-
-    private SpellingHit.GrammaticalMatch createGrammaticalMatch(Map<String, SpellingHit.GrammaticalMatch> grammarHits, String query, String normedWord,
-            int distance, int totalTerms, int totalChars, int actualTerms) {
-        // Produce a grammatical hit
-        SpellingHit.GrammaticalMatch gm = grammarHits.get(normedWord);
-        if (gm == null) {
-        	gm = new SpellingHit.GrammaticalMatch(normedWord,totalChars - query.length() + distance,actualTerms,totalTerms);
-        	grammarHits.put(normedWord, gm);
-        } else if (distance < gm.getDistance()) {
-        	grammarHits.put(normedWord, gm);
-        }
-        return gm;
-    }
 	
 	/**
 	 * Calls {@link #getRawSpellingHits getRawSpellingHits} for each term and as a whole.
@@ -274,8 +242,8 @@ public class LuceneSpellingSuggestionService {
 	 * @param grammarHits grammatical hits
 	 * @param contentHits hits generated for popular content keys
 	 */
-	private void collectSpellingHits(
-		String query, int maxHits, AcceptableEditDistanceFilter df, EditDistanceCalculator ED, Map<String,SpellingHit.GrammaticalMatch> grammarHits, Map<ContentKey,SpellingHit.ContentKeyMatch> contentHits)
+	private void getSpellingHits(
+		String query, int maxHits, AcceptableEditDistanceFilter df, EditDistanceCalculator ED, Map grammarHits, Map contentHits)
 	throws IOException {
 		
 		// lower case query
@@ -284,35 +252,29 @@ public class LuceneSpellingSuggestionService {
 		// chop into pieces
 		StringTokenizer ts = new StringTokenizer(q," \t&,");
 		StringBuffer normedQuery = new StringBuffer();
-		List<String> terms = new ArrayList<String>();
+		List terms = new ArrayList();
 		int queryChars = 0; // total number of content (useful) chars in query
-
-		while (ts.hasMoreTokens()) {
-                    String token = ts.nextToken().trim().toLowerCase();
-                    // skip stop words
-                    if (!stopWords.contains(token)) {
-                        if (normedQuery.length() > 0) {
-                            normedQuery.append(' ');
-                        }
-                        normedQuery.append(token);
-                        terms.add(token);
-                        queryChars += token.length();
-                    }
-                }
+		while(ts.hasMoreTokens()) {
+			String token = ts.nextToken().trim().toLowerCase();
+			// skip stop words
+			if (stopWords.contains(token)) continue;
+			if (normedQuery.length() > 0) normedQuery.append(' ');
+			normedQuery.append(token);
+			terms.add(token);
+			queryChars += token.length();
+		}
 			
 		int c = 0;
 		
 		// for each term
 		// e.g. for "dite" and "coko" in "dite coko"
-		for(Iterator<String> i = terms.iterator(); i.hasNext(); ++c) {
-		    collectRawSpellingHits(i.next(), terms.size(), queryChars, 1, terms.size() > 1 ? c : -1 , maxHits, df, ED, grammarHits, contentHits);
+		for(Iterator i = terms.iterator(); i.hasNext(); ++c) {
+			getRawSpellingHits((String)i.next(), terms.size(), queryChars, 1, terms.size() > 1 ? c : -1 , maxHits, df, ED, grammarHits, contentHits);
 		}
 			
 		// for the normed, stop word free query as a whole
 		// e.g. "dite coko"
-		if (terms.size() > 1) {
-		    collectRawSpellingHits(normedQuery.toString(), terms.size(), queryChars, terms.size(), -1, maxHits, df, ED, grammarHits, contentHits);
-		}
+		if (terms.size() > 1) getRawSpellingHits(normedQuery.toString(), terms.size(), queryChars, terms.size(), -1, maxHits, df, ED, grammarHits, contentHits);
 	}
 	
 	/**
@@ -327,27 +289,28 @@ public class LuceneSpellingSuggestionService {
 	 */
 	public List getSpellingHits(String query, int maxHits, AcceptableEditDistanceFilter df) {
 		
-		Map<String, SpellingHit.GrammaticalMatch> grammarHits = new HashMap<String, SpellingHit.GrammaticalMatch>(); // purely grammatical closeness
-		Map<ContentKey, SpellingHit.ContentKeyMatch> contentHits = new HashMap<ContentKey, SpellingHit.ContentKeyMatch>(); // relevant content: ... only triggered by multi-term queries
+		Map grammarHits = new HashMap(); // purely grammatical closeness
+		Map contentHits = new HashMap(); // relevant content: ... only triggered by multi-term queries
 		
 		// Use this edit distance calculator
 		EditDistanceCalculator ED = new EditDistanceCalculator.ModifiedLevenshtein();
 
 		try {
-			collectSpellingHits(query, maxHits, df,ED,grammarHits,contentHits);
+			getSpellingHits(query, maxHits, df,ED,grammarHits,contentHits);
 		} catch(IOException e) {
 			LOGGER.debug(e);
 		}
 		
-		List<SpellingHit> hits = new ArrayList<SpellingHit>();
+		List hits = new ArrayList();
 		hits.addAll(grammarHits.values());
 		
 		// weed content key hits, we only care about those that have 
 		// at least two term references
-		for(Iterator<SpellingHit.ContentKeyMatch> i = contentHits.values().iterator(); i.hasNext(); ) {
-			SpellingHit cm = i.next();
+		for(Iterator i = contentHits.values().iterator(); i.hasNext(); ) {
+			SpellingHit cm = (SpellingHit)i.next();
 			if (cm.getMatchTermCount() < 2) continue;
 			hits.add(cm);
+			
 		}
 		
 		// sort hits
@@ -389,22 +352,23 @@ public class LuceneSpellingSuggestionService {
 	 * @param hits list of {@link SpellingHit}
 	 * @return a list of spelling hits with the suggestions in the order they occur in the hits parameter 
 	 */
-        static public List<SpellingHit> getUniqueQueries(List<SpellingHit> hits) {
-            Set<SpellingHit> seen = new TreeSet<SpellingHit>(new Comparator<SpellingHit>() {
-                public int compare(SpellingHit o1, SpellingHit o2) {
-                    return o1.getSuggestion().compareToIgnoreCase(o2.getSuggestion());
-                }
-    
-            });
-    
-            List<SpellingHit> result = new ArrayList<SpellingHit>();
-            for (SpellingHit hit : hits) {
-                if (seen.contains(hit))
-                    continue;
-                seen.add(hit);
-                result.add(hit);
-            }
-            return result;
-        }
+	static public List<SpellingHit> getUniqueQueries(List<SpellingHit> hits) {
+		Set<SpellingHit> seen = new TreeSet<SpellingHit>(
+				new Comparator<SpellingHit>() {
+					public int compare(SpellingHit o1, SpellingHit o2) {
+						return o1.getSuggestion().compareToIgnoreCase(o2.getSuggestion());
+					}
+					
+				}
+			);
+		
+		List<SpellingHit> result = new ArrayList<SpellingHit>();
+		for(SpellingHit hit : hits) {
+			if (seen.contains(hit)) continue;
+			seen.add(hit);
+			result.add(hit);
+		}
+		return result;
+	}
 
 }

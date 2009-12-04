@@ -17,18 +17,13 @@ import java.util.StringTokenizer;
 import org.apache.lucene.analysis.LowerCaseTokenizer;
 import org.apache.lucene.analysis.PorterStemFilter;
 import org.apache.lucene.analysis.Token;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 
-import com.freshdirect.cms.search.ISOLatin1AccentFilter;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.SearchQuery;
 import com.freshdirect.framework.util.CSVUtils;
 import com.freshdirect.tools.lucene.SearchQueries.QueryFrequencies;
 import com.freshdirect.tools.lucene.SearchQueries.QueryMap;
 import com.freshdirect.tools.lucene.SearchQueries.QueryFrequency;
-
 
 public class StemAnalyser extends QueryFrequencies {
 	
@@ -57,13 +52,14 @@ public class StemAnalyser extends QueryFrequencies {
 	public static Stemmer porterStemmer = new Stemmer() {
 		
 		public String getStem(String s) {
-		    TokenStream ts =  new PorterStemFilter(new ISOLatin1AccentFilter(new LowerCaseTokenizer(new StringReader(s))));
-		    try {
-		        ts.incrementToken();
-                        } catch (IOException e) {
-                            return s.toLowerCase();
-                        }
-		    return ts.getAttribute(TermAttribute.class).term();
+			PorterStemFilter porterFilter = new PorterStemFilter(new LowerCaseTokenizer(new StringReader(s)));
+			
+			try {
+				Token t = porterFilter.next();
+				return t.termText();
+			} catch (Exception e) {
+				return s;
+			}
 		}
 	};
 	

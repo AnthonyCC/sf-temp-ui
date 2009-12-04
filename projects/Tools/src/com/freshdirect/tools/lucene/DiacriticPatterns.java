@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.lucene.analysis.LowerCaseTokenizer;
-import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 
 import com.freshdirect.cms.search.ISOLatin1AccentFilter;
 import com.freshdirect.framework.util.CSVUtils;
@@ -42,8 +41,7 @@ public class DiacriticPatterns {
 				String queryToken = tokenizer.nextToken().toLowerCase();
 				if (!StringUtil.hasDiacritic(queryToken)) continue;
 				ISOLatin1AccentFilter filter = new ISOLatin1AccentFilter(new LowerCaseTokenizer(new StringReader(queryToken)));
-				filter.incrementToken();
-				String maskedToken = filter.getAttribute(TermAttribute.class).term();
+				String maskedToken = filter.next().termText();
 				os.write(queryToken.getBytes("utf-8"));
 				os.write(',');
 				os.write(("" + freq).getBytes());

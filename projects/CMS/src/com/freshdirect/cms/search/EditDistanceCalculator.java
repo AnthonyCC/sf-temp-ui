@@ -1,7 +1,5 @@
 package com.freshdirect.cms.search;
 
-import org.apache.lucene.search.spell.StringDistance;
-
 /**
  * Calculate the edit distance between two strings.
  * @author istvan
@@ -27,7 +25,7 @@ public interface EditDistanceCalculator {
 	/** Helper for edit distance calculators which use Dynamic Programming.
 	 * 
 	 */
-	public abstract class Helper implements EditDistanceCalculator, StringDistance {
+	public abstract class Helper implements EditDistanceCalculator {
 		
 		/**
 		 * Used as a work buffer to calculate edit distance.
@@ -180,10 +178,6 @@ public interface EditDistanceCalculator {
 			return T.toString();
 		}
 		
-		@Override
-		public float getDistance(String s1, String s2) {
-		    return calculate(s1,s2);
-		}
 	}
 	
 	/**

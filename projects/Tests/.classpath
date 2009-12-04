@@ -26,7 +26,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/selenium-server.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/selenium-java-client-driver.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-core-3.0.0.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-core-2.2.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/jsp-api-2.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
