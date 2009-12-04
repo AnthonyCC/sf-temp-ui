@@ -10,120 +10,119 @@
 
 	<!--
 		disabled because it's conflicting with "/search/query/(.*)" <rule>
-		<from>/search/query/(.*)/page/(.*)/max/(.*)</from> <to
-		last="true">/v/$1/search.do?searchTerm=$1&amp;page=$2&amp;max=$3</to>
-		</rule>
+		<from>/search/query/(.*)/page/(.*)/max/(.*)</from>
+		<to>/search.do?searchTerm=$1&amp;page=$2&amp;max=$3</to> </rule>
 	-->
 
 	<!-- Search Autocomplete -->
 	<rule>
-		<from>^/v/([0-9]+)/search/autocomplete/(.*)</from>
-		<to last="true">/v/$1/search.do?action=autocomplete&amp;searchTerm=$2&amp;ver=$1</to>
+		<from>/search/autocomplete/(.*)</from>
+		<to>/search.do?action=autocomplete&amp;searchTerm=$1</to>
 	</rule>
 
 	<!-- Search -->
 	<rule>
-		<from>^/v/([0-9]+)/search/query/(.*)</from>
-		<to last="true">/v/$1/search.do?searchTerm=$2&amp;ver=$1</to>
+		<from>/search/query/(.*)</from>
+		<to>/search.do?searchTerm=$1</to>
 	</rule>
 
 	<!-- Search with payload -->
 	<rule>
-		<from>^/v/([0-9]+)/search/</from>
-		<to last="true">/v/$1/search.do?ver=$1</to>
+		<from>/search/</from>
+		<to>/search.do</to>
 	</rule>
 
 	<!-- View Product -->
 	<rule>
-		<from>^/v/([0-9]+)/product/catid/(.*)/id/(.*)</from>
-		<to last="true">/v/$1/product.do?productId=$2&amp;categoryId=$2&amp;ver=$1</to>
+		<from>/product/catid/(.*)/id/(.*)</from>
+		<to>/product.do?productId=$2&amp;categoryId=$1</to>
 	</rule>
 
 	<!-- View More Info -->
 	<rule>
-		<from>^/v/([0-9]+)/product/moreinfo/catid/(.*)/id/(.*)</from>
-		<to last="true">/v/$1/product.do?productId=$3&amp;categoryId=$2&amp;action=moreInfo&amp;ver=$1</to>
+		<from>/product/moreinfo/catid/(.*)/id/(.*)</from>
+		<to>/product.do?productId=$2&amp;categoryId=$1&amp;action=moreInfo</to>
 	</rule>
 
 	<rule>
-		<from>^/v/([0-9]+)/product/getprice/catid/(.*)/id/(.*)</from>
-		<to last="true">/v/$1/product.do?productId=$3&amp;categoryId=$2&amp;action=getprice&amp;ver=$1</to>
+		<from>/product/getprice/catid/(.*)/id/(.*)</from>
+		<to>/product.do?productId=$2&amp;categoryId=$1&amp;action=getprice</to>
 	</rule>
 
 	<!-- Login -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/login/$</from>
-		<to last="true">/v/$1/login.do?action=login&amp;ver=$1</to>
+		<from>/(.*)/login/$</from>
+		<to>/login.do?action=login</to>
 	</rule>
 
 	<!-- Cart : Apply Promo : Deprecated -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/applypromo/</from>
-		<to last="true">/v/$1/cart.do?action=applypromo&amp;ver=$1</to>
+		<from>/(.*)/cart/applypromo/</from>
+		<to>/cart.do?action=applypromo</to>
 	</rule>
 	<!-- Cart : Apply Promo : New and Improved -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/promo/apply/(.*)$</from>
-		<to last="true">/v/$1/cart.do?action=applypromo&amp;promoId=$3&amp;ver=$1</to>
+		<from>/(.*)/cart/promo/apply/(.*)$</from>
+		<to>/cart.do?action=applypromo&amp;promoId=$2</to>
 	</rule>
 
 	<!-- Cart : Remove Promo : Deprecated -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/removepromo/</from>
-		<to last="true">/v/$1/cart.do?action=removepromo&amp;ver=$1</to>
+		<from>/(.*)/cart/removepromo/</from>
+		<to>/cart.do?action=removepromo</to>
 	</rule>
 	<!-- Cart : Remove Promo : New and Improved -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/promo/remove/(.*)$</from>
-		<to last="true">/v/$1/cart.do?action=removepromo&amp;promoId=$3&amp;ver=$1</to>
+		<from>/(.*)/cart/promo/remove/(.*)$</from>
+		<to>/cart.do?action=removepromo&amp;promoId=$2</to>
 	</rule>
 
 	<!-- Cart : Add Item -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/add/</from>
-		<to last="true">/v/$1/cart.do?action=additem&amp;ver=$1</to>
+		<from>/(.*)/cart/add/</from>
+		<to>/cart.do?action=additem</to>
 	</rule>
 
 	<!-- Cart : Add Multiple Items -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/addmultiple/</from>
-		<to last="true">/v/$1/cart.do?action=addmultipleitems&amp;ver=$1</to>
+		<from>/(.*)/cart/addmultiple/</from>
+		<to>/cart.do?action=addmultipleitems</to>
 	</rule>
 
 	<!-- Cart : Update Item -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/update/</from>
-		<to last="true">/v/$1/cart.do?action=updateitem&amp;ver=$1</to>
+		<from>/(.*)/cart/update/</from>
+		<to>/cart.do?action=updateitem</to>
 	</rule>
 
 	<!-- Cart : Remove an Item : Deprecated -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/removeitem/</from>
-		<to last="true">/v/$1/cart.do?action=removeitem&amp;ver=$1</to>
+		<from>/(.*)/cart/removeitem/</from>
+		<to>/cart.do?action=removeitem</to>
 	</rule>
 	<!-- Cart : Remove an Item : New -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/remove/(.*)$</from>
-		<to last="true">/v/$1/cart.do?action=removeitem&amp;cartLineId=$3&amp;ver=$1</to>
+		<from>/(.*)/cart/remove/(.*)$</from>
+		<to>/cart.do?action=removeitem&amp;cartLineId=$2</to>
 	</rule>
 	<!-- Cart : Remove all items -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/removeallitems/</from>
-		<to last="true">/v/$1/cart.do?action=removeallitems&amp;ver=$1</to>
+		<from>/(.*)/cart/removeallitems/</from>
+		<to>/cart.do?action=removeallitems</to>
 	</rule>
 
 	<!-- Cart : Get Items -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/getdetail/</from>
-		<to last="true">/v/$1/cart.do?action=getcartdetail&amp;ver=$1</to>
+		<from>/(.*)/cart/getdetail/</from>
+		<to>/cart.do?action=getcartdetail</to>
 	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Get Delivery Addresses -->
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/checkout/init/$</from>
-		<to last="true">/v/$1/checkout.do?action=initcheckout&amp;ver=$1</to>
+		<from>/(.*)/checkout/init/$</from>
+		<to>/checkout.do?action=initcheckout</to>
 	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
@@ -131,13 +130,13 @@
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Deprecated -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/deliveryaddresses/getall/</from>
-		<to last="true">/v/$1/checkout.do?action=getdeliveryaddresses&amp;ver=$1</to>
+		<from>/(.*)/deliveryaddresses/getall/</from>
+		<to>/checkout.do?action=getdeliveryaddresses</to>
 	</rule>
 	<!-- New -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/getall/$</from>
-		<to last="true">/v/$1/checkout.do?action=getdeliveryaddresses&amp;ver=$1</to>
+		<from>/(.*)/checkout/deliveryaddresses/getall/$</from>
+		<to>/checkout.do?action=getdeliveryaddresses</to>
 	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
@@ -145,13 +144,13 @@
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Deprecated -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/deliveryaddresses/set/</from>
-		<to last="true">/v/$1/checkout.do?action=setdeliveryaddress&amp;ver=$1</to>
+		<from>/(.*)/deliveryaddresses/set/</from>
+		<to>/checkout.do?action=setdeliveryaddress</to>
 	</rule>
 	<!-- New -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/checkout/deliveryaddresses/set/$</from>
-		<to last="true">/v/$1/checkout.do?action=setdeliveryaddress&amp;ver=$1</to>
+		<from>/(.*)/checkout/deliveryaddresses/set/$</from>
+		<to>/checkout.do?action=setdeliveryaddress</to>
 	</rule>
 
 
@@ -160,18 +159,18 @@
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Deprecated -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/deliverytimeslot/reserve/$</from>
-		<to last="true">/v/$1/checkout.do?action=reservetimeslot&amp;ver=$1</to>
+		<from>/(.*)/deliverytimeslot/reserve/$</from>
+		<to>/checkout.do?action=reservetimeslot</to>
 	</rule>
 	<!-- New -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/checkout/deliverytimeslot/reserve/(.*)/$</from>
-		<to last="true">/v/$1/checkout.do?action=reservetimeslot&amp;slotId=$3&amp;ver=$1</to>
+		<from>/(.*)/checkout/deliverytimeslot/reserve/(.*)/$</from>
+		<to>/checkout.do?action=reservetimeslot&amp;slotId=$2</to>
 	</rule>
 	<!-- Deprecated -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/deliverytimeslot/reserve/(.*)$</from>
-		<to last="true">/v/$1/checkout.do?action=reservetimeslot&amp;slotId=$3&amp;ver=$1</to>
+		<from>/(.*)/deliverytimeslot/reserve/(.*)$</from>
+		<to>/checkout.do?action=reservetimeslot&amp;slotId=$2</to>
 	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
@@ -179,13 +178,13 @@
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Deprecated-->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/paymentmethods/getall/</from>
-		<to last="true">/v/$1/checkout.do?action=getpaymentmethods&amp;ver=$1</to>
+		<from>/(.*)/paymentmethods/getall/</from>
+		<to>/checkout.do?action=getpaymentmethods</to>
 	</rule>
 	<!-- New -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/getall/</from>
-		<to last="true">/v/$1/checkout.do?action=getpaymentmethods&amp;ver=$1</to>
+		<from>/(.*)/checkout/paymentmethod/getall/</from>
+		<to>/checkout.do?action=getpaymentmethods</to>
 	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
@@ -193,25 +192,25 @@
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Deprecated -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/paymentmethod/set/</from>
-		<to last="true">/v/$1/checkout.do?action=setpaymentmethod&amp;ver=$1</to>
+		<from>/(.*)/paymentmethod/set/</from>
+		<to>/checkout.do?action=setpaymentmethod</to>
 	</rule>
 	<!-- New -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/checkout/paymentmethod/set/</from>
-		<to last="true">/v/$1/checkout.do?action=setpaymentmethod&amp;ver=$1</to>
+		<from>/(.*)/checkout/paymentmethod/set/</from>
+		<to>/checkout.do?action=setpaymentmethod</to>
 	</rule>
 
 	<!-- Submit Order -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/checkout/ordersubmit/</from>
-		<to last="true">/v/$1/checkout.do?action=submitorder&amp;ver=$1</to>
+		<from>/(.*)/checkout/ordersubmit/</from>
+		<to>/checkout.do?action=submitorder</to>
 	</rule>
 
 	<!-- Order Detail -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/checkout/orderdetail/</from>
-		<to last="true">/v/$1/checkout.do?action=revieworderdetail&amp;ver=$1</to>
+		<from>/(.*)/checkout/orderdetail/</from>
+		<to>/checkout.do?action=revieworderdetail</to>
 	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
@@ -219,13 +218,13 @@
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Deprecated -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/atp/error/</from>
-		<to last="true">/v/$1/checkout.do?action=getatperrordetail&amp;ver=$1</to>
+		<from>/(.*)/atp/error/</from>
+		<to>/checkout.do?action=getatperrordetail</to>
 	</rule>
 	<!-- New -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/checkout/atp/error/</from>
-		<to last="true">/v/$1/checkout.do?action=getatperrordetail&amp;ver=$1</to>
+		<from>/(.*)/checkout/atp/error/</from>
+		<to>/checkout.do?action=getatperrordetail</to>
 	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
@@ -233,233 +232,220 @@
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Deprecated -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/atp/removeitems/</from>
-		<to last="true">/v/$1/checkout.do?action=removeunavailableitems&amp;ver=$1</to>
+		<from>/(.*)/atp/removeitems/</from>
+		<to>/checkout.do?action=removeunavailableitems</to>
 	</rule>
 	<!-- New -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/checkout/atp/removeitems/</from>
-		<to last="true">/v/$1/checkout.do?action=removeunavailableitems&amp;ver=$1</to>
+		<from>/(.*)/checkout/atp/removeitems/</from>
+		<to>/checkout.do?action=removeunavailableitems</to>
 	</rule>
 
 	<!-- Verify Age for Alcohol Purchase -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/alcohol/verifyage/</from>
-		<to last="true">/v/$1/checkout.do?action=alcoholageverify&amp;ver=$1</to>
+		<from>/(.*)/alcohol/verifyage/</from>
+		<to>/checkout.do?action=alcoholageverify</to>
 	</rule>
 
 	<!-- Remove all alcohol items from cart -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/alcohol/removefromcart/</from>
-		<to last="true">/v/$1/cart.do?action=removealcoholfromcart&amp;ver=$1</to>
+		<from>/(.*)/alcohol/removefromcart/</from>
+		<to>/cart.do?action=removealcoholfromcart</to>
 	</rule>
 
 	<!-- Get previous order detail : Deprecated -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/order/detail/</from>
-		<to last="true">/v/$1/order.do?action=getorderdetail&amp;ver=$1</to>
+		<from>/(.*)/order/detail/</from>
+		<to>/order.do?action=getorderdetail</to>
 	</rule>
 	<!-- Get previous order detail : New -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/order/(.*)/detail$</from>
-		<to last="true">/v/$1/order.do?action=getorderdetail&amp;orderId=$3&amp;ver=$1</to>
+		<from>/(.*)/order/(.*)/detail$</from>
+		<to>/order.do?action=getorderdetail&amp;orderId=$2</to>
 	</rule>
 
 	<!-- Cancel pending order -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/order/(.*)/cancel$</from>
-		<to last="true">/v/$1/order.do?action=cancelorder&amp;orderId=$3&amp;ver=$1</to>
+		<from>/(.*)/order/(.*)/cancel$</from>
+		<to>/order.do?action=cancelorder&amp;orderId=$2</to>
 	</rule>
 
 	<!-- Order history for Quick Shop -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/orders/quickshop/</from>
-		<to last="true">/v/$1/order.do?action=getquickshoporders&amp;ver=$1</to>
+		<from>/(.*)/orders/quickshop/</from>
+		<to>/order.do?action=getquickshoporders</to>
 	</rule>
 
 
 	<!-- Modify Order -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/order/(.*)/modify$</from>
-		<to last="true">/v/$1/order.do?action=modifyorder&amp;orderId=$3&amp;ver=$1</to>
+		<from>/(.*)/order/(.*)/modify$</from>
+		<to>/order.do?action=modifyorder&amp;orderId=$2</to>
 	</rule>
 
 	<!-- Cancel Order Modify -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/order/cancelmodify/</from>
-		<to last="true">/v/$1/order.do?action=cancelmodify&amp;ver=$1</to>
+		<from>/(.*)/order/cancelmodify/</from>
+		<to>/order.do?action=cancelmodify</to>
 	</rule>
 
 	<!-- Logout -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/logout/</from>
-		<to last="true">/v/$1/login.do?action=logout&amp;ver=$1</to>
+		<from>/(.*)/logout/</from>
+		<to>/login.do?action=logout</to>
 	</rule>
 
-	<!-- Logout -->
+	<!-- Ping -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/ping/</from>
-		<to last="true">/v/$1/login.do?action=ping&amp;ver=$1</to>
+		<from>/(.*)/ping/</from>
+		<to>/login.do?action=ping</to>
+	</rule>
+
+	<!-- Refresh -->
+	<rule>
+		<from>/(.*)/login/refresh/</from>
+		<to>/login.do?action=ping</to>
 	</rule>
 
 	<!-- QuickShop from Previous Order -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/order/id/(.*)/quickshop/</from>
-		<to last="true">/v/$1/order.do?orderId=$3&amp;action=quickshop&amp;ver=$1</to>
+		<from>/(.*)/order/id/(.*)/quickshop/</from>
+		<to>/order.do?orderId=$2&amp;action=quickshop</to>
 	</rule>
 
 	<!-- List Shopping lists -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/shoppinglists/</from>
-		<to last="true">/v/$1/shoppinglist.do?action=getshoppinglists&amp;ver=$1</to>
+		<from>/(.*)/shoppinglists/</from>
+		<to>/shoppinglist.do?action=getshoppinglists</to>
 	</rule>
 
 	<!-- List Shopping lists -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/shoppinglist/id/(.*)/quickshop/</from>
-		<to last="true">/v/$1/shoppinglist.do?cclId=$3&amp;action=quickshop&amp;ver=$1</to>
+		<from>/(.*)/shoppinglist/id/(.*)/quickshop/</from>
+		<to>/shoppinglist.do?cclId=$2&amp;action=quickshop</to>
 	</rule>
 
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/removemultipleitems/</from>
-		<to last="true">/v/$1/cart.do?action=removemultipleitems&amp;ver=$1</to>
+		<from>/(.*)/cart/removemultipleitems/</from>
+		<to>/cart.do?action=removemultipleitems</to>
 	</rule>
 
 	<!-- Smart Store -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/smartstore/youmightalsolike/</from>
-		<to last="true">/v/$1/smartstore.do?action=getymal&amp;ver=$1</to>
+		<from>/(.*)/smartstore/youmightalsolike/</from>
+		<to>/smartstore.do?action=getymal</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/smartstore/favorite/$</from>
-		<to last="true">/v/$1/smartstore.do?action=favorite&amp;ver=$1</to>
+		<from>/(.*)/smartstore/favorite/$</from>
+		<to>/smartstore.do?action=favorite</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/smartstore/yourfavorite/more/$</from>
-		<to last="true">/v/$1/smartstore.do?action=getyourfavorite&amp;page=next&amp;ver=$1</to>
+		<from>/(.*)/smartstore/yourfavorite/more/$</from>
+		<to>/smartstore.do?action=getyourfavorite&amp;page=next</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/smartstore/yourfavorite/$</from>
-		<to last="true">/v/$1/smartstore.do?action=getyourfavorite&amp;ver=$1</to>
+		<from>/(.*)/smartstore/yourfavorite/$</from>
+		<to>/smartstore.do?action=getyourfavorite</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/smartstore/fdfavorite/$</from>
-		<to last="true">/v/$1/smartstore.do?action=getfdfavorite&amp;ver=$1</to>
+		<from>/(.*)/smartstore/fdfavorite/$</from>
+		<to>/smartstore.do?action=getfdfavorite</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/smartstore/fdfavorite/more/$</from>
-		<to last="true">/v/$1/smartstore.do?action=getfdfavorite&amp;page=next&amp;ver=$1</to>
+		<from>/(.*)/smartstore/fdfavorite/more/$</from>
+		<to>/smartstore.do?action=getfdfavorite&amp;page=next</to>
 	</rule>
 
 	<!-- Contact Us : Get -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/contactus/get/</from>
-		<to last="true">/v/$1/contactus.do?action=getformdata&amp;ver=$1</to>
+		<from>/(.*)/contactus/get/</from>
+		<to>/contactus.do?action=getformdata</to>
 	</rule>
 	<!-- Contact Us : Post -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/contactus/send/</from>
-		<to last="true">/v/$1/contactus.do?action=submit&amp;ver=$1</to>
+		<from>/(.*)/contactus/send/</from>
+		<to>/contactus.do?action=submit</to>
 	</rule>
 
 	<!-- What's Good - Presidents Pick-->
 	<rule>
-		<from>^/v/([0-9]+)/product/presidentspick/</from>
-		<to last="true">/v/$1/product.do?action=wsgpresidentspick&amp;ver=$1</to>
+		<from>/product/presidentspick/</from>
+		<to>/product.do?action=wsgpresidentspick</to>
 	</rule>
 
 	<!-- What's Good - Butcher's Block-->
 	<rule>
-		<from>^/v/([0-9]+)/product/butchersblock/</from>
-		<to last="true">/v/$1/product.do?action=wsgbutchers&amp;ver=$1</to>
+		<from>/product/butchersblock/</from>
+		<to>/product.do?action=wsgbutchers</to>
 	</rule>
 
 	<!-- What's Good - Brand-Name Deals-->
 	<rule>
-		<from>^/v/([0-9]+)/product/brandnamedeals/</from>
-		<to last="true">/v/$1/product.do?action=wsgdeals&amp;ver=$1</to>
+		<from>/product/brandnamedeals/</from>
+		<to>/product.do?action=wsgdeals</to>
 	</rule>
 
 	<!-- What's Good - Brand-Name Deals-->
 	<rule>
-		<from>^/v/([0-9]+)/product/peakproduce/</from>
-		<to last="true">/v/$1/product.do?action=wsgproduce&amp;ver=$1</to>
+		<from>/product/peakproduce/</from>
+		<to>/product.do?action=wsgproduce</to>
 	</rule>
 
 	<!-- Delivery Info : Get Delivery Addresses -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/addresses/</from>
-		<to last="true">/v/$1/account.do?action=getaddresses&amp;ver=$1</to>
+		<from>/(.*)/account/addresses/</from>
+		<to>/account.do?action=getaddresses</to>
 	</rule>
 	<!-- Delivery Info : Get Timeslots -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/timeslots$</from>
-		<to last="true">/v/$1/account.do?action=gettimeslots&amp;ver=$1</to>
+		<from>/(.*)/account/timeslots$</from>
+		<to>/account.do?action=gettimeslots</to>
 	</rule>
 	<!-- Delivery Info : Cancel Reservation -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/timeslots/cancel$</from>
-		<to last="true">/v/$1/account.do?action=cancelreservation&amp;ver=$1</to>
+		<from>/(.*)/account/timeslots/cancel$</from>
+		<to>/account.do?action=cancelreservation</to>
 	</rule>
 	<!-- Delivery Info : Reserve Timeslot -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/timeslots/reserve$</from>
-		<to last="true">/v/$1/account.do?action=reservetimeslot&amp;ver=$1</to>
+		<from>/(.*)/account/timeslots/reserve$</from>
+		<to>/account.do?action=reservetimeslot</to>
 	</rule>
 	<!-- Delivery Info : Get Timeslots -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/timeslots/(.*)$</from>
-		<to last="true">/v/$1/account.do?action=gettimeslots&amp;addressId=$3&amp;ver=$1</to>
+		<from>/(.*)/account/timeslots/(.*)$</from>
+		<to>/account.do?action=gettimeslots&amp;addressId=$2</to>
 	</rule>
 
 	<!-- Order history for all order -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/account/orders/</from>
-		<to last="true">/v/$1/account.do?action=getorders&amp;ver=$1</to>
+		<from>/(.*)/account/orders/</from>
+		<to>/account.do?action=getorders</to>
 	</rule>
 
 	<!-- Email capture -->
 	<rule>
-		<from>^/v/([0-9]+)/emailcapture/(.*)</from>
-		<to last="true">/v/$1/emailcapture.do?email=$2&amp;ver=$1</to>
+		<from>/emailcapture/(.*)</from>
+		<to>/emailcapture.do?email=$1</to>
 	</rule>
 
 	<!-- config -->
 	<rule>
-		<from>^/v/([0-9]+)/configvalue/(.*)</from>
-		<to last="true">/v/$1/configvalue.do?key=$2&amp;ver=$1</to>
+		<from>/configvalue/(.*)</from>
+		<to>/configvalue.do?key=$1</to>
 	</rule>
 
 	<!-- Help -->
 	<rule>
-		<from>^/v/([0-9]+)/help/(.*)</from>
-		<to last="true">/v/$1/help.do?action=$2&amp;ver=$1</to>
+		<from>/help/(.*)</from>
+		<to>/help.do?action=$1</to>
 	</rule>
 
 	<!-- Test -->
 	<rule>
-		<from>^/v/([0-9]+)/test/$</from>
-		<to last="true">/v/$1/test.do</to>
-	</rule>
-
-	<rule>
 		<from>^/test/$</from>
-		<to last="true">/test.do</to>
+		<to>/test.do</to>
 	</rule>
 
-	<!--	 Discovery Service -->
-	<!--	<rule>-->
-	<!--		<from>^/discovery(.*)$</from>-->
-	<!--
-		<to last="true"
-		type="permanent-redirect">%{context-path}/discovery$1</to>
-	-->
-	<!--	</rule>-->
-
-	<!-- Versioning Default -->
-	<!--	<rule>-->
-	<!--		<from>^/([^v])(.*)$</from>-->
-	<!--		<to>/v/1/$1$2</to>-->
-	<!--	</rule>-->
 </urlrewrite>
 

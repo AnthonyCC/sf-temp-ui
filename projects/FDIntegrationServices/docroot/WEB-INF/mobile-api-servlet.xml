@@ -60,20 +60,20 @@
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
 			<props>
-				<prop key="**/shoppinglist.do">shoppingListController</prop>
-				<prop key="**/checkout.do">checkoutController</prop>
-				<prop key="**/order.do">orderController</prop>
-				<prop key="**/cart.do">cartController</prop>
-				<prop key="**/search.do">searchController</prop>
-				<prop key="**/product.do">productController</prop>
-				<prop key="**/login.do">loginController</prop>
-				<prop key="**/smartstore.do">smartStoreController</prop>
-				<prop key="**/account.do">accountController</prop>
-				<prop key="**/contactus.do">contactUsController</prop>
-				<prop key="**/emailcapture.do">emailCaptureController</prop>
-				<prop key="**/configvalue.do">configurationController</prop>
-				<prop key="**/test.do">testController</prop>
-				<prop key="**/help.do">helpController</prop>
+				<prop key="/shoppinglist.do">shoppingListController</prop>
+				<prop key="/checkout.do">checkoutController</prop>
+				<prop key="/order.do">orderController</prop>
+				<prop key="/cart.do">cartController</prop>
+				<prop key="/search.do">searchController</prop>
+				<prop key="/product.do">productController</prop>
+				<prop key="/login.do">loginController</prop>
+				<prop key="/smartstore.do">smartStoreController</prop>
+				<prop key="/account.do">accountController</prop>
+				<prop key="/contactus.do">contactUsController</prop>
+				<prop key="/emailcapture.do">emailCaptureController</prop>
+				<prop key="/configvalue.do">configurationController</prop>
+				<prop key="/test.do">testController</prop>
+				<prop key="/help.do">helpController</prop>
 			</props>
 		</property>
 	</bean>

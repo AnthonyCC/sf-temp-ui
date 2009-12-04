@@ -40,7 +40,6 @@ import com.freshdirect.mobileapi.model.tagwrapper.HttpSessionWrapper;
 import com.freshdirect.mobileapi.service.Oas247Service;
 import com.freshdirect.mobileapi.service.OasService;
 import com.freshdirect.mobileapi.service.ServiceException;
-import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
@@ -134,6 +133,13 @@ public abstract class BaseController extends AbstractController implements Messa
         }
     }
 
+    //    public Message createdErrorMessage(Collection<ActionError> errors) {
+    //        Message responseMessage = new Message();
+    //        responseMessage.setStatus(Message.STATUS_FAILED);
+    //        responseMessage.addErrorMessages(errors);
+    //        return responseMessage;
+    //    }
+
     protected RequestData qetRequestData(HttpServletRequest request) {
         RequestData requestData = new RequestData();
         requestData.setQueryString(request.getQueryString());
@@ -166,44 +172,28 @@ public abstract class BaseController extends AbstractController implements Messa
         response.setContentType("text/xml");
         ModelAndView model = getModelAndView(JSON_RENDERED);
         String action = request.getParameter("action");
-        String version = request.getParameter("ver");
-        String paramVersion = "0";
-        if ((null != version) && (!version.isEmpty())) {
-            SessionUser user = null;
+        SessionUser user = null;
+        try {
             try {
-                paramVersion = version;
-
-                if (!paramVersion.equals(MobileApiProperties.getCurrentApiVersion())) {
-                    throw new IllegalArgumentException();
-                }
-
-                try {
-                    user = getUserFromSession(request, response);
-                } catch (NoSessionException e) {
-                    if (validateUser()) {
-                        throw e;
-                    }
-                }
-                if (validateCart() && (null != user)) {
-                    Cart cart = user.getShoppingCart();
-                    if (!cart.isSet()) {
-                        throw new NoCartException("Where my cart?");
-                    }
-                }
-                model = processRequest(request, response, model, action, user);
+                user = getUserFromSession(request, response);
             } catch (NoSessionException e) {
-                Message responseMessage = getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
-                setResponseMessage(model, responseMessage, user);
-            } catch (NoCartException e) {
-                Message responseMessage = getErrorMessage(ERR_CART_EXPIRED, "User's shopping cart doesn't exists Que passo?");
-                setResponseMessage(model, responseMessage, user);
-            } catch (NumberFormatException e) {
-                Message responseMessage = getErrorMessage(ERR_INCOMPATIBLE_CLIENT, MobileApiProperties.getDiscoveryServiceUrl());
-                setResponseMessage(model, responseMessage, user);
-            } catch (IllegalArgumentException e) {
-                Message responseMessage = getErrorMessage(ERR_INCOMPATIBLE_CLIENT, MobileApiProperties.getDiscoveryServiceUrl());
-                setResponseMessage(model, responseMessage, user);
+                if (validateUser()) {
+                    throw e;
+                }
             }
+            if (validateCart() && (null != user)) {
+                Cart cart = user.getShoppingCart();
+                if (!cart.isSet()) {
+                    throw new NoCartException("Where my cart?");
+                }
+            }
+            model = processRequest(request, response, model, action, user);
+        } catch (NoSessionException e) {
+            Message responseMessage = getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
+            setResponseMessage(model, responseMessage, user);
+        } catch (NoCartException e) {
+            Message responseMessage = getErrorMessage(ERR_CART_EXPIRED, "User's shopping cart doesn't exists Que passo?");
+            setResponseMessage(model, responseMessage, user);
         }
 
         return model;
@@ -250,8 +240,8 @@ public abstract class BaseController extends AbstractController implements Messa
     protected void setResponseMessage(ModelAndView model, Message responseMessage, SessionUser user) throws JsonException {
         try {
             try {
-                //Do OAS Check
                 responseMessage.addNoticeMessages(oasService.getMessages(user));
+
             } catch (ServiceException e) {
                 LOGGER.warn("ServiceException while trying to get oas messages. not stopping execution.", e);
             }
