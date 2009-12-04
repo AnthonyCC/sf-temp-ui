@@ -183,8 +183,8 @@ public class LuceneSearchService implements ContentSearchServiceI {
 		return contentIndexes.keySet();
 	}
 
-	private IndexReader createReader() throws IOException {
-		return IndexReader.open(getIndexDirectory());
+	private IndexReader createReader(boolean readOnly) throws IOException {
+		return IndexReader.open(getIndexDirectory(), readOnly);
 	}
 
 	/* (non-Javadoc)
@@ -193,7 +193,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	public synchronized void index(Collection<ContentNodeI> contentNodes) {
 		try {
 			// delete old documents
-			IndexReader localReader = createReader();
+			IndexReader localReader = createReader(false);
 			int count = 0;
 			for (Iterator i = contentNodes.iterator(); i.hasNext();) {
 				ContentNodeI node = (ContentNodeI) i.next();
@@ -222,7 +222,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
 			// replace old reader
 			localReader = this.reader;
-			this.reader = createReader();
+			this.reader = createReader(true);
 			if (localReader != null) {
 				localReader.close();
 			}
@@ -247,7 +247,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
 			// replace old reader
 			IndexReader localReader = this.reader;
-			this.reader = createReader();
+			this.reader = createReader(false);
 			if (localReader != null) {
 				localReader.close();
 			}
@@ -461,7 +461,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
 	private IndexReader getReader() throws IOException {
 		if (this.reader == null) {
-			this.reader = createReader();
+			this.reader = createReader(true);
 		}
 		return this.reader;
 	}
