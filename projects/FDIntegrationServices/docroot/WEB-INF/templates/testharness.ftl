@@ -144,7 +144,7 @@ function loadStuff() {
   	$("#payload").val('');
   	$("#result").val("");  	
   } else if (loaddata == "Search") {
-  	$("#url").val("/mobileapi/search/");
+  	$("#url").val("/search/");
 	var postdata = '{"query": "coffee", "page" : "1"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
