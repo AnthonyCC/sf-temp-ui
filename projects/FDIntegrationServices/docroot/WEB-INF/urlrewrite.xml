@@ -30,7 +30,7 @@
 	<!-- Search with payload -->
 	<rule>
 		<from>^/v/([0-9]+)/search/</from>
-		<to last="true">/v/$1/search.do&amp;ver=$1</to>
+		<to last="true">/v/$1/search.do?ver=$1</to>
 	</rule>
 
 	<!-- View Product -->
