@@ -8,28 +8,12 @@
  */
 package com.freshdirect.mobileapi.util;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
 import java.util.Properties;
-import java.util.Set;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.FDException;
 import com.freshdirect.framework.util.ConfigHelper;
-import com.freshdirect.framework.util.DateRange;
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -44,11 +28,19 @@ public class MobileApiProperties {
 
     private static final SimpleDateFormat SF = new SimpleDateFormat("yyyy-MM-dd");
 
+    private final static String PROP_DISCOVERY_URL = "mobileapi.discovery.url";
+
+    private final static String PROP_CURRENT_VERSION = "mobileapi.version.current";
+
     private final static String PROP_VERSION_ACTION = "mobileapi.version.action.";
 
     private final static String PROP_CART_MISC_CHARGE_LABEL = "mobileapi.cart.misc.label";
 
     private final static String PROP_MEDIA_PATH = "mobileapi.media.path";
+    
+    public final static String UPGRADE = "UPGRADE";
+
+    public final static String INCOMPATIBLE = "INCOMPATIBLE";
 
     private static long lastRefresh = 0;
 
@@ -61,9 +53,6 @@ public class MobileApiProperties {
     static {
         defaults.put(PROP_CART_MISC_CHARGE_LABEL, "Fuel Surcharge");
         defaults.put(PROP_MEDIA_PATH, "http://www.freshdirect.com");
-        //        defaults.put(PROP_AD_SERVER_ENABLED, "false");
-        //        defaults.put(DEPT_EDLP_CATID, "");
-        refresh();
     }
 
     private MobileApiProperties() {
@@ -91,8 +80,16 @@ public class MobileApiProperties {
         return get(PROP_CART_MISC_CHARGE_LABEL);
     }
 
-    public static String getApiVersionAction(int version) {
+    public static String getApiVersionAction(String version) {
         return get(PROP_VERSION_ACTION + version);
+    }
+
+    public static String getCurrentApiVersion() {
+        return get(PROP_CURRENT_VERSION);
+    }
+
+    public static String getDiscoveryServiceUrl() {
+        return get(PROP_DISCOVERY_URL);
     }
 
     public static String getMediaPath(){
