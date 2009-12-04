@@ -166,7 +166,11 @@ public class AccountController extends BaseController {
     private ModelAndView getDeliveryTimeslot(ModelAndView model, SessionUser user) throws FDException, JsonException, ServiceException {
         String addressId = user.getReservationAddressId();
         if (addressId == null) {
-            addressId = user.getDefaultShipToAddress();
+            if (user.getDefaultShipToAddress() != null){
+                addressId = user.getDefaultShipToAddress();
+            } else{
+                addressId =  user.getDeliveryAddresses().get(0).getId();
+            }
         }
         return getDeliveryTimeslot(model, user, addressId);
     }
