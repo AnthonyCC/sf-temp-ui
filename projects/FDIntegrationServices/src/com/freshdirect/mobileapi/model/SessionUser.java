@@ -32,6 +32,7 @@ import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResu
 import com.freshdirect.mobileapi.model.tagwrapper.FDCustomerCreatedListTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.GetCutoffInfoTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.GetOrderTagWrapper;
+import com.freshdirect.mobileapi.model.tagwrapper.HealthWarningControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.OrderHistoryInfoTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.QuickShopControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ReserveTimeslotControllerTagWrapper;
@@ -321,7 +322,7 @@ public class SessionUser {
     public void setReservationAndPreselectedTimeslotIds(List<FDTimeslotList> timeslotLists,
             TimeSlotCalculationResult timeSlotCalculationResult) throws FDResourceException {
         FDReservation reservation = getReservation();
-        
+
         /*
         * DUP: FDWebSite/docroot/your_account/reserve_timeslot.jsp
         * LAST UPDATED ON: 11/13/2009
@@ -366,7 +367,7 @@ public class SessionUser {
                 timeSlotCalculationResult.setReservationTimeslotId(foundId);
             }
         }
-        
+
         //Set timeslot for checkout         
         FDReservation deliveryReservation = this.sessionUser.getShoppingCart().getDeliveryReservation();
         if (deliveryReservation != null) {
@@ -464,6 +465,19 @@ public class SessionUser {
 
     public String getUsername() {
         return sessionUser.getUserId();
+    }
+
+    /**
+     * @return
+     * @throws FDException
+     */
+    public ResultBundle acknowledgeHealthWarning() throws FDException {
+        HealthWarningControllerTagWrapper wrapper = new HealthWarningControllerTagWrapper(this);
+        return wrapper.acknowledgeHealthWarning();
+    }
+
+    public boolean isHealthWarningAcknowledged() {
+        return sessionUser.isHealthWarningAcknowledged();
     }
 
 }

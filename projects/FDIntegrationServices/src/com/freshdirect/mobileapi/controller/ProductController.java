@@ -17,6 +17,8 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.Product;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.controller.data.ProductMoreInfo;
@@ -26,10 +28,13 @@ import com.freshdirect.mobileapi.controller.data.response.Price;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
+import com.freshdirect.mobileapi.model.Checkout;
+import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SalesUnit;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.Sku;
 import com.freshdirect.mobileapi.model.Product.ImageType;
+import com.freshdirect.mobileapi.model.tagwrapper.HealthWarningControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
@@ -46,6 +51,8 @@ public class ProductController extends BaseController {
     public static final String MORE_INFO_ACTION = "moreInfo";
 
     public static final String GET_PRICE_ACTION = "getprice";
+
+    public static final String ACKNOWLEDGE_HEALTH_WARNING = "acknowledgehealthwarning";
 
     public static final String WHATS_GOOD_PRESIDEN_PICKS_ACTION = "wsgpresidentspick";
 
@@ -72,6 +79,8 @@ public class ProductController extends BaseController {
                 model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.BRAND_NAME_DEALS);
             } else if (WHATS_GOOD_BUTCHERS_ACTION.equals(action)) {
                 model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.BUTCHERS_BLOCK);
+            } else if (ACKNOWLEDGE_HEALTH_WARNING.equals(action)) {
+                model = getAcknowledgeHealthWarning(model, request, response, user);
             } else if (WHATS_GOOD_PRODUCE_ACTION.equals(action)) {
                 model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.PEAK_PRODUCE);
             } else {
@@ -80,6 +89,34 @@ public class ProductController extends BaseController {
         } catch (ModelException e) {
             throw new ServiceException(e);
         }
+
+        return model;
+    }
+
+    /**
+     * @param model
+     * @param request
+     * @param response
+     * @param user
+     * @return
+     * @throws JsonException
+     * @throws FDException
+     */
+    private ModelAndView getAcknowledgeHealthWarning(ModelAndView model, HttpServletRequest request, HttpServletResponse response,
+            SessionUser user) throws JsonException, FDException {
+
+        Message responseMessage = null;
+        ResultBundle resultBundle = user.acknowledgeHealthWarning();
+        ActionResult result = resultBundle.getActionResult();
+        propogateSetSessionValues(request.getSession(), resultBundle);
+
+        if (result.isSuccess()) {
+            responseMessage = Message.createSuccessMessage("User acknowledgment of health warning captured successfully.");
+        } else {
+            responseMessage = getErrorMessage(result, request);
+        }
+        responseMessage.addWarningMessages(result.getWarnings());
+        setResponseMessage(model, responseMessage, user);
 
         return model;
     }
@@ -140,20 +177,26 @@ public class ProductController extends BaseController {
 
         com.freshdirect.mobileapi.model.Product product = getProduct(request, response);
 
-        Product data;
-        try {
-            data = new Product(product);
-            if (null != data.getProductTerms()) {
-                data.setProductTerms(getProductWrappedTerms(data.getProductTerms()));
+        Message responseMessage;
+        if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
+            responseMessage = new Message();
+            responseMessage.setStatus(Message.STATUS_FAILED);
+            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, ERR_HEALTH_WARNING_MSG);
+        } else {
+            try {
+                responseMessage = new Product(product);
+                if (null != ((Product) responseMessage).getProductTerms()) {
+                    ((Product) responseMessage).setProductTerms(getProductWrappedTerms(((Product) responseMessage).getProductTerms()));
+                }
+            } catch (ModelException e) {
+                throw new FDException(e);
+            } catch (IOException e) {
+                throw new FDException(e);
+            } catch (TemplateException e) {
+                throw new FDException(e);
             }
-        } catch (ModelException e) {
-            throw new FDException(e);
-        } catch (IOException e) {
-            throw new FDException(e);
-        } catch (TemplateException e) {
-            throw new FDException(e);
         }
-        setResponseMessage(model, data, user);
+        setResponseMessage(model, responseMessage, user);
         return model;
 
     }

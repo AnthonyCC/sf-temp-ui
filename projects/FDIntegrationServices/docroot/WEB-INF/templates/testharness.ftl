@@ -127,6 +127,10 @@ function loadStuff() {
   	$("#url").val("/mobileapi/saptest12@freshdirect.com/alcohol/verifyage/");
   	$("#payload").val('');
   	$("#result").val("");  	
+  } else if (loaddata == "AcknowledgeHealthWarning") {  	
+  	$("#url").val("/mobileapi/saptest12@freshdirect.com/alcohol/acknowledgehealthwarning/");
+  	$("#payload").val('');
+  	$("#result").val("");  	
   } else if (loaddata == "RemoveAlcohol") {  	
   	$("#url").val("/mobileapi/saptest12@freshdirect.com/alcohol/removefromcart/");
   	$("#payload").val('');
@@ -416,6 +420,7 @@ function doStuff() {
   <option value="ProductDetail">PRODUCT - Product Detail</option>
   <option value="ProductDetailMoreInfo">PRODUCT - More Info</option>
   <option value="ProductGetPrice">PRODUCT - Pricing API</option>
+  <option value="AcknowledgeHealthWarning">PRODUCT - Ack Health Warning</option>
   <option value=""> ========== ORDERS ========== </option>
   <option value="GetOrderHistory">ORDERS - Order History</option>
   <option value="GetExistingOrder">ORDERS - Existing Order Detail</option>

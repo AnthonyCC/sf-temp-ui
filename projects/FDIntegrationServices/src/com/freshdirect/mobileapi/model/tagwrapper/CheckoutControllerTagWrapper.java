@@ -85,6 +85,21 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         String redirectUrl = ((HttpResponseWrapper) pageContext.getResponse()).getSendRedirectUrl();
         LOGGER.debug("redirectUrl is:" + redirectUrl);
 
+        CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
+
+        //Check redirect status on credit card auth failure
+        if ((result.getActionResult() == null) && (redirectUrl != null)) {
+            ActionResult actionResult = new ActionResult();
+            if (redirectUrl.equals(wrappedTag.getCcdProblemPage())) {
+                actionResult.addError(new ActionError(ERR_CREDIT_CARD_PROBLEM, ERR_CREDIT_CARD_PROBLEM_MSG));
+            } else if (redirectUrl.equals(wrappedTag.getAuthCutoffPage())) {
+                actionResult.addError(new ActionError(ERR_PAYMENT_ACCOUNT_PROBLEM, ERR_PAYMENT_ACCOUNT_PROBLEM_MSG));
+            } else {
+                actionResult.addError(new ActionError(ERR_GENERIC_CHECKOUT_EXCEPTION, ERR_GENERIC_CHECKOUT_EXCEPTION_MSG));
+            }
+            result.setActionResult(actionResult);
+        }
+
         return result;
     }
 
@@ -118,8 +133,6 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
      *     reference but it's a private field.
      * WHAT: constant in tag class that defines URL for page verification.
      */
-    public static String ageVerificationPage = (new CheckoutControllerTag()).ageVerificationPage; //Since it's not static
-
     public ResultBundle setCheckoutDeliveryAddress(SessionUser user, String selectAddressId, DeliveryAddressType type) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT },
                 new String[] { SESSION_PARAM_USER, SessionName.SIGNUP_WARNING }); //gets,sets
@@ -150,10 +163,9 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         if (actionResult == null) {
             actionResult = new ActionResult();
         }
-        //        if (user.getShoppingCart().containsAlcohol() && !verifyAddress(user.getShoppingCart().getDeliveryAddress())) {
-        //            actionResult.addError(new ActionError(ERR_ALCOHOL_DELIVERY_AREA_RESTRICTION,
-        //                    "Alcohol not allowed to be delivered to specified address."));
-        if (ageVerificationPage.equals(successPage)) {
+
+        CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
+        if (wrappedTag.getAgeVerificationPage().equals(successPage)) {
             actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, "Age verification needed"));
         }
         return new ResultBundle(actionResult, this);

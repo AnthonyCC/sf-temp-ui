@@ -56,18 +56,36 @@ public interface MessageCodes {
 
     //Alcohol - Age Verification Error
     public static final String ERR_AGE_VERIFICATION = "ERR_AGE_VERIFICATION";
+    public static final String ERR_AGE_VERIFICATION_MSG = "Age verification needed";
+
+    //Alcohol - Age Verification Error
+    public static final String ERR_HEALTH_WARNING = "ERR_HEALTH_WARNING";
+    public static final String ERR_HEALTH_WARNING_MSG = "Health warning verification";
+
 
     //Alcohol - Not allowed to be delivered outside
     public static final String ERR_ALCOHOL_DELIVERY_AREA_RESTRICTION = "ERR_ALCOHOL_DELIVERY_AREA_RESTRICTION";
 
     //Minimum Order Amount Error
     public static final String ERR_ORDER_MINIMUM = "ERR_ORDER_MINIMUM";
+    public static final String ERR_ORDER_MINIMUM_MSG = "We''re sorry; you cannot check out because your pretax order total of {0,number,$0.00} is under the FreshDirect {1,number,$0} minimum order requirement.";
+    
 
     //Minimum Order Amount Error
     public static final String ERR_PAYMENT_INVAID_CREDIT_CARD_NUMBER = "ERR_PAYMENT_INVAID_CREDIT_CARD_NUMBER";
 
     //Invalid Promo code
     public static final String ERR_REDEMPTION_ERROR = "ERR_REDEMPTION_ERROR";
+    
+    //Credit card problem
+    public static final String ERR_CREDIT_CARD_PROBLEM = "ERR_CREDIT_CARD_PROBLEM";
+    public static final String ERR_CREDIT_CARD_PROBLEM_MSG = "There was a problem with the credit card you selected. Please choose or add a new payment method.";
+
+    public static final String ERR_PAYMENT_ACCOUNT_PROBLEM = "ERR_CREDIT_CARD_PROBLEM";
+    public static final String ERR_PAYMENT_ACCOUNT_PROBLEM_MSG = "We are unable to process your order because there is a problem with your account.";
+
+    public static final String ERR_GENERIC_CHECKOUT_EXCEPTION = "ERR_GENERIC_CHECKOUT_EXCEPTION";
+    public static final String ERR_GENERIC_CHECKOUT_EXCEPTION_MSG = "There was a problem processing your order submission.";
 
     // =============================================== notices =============================== //
     //Minimum Order Amount Error
@@ -111,7 +129,7 @@ public interface MessageCodes {
                     Double minimumOrder = new Double(user.getMinimumOrderAmount());
 
                     //May need to distinguish between delivery and pickup
-                    returnValue = new ErrorMessage(ERR_ORDER_MINIMUM, MessageFormat.format(SystemMessageList.MSG_CHECKOUT_BELOW_MINIMUM,
+                    returnValue = new ErrorMessage(ERR_ORDER_MINIMUM, MessageFormat.format(ERR_ORDER_MINIMUM_MSG,
                             new Object[] { subTotal, minimumOrder }));
                 }
             } else if ("system".equals(key)) {

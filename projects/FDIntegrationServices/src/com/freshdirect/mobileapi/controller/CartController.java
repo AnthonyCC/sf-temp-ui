@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.AddItemToCart;
@@ -19,6 +20,7 @@ import com.freshdirect.mobileapi.controller.data.request.UpdateItemInCart;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.Cart;
+import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
@@ -169,20 +171,28 @@ public class CartController extends BaseController {
         Message responseMessage = null;
 
         Cart cart = user.getShoppingCart();
-        ResultBundle resultBundle = cart.addItemToCart(reqestMessage, qetRequestData(request), user);
-        ActionResult result = resultBundle.getActionResult();
-        propogateSetSessionValues(request.getSession(), resultBundle);
-
-        if (result.isSuccess()) {
-            CartDetail cartDetail = cart.getCartDetail(user);
-            responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
-            ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
-            responseMessage.setSuccessMessage("Item has been added to cart successfully.");
-
+        Product product = Product.getProduct(reqestMessage.getProductConfiguration().getProductId(), reqestMessage
+                .getProductConfiguration().getCategoryId(), user);
+        if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
+            responseMessage = new Message();
+            responseMessage.setStatus(Message.STATUS_FAILED);
+            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, ERR_HEALTH_WARNING_MSG);
         } else {
-            responseMessage = getErrorMessage(result, request);
+            ResultBundle resultBundle = cart.addItemToCart(reqestMessage, qetRequestData(request), user);
+            ActionResult result = resultBundle.getActionResult();
+            propogateSetSessionValues(request.getSession(), resultBundle);
+
+            if (result.isSuccess()) {
+                CartDetail cartDetail = cart.getCartDetail(user);
+                responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
+                ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
+                responseMessage.setSuccessMessage("Item has been added to cart successfully.");
+            } else {
+                responseMessage = getErrorMessage(result, request);
+            }
+            responseMessage.addWarningMessages(result.getWarnings());
+
         }
-        responseMessage.addWarningMessages(result.getWarnings());
         setResponseMessage(model, responseMessage, user);
         return model;
     }

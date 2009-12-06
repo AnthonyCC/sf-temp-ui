@@ -253,6 +253,12 @@
 		<to>/cart.do?action=removealcoholfromcart</to>
 	</rule>
 
+	<!-- Product Health Warning Acknowledge -->
+	<rule>
+		<from>(.*)/alcohol/acknowledgehealthwarning/$</from>
+		<to>/product.do?action=acknowledgehealthwarning</to>
+	</rule>
+
 	<!-- Get previous order detail : Deprecated -->
 	<rule>
 		<from>/(.*)/order/detail/</from>
