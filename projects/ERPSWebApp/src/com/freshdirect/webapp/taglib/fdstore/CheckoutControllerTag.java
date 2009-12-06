@@ -95,18 +95,52 @@ import com.freshdirect.webapp.taglib.AbstractControllerTag;
  */
 public class CheckoutControllerTag extends AbstractControllerTag {
 
-	private static Category LOGGER = LoggerFactory
+    private static Category LOGGER = LoggerFactory
 			.getInstance(CheckoutControllerTag.class);
 
-	public String ccdProblemPage = "/checkout/step_3_choose.jsp";
-	public String authCutoffPage = "/checkout/account_problem.jsp";
-	public String ageVerificationPage = "/checkout/step_2_verify_age.jsp";
-	public String noContactPhonePage = "/checkout/step_1_edit.jsp";
-	public String backToViewCart = "/checkout/view_cart.jsp";
-	public String ccdAddCardPage = "/checkout/step_3_card_add.jsp";
-	public String gcFraudPage = "/gift_card/purchase/purchase_giftcard.jsp";
-	public String gcAVSExceptionPage="/gift_card/purchase/purchase_giftcard.jsp";	
-	
+	private String ccdProblemPage = "/checkout/step_3_choose.jsp";
+	private String authCutoffPage = "/checkout/account_problem.jsp";
+	private String ageVerificationPage = "/checkout/step_2_verify_age.jsp";
+	private String noContactPhonePage = "/checkout/step_1_edit.jsp";
+	private String backToViewCart = "/checkout/view_cart.jsp";
+	private String ccdAddCardPage = "/checkout/step_3_card_add.jsp";
+	private String gcFraudPage = "/gift_card/purchase/purchase_giftcard.jsp";
+	private String gcAVSExceptionPage="/gift_card/purchase/purchase_giftcard.jsp";	
+
+
+	public String getCcdProblemPage() {
+	    return ccdProblemPage;
+	}
+
+	public String getAuthCutoffPage() {
+	    return authCutoffPage;
+	}
+
+	public String getAgeVerificationPage() {
+	    return ageVerificationPage;
+	}
+
+	public String getNoContactPhonePage() {
+	    return noContactPhonePage;
+	}
+
+	public String getBackToViewCart() {
+	    return backToViewCart;
+	}
+
+	public String getCcdAddCardPage() {
+	    return ccdAddCardPage;
+	}
+
+	public String getGcFraudPage() {
+	    return gcFraudPage;
+	}
+
+	public String getGcAVSExceptionPage() {
+	    return gcAVSExceptionPage;
+	}
+
+
 	public void setCcdProblemPage(String ccdProblemPage) {
 		this.ccdProblemPage = ccdProblemPage;
 	}
