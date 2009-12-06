@@ -77,6 +77,7 @@ import com.freshdirect.webapp.util.RestrictionUtil;
 public class Cart {
 
     public static final String AFFILIATE_USQ_WINES_CODE = "USQ";
+
     public static final String RECENT_ITEMS = "RECENT_ITEMS";
 
     public static Cart wrap(FDCartModel cart) {
@@ -547,7 +548,7 @@ public class Cart {
                 if (lastDept == null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) {
                     lastDept = cartLine.getDepartmentDesc();
                     // Bypass idDiaplayDepartment for USQ Affiliate
-                    if (view.isDisplayDepartment() || AFFILIATE_USQ_WINES_CODE.equalsIgnoreCase(view.getAffiliate().getCode()) ) {
+                    if (view.isDisplayDepartment() || AFFILIATE_USQ_WINES_CODE.equalsIgnoreCase(view.getAffiliate().getCode())) {
 
                         //This gets the first item's department, does not apply to Recipe
                         String lastDeptImgName = cartLine.getProductRef().lookupCategory().getDepartment().getContentName() + "_cart.gif";
@@ -678,8 +679,7 @@ public class Cart {
         }
         cartDetail.setIsMiscellaneousChargeTaxable(cart.isMiscellaneousChargeTaxable());
         cartDetail.setMiscellaneousChargeLabel(MobileApiProperties.getMiscChargeLabel());
-        
-        
+
         /*
          * DUP: FDWebSite/docroot/shared/includes/i_viewcart.jspf
          * LAST UPDATED ON: 10/05/2009
@@ -711,7 +711,7 @@ public class Cart {
             } else if (isRedemptionApplied && redemptionPromo.getPromotionCode().equalsIgnoreCase(discount.getPromotionCode())) {
 
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(discount
-                        .getPromotionCode(), DiscountType.PROMO, discount.getAmount()));
+                        .getPromotionCode(), DiscountType.PROMO, discount.getAmount(), redemptionPromo.getDescription()));
                 //                        %>
                 //                        <tr valign="top" class="orderSummary">
                 //                                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
