@@ -4,6 +4,12 @@ import com.freshdirect.mobileapi.controller.data.Message;
 
 public class Cart extends Message {
 
+    private String modificationCutoffTime;
+
+    public String getModificationCutoffTime() {
+        return this.modificationCutoffTime;
+    }
+
     private CartDetail cartDetail;
 
     public CartDetail getCartDetail() {
@@ -12,6 +18,9 @@ public class Cart extends Message {
 
     public void setCartDetail(CartDetail cartDetail) {
         this.cartDetail = cartDetail;
+        if ((cartDetail != null) && (cartDetail instanceof ModifyCartDetail)) {
+            this.modificationCutoffTime = ((ModifyCartDetail) cartDetail).getReservationCutoff();
+        }
     }
 
 }
