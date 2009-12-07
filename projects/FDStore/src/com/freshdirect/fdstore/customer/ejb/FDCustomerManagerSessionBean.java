@@ -4273,6 +4273,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
         } catch (SQLException se) {
             throw new FDResourceException(se, "Could not store product request");
+        } catch (RemoteException e) {
+            throw new FDResourceException(e, "Could not store product request");
         } finally {
             close(conn);
         }
