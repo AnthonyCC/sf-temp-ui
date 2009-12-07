@@ -25,6 +25,7 @@ import com.freshdirect.payment.ejb.PaymentManagerHome;
 public class FDServiceLocator extends ServiceLocator {
 
     public FDServiceLocator() {
+    	
     }
 
     public FDServiceLocator(Context ctx) {

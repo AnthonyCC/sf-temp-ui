@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.survey;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -22,11 +23,21 @@ public class FDSurveyFactory {
 
     private final static FDSurveyFactory INSTANCE = new FDSurveyFactory();
     
-    private final static FDServiceLocator LOCATOR = new FDServiceLocator();
+    //private final static FDServiceLocator LOCATOR = new FDServiceLocator();
 
 
     private final BuiltinSurveys builtinSurveys = new BuiltinSurveys();
     
+    private static FDServiceLocator LOCATOR ;
+    
+	static {
+		try {
+			LOCATOR=new FDServiceLocator(FDStoreProperties.getInitialContext());
+		} catch (NamingException e) {
+			LOGGER.error(e);
+			LOCATOR=new FDServiceLocator();
+		}
+	}
     private final static LazyTimedCache<SurveyKey, FDSurvey> surveyDefCache = new LazyTimedCache<SurveyKey, FDSurvey>(
             FDStoreProperties.getSurveyDefCacheSize(), FDStoreProperties.getRefreshSecsSurveyDef() * 1000);
 
