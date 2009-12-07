@@ -13,6 +13,7 @@ import com.freshdirect.customer.ejb.ErpFraudPreventionHome;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
@@ -24,7 +25,17 @@ import com.freshdirect.payment.ejb.PaymentManagerHome;
  */
 public class FDSessionBeanSupport extends SessionBeanSupport {
 
-    protected final static FDServiceLocator LOCATOR = new FDServiceLocator();
+    //	protected final static FDServiceLocator LOCATOR = new FDServiceLocator();
+	
+	protected static FDServiceLocator LOCATOR ;
+    
+	static {
+		try {
+			LOCATOR=new FDServiceLocator(FDStoreProperties.getInitialContext());
+		} catch (NamingException e) {
+			LOCATOR=new FDServiceLocator();
+		}
+	}
 
     /**
      * @return
