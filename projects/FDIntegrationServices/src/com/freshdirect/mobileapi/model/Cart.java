@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
@@ -39,6 +41,7 @@ import com.freshdirect.fdstore.customer.WebOrderViewI;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.DateFormat;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.controller.data.SalesUnit;
@@ -75,6 +78,8 @@ import com.freshdirect.webapp.util.RestrictionUtil;
  *
  */
 public class Cart {
+
+    private static Category LOG = LoggerFactory.getInstance(Cart.class);
 
     public static final String AFFILIATE_USQ_WINES_CODE = "USQ";
 
@@ -604,7 +609,18 @@ public class Cart {
                 try {
                     Product productData = Product.wrap(productNode, user.getFDSessionUser().getUser());
                     Sku sku = productData.getSkyByCode(cartLine.getSkuCode());
-                    productConfiguration.populateProductWithModel(productData, com.freshdirect.mobileapi.controller.data.Sku.wrap(sku));
+                    if (sku == null) {
+                        LOG.warn("sku=" + cartLine.getSkuCode() + "::product desc=" + cartLine.getDescription() + " was null");
+                        if (cartLine.getSkuCode() != null) {
+                            LOG.debug("cartLine.getSkuCode() was not null. setting skucode only at config level and not prod. letting product default.");
+                            productConfiguration.populateProductWithModel(productData, cartLine.getSkuCode());
+                        } else {
+                            LOG.debug("cartLine.getSkuCode() was null. should we skip this one?");
+                        }
+
+                    } else {
+                        productConfiguration.populateProductWithModel(productData, com.freshdirect.mobileapi.controller.data.Sku.wrap(sku));
+                    }
                 } catch (ModelException e) {
                     throw new FDResourceException(e);
                 }
@@ -708,7 +724,7 @@ public class Cart {
             Discount discount = discountLine.getDiscount();
             if (user.isEligibleForSignupPromotion() && cart.getTotalDiscountValue() >= 0.01) {
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(discount
-                        .getPromotionCode(), DiscountType.SIGNUP, discount.getAmount()));
+                        .getPromotionCode(), DiscountType.SIGNUP, discount.getAmount(),true));
                 //                        %>
                 //                        <tr valign="top" class="orderSummary">
                 //                                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=signup','large')">FREE FOOD</a></b>:</td>
@@ -719,7 +735,7 @@ public class Cart {
             } else if (isRedemptionApplied && redemptionPromo.getPromotionCode().equalsIgnoreCase(discount.getPromotionCode())) {
 
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(discount
-                        .getPromotionCode(), DiscountType.PROMO, discount.getAmount(), redemptionPromo.getDescription()));
+                        .getPromotionCode(), DiscountType.PROMO, discount.getAmount(), false, redemptionPromo.getDescription()));
                 //                        %>
                 //                        <tr valign="top" class="orderSummary">
                 //                                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
@@ -733,7 +749,7 @@ public class Cart {
             } else { //Its a automatic header discount
                 PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(promotion
-                        .getPromotionCode(), DiscountType.PROMO, discount.getAmount(), promotion.getDescription()));
+                        .getPromotionCode(), DiscountType.PROMO, discount.getAmount(), true, promotion.getDescription()));
                 //                        %>
                 //                        <tr valign="top" class="orderSummary">
                 //                                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promotion.getPromotionCode()%>','small')"><%= promotion.getDescription()%></a></b>:</td>
@@ -750,7 +766,7 @@ public class Cart {
         if (isRedemptionApplied) {
             if (redemptionPromo.isSampleItem()) {
                 cartDetail.addRemptionPromotion(new RemptionPromotion(redemptionPromo.getPromotionCode(), RemptionPromotionType.SAMPLE,
-                        redemptionPromo.getDescription()));
+                        redemptionPromo.getDescription(),false));
                 //        %>
                 //        <tr valign="top" class="orderSummary">
                 //            <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
@@ -761,7 +777,7 @@ public class Cart {
                 //        <%
             } else if (redemptionPromo.isWaiveCharge()) {
                 cartDetail.addRemptionPromotion(new RemptionPromotion(redemptionPromo.getPromotionCode(),
-                        RemptionPromotionType.WAIVE_CHARGE, redemptionPromo.getDescription()));
+                        RemptionPromotionType.WAIVE_CHARGE, redemptionPromo.getDescription(), false));
                 //        %>
                 //            <tr valign="top" class="orderSummary">
                 //                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>

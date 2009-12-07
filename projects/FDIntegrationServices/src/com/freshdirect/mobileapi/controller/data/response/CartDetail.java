@@ -217,19 +217,26 @@ public class CartDetail {
      */
     public static class RemptionPromotion {
 
-        public RemptionPromotion(String code, RemptionPromotionType type, String description) {
+        public RemptionPromotion(String code, RemptionPromotionType type, String description, boolean automatic) {
             this.code = code;
             this.type = type;
             this.description = description;
+            this.automatic = automatic;
         }
 
         public enum RemptionPromotionType {
             SAMPLE, WAIVE_CHARGE
         }
 
+        public boolean isAutomatic() {
+            return automatic;
+        }
+
         private String description;
 
         private RemptionPromotionType type;
+
+        private boolean automatic;
 
         private String code;
 
@@ -286,19 +293,26 @@ public class CartDetail {
      */
     public static class Discount {
 
-        public Discount(String code, DiscountType type, double amount, String description) {
-            this(code, type, amount);
+        public Discount(String code, DiscountType type, double amount, boolean automatic, String description) {
+            this(code, type, amount, automatic);
             this.description = description;
         }
 
-        public Discount(String code, DiscountType type, double amount) {
+        public Discount(String code, DiscountType type, double amount, boolean automatic) {
             this.code = code;
             this.type = type;
             this.amount = amount;
+            this.automatic = automatic;
         }
 
         public enum DiscountType {
             PROMO, SIGNUP, AUTO_HEADER
+        }
+
+        private boolean automatic;
+        
+        public boolean isAutomatic() {
+            return automatic;
         }
 
         private String description;

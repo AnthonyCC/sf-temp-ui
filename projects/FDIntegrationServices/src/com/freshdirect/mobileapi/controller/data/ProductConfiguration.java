@@ -47,6 +47,10 @@ public class ProductConfiguration {
         }
     }
 
+    public void populateProductWithModel(com.freshdirect.mobileapi.model.Product product, String sku) {
+        this.product = ProductSearchResult.wrap(product);
+        this.skuCode = sku;
+    }
     public void populateProductWithModel(com.freshdirect.mobileapi.model.Product product, Sku sku) {
         //        Product newProduct = new Product();
         //        newProduct.setId(product.getProductId());
