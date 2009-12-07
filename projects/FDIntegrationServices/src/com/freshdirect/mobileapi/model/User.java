@@ -42,6 +42,17 @@ public class User {
         return wrap(loginUser);
     }
 
+    public static boolean authenticate(String username, String password) throws FDResourceException {
+        boolean authenticated = false;
+        try {
+            FDCustomerManager.login(username, password);
+            authenticated = true;
+        } catch (FDAuthenticationException e) {
+            //Just pass as authentication error.
+        }
+        return authenticated;
+    }
+
     /**
      * @return
      */

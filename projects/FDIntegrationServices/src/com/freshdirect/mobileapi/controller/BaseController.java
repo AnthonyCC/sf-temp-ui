@@ -69,6 +69,19 @@ public abstract class BaseController extends AbstractController implements Messa
         this.file = file;
     }
 
+    public MobileSessionData getMobileSessionData(HttpServletRequest request) {
+        MobileSessionData mobileSessionData = (MobileSessionData) request.getSession().getAttribute("MobileSessionData");
+        if (mobileSessionData == null) {
+            mobileSessionData = new MobileSessionData();
+            request.getSession().setAttribute("MobileSessionData", mobileSessionData);
+        }
+        return mobileSessionData;
+    }
+
+    public void resetMobileSessionData(HttpServletRequest request) {
+        request.getSession().setAttribute("MobileSessionData", null);
+    }
+
     /**
      * This has a 
      */

@@ -87,6 +87,7 @@ public class LoginController extends BaseController {
         session.invalidate();
         // remove cookie
         CookieMonster.clearCookie(response);
+        resetMobileSessionData(request);
 
         Message responseMessage = Message.createSuccessMessage("User logged out successfully.");
         setResponseMessage(model, responseMessage, user);
@@ -127,6 +128,7 @@ public class LoginController extends BaseController {
             createUserSession(User.login(username, password), request, response);
             user = getUserFromSession(request, response);
             responseMessage = formatLoginMessage(user);
+            resetMobileSessionData(request);
 
         } catch (FDAuthenticationException ex) {
             responseMessage = getErrorMessage(ERR_AUTHENTICATION, "Invalid username and/or password");

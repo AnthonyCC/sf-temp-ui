@@ -421,6 +421,11 @@ public class Cart {
          *   and order receipt pages.
          */
         Order checkoutDetail = new Order();
+
+        if (cart instanceof FDModifyCartModel) {
+            checkoutDetail.setModificationCutoffTime(getModificationCutoffTime());
+        }
+
         FDReservation reservation = cart.getDeliveryReservation();
         ErpAddressModel dlvAddress = cart.getDeliveryAddress();
         ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
@@ -612,7 +617,8 @@ public class Cart {
                     if (sku == null) {
                         LOG.warn("sku=" + cartLine.getSkuCode() + "::product desc=" + cartLine.getDescription() + " was null");
                         if (cartLine.getSkuCode() != null) {
-                            LOG.debug("cartLine.getSkuCode() was not null. setting skucode only at config level and not prod. letting product default.");
+                            LOG
+                                    .debug("cartLine.getSkuCode() was not null. setting skucode only at config level and not prod. letting product default.");
                             productConfiguration.populateProductWithModel(productData, cartLine.getSkuCode());
                         } else {
                             LOG.debug("cartLine.getSkuCode() was null. should we skip this one?");
@@ -724,7 +730,7 @@ public class Cart {
             Discount discount = discountLine.getDiscount();
             if (user.isEligibleForSignupPromotion() && cart.getTotalDiscountValue() >= 0.01) {
                 cartDetail.addDiscount(new com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount(discount
-                        .getPromotionCode(), DiscountType.SIGNUP, discount.getAmount(),true));
+                        .getPromotionCode(), DiscountType.SIGNUP, discount.getAmount(), true));
                 //                        %>
                 //                        <tr valign="top" class="orderSummary">
                 //                                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=signup','large')">FREE FOOD</a></b>:</td>
@@ -766,7 +772,7 @@ public class Cart {
         if (isRedemptionApplied) {
             if (redemptionPromo.isSampleItem()) {
                 cartDetail.addRemptionPromotion(new RemptionPromotion(redemptionPromo.getPromotionCode(), RemptionPromotionType.SAMPLE,
-                        redemptionPromo.getDescription(),false));
+                        redemptionPromo.getDescription(), false));
                 //        %>
                 //        <tr valign="top" class="orderSummary">
                 //            <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>

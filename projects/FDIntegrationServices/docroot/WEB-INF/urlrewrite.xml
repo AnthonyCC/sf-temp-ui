@@ -118,11 +118,19 @@
 	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->
-	<!-- Get Delivery Addresses -->
+	<!-- Init Checkout -->
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<rule>
 		<from>/(.*)/checkout/init/$</from>
 		<to>/checkout.do?action=initcheckout</to>
+	</rule>
+
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<!-- Init Checkout -->
+	<!-- xxxxxxxxxxxxxxxxxxx -->
+	<rule>
+		<from>/(.*)/checkout/authenticate/$</from>
+		<to>/checkout.do?action=authenticate</to>
 	</rule>
 
 	<!-- xxxxxxxxxxxxxxxxxxx -->

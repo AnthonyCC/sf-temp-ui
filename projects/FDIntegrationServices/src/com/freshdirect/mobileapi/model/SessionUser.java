@@ -47,6 +47,7 @@ import com.freshdirect.webapp.util.ConfigurationContext;
 
 public class SessionUser {
 
+
     private FDSessionUser sessionUser;
 
     private SessionUser() {

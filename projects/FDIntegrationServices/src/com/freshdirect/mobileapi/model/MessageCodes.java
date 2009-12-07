@@ -37,6 +37,7 @@ public interface MessageCodes {
 
     //Login Errors
     public static final String ERR_AUTHENTICATION = "ERR_AUTHENTICATION";
+    public static final String ERR_CHECKOUT_AUTHENTICATION_REQUIRED = "ERR_CHECKOUT_AUTHENTICATION_REQUIRED";
 
     public static final String ERR_ATP_FAILED = "ERR_ATP_FAILED";
 

@@ -85,7 +85,11 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "InitCheckout") {
   	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/init/");
-  	$("#payload").val("");
+    $("#payload").val('');
+  	$("#result").val("");
+  } else if (loaddata == "CheckoutAuthenticate") {
+  	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/authenticate/");
+    $("#payload").val('{ "username" : "saptest12@freshdirect.com", "password" : "test" }');
   	$("#result").val("");
   } else if (loaddata == "GetDeliveryAddresses") {
   	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/deliveryaddresses/getall/");
@@ -400,6 +404,7 @@ function doStuff() {
   <option value="ViewItems">CART - View Items</option>
   <option value=""> ========== CHECKOUT ========== </option>
   <option value="InitCheckout">CHECKOUT - Init</option>
+  <option value="CheckoutAuthenticate">CHECKOUT - Auth</option>
   <option value="GetDeliveryAddresses">CHECKOUT - Get Delivery Addresses</option>
   <option value="SetDeliveryAddress">CHECKOUT - Set Delivery Address</option>
   <option value="VerifyAge">CHECKOUT - Verify Age</option>

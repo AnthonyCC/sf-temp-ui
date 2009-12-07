@@ -18,6 +18,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressSelection;
 import com.freshdirect.mobileapi.controller.data.request.DeliverySlotReservation;
+import com.freshdirect.mobileapi.controller.data.request.Login;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodSelection;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.OrderReceipt;
@@ -31,6 +32,7 @@ import com.freshdirect.mobileapi.model.PaymentMethod;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.ShipToAddress;
+import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 import com.freshdirect.mobileapi.service.ServiceException;
@@ -47,6 +49,8 @@ public class CheckoutController extends BaseController {
     private final static String ACTION_GET_ATP_ERROR_DETAIL = "getatperrordetail";
 
     private final static String ACTION_INIT_CHECKOUT = "initcheckout";
+
+    private final static String ACTION_AUTH_CHECKOUT = "authenticate";
 
     private final static String ACTION_GET_DELIVERY_ADDRESSES = "getdeliveryaddresses";
 
@@ -71,9 +75,14 @@ public class CheckoutController extends BaseController {
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException {
 
-        if (ACTION_INIT_CHECKOUT.equals(action)) {
+        if (ACTION_INIT_CHECKOUT.equals(action) || ACTION_AUTH_CHECKOUT.equals(action)) {
             //Validate pre-req. If pass, go directly to get payment method
-            if (validateCheckoutRequirements(model, user)) {
+            Login requestMessage = null;
+            
+            if(ACTION_AUTH_CHECKOUT.equals(action)) {
+                requestMessage = parseRequestObject(request, response, Login.class);
+            }
+            if (validateCheckoutRequirements(model, requestMessage, user, request)) {
                 model = getDeliveryAddresses(model, user);
             }
         } else if (ACTION_GET_DELIVERY_ADDRESSES.equals(action)) {
@@ -109,18 +118,47 @@ public class CheckoutController extends BaseController {
         return model;
     }
 
+    public boolean isCheckoutAuthenticated(HttpServletRequest request) {
+        return getMobileSessionData(request).isCheckoutAuthenticated();
+    }
+
+    public void setCheckoutAuthenticated(HttpServletRequest request) {
+        getMobileSessionData(request).setCheckoutAuthenticated(true);
+    }
+
     /**
      * @param model
      * @param user
      * @return
      * @throws JsonException
+     * @throws FDResourceException 
      */
-    private boolean validateCheckoutRequirements(ModelAndView model, SessionUser user) throws JsonException {
+    private boolean validateCheckoutRequirements(ModelAndView model, Login loginRequest, SessionUser user, HttpServletRequest request)
+            throws JsonException, FDResourceException {
         boolean valid = true;
         Message responseMessage = new Message();
-        if ((user.getPaymentMethods() == null) || (user.getPaymentMethods().size() == 0)) {
-            responseMessage.addErrorMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
-            valid = false;
+
+        if (!isCheckoutAuthenticated(request)) {
+            if (loginRequest == null) {
+                valid = false;
+                responseMessage = getErrorMessage(ERR_CHECKOUT_AUTHENTICATION_REQUIRED, "Authentication required for checkout");
+            } else {
+                String username = loginRequest.getUsername();
+                String password = loginRequest.getPassword();
+                if (!User.authenticate(username, password)) {
+                    valid = false;
+                    responseMessage = getErrorMessage(ERR_AUTHENTICATION, "Invalid username and/or password");
+                } else {
+                    setCheckoutAuthenticated(request);
+                }
+            }
+        }
+
+        if (valid) {
+            if ((user.getPaymentMethods() == null) || (user.getPaymentMethods().size() == 0)) {
+                responseMessage.addErrorMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
+                valid = false;
+            }
         }
         setResponseMessage(model, responseMessage, user);
         return valid;
