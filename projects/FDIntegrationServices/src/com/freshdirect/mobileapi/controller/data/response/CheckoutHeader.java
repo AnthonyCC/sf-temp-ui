@@ -6,6 +6,12 @@ public class CheckoutHeader {
 
     private double deliverySurcharge;
 
+    private double total;
+
+    public double getTotal() {
+        return total;
+    }
+
     private double subTotal;
 
     private boolean containsAlcohol;
@@ -38,6 +44,7 @@ public class CheckoutHeader {
         this.containsAlcohol = cart.containsAlcohol();
         this.deliverySurcharge = cart.getDeliverySurcharge();
         this.subTotal = cart.getSubTotal();
+        this.total = cart.getTotal();
     }
 
 }

@@ -401,6 +401,10 @@ public class Cart {
         return cart.getSubTotal();
     }
 
+    public double getTotal() {
+        return cart.getTotal();
+    }
+
     public Order getOrderDetails(SessionUser user) throws FDException {
         /*
          * DUP: FDWebSite/docroot/checkout/includes/i_checkout_receipt.jspf
