@@ -5,8 +5,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.freshdirect.mobileapi.controller.data.Message;
-
 /**
  * @author Rob
  *
