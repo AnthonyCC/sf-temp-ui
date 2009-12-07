@@ -3,6 +3,8 @@ package com.freshdirect.mobileapi.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -13,6 +15,9 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.mobileapi.exception.ModelException;
 
 public class ComponentGroup {
+    
+    private static final Logger LOG = Logger.getLogger(ComponentGroup.class);
+    
     protected List<Product> productList = new ArrayList<Product>();
 
     protected List<Variation> variations = new ArrayList<Variation>();
@@ -40,8 +45,12 @@ public class ComponentGroup {
                 for (FDVariationOption varOpt : varOpts) {
                     String optSkuCode = varOpt.getAttribute(EnumAttributeName.SKUCODE);
                     if (optSkuCode != null) {
-                        ProductModel pm = ContentFactory.getInstance().getProduct(optSkuCode);
-                        productList.add(Product.wrap(pm));
+                        try {
+                            ProductModel pm = ContentFactory.getInstance().getProduct(optSkuCode);
+                            productList.add(Product.wrap(pm));
+                        } catch (FDSkuNotFoundException e) {
+                            LOG.warn("Could not get product with sku:" + optSkuCode + "::desc=" + varOpt.getAttribute(EnumAttributeName.DESCRIPTION), e);
+                        }
                     }
                 }
 
