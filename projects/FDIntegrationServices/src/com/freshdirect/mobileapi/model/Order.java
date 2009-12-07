@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
@@ -19,6 +21,7 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.controller.data.response.CreditCard;
 import com.freshdirect.mobileapi.controller.data.response.DepotLocation;
@@ -29,6 +32,8 @@ import com.freshdirect.mobileapi.model.tagwrapper.QuickShopControllerTagWrapper;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class Order {
+
+    private static Category LOG = LoggerFactory.getInstance(Order.class);
 
     private FDOrderI target;
 
@@ -170,7 +175,19 @@ public class Order {
             try {
                 Product productData = Product.wrap(product.getProductRef().lookupProduct(), user.getFDSessionUser().getUser());
                 Sku sku = productData.getSkyByCode(product.getSkuCode());
-                productConfiguration.populateProductWithModel(productData, com.freshdirect.mobileapi.controller.data.Sku.wrap(sku));
+
+                if (sku == null) {
+                    LOG.warn("sku=" + product.getSkuCode() + "::product desc=" + product.getDescription() + " was null");
+                    if (product.getSkuCode() != null) {
+                        LOG
+                                .debug("cartLine.getSkuCode() was not null. setting skucode only at config level and not prod. letting product default.");
+                        productConfiguration.populateProductWithModel(productData, product.getSkuCode());
+                    } else {
+                        LOG.debug("cartLine.getSkuCode() was null. should we skip this one?");
+                    }
+                } else {
+                    productConfiguration.populateProductWithModel(productData, com.freshdirect.mobileapi.controller.data.Sku.wrap(sku));
+                }
             } catch (ModelException e) {
                 throw new FDResourceException(e);
             }
