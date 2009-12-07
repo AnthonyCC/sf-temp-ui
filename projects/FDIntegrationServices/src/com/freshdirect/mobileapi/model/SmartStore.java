@@ -83,66 +83,69 @@ public class SmartStore {
                 RequestParamName.REQ_PARAM_SMART_STORE_IMPRESSION }, new String[] { RequestParamName.REQ_PARAM_YMAL_RESET,
                 RequestParamName.REQ_PARAM_SMART_STORE_IMPRESSION });
 
+        // https://info.schematic.com/jira/browse/FDIPONE-869
+        // YMAL should be refreshed everytime.  pagination is done on client side.
         // in the current implementation we will keep recommendations until a request for a new site feature arrives
-        if (previousRecommendations != null && previousRecommendations.getVariant().getSiteFeature().equals(siteFeature)) {
-            // use previous
-            wrapper.setUtilsExecutionWrapper(new UtilsExecutionWrapper() {
-                @Override
-                public Object executeUtils(PageContext pageContext) {
+        //        if (previousRecommendations != null && previousRecommendations.getVariant().getSiteFeature().equals(siteFeature)) {
+        //            // use previous
+        //            wrapper.setUtilsExecutionWrapper(new UtilsExecutionWrapper() {
+        //                @Override
+        //                public Object executeUtils(PageContext pageContext) {
+        //                    // page alignment must happen before logging
+        //                    alignPage(previousRecommendations, page);
+        //
+        //                    // logging
+        //                    String impression = logImpressions(previousImpression, pageContext, previousRecommendations);
+        //                    pageContext.getSession().setAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION, impression);
+        //
+        //                    return null;
+        //                }
+        //            });
+        //            recommendations = previousRecommendations;
+        //        } else {
+        // construct new
+        wrapper.setUtilsExecutionWrapper(new UtilsExecutionWrapper() {
+            @Override
+            public Object executeUtils(PageContext pageContext) {
+                // we do not use the GenericRecommendationsTag because it does not fit our need
+                final SessionInput input = new SessionInput(user.getFDSessionUser());
+                FDStoreRecommender.initYmalSource(input, user.getFDSessionUser(), pageContext.getRequest());
+                input.setCurrentNode(input.getYmalSource());
+                input.setMaxRecommendations(MAX_RECOMMENDATION);
+                Recommendations recs;
+                try {
+                    recs = FDStoreRecommender.getInstance().getRecommendations(siteFeature, user.getFDSessionUser(), input);
+
                     // page alignment must happen before logging
-                    alignPage(previousRecommendations, page);
+                    alignPage(recs, page);
 
                     // logging
-                    String impression = logImpressions(previousImpression, pageContext, previousRecommendations);
+                    String impression = logImpressions(null, pageContext, recs);
                     pageContext.getSession().setAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION, impression);
 
-                    return null;
+                    return recs;
+                } catch (FDResourceException e) {
+                    // this is a nasty way to return error as I cannot handle
+                    // the exception in this call back function properly
+                    return e;
                 }
-            });
-            recommendations = previousRecommendations;
-        } else {
-            // construct new
-            wrapper.setUtilsExecutionWrapper(new UtilsExecutionWrapper() {
-                @Override
-                public Object executeUtils(PageContext pageContext) {
-                    // we do not use the GenericRecommendationsTag because it does not fit our need
-                    final SessionInput input = new SessionInput(user.getFDSessionUser());
-                    FDStoreRecommender.initYmalSource(input, user.getFDSessionUser(), pageContext.getRequest());
-                    input.setCurrentNode(input.getYmalSource());
-                    input.setMaxRecommendations(MAX_RECOMMENDATION);
-                    Recommendations recs;
-                    try {
-                        recs = FDStoreRecommender.getInstance().getRecommendations(siteFeature, user.getFDSessionUser(), input);
-
-                        // page alignment must happen before logging
-                        alignPage(recs, page);
-
-                        // logging
-                        String impression = logImpressions(null, pageContext, recs);
-                        pageContext.getSession().setAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION, impression);
-
-                        return recs;
-                    } catch (FDResourceException e) {
-                        // this is a nasty way to return error as I cannot handle
-                        // the exception in this call back function properly
-                        return e;
-                    }
-                }
-            });
-            Object o = wrapper.executeUtil();
-            if (o instanceof FDResourceException) {
-                FDResourceException e = (FDResourceException) o;
-                LOG.error("failed to retrieve recommendations", e);
-                resultBundle.getActionResult().addError(
-                        new ActionError("smartStore", "failed to retrieve recommendations: " + e.getMessage() + ", see log for details"));
-                return resultBundle;
-            } else {
-                recommendations = (Recommendations) o;
-                // TODO known bug (APPREQ-748) - this mapping should be cached along with the recommendations
-                // take thread locals for local use
-                prd2recommendation = (Map<String, String>) AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();
             }
+        });
+        Object o = wrapper.executeUtil();
+        if (o instanceof FDResourceException) {
+            FDResourceException e = (FDResourceException) o;
+            LOG.error("failed to retrieve recommendations", e);
+            resultBundle.getActionResult().addError(
+                    new ActionError("smartStore", "failed to retrieve recommendations: " + e.getMessage() + ", see log for details"));
+            return resultBundle;
+        } else {
+            recommendations = (Recommendations) o;
+            // TODO known bug (APPREQ-748) - this mapping should be cached along with the recommendations
+            // take thread locals for local use
+            prd2recommendation = (Map<String, String>) AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();
         }
+        
+        //        }
         // wrapper is used to save recommendations in the session
         wrapper.addSessionValue(SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS, recommendations);
         resultBundle.setWrapper(wrapper);
@@ -181,15 +184,15 @@ public class SmartStore {
                 if (product.getParentNode() instanceof ConfiguredProductGroup) {
                     System.out.println("ConfiguredProductGroup");
                 }
-                resultItem.setProduct(Product.wrap(product,user.getFDSessionUser().getUser()));
+                resultItem.setProduct(Product.wrap(product, user.getFDSessionUser().getUser()));
 
                 ProductLabeling pl = new ProductLabeling(user.getFDSessionUser(), product, variant.getHideBursts());
                 // added this using the thread local values
-                String trkd = prd2recommendation != null ? prd2recommendation.get(product.getContentKey().getId()) : pl
-                        .getTrackingCode();
+                String trkd = prd2recommendation != null ? prd2recommendation.get(product.getContentKey().getId()) : pl.getTrackingCode();
                 resultItem.setTrackingCodeEx(trkd);
-                resultItem.setParameterBundle(StringEscapeUtils.unescapeHtml(FDURLUtil.getProductURI(product, recommendations.getVariant().getId(), recommendations
-                        .getVariant().getSiteFeature().getName().toLowerCase(), trkd, rank, recommendations.getImpressionId(product))));
+                resultItem.setParameterBundle(StringEscapeUtils.unescapeHtml(FDURLUtil.getProductURI(product, recommendations.getVariant()
+                        .getId(), recommendations.getVariant().getSiteFeature().getName().toLowerCase(), trkd, rank, recommendations
+                        .getImpressionId(product))));
 
                 if (pi instanceof TransactionalProductImpression) {
 
@@ -202,7 +205,6 @@ public class SmartStore {
                     //                    resultItem.setRecYmalSource(recommendations != null && recommendations.getSessionInput() != null
                     //                            && recommendations.getSessionInput().getCurrentNode() != null ? recommendations.getSessionInput()
                     //                            .getCurrentNode().getContentKey().getId() : "(null)");
-
 
                     /*
                      * DUP: com.freshdirect.webapp.taglib.fdstore.TxProductControlTag
