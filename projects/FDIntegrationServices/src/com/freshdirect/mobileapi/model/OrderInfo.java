@@ -41,9 +41,9 @@ public class OrderInfo {
     }
 
     public String getOrderStatus() {
-        
+
         String status = "";
-        if(target.getSaleType().equals(EnumSaleType.GIFTCARD) || target.getSaleType().equals(EnumSaleType.DONATION)) {
+        if (target.getSaleType().equals(EnumSaleType.GIFTCARD) || target.getSaleType().equals(EnumSaleType.DONATION)) {
             status = target.isPending() ? "In Process" : "Completed";
         } else {
             status = target.getOrderStatus().getDisplayName();
@@ -99,13 +99,17 @@ public class OrderInfo {
         return isPendingDeliveryOrder;
     }
 
-    public boolean isModifiable() {
+    public static boolean isModifiable(Date deliveryCutoffTime, EnumSaleStatus orderStatus, EnumSaleType saleType) {
         Date now = new Date(); // now
-        boolean beforeCutoffTime = now.before(getDeliveryCutoffTime());
-        
-        return (EnumSaleStatus.SUBMITTED.equals(target.getOrderStatus()) || EnumSaleStatus.AUTHORIZED.equals(target.getOrderStatus()) || EnumSaleStatus.AVS_EXCEPTION
-                .equals(target.getOrderStatus()))
-                && !target.getSaleType().equals(EnumSaleType.DONATION) && beforeCutoffTime;
+        boolean beforeCutoffTime = now.before(deliveryCutoffTime);
+
+        return (EnumSaleStatus.SUBMITTED.equals(orderStatus) || EnumSaleStatus.AUTHORIZED.equals(orderStatus) || EnumSaleStatus.AVS_EXCEPTION
+                .equals(orderStatus))
+                && !EnumSaleType.DONATION.equals(saleType) && beforeCutoffTime;
+    }
+
+    public boolean isModifiable() {
+        return isModifiable(getDeliveryCutoffTime(), target.getOrderStatus(), target.getSaleType());
     }
 
     public boolean isShoppable() {
