@@ -7,6 +7,17 @@ public class UpdateItemInCart extends Message {
 
     private String cartLineId;
 
+    // Some products have "terms/conditions" associated. this value indicates that they agreed to t/c.
+    private String agreeToTerms;
+
+    public String getAgreeToTerms() {
+        return agreeToTerms;
+    }
+
+    public void setAgreeToTerms(String agreeToTerms) {
+        this.agreeToTerms = agreeToTerms;
+    }
+
     public String getCartLineId() {
         return cartLineId;
     }
