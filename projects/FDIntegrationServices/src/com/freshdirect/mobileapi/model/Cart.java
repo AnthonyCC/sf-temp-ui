@@ -311,7 +311,8 @@ public class Cart {
         FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
         CartEvent cartEvent = new CartEvent(CartEvent.FD_MODIFY_CART_EVENT);
         cartEvent.setRequestData(requestData);
-        ResultBundle result = wrapper.updateItemInCart(updateItemInCart, cartEvent);
+        ResultBundle result = wrapper.updateItemInCart(updateItemInCart, cartEvent, getOrderLineById(Integer.parseInt(updateItemInCart
+                .getCartLineId())));
 
         //Updating internal wrapped cart explicitly even though it should already be set since we're passing around user object reference
         user.updateShoppingCart(this);

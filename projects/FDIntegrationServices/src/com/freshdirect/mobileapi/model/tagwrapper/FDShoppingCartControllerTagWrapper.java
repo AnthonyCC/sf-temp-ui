@@ -13,6 +13,8 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.framework.util.QueryStringBuilder;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -47,7 +49,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
      * @return
      * @throws FDException
      */
-    public ResultBundle updateItemInCart(UpdateItemInCart updateItemInCart, CartEvent cartEvent) throws FDException {
+    public ResultBundle updateItemInCart(UpdateItemInCart updateItemInCart, CartEvent cartEvent, FDCartLineI cartLine) throws FDException {
         setCartEventLoggingSetsAndGets(cartEvent);
         addExpectedRequestValues(new String[] { REQ_PARAM_YMAL_BOX, REQ_PARAM_YMAL_SET_ID, REQ_PARAM_YMAL_ORIG_PROD_ID,
                 REQ_PARAM_YMAL_ORIG_ORDER_LINE_ID, REQ_PARAM_ATC_SUFFIX, REQ_PARAM_VARIANT, REQ_PARAM_CONSENTED, REQ_PARAM_AGREE_TO_TERMS,
@@ -78,6 +80,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_WINE_CATEGORY_ID, productConfiguration.getCategoryId());
         addRequestValue(REQ_PARAM_QUANTITY, productConfiguration.getQuantity());
         addRequestValue(REQ_PARAM_SALES_UNIT, productConfiguration.getSalesUnit().getName());
+        addRequestValue(REQ_PARAM_REQUEST_NOTIFICATION, cartLine.isRequestNotification());
 
         //Add all the configuration options
         if (null != productConfiguration.getOptions()) {
@@ -159,7 +162,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         //Pass all smart store configuration values:
         String parameterBundle = smartStoreConfiguration.getParameterBundle();
         if (parameterBundle != null) {
-            parameterBundle = parameterBundle.substring(parameterBundle.indexOf("?")+1);
+            parameterBundle = parameterBundle.substring(parameterBundle.indexOf("?") + 1);
             try {
                 parameterBundle = StringEscapeUtils.unescapeHtml(URLDecoder.decode(parameterBundle, "UTF-8"));
             } catch (UnsupportedEncodingException e) {
