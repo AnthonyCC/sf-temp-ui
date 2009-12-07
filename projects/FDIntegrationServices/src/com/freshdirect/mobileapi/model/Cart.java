@@ -535,7 +535,7 @@ public class Cart {
 
             String lastDept = null;
             //boolean firstRecipe = true;
-            Group recipeDeptGroup = null;
+            //Group recipeDeptGroup = null;
             Group currentBucketGroup = null; //Could be department or recipe group
 
             for (FDCartLineI cartLine : orderLines) {
@@ -554,24 +554,27 @@ public class Cart {
                         String lastDeptImgName = cartLine.getProductRef().lookupCategory().getDepartment().getContentName() + "_cart.gif";
 
                         if (lastDept.startsWith("Recipe: ")) {
-                            if (null == recipeDeptGroup) {
-                                recipeDeptGroup = new Group(CartLineItemType.DEPT);
-                                recipeDeptGroup.setName("RECIPES");
-                                recipeDeptGroup.setImageUrl("/media_stat/images/layout/department_headers/rec_cart.gif");
-                                recipeDeptGroup.setId(RecipeDepartment.getDefault().getContentName());
-
-                                //Add RecipeDepartment to affiliate
-                                affiliateCartDetail.addLineItems(recipeDeptGroup);
-                            }
-                            if ((null == recipeDeptGroup)
-                                    || (!lastDept.substring("Recipe: ".length()).equals(currentBucketGroup.getName()))) {
-                                currentBucketGroup = new Group(CartLineItemType.RECIPE);
-                                currentBucketGroup.setName(lastDept.substring("Recipe: ".length()));
+                            //                            if (null == recipeDeptGroup) {
+                            //                                recipeDeptGroup = new Group(CartLineItemType.DEPT);
+                            //                                recipeDeptGroup.setName("RECIPES");
+                            //                                recipeDeptGroup.setImageUrl("/media_stat/images/layout/department_headers/rec_cart.gif");
+                            //                                recipeDeptGroup.setId(RecipeDepartment.getDefault().getContentName());
+                            //
+                            //                                //Add RecipeDepartment to affiliate
+                            //                                affiliateCartDetail.addLineItems(recipeDeptGroup);
+                            //                            }
+                            if (!lastDept.equals(currentBucketGroup.getName())) {
+                                currentBucketGroup = new Group(CartLineItemType.DEPT);
+                                currentBucketGroup.setName(lastDept);
                                 currentBucketGroup.setId(cartLine.getRecipeSourceId());
-
-                                //Add RecipeGroup to RecipeDepartment
-                                recipeDeptGroup.addLineItem(currentBucketGroup);
+                                affiliateCartDetail.addLineItems(currentBucketGroup);
                             }
+                            //                            currentBucketGroup = new Group(CartLineItemType.DEPT);
+                            //                            currentBucketGroup.setId(lastDept);
+                            //                            currentBucketGroup.setName(lastDept);
+                            //                            currentBucketGroup.setImageUrl(lastDeptImgName);
+                            //                            affiliateCartDetail.addLineItems(currentBucketGroup);
+
                         } else {
                             String deptId = ContentFactory.getInstance().getProductByName(cartLine.getCategoryName(),
                                     cartLine.getProductName()).getDepartment().getContentName();
