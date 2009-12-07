@@ -76,7 +76,7 @@
 			<p><b>Alcohol:</b> ${product.alcohol}</p>
 		</#if>
 	</#if>		
-		</div>	
+		</div>
 <#list moreInfo.skuCodes as skuCode>
 		<#if multiNutrition >
 		<div class="detail">
@@ -148,7 +148,7 @@
 		<#if product.partiallyFrozen?has_content>
 		<div class="detail">
 			<h3>May Arrive Frozen</h3>
-			<p>${product.partiallyFrozen?replace("\"/media","\"http://www.freshdirect.com/media")}}</p>
+			<p>${product.partiallyFrozen?replace("\"/media","\"http://www.freshdirect.com/media")}</p>
 		</div>
 		</#if>
 		</#if>
