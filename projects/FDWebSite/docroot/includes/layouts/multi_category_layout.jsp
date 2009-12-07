@@ -54,7 +54,7 @@
 	}
 	
 	int maxWidth = isDepartment.booleanValue() ? 550 : 380;
-	boolean useAlternate = false;
+	boolean useAlternate = useAlternateImages.booleanValue();
 	
 	for ( int i = 0; i < multiList.size(); i++ ) {		
 		Object obj = multiList.get( i );
