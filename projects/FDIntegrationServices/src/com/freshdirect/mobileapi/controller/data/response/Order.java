@@ -16,6 +16,16 @@ public class Order extends Message {
     private String status;
 
     private Date modificationCutoffTime;
+    
+    public boolean isModifiable() {
+        return modifiable;
+    }
+
+    public void setModifiable(boolean modifiable) {
+        this.modifiable = modifiable;
+    }
+
+    private boolean modifiable;
 
     public String getModificationCutoffTime() {
         String formatterDate = null;

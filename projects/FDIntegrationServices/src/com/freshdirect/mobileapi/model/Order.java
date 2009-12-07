@@ -95,6 +95,7 @@ public class Order {
 
             //Set modification cutoff time
             orderDetail.setModificationCutoffTime(reservation.getCutoffTime());
+            orderDetail.setModifiable(OrderInfo.isModifiable(reservation.getCutoffTime(), target.getOrderStatus(), target.getOrderType()));
         }
 
         //Delivery Address
