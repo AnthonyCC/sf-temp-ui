@@ -487,8 +487,6 @@ public interface FDCustomerManagerSB extends EJBObject {
     
     public void changePassword(FDActionInfo info, String emailAddress, String password) throws FDResourceException, RemoteException;
     
-    public void storeSurvey(FDSurveyResponse survey) throws RemoteException, FDResourceException;
-    
     public void setProfileAttribute(FDIdentity identity, String key, String value, FDActionInfo info) throws RemoteException, FDResourceException;
     
     public void removeProfileAttribute(FDIdentity identity, String key, FDActionInfo info) throws RemoteException, FDResourceException;

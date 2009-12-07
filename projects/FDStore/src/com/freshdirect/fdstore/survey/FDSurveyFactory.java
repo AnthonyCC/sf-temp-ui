@@ -3,9 +3,6 @@ package com.freshdirect.fdstore.survey;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import javax.ejb.CreateException;
-import javax.naming.Context;
-import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -15,8 +12,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
-import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
+import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.LazyTimedCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -25,8 +21,8 @@ public class FDSurveyFactory {
     private static Logger LOGGER = LoggerFactory.getInstance(FDSurveyFactory.class);
 
     private final static FDSurveyFactory INSTANCE = new FDSurveyFactory();
-
-    private static FDSurveyHome surveyHome = null;
+    
+    private final static FDServiceLocator LOCATOR = new FDServiceLocator();
 
 
     private final BuiltinSurveys builtinSurveys = new BuiltinSurveys();
@@ -140,42 +136,12 @@ public class FDSurveyFactory {
      */
     FDSurvey getSurveyFromDatabase(SurveyKey key) throws FDResourceException {
         try {
-            FDSurveySB sb = lookupSurveyHome().create();
-            return sb.getSurvey(key);
-        } catch (CreateException ce) {
-            throw new FDResourceException(ce, "Error creating session bean");
+            return LOCATOR.getSurveySessionBean().getSurvey(key);
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
     }
 
-
-
-    private synchronized static FDSurveyHome lookupSurveyHome() throws FDResourceException {
-        if (surveyHome != null) {
-            return surveyHome;
-        }
-        Context ctx = null;
-        try {
-            ctx = FDStoreProperties.getInitialContext();
-            surveyHome = (FDSurveyHome) ctx.lookup(FDStoreProperties.getFDSurveyHome());
-            return surveyHome;
-        } catch (NamingException ne) {
-            throw new FDResourceException(ne);
-        } finally {
-            try {
-                if (ctx != null) {
-                    ctx.close();
-                }
-            } catch (NamingException e) {
-            }
-        }
-    }
-    
-    private static synchronized void invalidateSurveyHome() {
-        surveyHome = null;
-    }
-    
 
     /**
      * User can't be null !
@@ -201,26 +167,16 @@ public class FDSurveyFactory {
 
     public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity, EnumServiceType serviceType) throws FDResourceException {
         try {
-            FDSurveySB sb = lookupSurveyHome().create();
-            return sb.getCustomerProfile(identity, correctServiceType(serviceType));
-        } catch (CreateException ce) {
-            invalidateSurveyHome();
-            throw new FDResourceException(ce, "Error creating session bean");
+            return LOCATOR.getSurveySessionBean().getCustomerProfile(identity, correctServiceType(serviceType));
         } catch (RemoteException re) {
-            invalidateSurveyHome();
             throw new FDResourceException(re, "Error talking to session bean");
         }
     }       
 
     public static FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey survey) throws FDResourceException {
         try {
-            FDSurveySB sb = lookupSurveyHome().create();
-            return sb.getSurveyResponse(identity, survey);
-        } catch (CreateException ce) {
-            invalidateSurveyHome();
-            throw new FDResourceException(ce, "Error creating session bean");
+            return LOCATOR.getSurveySessionBean().getSurveyResponse(identity, survey);
         } catch (RemoteException re) {
-            invalidateSurveyHome();
             throw new FDResourceException(re, "Error talking to session bean");
         }
     }

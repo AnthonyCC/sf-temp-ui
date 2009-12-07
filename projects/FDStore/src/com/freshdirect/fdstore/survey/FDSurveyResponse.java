@@ -87,7 +87,7 @@ public class FDSurveyResponse implements Serializable {
 	}
 
 	/** @return map of String -> String[] */
-	public Map getAnswers() {
+	public Map<String, String[]> getAnswers() {
 		return Collections.unmodifiableMap(answers);
 	}
 	

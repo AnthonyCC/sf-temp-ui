@@ -31,15 +31,13 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
-import javax.mail.MessagingException;
-import javax.naming.NamingException;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
+import org.apache.openjpa.lib.log.Log;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.address.BasicContactAddressI;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -95,17 +93,12 @@ import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
-import com.freshdirect.customer.ejb.ErpCustomerHome;
-import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
-import com.freshdirect.customer.ejb.ErpFraudPreventionHome;
 import com.freshdirect.customer.ejb.ErpFraudPreventionSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.customer.ejb.ErpSaleEB;
-import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
-import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassModel;
@@ -113,7 +106,6 @@ import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
-import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.erp.ejb.ATPFailureDAO;
 import com.freshdirect.erp.model.ATPFailureInfo;
@@ -162,11 +154,9 @@ import com.freshdirect.fdstore.promotion.ejb.FDPromotionDAO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.request.FDProductRequestDAO;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
-import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
+import com.freshdirect.fdstore.survey.ejb.FDSurveyDAO;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
-import com.freshdirect.framework.core.ServiceLocator;
-import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
@@ -185,16 +175,12 @@ import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.GiftCardApplicationStrategy;
 import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.giftcard.ServiceUnavailableException;
-import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.giftcard.ejb.GiftCardPersistanceDAO;
-import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.mail.ErpEmailFactory;
-import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.payment.ejb.PaymentManagerHome;
 import com.freshdirect.payment.ejb.PaymentManagerSB;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 
@@ -206,11 +192,10 @@ import com.freshdirect.payment.fraud.PaymentFraudManager;
  * @version $Revision:78$
  * @author $Author:Kashif Nadeem$
  */
-public class FDCustomerManagerSessionBean extends SessionBeanSupport {
+public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(FDCustomerManagerSessionBean.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(FDCustomerManagerSessionBean.class);
 
-	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
 	public RegistrationResult register(
 			FDActionInfo info,
@@ -317,7 +302,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				// recreate survey with proper identity
 				FDSurveyResponse s = new FDSurveyResponse(identity, survey.getKey());
 				s.setAnswers(survey.getAnswers());
-				storeSurvey(s);
+				LOCATOR.getSurveySessionBean().storeSurvey(s);
 			}
 			if(isGiftCardBuyer) {
 				return new RegistrationResult(identity);
@@ -331,14 +316,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (java.sql.SQLException sqle2) {
-					LOGGER.warn("Unable to close connection after associating cookie to registration.");
-					throw new FDResourceException(sqle2);
-				}
-			}
+		    close(conn);
 		}
 	}
 
@@ -354,14 +332,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.error("Unable to close connection after creating new FDUser.", sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+			close(conn);
 		}
 	}
 
@@ -377,14 +348,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.error("Unable to close connection after creating new FDUser.", sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -400,14 +364,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.error("Unable to close connection after creating new FDUser.", sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -431,14 +388,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.error("Unable to close connection after recognizing user by FDIdentity.", sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 
 	}
@@ -463,14 +413,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.error("Unable to close connection after recognizing user by FDIdentity.", sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 
 	}
@@ -646,18 +589,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.error("Unable to close connection after recognizing user by cookie.", sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -737,9 +670,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			if(ps != null) {
 				ps.close();
 			}
-			if(conn != null) {
-				conn.close();
-			}
+                        close(conn);
 		}
 	}
 
@@ -772,9 +703,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			if(ps != null) {
 				ps.close();
 			}
-			if(conn != null) {
-				conn.close();
-			}
+                        close(conn);
 		}
 	}
 
@@ -1548,47 +1477,6 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public void storeSurvey(FDSurveyResponse survey) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = this.getConnection();
-			String id = this.getNextId(conn, "CUST");
-
-			FDSurveyDAO.storeSurvey(conn, id, survey);
-			if ("Signup_survey".equals(survey.getName())) {
-				FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(survey.getIdentity().getFDCustomerPK()));
-				eb.setProfileAttribute("signup_survey", "YES");
-
-			} else if ("Signup_survey_v2".equals(survey.getName())) {
-				FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(survey.getIdentity().getFDCustomerPK()));
-				eb.setProfileAttribute("signup_survey_v2", "FILL");
-			} else if ("fourth_order_survey".equals(survey.getName())) {
-				FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(survey.getIdentity().getFDCustomerPK()));
-				eb.setProfileAttribute("fourth_order_survey", "FILL");
-			} else if ("Second Order Survey".equals(survey.getName())) {
-				FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(survey.getIdentity().getFDCustomerPK()));
-				eb.setProfileAttribute("second_order_survey", "FILL");
-			}
-
-
-		} catch (SQLException se) {
-			throw new FDResourceException(se, "Could not store survey");
-		} catch (FinderException fe) {
-			throw new FDResourceException(fe, "Could not update customer profile");
-		} catch (RemoteException re) {
-			throw new FDResourceException(re, "Having problem talking to FDCustomerEntityBean");
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-					conn = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.storeSurvey()", se);
-			}
-		}
-	}
-
 	public void setProfileAttribute(FDIdentity identity, String key, String value, FDActionInfo info) throws FDResourceException {
 		try {
 			FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getFDCustomerPK()));
@@ -2320,14 +2208,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (Exception e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("error while saving customer request", e);
-			}
-		}	} 
+                    close(conn);
+		}
+	} 
 
 	private static final String PENDING_COMPLAINT_QUERY = "select c.id as complaint_id " +
 		"from cust.sale s, cust.complaint c " +
@@ -2359,13 +2242,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while cleaning: ", e);
-			}
+                    close(conn);
 		}
 	}
 
@@ -2594,13 +2471,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after getCustomerList", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -2632,13 +2503,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e, "Counld not find customers matching criteria entered.");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after locateCustomers", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -2655,13 +2520,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			e.printStackTrace();
 			throw new FDResourceException(e, "Coulld not find order matching criteria entered.");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after locateOrders", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -2823,13 +2682,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Unable to store FDUser");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.storeUser()", sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -2842,13 +2695,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Unable to store Cohort ID for user");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.storeCohortName()", sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 	
@@ -2861,13 +2708,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Unable to store saved recipient list for user");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.storeSavedRecipients()", sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 	
@@ -2880,13 +2721,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Unable to store saved recipient  for user");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.storeSavedRecipients()", sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 	
@@ -2899,13 +2734,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Unable to store saved recipient  for user");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.storeSavedRecipients()", sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 	
@@ -2917,13 +2746,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Unable to delete saved recipient  for user");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.deleteSavedRecipients()", sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 	
@@ -2935,13 +2758,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Unable to delete saved recipient  for user");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.deleteSavedRecipients()", sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 	
@@ -2954,13 +2771,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch(SQLException sqle) {
 			throw new FDResourceException(sqle, "unable to load saved recipient list");
 		} finally {
-			if( conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.loadSavedRecipients()", sqle);
-				}
-			}
+                    close(conn);
 		}
 		return list;
 	}
@@ -3057,9 +2868,6 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(e);
 		} finally {
 			try {
-				if (conn != null) {
-					conn.close();
-				}
 				if (ps != null) {
 					ps.close();
 				}
@@ -3069,6 +2877,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			} catch (SQLException e) {
 				LOGGER.warn("error while cleanup", e);
 			}
+                        close(conn);
 		}
 	}
 
@@ -3172,13 +2981,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("error while cleanup", e);
-			}
+                    close(conn);
 		}
 	}
 
@@ -3331,16 +3134,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while cleaning up: ", e);
-			}
+                    close(conn);
 		}
-
 	}
+	
 	private ContactAddressModel getAddressFromResultSet(ResultSet rs) throws SQLException {
 		ContactAddressModel address = new ContactAddressModel();
 		address.setPK(new PrimaryKey(rs.getString("ADDRESS_ID")));
@@ -3361,7 +3158,6 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		address.setLastName(rs.getString("LAST_NAME"));
 		address.setCustomerId(rs.getString("CUSTOMER_ID"));
 		return address;
-
 	}
 
 	/**
@@ -3373,78 +3169,6 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		return "com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome";
 	}
 
-	private ErpCustomerHome getErpCustomerHome() {
-		try {
-			return (ErpCustomerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpCustomer", ErpCustomerHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-	private FDCustomerHome getFdCustomerHome() {
-		try {
-			return (FDCustomerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/FDCustomer", FDCustomerHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-	private ErpCustomerManagerHome getErpCustomerManagerHome() {
-		try {
-			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager", ErpCustomerManagerHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-	private ErpFraudPreventionHome getErpFraudHome() {
-		try {
-			return (ErpFraudPreventionHome) LOCATOR.getRemoteHome("java:comp/env/ejb/FraudManager", ErpFraudPreventionHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-	private DlvManagerHome getDlvManagerHome() {
-		try {
-			return (DlvManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/DlvManager", DlvManagerHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-	private MailerGatewayHome getMailerHome() {
-		try {
-			return (MailerGatewayHome) LOCATOR.getRemoteHome("freshdirect.mail.MailerGateway", MailerGatewayHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-	private PaymentManagerHome getPaymentManagerHome() {
-		try {
-			return (PaymentManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/PaymentManager", PaymentManagerHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-   private DlvPassManagerHome getDlvPassManagerHome() {
-        try {
-            return (DlvPassManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/DlvPassManager", DlvPassManagerHome.class);
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-
-   private GiftCardManagerHome getGiftCardGManagerHome() {
-       try {
-           return (GiftCardManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/GiftCardManager", GiftCardManagerHome.class);
-       } catch (NamingException e) {
-           throw new EJBException(e);
-       }
-   }
-   
 	public void createCase(CrmSystemCaseInfo caseInfo) throws FDResourceException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
@@ -3530,9 +3254,6 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(e);
 		} finally {
 			try {
-				if (conn != null) {
-					conn.close();
-				}
 				if (rs != null) {
 					rs.close();
 				}
@@ -3542,6 +3263,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			} catch (SQLException e) {
 				LOGGER.warn("error while cleanup", e);
 			}
+                        close(conn);
 
 		}
 	}
@@ -3556,13 +3278,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (Exception e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("error while saving customer request", e);
-			}
+                    close(conn);
 		}
 	}
 
@@ -3578,13 +3294,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}catch(SQLException e){
 			throw new FDResourceException(e);
 		}finally{
-			if(conn != null){
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Exception while trying to close connection: " + e);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -3615,10 +3325,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			try {
 				if (rs != null) {rs.close();}
 				if (ps != null) {ps.close();}
-				if (conn != null) {conn.close();}
 			} catch (SQLException e) {
 				LOGGER.warn("SQLException while cleaning: ", e);
 			}
+                        close(conn);
 		}
 	}
 
@@ -3643,10 +3353,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			try {
 				if (rs != null) {rs.close();}
 				if (ps != null) {ps.close();}
-				if (conn != null) {conn.close();}
 			} catch (SQLException e) {
 				LOGGER.warn("SQLException while cleaning: ", e);
 			}
+                        close(conn);
 		}
 	}
 
@@ -3787,13 +3497,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException (e);
 		}finally{
-			if(conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("SQLException while cleaningup: ", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -4020,20 +3724,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			try {
 				if (rs != null) {rs.close();}
 				if (ps != null) {ps.close();}
-				if (conn != null) {conn.close();}
 			} catch (SQLException e) {
 				LOGGER.warn("SQLException occured: ", e);
 			}
+                        close(conn);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	private DeliveryPassModel getActiveDPForCustomer(String customerPK, DlvPassManagerSB dlvPassSB) throws FDResourceException, RemoteException  {
@@ -4471,14 +4167,6 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 
 
-		private ErpSaleHome getErpSaleHome() {
-				try {
-					return (ErpSaleHome) LOCATOR.getRemoteHome("freshdirect.erp.Sale", ErpSaleHome.class);
-				} catch (NamingException e) {
-					throw new EJBException(e);
-				}
-		}
-
 		public void authorizeSale(String erpCustomerID, String saleID, EnumSaleType type,CustomerRatingI cra) throws FDResourceException, ErpSaleNotFoundException {
 
 			if(EnumSaleType.REGULAR.equals(type)) {
@@ -4565,38 +4253,30 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			return activityRecord;
 		}
 
-		public void storeProductRequest(List productRequest,FDSurveyResponse survey) throws FDResourceException {
-			Connection conn = null;
-			try {
-				conn = this.getConnection();
-				String id="";
-				for(int i=0;i<productRequest.size();i++) {
-					id = this.getNextId(conn, "CUST");
-					FDProductRequest prodReq=(FDProductRequest)productRequest.get(i);
-					prodReq.setId(id);
-				}
-				if(productRequest.size()>0)
-					FDProductRequestDAO.storeRequest(conn,productRequest);
-				
-                if(survey!=null && !survey.getAnswers().isEmpty())
-                	storeSurvey(survey);
+    public void storeProductRequest(List productRequest, FDSurveyResponse survey) throws FDResourceException {
+        Connection conn = null;
+        try {
+            conn = this.getConnection();
+            String id = "";
+            for (int i = 0; i < productRequest.size(); i++) {
+                id = this.getNextId(conn, "CUST");
+                FDProductRequest prodReq = (FDProductRequest) productRequest.get(i);
+                prodReq.setId(id);
+            }
+            if (productRequest.size() > 0) {
+                FDProductRequestDAO.storeRequest(conn, productRequest);
+            }
 
-			} 
-			catch (SQLException se) {
-				throw new FDResourceException(se, "Could not store product request");
-			} 
-			finally {
-				try {
-					if (conn != null) {
-						conn.close();
-						conn = null;
-					}
-				} catch (SQLException se) {
-					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.storeProductRequests()", se);
-				}
-			}
-		}
+            if (survey != null && !survey.getAnswers().isEmpty()) {
+                LOCATOR.getSurveySessionBean().storeSurvey(survey);
+            }
 
+        } catch (SQLException se) {
+            throw new FDResourceException(se, "Could not store product request");
+        } finally {
+            close(conn);
+        }
+    }
 
 
 	

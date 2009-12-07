@@ -24,26 +24,32 @@ public class SurveyHelper {
 		List reqQuests = null;
 		reqQuests = survey.getRequiredQuestions();
        	
-		for(Iterator i = responses.entrySet().iterator(); i.hasNext();){
-			Entry e = (Entry) i.next();
-			String question = (String)e.getKey();
-			int seperator=question.indexOf(FDSurveyConstants.NAME_SEPERATOR);
-			if(seperator!=-1) {
-				question=question.substring(0, seperator);
-			}
-			String[] answers = (String[])e.getValue();
-			FDSurveyQuestion q = survey.getQuestion(question);
-			if(q==null)continue;
-			if(reqQuests.contains(question)) reqQuests.remove(question);
-			if (answers.length == 1 && "".equals(answers[0])) continue; //don't create entry for blank open ended questions.
-			//if(answers.length>1) {
-				answers=getSelectedValues(q,answers);
-			//}
-			if(seperator==-1) 
-				surveyResponse.addAnswer(question, answers);
-			else
-				surveyResponse.addAnswerEx(question, answers);
-		}
+                for (Iterator i = responses.entrySet().iterator(); i.hasNext();) {
+                    Entry e = (Entry) i.next();
+                    String question = (String) e.getKey();
+                    int seperator = question.indexOf(FDSurveyConstants.NAME_SEPERATOR);
+                    if (seperator != -1) {
+                        question = question.substring(0, seperator);
+                    }
+                    String[] answers = (String[]) e.getValue();
+                    FDSurveyQuestion q = survey.getQuestion(question);
+                    if (q != null) {
+                        if (reqQuests.contains(question)) {
+                            reqQuests.remove(question);
+                        }
+                        //if (answers.length == 1 && "".equals(answers[0]))
+                        //    continue; // don't create entry for blank open ended
+                                      // questions.
+                        // if(answers.length>1) {
+                        answers = getSelectedValues(q, answers);
+                        // }
+                        if (seperator == -1) {
+                            surveyResponse.addAnswer(question, answers);
+                        } else {
+                            surveyResponse.addAnswerEx(question, answers);
+                        }
+                    }
+                }
 		for(Iterator i = reqQuests.iterator(); i.hasNext();){
 			String question = (String) i.next();
 			result.addError(new ActionError(question, SystemMessageList.MSG_REQUIRED));

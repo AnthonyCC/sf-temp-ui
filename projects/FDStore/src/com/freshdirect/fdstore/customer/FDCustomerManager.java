@@ -99,6 +99,7 @@ import com.freshdirect.fdstore.atp.FDCompositeAvailability;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
+import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
@@ -149,7 +150,7 @@ public class FDCustomerManager {
 	private static FDCustomerManagerHome managerHome = null;
 	private static MailerGatewayHome mailerHome = null;
 	private static RoutingGatewayHome routingGatewayHome = null;
-	private static FDSurveyHome surveyHome = null;
+	private final static FDServiceLocator LOCATOR = new FDServiceLocator();
 
 	/**
 	 * Register and log in a new customer.
@@ -1897,17 +1898,11 @@ public class FDCustomerManager {
 	}
 
 	public static void storeSurvey(FDSurveyResponse survey) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeSurvey(survey);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
+	    try {
+                LOCATOR.getSurveySessionBean().storeSurvey(survey);
+            } catch (RemoteException re) {
+                throw new FDResourceException(re, "Error talking to session bean");
+            }
 	}
 
 	public static void setProfileAttribute(FDIdentity identity, String key, String value) throws FDResourceException {
@@ -2246,21 +2241,7 @@ public class FDCustomerManager {
 		if (managerHome != null) {
 			return;
 		}
-		Context ctx = null;
-		try {
-			ctx = FDStoreProperties.getInitialContext();
-			managerHome = (FDCustomerManagerHome) ctx.lookup(FDStoreProperties.getFDCustomerManagerHome());
-		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
-		} finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-				}
-			} catch (NamingException ne) {
-				LOGGER.warn("Cannot close Context while trying to cleanup", ne);
-			}
-		}
+		managerHome = LOCATOR.getFDCustomerManagerHome();
 	}
 
 	private static void lookupMailerGatewayHome() throws FDResourceException {

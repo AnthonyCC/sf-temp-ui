@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -232,7 +233,48 @@ private static FDSurveyResponse getSurveyResponse(FDIdentity identity,SurveyKey 
 		return value;
 	}
 	
-	
+
+
+        public static void storeSurvey(Connection conn, String id, FDSurveyResponse survey) throws SQLException {
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SURVEY(ID,CUSTOMER_ID,SURVEY_NAME,SALE_ID,CREATE_DATE, SERVICE_TYPE) VALUES(?, ?, ?, ?, SYSDATE, ?)");
+                ps.setString(1, id);
+                
+                if (survey.getIdentity() == null) {
+                        ps.setNull(2, Types.VARCHAR);
+                } else {
+                        ps.setString(2, survey.getIdentity().getFDCustomerPK());
+                }
+                
+                ps.setString(3, survey.getName());
+                
+                if (survey.getSalePk() == null) {
+                        ps.setNull(4, Types.VARCHAR);
+                } else {
+                        ps.setString(4, survey.getSalePk().getId());
+                }
+                ps.setString(5, survey.getKey().getUserType().name());
+                
+                ps.executeUpdate();
+                ps.close();
+
+                ps = conn.prepareStatement("INSERT INTO CUST.SURVEYDATA (SURVEY_ID, QUESTION, ANSWER) VALUES (?, ?, ?)");
+                for (Iterator i = survey.getAnswers().entrySet().iterator(); i.hasNext();) {
+                        Map.Entry entry = (Map.Entry) i.next();
+                        String question = (String) entry.getKey();
+                        String[] values = (String[]) entry.getValue();
+
+                        for (int j = 0; j < values.length; j++) {
+                                String answer = values[j];
+                                ps.setString(1, id);
+                                ps.setString(2, question);
+                                ps.setString(3, answer);
+                                ps.addBatch();
+                        }
+                }
+                ps.executeBatch();
+                ps.close();
+        }
+
   
 }
 
