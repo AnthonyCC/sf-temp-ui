@@ -76,7 +76,6 @@ public class ProductMoreInfo {
     private Set<ProductMoreInfo> componentGroupMealProductMoreInfo = new HashSet<ProductMoreInfo>();
 
     private List<String> allergens;
-    
 
     public ProductMoreInfo(com.freshdirect.mobileapi.model.Product product) throws ModelException, FDResourceException,
             FDSkuNotFoundException {
@@ -117,8 +116,27 @@ public class ProductMoreInfo {
             }
         }
 
-        if (product.isMultipleNutrition()) {
-            for (com.freshdirect.mobileapi.model.Sku sku : product.getSkus()) {
+        if (product.getLayout() != "componentGroupMeal") {
+
+            if (product.isMultipleNutrition()) {
+                for (com.freshdirect.mobileapi.model.Sku sku : product.getSkus()) {
+                    skuCodes.add(sku.getSkuCode());
+                    if (product.getDefaultProduct().hasIngredients()) {
+                        ingredients.put(sku.getSkuCode(), product.getSkuIngredients(sku));
+                    }
+                    if (product.getDefaultProduct().hasNutritionFacts()) {
+                        nutritionFacts.put(sku.getSkuCode(), product.getSkuNutrition(sku));
+                    }
+                    if (sku.hasSecondaryDomain()) {
+                        skuNames.put(sku.getSkuCode(), sku.getDomainLabel());
+                    } else {
+                        if (sku.getDomain() != null) {
+                            skuNames.put(sku.getSkuCode(), sku.getDomain().getDomainValueLabel());
+                        }
+                    }
+                }
+            } else {
+                com.freshdirect.mobileapi.model.Sku sku = product.getDefaultSku();
                 skuCodes.add(sku.getSkuCode());
                 if (product.getDefaultProduct().hasIngredients()) {
                     ingredients.put(sku.getSkuCode(), product.getSkuIngredients(sku));
@@ -126,25 +144,8 @@ public class ProductMoreInfo {
                 if (product.getDefaultProduct().hasNutritionFacts()) {
                     nutritionFacts.put(sku.getSkuCode(), product.getSkuNutrition(sku));
                 }
-                if (sku.hasSecondaryDomain()) {
-                    skuNames.put(sku.getSkuCode(), sku.getDomainLabel());
-                } else {
-                    if (sku.getDomain() != null){
-                    skuNames.put(sku.getSkuCode(), sku.getDomain().getDomainValueLabel());
-                    }
-                }
-            }
-        } else {
-            com.freshdirect.mobileapi.model.Sku sku = product.getDefaultSku();
-            skuCodes.add(sku.getSkuCode());
-            if (product.getDefaultProduct().hasIngredients()) {
-                ingredients.put(sku.getSkuCode(), product.getSkuIngredients(sku));
-            }
-            if (product.getDefaultProduct().hasNutritionFacts()) {
-                nutritionFacts.put(sku.getSkuCode(), product.getSkuNutrition(sku));
             }
         }
-
         // If product has componentGroups, in other words a ComponentGroupMeal
         if (product.getComponentGroups().size() > 0) {
             for (ComponentGroup componentGroup : product.getComponentGroups()) {
@@ -351,5 +352,5 @@ public class ProductMoreInfo {
             return false;
         return true;
     }
-    
+
 }
