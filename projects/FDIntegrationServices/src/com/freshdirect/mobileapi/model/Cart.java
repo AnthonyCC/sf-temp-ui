@@ -680,7 +680,7 @@ public class Cart {
 
         if (cart.getDepositValue() > 0) {
             cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getDepositValue(), false, false, false,
-                    "NY State Bottle Deposit and Handling Fee"));
+                    "Bottle Deposit & Fee"));
             //cartDetail.setDepositValue(cart.getDepositValue());
         }
 
