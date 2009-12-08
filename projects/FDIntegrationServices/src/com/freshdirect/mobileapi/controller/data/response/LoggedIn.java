@@ -23,6 +23,16 @@ public class LoggedIn extends Message {
     private Timeslot reservationTimeslot;
 
     private String firstName;
+    
+    private String customerServicePhoneNumber;
+
+    public String getCustomerServicePhoneNumber() {
+        return customerServicePhoneNumber;
+    }
+
+    public void setCustomerServicePhoneNumber(String customerServicePhoneNumber) {
+        this.customerServicePhoneNumber = customerServicePhoneNumber;
+    }
 
     public String getFirstName() {
         return firstName;
