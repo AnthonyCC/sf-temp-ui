@@ -8,6 +8,8 @@ import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 public class CartDetail {
     private List<AffiliateCartDetail> affiliates = new ArrayList<AffiliateCartDetail>();
 
+    private List<SummaryLineCharge> summaryLineCharges = new ArrayList<SummaryLineCharge>();
+
     private String platterCutoffTime;
 
     public String getPlatterCutoffTime() {
@@ -30,16 +32,6 @@ public class CartDetail {
         this.affiliates.add(affiliate);
     }
 
-    public float getCreditCharge() {
-        return creditCharge;
-    }
-
-    public void setCreditCharge(float creditCharge) {
-        this.creditCharge = creditCharge;
-    }
-
-    private float creditCharge = 0f;
-
     private double estimatedTotal;
 
     public double getEstimatedTotal() {
@@ -52,18 +44,6 @@ public class CartDetail {
 
     private double subtotal;
 
-    private double tax;
-
-    private double giftcardBalance;
-
-    public double getGiftcardBalance() {
-        return giftcardBalance;
-    }
-
-    public void setGiftcardBalance(double giftcardBalance) {
-        this.giftcardBalance = giftcardBalance;
-    }
-
     public double getSubtotal() {
         return subtotal;
     }
@@ -72,39 +52,7 @@ public class CartDetail {
         this.subtotal = subtotal;
     }
 
-    public void setTax(double tax) {
-        this.tax = tax;
-    }
-
-    public double getTax() {
-        return tax;
-    }
-
-    private double depositValue;
-
-    public void setDepositValue(double depositValue) {
-        this.depositValue = depositValue;
-    }
-
-    public double getDepositValue() {
-        return depositValue;
-    }
-
     private boolean isDlvPassApplied = false;
-
-    private double deliverySurcharge = 0.0;
-
-    private boolean isDeliveryChargeWaived = false;
-
-    private boolean isDeliveryChargeTaxable = false;
-
-    private double miscellaneousCharge = 0.0;
-
-    private String miscellaneousChargeLabel;
-
-    private boolean isMiscellaneousChargeTaxable = false;
-
-    private boolean isMiscellaneousChargeWaived = false;
 
     public boolean isDlvPassApplied() {
         return isDlvPassApplied;
@@ -112,54 +60,6 @@ public class CartDetail {
 
     public void setIsDlvPassApplied(boolean isDlvPassApplied) {
         this.isDlvPassApplied = isDlvPassApplied;
-    }
-
-    public double getDeliverySurcharge() {
-        return deliverySurcharge;
-    }
-
-    public void setDeliverySurcharge(double deliverySurcharge) {
-        this.deliverySurcharge = deliverySurcharge;
-    }
-
-    public boolean isDeliveryChargeWaived() {
-        return isDeliveryChargeWaived;
-    }
-
-    public void setIsDeliveryChargeWaived(boolean isDeliveryChargeWaived) {
-        this.isDeliveryChargeWaived = isDeliveryChargeWaived;
-    }
-
-    public boolean isDeliveryChargeTaxable() {
-        return isDeliveryChargeTaxable;
-    }
-
-    public void setIsDeliveryChargeTaxable(boolean isDeliveryChargeTaxable) {
-        this.isDeliveryChargeTaxable = isDeliveryChargeTaxable;
-    }
-
-    public double getMiscellaneousCharge() {
-        return miscellaneousCharge;
-    }
-
-    public void setMiscellaneousCharge(double miscellaneousCharge) {
-        this.miscellaneousCharge = miscellaneousCharge;
-    }
-
-    public boolean isMiscellaneousChargeTaxable() {
-        return isMiscellaneousChargeTaxable;
-    }
-
-    public void setIsMiscellaneousChargeTaxable(boolean isMiscellaneousChargeTaxable) {
-        this.isMiscellaneousChargeTaxable = isMiscellaneousChargeTaxable;
-    }
-
-    public boolean isMiscellaneousChargeWaived() {
-        return isMiscellaneousChargeWaived;
-    }
-
-    public void setIsMiscellaneousChargeWaived(boolean isMiscellaneousChargeWaived) {
-        this.isMiscellaneousChargeWaived = isMiscellaneousChargeWaived;
     }
 
     private List<Discount> discounts = new ArrayList<Discount>();
@@ -190,15 +90,15 @@ public class CartDetail {
         this.remptionPromotions.add(remptionPromotion);
     }
 
-    private double customerCreditsValue = 0.0;
-
-    public double getCustomerCreditsValue() {
-        return customerCreditsValue;
-    }
-
-    public void setCustomerCreditsValue(double customerCreditsValue) {
-        this.customerCreditsValue = customerCreditsValue;
-    }
+    //    private double customerCreditsValue = 0.0;
+    //
+    //    public double getCustomerCreditsValue() {
+    //        return customerCreditsValue;
+    //    }
+    //
+    //    public void setCustomerCreditsValue(double customerCreditsValue) {
+    //        this.customerCreditsValue = customerCreditsValue;
+    //    }
 
     private boolean isEstimatedPrice;
 
@@ -208,6 +108,50 @@ public class CartDetail {
 
     public void setIsEstimatedPrice(boolean isEstimatedPrice) {
         this.isEstimatedPrice = isEstimatedPrice;
+    }
+
+    /**
+     * @author Rob
+     *
+     */
+    public static class SummaryLineCharge {
+        private double amount = 0;
+
+        private boolean taxable = false;
+
+        private boolean waived = false;
+
+        private boolean discount = false;
+
+        private String label;
+
+        public SummaryLineCharge(double amount, boolean taxable, boolean waived, boolean discount, String label) {
+            this.amount = amount;
+            this.label = label;
+            this.taxable = taxable;
+            this.discount = discount;
+            this.waived = waived;
+        }
+
+        public double getAmount() {
+            return amount;
+        }
+
+        public boolean isTaxable() {
+            return taxable;
+        }
+
+        public boolean isWaived() {
+            return waived;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public boolean isDiscount() {
+            return discount;
+        }
     }
 
     /**
@@ -310,7 +254,7 @@ public class CartDetail {
         }
 
         private boolean automatic;
-        
+
         public boolean isAutomatic() {
             return automatic;
         }
@@ -567,54 +511,6 @@ public class CartDetail {
             this.hasKosherRestriction = hasKosherRestriction;
         }
 
-        //        public String getQuantityUnitLabel() {
-        //            return quantityUnitLabel;
-        //        }
-        //
-        //        public void setQuantityUnitLabel(String quantityUnitLabel) {
-        //            this.quantityUnitLabel = quantityUnitLabel;
-        //        }
-        //
-        //        public String getName() {
-        //            return name;
-        //        }
-        //
-        //        public void setName(String name) {
-        //            this.name = name;
-        //        }
-        //
-        //        public String getSalesUnit() {
-        //            return salesUnit;
-        //        }
-        //
-        //        public void setSalesUnit(String salesUnit) {
-        //            this.salesUnit = salesUnit;
-        //        }
-        //
-        //        public String getQuanity() {
-        //            return quanity;
-        //        }
-        //
-        //        public void setQuanity(String quanity) {
-        //            this.quanity = quanity;
-        //        }
-        //
-        //        public String getDescription() {
-        //            return description;
-        //        }
-        //
-        //        public void setDescription(String description) {
-        //            this.description = description;
-        //        }
-        //
-        //        public void setConfigurationDesc(String configurationDesc) {
-        //            this.configurationDesc = configurationDesc;
-        //        }
-        //
-        //        public String getConfigurationDesc() {
-        //            return this.configurationDesc;
-        //        }
-
         private boolean kosherProduction;
 
         public void setKosherProduction(boolean kosherProduction) {
@@ -725,13 +621,11 @@ public class CartDetail {
 
     }
 
-    public void setMiscellaneousChargeLabel(String miscChargeLabel) {
-       this.miscellaneousChargeLabel = miscChargeLabel;        
+    public List<SummaryLineCharge> getSummaryLineCharges() {
+        return this.summaryLineCharges;
     }
 
-    public String getMiscellaneousChargeLabel() {
-        return this.miscellaneousChargeLabel;
+    public void addSummaryLineCharge(SummaryLineCharge summaryLineCharge) {
+        this.summaryLineCharges.add(summaryLineCharge);
     }
-
-
 }

@@ -60,6 +60,7 @@ import com.freshdirect.mobileapi.controller.data.response.CartDetail.AffiliateCa
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.Group;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.ProductLineItem;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.RemptionPromotion;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail.SummaryLineCharge;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.CartLineItem.CartLineItemType;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount.DiscountType;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.RemptionPromotion.RemptionPromotionType;
@@ -631,15 +632,6 @@ public class Cart {
                     throw new FDResourceException(e);
                 }
 
-                //                try {
-                //                    productConfiguration.populateProductWithModel(Product.wrap(productNode, user.getFDSessionUser().getUser()));
-                //                } catch (ModelException e) {
-                //                    throw new FDResourceException(e);
-                //                }
-                //                productConfiguration.setQuantity((float) cartLine.getQuantity());
-                //                productConfiguration.setOptions(cartLine.getOptions());
-                //                productConfiguration.setConfigurationDescription(cartLine.getConfigurationDesc());
-                //                productConfiguration.setSalesUnit(new SalesUnit(cartLine.getSalesUnit()));
                 productLineItem.setProductConfiguration(productConfiguration);
                 productLineItem.setHasKosherRestriction(cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.KOSHER));
 
@@ -682,8 +674,15 @@ public class Cart {
         //Charge Lines
         cartDetail.setEstimatedTotal(cart.getTotal());
         cartDetail.setSubtotal(cart.getSubTotal());
-        cartDetail.setTax(cart.getTaxValue());
-        cartDetail.setDepositValue(cart.getDepositValue());
+
+        cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getTaxValue(), false, false, false, "Total Tax"));
+        //cartDetail.setTax(cart.getTaxValue());
+
+        if (cart.getDepositValue() > 0) {
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getDepositValue(), false, false, false,
+                    "NY State Bottle Deposit and Handling Fee"));
+            //cartDetail.setDepositValue(cart.getDepositValue());
+        }
 
         if (cart instanceof FDOrderI) {
             cartDetail.setIsDlvPassApplied(((FDOrderI) cart).isDlvPassApplied());
@@ -691,24 +690,26 @@ public class Cart {
             cartDetail.setIsDlvPassApplied(((FDCartModel) cart).isDlvPassApplied());
         }
 
-        //Delivery Charge
-        cartDetail.setIsDeliveryChargeWaived(cart.isDeliveryChargeWaived());
+        //Delivery Charge        
+        double deliveyCharge = cart.getDeliverySurcharge();
         if (cart.isDeliveryChargeWaived()) {
-            cartDetail.setDeliverySurcharge(0); //Set delivery charge to zero
-        } else {
-            cartDetail.setDeliverySurcharge(cart.getDeliverySurcharge());
+            deliveyCharge = 0;
         }
-        cartDetail.setIsDeliveryChargeTaxable(cart.isDeliveryChargeTaxable());
+        cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveyCharge, cart.isDeliveryChargeTaxable(), cart.isDeliveryChargeWaived(),
+                false, "Delivery Charge"));
 
         //Misc Charge
-        cartDetail.setIsMiscellaneousChargeWaived(cart.isMiscellaneousChargeWaived());
         if (cart.isMiscellaneousChargeWaived()) {
-            cartDetail.setMiscellaneousCharge(0); //Set misc charge to zero
+            //If waived, may need to show it w/ (waived labeling) 
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, cart.isMiscellaneousChargeTaxable(), cart
+                    .isMiscellaneousChargeWaived(), false, MobileApiProperties.getMiscChargeLabel()));
         } else {
-            cartDetail.setMiscellaneousCharge(cart.getMiscellaneousCharge());
+            //If not waived, show only if the value is greater than zero
+            if (cart.getMiscellaneousCharge() > 0) {
+                cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getMiscellaneousCharge(), cart.isMiscellaneousChargeTaxable(),
+                        cart.isMiscellaneousChargeWaived(), false, MobileApiProperties.getMiscChargeLabel()));
+            }
         }
-        cartDetail.setIsMiscellaneousChargeTaxable(cart.isMiscellaneousChargeTaxable());
-        cartDetail.setMiscellaneousChargeLabel(MobileApiProperties.getMiscChargeLabel());
 
         /*
          * DUP: FDWebSite/docroot/shared/includes/i_viewcart.jspf
@@ -797,7 +798,7 @@ public class Cart {
 
         //Customer Credit
         if (cart.getCustomerCreditsValue() > 0) {
-            cartDetail.setCustomerCreditsValue(cart.getCustomerCreditsValue());
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getCustomerCreditsValue(), false, false, true, "Credit Applied"));
             //            %>
             //                <tr valign="top" class="orderSummary">
             //                        <td colspan="3" align="right">Credit Applied:</td>
@@ -818,7 +819,11 @@ public class Cart {
         //        </tr>
 
         //Giftcard Balance
-        cartDetail.setGiftcardBalance(user.getGiftcardBalance());
+        if (user.getGiftcardBalance() > 0) {
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(user.getGiftcardBalance(), false, false, true, "Gift Card Balance"));            
+        }
+        //
+        //        cartDetail.setGiftcardBalance(user.getGiftcardBalance());
         //TODO: If we fully support GF, we'll have to support "remove" giftcard as below
 
         //    <% if (user.getGiftcardBalance() > 0) { %>
