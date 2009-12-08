@@ -119,7 +119,7 @@ public class CheckoutController extends BaseController {
     }
 
     public boolean isCheckoutAuthenticated(HttpServletRequest request) {
-        return true;//getMobileSessionData(request).isCheckoutAuthenticated();
+        return getMobileSessionData(request).isCheckoutAuthenticated();
     }
 
     public void setCheckoutAuthenticated(HttpServletRequest request) {
