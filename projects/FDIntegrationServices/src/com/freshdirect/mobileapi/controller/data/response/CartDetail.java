@@ -123,7 +123,14 @@ public class CartDetail {
 
         private boolean discount = false;
 
+        private boolean displayAmount = true;
+
         private String label;
+
+        public SummaryLineCharge(double amount, boolean taxable, boolean waived, boolean discount, String label, boolean displayAmount) {
+            this(amount, taxable, waived, discount, label);
+            this.displayAmount = displayAmount;
+        }
 
         public SummaryLineCharge(double amount, boolean taxable, boolean waived, boolean discount, String label) {
             this.amount = amount;
@@ -139,6 +146,10 @@ public class CartDetail {
 
         public boolean isTaxable() {
             return taxable;
+        }
+
+        public boolean isDisplayAmount() {
+            return displayAmount;
         }
 
         public boolean isWaived() {
