@@ -8,7 +8,7 @@
 
 	<div id="main">
 		<div id="header">
-			<img src="${mediaPath}${productImage.path}" class"productImage" width="320" />
+			<img src="${moreInfo.productImage.source}" class"productImage" width="320" />
 			<h1>${product.productTitle}</h1>
 
 <#if product.layout != "wine" >

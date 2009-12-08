@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
+import org.python.modules.newmodule;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -17,6 +18,7 @@ import com.freshdirect.mobileapi.model.Brand;
 import com.freshdirect.mobileapi.model.ComponentGroup;
 import com.freshdirect.mobileapi.model.Variation;
 import com.freshdirect.mobileapi.model.Wine;
+import com.freshdirect.mobileapi.model.Product.ImageType;
 
 /**
  * Contains information related to the product that is not strictly necessary to be displayed in product detail screen.
@@ -76,6 +78,8 @@ public class ProductMoreInfo {
     private Set<ProductMoreInfo> componentGroupMealProductMoreInfo = new HashSet<ProductMoreInfo>();
 
     private List<String> allergens;
+
+    private Image productImage;
 
     public ProductMoreInfo(com.freshdirect.mobileapi.model.Product product) throws ModelException, FDResourceException,
             FDSkuNotFoundException {
@@ -164,6 +168,15 @@ public class ProductMoreInfo {
         }
         kosherType = product.getKosherType();
 
+        // from i_product_image.jspf
+        com.freshdirect.fdstore.content.Image detail = product.getImage(ImageType.DETAIL);
+        com.freshdirect.fdstore.content.Image zoom = product.getImage(ImageType.ZOOM);
+
+        if (zoom != null && zoom.getPath().indexOf("clear.gif") == -1) {
+            productImage = new Image(zoom.getPath(), zoom.getHeight(), zoom.getHeight());
+        } else {
+            productImage = new Image(detail.getPath(), detail.getHeight(), detail.getHeight());
+        }
     }
 
     public String getId() {
@@ -308,6 +321,14 @@ public class ProductMoreInfo {
 
     public String getKosherType() {
         return kosherType;
+    }
+
+    public Image getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(Image productImage) {
+        this.productImage = productImage;
     }
 
     @Override

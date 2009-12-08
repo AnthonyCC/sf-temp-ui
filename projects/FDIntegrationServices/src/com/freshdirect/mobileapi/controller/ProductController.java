@@ -233,7 +233,7 @@ public class ProductController extends BaseController {
 
             model.addObject("moreInfo", productMoreInfo);
             model.addObject("product", product);
-            model.addObject("productImage", product.getImage(ImageType.ZOOM));
+            model.addObject("productImage", product.getImage(ImageType.DETAIL));
             model.addObject("mediaPath", MobileApiProperties.getMediaPath());
             model.addObject("request", request);
 
