@@ -151,6 +151,7 @@ public class LoginController extends BaseController {
 
         responseMessage = new LoggedIn();
         ((LoggedIn) responseMessage).setChefTable(user.isChefsTable());
+        ((LoggedIn) responseMessage).setCustomerServicePhoneNumber(user.getCustomerServiceContact());
         if (user.getReservationTimeslot() != null) {
             ((LoggedIn) responseMessage).setReservationTimeslot(new Timeslot(user.getReservationTimeslot()));
         }
