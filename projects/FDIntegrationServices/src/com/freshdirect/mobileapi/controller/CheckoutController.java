@@ -78,8 +78,8 @@ public class CheckoutController extends BaseController {
         if (ACTION_INIT_CHECKOUT.equals(action) || ACTION_AUTH_CHECKOUT.equals(action)) {
             //Validate pre-req. If pass, go directly to get payment method
             Login requestMessage = null;
-            
-            if(ACTION_AUTH_CHECKOUT.equals(action)) {
+
+            if (ACTION_AUTH_CHECKOUT.equals(action)) {
                 requestMessage = parseRequestObject(request, response, Login.class);
             }
             if (validateCheckoutRequirements(model, requestMessage, user, request)) {
@@ -156,7 +156,7 @@ public class CheckoutController extends BaseController {
 
         if (valid) {
             if ((user.getPaymentMethods() == null) || (user.getPaymentMethods().size() == 0)) {
-                responseMessage.addErrorMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
+                responseMessage = getErrorMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
                 valid = false;
             }
         }
