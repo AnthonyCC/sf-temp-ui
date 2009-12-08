@@ -15,13 +15,15 @@ public class Variation {
     private String variationName;
 
     public Variation() {
-    	
+
     }
-    
+
     public Variation(com.freshdirect.mobileapi.model.Variation variation) {
         this.setVariationName(variation.getName());
         this.setOptional(variation.isOptional());
-        this.setVariationDescription(variation.getDescription());
+        if (variation.getOptions().size() > 1) {
+            this.setVariationDescription(variation.getDescription());
+        }
         this.setVariationUnderLabel(variation.getUnderLabel());
         for (com.freshdirect.mobileapi.model.VariationOption vo : variation.getOptions()) {
             VariationOption option = new VariationOption();
