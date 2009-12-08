@@ -30,6 +30,7 @@ import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ProductModelSortUtil;
 import com.freshdirect.mobileapi.util.SortUtil;
+import com.freshdirect.mobileapi.util.ProductModelSortUtil.SortType;
 
 public class SearchController extends BaseController {
     private static org.apache.log4j.Category LOG = LoggerFactory.getInstance(SearchController.class);
@@ -65,10 +66,10 @@ public class SearchController extends BaseController {
         String searchTerm = request.getParameter("searchTerm");
         int page = (StringUtils.isNumeric(request.getParameter("page")) ? Integer.parseInt(request.getParameter("page")) : 1);
         int resultMax = (StringUtils.isNumeric(request.getParameter("max")) ? Integer.parseInt(request.getParameter("max")) : 25);
-        ProductModelSortUtil.SortType sortType = null;
-        String brandToFilter = "";
-        String categoryToFilter = "";
-        String departmentToFilter = "";
+        ProductModelSortUtil.SortType sortType = SortType.RELEVANCY; //Default sort type
+        String brandToFilter = null;
+        String categoryToFilter = null;
+        String departmentToFilter = null;
 
         // Retrieving any possible payload
         String postData = getPostData(request, response);

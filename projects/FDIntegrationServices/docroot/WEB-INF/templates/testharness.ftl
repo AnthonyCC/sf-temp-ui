@@ -2,24 +2,36 @@
 <head>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
 <script type="text/javascript" src="../js/urlEncode.js"></script>
+<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+
 
 <script language="Javascript">
+$(document).ready(function(){
+  var version = $.cookie("version");
+  if (version) {
+    $("#version").val(version);
+  } else {
+    $("#version").val("1");
+  }
+});
+
+
 function loadStuff() {
   var loaddata = $("#loaddata").val();
   if(loaddata == "Login") {  	
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/login/");
+  	$("#url").val("/saptest12@freshdirect.com/login/");
   	$("#payload").val('{ "username" : "saptest12@freshdirect.com", "password" : "test" }');
   	$("#result").val("");
   } else if (loaddata == "AddPromo") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/cart/promo/apply/TEST_P0002");
+  	$("#url").val("/saptest12@freshdirect.com/cart/promo/apply/TEST_P0002");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "RemovePromo") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/cart/promo/remove/TEST_P0002");
+  	$("#url").val("/saptest12@freshdirect.com/cart/promo/remove/TEST_P0002");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "AddItem-SimpleBeef") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/cart/add/");
+  	$("#url").val("/saptest12@freshdirect.com/cart/add/");
   	var postdata = '{'+
 		'\n	"productConfiguration" : {'+
 		'\n		"product" : { '+
@@ -37,7 +49,7 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "AddItem-SimpleWine") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/cart/add/");
+  	$("#url").val("/saptest12@freshdirect.com/cart/add/");
   	var postdata = '{'+
 		'\n	"productConfiguration" : {'+
 		'\n		"product" : { '+
@@ -53,7 +65,7 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "UpdateItem-SimpleBeef") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/cart/update/");
+  	$("#url").val("/saptest12@freshdirect.com/cart/update/");
   	var postdata = '{'+
 		'\n	"cartLineId" : "-580423507",'+
 		'\n	"productConfiguration" : {'+
@@ -72,126 +84,126 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "RemoveItem") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/cart/remove/621581041");
+  	$("#url").val("/saptest12@freshdirect.com/cart/remove/621581041");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "RemoveAllItems") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/cart/removeallitems/");
+  	$("#url").val("/saptest12@freshdirect.com/cart/removeallitems/");
   	$("#payload").val('');
   	$("#result").val("");  	
   } else if (loaddata == "ViewItems") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/cart/getdetail/");
+  	$("#url").val("/saptest12@freshdirect.com/cart/getdetail/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "InitCheckout") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/init/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/init/");
     $("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "CheckoutAuthenticate") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/authenticate/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/authenticate/");
     $("#payload").val('{ "username" : "saptest12@freshdirect.com", "password" : "test" }');
   	$("#result").val("");
   } else if (loaddata == "GetDeliveryAddresses") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/deliveryaddresses/getall/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/getall/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "SetDeliveryAddress") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/deliveryaddresses/set/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/set/");
   	$("#payload").val('{ "id" : "2150625068", "type" : "RESIDENTIAL" }');
   	$("#result").val("");
   } else if (loaddata == "ReserveDeliverySlot") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/deliverytimeslot/reserve/2150625068/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/deliverytimeslot/reserve/2150625068/");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "ATPErrorDetails") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/atp/error/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/atp/error/");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "ATPRemove") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/atp/removeitems/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/atp/removeitems/");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "GetPaymentMethods") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/paymentmethod/getall/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/getall/");
   	$("#payload").val("");
   	$("#result").val("");  	
   } else if (loaddata == "SetPaymentMethods") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/paymentmethod/set/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/set/");
   	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "" }');
   	$("#result").val("");
   } else if (loaddata == "OrderDetail") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/orderdetail/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/orderdetail/");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "SubmitOrder") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/checkout/ordersubmit/");
+  	$("#url").val("/saptest12@freshdirect.com/checkout/ordersubmit/");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "VerifyAge") {  	
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/alcohol/verifyage/");
+  	$("#url").val("/saptest12@freshdirect.com/alcohol/verifyage/");
   	$("#payload").val('');
   	$("#result").val("");  	
   } else if (loaddata == "AcknowledgeHealthWarning") {  	
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/alcohol/acknowledgehealthwarning/");
+  	$("#url").val("/saptest12@freshdirect.com/alcohol/acknowledgehealthwarning/");
   	$("#payload").val('');
   	$("#result").val("");  	
   } else if (loaddata == "RemoveAlcohol") {  	
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/alcohol/removefromcart/");
+  	$("#url").val("/saptest12@freshdirect.com/alcohol/removefromcart/");
   	$("#payload").val('');
   	$("#result").val("");  	
   } else if (loaddata == "Search") {
-  	$("#url").val("/mobileapi/search/");
+  	$("#url").val("/search/");
 	var postdata = '{"query": "coffee", "page" : "1"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "SearchSort") {
-  	$("#url").val("/mobileapi/search/");
+  	$("#url").val("/search/");
 	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "sortBy" : "name"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "SearchFilter") {
-  	$("#url").val("/mobileapi/search/");
+  	$("#url").val("/search/");
 	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "category" : "gro_coffe"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "ProductDetail") {
-  	$("#url").val("/mobileapi/product/catid/grns/id/grns_grnkale");
+  	$("#url").val("/product/catid/grns/id/grns_grnkale");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "ProductDetailMoreInfo") {
-  	$("#url").val("/mobileapi/product/moreinfo/catid/grns/id/grns_grnkale");
+  	$("#url").val("/product/moreinfo/catid/grns/id/grns_grnkale");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "GetExistingOrder") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/order/2153089071/detail");
+  	$("#url").val("/saptest12@freshdirect.com/order/2153089071/detail");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "CancelExistingOrder") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/order/2153087389/cancel");
+  	$("#url").val("/saptest12@freshdirect.com/order/2153087389/cancel");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "GetOrderHistory") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/account/orders/");
+  	$("#url").val("/saptest12@freshdirect.com/account/orders/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "ModifyOrder") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/order/2153089071/modify");
+  	$("#url").val("/saptest12@freshdirect.com/order/2153089071/modify");
   	$("#payload").val('');
   	$("#result").val("");
   } else if (loaddata == "CancelOrderModify") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/order/cancelmodify/");
+  	$("#url").val("/saptest12@freshdirect.com/order/cancelmodify/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "Logout") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/logout/");
+  	$("#url").val("/saptest12@freshdirect.com/logout/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "QuickShopOrder") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/order/id/2153085854/quickshop/");
+  	$("#url").val("/saptest12@freshdirect.com/order/id/2153085854/quickshop/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "AddItem-MultipleBeef") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/cart/addmultiple/");
+  	$("#url").val("/saptest12@freshdirect.com/cart/addmultiple/");
   	var postdata = '{'+
 		'\n	"productsConfiguration" : ['+
 		'\n  { '+
@@ -223,26 +235,26 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "ShoppingLists") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/shoppinglists/");
+  	$("#url").val("/saptest12@freshdirect.com/shoppinglists/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "OrderHistoryQuickshop") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/orders/quickshop/");
+  	$("#url").val("/saptest12@freshdirect.com/orders/quickshop/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "QuickShopLists") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/shoppinglist/id/2153098981/quickshop/");
+  	$("#url").val("/saptest12@freshdirect.com/shoppinglist/id/2153098981/quickshop/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "RemoveMultipleItems") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/cart/removemultipleitems/");
+  	$("#url").val("/saptest12@freshdirect.com/cart/removemultipleitems/");
   	var postdata = '{'+
   	'  "ids" : ["-2093500227","545704818"]'+
 	'\n}';
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "ProductGetPrice") {
-  	$("#url").val("/mobileapi/product/getprice/catid/crt/id/crt_jumbo");
+  	$("#url").val("/product/getprice/catid/crt/id/crt_jumbo");
   	var postdata = '\n	{'+
 	'\n	    "product" : {'+
 	'\n	        "id" : "crt_jumbo",'+
@@ -260,15 +272,15 @@ function loadStuff() {
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "SSYouMightAlsoLike") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/smartstore/youmightalsolike/");
+  	$("#url").val("/saptest12@freshdirect.com/smartstore/youmightalsolike/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "ContactUsFormData") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/contactus/get/");
+  	$("#url").val("/saptest12@freshdirect.com/contactus/get/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "ContactUsSubmit") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/contactus/send/");
+  	$("#url").val("/saptest12@freshdirect.com/contactus/send/");
   	var postdata = '\n	{'+
 	'\n	    "subject" : "1",'+
 	'\n	    "orderId" : "5348377355",'+
@@ -277,97 +289,98 @@ function loadStuff() {
 	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "SSYourFavorite") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/smartstore/yourfavorite/");
+  	$("#url").val("/saptest12@freshdirect.com/smartstore/yourfavorite/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "SSFavorite") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/smartstore/favorite/");
+  	$("#url").val("/saptest12@freshdirect.com/smartstore/favorite/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "SSFDFavorite") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/smartstore/fdfavorite/");
+  	$("#url").val("/saptest12@freshdirect.com/smartstore/fdfavorite/");
   	$("#payload").val("");
   	$("#result").val("");
   }else if (loaddata == "WGDPresidentPicks") {
     var postdata = '{"query": "", "page" : "1", "max" : "25"}';
-  	$("#url").val("/mobileapi/product/presidentspick/");
+  	$("#url").val("/product/presidentspick/");
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "WGDButcherBlock") {
-  	$("#url").val("/mobileapi/product/butchersblock/");
+  	$("#url").val("/product/butchersblock/");
     var postdata = '{"query": "", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "WGDPeakProduce") {
-  	$("#url").val("/mobileapi/product/peakproduce/");
+  	$("#url").val("/product/peakproduce/");
     var postdata = '{"query": "", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "WGDBrandNameDeals") {
-  	$("#url").val("/mobileapi/product/brandnamedeals/");
+  	$("#url").val("/product/brandnamedeals/");
     var postdata = '{"query": "", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "AccountDeliveryInfo") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/account/addresses/");
+  	$("#url").val("/saptest12@freshdirect.com/account/addresses/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "AccountDeliveryTimeslotsDefault") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/account/timeslots");
+  	$("#url").val("/saptest12@freshdirect.com/account/timeslots");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "AccountDeliveryTimeslots") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/account/timeslots/2148933356");
+  	$("#url").val("/saptest12@freshdirect.com/account/timeslots/2148933356");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "AccountCancelTimeslotsReservation") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/account/timeslots/cancel");
+  	$("#url").val("/saptest12@freshdirect.com/account/timeslots/cancel");
     var postdata = '{ "addressId" : "2148933356","deliveryTimeslotId": "xxx"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "AccountReservedTimeslots") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/account/timeslots/reserve");
+  	$("#url").val("/saptest12@freshdirect.com/account/timeslots/reserve");
     var postdata = '{ "addressId" : "2148933356", "deliveryTimeslotId": "xxx"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
   } else if (loaddata == "SearchAutocomplete") {
-  	$("#url").val("/mobileapi/search/autocomplete/c");
+  	$("#url").val("/search/autocomplete/c");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "EmailCapture") {
-  	$("#url").val("/mobileapi/emailcapture/test@test.com");
+  	$("#url").val("/emailcapture/test@test.com");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "ConfiguredValues") {
-  	$("#url").val("/mobileapi/configvalue/param1");
+  	$("#url").val("/configvalue/param1");
   	$("#payload").val("");
   	$("#result").val("");
   }  else if (loaddata == "Help") {
-  	$("#url").val("/mobileapi/help/");
+  	$("#url").val("/help/");
   	$("#payload").val("");
   	$("#result").val("");
   }  else if (loaddata == "HelpContactUs") {
-  	$("#url").val("/mobileapi/help/contactUs");
+  	$("#url").val("/help/contactUs");
   	$("#payload").val("");
   	$("#result").val("");
   }  else if (loaddata == "HelpLearnMorePromo") {
-  	$("#url").val("/mobileapi/help/LearnMorePromo");
+  	$("#url").val("/help/LearnMorePromo");
   	$("#payload").val("");
   	$("#result").val("");
   }  else if (loaddata == "Ping") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/ping/");
+  	$("#url").val("/saptest12@freshdirect.com/ping/");
   	$("#payload").val("");
   	$("#result").val("");
   }  else if (loaddata == "LoginRefresh") {
-  	$("#url").val("/mobileapi/saptest12@freshdirect.com/login/refresh/");
+  	$("#url").val("/saptest12@freshdirect.com/login/refresh/");
   	$("#payload").val("");
   	$("#result").val("");
-  }   
-  
+  }  
 }
 
 function doStuff() {
-  var strURL = $("#url").val();
+  var version = $("#version").val();
+  $.cookie("version", version);
+  var strURL = "/mobileapi/v/" + version + $("#url").val();
   var payload = $("#payload").val();
   $.ajax({
       type: "POST",
@@ -383,7 +396,7 @@ function doStuff() {
 </head>
 <body>
 <form name="f1">
-  <p>URL: <input id="url" name="url" type="text" size="100" />
+  <p>URL: <input id="url" name="url" type="text" size="70" /> Ver: <input id="version" name="version" type="text" size="3" />
   - or -
   <select name="loaddata" id="loaddata" onchange='JavaScript:loadStuff()'>
   <option value="">========== LOGIN ==========</option>
