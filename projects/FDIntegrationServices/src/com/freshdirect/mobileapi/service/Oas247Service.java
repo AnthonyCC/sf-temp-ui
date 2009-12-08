@@ -14,6 +14,7 @@ import org.apache.log4j.Category;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.framework.util.QueryStringBuilder;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -36,7 +37,7 @@ public class Oas247Service implements OasService {
     /**
      * This can be injected configuration
      */
-    private String server = "http://promo.freshdirect.com";
+    private String server = FDStoreProperties.getAdServerUrl();;
 
     /**
      * This can be injected configuration
