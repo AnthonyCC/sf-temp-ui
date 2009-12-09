@@ -56,7 +56,7 @@ public class ProductUtil {
 
     public static String readHtml(Html htmlContent){
         String result = "";
-        if (htmlContent != null) {
+        if ((htmlContent != null) && (htmlContent.getPath() != null)) {
             try {
                 result = readContent(ProductUtil.resolve(htmlContent.getPath()));
             } catch (IOException e) {
