@@ -93,6 +93,13 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
 
     }
 
+    public ResultBundle refreshDeliveryPass() throws FDException {
+        addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_REMOVE, REQ_PARAM_REMOVE_RECIPE },
+                new String[] { REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED }); //gets,sets
+        ((FDShoppingCartControllerTag) getWrapTarget()).setAction(null);
+        return new ResultBundle(executeTagLogic(), this);
+    }
     /**
      * @param cartLineId
      * @return
