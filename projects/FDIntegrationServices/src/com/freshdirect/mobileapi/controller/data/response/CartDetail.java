@@ -76,18 +76,18 @@ public class CartDetail {
         this.discounts.add(discount);
     }
 
-    private List<RemptionPromotion> remptionPromotions = new ArrayList<RemptionPromotion>();
+    private List<RedemptionPromotion> redemptionPromotions = new ArrayList<RedemptionPromotion>();
 
-    public List<RemptionPromotion> getRemptionPromotions() {
-        return remptionPromotions;
+    public List<RedemptionPromotion> getRedemptionPromotions() {
+        return redemptionPromotions;
     }
 
-    public void setRemptionPromotions(List<RemptionPromotion> remptionPromotions) {
-        this.remptionPromotions = remptionPromotions;
+    public void setRedemptionPromotions(List<RedemptionPromotion> redemptionPromotions) {
+        this.redemptionPromotions = redemptionPromotions;
     }
 
-    public void addRemptionPromotion(RemptionPromotion remptionPromotion) {
-        this.remptionPromotions.add(remptionPromotion);
+    public void addRedemptionPromotion(RedemptionPromotion redemptionPromotion) {
+        this.redemptionPromotions.add(redemptionPromotion);
     }
 
     //    private double customerCreditsValue = 0.0;
@@ -170,16 +170,16 @@ public class CartDetail {
      * @author Rob
      *
      */
-    public static class RemptionPromotion {
+    public static class RedemptionPromotion {
 
-        public RemptionPromotion(String code, RemptionPromotionType type, String description, boolean automatic) {
+        public RedemptionPromotion(String code, RedemptionPromotionType type, String description, boolean automatic) {
             this.code = code;
             this.type = type;
             this.description = description;
             this.automatic = automatic;
         }
 
-        public enum RemptionPromotionType {
+        public enum RedemptionPromotionType {
             SAMPLE, WAIVE_CHARGE
         }
 
@@ -189,7 +189,7 @@ public class CartDetail {
 
         private String description;
 
-        private RemptionPromotionType type;
+        private RedemptionPromotionType type;
 
         private boolean automatic;
 
@@ -197,11 +197,11 @@ public class CartDetail {
 
         private double amount = 0.0;
 
-        public RemptionPromotionType getType() {
+        public RedemptionPromotionType getType() {
             return type;
         }
 
-        public void setType(RemptionPromotionType type) {
+        public void setType(RedemptionPromotionType type) {
             this.type = type;
         }
 

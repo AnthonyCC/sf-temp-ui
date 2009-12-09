@@ -1,5 +1,7 @@
 package com.freshdirect.mobileapi.controller.data;
 
+import java.text.SimpleDateFormat;
+
 public class Sku {
     public enum ContentType {
         FD_SOURCE("fdSource"), FD_GRADE("fdGrade"), FD_FRENCHING("fdFrenching"), FD_RIPENESS("fdRipeness");
@@ -46,9 +48,15 @@ public class Sku {
 
     private boolean defaultSku;
 
+    private String earliestAvailability;
+
     private String code;
 
     public Sku() {
+    }
+
+    public String getEarliestAvailability() {
+        return earliestAvailability;
     }
 
     public static Sku wrap(com.freshdirect.mobileapi.model.Sku sku) {
@@ -62,6 +70,11 @@ public class Sku {
         result.domainLabel = sku.getDomainLabel();
         result.salesUnitDescription = sku.getSalesUnitDescription();
         result.displayAboutPrice = sku.getDisplayAboutPrice();
+
+        if (sku.getFilteredEarliestAvailability() != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat(DateFormat.STANDARDIZED_DATE_FORMAT);
+            result.earliestAvailability = formatter.format(sku.getFilteredEarliestAvailability());
+        }
 
         result.setFdContentType(ContentType.getContentType(sku.getFdContentType()));
         StringBuffer buff = new StringBuffer();

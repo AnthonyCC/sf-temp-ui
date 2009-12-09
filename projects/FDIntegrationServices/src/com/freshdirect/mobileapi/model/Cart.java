@@ -60,11 +60,11 @@ import com.freshdirect.mobileapi.controller.data.response.Order;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.AffiliateCartDetail;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.Group;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.ProductLineItem;
-import com.freshdirect.mobileapi.controller.data.response.CartDetail.RemptionPromotion;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.SummaryLineCharge;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.CartLineItem.CartLineItemType;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount.DiscountType;
-import com.freshdirect.mobileapi.controller.data.response.CartDetail.RemptionPromotion.RemptionPromotionType;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail.RedemptionPromotion;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail.RedemptionPromotion.RedemptionPromotionType;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.tagwrapper.FDShoppingCartControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RedemptionCodeControllerTagWrapper;
@@ -484,7 +484,7 @@ public class Cart {
         return checkoutDetail;
     }
 
-    public CartDetail getCartDetail(SessionUser user) throws FDResourceException {
+    public CartDetail getCartDetail(SessionUser user) throws FDException {
         return getCartDetail(user, this.cart);
     }
 
@@ -492,10 +492,12 @@ public class Cart {
      * TODO: this shouldn't return an object that's of response package.
      * @param user
      * @return
-     * @throws FDResourceException
+     * @throws FDException 
      * @throws ModelException 
      */
-    private CartDetail getCartDetail(SessionUser user, FDCartI cart) throws FDResourceException {
+    private CartDetail getCartDetail(SessionUser user, FDCartI cart) throws FDException {
+        FDShoppingCartControllerTagWrapper wrapper = new FDShoppingCartControllerTagWrapper(user);
+        wrapper.refreshDeliveryPass();
         /*
          * DUP: FDWebSite/docroot/shared/includes/chk_acct/i_step_4_cart_details.jspf
          * LAST UPDATED ON: 10/1/2009
@@ -704,17 +706,17 @@ public class Cart {
         }
 
         //Misc Charge
-        if (cart.isMiscellaneousChargeWaived()) {
-            //If waived, may need to show it w/ (waived labeling) 
-            cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, cart.isMiscellaneousChargeTaxable(), true, false, MobileApiProperties
-                    .getMiscChargeLabel()));
-        } else {
-            //If not waived, show only if the value is greater than zero
-            if (cart.getMiscellaneousCharge() > 0) {
-                cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getMiscellaneousCharge(), cart.isMiscellaneousChargeTaxable(),
-                        false, false, MobileApiProperties.getMiscChargeLabel()));
-            }
+        //        if (cart.isMiscellaneousChargeWaived()) {
+        //            //If waived, may need to show it w/ (waived labeling) 
+        //            cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, cart.isMiscellaneousChargeTaxable(), true, false, MobileApiProperties
+        //                    .getMiscChargeLabel()));
+        //        } else {
+        //If not waived, show only if the value is greater than zero
+        if (cart.getMiscellaneousCharge() > 0) {
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getMiscellaneousCharge(), cart.isMiscellaneousChargeTaxable(),
+                    false, false, MobileApiProperties.getMiscChargeLabel()));
         }
+        //        }
 
         /*
          * DUP: FDWebSite/docroot/shared/includes/i_viewcart.jspf
@@ -777,8 +779,8 @@ public class Cart {
 
         if (isRedemptionApplied) {
             if (redemptionPromo.isSampleItem()) {
-                cartDetail.addRemptionPromotion(new RemptionPromotion(redemptionPromo.getPromotionCode(), RemptionPromotionType.SAMPLE,
-                        redemptionPromo.getDescription(), false));
+                cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
+                        RedemptionPromotionType.SAMPLE, redemptionPromo.getDescription(), false));
                 //        %>
                 //        <tr valign="top" class="orderSummary">
                 //            <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
@@ -788,8 +790,8 @@ public class Cart {
                 //        </tr>
                 //        <%
             } else if (redemptionPromo.isWaiveCharge()) {
-                cartDetail.addRemptionPromotion(new RemptionPromotion(redemptionPromo.getPromotionCode(),
-                        RemptionPromotionType.WAIVE_CHARGE, redemptionPromo.getDescription(), false));
+                cartDetail.addRedemptionPromotion(new RedemptionPromotion(redemptionPromo.getPromotionCode(),
+                        RedemptionPromotionType.WAIVE_CHARGE, redemptionPromo.getDescription(), false));
                 //        %>
                 //            <tr valign="top" class="orderSummary">
                 //                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>

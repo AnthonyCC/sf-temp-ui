@@ -216,7 +216,7 @@ public class Product {
 
     private Variant variant; //Used for product burst labeling
 
-    private List<String> warningMessages = new ArrayList<String>();
+    //private List<String> warningMessages = new ArrayList<String>();
 
     @SuppressWarnings("unchecked")
     public Product(ProductModel productModel, FDUserI user, Variant variant) throws ModelException {
@@ -518,15 +518,15 @@ public class Product {
         this.hideForMobile = productModel.hideIphone();
 
         // Getting any notice message that neeed to be displayed on screen:
-
-        if (getFilteredEarliestAvailabilityDate() != null && !hasSingleSku()) {
-            warningMessages.add("* Earliest delivery-" + CCFormatter.formatAvailabilityDate(getFilteredEarliestAvailabilityDate()));
-        } else if (isPlatter()) {
-            warningMessages.add(getCancellationNote());
-        } else if (!displayShortTermUnavailability) {
-            warningMessages.add(getDayOfWeekNotice());
-            warningMessages.add(getDeliveryNote());
-        }
+        //rsung
+        //        if (getFilteredEarliestAvailabilityDate() != null && !hasSingleSku()) {
+        //            warningMessages.add("* Earliest delivery-" + CCFormatter.formatAvailabilityDate(getFilteredEarliestAvailabilityDate()));
+        //        } else if (isPlatter()) {
+        //            warningMessages.add(getCancellationNote());
+        //        } else if (!displayShortTermUnavailability) {
+        //            warningMessages.add(getDayOfWeekNotice());
+        //            warningMessages.add(getDeliveryNote());
+        //        }
 
     }
 
@@ -534,9 +534,10 @@ public class Product {
      * @return
      * @throws FDResourceException
      */
-    public String getPlatterCutoffMessage() {
+    public String[] getPlatterCutoffMessage() {
         TimeOfDay cutoffTime = null;
         ;
+        StringBuilder title = new StringBuilder();
         StringBuilder message = new StringBuilder();
         try {
             if (product.getFDProduct().isPlatter() && (cutoffTime = RestrictionUtil.getPlatterRestrictionStartTime()) != null) {
@@ -553,17 +554,14 @@ public class Product {
                     headerTime = headerTimeFormat.format(cutoffTime.getAsDate());
                     bodyTime = bodyTimeFormat.format(cutoffTime.getAsDate());
                 }
-                message
-                        .append("PLEASE ORDER BY ")
-                        .append(headerTime)
-                        .append(
-                                " FOR DELIVERY TOMORROW. To assure the highest quality, our chefs prepare this item to order. You must complete checkout by ")
+                title.append("PLEASE ORDER BY ").append(headerTime).append(" FOR DELIVERY TOMORROW");
+                message.append("To assure the highest quality, our chefs prepare this item to order. You must complete checkout by ")
                         .append(bodyTime).append(" to order this item for delivery tomorrow.");
             }
         } catch (FDResourceException e) {
             LOG.warn("FDResourceException while trying to get platter cutoff. no need to throw exception. log and go forward.", e);
         }
-        return message.toString();
+        return new String[] { title.toString(), message.toString() };
     }
 
     public Sku getDefaultSku() {
@@ -785,7 +783,7 @@ public class Product {
      * WHAT: Returns the earliest date of availability
      * @return
      */
-    public Date getEarliestAvailabilityDate() {
+    private Date getEarliestAvailabilityDate() {
         Date earliestDate = defaultSku.getEarliestAvailability();
         // if no availability indication, show the horizon as the
         // earliest availability
@@ -890,7 +888,9 @@ public class Product {
         String result = "";
         DayOfWeekSet blockedDays = product.getProductModel().getBlockedDays();
 
-        result = "* Only available for delivery on " + blockedDays.inverted().format(true) + ".";
+        if (!blockedDays.isEmpty()) {
+            result = "* Only available for delivery on " + blockedDays.inverted().format(true) + ".";
+        }
 
         return result;
     }
@@ -1833,9 +1833,9 @@ public class Product {
     public boolean isPricedByLB() {
         return isPricedByLB;
     }
-
-    public List<String> getWarningMessages() {
-        return warningMessages;
-    }
+    //
+    //    public List<String> getWarningMessages() {
+    //        return warningMessages;
+    //    }
 
 }
