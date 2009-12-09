@@ -33,7 +33,7 @@ public class Product extends Message {
         }
 
         public enum ProductWarningMessageType {
-            PLATTER_CANCELLATION_NOTE, PLATTER_CUTOFF_NOTICE, BLOCKED_DAYS, DELIVERY_NOTE, DAY_OF_THE_WEEK_NOTICE
+            PLATTER_CANCELLATION_NOTE, PLATTER_CUTOFF_NOTICE, DELIVERY_NOTE, DAY_OF_THE_WEEK_NOTICE
         };
 
         private String title;
