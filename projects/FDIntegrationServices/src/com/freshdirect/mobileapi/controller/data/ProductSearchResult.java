@@ -8,8 +8,6 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.mobileapi.controller.data.Product.ProductWarningMessage;
-import com.freshdirect.mobileapi.controller.data.Product.ProductWarningMessage.ProductWarningMessageType;
 import com.freshdirect.mobileapi.model.Product.ImageType;
 import com.freshdirect.webapp.util.CCFormatter;
 
@@ -67,7 +65,7 @@ public class ProductSearchResult {
 
     private boolean autoConfigurable;
 
-    //private String checkoutInformation;
+    private String checkoutInformation;
 
     private boolean soldByWeight;
 
@@ -77,9 +75,11 @@ public class ProductSearchResult {
         return platter;
     }
 
+    protected com.freshdirect.mobileapi.model.Product product;
+
     private Map<String, String> options = new HashMap<String, String>();
 
-    //    private String cancellationNote;
+    private String cancellationNote;
 
     public Integer getHighestDealPercentage() {
         return highestDealPercentage;
@@ -92,15 +92,13 @@ public class ProductSearchResult {
     public ProductSearchResult() {
     }
 
-    private List<ProductWarningMessage> productWarningMessages = new ArrayList<ProductWarningMessage>();
-
     public static ProductSearchResult wrap(com.freshdirect.mobileapi.model.Product product) {
         return new ProductSearchResult(product);
     }
 
     protected ProductSearchResult(com.freshdirect.mobileapi.model.Product product) {
-        this.soldBySalesUnits = product.isSoldBySalesUnits();
-        this.autoConfigurableSalesUnit = product.getAutoConfiguredSalesUnit();
+        //ProductSearchResult result = new ProductSearchResult();
+        this.product = product;
         if (product.isAvailable()) {
             this.sku = Sku.wrap(product.getDefaultSku());
         }
@@ -165,33 +163,19 @@ public class ProductSearchResult {
         }
 
         this.platter = product.isPlatter();
-        //        this.cancellationNote = product.getCancellationNote();
-        //        if (product.getWarningMessages().size() > 0) {
-        //            this.checkoutInformation = product.getWarningMessages().get(0);
-        //        }
+        this.cancellationNote = product.getCancellationNote();
+        if (product.getWarningMessages().size() > 0) {
+            this.checkoutInformation = product.getWarningMessages().get(0);
+        }
 
         this.soldByWeight = product.isSoldByLB();
         this.pricedByWeight = product.isPricedByLB();
 
-        if (product.isPlatter()) {
-            String[] message = product.getPlatterCutoffMessage();
-            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.PLATTER_CUTOFF_NOTICE, message[0], message[1]));
-            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.PLATTER_CANCELLATION_NOTE, null, product
-                    .getCancellationNote()));
-        }
-        if (!product.getDayOfWeekNotice().isEmpty()) {
-            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.DAY_OF_THE_WEEK_NOTICE, null, product
-                    .getDayOfWeekNotice()));
-        }
-        if (!product.getDeliveryNote().isEmpty()) {
-            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.DELIVERY_NOTE, null, product.getDeliveryNote()));
-        }
-
     }
 
-    //    public String getCancellationNote() {
-    //        return cancellationNote;
-    //    }
+    public String getCancellationNote() {
+        return cancellationNote;
+    }
 
     public Image getThumbBurst() {
         return thumbBurst;
@@ -321,16 +305,12 @@ public class ProductSearchResult {
         this.autoConfigurable = autoConfigurable;
     }
 
-    private boolean soldBySalesUnits;
-
-    private String autoConfigurableSalesUnit;
-
     public String getAutoConfigurableSalesUnit() {
-        return this.autoConfigurableSalesUnit;
+        return product.getAutoConfiguredSalesUnit();
     }
 
     public boolean isSoldBySalesUnits() {
-        return this.soldBySalesUnits;
+        return product.isSoldBySalesUnits();
     }
 
     public List<SalesUnit> getSalesUnits() {
@@ -341,24 +321,12 @@ public class ProductSearchResult {
         this.options.put(key, value);
     }
 
-    //    public String getCheckoutInformation() {
-    //        return checkoutInformation;
-    //    }
-    //
-    //    public void setCheckoutInformation(String checkoutInformation) {
-    //        this.checkoutInformation = checkoutInformation;
-    //    }
-
-    public List<ProductWarningMessage> getProductWarningMessages() {
-        return productWarningMessages;
+    public String getCheckoutInformation() {
+        return checkoutInformation;
     }
 
-    //    public void setProductWarningMessages(List<ProductWarningMessage> productWarningMessages) {
-    //        this.productWarningMessages = productWarningMessages;
-    //    }
-
-    public void addProductWarningMessage(ProductWarningMessage productWarningMessage) {
-        this.productWarningMessages.add(productWarningMessage);
+    public void setCheckoutInformation(String checkoutInformation) {
+        this.checkoutInformation = checkoutInformation;
     }
 
     public boolean isSoldByWeight() {

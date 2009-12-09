@@ -1,17 +1,14 @@
 package com.freshdirect.mobileapi.model;
 
 import java.text.NumberFormat;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
@@ -25,8 +22,6 @@ import com.freshdirect.fdstore.attributes.MultiAttribute;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.DomainValueRef;
 import com.freshdirect.fdstore.content.SkuModel;
-import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.webapp.util.JspMethods;
 
 public class Sku {
@@ -133,32 +128,6 @@ public class Sku {
 
     public Date getEarliestAvailability() {
         return skuModel.getEarliestAvailability();
-    }
-    
-    public Date getFilteredEarliestAvailability() {
-        /*
-       Date earliestDate = sku.getEarliestAvailability();
-       Calendar testDate = new GregorianCalendar();
-       testDate.add(Calendar.DATE, 1);
-       // cheat: if no availability indication, show the horizon as the
-       //        earliest availability
-       if (earliestDate == null) {
-           earliestDate = DateUtil.addDays( DateUtil.truncate( new Date() ), ErpServicesProperties.getHorizonDays() );
-       }
-       if (QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0) {
-           %><font class="text11rbold">*</font><%
-       } %>
-       */
-        Date earliestDate = getEarliestAvailability();
-        Calendar testDate = new GregorianCalendar();
-        testDate.add(Calendar.DATE, 1);
-        if (earliestDate == null) {
-            earliestDate = DateUtil.addDays( DateUtil.truncate( new Date() ), ErpServicesProperties.getHorizonDays() );
-        }
-        if (!(QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0)) {
-            earliestDate = null;
-        }
-        return earliestDate;
     }
 
     public double getPrice() {
