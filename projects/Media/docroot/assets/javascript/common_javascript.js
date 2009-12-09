@@ -62,11 +62,12 @@ var isIE = !!(window.attachEvent && !window.opera);
 
 var newWin='';
 /* simple pop */
-function pop(URL, h, w) {
-	newWin = window.open(URL,"popWin","height=" + h + ", width=" + w + ", resizable, scrollbars");
-	newWin.focus();
-	if (window.resizeTo) { newWin.resizeTo(w, h); }
-}
+function pop(URL, h, w, name) {
+    var name = name || 'popWin';
+    newWin = window.open(URL, name, "height=" + h + ", width=" + w + ", resizable, scrollbars");
+    newWin.focus();
+    if (window.resizeTo) { newWin.resizeTo(w, h); }
+} 
 
 /* currently being used for help section...*/
 function popold(URL,h,w) {
@@ -110,6 +111,16 @@ function backtoWin(url) {
     parent.window.opener.focus();
 }
 
+function backtoWinPop(url, size) {
+    if (self.opener) {
+          self.opener.focus();
+          self.opener.popup(url, size, 'popInPop');
+    }else{
+          popup(url, size);
+    }
+}
+
+
 //sets the value of hidden field named "actionName"
 function setActionName(frmObj,actionText) {
     if (frmObj["actionName"]!=null) {
@@ -126,13 +137,13 @@ function setDeletePaymentId(frmObj,payid) {
     return true;
 }
 
-function popup(URL,type) {
+function popup(URL, type, name) {
 	if ("small" == type) {
 		w = "375";
 		h = "335";
 	} else if ("large" == type) {
 		w = "585";
-		h = "400";	
+		h = "400";
 	} else if ("large_long" == type) {
 		w = "585";
 		h = "600";
@@ -143,8 +154,8 @@ function popup(URL,type) {
 		w = "650";
 		h = "700";
 	}
-	pop(URL,h,w);
-}
+	pop(URL, h, w, name);
+} 
 
 
 function IsNumericNoDecimal(sText){
