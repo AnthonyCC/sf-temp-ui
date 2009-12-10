@@ -238,6 +238,10 @@ public class CheckoutController extends BaseController {
         DeliveryAddresses responseMessage = new DeliveryAddresses((new Checkout(user)).getPreselectedDeliveryAddressId(), ShipToAddress
                 .filter(deliveryAddresses, DeliveryAddressType.RESIDENTIAL), ShipToAddress.filter(deliveryAddresses,
                 DeliveryAddressType.CORP), Depot.getPickupDepots());
+        responseMessage.setResidentialDeliveryMinimum(user.getMinimumOrderAmount());
+        responseMessage.setDepotDeliveryMinimum(user.getMinimumOrderAmount());
+        responseMessage.setCorporateDeliveryMinimum(user.getMinCorpOrderAmount());
+
         responseMessage.getCheckoutHeader().setHeader(user.getShoppingCart());
         responseMessage.setSuccessMessage("Delivery Addresses have been retrieved successfully.");
         setResponseMessage(model, responseMessage, user);

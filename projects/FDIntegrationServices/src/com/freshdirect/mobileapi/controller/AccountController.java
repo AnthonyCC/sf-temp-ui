@@ -201,6 +201,10 @@ public class AccountController extends BaseController {
         List<ShipToAddress> deliveryAddresses = user.getDeliveryAddresses();
         DeliveryAddresses responseMessage = new DeliveryAddresses(null, ShipToAddress.filter(deliveryAddresses,
                 DeliveryAddressType.RESIDENTIAL), ShipToAddress.filter(deliveryAddresses, DeliveryAddressType.CORP), null);
+        
+        responseMessage.setResidentialDeliveryMinimum(user.getMinimumOrderAmount());
+        responseMessage.setDepotDeliveryMinimum(user.getMinimumOrderAmount());
+        responseMessage.setCorporateDeliveryMinimum(user.getMinCorpOrderAmount());
         return responseMessage;
     }
 

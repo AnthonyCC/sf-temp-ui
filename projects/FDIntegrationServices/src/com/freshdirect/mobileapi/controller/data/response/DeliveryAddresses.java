@@ -11,9 +11,39 @@ public class DeliveryAddresses extends CheckoutResponse {
 
     private String preSelectedId;
 
+    private double residentialDeliveryMinimum = 0;
+
     private List<ShipToAddress> residentialAddresses = new ArrayList<ShipToAddress>();
 
+    private double corporateDeliveryMinimum = 0;
+
     private List<ShipToAddress> corporateAddresses = new ArrayList<ShipToAddress>();
+
+    private double depotDeliveryMinimum = 0;
+
+    public double getResidentialDeliveryMinimum() {
+        return residentialDeliveryMinimum;
+    }
+
+    public void setResidentialDeliveryMinimum(double residentialDeliveryMinimum) {
+        this.residentialDeliveryMinimum = residentialDeliveryMinimum;
+    }
+
+    public double getCorporateDeliveryMinimum() {
+        return corporateDeliveryMinimum;
+    }
+
+    public void setCorporateDeliveryMinimum(double corporateDeliveryMinimum) {
+        this.corporateDeliveryMinimum = corporateDeliveryMinimum;
+    }
+
+    public double getDepotDeliveryMinimum() {
+        return depotDeliveryMinimum;
+    }
+
+    public void setDepotDeliveryMinimum(double depotDeliveryMinimum) {
+        this.depotDeliveryMinimum = depotDeliveryMinimum;
+    }
 
     private List<Depot> depot = new ArrayList<Depot>();
 

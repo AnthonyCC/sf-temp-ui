@@ -481,4 +481,8 @@ public class SessionUser {
         return sessionUser.isHealthWarningAcknowledged();
     }
 
+    public double getMinCorpOrderAmount() {
+        return sessionUser.getMinCorpOrderAmount();
+    }
+
 }
