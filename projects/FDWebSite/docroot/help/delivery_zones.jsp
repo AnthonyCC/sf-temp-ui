@@ -87,7 +87,7 @@ function goToPage(pagePath) {
 			<%}%><br>
 			<b>Minutes from Manhattan!</b><br>You can also enjoy food from<br>FreshDirect by picking up<br>your order at our<br>
 			<% if (!fromZipCheck) {%>
-				<a href="javascript:goToPage('/help/delivery_lic_pickup.jsp')">
+				<a href="javascript:backtoWin('/help/delivery_lic_pickup.jsp')">
 			<%}%>
 			Long Island City facility
 			<% if (!fromZipCheck) {%>

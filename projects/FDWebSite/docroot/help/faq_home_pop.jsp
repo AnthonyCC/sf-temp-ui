@@ -1,4 +1,8 @@
-<%@ page import="com.freshdirect.webapp.util.MediaHelper" %><%
+<%@ page import="com.freshdirect.webapp.util.MediaHelper" %>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+
+<%
 String faqPage = "faqHome";
 Map params = new HashMap();
 params.put("baseUrl", "");
@@ -68,9 +72,6 @@ if (user2 != null) {
 				<%}else{%><A HREF="faq_home_pop.jsp?page=cos" TARGET="_top">Corporate Delivery</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}%>
 
-				
-				
-				<!-- APPDEV-335 ChefsTable FAQ moved to CMS --> 
 				<%if(faqPage.equals("chefstable")){%><b>Chef's Table</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}else{%><A HREF="faq_home_pop.jsp?page=chefstable" TARGET="_top">Chef's Table</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}%>	
@@ -119,11 +120,6 @@ if (user2 != null) {
 		                params.put("deliveryInfoFaq", new Boolean(flag) );
 					%>
 						<fd:IncludeMedia name="/media/editorial/faq/delivery_home.ftl" parameters="<%=params%>" withErrorReport="true"/>
-					<!--<%
-					}else if(faqPage.equals("deliveryDepot")){%>
-				 	leave as-is <%@ include file="/help/delivery_depot.jsp"%>				
-					-->
-					
 					<%}else if(faqPage.equals("inside")){
 						params.put("careerLink", FDStoreProperties.getCareerLink());
 					%><fd:IncludeMedia name="/media/editorial/faq/inside.ftl" parameters="<%=params%>" withErrorReport="true"/>

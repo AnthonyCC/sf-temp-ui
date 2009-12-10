@@ -1,4 +1,7 @@
-<%@ page import="com.freshdirect.webapp.util.MediaHelper" %><%
+<%@ page import="com.freshdirect.webapp.util.MediaHelper" %>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%
 String faqPage = "faqHome";
 Map params = new HashMap();
 params.put("baseUrl", "");
@@ -70,10 +73,7 @@ if (user2 != null) {
                 boolean flag = request.getRequestURI().toLowerCase().endsWith("delivery_info_faq.jsp");
                 params.put("deliveryInfoFaq", new Boolean(flag) );
 			%>	<fd:IncludeMedia name="/media/editorial/faq/delivery_home.ftl" parameters="<%=params%>" withErrorReport="true"/>
-			<!--<%
-				}else if(faqPage.equals("deliveryDepot")){%>
-				 leave as-is <%@ include file="/help/delivery_depot.jsp"%>				
-			-->
+			
 			
 			<%}else if(faqPage.equals("inside")){
 				params.put("careerLink", FDStoreProperties.getCareerLink());
