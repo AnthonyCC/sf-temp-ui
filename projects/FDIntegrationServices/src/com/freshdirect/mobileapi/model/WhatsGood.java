@@ -104,10 +104,10 @@ public class WhatsGood {
         for (String categoryId : categoryIds) {
             CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(categoryId);
             if (null != category) {
-                categories.add(new WhatsGoodCategory(categoryId, category.getFullName(), "/media/mobile/iphone/whats_good/whats_good_"
+                categories.add(new WhatsGoodCategory(categoryId, category.getFullName(), "/mobile/iphone/whats_good/whats_good_"
                         + categoryId + ".png"));
             } else if ("wg_deals".equals(categoryId)) {
-                categories.add(new WhatsGoodCategory(categoryId, "Brand-Name Deals", "/media/mobile/iphone/whats_good/whats_good_"
+                categories.add(new WhatsGoodCategory(categoryId, "Brand-Name Deals", "/mobile/iphone/whats_good/whats_good_"
                         + categoryId + ".png"));
             }
         }
