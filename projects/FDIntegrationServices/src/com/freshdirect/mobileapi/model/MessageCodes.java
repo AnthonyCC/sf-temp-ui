@@ -37,6 +37,7 @@ public interface MessageCodes {
 
     //Login Errors
     public static final String ERR_AUTHENTICATION = "ERR_AUTHENTICATION";
+
     public static final String ERR_CHECKOUT_AUTHENTICATION_REQUIRED = "ERR_CHECKOUT_AUTHENTICATION_REQUIRED";
 
     public static final String ERR_ATP_FAILED = "ERR_ATP_FAILED";
@@ -57,37 +58,47 @@ public interface MessageCodes {
 
     //Alcohol - Age Verification Error
     public static final String ERR_AGE_VERIFICATION = "ERR_AGE_VERIFICATION";
+
     public static final String ERR_AGE_VERIFICATION_MSG = "Age verification needed";
 
     //Alcohol - Age Verification Error
     public static final String ERR_HEALTH_WARNING = "ERR_HEALTH_WARNING";
-    public static final String ERR_HEALTH_WARNING_MSG = "Health warning verification";
 
+    public static final String ERR_HEALTH_WARNING_MSG = "Health warning verification";
 
     //Alcohol - Not allowed to be delivered outside
     public static final String ERR_ALCOHOL_DELIVERY_AREA_RESTRICTION = "ERR_ALCOHOL_DELIVERY_AREA_RESTRICTION";
 
     //Minimum Order Amount Error
     public static final String ERR_ORDER_MINIMUM = "ERR_ORDER_MINIMUM";
+
     public static final String ERR_ORDER_MINIMUM_MSG = "We''re sorry; you cannot check out because your pretax order total of {0,number,$0.00} is under the FreshDirect {1,number,$0} minimum order requirement.";
-    
+
+    public static final String ERR_RESTRICTED_ADDRESS = "ERR_RESTRICTED_ADDRESS";
+    public static final String ERR_RESTRICTED_ADDRESS_MSG = "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address or choose the Pickup option.";
 
     //Minimum Order Amount Error
     public static final String ERR_PAYMENT_INVAID_CREDIT_CARD_NUMBER = "ERR_PAYMENT_INVAID_CREDIT_CARD_NUMBER";
 
     //Invalid Promo code
     public static final String ERR_REDEMPTION_ERROR = "ERR_REDEMPTION_ERROR";
-    
+
     //Credit card problem
     public static final String ERR_CREDIT_CARD_PROBLEM = "ERR_CREDIT_CARD_PROBLEM";
+
     public static final String ERR_CREDIT_CARD_PROBLEM_MSG = "There was a problem with the credit card you selected. Please choose or add a new payment method.";
 
     public static final String ERR_PAYMENT_ACCOUNT_PROBLEM = "ERR_CREDIT_CARD_PROBLEM";
+
     public static final String ERR_PAYMENT_ACCOUNT_PROBLEM_MSG = "We are unable to process your order because there is a problem with your account.";
 
     public static final String ERR_GENERIC_CHECKOUT_EXCEPTION = "ERR_GENERIC_CHECKOUT_EXCEPTION";
+
     public static final String ERR_GENERIC_CHECKOUT_EXCEPTION_MSG = "There was a problem processing your order submission.";
 
+    public final static String MSG_RESTRICTED_ADDRESS                                       = "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address <a href=\"/checkout/step_1_enter.jsp\">here</a> or choose the Pickup option below. To see where we deliver, <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">click here</a>.";
+    
+    
     // =============================================== notices =============================== //
     //Minimum Order Amount Error
     public static final String NOTICE_DELIVERY_CUTOFF = "NOTICE_DELIVERY_CUTOFF";
@@ -119,7 +130,7 @@ public interface MessageCodes {
         private static Map<String, ErrorMessage> translations = new HashMap<String, ErrorMessage>();
 
         static {
-            //translations.put("order_minimum", new ErrorMessage(ERR_ORDER_MINIMUM, ErrorMessage.PASS_THROUGH));
+            translations.put("undeliverableAddress", new ErrorMessage(ERR_RESTRICTED_ADDRESS, ERR_RESTRICTED_ADDRESS_MSG));
         }
 
         public static ErrorMessage translate(String key, String desc, SessionUser user) {
@@ -130,8 +141,8 @@ public interface MessageCodes {
                     Double minimumOrder = new Double(user.getMinimumOrderAmount());
 
                     //May need to distinguish between delivery and pickup
-                    returnValue = new ErrorMessage(ERR_ORDER_MINIMUM, MessageFormat.format(ERR_ORDER_MINIMUM_MSG,
-                            new Object[] { subTotal, minimumOrder }));
+                    returnValue = new ErrorMessage(ERR_ORDER_MINIMUM, MessageFormat.format(ERR_ORDER_MINIMUM_MSG, new Object[] { subTotal,
+                            minimumOrder }));
                 }
             } else if ("system".equals(key)) {
                 //Generic system error. Pass description through
@@ -152,6 +163,8 @@ public interface MessageCodes {
                 returnValue = new ErrorMessage(ERR_DLV_PASS_ONLY, desc);
             } else if ("redemption_error".equals(key)) {
                 returnValue = new ErrorMessage(ERR_REDEMPTION_ERROR, desc);
+            } else if (translations.containsKey(key)) {
+                returnValue = translations.get(key);
             }
 
             return returnValue;
