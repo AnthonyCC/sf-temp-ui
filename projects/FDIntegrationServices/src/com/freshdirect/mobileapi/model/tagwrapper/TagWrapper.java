@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.model.tagwrapper;
 
 import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.log4j.Category;
 
@@ -17,7 +18,7 @@ public abstract class TagWrapper extends HttpContextWrapper {
 
     private final static Category LOGGER = LoggerFactory.getInstance(TagWrapper.class);
 
-    protected BodyTagSupport wrapTarget;
+    protected TagSupport wrapTarget;
 
     protected abstract Object getResult() throws FDException;
 
@@ -25,7 +26,7 @@ public abstract class TagWrapper extends HttpContextWrapper {
         return (FDUserI) this.pageContext.getSession().getAttribute(SessionName.USER);
     }
 
-    public TagWrapper(BodyTagSupport wrapTarget, FDUserI user) {
+    public TagWrapper(TagSupport wrapTarget, FDUserI user) {
         this.wrapTarget = wrapTarget;
         this.wrapTarget.setId(GET_RESULT);
         //Some global get/sets

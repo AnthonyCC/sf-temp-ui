@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.model.tagwrapper;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.jsp.tagext.TagSupport;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -33,7 +34,7 @@ public abstract class NonStandardControllerTagWrapper extends TagWrapper {
      */
     protected abstract void setResult();
 
-    public BodyTagSupport getWrapTarget() {
+    public TagSupport getWrapTarget() {
         return wrapTarget;
     }
 

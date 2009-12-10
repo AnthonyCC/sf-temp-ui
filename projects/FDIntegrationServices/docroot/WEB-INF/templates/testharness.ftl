@@ -300,6 +300,14 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/fdfavorite/");
   	$("#payload").val("");
   	$("#result").val("");
+  }else if (loaddata == "WGDCategories") {
+  	$("#url").val("/product/whatsgood/categories/");
+  	$("#payload").val("");
+  	$("#result").val("");
+  }else if (loaddata == "WGDCategoryProducts") {
+  	$("#url").val("/product/whatsgood/category/xxx/");
+  	$("#payload").val("");
+  	$("#result").val("");
   }else if (loaddata == "WGDPresidentPicks") {
     var postdata = '{"query": "", "page" : "1", "max" : "25"}';
   	$("#url").val("/product/presidentspick/");
@@ -451,10 +459,8 @@ function doStuff() {
   <option value="ShoppingLists">QUICKSHOP - Shopping Lists</option>
   <option value="QuickShopLists">QUICKSHOP - Shop from Shopping List</option>
   <option value=""> ========== WHATS GOOD ========== </option>
-  <option value="WGDPresidentPicks">WHATS GOOD - President's Picks</option>
-  <option value="WGDButcherBlock">WHATS GOOD - Butcher's Block</option>
-  <option value="WGDPeakProduce">WHATS GOOD - Great Right Now Produce</option>
-  <option value="WGDBrandNameDeals">WHATS GOOD - Brand-Name Deals</option>
+  <option value="WGDCategories">WHATS GOOD - Categories</option>
+  <option value="WGDCategoryProducts">WHATS GOOD - Category Products</option>
   <option value=""> ========== SMARTSTORE ========== </option>
   <option value="SSYouMightAlsoLike">SMARTSTORE - YouMightAlsoLike</option>
   <option value="SSYourFavorite">SMARTSTORE - YourFavorite</option>

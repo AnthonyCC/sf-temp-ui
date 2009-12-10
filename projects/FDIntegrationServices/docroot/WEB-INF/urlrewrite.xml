@@ -10,8 +10,8 @@
 
 	<!--
 		disabled because it's conflicting with "/search/query/(.*)" <rule>
-		<from>/search/query/(.*)/page/(.*)/max/(.*)</from> 
-		<to last="true">/search.do?searchTerm=$1&amp;page=$2&amp;max=$3</to>
+		<from>/search/query/(.*)/page/(.*)/max/(.*)</from> <to
+		last="true">/search.do?searchTerm=$1&amp;page=$2&amp;max=$3</to>
 		</rule>
 	-->
 
@@ -267,7 +267,7 @@
 		<from>^/v/([0-9]+)/(.*)/alcohol/acknowledgehealthwarning/$</from>
 		<to>/product.do?action=acknowledgehealthwarning&amp;ver=$1</to>
 	</rule>
-	
+
 	<!-- Get previous order detail : Deprecated -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/order/detail/</from>
@@ -321,7 +321,7 @@
 		<from>^/v/([0-9]+)/(.*)/login/refresh/</from>
 		<to last="true">/login.do?action=ping&amp;ver=$1</to>
 	</rule>
-	
+
 	<!-- QuickShop from Previous Order -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/order/id/(.*)/quickshop/</from>
@@ -382,29 +382,35 @@
 		<to last="true">/contactus.do?action=submit&amp;ver=$1</to>
 	</rule>
 
-	<!-- What's Good - Presidents Pick-->
+	<!-- What's Good - Categories-->
 	<rule>
-		<from>^/v/([0-9]+)/product/presidentspick/</from>
-		<to last="true">/product.do?action=wsgpresidentspick&amp;ver=$1</to>
+		<from>^/v/([0-9]+)/product/whatsgood/categories/$</from>
+		<to last="true">/product.do?action=getwhatsgoodcategories&amp;ver=$1</to>
+	</rule>
+
+	<!-- What's Good - By Category ID -->
+	<rule>
+		<from>^/v/([0-9]+)/product/whatsgood/category/(.*)/$</from>
+		<to last="true">/product.do?action=getwhatsgoodcateory&amp;ver=$1&amp;categoryId=$2</to>
 	</rule>
 
 	<!-- What's Good - Butcher's Block-->
-	<rule>
-		<from>^/v/([0-9]+)/product/butchersblock/</from>
-		<to last="true">/product.do?action=wsgbutchers&amp;ver=$1</to>
-	</rule>
+	<!--	<rule>-->
+	<!--		<from>^/v/([0-9]+)/product/butchersblock/</from>-->
+	<!--		<to last="true">/product.do?action=wsgbutchers&amp;ver=$1</to>-->
+	<!--	</rule>-->
 
 	<!-- What's Good - Brand-Name Deals-->
-	<rule>
-		<from>^/v/([0-9]+)/product/brandnamedeals/</from>
-		<to last="true">/product.do?action=wsgdeals&amp;ver=$1</to>
-	</rule>
+	<!--	<rule>-->
+	<!--		<from>^/v/([0-9]+)/product/brandnamedeals/</from>-->
+	<!--		<to last="true">/product.do?action=wsgdeals&amp;ver=$1</to>-->
+	<!--	</rule>-->
 
 	<!-- What's Good - Brand-Name Deals-->
-	<rule>
-		<from>^/v/([0-9]+)/product/peakproduce/</from>
-		<to last="true">/product.do?action=wsgproduce&amp;ver=$1</to>
-	</rule>
+	<!--	<rule>-->
+	<!--		<from>^/v/([0-9]+)/product/peakproduce/</from>-->
+	<!--		<to last="true">/product.do?action=wsgproduce&amp;ver=$1</to>-->
+	<!--	</rule>-->
 
 	<!-- Delivery Info : Get Delivery Addresses -->
 	<rule>

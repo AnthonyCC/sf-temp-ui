@@ -25,6 +25,7 @@ import com.freshdirect.mobileapi.controller.data.ProductMoreInfo;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.Price;
+import com.freshdirect.mobileapi.controller.data.response.WhatsGoodCategories;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
@@ -33,6 +34,7 @@ import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SalesUnit;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.Sku;
+import com.freshdirect.mobileapi.model.WhatsGood;
 import com.freshdirect.mobileapi.model.Product.ImageType;
 import com.freshdirect.mobileapi.model.tagwrapper.HealthWarningControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
@@ -51,6 +53,10 @@ public class ProductController extends BaseController {
     public static final String MORE_INFO_ACTION = "moreInfo";
 
     public static final String GET_PRICE_ACTION = "getprice";
+
+    public static final String GET_WHATS_GOOD_CATEGORY_PRODUCTS_ACTION = "getwhatsgoodcateory";
+
+    public static final String GET_WHATS_GOOD_CATEGORIES_ACTION = "getwhatsgoodcategories";
 
     public static final String ACKNOWLEDGE_HEALTH_WARNING = "acknowledgehealthwarning";
 
@@ -73,16 +79,21 @@ public class ProductController extends BaseController {
                 model = getProductMoreInfo(model, request, response);
             } else if (GET_PRICE_ACTION.equalsIgnoreCase(action)) {
                 model = getPrice(model, request, response, user);
-            } else if (WHATS_GOOD_PRESIDEN_PICKS_ACTION.equals(action)) {
-                model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.PRESIDEN_PICKS);
-            } else if (WHATS_GOOD_DEALS_ACTION.equals(action)) {
-                model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.BRAND_NAME_DEALS);
-            } else if (WHATS_GOOD_BUTCHERS_ACTION.equals(action)) {
-                model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.BUTCHERS_BLOCK);
             } else if (ACKNOWLEDGE_HEALTH_WARNING.equals(action)) {
                 model = getAcknowledgeHealthWarning(model, request, response, user);
-            } else if (WHATS_GOOD_PRODUCE_ACTION.equals(action)) {
-                model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.PEAK_PRODUCE);
+                //            } else if (WHATS_GOOD_PRESIDEN_PICKS_ACTION.equals(action)) {
+                //                model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.PRESIDEN_PICKS);
+                //            } else if (WHATS_GOOD_DEALS_ACTION.equals(action)) {
+                //                model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.BRAND_NAME_DEALS);
+                //            } else if (WHATS_GOOD_BUTCHERS_ACTION.equals(action)) {
+                //                model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.BUTCHERS_BLOCK);
+                //            } else if (WHATS_GOOD_PRODUCE_ACTION.equals(action)) {
+                //                model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.PEAK_PRODUCE);
+            } else if (GET_WHATS_GOOD_CATEGORIES_ACTION.equals(action)) {
+                model = getWhatsGoodCategories(model, request, response, user);
+            } else if (GET_WHATS_GOOD_CATEGORY_PRODUCTS_ACTION.equals(action)) {
+                String categoryId = request.getParameter("categoryId");
+                model = getWhatsGoodProducts(model, request, response, user, categoryId);
             } else {
                 model = getProduct(model, request, response, user);
             }
@@ -266,42 +277,31 @@ public class ProductController extends BaseController {
         return result;
     }
 
-    private ModelAndView getWhatsGoodProductList(ModelAndView model, HttpServletRequest request, HttpServletResponse response,
-            SessionUser user, WhatsGoodType type) throws NoSessionException, JsonException, FDException {
-        SearchResult data = new SearchResult();
+    /**
+     * @param model
+     * @param request
+     * @param response
+     * @param user
+     * @param categoryId
+     * @return
+     * @throws NoSessionException
+     * @throws JsonException
+     * @throws FDException
+     */
+    private ModelAndView getWhatsGoodProducts(ModelAndView model, HttpServletRequest request, HttpServletResponse response,
+            SessionUser user, String categoryId) throws NoSessionException, JsonException, FDException {
 
-        // Retrieving any possible payload
+        SearchResult data = new SearchResult();
         String postData = getPostData(request, response);
         int page = 1;
         int resultMax = 25;
-
         LOGGER.debug("PostData received: [" + postData + "]");
         if (StringUtils.isNotEmpty(postData)) {
             SearchQuery requestMessage = parseRequestObject(request, response, SearchQuery.class);
             page = requestMessage.getPage();
             resultMax = requestMessage.getMax();
         }
-
-        List<com.freshdirect.mobileapi.model.Product> products = null;
-
-        try {
-            switch (type) {
-            case BRAND_NAME_DEALS:
-                products = com.freshdirect.mobileapi.model.Product.getBrandNameDealsProductList(getUserFromSession(request, response));
-                break;
-            case BUTCHERS_BLOCK:
-                products = com.freshdirect.mobileapi.model.Product.getButchersBlockProductList(getUserFromSession(request, response));
-                break;
-            case PEAK_PRODUCE:
-                products = com.freshdirect.mobileapi.model.Product.getPeakProduceProductList(user);
-                break;
-            case PRESIDEN_PICKS:
-                products = com.freshdirect.mobileapi.model.Product.getPresidentsPickProductList(getUserFromSession(request, response));
-                break;
-            }
-        } catch (ModelException e) {
-            throw new FDException(e);
-        }
+        List<com.freshdirect.mobileapi.model.Product> products = WhatsGood.getProducts(categoryId, user);
         ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(
                 products, resultMax);
 
@@ -311,4 +311,59 @@ public class ProductController extends BaseController {
 
         return model;
     }
+
+    //    private ModelAndView getWhatsGoodProductList(ModelAndView model, HttpServletRequest request, HttpServletResponse response,
+    //            SessionUser user, WhatsGoodType type) throws NoSessionException, JsonException, FDException {
+    //        SearchResult data = new SearchResult();
+    //
+    //        // Retrieving any possible payload
+    //        String postData = getPostData(request, response);
+    //        int page = 1;
+    //        int resultMax = 25;
+    //
+    //        LOGGER.debug("PostData received: [" + postData + "]");
+    //        if (StringUtils.isNotEmpty(postData)) {
+    //            SearchQuery requestMessage = parseRequestObject(request, response, SearchQuery.class);
+    //            page = requestMessage.getPage();
+    //            resultMax = requestMessage.getMax();
+    //        }
+    //
+    //        List<com.freshdirect.mobileapi.model.Product> products = null;
+    //
+    //        try {
+    //            switch (type) {
+    //            case BRAND_NAME_DEALS:
+    //                products = WhatsGood.getBrandNameDealsProductList(getUserFromSession(request, response));
+    //                break;
+    //            case BUTCHERS_BLOCK:
+    //                products = WhatsGood.getButchersBlockProductList(getUserFromSession(request, response));
+    //                break;
+    //            case PEAK_PRODUCE:
+    //                products = WhatsGood.getPeakProduceProductList(user);
+    //                break;
+    //            case PRESIDEN_PICKS:
+    //                products = WhatsGood.getPresidentsPickProductList(getUserFromSession(request, response));
+    //                break;
+    //            }
+    //        } catch (ModelException e) {
+    //            throw new FDException(e);
+    //        }
+    //        ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(
+    //                products, resultMax);
+    //
+    //        data.setProductsFromModel(paginator.getPage(page));
+    //        data.setTotalResultCount(products.size());
+    //        setResponseMessage(model, data, user);
+    //
+    //        return model;
+    //    }
+
+    private ModelAndView getWhatsGoodCategories(ModelAndView model, HttpServletRequest request, HttpServletResponse response,
+            SessionUser user) throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
+        WhatsGoodCategories whatsGoodCategories = new WhatsGoodCategories();
+        whatsGoodCategories.setCategories(WhatsGood.getWhatsGoodCategories());
+        setResponseMessage(model, whatsGoodCategories, user);
+        return model;
+    }
+
 }
