@@ -204,8 +204,7 @@ public class OrderController extends BaseController {
      * @throws IOException
      */
     private ModelAndView getQuickshopOrders(ModelAndView model, SessionUser user) throws FDException, JsonException {
-        OrderHistory orderHistory = user.getOrderHistory();
-        List<OrderInfo> infos = orderHistory.getCompletedOrderInfos();
+        List<OrderInfo> infos = OrderHistory.getCompletedOrderInfos(user.getCompleteOrderHistory());
         Message responseMessage = QuickShopLists.initWithOrder(infos);
         setResponseMessage(model, responseMessage, user);
         return model;

@@ -64,6 +64,12 @@ public class OrderHistory {
         }
     };
 
+    private final static Comparator ORDER_INFO_COMPARATOR = new Comparator() {
+        public int compare(Object o1, Object o2) {
+            return ((OrderInfo) o2).getDeliveryStartTime().compareTo(((OrderInfo) o1).getDeliveryStartTime());
+        }
+    };
+
     /**
      * Used mostly in homepage where pending and refused orders should be notified to users. 
      * @return
@@ -90,18 +96,18 @@ public class OrderHistory {
     /**
      * @return
      */
-    public List<OrderInfo> getCompletedOrderInfos() {
-        List<OrderInfo> infos = getRegularOrderInfos();
+    public static List<OrderInfo> getCompletedOrderInfos(List<OrderInfo> infos) {
         List<OrderInfo> completedOrder = new ArrayList<OrderInfo>();
 
         for (OrderInfo info : infos) {
-            if ("Cancelled".equals(info.getOrderStatus()) || "Delivered".equals(info.getOrderStatus())) {
+            info.getOrderStatus();
+            if (!info.isPending()) {
                 completedOrder.add(info);
             }
-
         }
+        Collections.sort(completedOrder, ORDER_INFO_COMPARATOR);
 
-        return infos;
+        return completedOrder;
     }
 
 }

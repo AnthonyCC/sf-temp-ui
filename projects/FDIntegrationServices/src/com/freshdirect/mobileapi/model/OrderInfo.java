@@ -75,6 +75,10 @@ public class OrderInfo {
 
     public static final String DONATE_CORPORATE = EnumDeliveryType.DONATION_BUSINESS.getCode();
 
+    public boolean isPending() {
+        return target.isPending();
+    }
+    
     public boolean isPendingDeliveryOrder() {
         /*
          * DUP: FDWebSite/docroot/index.jsp
