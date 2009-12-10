@@ -565,7 +565,7 @@ public class Cart {
                 //Do some confusing logic to convert flag structure of cart line items into nested structure.
                 //CartDetail -> AffiliateDetail -> (Department Group->Product Item) or (DepartmentGroup->Recipe->Product Item)
                 if (lastDept == null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) {
-                    lastDept = cartLine.getDepartmentDesc();
+                    lastDept = cartLine.getDepartmentDesc(); 
                     // Bypass idDiaplayDepartment for USQ Affiliate
                     if (view.isDisplayDepartment() || AFFILIATE_USQ_WINES_CODE.equalsIgnoreCase(view.getAffiliate().getCode())) {
 
@@ -582,12 +582,12 @@ public class Cart {
                             //                                //Add RecipeDepartment to affiliate
                             //                                affiliateCartDetail.addLineItems(recipeDeptGroup);
                             //                            }
-                            if (!lastDept.equals(currentBucketGroup.getName())) {
-                                currentBucketGroup = new Group(CartLineItemType.DEPT);
-                                currentBucketGroup.setName(lastDept);
-                                currentBucketGroup.setId(cartLine.getRecipeSourceId());
-                                affiliateCartDetail.addLineItems(currentBucketGroup);
-                            }
+                            //                            if (!lastDept.equals(currentBucketGroup.getName())) {
+                            currentBucketGroup = new Group(CartLineItemType.DEPT);
+                            currentBucketGroup.setName(lastDept);
+                            currentBucketGroup.setId(cartLine.getRecipeSourceId());
+                            affiliateCartDetail.addLineItems(currentBucketGroup);
+                            //                            }
                             //                            currentBucketGroup = new Group(CartLineItemType.DEPT);
                             //                            currentBucketGroup.setId(lastDept);
                             //                            currentBucketGroup.setName(lastDept);
