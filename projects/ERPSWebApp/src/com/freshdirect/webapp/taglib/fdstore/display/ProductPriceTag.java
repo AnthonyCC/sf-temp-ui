@@ -33,13 +33,13 @@ public class ProductPriceTag extends BodyTagSupport {
 	private static final String styleAboutOnly = " style=\"padding-top:2px; line-height:12px; font-size: 11px; font-weight: bold; font-family: Tahoma, Arial, sans-serif; color: #6B6B6B;\"";		// bold, red
 	private static final String styleAboutScaled = " style=\"padding-top:4px; line-height:12px; font-weight: bold; color: #C94747;\"";		// bold, red
 	
-	private static final String quickShopStyleRegularOnly = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #555555;\"";			// bold, dark grey
-	private static final String quickShopStyleRegularWithScaled = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #555555;\"";	// normal, dark grey
-	private static final String quickShopStyleRegularWithWas = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #C94747;\"";		// bold, red
-	private static final String quickShopStyleRegularWithBoth = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #C94747;\"";	// normal, red
+	private static final String quickShopStyleRegularOnly = " style=\"line-height:16px; font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #555555;\"";			// bold, dark grey
+	private static final String quickShopStyleRegularWithScaled = " style=\"line-height:16px; font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #555555;\"";	// normal, dark grey
+	private static final String quickShopStyleRegularWithWas = " style=\"line-height:16px; font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #C94747;\"";		// bold, red
+	private static final String quickShopStyleRegularWithBoth = " style=\"line-height:16px; font-size: 11px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #C94747;\"";	// normal, red
 	
 	private static final String quickShopStyleWas = " style=\"font-weight: normal; color: gray;\"";			// normal, light grey
-	private static final String quickShopStyleScale = " style=\"line-height:16px; font-size: 13px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;\"";		// bold, red
+	private static final String quickShopStyleScale = " style=\"line-height:16px; font-size: 11px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;\"";		// bold, red
 	
 	private final static Category LOGGER = LoggerFactory.getInstance("ProductPriceTag.java");
 	
