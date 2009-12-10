@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.mobileapi.exception.ModelException;
+import com.freshdirect.mobileapi.model.data.WhatsGoodCategory;
 import com.freshdirect.mobileapi.model.tagwrapper.GetDealsSKUTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.GetPeakProduceTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
@@ -94,22 +95,40 @@ public class WhatsGood {
      * Returns list of category Ids with names
      * @return
      */
-    public static Map<String, String> getWhatsGoodCategories() {
+    public static List<WhatsGoodCategory> getWhatsGoodCategories() {
 
         String[] categoryIds = getWhatsGoodCategoryIds();
 
-        Map<String, String> categories = new HashMap<String, String>();
+        List<WhatsGoodCategory> categories = new ArrayList<WhatsGoodCategory>();
 
         for (String categoryId : categoryIds) {
             CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(categoryId);
             if (null != category) {
-                categories.put(categoryId, category.getFullName());
-            } else if("wg_deals".equals(categoryId)) {
-                categories.put(categoryId, "Brand-Name Deals");
+                categories.add(new WhatsGoodCategory(categoryId, category.getFullName(), "/mobile/iphone/whats_good/picks_love.png"));//TODO: fix once available
+            } else if ("wg_deals".equals(categoryId)) {
+                categories.add(new WhatsGoodCategory(categoryId, "Brand-Name Deals", "/mobile/iphone/whats_good/picks_love.png")); //TODO: fix once available
             }
         }
 
         return categories;
+    }
+
+    private String name;
+
+    private String id;
+
+    private String headerImage;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getHeaderImage() {
+        return headerImage;
     }
 
     //    /**

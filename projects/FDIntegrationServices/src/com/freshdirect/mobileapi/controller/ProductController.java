@@ -36,6 +36,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.Sku;
 import com.freshdirect.mobileapi.model.WhatsGood;
 import com.freshdirect.mobileapi.model.Product.ImageType;
+import com.freshdirect.mobileapi.model.data.WhatsGoodCategory;
 import com.freshdirect.mobileapi.model.tagwrapper.HealthWarningControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
@@ -358,10 +359,17 @@ public class ProductController extends BaseController {
     //        return model;
     //    }
 
+    private String mediaServerUrl = FDStoreProperties.getMediaPath();
+
     private ModelAndView getWhatsGoodCategories(ModelAndView model, HttpServletRequest request, HttpServletResponse response,
             SessionUser user) throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
         WhatsGoodCategories whatsGoodCategories = new WhatsGoodCategories();
-        whatsGoodCategories.setCategories(WhatsGood.getWhatsGoodCategories());
+        List<WhatsGoodCategory> categories = WhatsGood.getWhatsGoodCategories();
+        for (WhatsGoodCategory category : categories) {
+            category.prependHeaderImageUrl(mediaServerUrl);
+        }
+        whatsGoodCategories.setCategories(categories);
+
         setResponseMessage(model, whatsGoodCategories, user);
         return model;
     }
