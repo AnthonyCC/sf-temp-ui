@@ -97,6 +97,8 @@ public class Timeslot {
         boolean full = false;
         if (chefTableUser) {
             full = (availCapacity < 1);
+        } else {
+            full = (normalAvailCapacity < 1);
         }
         return full;
     }
