@@ -590,7 +590,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
     </td>
     
     <td align="right">
-    	<NOBR><display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="false" showDescription="false" showScalePricing="false"/></NOBR>
+    	<NOBR><display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="true" showDescription="false" showScalePricing="false"/></NOBR>
     	<%@include file="/includes/product/i_price_taxdeposit.jspf"%></td>
             
         <input type="hidden" name="skuCode_<%=idx%>" value="<%= orderLine.getSkuCode() %>">
