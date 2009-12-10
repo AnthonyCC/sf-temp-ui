@@ -2,7 +2,7 @@
 String width="693";
 if (isSmall) width="630";
 %>
-<table border="0" cellspacing="0" cellpadding="0" width="<%=width%>">
+<table align="center" border="0" cellspacing="0" cellpadding="0" width="<%=width%>">
 <tr align="center" valign="top">
 	<td width="430">
 		<font class="space4pix"><br><br><br></font><font class="text13">
