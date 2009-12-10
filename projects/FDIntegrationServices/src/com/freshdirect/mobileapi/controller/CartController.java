@@ -121,11 +121,10 @@ public class CartController extends BaseController {
      * @param user
      * @param request
      * @return
-     * @throws FDResourceException
      * @throws JsonException
+     * @throws FDException 
      */
-    private ModelAndView getCartDetail(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDResourceException,
-            JsonException {
+    private ModelAndView getCartDetail(ModelAndView model, SessionUser user, HttpServletRequest request) throws JsonException, FDException {
         Cart cart = user.getShoppingCart();
         CartDetail cartDetail = cart.getCartDetail(user);
         com.freshdirect.mobileapi.controller.data.response.Cart responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();

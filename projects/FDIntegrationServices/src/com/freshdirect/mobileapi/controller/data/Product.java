@@ -11,16 +11,65 @@ import org.apache.log4j.Category;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.ContainerSize.Size;
+import com.freshdirect.mobileapi.controller.data.Product.ProductWarningMessage.ProductWarningMessageType;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Brand;
 import com.freshdirect.mobileapi.model.ComponentGroup;
 import com.freshdirect.mobileapi.model.ProductDomain;
 import com.freshdirect.mobileapi.model.Product.ImageType;
-import com.freshdirect.mobileapi.service.Oas247Service;
 
 public class Product extends Message {
 
+    public static class ProductWarningMessage {
+
+        public ProductWarningMessage() {
+
+        }
+
+        public ProductWarningMessage(ProductWarningMessageType type, String title, String description) {
+            this.type = type;
+            this.title = title;
+            this.description = description;
+        }
+
+        public enum ProductWarningMessageType {
+            PLATTER_CANCELLATION_NOTE, PLATTER_CUTOFF_NOTICE, DELIVERY_NOTE, DAY_OF_THE_WEEK_NOTICE
+        };
+
+        private String title;
+
+        private ProductWarningMessageType type;
+
+        private String description;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public ProductWarningMessageType getType() {
+            return type;
+        }
+    }
+
+    private List<ProductWarningMessage> productWarningMessages = new ArrayList<ProductWarningMessage>();
+
     private static final Category LOGGER = LoggerFactory.getInstance(Product.class);
+
+    public List<ProductWarningMessage> getProductWarningMessages() {
+        return productWarningMessages;
+    }
+
+    public void setProductWarningMessages(List<ProductWarningMessage> productWarningMessages) {
+        this.productWarningMessages = productWarningMessages;
+    }
+
+    public void addProductWarningMessage(ProductWarningMessage productWarningMessage) {
+        this.productWarningMessages.add(productWarningMessage);
+    }
 
     /**
      * Product layout handled for iphone 
@@ -117,8 +166,6 @@ public class Product extends Message {
 
     private Date cutoffTime;
 
-    private String cancellationNote;
-
     private boolean qualifiedForPromotions;
 
     private List<String> origin;
@@ -145,7 +192,9 @@ public class Product extends Message {
 
     private boolean autoConfigurable;
 
-    private Date earliestAvailabilityDate;
+    //    private Date earliestAvailabilityDate;
+    //  private String dayOfTheWeekNotice;
+    //  private String cancellationNote;
 
     private String salesUnitLabel;
 
@@ -161,13 +210,11 @@ public class Product extends Message {
 
     private boolean displayEstimatedQuantity;
 
-    private String platterCutoffMessage;
+    //private String platterCutoffMessage;
 
     private boolean soldByWeight;
 
     private boolean pricedByWeight;
-
-    private String dayOfTheWeekNotice;
 
     private String deliveryNote;
 
@@ -175,17 +222,17 @@ public class Product extends Message {
 
     }
 
-    public String getPlatterCutoffMessage() {
-        return platterCutoffMessage;
-    }
+    //    public String getPlatterCutoffMessage() {
+    //        return platterCutoffMessage;
+    //    }
 
     public Integer getHighestDealPercentage() {
         return highestDealPercentage;
     }
 
-    public Date getEarliestAvailabilityDate() {
-        return earliestAvailabilityDate;
-    }
+    //    public Date getEarliestAvailabilityDate() {
+    //        return earliestAvailabilityDate;
+    //    }
 
     public Product(com.freshdirect.mobileapi.model.Product product) throws ModelException {
         setId(product.getProductId());
@@ -316,7 +363,7 @@ public class Product extends Message {
         this.setSeasonText(product.getSeasonText());
         this.setHeatRating(product.getHeatRating());
         this.setCutoffTime(product.getCutOffTime());
-        this.setCancellationNote(product.getCancellationNote());
+
         this.setQualifiedForPromotions(product.isQualifiedForPromotions());
 
         this.setOrigin(product.getOrigin());
@@ -342,7 +389,7 @@ public class Product extends Message {
             e.printStackTrace();
         }
 
-        this.earliestAvailabilityDate = product.getFilteredEarliestAvailabilityDate();
+        //this.earliestAvailabilityDate = product.getFilteredEarliestAvailabilityDate();
         this.salesUnitLabel = product.getSalesUnitLabel();
         this.autoConfiguredSalesUnit = product.getAutoConfiguredSalesUnit();
         this.soldBySalesUnits = product.isSoldBySalesUnits();
@@ -358,17 +405,25 @@ public class Product extends Message {
         }
 
         this.displayEstimatedQuantity = product.isDisplayEstimatedQuantity();
-        //this.blockedDaysMessage = product.getDayOfWeekNotice();
         if (product.isPlatter()) {
-            this.platterCutoffMessage = product.getPlatterCutoffMessage();
+            String[] message = product.getPlatterCutoffMessage();
+            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.PLATTER_CUTOFF_NOTICE, message[0], message[1]));
+            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.PLATTER_CANCELLATION_NOTE, null, product
+                    .getCancellationNote()));
         }
 
         this.soldByWeight = product.isSoldByLB();
         this.pricedByWeight = product.isPricedByLB();
-        if (product.displayShortTermUnavailability()) {
-            this.deliveryNote = product.getDayOfWeekNotice();
-            this.dayOfTheWeekNotice = product.getDeliveryNote();
+        if (!product.getDayOfWeekNotice().isEmpty()) {
+            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.DAY_OF_THE_WEEK_NOTICE, null, product
+                    .getDayOfWeekNotice()));
         }
+        if (!product.getDeliveryNote().isEmpty()) {
+            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.DELIVERY_NOTE, null, product.getDeliveryNote()));
+        }
+        //RSUNG: this.deliveryNote = product.getDayOfWeekNotice();
+        //RSUNG: this.dayOfTheWeekNotice = product.getDeliveryNote();
+        //RSUNG: this.setCancellationNote(product.getCancellationNote());
     }
 
     public String getId() {
@@ -551,13 +606,13 @@ public class Product extends Message {
         this.cutoffTime = cutoffTime;
     }
 
-    public String getCancellationNote() {
-        return cancellationNote;
-    }
-
-    public void setCancellationNote(String cancellationNote) {
-        this.cancellationNote = cancellationNote;
-    }
+    //    public String getCancellationNote() {
+    //        return cancellationNote;
+    //    }
+    //
+    //    public void setCancellationNote(String cancellationNote) {
+    //        this.cancellationNote = cancellationNote;
+    //    }
 
     public boolean isQualifiedForPromotions() {
         return qualifiedForPromotions;
@@ -735,9 +790,9 @@ public class Product extends Message {
         return pricedByWeight;
     }
 
-    public String getDayOfTheWeekNotice() {
-        return dayOfTheWeekNotice;
-    }
+    //    public String getDayOfTheWeekNotice() {
+    //        return dayOfTheWeekNotice;
+    //    }
 
     public String getDeliveryNote() {
         return deliveryNote;
