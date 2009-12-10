@@ -99,7 +99,7 @@ public class FDSurveyDAO {
      " ss.QUESTION=sq.ID AND ss.QUESTION=sqa.QUESTION AND sqa.ANSWER=sa.ID) t "+ 
 	 " WHERE sd.survey_id IN (SELECT ID FROM cust.SURVEY WHERE survey_name=? AND "+ 
 	 " customer_id=(SELECT ID FROM cust.FDCUSTOMER WHERE erp_customer_id=?) "+ 
-	 " AND create_date=(SELECT MAX(create_date) FROM cust.SURVEY WHERE survey_name=? AND customer_id=(SELECT ID FROM cust.FDCUSTOMER WHERE erp_customer_id=?))) "+ 
+	 " AND create_date=(SELECT MAX(create_date) FROM cust.SURVEY WHERE survey_name=? AND service_type = ? AND customer_id=(SELECT ID FROM cust.FDCUSTOMER WHERE erp_customer_id=?))) "+ 
 	 " AND sd.QUESTION=t.question(+) AND sd.ANSWER=t.AnswerName(+)	 ORDER BY QuestionNumber,AnswerNumber";
 	public static FDSurveyResponse getResponse(Connection conn,FDIdentity identity, SurveyKey key) throws SQLException {
 		
@@ -113,7 +113,8 @@ public class FDSurveyDAO {
 			ps.setString(3, key.getSurveyType().getLabel());
 			ps.setString(4, identity.getErpCustomerPK());
 			ps.setString(5, key.getSurveyType().getLabel());
-			ps.setString(6, identity.getErpCustomerPK());
+                        ps.setString(6, key.getUserType().name());
+			ps.setString(7, identity.getErpCustomerPK());
 			rs = ps.executeQuery();
 			surveyResponse = getSurveyResponse(identity,key,rs);						
 		} finally {

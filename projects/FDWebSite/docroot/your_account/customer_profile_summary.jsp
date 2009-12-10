@@ -223,7 +223,7 @@ response.setHeader("Cache-Control", "no-cache");
 		    <% } %>
 		       <td width="100%"></td>
 				 <td  nowrap>
-				 	<a href="/your_account/customer_profile.jsp">Edit my profile</a>
+				 	<a href="/your_account/customer_profile.jsp?serviceType=<%=serviceType.name() %>">Edit my profile</a>
 				 </td>
 		    	 
 		    	</tr>
