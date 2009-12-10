@@ -64,7 +64,7 @@ if (user.isChefsTable() && zoneCtActive ) {
 	</table>
 
 	<%
-} else {
+} else if (!user.isChefsTable())  {
 	if(ClickToCallUtil.isBusinessHour())
         {
 		%>
