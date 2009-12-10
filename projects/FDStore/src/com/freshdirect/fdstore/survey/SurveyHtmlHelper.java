@@ -199,9 +199,9 @@ public class SurveyHtmlHelper {
 				for (int i = 0; i < ansCount; i++) {
 					data = (String) displayElements.get(i);
 					if (i % 2 == 0)
-						tmp1.append(getDivTag(getRowStyle(rowStyle), "", ("<nobr>"+data+"&nbsp;</nobr>")));
+						tmp1.append(getDivTag(getRowStyle(rowStyle), "", wrapText(data, false)));
 					else {
-						tmp2.append(getDivTag(getRowStyle(rowStyle), "", ("<nobr>"+data+"&nbsp;</nobr>")));
+						tmp2.append(getDivTag(getRowStyle(rowStyle), "", wrapText(data, false)));
 						rowStyle=(rowStyle == 0)?1:0;
 					}
 					if (i== ansCount-1 && oddRow) {
@@ -224,8 +224,13 @@ public class SurveyHtmlHelper {
 			}
 		}
 		return response.toString();
-
 	}
+	
+	static String wrapText(String data, boolean nobr) {
+	    return nobr ? "<nobr>"+data+"&nbsp;</nobr>" : data;
+	}
+	
+	
 	
 	public static final String getAnswersHtml(String id,
 			FDSurveyQuestion question, FDSurveyResponse previousResponse) {
