@@ -7,59 +7,32 @@
 <%
 	
 
-if (user.isChefsTable() && zoneCtActive ) { 
+if (user.isChefsTable()  ) { 
 	%>
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 		<table cellspacing="0" cellpadding="0" border="0" width="695">
+		
 		<tr>
-			<td colspan="3" align="center"><br />
-			<%
-			boolean chefsTable = timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE;
-			if (!chefsTable) { 
-				String loyaltyAddressId = request.getParameter("addressId");
-				if (loyaltyAddressId == null && rsv != null) loyaltyAddressId = rsv.getAddressId();
-				if (loyaltyAddressId == null) loyaltyAddressId = address.getPK().getId();
-	    		%>
-				<a href="?chefstable=true&addressId=<%= loyaltyAddressId %>"><img
-				src="/media_stat/images/template/checkout/loy_hdr_wevemademore.gif"
-				width="608" height="19" border="0"
-				alt="We've made more delivery slots available to our best customers."></a>
-				<%	
-			} else {
-				%> <!-- <img
-				src="/media_stat/images/template/checkout/loy_hdr_preferredaccess.gif"
-				border="0" alt="Preferred access to our best delivery times."> -->
-				<%
-			}
-	    %>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="3" align="center">
-			<%
-	    	if (!chefsTable ) {
-	    		%> If the time you're looking for is full, click the button below
-					for Chef's Table preferred access.
-				<%	
-	    	} else {
+		<td colspan="3" align="center">
+		<%
+	    	
             
-            
-		       if(ClickToCallUtil.isBusinessHour())
-			{
-			%>
-				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre_click2call.html" />            
-			<%        
+	       if(ClickToCallUtil.isBusinessHour())
+		{
+		%>
+			<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre_click2call.html" />            
+		<%        
 
-			}else
-			{
+		}else
+		{
 
-			%>
-				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" />                        
-			<%                            
-			}   
-           	}
-    	   %>			
-			</td>
+		%>
+			<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" />                        
+		<%                            
+		}   
+           	
+    	   	%>			
+		</td>
 		</tr>
 	</table>
 
@@ -74,4 +47,5 @@ if (user.isChefsTable() && zoneCtActive ) {
         }
 }
 %>
+
 
