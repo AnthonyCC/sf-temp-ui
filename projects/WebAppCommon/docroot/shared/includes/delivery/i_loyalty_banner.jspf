@@ -65,7 +65,7 @@ if (user.isChefsTable() && zoneCtActive ) {
 
 <%
 } else {
-	if(ClickToCallUtil.isBusinessHour())
+	if(!user.isChefsTable() && ClickToCallUtil.isBusinessHour())
 	{
 	%>
 		<fd:IncludeMedia name="/media/editorial/site_pages/click_to_call/timeslot_note_click2call.html" />            
