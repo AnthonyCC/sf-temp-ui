@@ -1,5 +1,8 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -8,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -182,9 +186,12 @@ public class CartController extends BaseController {
             propogateSetSessionValues(request.getSession(), resultBundle);
 
             if (result.isSuccess()) {
+                List<String> recentItems = (List<String>) resultBundle.getExtraData(Cart.RECENT_ITEMS);
+
                 CartDetail cartDetail = cart.getCartDetail(user);
                 responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
                 ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
+                ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
                 responseMessage.setSuccessMessage("Item has been added to cart successfully.");
             } else {
                 responseMessage = getErrorMessage(result, request);
@@ -368,9 +375,12 @@ public class CartController extends BaseController {
         ActionResult result = resultBundle.getActionResult();
 
         if (result.isSuccess()) {
+            List<String> recentItems = (List<String>) resultBundle.getExtraData(Cart.RECENT_ITEMS);
+
             CartDetail cartDetail = cart.getCartDetail(user);
             responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
+            ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
             responseMessage.setSuccessMessage("Items has been added to cart successfully.");
 
         } else {

@@ -387,6 +387,7 @@ public class CartDetail {
     }
 
     public static class CartLineItem {
+//        private String id;
 
         protected CartLineItemType type;
 
@@ -401,7 +402,17 @@ public class CartDetail {
         public void setType(CartLineItemType type) {
             this.type = type;
         }
+/*
+        public String getId() {
+            return id;
+        }
 
+        public void setId(String id) {
+            this.id = id;
+        }
+        
+        
+*/
     }
 
     public static class Group extends CartLineItem {
