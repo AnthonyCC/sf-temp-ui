@@ -27,6 +27,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.GetPeakProduceTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.util.GeneralCacheAdministratorFactory;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
@@ -59,7 +60,7 @@ public class WhatsGood {
         String strWGRows = "";
 
         //get property with rows
-        strWGRows = FDStoreProperties.getWhatsGoodRows();
+        strWGRows = MobileApiProperties.getWhatsGoodCatIds();
 
         //check for config
         if (strWGRows.toLowerCase().indexOf("useconfig:") > -1) {
@@ -107,8 +108,8 @@ public class WhatsGood {
                 categories.add(new WhatsGoodCategory(categoryId, category.getFullName(), "/mobile/iphone/whats_good/whats_good_"
                         + categoryId + ".png"));
             } else if ("wg_deals".equals(categoryId)) {
-                categories.add(new WhatsGoodCategory(categoryId, "Brand-Name Deals", "/mobile/iphone/whats_good/whats_good_"
-                        + categoryId + ".png"));
+                categories.add(new WhatsGoodCategory(categoryId, "Brand-Name Deals", "/mobile/iphone/whats_good/whats_good_" + categoryId
+                        + ".png"));
             }
         }
 
@@ -133,52 +134,52 @@ public class WhatsGood {
         return headerImage;
     }
 
-    //    /**
-    //     * DUP: /shared/includes/layouts/i_peak_produce_all.jspf
-    //     * DATE: 9/25/2009   
-    //     * WHY: The following logic was duplicate because it was specified in a JSP file.
-    //     * WHAT: Retrieves the peak produce product list
-    //     * 
-    //     * @return
-    //     * @throws FDException
-    //     * @throws ModelException
-    //     */
-    //    public static List<Product> getPeakProduceProductList(SessionUser user) throws FDException, ModelException {
-    //        List<Product> result = new ArrayList<Product>();
-    //        String deptIds[] = { "fru", "veg" };
-    //
-    //        String cacheKey = Product.class.toString() + "getPeakProduceProductList";
-    //
-    //        try {
-    //            result = (List<Product>) cacheAdmin.getFromCache(cacheKey, REFRESH_PERIOD);
-    //        } catch (NeedsRefreshException nre) {
-    //            try {
-    //                LOG.debug("Refreshing peak produce product list from CMS to cache with key" + cacheKey);
-    //                for (String deptId : deptIds) {
-    //                    GetPeakProduceTagWrapper wrapper = new GetPeakProduceTagWrapper(deptId, user);
-    //                    List<ProductModel> productModels = wrapper.getPeakProduct();
-    //                    for (ProductModel pm : productModels) {
-    //                        if (!pm.isUnavailable()) {
-    //                            try {
-    //                                result.add(Product.wrap(pm, user.getFDSessionUser().getUser()));
-    //                            } catch (ModelException e) {
-    //                                LOG.warn("ModelException in a product in peak produce. continuing on, instead of failing on entire list.",
-    //                                        e);
-    //                            }
-    //                        }
-    //                    }
-    //                }
-    //                LOG.debug("Updating cache with products");
-    //                cacheAdmin.putInCache(cacheKey, result);
-    //            } catch (Throwable ex) {
-    //                LOG.error("Throwable caught at cache update", ex);
-    //                result = (List<Product>) nre.getCacheContent();
-    //                LOG.debug("Cancelling cache update. Exception encountered.");
-    //                cacheAdmin.cancelUpdate(cacheKey);
-    //            }
-    //        }
-    //        return result;
-    //    }
+    /**
+     * DUP: /shared/includes/layouts/i_peak_produce_all.jspf
+     * DATE: 9/25/2009   
+     * WHY: The following logic was duplicate because it was specified in a JSP file.
+     * WHAT: Retrieves the peak produce product list
+     * 
+     * @return
+     * @throws FDException
+     * @throws ModelException
+     */
+    public static List<Product> getPeakProduceProductList(SessionUser user) throws FDException, ModelException {
+        List<Product> result = new ArrayList<Product>();
+        String deptIds[] = { "fru", "veg" };
+
+        String cacheKey = Product.class.toString() + "getPeakProduceProductList";
+
+        try {
+            result = (List<Product>) cacheAdmin.getFromCache(cacheKey, REFRESH_PERIOD);
+        } catch (NeedsRefreshException nre) {
+            try {
+                LOG.debug("Refreshing peak produce product list from CMS to cache with key" + cacheKey);
+                for (String deptId : deptIds) {
+                    GetPeakProduceTagWrapper wrapper = new GetPeakProduceTagWrapper(deptId, user);
+                    List<ProductModel> productModels = wrapper.getPeakProduct();
+                    for (ProductModel pm : productModels) {
+                        if (!pm.isUnavailable()) {
+                            try {
+                                result.add(Product.wrap(pm, user.getFDSessionUser().getUser()));
+                            } catch (ModelException e) {
+                                LOG.warn("ModelException in a product in peak produce. continuing on, instead of failing on entire list.",
+                                        e);
+                            }
+                        }
+                    }
+                }
+                LOG.debug("Updating cache with products");
+                cacheAdmin.putInCache(cacheKey, result);
+            } catch (Throwable ex) {
+                LOG.error("Throwable caught at cache update", ex);
+                result = (List<Product>) nre.getCacheContent();
+                LOG.debug("Cancelling cache update. Exception encountered.");
+                cacheAdmin.cancelUpdate(cacheKey);
+            }
+        }
+        return result;
+    }
 
     //    public static List<Product> getButchersBlockProductList(SessionUser user) throws FDException, ModelException {
     //        return getProducts("our_picks_meat", user);
@@ -232,6 +233,8 @@ public class WhatsGood {
 
                 if ("wg_deals".equals(contentNodeId) && (null == ContentFactory.getInstance().getContentNode(contentNodeId))) {
                     result = getBrandNameDealsProductList(user);
+                } else if ("wgd_produce".equals(contentNodeId) && (null == ContentFactory.getInstance().getContentNode(contentNodeId))) {
+                        result = getPeakProduceProductList(user);
                 } else {
                     List contents = tagWrapper.getProducts(currentFolder);
 

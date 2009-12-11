@@ -30,6 +30,8 @@ public class MobileApiProperties {
 
     private final static String PROP_MEDIA_PATH = "mobileapi.media.path";
 
+    private final static String PROP_WHATS_GOOD_CAT_IDS = "mobileapi.whatsgood.catIds";
+
     public final static String UPGRADE = "UPGRADE";
 
     public final static String INCOMPATIBLE = "INCOMPATIBLE";
@@ -85,6 +87,10 @@ public class MobileApiProperties {
         return get(PROP_DISCOVERY_URL);
     }
 
+    public static String getWhatsGoodCatIds() {
+        return get(PROP_WHATS_GOOD_CAT_IDS);
+    }
+    
     public static String getMediaPath(){
         return get(PROP_MEDIA_PATH);
     }
