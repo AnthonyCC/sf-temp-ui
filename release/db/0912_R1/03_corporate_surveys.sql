@@ -171,3 +171,4 @@ insert into CUST.SURVEY_SETUP (SURVEY,SEQUENCE,ACTIVE,QUESTION, ID, DATE_MODIFIE
 insert into CUST.SURVEY_SETUP (SURVEY,SEQUENCE,ACTIVE,QUESTION, ID, DATE_MODIFIED) values (8,4,'Y',(select id from CUST.SURVEY_QUESTION q where q.name = 'cos_profile_events'),(select max(to_number(id))+1 from CUST.SURVEY_SETUP),SYSDATE);
 insert into CUST.SURVEY_SETUP (SURVEY,SEQUENCE,ACTIVE,QUESTION, ID, DATE_MODIFIED) values (8,5,'Y',(select id from CUST.SURVEY_QUESTION q where q.name = 'cos_profile_reimburse'),(select max(to_number(id))+1 from CUST.SURVEY_SETUP),SYSDATE);
 
+insert into CUST.SURVEY_SETUP (SURVEY,SEQUENCE,ACTIVE,QUESTION, ID, DATE_MODIFIED) values (7,10,'Y',(select id from CUST.SURVEY_QUESTION q where q.name = 'Profile'),(select max(to_number(id))+1 from CUST.SURVEY_SETUP),SYSDATE);
