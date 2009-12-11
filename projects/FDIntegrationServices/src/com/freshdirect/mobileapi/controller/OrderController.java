@@ -28,6 +28,7 @@ import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 /**
  * @author Rob
@@ -205,6 +206,9 @@ public class OrderController extends BaseController {
      */
     private ModelAndView getQuickshopOrders(ModelAndView model, SessionUser user) throws FDException, JsonException {
         List<OrderInfo> infos = OrderHistory.getCompletedOrderInfos(user.getCompleteOrderHistory());
+        if(infos.size() > MobileApiProperties.getPreviousOrderListLimit()) {
+            infos = infos.subList(0, MobileApiProperties.getPreviousOrderListLimit());
+        }
         Message responseMessage = QuickShopLists.initWithOrder(infos);
         setResponseMessage(model, responseMessage, user);
         return model;

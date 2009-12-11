@@ -55,6 +55,13 @@ public class LoginController extends BaseController {
 
         if (ACTION_LOGIN.equals(action)) {
             Login requestMessage = parseRequestObject(request, response, Login.class);
+            try {
+                //Check to see if user session exists
+                getUserFromSession(request, response);
+                logout(model, user, request, response);
+            } catch (NoSessionException e) {
+                //Do nothing
+            }
             model = login(model, requestMessage, request, response);
         } else if (ACTION_PING.equals(action)) {
             model = ping(model, request, response);
