@@ -40,7 +40,7 @@
 							%>
 								<fd:GetOrder id='qs_order' saleId='<%= orderInfo.getErpSalesId()%>'>
 								<% if(qs_order != null) {
-									orderNav.append(qs_order.numberOfOrderLines() + (qs_order.numberOfOrderLines() == 1 ? " Item ": " Items "));
+									orderNav.append(qs_order.numberOfOrderLines() + (qs_order.numberOfOrderLines() == 1 ? " Item, ": " Items, "));
 								   } else {
 									orderNav.append("0 " + " Items, ");
 								  }
