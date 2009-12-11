@@ -14,7 +14,7 @@ public class EmailSupport implements EmailI {
 		return this.recipient;
 	}
 	
-	protected void setRecipient(String recipient){
+	public void setRecipient(String recipient){
 		this.recipient = recipient;
 	}
 
