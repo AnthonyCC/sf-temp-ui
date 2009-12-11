@@ -176,8 +176,9 @@ public class ProductSearchResult {
         if (product.isPlatter()) {
             String[] message = product.getPlatterCutoffMessage();
             addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.PLATTER_CUTOFF_NOTICE, message[0], message[1]));
-            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.PLATTER_CANCELLATION_NOTE, null, product
-                    .getCancellationNote()));
+            //We dont need to send cancellation message
+            //            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.PLATTER_CANCELLATION_NOTE, null, product
+            //                    .getCancellationNote()));
         }
         if (!product.getDayOfWeekNotice().isEmpty()) {
             addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.DAY_OF_THE_WEEK_NOTICE, null, product

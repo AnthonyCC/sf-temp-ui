@@ -33,7 +33,7 @@ public class Product extends Message {
         }
 
         public enum ProductWarningMessageType {
-            PLATTER_CANCELLATION_NOTE, PLATTER_CUTOFF_NOTICE, DELIVERY_NOTE, DAY_OF_THE_WEEK_NOTICE
+            PLATTER_CUTOFF_NOTICE, DELIVERY_NOTE, DAY_OF_THE_WEEK_NOTICE
         };
 
         private String title;
@@ -408,8 +408,9 @@ public class Product extends Message {
         if (product.isPlatter()) {
             String[] message = product.getPlatterCutoffMessage();
             addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.PLATTER_CUTOFF_NOTICE, message[0], message[1]));
-            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.PLATTER_CANCELLATION_NOTE, null, product
-                    .getCancellationNote()));
+            //We dont need to send cancellation message
+            //            addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.PLATTER_CANCELLATION_NOTE, null, product
+            //                    .getCancellationNote()));
         }
 
         this.soldByWeight = product.isSoldByLB();
