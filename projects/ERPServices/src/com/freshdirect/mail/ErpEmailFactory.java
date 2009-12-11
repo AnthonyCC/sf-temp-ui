@@ -51,26 +51,26 @@ public class ErpEmailFactory  {
 		}
 	}
 	
-
-
+	
 	/**
 	 * Creating Email using FreeMarker Templates(FTL), for iPhone module.
 	 * @param String emailId
 	 * @return
 	 */
 	public FTLEmailI createIPhoneEmail(String emailId) {
-
-		String iPhoneMediaPath = FDStoreProperties.getMediaIPhoneTemplatePath();//&& !"".equalsIgnoreCase(FDStoreProperties.getMediaGiftCardTemplatePath()))?FDStoreProperties.getMediaGiftCardTemplatePath():"media/editorial/giftcards/");
-		String ftlPath = FDStoreProperties.getMediaIPhoneTemplatePath()+"/"+IPHONE_FTL_TEMPLATE_NAME;
+		
+		String iPhoneMediaPath = FDStoreProperties.getMediaIPhoneTemplatePath();
+		String ftlPath =  IPHONE_FTL_TEMPLATE_NAME;		
 		FDFtlEmail email = new FDFtlEmail();
 		email.setFromAddress(new EmailAddress("FreshDirect", "service@freshdirect.com"));
 		email.getParameters().put(MailName.IPHONE_FTL_PATH, ftlPath);
 		email.getParameters().put("iPhoneMediaRoot", iPhoneMediaPath);
 		email.setSubject(FDStoreProperties.getIPhoneEmailSubject());
+		email.getParameters().put(MailName.TO_ADDRESS, emailId);
+		email.setRecipient(emailId);
 		return email;
 	}
-
-
+	
 	/**
 	 * Creating Email using FreeMarker Templates(FTL), for GiftCards module.
 	 * @param giftCardInfo
@@ -89,7 +89,6 @@ public class ErpEmailFactory  {
 		email.setSubject("A Gift for You");
 		return email;
 	}
-	
 	
 	/*public XMLEmailI createGiftCardPurchaseConfirmationEmail(ErpCustomerInfoModel custInfoModel, ErpAbstractOrderModel orderModel){
 		FDTransactionalEmail email = new FDTransactionalEmail(custInfoModel, orderModel);
