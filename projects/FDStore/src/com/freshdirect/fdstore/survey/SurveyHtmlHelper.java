@@ -173,12 +173,12 @@ public class SurveyHtmlHelper {
 				return getPulldownHtml(question,previousAnswers,false);
 			}
 		} else {
-			List displayElements = getDisplayElements(id, question,
-					previousAnswers);
-			
 			if (EnumFormDisplayType.SINGLE_ANS_PER_ROW.equals(question
 					.getFormDisplayType())) {
 
+	                        List<String> displayElements = getDisplayElements(id, question,
+                                        previousAnswers);
+                        
 				String data = "";
 				for (int i = 0; i < displayElements.size(); i++) {
 					data = (String) displayElements.get(i);
@@ -190,18 +190,21 @@ public class SurveyHtmlHelper {
 				}
 			} else if (EnumFormDisplayType.TWO_ANS_PER_ROW.equals(question
 					.getFormDisplayType())) {
-				String data = "";
+	                        List<String[]> displayElements = getDisplayElementsPairs(id, question,
+                                        previousAnswers);
+                        
 				int ansCount = displayElements.size();
 				StringBuffer tmp1 = new StringBuffer(200);
 				StringBuffer tmp2 = new StringBuffer(200);
 				int rowStyle = 1;
 				boolean oddRow = (ansCount %2 == 0 && ansCount !=0)?false:true;
 				for (int i = 0; i < ansCount; i++) {
-					data = (String) displayElements.get(i);
+					String[] data = displayElements.get(i);
+					String rStyle = getRowStyle(rowStyle);
 					if (i % 2 == 0)
-						tmp1.append(getDivTag(getRowStyle(rowStyle), "", wrapText(data, false)));
+						tmp1.append(getDivTag(rStyle, "", wrapText(data, rStyle)));
 					else {
-						tmp2.append(getDivTag(getRowStyle(rowStyle), "", wrapText(data, false)));
+						tmp2.append(getDivTag(rStyle, "", wrapText(data, rStyle)));
 						rowStyle=(rowStyle == 0)?1:0;
 					}
 					if (i== ansCount-1 && oddRow) {
@@ -225,9 +228,15 @@ public class SurveyHtmlHelper {
 		}
 		return response.toString();
 	}
+
+	static String wrapText(String[] data, String style) {
+	    return "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\""+style+"\" style=\"line-height:22px;\">" +
+	    		"<td style=\"vertical-align:top\">"+data[0]+"</td>" +
+	    				"<td style=\"font-size:11px\">"+data[1]+"</td></tr></table>";
+	}
 	
 	static String wrapText(String data, boolean nobr) {
-	    return nobr ? "<nobr>"+data+"&nbsp;</nobr>" : data;
+	    return nobr ? "<nobr>" + data + "&nbsp;</nobr>" : "<span class=\"surveyAnswer\">" + data + "</span>";
 	}
 	
 	
@@ -555,7 +564,7 @@ public class SurveyHtmlHelper {
 	}
 
 
-	private static List getDisplayElements(String id,
+	private static List<String> getDisplayElements(String id,
 			FDSurveyQuestion question, List previousAnswers) {
 		List displayElements = new ArrayList(question.getAnswers().size());
 		Iterator it = question.getAnswers().iterator();
@@ -572,6 +581,7 @@ public class SurveyHtmlHelper {
 			if (question.isMultiselect()) {
 				input = FDSurveyConstants.MULTI_SELECT_INPUT;
 			}
+			
 			if (isOtherOption(answer.getName())) {
 				if (customResponseList != null && !customResponseList.isEmpty())
 					value = customResponseList.remove(0).toString();
@@ -610,6 +620,56 @@ public class SurveyHtmlHelper {
 
 	}
 
+
+        private static List<String[]> getDisplayElementsPairs(String id,
+                FDSurveyQuestion question, List previousAnswers) {
+        List<String[]> displayElements = new ArrayList<String[]>(question.getAnswers().size());
+        Iterator it = question.getAnswers().iterator();
+        FDSurveyAnswer answer = null;
+
+        boolean disable = isNoneOptionSelected(previousAnswers);
+        List customResponseList = getCustomResponse(previousAnswers, question
+                        .getAnswers());
+        while (it.hasNext()) {
+                answer = (FDSurveyAnswer) it.next();
+                String value = answer.getName();
+                String input = FDSurveyConstants.SINGLE_SELECT_INPUT;
+                boolean checked = previousAnswers.contains(value) ? true: false;
+                if (question.isMultiselect()) {
+                        input = FDSurveyConstants.MULTI_SELECT_INPUT;
+                }
+                String[] res = new String[2];
+                res[1] = answer.getDescription();
+                
+                if (isOtherOption(answer.getName())) {
+                        if (customResponseList != null && !customResponseList.isEmpty())
+                                value = customResponseList.remove(0).toString();
+                        else
+                                value = "";
+                        res[0] = getInputTag(FDSurveyConstants.TEXT_INPUT,
+                                question.getName(),
+                                FDSurveyConstants.OTHER_INPUT_STYLE, value,
+                                false, disable, "");
+                        
+                        displayElements.add(res);
+                } else if (isNoneOption(answer.getName())) {
+                        String script = "onclick=\" " + FDSurveyConstants.CLEAR_SCRIPT
+                                        + "(\'" + id + "\',this.checked)\" ";
+                        
+                        res[0] = getInputTag(input, question
+                                .getName(), FDSurveyConstants.NONE_INPUT_STYLE, value,
+                                checked, false, script);
+                        displayElements.add(res);
+                } else {
+                    res[0] = getInputTag(input, question
+                            .getName(), "", value, checked, disable, "");
+                        displayElements.add(res);
+                }
+        }
+        return displayElements;
+
+}
+	
 	
 
 	private static boolean isNoneOptionSelected(List previousAnswers) {
