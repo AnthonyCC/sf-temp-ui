@@ -21,6 +21,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.util.GeneralCacheAdministratorFactory;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
@@ -37,18 +38,20 @@ public class Oas247Service implements OasService {
     /**
      * This can be injected configuration
      */
-    private String server = FDStoreProperties.getAdServerUrl();;
-
-    /**
-     * This can be injected configuration
-     */
-    private String path = "adstream_sx.ads/iPhone/home@SystemMessage";
+    private static String path = "adstream_sx.ads/iPhone/home@SystemMessage";
 
     private String queryString = "";
 
     @Override
     public Map<String, Object> getMessages() throws ServiceException {
         HttpClient client = new HttpClient();
+
+        //This was declared static at first but added it inline to that it be refreshed on prop file update
+        String server = FDStoreProperties.getAdServerUrl();
+        if ((server != null) && (!server.toLowerCase().startsWith("http"))) {
+            server = MobileApiProperties.getOasCommunicationProtocol() + "://" + server;
+        }
+
         String fullpath = server + path + queryString;
         HttpMethod method = new GetMethod(fullpath);
         String cacheKey = fullpath;
@@ -117,10 +120,6 @@ public class Oas247Service implements OasService {
             }
         }
         return getMessages();
-    }
-
-    public void setServer(String server) {
-        this.server = server;
     }
 
     public void setPath(String path) {

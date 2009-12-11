@@ -16,7 +16,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class MobileApiProperties {
 
-    private static final Category LOGGER = LoggerFactory.getInstance(MobileApiProperties.class);
+    private static final Category LOG = LoggerFactory.getInstance(MobileApiProperties.class);
 
     private static final SimpleDateFormat SF = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -31,6 +31,10 @@ public class MobileApiProperties {
     private final static String PROP_MEDIA_PATH = "mobileapi.media.path";
 
     private final static String PROP_WHATS_GOOD_CAT_IDS = "mobileapi.whatsgood.catIds";
+
+    private final static String PROP_PREV_ORDER_LIST_LIMIT = "mobileapi.previousorder.listlimit";
+
+    private final static String PROP_OAS_PROTOCOL = "mobileapi.oas.protocol";
 
     public final static String UPGRADE = "UPGRADE";
 
@@ -47,6 +51,8 @@ public class MobileApiProperties {
     static {
         defaults.put(PROP_CART_MISC_CHARGE_LABEL, "Fuel Surcharge");
         defaults.put(PROP_MEDIA_PATH, "http://www.freshdirect.com");
+        defaults.put(PROP_PREV_ORDER_LIST_LIMIT, "10");
+        defaults.put(PROP_OAS_PROTOCOL, "http");
         refresh();
     }
 
@@ -62,13 +68,23 @@ public class MobileApiProperties {
         if (force || (t - lastRefresh > REFRESH_PERIOD)) {
             config = ConfigHelper.getPropertiesFromClassLoader("mobileapi.properties", defaults);
             lastRefresh = t;
-            LOGGER.info("Loaded configuration from mobileapi.properties: " + config);
+            LOG.info("Loaded configuration from mobileapi.properties: " + config);
         }
     }
 
     private static String get(String key) {
         refresh();
         return config.getProperty(key);
+    }
+
+    private static int getInt(String key) {
+        int value = 0;
+        try {
+            value = Integer.parseInt(get(key));
+        } catch (NumberFormatException e) {
+            LOG.error(key + " value was null. Returning '0' as value");
+        }
+        return value;
     }
 
     public static String getMiscChargeLabel() {
@@ -90,8 +106,17 @@ public class MobileApiProperties {
     public static String getWhatsGoodCatIds() {
         return get(PROP_WHATS_GOOD_CAT_IDS);
     }
-    
-    public static String getMediaPath(){
+
+    public static String getMediaPath() {
         return get(PROP_MEDIA_PATH);
     }
+
+    public static int getPreviousOrderListLimit() {
+        return getInt(PROP_PREV_ORDER_LIST_LIMIT);
+    }
+
+    public static String getOasCommunicationProtocol() {
+        return get(PROP_OAS_PROTOCOL);
+    }
+
 }
