@@ -26,11 +26,12 @@ public interface MailName {
     public final static String ORDER_HISTORY 		= "orderHistory";
 
     public final static String IPHONE_FTL_PATH 		= "iphoneFtlPath";
-
+    
     public final static String GC_FTL_PATH 		= "gcFtlPath";
     public final static String FTL_PARAMETERS 		= "ftlParameters";
     public final static String IS_FTL 		= "IS_FTL";
 
     public final static String GC_RECIPIENT_EMAIL = "gcRecipientEmail";
 
+    
 } // class MailName
