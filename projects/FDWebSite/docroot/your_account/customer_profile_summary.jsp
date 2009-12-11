@@ -216,14 +216,18 @@ response.setHeader("Cache-Control", "no-cache");
 		<td class="padL20px vTop tLeft t11px">
 		    <table id="profileSwitcher">
 		    	<tr class="t11px bolded tLeft">
-			<% if ((user.hasServiceBasedOnUserAddress(EnumServiceType.HOME) && user.hasServiceBasedOnUserAddress(EnumServiceType.CORPORATE)) || (request.getParameter("KRIKSZKRAKSZ")!=null)) { %>
+			<% 
+			boolean needServiceType = false;
+			if ((user.hasServiceBasedOnUserAddress(EnumServiceType.HOME) && user.hasServiceBasedOnUserAddress(EnumServiceType.CORPORATE)) || (request.getParameter("KRIKSZKRAKSZ")!=null)) {
+			    needServiceType = true;
+			%>
 		    	 <td nowrap><% if (serviceType!=EnumServiceType.HOME) { %><a href="?serviceType=HOME">PERSONAL</a><% } else { %>PERSONAL<% } %></td>
 		    	 <td>|</td>
 		    	 <td nowrap><% if (serviceType!=EnumServiceType.CORPORATE) { %><a href="?serviceType=CORPORATE">CORPORATE</a><% } else { %>CORPORATE<% } %></td>
 		    <% } %>
 		       <td width="100%"></td>
 				 <td  nowrap>
-				 	<a href="/your_account/customer_profile.jsp?serviceType=<%=serviceType.name() %>">Edit my profile</a>
+				 	<a href="/your_account/customer_profile.jsp<%= needServiceType ? "?serviceType="+ serviceType.name() : "" %>">Edit my profile</a>
 				 </td>
 		    	 
 		    	</tr>
@@ -243,7 +247,7 @@ response.setHeader("Cache-Control", "no-cache");
                 <tr>
                     <td class="padB6px">
                         <span class="t12px bolded tOrange"> <%=question.getShortDescr()%> </span>
-                        <a href="<%="/your_account/customer_profile.jsp#"+question.getName()%>" title="">Edit</a></td>
+                        <a href="<%="/your_account/customer_profile.jsp"+(needServiceType ? "?serviceType="+serviceType.name() : "")+'#'+question.getName()%>" title="">Edit</a></td>
                 </tr>
                <%=SurveyHtmlHelper.getAnswers(question,surveyResponse.getAnswerAsList(question.getName()))%>
 			   <tr><td><img height="8" width="1" src="/media_stat/images/layout/clear.gif"/></td></tr>
