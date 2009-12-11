@@ -27,7 +27,7 @@ import com.freshdirect.webapp.util.ProductImpression;
 public class RatingPlusScalePriceTag extends ProductRatingTag {
 
 	
-	private static final String quickShopStyleScale = " style=\"line-height:16px; font-size: 13px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;\"";		// bold, red
+	private static final String quickShopStyleScale = " style=\"line-height:16px; font-size: 11px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;\"";		// bold, red
 	
 	double savingsPercentage = 0 ; // savings % off
 		
