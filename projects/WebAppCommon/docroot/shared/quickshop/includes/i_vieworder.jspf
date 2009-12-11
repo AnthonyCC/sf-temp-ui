@@ -413,7 +413,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
     <input type="hidden" name="quantity_<%=idx%>" value="">
     <input type="hidden" name="salesUnit_<%=idx%>" value="">
     <input type="hidden" name="estPrice_<%=idx%>" value="">
-    <td colspan="3">
+    <td colspan="2">
 		<font class="text10bold" color="#666666"><%= orderLine.getDescription() %><br></font>
 <%
 		if (productNode != null) {
@@ -486,6 +486,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 %>
 	
 	</td>
+	<td>&nbsp;</td>
 </tr>
 <%--bottom buffer--%>
 <tr bgcolor="<%=rowColor%>">

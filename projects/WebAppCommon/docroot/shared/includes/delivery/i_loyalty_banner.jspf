@@ -44,10 +44,10 @@ if (user.isChefsTable() && zoneCtActive ) {
 	    	} else {
             
             
-		       if(ClickToCallUtil.isBusinessHour())
+	       if(ClickToCallUtil.isBusinessHour())
 			{
 			%>
-				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre.html" />            
+				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre_click2call.html" />            
 			<%        
 
 			}else
@@ -57,21 +57,21 @@ if (user.isChefsTable() && zoneCtActive ) {
 				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" />                        
 			<%                            
 			}   
-           	}
-    	   %>			
+			}
+		   %>			
 			</td>
 		</tr>
 	</table>
 
-	<%
-} else if (!user.isChefsTable())  {
+<%
+} else {
 	if(ClickToCallUtil.isBusinessHour())
-        {
-		%>
+	{
+	%>
 		<fd:IncludeMedia name="/media/editorial/site_pages/click_to_call/timeslot_note_click2call.html" />            
-		<%        
-                    
-        }
+	<%        
+
+	}
 }
 %>
 
