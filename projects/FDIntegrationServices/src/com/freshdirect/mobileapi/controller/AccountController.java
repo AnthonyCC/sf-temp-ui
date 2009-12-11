@@ -178,7 +178,7 @@ public class AccountController extends BaseController {
     private TimeSlotCalculationResult getTimeSlotCalculationResult(ModelAndView model, SessionUser user, String addressId)
             throws FDException, JsonException {
         ShipToAddress shipToAddress = user.getDeliveryAddress(addressId);
-        TimeSlotCalculationResult timeSlotResult = shipToAddress.getDeliveryTimeslot(user);
+        TimeSlotCalculationResult timeSlotResult = shipToAddress.getDeliveryTimeslot(user, true);
         return timeSlotResult;
     }
 

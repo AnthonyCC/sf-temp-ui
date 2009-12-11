@@ -142,11 +142,12 @@ public class DeliveryAddress {
         return address;
     }
 
-    public TimeSlotCalculationResult getDeliveryTimeslot(SessionUser user) throws FDException {
+    public TimeSlotCalculationResult getDeliveryTimeslot(SessionUser user, boolean preReservationMode) throws FDException {
         DeliveryTimeSlotTagWrapper wrapper = new DeliveryTimeSlotTagWrapper(user);
         Result result = wrapper.getDeliveryTimeSlotResult(this.address);
-        TimeSlotCalculationResult timeSlotCalculationResult = new TimeSlotCalculationResult(result, user.isChefsTable());
+        TimeSlotCalculationResult timeSlotCalculationResult = new TimeSlotCalculationResult(result, user.isChefsTable(), preReservationMode);
         user.setReservationAndPreselectedTimeslotIds(result.getTimeslots(), timeSlotCalculationResult);
+        
         return timeSlotCalculationResult;
     }
 

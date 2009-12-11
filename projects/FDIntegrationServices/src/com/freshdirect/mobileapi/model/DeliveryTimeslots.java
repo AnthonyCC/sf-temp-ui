@@ -93,8 +93,9 @@ public class DeliveryTimeslots {
          * @param isUserChefTable
          * @throws FDResourceException
          */
-        public TimeSlotCalculationResult(Result result, boolean isUserChefTable) throws FDResourceException {
-            this(result.getTimeslots(), result.getZones(), result.isZoneCtActive(), result.getMessages(), isUserChefTable);
+        public TimeSlotCalculationResult(Result result, boolean isUserChefTable, boolean preReservationMode) throws FDResourceException {
+            //(isUserChefTable && !preReservationMode) condition essentially makes the user non-chef user for during pre-reservation
+            this(result.getTimeslots(), result.getZones(), result.isZoneCtActive(), result.getMessages(), (isUserChefTable && !preReservationMode));
         }
 
         /**
