@@ -631,7 +631,7 @@ public class FDStoreProperties {
 		defaults.put(DYNAMIC_ROUTING_ENABLED, "true");
 
 		// iphone 
-		defaults.put(PROP_MEDIA_IPHONE_TEMPLATE_PATH," /media/mobile/iphone/");
+		defaults.put(PROP_MEDIA_IPHONE_TEMPLATE_PATH,"media/mobile/iphone/");
 		defaults.put(IPHONE_EMAIL_SUBJECT, "FreshDirect SmartPhone Shopping");
 		
 		// Gift Card
