@@ -71,7 +71,7 @@ public class Oas247Service implements OasService {
                     cacheAdmin.putInCache(cacheKey, messages);
                 }
             } catch (Throwable ex) {
-                LOG.error("Throwable caught at cache update", ex);
+                LOG.error("Throwable caught at cache update");
                 messages = (Map<String, Object>) nre.getCacheContent();
                 LOG.debug("Cancelling cache update. Exception encountered.");
                 cacheAdmin.cancelUpdate(cacheKey);
