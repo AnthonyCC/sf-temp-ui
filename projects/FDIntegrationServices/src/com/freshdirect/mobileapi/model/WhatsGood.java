@@ -223,7 +223,6 @@ public class WhatsGood {
 
         try {
             result = (List<Product>) cacheAdmin.getFromCache(cacheKey, REFRESH_PERIOD);
-            throw new NeedsRefreshException(null);
         } catch (NeedsRefreshException nre) {
             try {
                 LOG.debug("Refreshing product list from CMS to cache with key" + cacheKey);
