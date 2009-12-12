@@ -36,6 +36,9 @@ public class MobileApiProperties {
 
     private final static String PROP_OAS_PROTOCOL = "mobileapi.oas.protocol";
 
+    private final static String PROP_ALCOHOL_AGE_WARNING = "mobileapi.mediapath.alcohol.agewarning";
+    private final static String PROP_ALCOHOL_HEALTH_WARNING = "mobileapi.mediapath.alcohol.healthwarning";
+
     public final static String UPGRADE = "UPGRADE";
 
     public final static String INCOMPATIBLE = "INCOMPATIBLE";
@@ -118,5 +121,17 @@ public class MobileApiProperties {
     public static String getOasCommunicationProtocol() {
         return get(PROP_OAS_PROTOCOL);
     }
+/*
+ *     private final static String PROP_ALCOHOL_AGE_WARNING = "mobileapi.mediapath.alcohol.agewarning";
+    private final static String PROP_ALCOHOL_HEALTH_WARNING = "mobileapi.mediapath.alcohol.healthwarning";
 
+ */
+    public static String getAlcoholAgeWarningMediaPath() {
+        return get(PROP_ALCOHOL_AGE_WARNING);
+    }
+    public static String getAlcoholHealthWarningMediaPath() {
+        return get(PROP_ALCOHOL_HEALTH_WARNING);
+    }
+    
+    
 }

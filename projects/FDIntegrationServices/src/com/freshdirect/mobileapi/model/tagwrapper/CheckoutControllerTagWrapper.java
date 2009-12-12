@@ -8,6 +8,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -16,6 +17,7 @@ import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -166,7 +168,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
         CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
         if (wrappedTag.getAgeVerificationPage().equals(successPage)) {
-            actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, "Age verification needed"));
+            actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, FDStoreProperties.getMediaPath()
+                    + MobileApiProperties.getAlcoholAgeWarningMediaPath()));
         }
         return new ResultBundle(actionResult, this);
     }

@@ -49,11 +49,7 @@
 
 	<bean id="testController" class="com.freshdirect.mobileapi.controller.TestController" />
 
-	<bean id="helpController" class="com.freshdirect.mobileapi.controller.HelpController">
-		<property name="contactUsFile" value="classpath:customer_service_hours.json" />
-		<property name="helpFile" value="classpath:help.json" />
-		<property name="learnMorePromoFile" value="classpath:learn_more_promo.json" />
-	</bean>
+	<bean id="helpController" class="com.freshdirect.mobileapi.controller.HelpController" />
 
 
 	<bean id="urlMapping"

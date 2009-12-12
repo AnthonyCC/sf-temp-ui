@@ -193,7 +193,7 @@ public class ProductController extends BaseController {
         if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
             responseMessage = new Message();
             responseMessage.setStatus(Message.STATUS_FAILED);
-            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, ERR_HEALTH_WARNING_MSG);
+            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, FDStoreProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
         } else {
             try {
                 responseMessage = new Product(product);

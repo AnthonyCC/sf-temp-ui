@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -28,6 +29,7 @@ import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 public class CartController extends BaseController {
 
@@ -179,7 +181,7 @@ public class CartController extends BaseController {
         if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
             responseMessage = new Message();
             responseMessage.setStatus(Message.STATUS_FAILED);
-            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, ERR_HEALTH_WARNING_MSG);
+            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, FDStoreProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
         } else {
             ResultBundle resultBundle = cart.addItemToCart(reqestMessage, qetRequestData(request), user);
             ActionResult result = resultBundle.getActionResult();
