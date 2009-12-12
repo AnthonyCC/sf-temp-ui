@@ -108,8 +108,8 @@ public class SearchController extends BaseController {
             option.setLabel(brand.getName());
             brandList.add(option);
         }
-        SortUtil<FilterOption> sortUtil = new SortUtil<FilterOption>(brandList, filterComparator);
-        sortUtil.sort();
+        
+        Collections.sort(brandList,filterComparator);
 
         // Data required for filtering: Categories
         Set<Category> categories = productService.getCategories();
@@ -123,8 +123,7 @@ public class SearchController extends BaseController {
             categoryList.add(option);
         }
 
-        sortUtil = new SortUtil<FilterOption>(categoryList, filterComparator);
-        sortUtil.sort();
+        Collections.sort(categoryList,filterComparator);
 
         // Data required for filtering: Departments
         Set<Department> departments = productService.getDepartments();
@@ -138,7 +137,6 @@ public class SearchController extends BaseController {
             departmentList.add(option);
         }
 
-        sortUtil = new SortUtil<FilterOption>(departmentList, filterComparator);
         Collections.sort(departmentList, filterComparator);
 
         SearchResult data = new SearchResult();
