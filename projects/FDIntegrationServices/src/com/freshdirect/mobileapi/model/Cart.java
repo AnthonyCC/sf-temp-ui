@@ -827,8 +827,15 @@ public class Cart {
         //        </tr>
 
         //Giftcard Balance
-        if (user.getGiftcardBalance() > 0) {
-            cartDetail.addSummaryLineCharge(new SummaryLineCharge(user.getGiftcardBalance(), false, false, true, "Gift Card Balance"));
+        if (cart instanceof FDOrderI) {
+            if (cart.getTotalAppliedGCAmount() > 0) {
+                cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getTotalAppliedGCAmount(), false, false, true,
+                        "Gift Card Amount to Be Applied"));
+            }
+        } else {
+            if (user.getGiftcardBalance() > 0) {
+                cartDetail.addSummaryLineCharge(new SummaryLineCharge(user.getGiftcardBalance(), false, false, true, "Gift Card Balance"));
+            }
         }
 
         //Other charages (phone handling and restocking charge)
