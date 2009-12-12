@@ -28,6 +28,7 @@ public class ItemGrabberTagWrapper extends TagWrapper {
         ((ItemGrabberTag) this.wrapTarget).setReturnSkus(false);
         ((ItemGrabberTag) this.wrapTarget).setDepth(1000);
         ((ItemGrabberTag) this.wrapTarget).setCategory(currentFolder);
+        ((ItemGrabberTag) this.wrapTarget).setIgnoreDuplicateProducts(true);
 
         try {
             wrapTarget.doStartTag();
