@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.python.modules.newmodule;
 
@@ -81,6 +82,8 @@ public class ProductMoreInfo {
 
     private Image productImage;
 
+    private String partiallyFrozen;
+
     public ProductMoreInfo(com.freshdirect.mobileapi.model.Product product) throws ModelException, FDResourceException,
             FDSkuNotFoundException {
         LOG.debug("Creating ProductMoreInfo for product: " + product.getProductId());
@@ -101,7 +104,6 @@ public class ProductMoreInfo {
         for (Variation variation : product.getVariations()) {
             variations.put(variation.getName(), variation.getDescription());
         }
-        heatingInstructions = product.getHeatingInstructions();
 
         if (product instanceof Wine) {
             Wine wine = (Wine) product;
@@ -141,12 +143,14 @@ public class ProductMoreInfo {
                 }
             } else {
                 com.freshdirect.mobileapi.model.Sku sku = product.getDefaultSku();
-                skuCodes.add(sku.getSkuCode());
-                if (product.getDefaultProduct().hasIngredients()) {
-                    ingredients.put(sku.getSkuCode(), product.getSkuIngredients(sku));
-                }
-                if (product.getDefaultProduct().hasNutritionFacts()) {
-                    nutritionFacts.put(sku.getSkuCode(), product.getSkuNutrition(sku));
+                if (sku != null) {
+                    skuCodes.add(sku.getSkuCode());
+                    if (product.getDefaultProduct().hasIngredients()) {
+                        ingredients.put(sku.getSkuCode(), product.getSkuIngredients(sku));
+                    }
+                    if (product.getDefaultProduct().hasNutritionFacts()) {
+                        nutritionFacts.put(sku.getSkuCode(), product.getSkuNutrition(sku));
+                    }
                 }
             }
         }
@@ -177,6 +181,10 @@ public class ProductMoreInfo {
         } else {
             productImage = new Image(detail.getPath(), detail.getHeight(), detail.getHeight());
         }
+
+        partiallyFrozen = StringUtils.replace(product.getPartiallyFrozen(), "\"/media", "\"http://www.freshdirect.com/media");
+        partiallyFrozen = StringUtils.remove(partiallyFrozen, "align=right");
+        heatingInstructions = StringUtils.replace(product.getHeatingInstructions(), "\"/media", "\"http://www.freshdirect.com/media");
     }
 
     public String getId() {
@@ -329,6 +337,14 @@ public class ProductMoreInfo {
 
     public void setProductImage(Image productImage) {
         this.productImage = productImage;
+    }
+
+    public String getPartiallyFrozen() {
+        return partiallyFrozen;
+    }
+
+    public void setPartiallyFrozen(String partiallyFrozen) {
+        this.partiallyFrozen = partiallyFrozen;
     }
 
     @Override

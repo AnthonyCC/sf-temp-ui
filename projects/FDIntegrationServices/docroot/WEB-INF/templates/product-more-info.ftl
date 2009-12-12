@@ -8,7 +8,7 @@
 
 	<div id="main">
 		<div id="header">
-			<img src="${moreInfo.productImage.source}" class"productImage" width="320" />
+			<img src="${moreInfo.productImage.source}" class="productImage"/>
 			<h1>${product.productTitle}</h1>
 
 <#if product.layout != "wine" >
@@ -148,14 +148,14 @@
 		<#if product.partiallyFrozen?has_content>
 		<div class="detail">
 			<h3>May Arrive Frozen</h3>
-			<p>${product.partiallyFrozen?replace("\"/media","\"http://www.freshdirect.com/media")}</p>
+			<p>${moreInfo.partiallyFrozen}</p>
 		</div>
 		</#if>
 		</#if>
 		<#if moreInfo.heatingInstructions?has_content >
 		<div class="detail">
 			<h3>Heating Instructions</h3>
-			<p>${moreInfo.heatingInstructions?replace("\"/media","\"http://www.freshdirect.com/media")}</p>
+			<p>${moreInfo.heatingInstructions}</p>
 		</div>
 		</#if>
 	
