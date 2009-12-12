@@ -662,7 +662,7 @@ public class Product {
     public String getProductTitle() {
         String result = "";
 
-        result = product.getProductModel().getFullName().toUpperCase();
+        result = product.getProductModel().getFullName();
 
         if (EnumProductLayout.WINE.equals(product.getProductModel().getProductLayout())) {
             List wineVintage = product.getProductModel().getWineVintage();
