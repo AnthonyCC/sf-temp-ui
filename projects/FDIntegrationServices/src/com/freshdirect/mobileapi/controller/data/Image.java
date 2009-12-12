@@ -9,13 +9,32 @@ import com.freshdirect.mobileapi.util.MobileApiProperties;
  */
 public class Image {
 
+    public enum ImageSizeType {
+        THUMB, MEDIUM, LARGE
+    }
+
     public Image() {
+    }
+
+    public Image(String source, int height, int width, ImageSizeType type) {
+        this(source, height, width);
+        setType(type);
     }
 
     public Image(String source, int height, int width) {
         setSource(source);
         setHeight(height);
         setWidth(width);
+    }
+
+    private ImageSizeType type;
+
+    public ImageSizeType getType() {
+        return type;
+    }
+
+    public void setType(ImageSizeType type) {
+        this.type = type;
     }
 
     /**

@@ -11,6 +11,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.ContainerSize.Size;
+import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
 import com.freshdirect.mobileapi.controller.data.Product.ProductWarningMessage.ProductWarningMessageType;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Brand;
@@ -294,12 +295,14 @@ public class Product extends Message {
         detailImage.setHeight(detailImg.getHeight());
         detailImage.setWidth(detailImg.getWidth());
         detailImage.setSource(detailImg.getPath());
+        detailImage.setType(ImageSizeType.MEDIUM);
 
         Image productImage = new Image();
         com.freshdirect.fdstore.content.Image prodImg = product.getImage(ImageType.PRODUCT);
         productImage.setHeight(prodImg.getHeight());
         productImage.setWidth(prodImg.getWidth());
         productImage.setSource(prodImg.getPath());
+        productImage.setType(ImageSizeType.THUMB);
 
         images.add(detailImage);
         images.add(productImage);

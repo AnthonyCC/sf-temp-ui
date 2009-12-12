@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
@@ -565,7 +566,7 @@ public class Cart {
                 //Do some confusing logic to convert flag structure of cart line items into nested structure.
                 //CartDetail -> AffiliateDetail -> (Department Group->Product Item) or (DepartmentGroup->Recipe->Product Item)
                 if (lastDept == null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) {
-                    lastDept = cartLine.getDepartmentDesc(); 
+                    lastDept = cartLine.getDepartmentDesc();
                     // Bypass idDiaplayDepartment for USQ Affiliate
                     if (view.isDisplayDepartment() || AFFILIATE_USQ_WINES_CODE.equalsIgnoreCase(view.getAffiliate().getCode())) {
 
@@ -829,6 +830,30 @@ public class Cart {
         if (user.getGiftcardBalance() > 0) {
             cartDetail.addSummaryLineCharge(new SummaryLineCharge(user.getGiftcardBalance(), false, false, true, "Gift Card Balance"));
         }
+
+        //Other charages (phone handling and restocking charge)
+        if (cart.isChargeWaived(EnumChargeType.PHONE)) {
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, false, true, false, "Phone Handling Charge"));
+        } else if (cart.getPhoneCharge() > 0) {
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getPhoneCharge(), false, false, false, "Phone Handling Charge"));
+        }
+
+        double restockingFee = 0.0;
+        if (cart instanceof FDOrderI) {
+            if (((FDOrderI) cart).hasSettledReturn()) {
+                restockingFee = ((FDOrderI) cart).getRestockingCharges();
+                if (restockingFee > 0) {
+                    cartDetail.addSummaryLineCharge(new SummaryLineCharge(restockingFee, false, false, false, "Restocking Fees"));
+                }
+            }
+        }
+
+        if (cart.isChargeWaived(EnumChargeType.PHONE)) {
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, false, true, false, "Phone Handling Charge"));
+        } else if (cart.getPhoneCharge() > 0) {
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getPhoneCharge(), false, false, false, "Phone Handling Charge"));
+        }
+
         //
         //        cartDetail.setGiftcardBalance(user.getGiftcardBalance());
         //TODO: If we fully support GF, we'll have to support "remove" giftcard as below
