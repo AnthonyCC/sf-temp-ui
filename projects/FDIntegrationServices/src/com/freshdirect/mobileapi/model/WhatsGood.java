@@ -233,7 +233,7 @@ public class WhatsGood {
                 if ("wg_deals".equals(contentNodeId) && (null == ContentFactory.getInstance().getContentNode(contentNodeId))) {
                     result = getBrandNameDealsProductList(user);
                 } else if ("wgd_produce".equals(contentNodeId) && (null == ContentFactory.getInstance().getContentNode(contentNodeId))) {
-                        result = getPeakProduceProductList(user);
+                    result = getPeakProduceProductList(user);
                 } else {
                     List contents = tagWrapper.getProducts(currentFolder);
 
@@ -259,8 +259,9 @@ public class WhatsGood {
                         }
                     }
                 }
-
-                cacheAdmin.putInCache(cacheKey, result);
+                if (result.size() > 0) {
+                    cacheAdmin.putInCache(cacheKey, result);
+                }
             } catch (Throwable ex) {
                 LOG.error("Throwable caught at cache update", ex);
                 result = (List<Product>) nre.getCacheContent();
