@@ -38,7 +38,7 @@ public class Oas247Service implements OasService {
     /**
      * This can be injected configuration
      */
-    private static String path = "adstream_sx.ads/iPhone/home@SystemMessage";
+    private static String path = "/adstream_sx.ads/iPhone/home@SystemMessage";
 
     private String queryString = "";
 
