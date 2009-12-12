@@ -23,9 +23,12 @@ public class SalesUnit {
         defaultSalesUnit = su.isDefault();
 
         int lbIndex = description.indexOf("lb");
-        if (lbIndex > 0) {
+        if (lbIndex >= 0) {
             shortDescription = description.substring(0, lbIndex).trim();
+        } else {
+            shortDescription = description;
         }
+        
         /*
         if (salesUnitOnly){
             double fraction = (double) su.getNumerator() / (double) su.getDenominator();
