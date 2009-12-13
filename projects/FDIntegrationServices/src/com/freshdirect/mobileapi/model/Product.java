@@ -997,17 +997,8 @@ public class Product {
     * WHAT: The duplicate code determines the text for the quantity text field
     */
     public String getQuantitText() {
-        String result = "";
+        String result = product.getProductModel().getQuantityText();
 
-        if (displaySalesUnitsOnly) {
-            if (selectBySalesUnitOnly) {
-                result = product.getProductModel().getQuantityText();
-            } else if (selectBySalesUnitAndQuantity()) {
-                result = this.getSalesUnitLabel();
-            }
-        } else {
-            result = product.getProductModel().getQuantityText();
-        }
         return result;
     }
 
@@ -1024,7 +1015,15 @@ public class Product {
     }
 
     public String getSalesUnitLabel() {
-        return product.getProductModel().getSalesUnitLabel();
+        String result = product.getProductModel().getSalesUnitLabel();
+        if (displaySalesUnitsOnly) {
+            if (selectBySalesUnitOnly) {
+                result = product.getProductModel().getQuantityText();
+            } else if (selectBySalesUnitAndQuantity()) {
+                result = product.getProductModel().getSalesUnitLabel();
+            }
+        } 
+        return result;
     }
 
     public boolean hasHalfPint() {
