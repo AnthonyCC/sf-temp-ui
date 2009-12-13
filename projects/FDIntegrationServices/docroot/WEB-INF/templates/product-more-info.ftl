@@ -117,7 +117,7 @@
 	
 	<div class="detail">
 		<h3>${cgpMoreinfo.fullName}</h3>
-		${cgpMoreinfo.description}
+		<p>${cgpMoreinfo.description}</p>
 	</div>
 
 	<#list cgpMoreinfo.skuCodes as skuCode>		
