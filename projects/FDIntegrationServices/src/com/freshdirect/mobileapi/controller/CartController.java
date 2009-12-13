@@ -181,7 +181,7 @@ public class CartController extends BaseController {
         if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
             responseMessage = new Message();
             responseMessage.setStatus(Message.STATUS_FAILED);
-            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, FDStoreProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
+            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
         } else {
             ResultBundle resultBundle = cart.addItemToCart(reqestMessage, qetRequestData(request), user);
             ActionResult result = resultBundle.getActionResult();

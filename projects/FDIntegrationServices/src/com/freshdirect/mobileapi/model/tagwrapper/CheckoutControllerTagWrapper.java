@@ -168,7 +168,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
         CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
         if (wrappedTag.getAgeVerificationPage().equals(successPage)) {
-            actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, FDStoreProperties.getMediaPath()
+            actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, MobileApiProperties.getMediaPath()
                     + MobileApiProperties.getAlcoholAgeWarningMediaPath()));
         }
         return new ResultBundle(actionResult, this);

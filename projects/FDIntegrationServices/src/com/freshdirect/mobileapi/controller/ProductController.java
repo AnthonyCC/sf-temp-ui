@@ -193,7 +193,7 @@ public class ProductController extends BaseController {
         if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
             responseMessage = new Message();
             responseMessage.setStatus(Message.STATUS_FAILED);
-            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, FDStoreProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
+            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
         } else {
             try {
                 responseMessage = new Product(product);
@@ -357,7 +357,7 @@ public class ProductController extends BaseController {
     //        return model;
     //    }
 
-    private String mediaServerUrl = FDStoreProperties.getMediaPath();
+    private String mediaServerUrl = MobileApiProperties.getMediaPath();
 
     private ModelAndView getWhatsGoodCategories(ModelAndView model, HttpServletRequest request, HttpServletResponse response,
             SessionUser user) throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
