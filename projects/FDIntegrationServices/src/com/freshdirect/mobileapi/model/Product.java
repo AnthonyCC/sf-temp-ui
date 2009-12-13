@@ -292,13 +292,17 @@ public class Product {
 
                 Iterator i = productModel.getSkus().iterator();
                 while (i.hasNext()) {
-                    FDProduct fdp;
+                    FDProduct fdp = null;
+                    String skuCode = null;
                     try {
-                        fdp = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(((SkuModel) i.next()).getSkuCode()));
+                        skuCode = ((SkuModel) i.next()).getSkuCode();
+                        fdp = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(skuCode));
                     } catch (FDResourceException e) {
-                        throw new ModelException("Error getting product for sku", e);
+                        LOG.error("Error getting product for sku=" + skuCode, e);
+                        continue;
                     } catch (FDSkuNotFoundException e) {
-                        throw new ModelException("Error getting product for sku", e);
+                        LOG.error("Error getting product for sku=" + skuCode, e);
+                        continue;
                     }
                     this.salesUnitsMatch &= defaultSalesUnit.equals(fdp.getSalesUnits()[0].getName());
                     this.salesUnitDescrsMatch &= defSU.getDescription().equals(fdp.getSalesUnits()[0].getDescription());
@@ -1022,7 +1026,7 @@ public class Product {
             } else if (selectBySalesUnitAndQuantity()) {
                 result = product.getProductModel().getSalesUnitLabel();
             }
-        } 
+        }
         return result;
     }
 
@@ -1547,8 +1551,6 @@ public class Product {
         }
         return result;
     }
-
-
 
     /**
      * Method to get a product by id and category id. If product is not get, 

@@ -255,7 +255,12 @@ public class WhatsGood {
 
                     for (Object content : contents) {
                         if (content instanceof ProductModel) {
-                            result.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
+                            try {
+                                result.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
+                            } catch (ModelException e) {
+                                //Don't let one rotten egg ruin it for the bunch
+                                LOG.error("ModelException encountered", e);
+                            }
                         }
                     }
                 }
