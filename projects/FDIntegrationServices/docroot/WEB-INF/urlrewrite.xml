@@ -56,25 +56,15 @@
 		<to last="true">/login.do?action=login&amp;ver=$1</to>
 	</rule>
 
-	<!-- Cart : Apply Promo : Deprecated -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/applypromo/</from>
-		<to last="true">/cart.do?action=applypromo&amp;ver=$1</to>
-	</rule>
-	<!-- Cart : Apply Promo : New and Improved -->
+	<!-- Cart : Apply Promo -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/cart/promo/apply/(.*)$</from>
 		<to last="true">/cart.do?action=applypromo&amp;promoId=$3&amp;ver=$1</to>
 	</rule>
 
-	<!-- Cart : Remove Promo : Deprecated -->
+	<!-- Cart : Remove Promo -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/removepromo/</from>
-		<to last="true">/cart.do?action=removepromo&amp;ver=$1</to>
-	</rule>
-	<!-- Cart : Remove Promo : New and Improved -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/promo/remove/(.*)$</from>
+		<from>^/v/([0-9]+)/(.*)/cart/promo/remove/(.*)</from>
 		<to last="true">/cart.do?action=removepromo&amp;promoId=$3&amp;ver=$1</to>
 	</rule>
 
@@ -96,12 +86,7 @@
 		<to last="true">/cart.do?action=updateitem&amp;ver=$1</to>
 	</rule>
 
-	<!-- Cart : Remove an Item : Deprecated -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/cart/removeitem/</from>
-		<to last="true">/cart.do?action=removeitem&amp;ver=$1</to>
-	</rule>
-	<!-- Cart : Remove an Item : New -->
+	<!-- Cart : Remove an Item -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/cart/remove/(.*)$</from>
 		<to last="true">/cart.do?action=removeitem&amp;cartLineId=$3&amp;ver=$1</to>
@@ -166,16 +151,11 @@
 	<!-- xxxxxxxxxxxxxxxxxxx -->
 	<!-- Set Delivery Slot -->
 	<!-- xxxxxxxxxxxxxxxxxxx -->
-	<!-- Deprecated -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/deliverytimeslot/reserve/$</from>
-		<to last="true">/checkout.do?action=reservetimeslot&amp;ver=$1</to>
-	</rule>
-	<!-- New -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/checkout/deliverytimeslot/reserve/(.*)/$</from>
 		<to last="true">/checkout.do?action=reservetimeslot&amp;slotId=$3&amp;ver=$1</to>
 	</rule>
+
 	<!-- Deprecated -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/deliverytimeslot/reserve/(.*)$</from>
@@ -268,12 +248,7 @@
 		<to>/product.do?action=acknowledgehealthwarning&amp;ver=$1</to>
 	</rule>
 
-	<!-- Get previous order detail : Deprecated -->
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/order/detail/</from>
-		<to last="true">/order.do?action=getorderdetail&amp;ver=$1</to>
-	</rule>
-	<!-- Get previous order detail : New -->
+	<!-- Get previous order detail -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/order/(.*)/detail$</from>
 		<to last="true">/order.do?action=getorderdetail&amp;orderId=$3&amp;ver=$1</to>
@@ -290,7 +265,6 @@
 		<from>^/v/([0-9]+)/(.*)/orders/quickshop/</from>
 		<to last="true">/order.do?action=getquickshoporders&amp;ver=$1</to>
 	</rule>
-
 
 	<!-- Modify Order -->
 	<rule>
