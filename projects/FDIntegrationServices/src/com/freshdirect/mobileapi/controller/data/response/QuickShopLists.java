@@ -9,6 +9,7 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.model.CustomerCreatedList;
 import com.freshdirect.mobileapi.model.OrderInfo;
+import com.freshdirect.mobileapi.util.CommonFormatter;
 
 /**
  * Generic form for lists used in Quickshop
@@ -29,8 +30,8 @@ public class QuickShopLists extends Message {
         QuickShopLists newInstance = new QuickShopLists();
         for (OrderInfo list : lists) {
             try {
-                newInstance.lists.add(new QuickShopList(list.getId(), newInstance.formatter.format(list.getRequestedDate()), Double
-                        .toString(list.getTotal())));
+                newInstance.lists.add(new QuickShopList(list.getId(), newInstance.formatter.format(list.getRequestedDate()),
+                        CommonFormatter.formatCurrency(list.getTotal())));
             } catch (PricingException e) {
                 //If we get error on an order, just move on...
                 LOG.warn("Unable to retrieve total amount for order: " + list.getId(), e);
