@@ -11,12 +11,9 @@ public class ContactUsInit extends Message {
 
     private List<Map<String, String>> previousOrders;
 
-    private String contactUsNumber;
-
-    public ContactUsInit(Map<String, String> subjects, List<Map<String, String>> previousOrders, String contactUsNumber) {
+    public ContactUsInit(Map<String, String> subjects, List<Map<String, String>> previousOrders) {
         this.subjects = subjects;
         this.previousOrders = previousOrders;
-        this.contactUsNumber = contactUsNumber;
     }
 
     public Map<String, String> getSubjects() {
@@ -33,14 +30,6 @@ public class ContactUsInit extends Message {
 
     public void setPreviousOrders(List<Map<String, String>> previousOrders) {
         this.previousOrders = previousOrders;
-    }
-
-    public String getContactUsNumber() {
-        return contactUsNumber;
-    }
-
-    public void setContactUsNumber(String contactUsNumber) {
-        this.contactUsNumber = contactUsNumber;
     }
 
 }

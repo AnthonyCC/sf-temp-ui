@@ -64,8 +64,7 @@ public class ContactUsController extends BaseController {
 
         Map<String, String> subjects = contactUs.getContactUsSubjects();
         List<Map<String, String>> orders = contactUs.getPreviousOrders();
-        String contactNumber = user.getFDSessionUser().getCustomerServiceContact();
-        responseMessage = new ContactUsInit(subjects, orders, contactNumber);
+        responseMessage = new ContactUsInit(subjects, orders);
         responseMessage.setSuccessMessage("Contact Us form data has been retrieved successfully.");
         setResponseMessage(model, responseMessage, user);
         return model;
