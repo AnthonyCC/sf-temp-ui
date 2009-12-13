@@ -1,10 +1,12 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.mobileapi.controller.data.DateFormat;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.model.OrderInfo;
 
@@ -103,8 +105,14 @@ public class OrderHistory extends Message {
             this.id = id;
         }
 
-        public Date getOrderDate() {
-            return orderDate;
+        private SimpleDateFormat formatter = new SimpleDateFormat(DateFormat.STANDARDIZED_DATE_FORMAT);
+
+        public String getOrderDate() {
+            String formatterDate = null;
+            if (orderDate != null) {
+                formatterDate = formatter.format(orderDate);
+            }
+            return formatterDate;
         }
 
         public void setOrderDate(Date orderDate) {

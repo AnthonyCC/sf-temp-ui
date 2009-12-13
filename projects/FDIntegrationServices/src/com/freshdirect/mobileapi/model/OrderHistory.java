@@ -58,7 +58,7 @@ public class OrderHistory {
     /**
      * Comparator used for sort by order delivery slot time
      */
-    private final static Comparator ORDER_COMPARATOR = new Comparator() {
+    private final static Comparator HOME_ORDER_COMPARATOR = new Comparator() {
         public int compare(Object o1, Object o2) {
             return ((FDOrderInfoI) o2).getDeliveryStartTime().compareTo(((FDOrderInfoI) o1).getDeliveryStartTime());
         }
@@ -66,7 +66,7 @@ public class OrderHistory {
 
     private final static Comparator ORDER_INFO_COMPARATOR = new Comparator() {
         public int compare(Object o1, Object o2) {
-            return ((OrderInfo) o2).getDeliveryStartTime().compareTo(((OrderInfo) o1).getDeliveryStartTime());
+            return ((OrderInfo) o2).getRequestedDate().compareTo(((OrderInfo) o1).getRequestedDate());
         }
     };
 
@@ -78,7 +78,7 @@ public class OrderHistory {
 
         //This should be returned in sorted order. Most recent delivery time to least recent (past)
         List<FDOrderInfoI> fDOrderInfos = getOrderInfos(EnumSaleType.REGULAR);
-        Collections.sort(fDOrderInfos, ORDER_COMPARATOR);
+        Collections.sort(fDOrderInfos, HOME_ORDER_COMPARATOR);
         OrderInfo closestPendingOrderInfo = null;
         for (FDOrderInfoI info : fDOrderInfos) {
             OrderInfo orderInfo = OrderInfo.wrap(info);
