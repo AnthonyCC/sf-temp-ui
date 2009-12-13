@@ -241,8 +241,6 @@ public class ProductController extends BaseController {
             response.setContentType("text/html");
             ProductMoreInfo productMoreInfo = new ProductMoreInfo(product);
 
-            String mediaPath = FDStoreProperties.getMediaPath().substring(0, FDStoreProperties.getMediaPath().indexOf("/media"));
-
             model.addObject("moreInfo", productMoreInfo);
             model.addObject("product", product);
             model.addObject("productImage", product.getImage(ImageType.DETAIL));
