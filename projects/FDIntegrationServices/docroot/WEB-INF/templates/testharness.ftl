@@ -371,7 +371,7 @@ function loadStuff() {
   	$("#payload").val("");
   	$("#result").val("");
   }  else if (loaddata == "HelpLearnMorePromo") {
-  	$("#url").val("/help/LearnMorePromo");
+  	$("#url").val("/help/learnMorePromo");
   	$("#payload").val("");
   	$("#result").val("");
   }  else if (loaddata == "Ping") {
