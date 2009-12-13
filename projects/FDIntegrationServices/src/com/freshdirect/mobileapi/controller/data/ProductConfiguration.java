@@ -1,10 +1,30 @@
 package com.freshdirect.mobileapi.controller.data;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.freshdirect.mobileapi.model.ProductSelection;
 
 public class ProductConfiguration {
+
+    private Map<String, String> passback = new HashMap<String, String>();
+
+    public String getPassback() {
+        String passbackString = null;
+        if (!passback.isEmpty()) {
+            StringBuilder passbackBuffer = new StringBuilder();
+            for (String key : passback.keySet()) {
+                if (passbackBuffer.length() == 0) {
+                    passbackBuffer.append("?");
+                } else {
+                    passbackBuffer.append("&");
+                }
+                passbackBuffer.append(key).append("=").append(passback.get(key));
+            }
+            passbackString = passbackBuffer.toString();
+        }
+        return passbackString;
+    }
 
     private ProductSearchResult product;
 
@@ -51,6 +71,7 @@ public class ProductConfiguration {
         this.product = ProductSearchResult.wrap(product);
         this.skuCode = sku;
     }
+
     public void populateProductWithModel(com.freshdirect.mobileapi.model.Product product, Sku sku) {
         //        Product newProduct = new Product();
         //        newProduct.setId(product.getProductId());
@@ -116,6 +137,10 @@ public class ProductConfiguration {
         setConfigurationDescription(productSelection.getConfigurationDesc());
         setSalesUnit(new SalesUnit(productSelection.getSalesUnit()));
         setSkuCode(productSelection.getSkuCode());
+    }
+
+    public void addPassbackParam(String key, String value) {
+        this.passback.put(key, value);
     }
 
 }

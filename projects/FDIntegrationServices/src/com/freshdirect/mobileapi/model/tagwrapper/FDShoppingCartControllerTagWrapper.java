@@ -74,6 +74,11 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue("save_changes.x", "non-null-value");
         addRequestValue("cartLine", updateItemInCart.getCartLineId());
 
+        String passback = productConfiguration.getPassback();
+        if (passback != null) {
+            handlePassbackParameters(passback);
+        }
+
         addRequestValue(REQ_PARAM_SKU_CODE, skuCode);
         addRequestValue(REQ_PARAM_CATEGORY_ID, productConfiguration.getCategoryId());
         addRequestValue(REQ_PARAM_PRODUCT_ID, productConfiguration.getProductId());
@@ -100,6 +105,7 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         ((FDShoppingCartControllerTag) getWrapTarget()).setAction(null);
         return new ResultBundle(executeTagLogic(), this);
     }
+
     /**
      * @param cartLineId
      * @return
@@ -169,6 +175,30 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         //Pass all smart store configuration values:
         String parameterBundle = smartStoreConfiguration.getParameterBundle();
         if (parameterBundle != null) {
+            handlePassbackParameters(parameterBundle);
+        }
+        String passback = productConfiguration.getPassback();
+        if (passback != null) {
+            handlePassbackParameters(passback);
+        }
+
+        //addRequestValue(REQ_PARAM_VARIANT, smartStoreConfiguration.getVariant()); //Value from smart store
+
+        //Indicates users has checked "Email a copy of this recipe on the day of delivery!"
+        addRequestValue(REQ_PARAM_REQUEST_NOTIFICATION, addItemToCart.getRequestNotification());
+
+        //Add all the configuration options
+        if (null != productConfiguration.getOptions()) {
+            addRequestValues(productConfiguration.getOptions());
+        }
+
+        ((FDShoppingCartControllerTag) getWrapTarget()).setAction(ACTION_ADD_TO_CART);
+        setMethodMode(true);
+        return new ResultBundle(executeTagLogic(), this);
+    }
+
+    private void handlePassbackParameters(String parameterBundle) throws FDException {
+        if (parameterBundle != null) {
             parameterBundle = parameterBundle.substring(parameterBundle.indexOf("?") + 1);
             try {
                 parameterBundle = StringEscapeUtils.unescapeHtml(URLDecoder.decode(parameterBundle, "UTF-8"));
@@ -186,19 +216,6 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
                 }
             }
         }
-        //addRequestValue(REQ_PARAM_VARIANT, smartStoreConfiguration.getVariant()); //Value from smart store
-
-        //Indicates users has checked "Email a copy of this recipe on the day of delivery!"
-        addRequestValue(REQ_PARAM_REQUEST_NOTIFICATION, addItemToCart.getRequestNotification());
-
-        //Add all the configuration options
-        if (null != productConfiguration.getOptions()) {
-            addRequestValues(productConfiguration.getOptions());
-        }
-
-        ((FDShoppingCartControllerTag) getWrapTarget()).setAction(ACTION_ADD_TO_CART);
-        setMethodMode(true);
-        return new ResultBundle(executeTagLogic(), this);
     }
 
     /**
@@ -255,6 +272,11 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
                     String value = pc.getOptions().get(key);
                     addRequestValue(key + "_" + idx, value);
                 }
+            }
+            
+            String passback = pc.getPassback();
+            if (passback != null) {
+                handlePassbackParameters(passback);
             }
 
         }

@@ -69,6 +69,7 @@ import com.freshdirect.mobileapi.controller.data.response.CartDetail.RedemptionP
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.tagwrapper.FDShoppingCartControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RedemptionCodeControllerTagWrapper;
+import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
 import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
@@ -618,6 +619,13 @@ public class Cart {
 
                 try {
                     Product productData = Product.wrap(productNode, user.getFDSessionUser().getUser());
+
+                    //Automatically add "agree to terms". In order to end up in cart or prev order, user must have agreed already. Website does 
+                    //something similar with hidden input fields.
+                    if (productData.hasTerms()) {
+                        productConfiguration.addPassbackParam(RequestParamName.REQ_PARAM_AGREE_TO_TERMS, "yes");
+                    }
+
                     Sku sku = productData.getSkyByCode(cartLine.getSkuCode());
                     if (sku == null) {
                         LOG.warn("sku=" + cartLine.getSkuCode() + "::product desc=" + cartLine.getDescription() + " was null");
