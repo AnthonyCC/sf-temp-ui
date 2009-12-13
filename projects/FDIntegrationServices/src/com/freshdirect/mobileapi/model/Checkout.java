@@ -239,12 +239,12 @@ public class Checkout {
     public ResultBundle setCheckoutDeliveryAddress(String id, DeliveryAddressType type) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = null;
-        if (sessionUser.getShoppingCart().isAgeVerified()) {
-            AgeVerificationControllerTagWrapper alcoholAddressCheckWrapper = new AgeVerificationControllerTagWrapper(this.sessionUser);
-            result = alcoholAddressCheckWrapper.verifyAddress(id, type);
-        }
         if ((result == null) || (result.getActionResult().isSuccess())) {
             result = tagWrapper.setCheckoutDeliveryAddress(this.sessionUser, id, type);
+        }
+        if ((result.getActionResult().isSuccess()) && sessionUser.getShoppingCart().isAgeVerified()) {
+            AgeVerificationControllerTagWrapper alcoholAddressCheckWrapper = new AgeVerificationControllerTagWrapper(this.sessionUser);
+            result = alcoholAddressCheckWrapper.verifyAddress(id, type);
         }
         return result;
     }
