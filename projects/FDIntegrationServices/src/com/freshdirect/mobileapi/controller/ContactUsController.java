@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,7 +63,7 @@ public class ContactUsController extends BaseController {
         ContactUs contactUs = new ContactUs(user);
 
         Map<String, String> subjects = contactUs.getContactUsSubjects();
-        Map<String, String> orders = contactUs.getPreviousOrders();
+        List<Map<String, String>> orders = contactUs.getPreviousOrders();
         String contactNumber = user.getFDSessionUser().getCustomerServiceContact();
         responseMessage = new ContactUsInit(subjects, orders, contactNumber);
         responseMessage.setSuccessMessage("Contact Us form data has been retrieved successfully.");

@@ -2,6 +2,8 @@ package com.freshdirect.mobileapi.model;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +49,7 @@ public class ContactUs {
      * @return
      * @throws FDException
      */
-    public Map<String, String> getPreviousOrders() throws FDException {
+    public List<Map<String, String>> getPreviousOrders() throws FDException {
         DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy");
         OrderHistoryInfoTagWrapper orderHistoryInfoTagWrapper = new OrderHistoryInfoTagWrapper(this.sessionUser);
         List<FDOrderInfoI> orderInfos = orderHistoryInfoTagWrapper.getOrderHistoryInfo();
@@ -63,11 +65,14 @@ public class ContactUs {
         //        <% if (idx.intValue() == 5) break; %>
         //        <option value="<%= orderInfo.getErpSalesId() %>">#<%= orderInfo.getErpSalesId() %> - <%=orderInfo.getOrderStatus().getDisplayName()%> - <%= dateFormatter.format( orderInfo.getRequestedDate() ) %>
         //        </logic:iterate>
-        Map<String, String> values = new LinkedHashMap<String, String>();
+        List<Map<String, String>> values = new ArrayList<Map<String, String>>();//new LinkedHashMap<String, String>();
+        //List<Map<String, String>> values = new LinkedHashMap<String, String>();
         for (FDOrderInfoI orderInfo : orderInfos) {
             StringBuilder buffer = new StringBuilder("#").append(orderInfo.getErpSalesId()).append(" - ").append(
                     orderInfo.getOrderStatus().getDisplayName()).append(" - ").append(dateFormatter.format(orderInfo.getRequestedDate()));
-            values.put(orderInfo.getErpSalesId(), buffer.toString());
+            HashMap<String, String> item = new HashMap<String, String>();
+            item.put(orderInfo.getErpSalesId(), buffer.toString());
+            values.add(item);
             if (values.size() >= 5) {
                 break;
             }

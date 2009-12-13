@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -8,11 +9,11 @@ public class ContactUsInit extends Message {
 
     private Map<String, String> subjects;
 
-    private Map<String, String> previousOrders;
+    private List<Map<String, String>> previousOrders;
 
     private String contactUsNumber;
 
-    public ContactUsInit(Map<String, String> subjects, Map<String, String> previousOrders, String contactUsNumber) {
+    public ContactUsInit(Map<String, String> subjects, List<Map<String, String>> previousOrders, String contactUsNumber) {
         this.subjects = subjects;
         this.previousOrders = previousOrders;
         this.contactUsNumber = contactUsNumber;
@@ -26,11 +27,11 @@ public class ContactUsInit extends Message {
         this.subjects = subjects;
     }
 
-    public Map<String, String> getPreviousOrders() {
+    public List<Map<String, String>> getPreviousOrders() {
         return previousOrders;
     }
 
-    public void setPreviousOrders(Map<String, String> previousOrders) {
+    public void setPreviousOrders(List<Map<String, String>> previousOrders) {
         this.previousOrders = previousOrders;
     }
 
