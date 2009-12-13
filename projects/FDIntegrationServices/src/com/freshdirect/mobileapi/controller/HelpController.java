@@ -30,11 +30,11 @@ public class HelpController extends BaseController {
 
     public static final String LEARN_MORE_PROMO_ACTION = "learnMorePromo";
 
-    private String costumerServicePath = "/mobile/iphone/contact_us/customer_service_hours.json";
+    private String costumerServicePath = "/media/mobile/iphone/contact_us/customer_service_hours.json";
 
-    private String learnMorePromoPath = "/mobile/iphone/home/learn_more_promo.json";
+    private String learnMorePromoPath = "/media/mobile/iphone/home/learn_more_promo.json";
 
-    private String helpPath = "/mobile/iphone/help/help.json";
+    private String helpPath = "/media/mobile/iphone/help/help.json";
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
