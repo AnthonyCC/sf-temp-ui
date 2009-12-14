@@ -322,7 +322,9 @@
                 // burst related stuff ->
                 
                 int deal = (product == null) ? 0 : product.getHighestDealPercentage();
-                ProductLabeling prodLabel = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), product);
+		
+			if(product!=null){
+				ProductLabeling prodLabel = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), product);
 				
 				col1.append("<div style=\"position: absolute; top: 0px; left: 0px\">\n");
                 
@@ -334,7 +336,7 @@
                 col1.append( "</div>" );
                 
                 // <- burst related stuff
-                
+                }
             }
 
             appendColumn.setLength(0);
@@ -427,14 +429,16 @@
 				
                 // burst related stuff ->
                 
-				int deal = product.getHighestDealPercentage();				
+				int deal = (product == null) ? 0 : product.getHighestDealPercentage();	
+				if(product!=null){
+
 				ProductLabeling prdLbl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), product);
 				
 				String burstUrl = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : prdLbl.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif"):prdLbl.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif"): clearImage;
 
 				appendColumn.append( "swapImageAndBurst(\"" + imgName + "\",\"" + ((Image)product.getCategoryImage()).getPath() + "\"," + imgS + ",\"" + 
 						(deal > 0) + "\",\"" + burstImgName  + "\",\"" + burstUrl + "\"" + ")" );
-				
+				}
                 // <- burst related stuff				
 				
                 if( product.isUnavailable() ) {
