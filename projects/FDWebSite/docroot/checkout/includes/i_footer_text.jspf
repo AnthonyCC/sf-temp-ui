@@ -4,7 +4,7 @@ if (isSmall) width="630";
 %>
 <table align="center" border="0" cellspacing="0" cellpadding="0" width="<%=width%>">
 <tr align="center" valign="top">
-	<td width="430">
+	<td>
 		<font class="space4pix"><br><br><br></font><font class="text13">
 		<img src="/media/editorial/site_pages/click_to_call/c2c_hdr_trouble_offhours.gif" alt="Timeslot Full?"> <br>
 		Our service hours are Monday through Thursday 6:30a.m. to Midnight, Friday from 6:30a.m. to 11p.m.,<br>
