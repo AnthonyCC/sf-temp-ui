@@ -138,6 +138,8 @@ function setDeletePaymentId(frmObj,payid) {
 }
 
 function popup(URL, type, name) {
+	var w = "375";
+	var h = "335";
 	if ("small" == type) {
 		w = "375";
 		h = "335";
