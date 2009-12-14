@@ -126,7 +126,7 @@ public class FDStoreRecommender {
             if (products == null || products.isEmpty()) {
                 return null;
             } else  {
-                YmalSource source = (YmalSource) Collections.max(products, ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE);
+                YmalSource source = (YmalSource) Collections.min(products, ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE);
                 YmalUtil.resetActiveYmalSetSession(source, request);
                 return source;
             }

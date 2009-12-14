@@ -22,6 +22,12 @@
     </module>
      <module>
         <web>
+            <web-uri>../FDIntegrationServices/docroot</web-uri>
+            <context-root>mobileapi</context-root>
+        </web>
+    </module>
+     <module>
+        <web>
             <web-uri>../ERPSAdmin/docroot</web-uri>
             <context-root>ERPSAdmin</context-root>
         </web>

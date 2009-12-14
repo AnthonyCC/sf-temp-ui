@@ -291,6 +291,8 @@ YmalSource source = null;
 if (useLoggedIn && user != null) {
 	if (("allItems").equals(cartAlgorithm)) {
 	    FDStoreRecommender.initYmalSource(si, user, request);
+	    source = si.getYmalSource();
+	    si.setCurrentNode(source);
 	} else {
 		source = YmalUtil.resolveYmalSource(user, null, request);
 		if (YmalUtil.getSelectedCartLine(user) != null)
@@ -631,6 +633,15 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    						if (source != null) { 
 	    						%><span style="font-weight: normal;" title="<%= ((ContentNodeModel) source).getFullName() + " (" +
 	    								source.getContentKey().getType().getName() + ")" %>"><%= source.getContentKey().getId() %></span><% 
+	    						} else { 
+	    						%><span class="not-found">&lt;unidentified&gt;</span><% 
+	    						} %>
+	    				</p>
+	    				<p class="result">
+	    					Selected YMAL set: <% 
+	    						if (source != null) { 
+	    						%><span style="font-weight: normal;" title="<%= source.getActiveYmalSet().getFullName() + " (" +
+	    								source.getActiveYmalSet().getContentKey().getType().getName() + ")" %>"><%= source.getActiveYmalSet().getContentKey().getId() %></span><% 
 	    						} else { 
 	    						%><span class="not-found">&lt;unidentified&gt;</span><% 
 	    						} %>

@@ -33,7 +33,6 @@ import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
 
 import org.apache.log4j.Logger;
-import org.apache.openjpa.lib.log.Log;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.AddressInfo;
