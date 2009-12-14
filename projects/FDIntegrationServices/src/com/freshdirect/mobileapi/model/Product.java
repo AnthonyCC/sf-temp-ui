@@ -1285,9 +1285,8 @@ public class Product {
      * @throws FDException
      */
     public Map<String, String> getKosherRestrictions() throws FDException {
-
-        if (kosherRestrictions == null && isAvailable()) {
-            kosherRestrictions = new HashMap<String, String>();
+        kosherRestrictions = new HashMap<String, String>();
+        if (isAvailable()) {
             FDProduct defaultSku = this.defaultSku.getOriginalSku().getProduct();
 
             if (defaultSku.getKosherInfo().isKosherProduction()) {
