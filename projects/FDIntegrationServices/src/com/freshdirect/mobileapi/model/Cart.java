@@ -703,8 +703,9 @@ public class Cart {
 
         //Delivery Charge 
         if (cartDetail.isDlvPassApplied()) {
-            cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, false, false, false, DeliveryPassUtil.getDlvPassAppliedMessage(user
-                    .getFDSessionUser()), false));
+
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, false, false, false, "Delivery Charge", false, DeliveryPassUtil
+                    .getDlvPassAppliedMessage(user.getFDSessionUser())));
         } else {
             double deliveyCharge = cart.getDeliverySurcharge();
             if (cart.isDeliveryChargeWaived()) {

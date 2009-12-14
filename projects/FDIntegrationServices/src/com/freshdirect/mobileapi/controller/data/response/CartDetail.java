@@ -127,6 +127,21 @@ public class CartDetail {
 
         private String label;
 
+        private String description;
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public SummaryLineCharge(double amount, boolean taxable, boolean waived, boolean discount, String label, boolean displayAmount, String description) {
+            this(amount, taxable, waived, discount, label, displayAmount);
+            this.description = description;
+        }
+
         public SummaryLineCharge(double amount, boolean taxable, boolean waived, boolean discount, String label, boolean displayAmount) {
             this(amount, taxable, waived, discount, label);
             this.displayAmount = displayAmount;
