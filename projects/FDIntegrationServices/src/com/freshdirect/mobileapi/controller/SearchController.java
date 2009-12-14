@@ -90,6 +90,10 @@ public class SearchController extends BaseController {
         if (searchTerm == null) {
             searchTerm = "";
         }
+        
+        if (null != searchTerm) {
+            searchTerm = searchTerm.trim();
+        }
 
         ProductServiceImpl productService = new ProductServiceImpl();
         FilterOptionLabelComparator filterComparator = new FilterOptionLabelComparator();
@@ -156,6 +160,11 @@ public class SearchController extends BaseController {
             throws JsonException {
         String searchTerm = request.getParameter("searchTerm");
         LOG.debug("Prefix received: " + searchTerm);
+        
+        if (null != searchTerm) {
+            searchTerm = searchTerm.trim();
+        }
+        
         ProductServiceImpl productService = new ProductServiceImpl();
         List<String> suggestions = productService.getAutoSuggestions(searchTerm);
 

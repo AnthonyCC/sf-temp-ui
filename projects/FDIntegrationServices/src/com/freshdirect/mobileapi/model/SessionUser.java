@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDException;
@@ -162,7 +163,16 @@ public class SessionUser {
 
         List<FDOrderInfoI> history = (List<FDOrderInfoI>) wrapper.getOrderHistoryInfo();
 
-        return OrderInfo.wrap(history);
+        List<FDOrderInfoI> filteredHistory = new ArrayList<FDOrderInfoI>();
+        
+        //Filtering out Giftcart and Donation
+        for(FDOrderInfoI historyItem : history) {
+            if(!EnumSaleType.GIFTCARD.equals(historyItem.getSaleType()) && !EnumSaleType.DONATION.equals(historyItem.getSaleType())) {
+                filteredHistory.add(historyItem);
+            }
+        }
+        
+        return OrderInfo.wrap(filteredHistory);
     }
 
     /**
