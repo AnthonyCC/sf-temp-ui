@@ -245,6 +245,9 @@ function gcNumberSubmit(){
 				            <fd:ErrorHandler result="<%=result%>" name="card_zero_balance" id="errorMsg">
 				                <%@ include file="/includes/i_error_messages.jspf" %>   
 				            </fd:ErrorHandler>
+				            <fd:ErrorHandler result="<%=result%>" name="technical_difficulty" id="errorMsg">
+				                <%@ include file="/includes/i_error_messages.jspf" %>   
+				            </fd:ErrorHandler>
 							<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table1footer">
 								<tr valign="middle">
 									<td align="center">

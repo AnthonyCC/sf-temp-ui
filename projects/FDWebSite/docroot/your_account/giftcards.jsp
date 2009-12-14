@@ -98,6 +98,9 @@
             <fd:ErrorHandler result="<%=result%>" name="card_zero_balance" id="errorMsg">
                 <%@ include file="/includes/i_error_messages.jspf" %>   
             </fd:ErrorHandler>
+            <fd:ErrorHandler result="<%=result%>" name="technical_difficulty" id="errorMsg">
+			     <%@ include file="/includes/i_error_messages.jspf" %>   
+			</fd:ErrorHandler>            
             
         <form method="post">
 		<table border="0" cellspacing="0" cellpadding="0" width="675">

@@ -137,8 +137,8 @@ public class GiftCardControllerTag extends AbstractControllerTag{
 				}
 			}
 		}catch (FDResourceException e) {
-			actionResult.setError(e.getMessage());
-			throw new JspException(e);
+			actionResult.addError(new ActionError("technical_difficulty", "Unable to process your request due to technical difficulty."));
+			//throw new JspException(e);
 		}
 		return true;
 	}
