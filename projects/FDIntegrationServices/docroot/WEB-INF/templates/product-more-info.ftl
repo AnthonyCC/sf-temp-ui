@@ -78,7 +78,7 @@
 	</#if>		
 		</div>
 <#list moreInfo.skuCodes as skuCode>
-		<#if multiNutrition >
+		<#if multiNutrition && moreInfo.skuNames[skuCode]?has_content>
 		<div class="detail">
 			<h3>${moreInfo.skuNames[skuCode]}</h3>
 		</div>
