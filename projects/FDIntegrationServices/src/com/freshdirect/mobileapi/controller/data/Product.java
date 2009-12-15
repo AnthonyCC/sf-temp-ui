@@ -400,8 +400,10 @@ public class Product extends Message {
         if (product.getHighestDealPercentage() > 0) {
             this.highestDealPercentage = product.getHighestDealPercentage();
         }
-        this.taxable = product.getDefaultProduct().isTaxable();
-        this.depositRequired = product.getDefaultProduct().hasDeposit();
+        if (null != product.getDefaultProduct()) {
+            this.taxable = product.getDefaultProduct().isTaxable();
+            this.depositRequired = product.getDefaultProduct().hasDeposit();
+        }
 
         if (product.hasTerms()) {
             this.productTerms = product.getProductTerms();
