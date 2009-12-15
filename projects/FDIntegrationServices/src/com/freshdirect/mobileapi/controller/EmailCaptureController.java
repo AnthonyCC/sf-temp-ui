@@ -29,18 +29,23 @@ public class EmailCaptureController extends BaseController {
     protected boolean validateUser() {
         return false;
     }
-    
+
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws JsonException, FDException, ServiceException, NoSessionException {
         String emailAddress = request.getParameter(PARAM_EMAIL);
         Message responseMessage = null;
         if (EmailUtil.isValidEmailAddress(emailAddress)) {
-            if (FDCustomerManager.iPhoneCaptureEmail(emailAddress)) {
+            if (EnumIPhoneCaptureType.UNREGISTERED.equals(FDCustomerManager.iPhoneCaptureEmail(emailAddress))) {
+				LOGGER.info("controller: email is unregistered " + emailId);
                 responseMessage = Message.createSuccessMessage("Email address has been submitted successfully.");
+            } else if (EnumIPhoneCaptureType.EXISTING.equals(FDCustomerManager.iPhoneCaptureEmail(emailAddress))) {
+				LOGGER.info("controller:  existing iphone capture email: " + emailId);
+                responseMessage = getErrorMessage(ERR_INVALID_EMAIL,
+                "The email address you entered matches an existing account in our system. Please sign in to start shopping. If you have forgotten your password or need additional assistance, visit our website or call (1-212-796-8002).");
             } else {
-                responseMessage = getErrorMessage(ERR_SYSTEM, ERR_SYSTEM_MESSAGE);
-            }
+				responseMessage = getErrorMessage(ERR_SYSTEM, ERR_SYSTEM_MESSAGE);
+			}
         } else {
             responseMessage = getErrorMessage(ERR_INVALID_EMAIL, "The email address you entered does not appear to be valid.  Maybe you mistyped something.");
         }
