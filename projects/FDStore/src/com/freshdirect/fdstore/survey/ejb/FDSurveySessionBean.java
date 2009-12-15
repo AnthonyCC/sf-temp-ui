@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerEB;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurvey;
@@ -24,8 +23,6 @@ import com.freshdirect.fdstore.survey.FDSurveyConstants;
 import com.freshdirect.fdstore.survey.FDSurveyQuestion;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.survey.SurveyKey;
-import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -174,19 +171,15 @@ public class FDSurveySessionBean extends FDSessionBeanSupport {
             }
         }
 
-        private void surveyStored(FDSurveyResponse survey) throws FinderException, RemoteException {
+        private void surveyStored(FDSurveyResponse survey) throws FinderException, RemoteException, FDResourceException {
             if ("Signup_survey".equals(survey.getName())) {
-                    FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(survey.getIdentity().getFDCustomerPK()));
-                    eb.setProfileAttribute("signup_survey", "YES");
+                getFDCustomerManager().setProfileAttribute(survey.getIdentity(), "signup_survey", "YES", null);
             } else if ("Signup_survey_v2".equals(survey.getName())) {
-                    FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(survey.getIdentity().getFDCustomerPK()));
-                    eb.setProfileAttribute("signup_survey_v2", "FILL");
+                getFDCustomerManager().setProfileAttribute(survey.getIdentity(), "signup_survey_v2", "FILL", null);
             } else if ("fourth_order_survey".equals(survey.getName())) {
-                    FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(survey.getIdentity().getFDCustomerPK()));
-                    eb.setProfileAttribute("fourth_order_survey", "FILL");
+                getFDCustomerManager().setProfileAttribute(survey.getIdentity(), "fourth_order_survey", "FILL", null);
             } else if ("Second Order Survey".equals(survey.getName())) {
-                    FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(survey.getIdentity().getFDCustomerPK()));
-                    eb.setProfileAttribute("second_order_survey", "FILL");
+                getFDCustomerManager().setProfileAttribute(survey.getIdentity(), "second_order_survey", "FILL", null);
             }
         }
 

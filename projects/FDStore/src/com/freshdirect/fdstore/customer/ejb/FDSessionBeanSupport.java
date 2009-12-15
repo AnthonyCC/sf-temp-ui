@@ -124,6 +124,10 @@ public class FDSessionBeanSupport extends SessionBeanSupport {
     protected PaymentManagerHome getPaymentManagerHome() {
         return LOCATOR.getPaymentManagerHome();
     }
+    
+    protected FDCustomerManagerSB getFDCustomerManager() {
+        return LOCATOR.getFDCustomerManagerSessionBean();
+    }
 
     /**
      * @param jndiHomeName
