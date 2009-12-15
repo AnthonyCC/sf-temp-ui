@@ -41,6 +41,14 @@ public class ProductPriceTag extends BodyTagSupport {
 	private static final String quickShopStyleWas = " style=\"font-weight: normal; color: gray;\"";			// normal, light grey
 	private static final String quickShopStyleScale = " style=\"line-height:16px; font-size: 11px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;\"";		// bold, red
 	
+	private static final String groceryStyleRegularOnly = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #555555;\"";			// bold, dark grey
+	private static final String groceryStyleRegularWithScaled = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #555555;\"";	// normal, dark grey
+	private static final String groceryStyleRegularWithWas = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #C94747;\"";		// bold, red
+	private static final String groceryStyleRegularWithBoth = " style=\"line-height:16px; font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #C94747;\"";	// normal, red
+	
+	private static final String groceryStyleWas = " style=\"font-weight: normal; color: gray;\"";			// normal, light grey
+	private static final String groceryStyleScale = " style=\"line-height:16px; font-size: 13px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;\"";		// bold, red
+	
 	private final static Category LOGGER = LoggerFactory.getInstance("ProductPriceTag.java");
 	
 	private ProductImpression impression;
@@ -51,8 +59,12 @@ public class ProductPriceTag extends BodyTagSupport {
 	boolean showWasPrice = true; //show was pricing
 	boolean showScalePricing = true; //show scale pricing
 	boolean quickShop = false; // special font for quick shop
+	boolean grcyProd = false; // special font for grocery product
 	
-	
+	public void setGrcyProd(boolean grcyProd) {
+		this.grcyProd = grcyProd;
+	}
+
 	public void setImpression(ProductImpression impression) {
 		this.impression = impression;
 	}
@@ -153,12 +165,14 @@ public class ProductPriceTag extends BodyTagSupport {
 			// style for the real price depends on what kind of deals we have
 			String styleRegular = "";
 			//LOGGER.debug("styleRegular before : |"+styleRegular+"|");			
-			if ( scaleString != null && !quickShop)
+			if ( scaleString != null && !quickShop && !grcyProd)
 				styleRegular = ( wasString != null ) ? styleRegularWithBoth : styleRegularWithScaled;
-			else if (!quickShop)
+			else if (!quickShop && !grcyProd)
 				styleRegular = ( wasString != null ) ? styleRegularWithWas : styleRegularOnly;
 			else if (scaleString != null && quickShop) 
 				styleRegular = ( wasString != null ) ? quickShopStyleRegularWithBoth : quickShopStyleRegularWithScaled;
+			else if (scaleString != null && grcyProd) 
+				styleRegular = ( wasString != null ) ? groceryStyleRegularWithBoth : groceryStyleRegularWithScaled;
 			else 
 				styleRegular = ( wasString != null ) ? quickShopStyleRegularWithWas : quickShopStyleRegularOnly;
 
@@ -185,7 +199,13 @@ public class ProductPriceTag extends BodyTagSupport {
 							scaleString + 
 							"</div>"
 					);
-				} 
+				}else if(grcyProd) {
+					buf.append(
+							"<div" + groceryStyleScale + ">" +
+							scaleString + 
+							"</div>"
+					);
+				}
 				else {
 					buf.append(
 							"<div" + styleScale + ">" +
@@ -203,6 +223,12 @@ public class ProductPriceTag extends BodyTagSupport {
 						wasString +
 						"</div>"
 					);
+				} else if(grcyProd) {
+					buf.append(
+							"<div" + groceryStyleWas + ">" + 
+							wasString +
+							"</div>"
+						);
 				} else {
 					buf.append(
 							"<div" + styleWas + ">" + 
