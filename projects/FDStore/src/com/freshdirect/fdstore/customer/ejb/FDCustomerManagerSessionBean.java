@@ -124,6 +124,7 @@ import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
@@ -4556,26 +4557,29 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		 * @return
 		 * @throws FDResourceException
 		 */
-		public boolean iPhoneCaptureEmail(String emailId) throws FDResourceException {
+		public EnumIPhoneCaptureType iPhoneCaptureEmail(String emailId) throws FDResourceException {
 
 			if(null == emailId || "".equals(emailId)) {
-				return false;
+				return EnumIPhoneCaptureType.INVALID_EMAIL;
 			}
 
 			try {
 				// Check if email format is correct. @ with . domain
 				if(!EmailUtil.isValidEmailAddress(emailId.trim())) {
-					return false;
+					LOGGER.info("invalid iphone capture email: " + emailId);
+					return EnumIPhoneCaptureType.INVALID_EMAIL;
 				}
 				//	Check if email already exists in customer base
 				FDCustomerEB custEB = getFdCustomerHome().findByUserId(emailId, EnumServiceType.IPHONE);
 				if(custEB != null) {
-					return false;
+					LOGGER.info("existing iphone capture email: " + emailId);
+					return EnumIPhoneCaptureType.EXISTING;
 				}
 
+				LOGGER.info("valid iphone capture email: " + emailId);
 				//  If unknown email, save it in dlv.zonenotification table
 				FDDeliveryManager.getInstance().saveFutureZoneNotification(emailId, "iphone", EnumServiceType.IPHONE);
-
+			
 				//	Send notification email with content managed in CMS.
 				this.doEmail(ErpEmailFactory.getInstance().createIPhoneEmail(emailId));
 			}
@@ -4584,7 +4588,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}catch (FinderException fe) {
 				throw new FDResourceException(fe);
 			}
-			return true; //success
+			return EnumIPhoneCaptureType.UNREGISTERED; //success
 		}
 
 		
