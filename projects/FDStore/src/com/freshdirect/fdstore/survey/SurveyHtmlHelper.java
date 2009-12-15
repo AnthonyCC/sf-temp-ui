@@ -154,10 +154,10 @@ public class SurveyHtmlHelper {
 	private static String getRow(String data) {
 		
 		StringBuffer response=new StringBuffer(400);
-		response.append("<tr><td style=\"padding-bottom: 6px;\">");
+		response.append("<tr><td style=\"padding-bottom: 6px;\">\n");
 		response.append(data);
-		response.append("</td>");
-		response.append("</tr>");
+		response.append("</td>\n");
+		response.append("</tr>\n");
 		return response.toString();
 	}
 
@@ -208,14 +208,15 @@ public class SurveyHtmlHelper {
 						rowStyle=(rowStyle == 0)?1:0;
 					}
 					if (i== ansCount-1 && oddRow) {
-						tmp2.append(getDivTag(getRowStyle(rowStyle), "", ("<nobr>&nbsp;</nobr>")));
+						tmp2.append(getDivTag(getRowStyle(rowStyle), "", "<nobr>&nbsp;</nobr>"));
 					}
 				}
-				response.append(getDivTag("q05_container col49per", "", tmp1
+
+				response.append(getDivTag("q05_container q05_colwfixed", "", tmp1
 						.toString()));
-				response.append(getDivTag("q05_container col50per", "", tmp2
+				response.append(getDivTag("q05_container q05_colwfixed", "", tmp2
 						.toString()));
-				
+
 			} else if(EnumFormDisplayType.GROUPED_RADIO_BUTTON.equals(question.getFormDisplayType())) {
 				return getGroupedRadio(question,previousAnswers);
 			}else if(EnumFormDisplayType.GROUPED_MULTI_SELECTION.equals(question.getFormDisplayType())) {
@@ -230,9 +231,7 @@ public class SurveyHtmlHelper {
 	}
 
 	static String wrapText(String[] data, String style) {
-	    return "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr class=\""+style+"\" style=\"line-height:22px;\">" +
-	    		"<td style=\"vertical-align:top\">"+data[0]+"</td>" +
-	    				"<td style=\"font-size:11px\">"+data[1]+"</td></tr></table>";
+		return "<div class=\""+style+"\" style=\"line-height:22px; width: 100%;\">"+data[0]+"&nbsp;"+data[1]+"</div>";
 	}
 	
 	static String wrapText(String data, boolean nobr) {
@@ -254,14 +253,14 @@ public class SurveyHtmlHelper {
 		List answers=question.getAnswers();
 		FDSurveyAnswer answer=null;
 		//
-		response.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" align=\"center\"><tr>");
+		response.append("\n<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" align=\"center\">\n<tr>\n");
 		//
 		int colCount = 0;
 		for(int i=0;i<answers.size();i++) {
 			answer=(FDSurveyAnswer)answers.get(i);
 			StringBuffer temp=new StringBuffer(200);
 			//temp.append("<div style=\"width: 110px;\" class=\"rb_image\" align=\"center\">");
-			temp.append("<td width=\"16%\" align=\"center\">");
+			temp.append("<td width=\"16%\" align=\"center\">\n");
 			temp.append(getDivTag(getImageTag(answer.getDescription())));
 			if(previousAnswers.contains(answer.getName())) {
 				temp.append(getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName(), "", answer.getName(), true, false, ""));
@@ -273,15 +272,15 @@ public class SurveyHtmlHelper {
 			colCount++;
 			//System.out.println("colCount "+colCount + " i="+i +" answers.size() "+answers.size());
 			if (colCount == 6 && i != answers.size()-1) {
-				temp.append("</tr><tr><td style=\"height:8px;\" colspan=\"6\">&nbsp;</td></tr>");
-				temp.append("<tr>");
+				temp.append("</tr>\n<tr>\n<td style=\"height:8px;\" colspan=\"6\">&nbsp;</td>\n</tr>\n");
+				temp.append("<tr>\n");
 				colCount = 0;
 			}
 			//response.append(getDivTag("q12_container","",temp.toString()));
 			response.append(temp.toString());
 		}
 		//
-		response.append("</tr></table>");
+		response.append("</tr></table>\n");
 		//
 		return response.toString();
 	}
@@ -510,20 +509,20 @@ public class SurveyHtmlHelper {
 
 	private static String getDivTag(String className, String id, String data) {
 		StringBuffer response = new StringBuffer(200);
-		response.append("<div");
+		response.append("\n<div");
 		if (!StringUtil.isEmpty(className)) {
 			response.append(" class=\"").append(className).append("\"");
 		}
 		if (!StringUtil.isEmpty(id)) {
 			response.append(" id=\"").append(id).append("\"");
 		}
-		response.append(">").append(data).append("</div>");
+		response.append(">").append(data).append("</div>\n");
 		return response.toString();
 	}
 	
 	private static String getDivTag(String className, String id, String data, String divStyle) {
 		StringBuffer response = new StringBuffer(200);
-		response.append("<div");
+		response.append("\n<div");
 		if (!StringUtil.isEmpty(className)) {
 			response.append(" class=\"").append(className).append("\"");
 		}
@@ -533,7 +532,7 @@ public class SurveyHtmlHelper {
 		if (!StringUtil.isEmpty(divStyle)) {
 			response.append(" style=\"").append(divStyle).append("\"");
 		}
-		response.append(">").append(data).append("</div>");
+		response.append(">").append(data).append("</div>\n");
 		return response.toString();
 	}
 

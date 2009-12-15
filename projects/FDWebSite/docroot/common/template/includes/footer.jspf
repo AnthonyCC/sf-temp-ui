@@ -6,19 +6,15 @@
 	<tr>
 		<td>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
-			<img src="/media_stat/images/navigation/global_nav/bottom_nav
-			<% 
-				/*
-					Changing to site feature
-					if(FDStoreProperties.isGiftCardEnabled()) { 
-				*/
-				if(user.isGiftCardsEnabled()) {
-			%>
-				_gc
-			<% } else { %>
-				<%= (FDStoreProperties.isWhatsGoodEnabled() ? "_09" : "" )%>
-			<% } %>
-			.gif" width="745" height="21" alt="" border="0" usemap="#bottomlinks" />
+<%
+	if (user.isGiftCardsEnabled()) {
+%>			<img src="/media_stat/images/navigation/global_nav/bottom_nav_gc.gif" width="745" height="21" alt="" border="0" usemap="#bottomlinks" />
+<%
+	} else {
+%>			<img src="/media_stat/images/navigation/global_nav/bottom_nav<%= (FDStoreProperties.isWhatsGoodEnabled() ? "_09" : "" )%>.gif" width="745" height="21" alt="" border="0" usemap="#bottomlinks" />
+<%		
+	}
+%>
 		</td>
 	</tr>
 	<tr>

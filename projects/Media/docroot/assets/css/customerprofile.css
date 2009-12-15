@@ -30,7 +30,10 @@
 	.q04_container input { float: left; }
 	.q04_container div div { float: right; width: 90%; line-height: 22px; }
 
+
+	.answer_container { overflow: hidden; }
 	.q05_container { float: left; margin: 0; line-height: 23px; }
+	.q05_colwfixed { width: 350px;}
 	.q05_col50per { width: 50%; }
 	.q05_col25per { width: 25%; }
 	.q05_col75per { width: 75%; }
