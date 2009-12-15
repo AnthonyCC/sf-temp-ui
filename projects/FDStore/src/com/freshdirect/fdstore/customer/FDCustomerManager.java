@@ -3097,7 +3097,7 @@ public class FDCustomerManager {
 			}		
 		}
 		
-		public static boolean iPhoneCaptureEmail(String emailId) throws FDResourceException {
+		public static EnumIPhoneCaptureType iPhoneCaptureEmail(String emailId) throws FDResourceException {
 			lookupManagerHome();
 			try {
 				FDCustomerManagerSB sb = managerHome.create();

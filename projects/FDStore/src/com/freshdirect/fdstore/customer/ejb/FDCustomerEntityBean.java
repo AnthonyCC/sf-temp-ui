@@ -213,9 +213,14 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 			ps = conn.prepareStatement("SELECT F.ID FROM CUST.CUSTOMER C, CUST.FDCUSTOMER F WHERE C.USER_ID LIKE LOWER(?) AND F.ERP_CUSTOMER_ID = C.ID");
 			ps.setString(1, email);
 			rs = ps.executeQuery();
-			if (!rs.next() && (null == type || !EnumServiceType.IPHONE.equals(type))) {
+			int fetchSize = 0;
+			if(rs.next()) {
+				fetchSize = rs.getFetchSize();
+			}
+			if (fetchSize < 1 && (null == type || !EnumServiceType.IPHONE.equals(type))) {
 				throw new ObjectNotFoundException("Unable to find FDCustomer with email " + email);
-			} else if(!rs.next() && null != type && EnumServiceType.IPHONE.equals(type) ) {
+			} else if(fetchSize < 1 && null != type && EnumServiceType.IPHONE.equals(type) ) {
+				LOGGER.info("Unrecognized customer from IPHONE APP capture email");
 				// this is expected behavior for non-customers visiting iphone app
 				// no need to throw ObjectNotFoundException, just return null to verify customer does not exist
 				return null;
@@ -245,6 +250,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		return ejbFindByUserId(email, null);
 
 	}
+
 
 	public PrimaryKey ejbFindByUserIdAndPasswordRequest(String email, String passReq) throws FinderException {
 		Connection conn = null;

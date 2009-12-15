@@ -59,6 +59,7 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -674,7 +675,7 @@ public interface FDCustomerManagerSB extends EJBObject {
     
     public double getOutStandingBalance(ErpAbstractOrderModel order) throws FDResourceException, RemoteException;
     
-    public boolean iPhoneCaptureEmail(String emailId) throws FDResourceException, RemoteException;
+    public EnumIPhoneCaptureType iPhoneCaptureEmail(String emailId) throws FDResourceException, RemoteException;
 
     public void doEmail(FTLEmailI email) throws RemoteException, FDResourceException;
     
