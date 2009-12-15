@@ -8,7 +8,12 @@ import com.freshdirect.mobileapi.model.ProductSelection;
 public class ProductConfiguration {
 
     private Map<String, String> passback = new HashMap<String, String>();
+    private String passbackString;
 
+    public void setPassback(String passbackString) {
+    	this.passbackString = passbackString;
+    }
+    
     public String getPassback() {
         String passbackString = null;
         if (!passback.isEmpty()) {
@@ -22,6 +27,8 @@ public class ProductConfiguration {
                 passbackBuffer.append(key).append("=").append(passback.get(key));
             }
             passbackString = passbackBuffer.toString();
+        } else {
+        	passbackString = this.passbackString;
         }
         return passbackString;
     }
