@@ -35,6 +35,7 @@ import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
+import com.freshdirect.smartstore.ymal.YmalUtil;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
@@ -109,8 +110,11 @@ public class SmartStore {
             public Object executeUtils(PageContext pageContext) {
                 // we do not use the GenericRecommendationsTag because it does not fit our need
                 final SessionInput input = new SessionInput(user.getFDSessionUser());
-                FDStoreRecommender.initYmalSource(input, user.getFDSessionUser(), pageContext.getRequest());
-                input.setCurrentNode(input.getYmalSource());
+                // FDStoreRecommender.initYmalSource(input, user.getFDSessionUser(), pageContext.getRequest());
+                // input.setCurrentNode(input.getYmalSource());
+                input.setYmalSource(YmalUtil.resolveYmalSource(user.getFDSessionUser(), null, pageContext.getRequest()));
+                input.setCurrentNode(YmalUtil.getSelectedCartLine(user.getFDSessionUser()).lookupProduct());
+                
                 input.setMaxRecommendations(MAX_RECOMMENDATION);
                 Recommendations recs;
                 try {
