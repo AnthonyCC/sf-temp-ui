@@ -29,6 +29,7 @@ import com.freshdirect.mobileapi.controller.data.response.ElectronicCheck;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.tagwrapper.ModifyOrderControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.QuickShopControllerTagWrapper;
+import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class Order {
@@ -176,6 +177,10 @@ public class Order {
                 Product productData = Product.wrap(product.getProductRef().lookupProduct(), user.getFDSessionUser().getUser());
                 Sku sku = productData.getSkyByCode(product.getSkuCode());
 
+                if (productData.hasTerms()) {
+                    productConfiguration.addPassbackParam(RequestParamName.REQ_PARAM_AGREE_TO_TERMS, "yes");
+                }
+                
                 if (sku == null) {
                     LOG.warn("sku=" + product.getSkuCode() + "::product desc=" + product.getDescription() + " was null");
                     if (product.getSkuCode() != null) {
