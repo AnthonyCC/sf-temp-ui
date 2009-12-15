@@ -580,20 +580,20 @@ if(productCode!=null && prodCatId !=null ) {
 				<table>
 					<tr>
 						<td>
-							<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="true" showRegularPrice="true" showScalePricing="false" showWasPrice="false" showDescription="false"/>
+							<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="true" showScalePricing="false" showWasPrice="false" showDescription="false"/>
 						</td>
 						<td>
-							<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="true" showRegularPrice="false" showScalePricing="false" showWasPrice="true" showDescription="false"/>
+							<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="false" showScalePricing="false" showWasPrice="true" showDescription="false"/>
 						</td>
 					</tr>
 				</table>
-						<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false"/>
+						<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showRegularPrice="false" showScalePricing="true" showWasPrice="false" showDescription="false"/>
 			</div>
 <%
 	} else {
 %>    
 			<div>
-					<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="true" showDescription="false"/>
+					<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" grcyProd="true" showDescription="false"/>
 			<br></div>
 <%
 	}
