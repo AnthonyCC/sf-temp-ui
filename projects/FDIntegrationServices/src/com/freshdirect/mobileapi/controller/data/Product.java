@@ -285,7 +285,7 @@ public class Product extends Message {
         if (LayoutType.WINE.equals(this.layoutType)) {
             detailImg = product.getImage(ImageType.WINE_ALT);
             if (detailImg == null) {
-                LOGGER.warn("AlternateProductImag for wine was null. sku=" + getSku().getCode());
+                LOGGER.warn("AlternateProductImag for wine was null.");
                 detailImg = product.getImage(ImageType.DETAIL);
             }
         } else {

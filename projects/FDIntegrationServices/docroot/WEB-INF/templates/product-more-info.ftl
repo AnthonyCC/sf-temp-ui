@@ -8,7 +8,7 @@
 
 	<div id="main">
 		<div id="header">
-			<img src="${moreInfo.productImage.source}" class="productImage"/>
+			<img src="${moreInfo.productImage.source}" class="productImage" width="${moreInfo.productImage.width}" height="${moreInfo.productImage.height}" />
 			<h1>${product.productTitle}</h1>
 
 <#if product.layout != "wine" >

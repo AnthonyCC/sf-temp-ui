@@ -267,7 +267,11 @@ public class SessionUser {
             try {
                 Product productData = Product.wrap(product.getProductRef().lookupProduct(), this.sessionUser.getUser());
                 Sku sku = productData.getSkyByCode(product.getSkuCode());
-                productConfiguration.populateProductWithModel(productData, com.freshdirect.mobileapi.controller.data.Sku.wrap(sku));
+                if(sku != null) {
+                    productConfiguration.populateProductWithModel(productData, com.freshdirect.mobileapi.controller.data.Sku.wrap(sku));
+                } else {
+                    productConfiguration.populateProductWithModel(productData, product.getSkuCode());
+                }
             } catch (ModelException e) {
                 throw new FDResourceException(e);
             }
