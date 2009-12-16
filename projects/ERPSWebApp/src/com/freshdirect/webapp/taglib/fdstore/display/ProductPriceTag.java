@@ -173,6 +173,8 @@ public class ProductPriceTag extends BodyTagSupport {
 				styleRegular = ( wasString != null ) ? quickShopStyleRegularWithBoth : quickShopStyleRegularWithScaled;
 			else if (scaleString != null && grcyProd) 
 				styleRegular = ( wasString != null ) ? groceryStyleRegularWithBoth : groceryStyleRegularWithScaled;
+			else if (scaleString == null && grcyProd) 
+				styleRegular = ( wasString != null ) ? groceryStyleRegularWithWas : groceryStyleRegularOnly;
 			else 
 				styleRegular = ( wasString != null ) ? quickShopStyleRegularWithWas : quickShopStyleRegularOnly;
 
