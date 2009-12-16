@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.model.tagwrapper;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
@@ -10,6 +11,10 @@ public abstract class GetterTagWrapper extends TagWrapper {
 
     public GetterTagWrapper(AbstractGetterTag wrapTarget) {
         super(wrapTarget);
+    }
+
+    public GetterTagWrapper(AbstractGetterTag wrapTarget, FDUserI user) {
+        super(wrapTarget, user);
     }
 
     public GetterTagWrapper(AbstractGetterTag wrapTarget, SessionUser user) {

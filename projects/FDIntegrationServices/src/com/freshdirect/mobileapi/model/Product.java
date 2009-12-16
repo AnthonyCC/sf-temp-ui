@@ -1290,10 +1290,8 @@ public class Product {
             FDProduct defaultSku = this.defaultSku.getOriginalSku().getProduct();
 
             if (defaultSku.getKosherInfo().isKosherProduction()) {
-                GetDlvRestrictionsTag target = new GetDlvRestrictionsTag();
-                target.setReason(EnumDlvRestrictionReason.KOSHER);
-                GetDlvRestrictionsTagWrapper tagWrapper = new GetDlvRestrictionsTagWrapper(target);
-                List<RestrictionI> restrictions = tagWrapper.getRestrictions();
+                GetDlvRestrictionsTagWrapper tagWrapper = new GetDlvRestrictionsTagWrapper(user);
+                List<RestrictionI> restrictions = tagWrapper.getRestrictions(EnumDlvRestrictionReason.KOSHER);
                 for (RestrictionI restriction : restrictions) {
                     kosherRestrictions.put(restriction.getName(), restriction.getDisplayDate());
                 }
