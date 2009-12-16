@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -113,7 +114,10 @@ public class SmartStore {
                 // FDStoreRecommender.initYmalSource(input, user.getFDSessionUser(), pageContext.getRequest());
                 // input.setCurrentNode(input.getYmalSource());
                 input.setYmalSource(YmalUtil.resolveYmalSource(user.getFDSessionUser(), null, pageContext.getRequest()));
-                input.setCurrentNode(YmalUtil.getSelectedCartLine(user.getFDSessionUser()).lookupProduct());
+                FDCartLineModel selectedCartLine = YmalUtil.getSelectedCartLine(user.getFDSessionUser());
+                if (selectedCartLine != null) {
+                	input.setCurrentNode(selectedCartLine.lookupProduct());
+                }
                 
                 input.setMaxRecommendations(MAX_RECOMMENDATION);
                 Recommendations recs;
