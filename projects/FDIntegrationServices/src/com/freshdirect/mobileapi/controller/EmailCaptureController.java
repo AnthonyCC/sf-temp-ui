@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -37,10 +38,10 @@ public class EmailCaptureController extends BaseController {
         Message responseMessage = null;
         if (EmailUtil.isValidEmailAddress(emailAddress)) {
             if (EnumIPhoneCaptureType.UNREGISTERED.equals(FDCustomerManager.iPhoneCaptureEmail(emailAddress))) {
-				LOGGER.info("controller: email is unregistered " + emailId);
+				LOGGER.info("controller: email is unregistered " + emailAddress);
                 responseMessage = Message.createSuccessMessage("Email address has been submitted successfully.");
             } else if (EnumIPhoneCaptureType.EXISTING.equals(FDCustomerManager.iPhoneCaptureEmail(emailAddress))) {
-				LOGGER.info("controller:  existing iphone capture email: " + emailId);
+				LOGGER.info("controller:  existing iphone capture email: " + emailAddress);
                 responseMessage = getErrorMessage(ERR_INVALID_EMAIL,
                 "The email address you entered matches an existing account in our system. Please sign in to start shopping. If you have forgotten your password or need additional assistance, visit our website or call (1-212-796-8002).");
             } else {
