@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 
@@ -32,7 +33,11 @@ public class CustomerCreatedList {
      */
     public static List<CustomerCreatedList> wrap(List<FDCustomerCreatedList> lists) {
         List<CustomerCreatedList> wrappedItems = new ArrayList<CustomerCreatedList>();
-        for (FDCustomerCreatedList list : lists) {
+        
+        TreeSet<FDCustomerCreatedList> sortedLists = new TreeSet<FDCustomerCreatedList>(FDCustomerCreatedList.getModificationDateComparator());
+        sortedLists.addAll(lists);
+
+        for (FDCustomerCreatedList list : sortedLists) {
             wrappedItems.add(wrap(list));
         }
         return wrappedItems;
