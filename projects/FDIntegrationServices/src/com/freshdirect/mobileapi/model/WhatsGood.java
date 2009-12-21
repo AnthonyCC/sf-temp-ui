@@ -1,21 +1,14 @@
 package com.freshdirect.mobileapi.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.CategoryRef;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentRef;
-import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -222,11 +215,13 @@ public class WhatsGood {
         String cacheKey = Product.class.toString() + "getProductListFromContentNodeModel" + contentNodeId;
 
         try {
+            LOG.debug("cacheAdmin.getFromCache" + contentNodeId);
             result = (List<Product>) cacheAdmin.getFromCache(cacheKey, REFRESH_PERIOD);
         } catch (NeedsRefreshException nre) {
             try {
                 LOG.debug("Refreshing product list from CMS to cache with key" + cacheKey);
                 ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(contentNodeId);
+                LOG.debug("ContentFactory.getInstance().getContentNode(contentNodeId)");
                 ItemGrabberTagWrapper tagWrapper = new ItemGrabberTagWrapper(user);
                 tagWrapper.setId("list");
 
@@ -236,6 +231,7 @@ public class WhatsGood {
                     result = getPeakProduceProductList(user);
                 } else {
                     List contents = tagWrapper.getProducts(currentFolder);
+                    LOG.debug("tagWrapper.getProducts : contents");
 
                     /*
                      * DUP: FDWebSite/docroot/departments/whatsgood/generic_row.jspf
@@ -266,6 +262,11 @@ public class WhatsGood {
                 }
                 if (result.size() > 0) {
                     cacheAdmin.putInCache(cacheKey, result);
+                } else {
+                    if(null != nre.getCacheContent()) {
+                        result = (List<Product>) nre.getCacheContent();
+                    }
+                    cacheAdmin.cancelUpdate(cacheKey);
                 }
             } catch (Throwable ex) {
                 LOG.error("Throwable caught at cache update", ex);
