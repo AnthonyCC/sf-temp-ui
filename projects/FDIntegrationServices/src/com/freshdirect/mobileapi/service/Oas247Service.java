@@ -1,14 +1,13 @@
 package com.freshdirect.mobileapi.service;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Category;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -18,16 +17,19 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.framework.util.QueryStringBuilder;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.util.GeneralCacheAdministratorFactory;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
+/**
+ * Oas service implementation. Retrieves content from configured 24/7 OAS.
+ * 
+ * @author rsung
+ *
+ */
 public class Oas247Service implements OasService {
-
-    private static final int REFRESH_PERIOD = 300;
 
     private static Category LOG = LoggerFactory.getInstance(Oas247Service.class);
 
@@ -42,10 +44,17 @@ public class Oas247Service implements OasService {
 
     private String queryString = "";
 
+    private static HttpClient client = new HttpClient();
+
+    static {
+        //Multi Threaded connection manager
+        MultiThreadedHttpConnectionManager mgr = new MultiThreadedHttpConnectionManager();
+        mgr.setMaxTotalConnections(1000);
+        client = new HttpClient(mgr);
+    }
+
     @Override
     public Map<String, Object> getMessages() throws ServiceException {
-        HttpClient client = new HttpClient();
-
         //This was declared static at first but added it inline to that it be refreshed on prop file update
         String server = FDStoreProperties.getAdServerUrl();
         if ((server != null) && (!server.toLowerCase().startsWith("http"))) {
@@ -57,7 +66,7 @@ public class Oas247Service implements OasService {
         String cacheKey = fullpath;
         Map<String, Object> messages = null;
         try {
-            messages = (Map<String, Object>) cacheAdmin.getFromCache(cacheKey, REFRESH_PERIOD);
+            messages = (Map<String, Object>) cacheAdmin.getFromCache(cacheKey, MobileApiProperties.getOasCacheTimeout());
         } catch (NeedsRefreshException nre) {
 
             try {
@@ -78,6 +87,9 @@ public class Oas247Service implements OasService {
                 if (null == messages) {
                     throw new ServiceException(ex.getMessage(), ex);
                 }
+            } finally {
+                // Release the connection.
+                method.releaseConnection();
             }
         }
 

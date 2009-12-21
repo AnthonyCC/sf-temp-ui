@@ -39,6 +39,8 @@ public class MobileApiProperties {
     private final static String PROP_ALCOHOL_AGE_WARNING = "mobileapi.mediapath.alcohol.agewarning";
     private final static String PROP_ALCOHOL_HEALTH_WARNING = "mobileapi.mediapath.alcohol.healthwarning";
 
+    private final static String PROP_OAS_CACHE_TIMEOUT = "mobileapi.oas.timeout";
+
     public final static String UPGRADE = "UPGRADE";
 
     public final static String INCOMPATIBLE = "INCOMPATIBLE";
@@ -56,6 +58,7 @@ public class MobileApiProperties {
         defaults.put(PROP_MEDIA_PATH, "http://www.freshdirect.com");
         defaults.put(PROP_PREV_ORDER_LIST_LIMIT, "10");
         defaults.put(PROP_OAS_PROTOCOL, "http");
+        defaults.put(PROP_OAS_CACHE_TIMEOUT,60);
         refresh();
     }
 
@@ -116,6 +119,10 @@ public class MobileApiProperties {
 
     public static int getPreviousOrderListLimit() {
         return getInt(PROP_PREV_ORDER_LIST_LIMIT);
+    }
+
+    public static int getOasCacheTimeout() {
+        return getInt(PROP_OAS_CACHE_TIMEOUT);
     }
 
     public static String getOasCommunicationProtocol() {
