@@ -100,9 +100,9 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 				<%-- END PROMO 1 --%>
 	<% if (showAltHome || location2Media) { %>
 			<tr> 
-				<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" vspace="0"></td>
-    				<td height="5" style="border-bottom: solid 1px #999966;"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="204" height="1" vspace="0"></td>
-   			 	<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" vspace="0"></td>
+				<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" vspace="0"></td>
+    				<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="204" height="1" vspace="0"></td>
+   			 	<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" vspace="0"></td>
 		    	</tr>
 			<tr> 
 				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" vspace="0"></td>
@@ -128,9 +128,9 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 				</td>
 			</tr>
   			<tr> 
-				<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" vspace="0"></td>
-    				<td height="5" style="border-bottom: solid 1px #999966;"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="204" height="1" vspace="0"></td>
-   			 	<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" vspace="0"></td>
+				<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" vspace="0"></td>
+    				<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="204" height="1" vspace="0"></td>
+   			 	<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" vspace="0"></td>
 		    	</tr>
 			<tr> 
 				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" vspace="0"></td>
@@ -156,9 +156,9 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 				</td>
 			</tr>
 			<tr> 
-				<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" vspace="0"></td>
-				<td height="5" style="border-bottom: solid 1px #999966;"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="204" height="1" vspace="0"></td>
-				<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" vspace="0"></td>
+				<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" vspace="0"></td>
+				<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="204" height="1" vspace="0"></td>
+				<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" vspace="0"></td>
 		    	</tr>
 			
 		</table>
@@ -346,9 +346,9 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 				</td>
 			</tr>
   			<tr> 
-				<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" vspace="0"></td>
-    				<td height="5" style="border-bottom: solid 1px #999966;"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="512" height="1" vspace="0"></td>
-   			 	<td height="5"><img src="http://www.freshdirect.com/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" vspace="0"></td>
+				<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" vspace="0"></td>
+    				<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="512" height="1" vspace="0"></td>
+   			 	<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" vspace="0"></td>
 		  	</tr>
 		</table>
 	<% } %>
