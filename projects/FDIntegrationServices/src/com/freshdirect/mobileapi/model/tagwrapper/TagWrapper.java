@@ -25,6 +25,10 @@ public abstract class TagWrapper extends HttpContextWrapper {
     protected FDUserI getUser() {
         return (FDUserI) this.pageContext.getSession().getAttribute(SessionName.USER);
     }
+    
+    protected Object getPageContextAttribute(String value) {
+        return pageContext.getAttribute(value);
+    }
 
     public TagWrapper(TagSupport wrapTarget, FDUserI user) {
         this.wrapTarget = wrapTarget;

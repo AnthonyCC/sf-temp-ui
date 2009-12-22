@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -12,13 +13,15 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
-import com.freshdirect.fdstore.content.util.SortStrategyElement;
+import com.freshdirect.framework.webapp.ActionError;
+import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.data.WhatsGoodCategory;
 import com.freshdirect.mobileapi.model.tagwrapper.GetDealsSKUTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.GetPeakProduceTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
+import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
 import com.freshdirect.mobileapi.util.GeneralCacheAdministratorFactory;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
@@ -101,8 +104,8 @@ public class WhatsGood {
                 categories.add(new WhatsGoodCategory(categoryId, category.getFullName(), "/media/mobile/iphone/whats_good/whats_good_"
                         + categoryId + ".png"));
             } else if ("wg_deals".equals(categoryId)) {
-                categories.add(new WhatsGoodCategory(categoryId, "Brand-Name Deals", "/media/mobile/iphone/whats_good/whats_good_" + categoryId
-                        + ".png"));
+                categories.add(new WhatsGoodCategory(categoryId, "Brand-Name Deals", "/media/mobile/iphone/whats_good/whats_good_"
+                        + categoryId + ".png"));
             }
         }
 
@@ -211,7 +214,6 @@ public class WhatsGood {
 
     public static List<Product> getProducts(String contentNodeId, SessionUser user) {
         List<Product> result = new ArrayList<Product>();
-
         String cacheKey = Product.class.toString() + "getProductListFromContentNodeModel" + contentNodeId;
 
         try {
@@ -219,35 +221,45 @@ public class WhatsGood {
             result = (List<Product>) cacheAdmin.getFromCache(cacheKey, REFRESH_PERIOD);
         } catch (NeedsRefreshException nre) {
             try {
+                List contents = new ArrayList();
                 LOG.debug("Refreshing product list from CMS to cache with key" + cacheKey);
-                ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(contentNodeId);
-                LOG.debug("ContentFactory.getInstance().getContentNode(contentNodeId)");
-                ItemGrabberTagWrapper tagWrapper = new ItemGrabberTagWrapper(user);
-                tagWrapper.setId("list");
+                /*
+                 * DUP: FDWebSite/docroot/common/template/includes/catLayoutManager.jspf
+                 * LAST UPDATED ON: 12/22/2009
+                 * LAST UPDATED WITH SVN#: 4379
+                 * WHY: The following logic was duplicate because it was specified in a JSP file.
+                 * WHAT: The duplicated code determines proper layout manager for given content folder 
+                 * and retrieves products under that folder.
+                 */
 
                 if ("wg_deals".equals(contentNodeId) && (null == ContentFactory.getInstance().getContentNode(contentNodeId))) {
                     result = getBrandNameDealsProductList(user);
                 } else if ("wgd_produce".equals(contentNodeId) && (null == ContentFactory.getInstance().getContentNode(contentNodeId))) {
                     result = getPeakProduceProductList(user);
                 } else {
-                    List contents = tagWrapper.getProducts(currentFolder);
-                    LOG.debug("tagWrapper.getProducts : contents");
+                    ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(contentNodeId);
+                    LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
+                    Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
 
-                    /*
-                     * DUP: FDWebSite/docroot/departments/whatsgood/generic_row.jspf
-                     * LAST UPDATED ON: 12/10/2009
-                     * LAST UPDATED WITH SVN#: 4266
-                     * WHY: The following logic was duplicate because it was specified in a JSP file.
-                     * WHAT: The duplicated code sorting what's good products
-                     */
-                    ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
-                    Settings layoutSettings = new Settings();
-                    layoutSettings.setGrabberDepth(0);
-                    layoutSettings.setIgnoreDuplicateProducts(true);
-                    layoutSettings.setIgnoreShowChildren(false);
-                    layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
-                    layoutSettings.setReturnHiddenFolders(false);
-                    sortTagWrapper.sort(contents, layoutSettings.getSortStrategy());
+                    //We have layout manager
+                    if (layoutManagerSetting != null) {
+                        ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user);
+                        contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
+
+                        ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
+                        sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
+
+                    } else {
+                        //Error happened. It's a internal error so don't expose to user. just log and return empty list
+                        ActionResult layoutResult = (ActionResult) layoutManagerTagWrapper.getResult();
+                        if (layoutResult.isFailure()) {
+                            Collection<ActionError> errors = layoutResult.getErrors();
+                            for (ActionError error : errors) {
+                                LOG.error("Error while trying to retrieve whats good product: ec=" + error.getType() + "::desc="
+                                        + error.getDescription());
+                            }
+                        }
+                    }
 
                     for (Object content : contents) {
                         if (content instanceof ProductModel) {
@@ -263,16 +275,16 @@ public class WhatsGood {
                 if (result.size() > 0) {
                     cacheAdmin.putInCache(cacheKey, result);
                 } else {
-                    if(null != nre.getCacheContent()) {
+                    if (null != nre.getCacheContent()) {
                         result = (List<Product>) nre.getCacheContent();
                     }
                     cacheAdmin.cancelUpdate(cacheKey);
                 }
             } catch (Throwable ex) {
+                cacheAdmin.cancelUpdate(cacheKey);
                 LOG.error("Throwable caught at cache update", ex);
                 result = (List<Product>) nre.getCacheContent();
                 LOG.debug("Cancelling cache update. Exception encountered.");
-                cacheAdmin.cancelUpdate(cacheKey);
             }
         }
 

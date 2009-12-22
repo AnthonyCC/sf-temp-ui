@@ -136,6 +136,11 @@ public interface RequestParamName {
     //Cancel Order
     public static final String REQ_PARAM_ALLOW_RESUBMIT_ORDER = "allowResubmitOrder";
 
+    //What's Good
+    public static final String REQ_PARAM_SORTBY = "sortBy";
+    public static final String REQ_PARAM_GROCERY_VIRTUAL = "groceryVirtual";
+    public static final String REQ_PARAM_SORT_DESCENDING = "sortDescending";
+    
     public static final String REQ_PARAM_FD_ACTION = "fdAction";
 
     public static final String REQ_PARAM_QUICK_CART = "quickCart";

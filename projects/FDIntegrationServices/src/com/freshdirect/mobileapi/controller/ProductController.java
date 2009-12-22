@@ -82,14 +82,6 @@ public class ProductController extends BaseController {
                 model = getPrice(model, request, response, user);
             } else if (ACKNOWLEDGE_HEALTH_WARNING.equals(action)) {
                 model = getAcknowledgeHealthWarning(model, request, response, user);
-                //            } else if (WHATS_GOOD_PRESIDEN_PICKS_ACTION.equals(action)) {
-                //                model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.PRESIDEN_PICKS);
-                //            } else if (WHATS_GOOD_DEALS_ACTION.equals(action)) {
-                //                model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.BRAND_NAME_DEALS);
-                //            } else if (WHATS_GOOD_BUTCHERS_ACTION.equals(action)) {
-                //                model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.BUTCHERS_BLOCK);
-                //            } else if (WHATS_GOOD_PRODUCE_ACTION.equals(action)) {
-                //                model = getWhatsGoodProductList(model, request, response, user, WhatsGoodType.PEAK_PRODUCE);
             } else if (GET_WHATS_GOOD_CATEGORIES_ACTION.equals(action)) {
                 model = getWhatsGoodCategories(model, request, response, user);
             } else if (GET_WHATS_GOOD_CATEGORY_PRODUCTS_ACTION.equals(action)) {
