@@ -138,28 +138,35 @@ public class CheckoutController extends BaseController {
         boolean valid = true;
         Message responseMessage = new Message();
 
-        if (!isCheckoutAuthenticated(request)) {
-            if (loginRequest == null) {
-                valid = false;
-                responseMessage = getErrorMessage(ERR_CHECKOUT_AUTHENTICATION_REQUIRED, "Authentication required for checkout");
-            } else {
-                String username = loginRequest.getUsername();
-                String password = loginRequest.getPassword();
-                if (!User.authenticate(username, password)) {
+        if ((user.getPaymentMethods() == null) || (user.getPaymentMethods().size() == 0)) {
+            responseMessage = getErrorMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
+            valid = false;
+        }
+
+        if (valid) {
+            if (!isCheckoutAuthenticated(request)) {
+                if (loginRequest == null) {
                     valid = false;
-                    responseMessage = getErrorMessage(ERR_AUTHENTICATION, "Invalid username and/or password");
+                    responseMessage = getErrorMessage(ERR_CHECKOUT_AUTHENTICATION_REQUIRED, "Authentication required for checkout");
                 } else {
-                    setCheckoutAuthenticated(request);
+                    String username = loginRequest.getUsername();
+                    String password = loginRequest.getPassword();
+                    if (!User.authenticate(username, password)) {
+                        valid = false;
+                        responseMessage = getErrorMessage(ERR_AUTHENTICATION, "Invalid username and/or password");
+                    } else {
+                        setCheckoutAuthenticated(request);
+                    }
                 }
             }
         }
 
-        if (valid) {
-            if ((user.getPaymentMethods() == null) || (user.getPaymentMethods().size() == 0)) {
-                responseMessage = getErrorMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
-                valid = false;
-            }
-        }
+        //        if (valid) {
+        //            if ((user.getPaymentMethods() == null) || (user.getPaymentMethods().size() == 0)) {
+        //                responseMessage = getErrorMessage(ERR_NO_PAYMENT_METHOD, ERR_NO_PAYMENT_METHOD_MSG);
+        //                valid = false;
+        //            }
+        //        }
         setResponseMessage(model, responseMessage, user);
         return valid;
     }
