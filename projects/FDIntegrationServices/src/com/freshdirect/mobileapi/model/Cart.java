@@ -924,4 +924,9 @@ public class Cart {
     public boolean isAgeVerified() {
         return ((FDCartModel) this.cart).isAgeVerified();
     }
+    
+    public boolean isDeliveryChargeWaived() {
+        return cart.isDeliveryChargeWaived();
+    }
+    
 }

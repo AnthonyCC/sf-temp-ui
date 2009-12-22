@@ -42,7 +42,12 @@ public class CheckoutHeader {
 
     public void setHeader(Cart cart) {
         this.containsAlcohol = cart.containsAlcohol();
-        this.deliverySurcharge = cart.getDeliverySurcharge();
+        if(cart.isDeliveryChargeWaived()) {
+            //If delivery charge waived, set delivery fee to 'zero'
+            this.deliverySurcharge = 0;
+        } else {
+            this.deliverySurcharge = cart.getDeliverySurcharge();
+        }
         this.subTotal = cart.getSubTotal();
         this.total = cart.getTotal();
     }
