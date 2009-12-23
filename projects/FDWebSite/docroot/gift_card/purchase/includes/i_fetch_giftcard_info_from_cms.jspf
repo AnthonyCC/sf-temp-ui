@@ -1,5 +1,6 @@
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='java.net.URLEncoder' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%
@@ -66,11 +67,22 @@
 			if (gcList !=null) {
 				for(int i=0;i<gcList.size();i++) {
 					DomainValue gcType=(DomainValue)gcList.get(i);
+					/*
+					 *	Tested against chars:
+					 *		!"#$%&'()*+,-./0123456789:;<=>?@
+					 *		ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`
+					 *		abcdefghijklmnopqrstuvwxyz{|}~‘’
+					 *		¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿À
+					 *		ÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßà
+					 *		áâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ 
+					 *
+					 *	Backslash still escapes (fixable?)
+					 */
 					%>
 					cardArr[<%=i%>]=Array(
 						<%=i%>,						// fdCard.index
 						'<%= gcType.getID() %>',	// fdCard.id
-						'<%= gcType.getLabel() %>',	// fdCard.displayName
+						URLDecode('<%= URLEncoder.encode(gcType.getLabel()) %>'),	// fdCard.displayName
 						true						// fdCard.preLoad
 					);
 					<%

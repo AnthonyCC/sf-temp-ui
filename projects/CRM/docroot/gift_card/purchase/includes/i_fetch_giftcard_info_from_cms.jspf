@@ -1,5 +1,6 @@
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='java.net.URLEncoder' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%
@@ -70,7 +71,7 @@
 					cardArr[<%=i%>]=Array(
 						<%=i%>,						// fdCard.index
 						'<%= gcType.getID() %>',	// fdCard.id
-						'<%= gcType.getLabel() %>',	// fdCard.displayName
+						URLDecode('<%= URLEncoder.encode(gcType.getLabel()) %>'),	// fdCard.displayName
 						true						// fdCard.preLoad
 					);
 					<%

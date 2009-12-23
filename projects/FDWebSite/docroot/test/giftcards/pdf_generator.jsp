@@ -6,6 +6,7 @@
 <%@ page import="org.xhtmlrenderer.pdf.ITextRenderer" %>
 <%@ page import="com.lowagie.text.*" %>
 <%@ page import="com.freshdirect.webapp.util.MediaUtils" %>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ page import='java.util.Random' %><%
 
 	/*
@@ -52,19 +53,35 @@
 			// using an FTL requires it to pass through MediaUtils.render first (for FTL tags)
 
 			//we would NOT want to just pass through the form values in prod
+			
+			String gcBaseUrl = FDStoreProperties.getMediaPath();
 
-			String gcBaseUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
+			//String gcBaseUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
 
-			String gcId = request.getParameter("gcTemplateId");				// Gift Card ID (domain value ID), used in paths
-			String gcAmount = request.getParameter("fldAltAmount");		// Gift Card Amount
-			String gcRedempCode = request.getParameter("gcRedempCode");	// Gift Card Redemption Code (fake in email preview)
-			String gcFor = request.getParameter("gcRecipientName");			// Gift Card "for"
-			String gcFrom = request.getParameter("gcBuyerName");			// Gift Card "from"
-			String gcMessage = request.getParameter("fldMessage");	// Gift Card "personal message"
-			String gcIsPDF = "true";	// signal to ftl that we're making a PDF
+			String gcId = request.getParameter("gcTemplateId");           // Gift Card ID (domain value ID), used in paths
+			String gcAmount = request.getParameter("fldAltAmount");       // Gift Card Amount
+			String gcRedempCode = request.getParameter("gcRedempCode");   // Gift Card Redemption Code (fake in email preview)
+			String gcFor = request.getParameter("gcRecipientName");       // Gift Card "for"
+			String gcFrom = request.getParameter("gcBuyerName");          // Gift Card "from"
+			String gcMessage = request.getParameter("fldMessage");        // Gift Card "personal message"
+			String gcIsPDF = "true";                                      // signal to ftl that we're making a PDF
 
 			/* do some validation / limitation */
 				%><%@ include file="gc_validation.jspf" %><%
+
+				/* prevent opening and closing CDATA tags in string */
+				gcFor = gcFor.replaceAll("<!\\[CDATA\\[", "<! [CDATA[").replaceAll("]]>", "]] >");
+				gcFrom = gcFrom.replaceAll("<!\\[CDATA\\[", "<! [CDATA[").replaceAll("]]>", "]] >");
+				gcMessage = gcMessage.replaceAll("<!\\[CDATA\\[", "<! [CDATA[").replaceAll("]]>", "]] >");
+				
+				/*
+				 *	fix for '&' in a xhtml file
+				 * 	escape data in CDATA tags for xml
+				 */
+				gcFor = "<![CDATA[" + gcFor + "]]>";
+				gcFrom = "<![CDATA[" + gcFrom + "]]>";
+				gcMessage = "<![CDATA[" + gcMessage + "]]>";
+
 			/* end validation */
 
 			//for testing, we'll use a fallback ftl

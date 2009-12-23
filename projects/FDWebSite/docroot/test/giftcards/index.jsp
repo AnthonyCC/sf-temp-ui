@@ -1,5 +1,6 @@
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='java.net.URLEncoder' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -96,7 +97,7 @@
 					cardArr[<%=i%>]=Array(
 										<%=i%>,						// fdCard.index
 										'<%= gcType.getID() %>',	// fdCard.id
-										'<%= gcType.getLabel() %>',	// fdCard.displayName
+										URLDecode('<%= URLEncoder.encode(gcType.getLabel()) %>'),	// fdCard.displayName
 										true						// fdCard.preLoad
 									);
 						<%
@@ -138,22 +139,16 @@
 			//test manually changing selected card
 				if (i==0) {
 					window[testArray[i]].chooseInitialCard(1);
-					//setting greater than available cards
-					//window[testArray[i]].chooseInitialCard(99);
 				}
 				if (i==1) {
 					window[testArray[i]].chooseInitialCard(1);
-					//setting greater than available cards
-					//window[testArray[i]].chooseInitialCard(99);
 				}
 				if (i==2) {
 					window[testArray[i]].chooseInitialCard(1);
-					//setting greater than available cards
-					//window[testArray[i]].chooseInitialCard(5);
 				}
 				if (i==3) {
 					//setting greater than available cards
-					window[testArray[i]].chooseInitialCard(99);
+					window[testArray[i]].chooseInitialCard(<%=(gcList != null && gcList.size()>0)?gcList.size()+10:0%>);
 				}
 
 				window[testArray[i]].updateDisplay();
@@ -273,7 +268,7 @@ Gift Card with select (Choosing second card)
 Gift Card with carousel (Choosing second card)
 <hr />
 <div id="containerTest3" class="container"></div>
-Gift Card alone (Choosing a card outside of available [99 of <%if (gcList != null && gcList.size()>0) { %><%=gcList.size()%><%}else{%>null<%}%>])
+Gift Card alone (Choosing a card outside of available [<%if (gcList != null && gcList.size()>0) { %><%= gcList.size()+10 %><%}%> of <%if (gcList != null && gcList.size()>0) { %><%=gcList.size()%><%}else{%>null<%}%>])
 <hr />
 
 <hr />

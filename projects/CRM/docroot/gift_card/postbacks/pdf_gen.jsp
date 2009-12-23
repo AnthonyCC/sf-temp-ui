@@ -40,18 +40,32 @@
                 String gcFrom = "";			// Gift Card "from"
                 String gcMessage = "";		// Gift Card "personal message"
             if(dlvInfo != null){
-                gcId = dlvInfo.getRecepientModel().getTemplateId();						// Gift Card ID (domain value ID), used in paths
-                gcAmount = String.valueOf(dlvInfo.getRecepientModel().getAmount());		// Gift Card Amount
-                gcRedempCode = dlvInfo.getGivexNum();									// Gift Card Redemption Code (fake in email preview)
-                gcFor = dlvInfo.getRecepientModel().getRecipientName();					// Gift Card "for"
-                gcFrom = dlvInfo.getRecepientModel().getSenderName();					// Gift Card "from"
-                gcMessage = dlvInfo.getRecepientModel().getPersonalMessage();			// Gift Card "personal message"
+                gcId = dlvInfo.getRecepientModel().getTemplateId();                            // Gift Card ID (domain value ID), used in paths
+                gcAmount = String.valueOf(dlvInfo.getRecepientModel().getFormattedAmount());   // Gift Card Amount
+                gcRedempCode = dlvInfo.getGivexNum();                                          // Gift Card Redemption Code (fake in email preview)
+                gcFor = dlvInfo.getRecepientModel().getRecipientName();                        // Gift Card "for"
+                gcFrom = dlvInfo.getRecepientModel().getSenderName();                          // Gift Card "from"
+                gcMessage = dlvInfo.getRecepientModel().getPersonalMessage();                  // Gift Card "personal message"
            
             }
 				String gcIsPDF = "true";	// signal to ftl that we're making a PDF
 
 	/* do some validation / limitation */
 		%><%@ include file="/gift_card/postbacks/pb_validation.jspf" %><%
+
+		/* prevent opening and closing CDATA tags in string */
+		gcFor = gcFor.replaceAll("<!\\[CDATA\\[", "<! [CDATA[").replaceAll("]]>", "]] >");
+		gcFrom = gcFrom.replaceAll("<!\\[CDATA\\[", "<! [CDATA[").replaceAll("]]>", "]] >");
+		gcMessage = gcMessage.replaceAll("<!\\[CDATA\\[", "<! [CDATA[").replaceAll("]]>", "]] >");
+		
+		/*
+		 *	fix for '&' in a xhtml file
+		 * 	escape data in CDATA tags for xml
+		 */
+		gcFor = "<![CDATA[" + gcFor + "]]>";
+		gcFrom = "<![CDATA[" + gcFrom + "]]>";
+		gcMessage = "<![CDATA[" + gcMessage + "]]>";
+
 	/* end validation */
 
 	//make sure we have an ID so we know which ftl to use
