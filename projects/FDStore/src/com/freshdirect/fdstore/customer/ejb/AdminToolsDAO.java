@@ -31,7 +31,7 @@ public class AdminToolsDAO {
 														   + "from cust.customer c, cust.customerinfo ci, cust.address a, "
 														   + "(select id as fdcustid, erp_customer_id, depot_code from cust.fdcustomer where id not in " 
 														   + "(select fdcustomer_id from cust.fduser where fdcustomer_id is not null)) fdc "
-														   + "where c.id=fdc.erp_customer_id and c.id=ci.customer_id and c.id=a.customer_id "
+														   + "where c.id=fdc.erp_customer_id and c.id=ci.customer_id and c.id=a.customer_id(+) "
 														   + "group by fdc.fdcustid) ";
 
 	public static int fixBrokenAccounts(Connection conn) throws SQLException {

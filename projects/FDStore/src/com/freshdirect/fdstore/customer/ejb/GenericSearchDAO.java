@@ -449,7 +449,7 @@ public class GenericSearchDAO {
 			+ "(select id as fdcustid, erp_customer_id, depot_code "
 			+ "from cust.fdcustomer where id not in "
 			+ "(select fdcustomer_id from cust.fduser where fdcustomer_id is not null)) fdc "
-			+ "where c.id=fdc.erp_customer_id and c.id=ci.customer_id and c.id=a.customer_id";
+			+ "where c.id=fdc.erp_customer_id and c.id=ci.customer_id and c.id=a.customer_id(+)";
 	
 	
 	public static List findBrokenAccounts(Connection conn) throws SQLException {
