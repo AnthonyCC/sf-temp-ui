@@ -112,9 +112,14 @@ import com.freshdirect.payment.fraud.EnumRestrictionReason;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.sap.SapCustomerI;
 import com.freshdirect.sap.SapOrderLineI;
+import com.freshdirect.sap.SapProperties;
+import com.freshdirect.sap.command.SapCommandI;
+import com.freshdirect.sap.command.SapCreateCustomer;
 import com.freshdirect.sap.command.SapPostReturnCommand;
+import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.sap.ejb.SapGatewayHome;
 import com.freshdirect.sap.ejb.SapGatewaySB;
+import com.freshdirect.sap.ejb.SapResult;
 
 /**
  *
@@ -156,8 +161,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 			ErpCustomerEB customerEB = this.getErpCustomerHome().create(erpCustomer);
 			PrimaryKey customerPK = customerEB.getPK();
-
-			this.enqueueCustomer(erpCustomer, customerPK, isGiftCardBuyer);
+			if(!isGiftCardBuyer){
+				this.enqueueCustomer(erpCustomer, customerPK, isGiftCardBuyer);
+			}else{
+				createCustomerForGC(erpCustomer, customerPK);			
+			}
 
 			//this.doEmail( ErpEmailFactory.createSignupConfirmEmail(erpCustomer) );
 
@@ -175,6 +183,38 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(ex);
 		}
 
+	}
+
+
+	private void createCustomerForGC(ErpCustomerModel erpCustomer,
+			PrimaryKey customerPK) {
+
+		SapCreateCustomer sapCreateCustomer = null;
+		try {
+			
+			SapCustomerI customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
+			sapCreateCustomer = new SapCreateCustomer(customerPK.getId(), customer);
+			if (SapProperties.isBlackhole()) {
+				LOGGER.debug("Message blackholed.");
+				return;
+			}
+			sapCreateCustomer.execute();
+			String custId = sapCreateCustomer.getErpCustomerNumber();
+			ErpCustomerEB custEB;
+			try {
+				custEB = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(custId));
+				custEB.setSapId(sapCreateCustomer.getSapCustomerNumber());
+
+			} catch (RemoteException e) {
+				throw new EJBException("RemoteException occured processing customer " + custId, e);
+
+			} catch (FinderException e) {
+				throw new EJBException("RemoteException occured processing customer " + custId, e);
+
+			}
+		} catch (SapException e) {
+			throw new EJBException("SapException occured while creating new customer", e);			
+		}
 	}
 	
 	private void enqueueCustomer(ErpCustomerModel erpCustomer, PrimaryKey customerPK) {
@@ -2568,7 +2608,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				PrimaryKey salePK=new PrimaryKey(saleID);
 				ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(salePK);
 				ErpAbstractOrderModel orderModel=saleEB.getCurrentOrder();
-				SapOrderAdapter sapOrder = this.adaptDonationOrder(erpCustomerPk, orderModel, rating);
+				SapOrderAdapter sapOrder = this.adaptOrder(erpCustomerPk, orderModel, rating);
 				SapGatewaySB sapSB = this.getSapGatewayHome().create();
 				sapOrder.setWebOrderNumber(salePK.getId());
 				sapSB.sendCreateSalesOrder(sapOrder,saleType);
@@ -2650,4 +2690,5 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
+			
 }
