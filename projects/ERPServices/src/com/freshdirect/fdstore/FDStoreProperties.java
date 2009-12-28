@@ -211,6 +211,8 @@ public class FDStoreProperties {
 
 	
 	// customer service hours properties
+	
+	private static final String CLICK_TO_CALL="fdstore.click_to_call";
 
 	private static final String CUST_SERV_HOURS_SUN="fdstore.cust_serv_day_1";
 
@@ -440,6 +442,7 @@ public class FDStoreProperties {
 		
 		// customer service hours
 		
+		defaults.put(CLICK_TO_CALL, "false");
 		defaults.put(CUST_SERV_HOURS_SUN, "07:30-11:59");
 		defaults.put(CUST_SERV_HOURS_MON, "06:30-11:59");
 		defaults.put(CUST_SERV_HOURS_TUES, "06:30-11:59");
@@ -1127,6 +1130,11 @@ public class FDStoreProperties {
 	public static String getCutOffTimeRange(int day) {
 		return get("fdstore.cut_off_day_"+day);
 	}
+	
+	// click to call display toggle
+	public static boolean getClickToCall() {
+        return (new Boolean(get(CLICK_TO_CALL))).booleanValue();
+    }
 	
 	// customer service hours
 	public static String getCustServHoursRange(int day) {

@@ -26,7 +26,7 @@ public class ClickToCallUtil {
 
 		Calendar calNow=Calendar.getInstance();
 
-		if ((calNow.equals(calStart) || calNow.after(calStart) ) &&
+		if ( FDStoreProperties.getClickToCall() && (calNow.equals(calStart) || calNow.after(calStart) ) &&
 				(calNow.equals(calEnd) || calNow.before(calEnd)) ) {
 			return true;
 		}
