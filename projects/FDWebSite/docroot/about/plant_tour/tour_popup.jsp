@@ -35,6 +35,9 @@ currImgSrc = imgSrc + currNum + ".jpg";
 
 %>
 
+<tmpl:insert template='/common/template/small_pop.jsp'>
+	<tmpl:put name='title' direct='true'>FreshDirect - A Photographic Tour</tmpl:put>
+		<tmpl:put name='content' direct='true'>
 <script>
 var imgNum = <%=imgNum%>;
 var maxNum = <%=deptMaxNum%>;
@@ -55,11 +58,11 @@ function buildImgSrc (numDirection) {
 }
 </script>
 
-<tmpl:insert template='/common/template/small_pop.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - A Photographic Tour</tmpl:put>
-		<tmpl:put name='content' direct='true'>
+
 <div align="center"><a href="javascript:window.close();"><img src="<%=currImgSrc%>" width="235" height="294" name="deptImg" border="0"></a>
 <br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><span class="text12"><a href="javascript:swapImage('deptImg',buildImgSrc('prev'));">< previous image</a> | <a href="javascript:swapImage('deptImg',buildImgSrc('next'));">next image ></a>
 </span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="18"></div>
 	</tmpl:put>
 </tmpl:insert>
+
+
