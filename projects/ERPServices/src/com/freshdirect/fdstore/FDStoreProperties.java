@@ -391,6 +391,9 @@ public class FDStoreProperties {
 	private final static String MOBILE_IPHONE_LANDING_ENABLED = "fdstore.mobile.iPhone.landingEnabled";
 	private final static String MOBILE_IPHONE_LANDING_PAGE = "fdstore.mobile.iPhone.landingPage";
 	
+	private final static String PROP_GC_NSM_AUTHSKIP_SECS  = "fdstore.gcnsm.authskip.secs";
+	private final static String PROP_GC_NSM_FREQ_SECS  = "fdstore.gcnsm.frequency.secs";
+	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -671,6 +674,8 @@ public class FDStoreProperties {
 		defaults.put(MOBILE_IPHONE_LANDING_ENABLED, "false");
 		defaults.put(MOBILE_IPHONE_LANDING_PAGE, "/media/mobile/supported.ftl");
 		
+		defaults.put(PROP_GC_NSM_AUTHSKIP_SECS, "600");
+		defaults.put(PROP_GC_NSM_FREQ_SECS, "60");
 		refresh();
 	}
 
@@ -1527,5 +1532,13 @@ public class FDStoreProperties {
 	}
 	public static String getIphoneLandingPage() {
 		return get(MOBILE_IPHONE_LANDING_PAGE);
+	}
+	
+	public static int getNSMAuthSkipSecsForGC(){
+		return Integer.parseInt(get(PROP_GC_NSM_AUTHSKIP_SECS));
+	}
+	
+	public static int getNSMFreqSecsForGC(){
+		return Integer.parseInt(get(PROP_GC_NSM_FREQ_SECS));
 	}
 }

@@ -161,12 +161,8 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 			ErpCustomerEB customerEB = this.getErpCustomerHome().create(erpCustomer);
 			PrimaryKey customerPK = customerEB.getPK();
-			if(!isGiftCardBuyer){
-				this.enqueueCustomer(erpCustomer, customerPK, isGiftCardBuyer);
-			}else{
-				createCustomerForGC(erpCustomer, customerPK);			
-			}
-
+			this.enqueueCustomer(erpCustomer, customerPK, isGiftCardBuyer);
+			
 			//this.doEmail( ErpEmailFactory.createSignupConfirmEmail(erpCustomer) );
 
 			LOGGER.info("Creating customer - success. userId=" + erpCustomer.getUserId() + " customerPK=" + customerPK);
@@ -186,7 +182,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 
 
-	private void createCustomerForGC(ErpCustomerModel erpCustomer,
+	/*private void createCustomerForGC(ErpCustomerModel erpCustomer,
 			PrimaryKey customerPK) {
 
 		SapCreateCustomer sapCreateCustomer = null;
@@ -215,7 +211,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (SapException e) {
 			throw new EJBException("SapException occured while creating new customer", e);			
 		}
-	}
+	}*/
 	
 	private void enqueueCustomer(ErpCustomerModel erpCustomer, PrimaryKey customerPK) {
 		enqueueCustomer(erpCustomer, customerPK, false);
@@ -2690,5 +2686,25 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
-			
+		
+		
+		
+		public List getNSMOrdersForGC()  {
+			Connection conn = null;
+			try {
+				conn = this.getConnection();
+				return ErpSaleInfoDAO.getNSMOrdersForGC(conn);
+			} catch (SQLException e) {
+				LOGGER.debug("SQLException: ", e);
+				throw new EJBException(e);
+			} finally {
+				try {
+					if (conn != null) {
+						conn.close();
+					}
+				} catch (SQLException e) {
+					LOGGER.warn("SQLException while cleaning: ", e);
+				}
+			}
+		}
 }

@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.ejb.EJBObject;
 import javax.ejb.FinderException;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
@@ -51,6 +52,7 @@ import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -276,4 +278,10 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public double getPerishableBufferAmount(ErpAbstractOrderModel order) throws RemoteException;
     
     public void sendCreateDonationOrderToSAP(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws RemoteException, ErpSaleNotFoundException, ErpTransactionException;
+    
+    public List getLastOrderForAddress(AddressModel address)  throws RemoteException;
+    
+    public String getSapCustomerId(String erpCustomerPk) throws RemoteException;
+
+    public List getNSMOrdersForGC()  throws RemoteException;
 }

@@ -40,6 +40,7 @@ import com.freshdirect.fdstore.FDConfiguredProduct;
 import com.freshdirect.fdstore.FDConfiguredProductFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -786,6 +787,53 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 		}
 
 		return lst;
+	}
+	
+	private static final String GC_NSM_ORD_SEARCH_QUERY =
+		"select s.id,s.customer_id,s.status,sa.action_date "
+			+ "from cust.sale s, cust.salesaction sa "
+			+ "where s.id=sa.sale_id and s.status = 'NEW' "
+			+ "and s.type='GCD' and sa.action_type in ('AUT')";
+	
+	public static List getNSMOrdersForGC(Connection conn) throws SQLException{
+		List list = new ArrayList();
+		PreparedStatement ps = conn.prepareStatement(GC_NSM_ORD_SEARCH_QUERY);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			Date actionDate = rs.getDate("action_date");			
+			Long currentTime = System.currentTimeMillis()-(FDStoreProperties.getNSMAuthSkipSecsForGC()*1000);
+			Date currentDate = new Date(currentTime);
+			if(currentDate.after(actionDate)){
+				ErpSaleInfo erpSaleInfo = new ErpSaleInfo(
+						rs.getString("ID"),
+						rs.getString("CUSTOMER_ID"),
+						EnumSaleStatus.getSaleStatus(rs.getString("STATUS")),
+						0.0,
+						0.0,
+						null,
+						null,
+						null,
+						"",
+						null,
+						null,
+						"",
+						null,
+						null,
+						null,
+						null,
+						0.0,
+						0.0,
+						"",
+						null,
+						"",
+						EnumSaleType.GIFTCARD,
+						"",
+						"",
+						false);
+						list.add(erpSaleInfo);
+			}
+		}
+		return list;
 	}
 
 }

@@ -86,6 +86,7 @@ import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpPromotionHistory;
+import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
@@ -129,7 +130,9 @@ import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditModel;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerRequest;
@@ -145,6 +148,7 @@ import com.freshdirect.fdstore.customer.ProfileAttributeName;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
+import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
@@ -4055,7 +4059,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					if(auths != null && auths.size() > 0){
 						//Only when it has a valid auth.
 						ErpCustomerManagerSB erpCMsb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
-						erpCMsb.sendCreateOrderToSAP(customerPk,  pk.getId(), EnumSaleType.GIFTCARD, cra);
+						String sapCustomerId = erpCMsb.getSapCustomerId(customerPk);
+						//Only if the customer id is available in SAP.
+						if(null != sapCustomerId && sapCustomerId.length() > 0){
+							erpCMsb.sendCreateOrderToSAP(customerPk,  pk.getId(), EnumSaleType.GIFTCARD, cra);
+						}
 					}
 					
 					return pk.getId();
@@ -4930,5 +4938,54 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			} catch (SQLException e) {
 				throw new FDResourceException(e);
 			}
+		}
+		
+		public void resubmitGCOrders() throws FDResourceException{
+			//Get GC NSM Orders
+			//For each order,
+			//-Get customer info from customer id.
+			//-Get order info from order id.
+			//-Create CustomerRatingInfo instance
+			//-Invoke ErpCustomerManagerSessionBean.sendCreateOrderToSAP
+			
+			try {
+				ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+				List nsmOrders = sb.getNSMOrdersForGC();
+				if(null != nsmOrders){
+					for (Iterator iterator = nsmOrders.iterator(); iterator.hasNext();) {
+						ErpSaleInfo erpSaleInfo = (ErpSaleInfo) iterator.next();
+						String saleId = erpSaleInfo.getSaleId();
+						String customerId = erpSaleInfo.getErpCustomerId();
+						String sapCustomerId = sb.getSapCustomerId(customerId);
+						if(null != sapCustomerId && sapCustomerId.length() > 0){
+							FDOrderI order = this.getOrder(saleId);
+							FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(customerId);
+							int orderCount =sb.getValidOrderCount(new PrimaryKey(customerId));
+							String sapOrderNumber = order.getSapOrderId();
+//							int orderCount = erpOrderHistory.getValidOrderCount();
+							if (sapOrderNumber != null) {
+								orderCount--;
+							}
+							ErpAddressModel address =order.getDeliveryAddress();
+							boolean isCorporateUser = false;
+							if(null != address){
+								isCorporateUser = EnumServiceType.CORPORATE.equals(address.getServiceType());
+							}
+							CustomerRatingAdaptor cra = new CustomerRatingAdaptor(fdCustomer.getProfile(),isCorporateUser,orderCount); 
+							try {
+								sb.sendCreateOrderToSAP(customerId, saleId,order.getOrderType(),cra);
+							} catch (ErpSaleNotFoundException e) {
+								LOGGER.warn("Order not found to submit to SAP.", e);
+								
+							}
+						}
+						
+					}
+				}
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			} 
 		}
 }

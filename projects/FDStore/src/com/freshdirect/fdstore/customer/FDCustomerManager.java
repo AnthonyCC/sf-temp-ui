@@ -30,6 +30,8 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Category;
 
+import weblogic.auddi.util.Logger;
+
 import com.freshdirect.common.address.AddressI;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
@@ -155,6 +157,7 @@ public class FDCustomerManager {
 	static {
 		try {
 			LOCATOR=new FDServiceLocator(FDStoreProperties.getInitialContext());
+			startGiftCardNSMThread();
 		} catch (NamingException e) {
 			LOGGER.error(e);
 			LOCATOR=new FDServiceLocator();
@@ -3331,5 +3334,57 @@ public class FDCustomerManager {
 				invalidateManagerHome();
 				throw new FDResourceException(re, "Error talking to session bean");
 			}
+		}
+		
+		public static void resubmitGCOrders(){
+			
+			try {
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.resubmitGCOrders();
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+//				throw new FDResourceException(ce, "Error creating session bean");
+				Logger.warning("Error creating session bean:"+ce);
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+//				throw new FDResourceException(re, "Error talking to session bean");
+				Logger.warning("Error talking to session bean:"+re);
+			} catch(FDResourceException fe){
+				Logger.warning("Error looking up for manager:"+fe);
+			}
+		}
+		
+		public static void startGiftCardNSMThread(){
+			Thread thread = new GiftCardNSMThread();
+			thread.setName("GiftCardNSMThread");
+			thread.start();
+		}
+		
+		public static class GiftCardNSMThread extends Thread{			
+
+			@Override
+			public void run(){
+				
+				long refreshFrequency = FDStoreProperties.getNSMFreqSecsForGC()*1000;
+				long lastTime = System.currentTimeMillis();
+				try {
+					while(true) {
+						Long currentTime =System.currentTimeMillis();
+						if(currentTime-lastTime < refreshFrequency){
+							synchronized (this) {
+								this.wait(refreshFrequency-(currentTime-lastTime));
+							}
+						}
+						
+						resubmitGCOrders();
+						lastTime= System.currentTimeMillis();						
+					}
+				} catch (InterruptedException e) {
+					Logger.warning("GiftCardNSMThread interrupted:"+e);
+				}
+				
+			}
+			
 		}
 }
