@@ -374,10 +374,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 					}
 
 					if (wasPrice != null)
-						return CURRENCY_FORMAT.format(wasPrice)
-								+ "/"
-								+ productInfo.getDisplayableDefaultPriceUnit()
-										.toLowerCase();
+						return CURRENCY_FORMAT.format(wasPrice);								
 				}
 				return null;
 			} catch (FDSkuNotFoundException ex) {
