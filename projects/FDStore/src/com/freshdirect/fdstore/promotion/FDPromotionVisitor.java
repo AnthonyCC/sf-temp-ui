@@ -13,8 +13,14 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.ZonePromoDiscount;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.PromoVariantHelper;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -48,10 +54,25 @@ public class FDPromotionVisitor {
 		LOGGER.info("Apply Promotions - END TIME ");
 		long endTime = System.currentTimeMillis();
 		LOGGER.info("Apply Promotions - TOTAL EXECUTION TIME "+(endTime - startTime)+" milliseconds");
+		
+		applyZonePromotion(context, eligibilities);
 		return eligibilities;
 	}
 
-
+    private static void applyZonePromotion(PromotionContextI context, FDPromotionEligibility eligibilities) 
+    {    
+    	if(FDPromotionZoneRulesEngine.isEligible(context))//iPhone check
+    	{
+			String promoCode=FDPromotionZoneRulesEngine.getPromoCode(context);
+			//if(promoCode!=null&&eligibilities.isEligible(promoCode))
+			if(promoCode!=null)
+			{
+				PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+		    	Discount discount = new ZonePromoDiscount(promoCode, EnumDiscountType.DOLLAR_OFF, promo.getHeaderDiscountTotal());
+		    	context.addDiscount(discount);  
+			}
+    	}
+    }
 	private static void resolveLineItemConflicts(PromotionContextI context, FDPromotionEligibility eligibilities) {
 		//Reload the promo variant map based on new promotion eligibilities.	
 		Map pvMap = PromoVariantHelper.getPromoVariantMap(context.getUser(), eligibilities);
@@ -64,7 +85,7 @@ public class FDPromotionVisitor {
          FDPromotionEligibility eligibilities = new FDPromotionEligibility();
          int counter = 0;
          //Get All Automatic Promo codes.  Evaluate them.
-         Collection promotions = PromotionFactory.getInstance().getAllAutomaticPromotions();
+         Collection promotions = PromotionFactory.getInstance().getAllAutomaticPromotions(); 
          for (Iterator i = promotions.iterator(); i.hasNext();) {
                PromotionI autopromotion  = (PromotionI) i.next(); 
                String promoCode = autopromotion.getPromotionCode();

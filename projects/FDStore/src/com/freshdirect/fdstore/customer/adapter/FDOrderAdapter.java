@@ -1069,6 +1069,19 @@ public class FDOrderAdapter implements FDOrderI {
 	
 	public List getDiscounts() { return this.erpOrder.getDiscounts(); }
 
+	public List getHeaderDiscounts()
+	{
+		if (this.erpOrder.getDiscounts() != null && this.erpOrder.getDiscounts().size() > 0) 
+		{
+			List result=new ArrayList();
+			for (Iterator iter = this.erpOrder.getDiscounts().iterator(); iter.hasNext(); ) {
+				ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+				result.add(new DiscountLineModelAdaptor(discountLine));
+			}
+			return result;
+		}
+		return null;
+	}
 	public double getTotalDiscountValue() {		
 		double totalDiscountAmount = 0.0;
 		if (this.erpOrder.getDiscounts() != null && this.erpOrder.getDiscounts().size() > 0) {

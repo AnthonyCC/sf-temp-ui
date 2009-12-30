@@ -16,6 +16,7 @@ public class EnumPromotionType extends Enum {
 	public static final EnumPromotionType DCP_DISCOUNT = new EnumPromotionType("DCPD", "Dept/Category Promotions", 50);
 	public static final EnumPromotionType REDEMPTION = new EnumPromotionType("REDEMPTION", "Redemption Code Promotions", 60);
 	public static final EnumPromotionType LINE_ITEM = new EnumPromotionType("LINE_ITEM", "Line Item Promotions", 70);
+	public static final EnumPromotionType WINDOW_STEERING = new EnumPromotionType("WINDOW_STEERING", "Window Steering Promotions", 80);
 	
 	private final String description;
 	private final int priority;
