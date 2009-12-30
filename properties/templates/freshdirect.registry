@@ -11,6 +11,7 @@ classpath:/com/freshdirect/fdstore/rules/misc/hivemodule-prd.xml
 classpath:/com/freshdirect/fdstore/rules/echeck/hivemodule-prd.xml
 classpath:/com/freshdirect/fdstore/rules/referrer/hivemodule-prd.xml
 classpath:/com/freshdirect/fdstore/rules/promotion/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/promotion/zone/hivemodule.xml
 classpath:/com/freshdirect/ocf/hivemodule.xml
 
 ### CMS
