@@ -11,6 +11,7 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.delivery.EnumReservationType"%>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
+<%@ page import="com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine" %>
 
 <%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason"%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>  
@@ -157,7 +158,25 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 		hasCapacity = hasCapacity || lst.hasCapacity();
 	}
 	request.setAttribute("listPos", "SystemMessage,CategoryNote");
+	//get amount for zone promotion
+	double zonePromoAmount=FDPromotionZoneRulesEngine.getDiscount(user,zoneId);
+	String zonePromoString=null;
+	if(zonePromoAmount>0)
+	{
+		zonePromoString=FDPromotionZoneRulesEngine.getDiscountFormatted(zonePromoAmount);
+		request.setAttribute("SHOW_WINDOWS_STEERING","true");
+	}
 %>
+
+<script>
+var zonePromoString=""; 
+var zonePromoEnabled=false;
+<%if(zonePromoAmount>0){ %>
+zonePromoString="<%=zonePromoString %>"; 
+zonePromoEnabled=true;
+<%} %>
+</script>
+
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Time </tmpl:put>
@@ -192,6 +211,22 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 	<%if(hasCapacity){%>
 		<TD WIDTH="205" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold">
 			<FONT CLASS="space2pix"><BR></FONT><input type="image" name="form_action_name" src="/media_stat/images/buttons/continue_checkout.gif" alt="CONTINUE CHECKOUT" VSPACE="2" border="0"><BR>
+			<b><%= (isDepotAddress && depotAddress.isPickup())?"Service":"Delivery" %> Charge:  </b>
+
+<%	
+	String dlvCharge = CCFormatter.formatCurrency( cart.getDeliverySurcharge() );
+	if(cart.isDlvPassApplied()) {
+%>
+	<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+	
+<%	} else if (cart.isDeliveryChargeWaived()) {
+        if((int)cart.getDeliverySurcharge() == 0){
+%>     
+		Free! <% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>	
+                
+	<%}else {%>
+		<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : dlvCharge %>
+	<%}%><br>		
 			<A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated Total</A>: <%= CCFormatter.formatCurrency(cartTotal) %></TD>
 		<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
 			<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif"
@@ -225,33 +260,8 @@ if (errorMsg!=null) {%>
 
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="695">
 <TR VALIGN="TOP">
-<TD CLASS="text12" width="455">
-<b><%= (isDepotAddress && depotAddress.isPickup())?"Service":"Delivery" %> Charge:  </b>
-
-<%	
-	String dlvCharge = CCFormatter.formatCurrency( cart.getDeliverySurcharge() );
-	if(cart.isDlvPassApplied()) {
-%>
-	<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-	
-<%	} else if (cart.isDeliveryChargeWaived()) {
-        if((int)cart.getDeliverySurcharge() == 0){
-%>     
-		Free! <% }else{ %> Free! We've waived the standard <%= dlvCharge %> delivery charge for this order. <% } %>	
-                
-	<%}else {%>
-		<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : dlvCharge %>
-	<%}%>		
-<br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></TD>
-
-<td width="240" class="text12" align="right">
-	<% if(user.isEligibleForPreReservation()){
-	 		FDReservation userRsv = user.getReservation();
-			if(userRsv != null && address.getPK()!=null && userRsv.getAddressId().equals(address.getPK().getId())){%>
-				<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12"> = Your <%= EnumReservationType.RECURRING_RESERVATION.equals(userRsv.getReservationType()) ? "Weekly" : "" %> Reserved Delivery Slot
-		<% } 
-	}%>
-</TD>
+<TD CLASS="text12" width="455">		
+<img src="/media_stat/images/layout/clear.gif" width="1" height="10"></TD>
 </TR>
 
 <%if(kosherRestriction){%>
@@ -279,7 +289,32 @@ if (errorMsg!=null) {%>
 <%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 </td>
 </tr>
-
+<!-- to display new legend  -->
+<tr>
+	<td colspan="2">
+	<table width="100%">
+	<tr>	
+	<td>
+	<%if(timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE){ %>
+		<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
+	<%}%>
+	</td>
+	<td>
+	<% if(user.isEligibleForPreReservation()){
+	 		FDReservation userRsv = user.getReservation();
+			if(userRsv != null && address.getPK()!=null && userRsv.getAddressId().equals(address.getPK().getId())){%>		
+				<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12">  Your <%= EnumReservationType.RECURRING_RESERVATION.equals(userRsv.getReservationType()) ? "Weekly" : "" %> Reserved Delivery Slot
+		<% } 
+	}%>
+	</td>
+	<td align="right">
+	<%if(zonePromoAmount>0){ %>
+	<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%=zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a><br>
+	<%}%>
+	</td></tr>
+	</table>
+	</td>
+</tr>
 <%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && thxgivingRestriction){%>
 <tr valign="top">
 	<td colspan="2" class="text12">
@@ -462,6 +497,10 @@ if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) {
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<%if(zonePromoAmount>0){ %>
+<fd:IncludeMedia name="/media/editorial/site_pages/timeslots/timeslot_adv.html" />
+
+<%	}  %>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="TOP">
 	<TD WIDTH="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelX"><img src="/media_stat/images/buttons/x_green.gif" WIDTH="20" HEIGHT="19" border="0" alt="CONTINUE SHOPPING"></a></TD>

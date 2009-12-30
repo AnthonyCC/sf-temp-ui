@@ -92,7 +92,6 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
                 //-->
       	</SCRIPT>
 <% } %>
-
 <%
 //FDDeliveryManager deliveryManager = FDDeliveryManager.getInstance();
 //DlvZoneInfoModel zoneInfoModel = deliveryManager.getZoneInfo(address, new Date());
@@ -168,8 +167,43 @@ if(user.isHomeUser())
 </table>
 <% String preReserveSlotId = ""; %>
 <%String timeSlotId = ""; %>
+<%
+//get amount for zone promotion
+	DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date());    
+	double zonePromoAmount=FDPromotionZoneRulesEngine.getDiscount(user,zInfo.getZoneCode());
+	String zonePromoString=null;
+	if(zonePromoAmount>0)
+	{
+		zonePromoString=FDPromotionZoneRulesEngine.getDiscountFormatted(zonePromoAmount);
+		request.setAttribute("SHOW_WINDOWS_STEERING","true");
+	
+	}
+%>
+<script>
+var zonePromoString=""; 
+var zonePromoEnabled=false;
+<%if(zonePromoAmount>0){ %>
+zonePromoString="<%=zonePromoString %>"; 
+zonePromoEnabled=true;
+<%} %>
+</script>
 	<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 	
+	
+	<table width="695">
+	<tr>	
+	<td>
+	<%if(timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE){ %>
+		<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
+	<%}%>
+	</td>	
+	<td align="right">
+	<%if(zonePromoAmount>0){ %>
+	<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%=zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a><br>
+	<%}%>
+	</td></tr>
+	</table>	
+	<br/>
 	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
 		<% // fix for advance orders showing on this page
 		if (idx.intValue() == timeslotList.size()-1 && timeslotList.size() > idx.intValue()) { %>
@@ -185,10 +219,10 @@ if(user.isHomeUser())
 	<table cellpadding="0" cellspacing="0" width="693"/>
 		<tr>
 			<td align="left">
-				<img src="/media_stat/images/template/help/greendot_trans.gif" width="10" height="10" border="0" valign="bottom" alt="Green">
+				<img src="/media_stat/images/windowsteering/legend_view_avail.png" width="10" height="10" border="0" valign="bottom" alt="Green">
 				Time Slot Available*
 				&nbsp;
-				<img src="/media_stat/images/template/help/orangedot_trans.gif" width="10" height="10" border="0" valign="bottom" alt="Orange">
+				<img src="/media_stat/images/windowsteering/legend_view_full.png" width="10" height="10" border="0" valign="bottom" alt="Orange">
 				Time Slot Full
 			</td>
 			<td align="right" width="450">You must complete checkout for next-day deliveries before the "Order by" time.</td>
@@ -201,6 +235,11 @@ if(user.isHomeUser())
 		</tr>
 	</table>
 	<br>
+
+<%if(zonePromoAmount>0){ %>
+<fd:IncludeMedia name="/media/editorial/site_pages/timeslots/timeslot_delinfo_adv.html" />
+
+<%	}  %>
 	<% if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) { %>
 	<%@ include file="/shared/includes/delivery/i_loyalty_button.jspf" %>
 	<% } %>
