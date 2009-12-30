@@ -507,7 +507,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_FDREFERRALMGR_HOME,	"freshdirect.fdstore.ReferralManager");
 
 
-		defaults.put(PROP_USE_MULTIPLE_PROMOTIONS, "false");
+		defaults.put(PROP_USE_MULTIPLE_PROMOTIONS, "true");
 
 		defaults.put(PROP_DATA_COLLECTION_ENABLED, "false");
 

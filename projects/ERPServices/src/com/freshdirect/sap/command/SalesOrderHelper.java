@@ -22,6 +22,7 @@ import com.freshdirect.common.pricing.CreditMemo;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.ZonePromoDiscount;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.sap.PosexUtil;
@@ -149,12 +150,26 @@ class SalesOrderHelper {
 		if (sapOrder.getDiscounts() != null && sapOrder.getDiscounts().size() > 0) {
 			for (Iterator iter = sapOrder.getDiscounts().iterator(); iter.hasNext();) {
 				ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
-				if (EnumDiscountType.DOLLAR_OFF.equals(discountLine.getDiscount().getDiscountType())) {
-					//orderDiscountAmount += promo.getDiscount().getAmount();
-					this.addFakeLine(sapOrder, fakePosition, "000000000000009999", isCreateOrder);
-					this.bapi.addCondition(PosexUtil.getPosexInt(fakePosition), "PB00", -1.0 * discountLine.getDiscount().getAmount(), "USD");
-					passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, discountLine.getDiscount().getPromotionCode());
-					fakePosition++;
+				if(discountLine.getDiscount() instanceof ZonePromoDiscount)
+				{
+					if (EnumDiscountType.DOLLAR_OFF.equals(discountLine.getDiscount().getDiscountType())) {
+						//orderDiscountAmount += promo.getDiscount().getAmount();
+						this.addFakeLine(sapOrder, fakePosition, "000000000000009999", isCreateOrder);
+						this.bapi.addCondition(PosexUtil.getPosexInt(fakePosition), "PB00", -1.0 * discountLine.getDiscount().getAmount(), "USD");
+						//WS1_ is to identify windows steering promo at sap
+						passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, "WS1_"+discountLine.getDiscount().getPromotionCode());
+						fakePosition++;
+					}
+				}
+				else
+				{
+					if (EnumDiscountType.DOLLAR_OFF.equals(discountLine.getDiscount().getDiscountType())) {
+						//orderDiscountAmount += promo.getDiscount().getAmount();
+						this.addFakeLine(sapOrder, fakePosition, "000000000000009999", isCreateOrder);
+						this.bapi.addCondition(PosexUtil.getPosexInt(fakePosition), "PB00", -1.0 * discountLine.getDiscount().getAmount(), "USD");
+						passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, discountLine.getDiscount().getPromotionCode());
+						fakePosition++;
+					}
 				}
 			}
 		} else {  // for backwards compatibility
