@@ -328,7 +328,7 @@ class DispatchComparator extends LogComparator
 	{
 		Dispatch oldDispatch=(Dispatch)o1;
 		Dispatch newDispatch=(Dispatch)o2;
-		id=newDispatch.getPlanId();
+		id=newDispatch.getDispatchId();
 		if(oldDispatch!=null&&newDispatch!=null)
 		{
 			updates=new ArrayList();

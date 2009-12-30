@@ -107,7 +107,8 @@ public class ScribController extends AbstractMultiActionController
 						Scrib s=(Scrib)j.next();
 						if(s.getSupervisorCode()!=null)
 						{
-							WebEmployeeInfo webEmp=employeeManagerService.getEmployee(s.getSupervisorCode());						
+							WebEmployeeInfo webEmp=employeeManagerService.getEmployee(s.getSupervisorCode());
+							if(webEmp!=null&&webEmp.getEmpInfo()!=null)
 							s.setSupervisorName(webEmp.getEmpInfo().getName());
 						}
 					}
