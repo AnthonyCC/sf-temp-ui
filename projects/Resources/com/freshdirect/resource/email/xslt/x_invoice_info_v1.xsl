@@ -67,11 +67,13 @@ CART DETAILS
 </xsl:for-each>
 
 =========================================
-<xsl:if test="number(order/totalDiscountValue) > 0">
-Free Food: $<xsl:value-of select='format-number(order/totalDiscountValue, "###,##0.00", "USD")'/>
+<xsl:if test="number(order/totalDiscountValue) &gt; 0">
+<xsl:for-each select="order/headerDiscounts/headerDiscounts"><xsl:value-of select='description' />: ($<xsl:value-of select='format-number(model/discount/amount, "###,##0.00", "USD")'/>)
+</xsl:for-each>
 <xsl:text>
 </xsl:text>
 </xsl:if>
+
 <xsl:if test="order/invoicedTaxValue > 0">
 Total Tax: $<xsl:value-of select='format-number(order/invoicedTaxValue, "###,##0.00", "USD")'/>
 <xsl:text>

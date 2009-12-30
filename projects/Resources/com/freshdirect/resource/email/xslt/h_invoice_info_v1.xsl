@@ -131,15 +131,14 @@
 </tr>
 
 	<xsl:if test="number(order/totalDiscountValue) &gt; 0">
-		<tr valign="top" class="orderSummary">
-			<td colspan="2" align="right">Free Food:</td>
-			<td align="right">
-				$<xsl:value-of select='format-number(order/totalDiscountValue, "###,##0.00", "USD")'/>
-			</td>
-			<td colspan="3">&nbsp;</td>
-		</tr>
+		<xsl:for-each select="order/headerDiscounts/headerDiscounts">
+			<tr valign="top" class="orderSummary">
+				<td colspan="3" align="right"><xsl:value-of select='description'/>:</td>
+				<td colspan="1" align="right">-<xsl:value-of select="format-number(model/discount/amount, '$###,##0.00', 'USD')"/></td>
+				<td colspan="3"></td>
+			</tr>
+		</xsl:for-each>
 	</xsl:if>
-
 	<xsl:if test="order/invoicedTaxValue > 0">
 		<tr valign="top" class="orderSummary">
 			<td colspan="2" align="right">Total Tax:</td>
