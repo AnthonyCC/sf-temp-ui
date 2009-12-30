@@ -675,7 +675,7 @@ public class FDStoreProperties {
 		defaults.put(MOBILE_IPHONE_LANDING_PAGE, "/media/mobile/supported.ftl");
 		
 		defaults.put(PROP_GC_NSM_AUTHSKIP_SECS, "600");
-		defaults.put(PROP_GC_NSM_FREQ_SECS, "60");
+		defaults.put(PROP_GC_NSM_FREQ_SECS, "600");
 		refresh();
 	}
 
