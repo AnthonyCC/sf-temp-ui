@@ -201,7 +201,7 @@ public class FDShoppingCartControllerTag extends
 		HttpSession session = pageContext.getSession();
 
 		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-
+		user.updateUserState();
 		this.cart = user.getShoppingCart();
 		if (cart == null) {
 			// user doesn't have a cart, this is a bug, as login or site_access
