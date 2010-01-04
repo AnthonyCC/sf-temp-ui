@@ -11,6 +11,7 @@
 <%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
 
 <%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
