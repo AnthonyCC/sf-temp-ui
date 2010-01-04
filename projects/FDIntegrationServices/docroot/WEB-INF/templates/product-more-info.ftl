@@ -60,7 +60,7 @@
 		<div class="detail">
 	<#if product.layout != "wine" >
 		<#if product.origin?has_content >
-			<p><b>Origin:</b><#list product.origin as origin>${origin}</#list></p>
+			<p><b>Origin</b><br /><#list product.origin as origin>${origin}<#if origin_has_next><br /></#if></#list></p>
 		</#if>
 	</#if>	<#if product.layout == "wine" >
 		<#if product.wineRegionLabel?has_content >
