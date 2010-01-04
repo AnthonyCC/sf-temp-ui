@@ -17,6 +17,7 @@
 // Load YUI dependencies for smartstore tabs
 %>
 
+<fd:SmartSavingsUpdate promoConflictMode="false"/>
 <tmpl:insert template='/common/template/quick_shop.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop</tmpl:put>
 		<tmpl:put name='content' direct='true'>

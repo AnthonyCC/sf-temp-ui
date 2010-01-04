@@ -1411,8 +1411,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public PromoVariantModel getPromoVariant(String variantId) {
-		if(this.promoVariantMap == null) return null;
-		return (PromoVariantModel) this.promoVariantMap.get(variantId);
+		return (PromoVariantModel) this.getPromoVariantMap().get(variantId);
 	}
 
 	public String getSavingsVariantId() {
