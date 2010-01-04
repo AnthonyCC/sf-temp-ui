@@ -2604,7 +2604,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				PrimaryKey salePK=new PrimaryKey(saleID);
 				ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(salePK);
 				ErpAbstractOrderModel orderModel=saleEB.getCurrentOrder();
-				SapOrderAdapter sapOrder = this.adaptOrder(erpCustomerPk, orderModel, rating);
+				SapOrderAdapter sapOrder = this.adaptDonationOrder(erpCustomerPk, orderModel, rating);
 				SapGatewaySB sapSB = this.getSapGatewayHome().create();
 				sapOrder.setWebOrderNumber(salePK.getId());
 				sapSB.sendCreateSalesOrder(sapOrder,saleType);
