@@ -540,7 +540,7 @@ public class Product {
         StringBuilder title = new StringBuilder();
         StringBuilder message = new StringBuilder();
         try {
-            if (product.getFDProduct().isPlatter() && (cutoffTime = RestrictionUtil.getPlatterRestrictionStartTime()) != null) {
+            if (isPlatter() && (cutoffTime = RestrictionUtil.getPlatterRestrictionStartTime()) != null) {
 
                 String headerTime;
                 String bodyTime;
@@ -744,7 +744,7 @@ public class Product {
     public Date getCutOffTime() throws ModelException {
         Date result = null;
         try {
-            if (product.getProductModel().isPlatter() && (RestrictionUtil.getPlatterRestrictionStartTime()) != null) {
+            if (isPlatter() && (RestrictionUtil.getPlatterRestrictionStartTime()) != null) {
                 TimeOfDay cutoffTime = null;
                 cutoffTime = RestrictionUtil.getPlatterRestrictionStartTime();
                 result = cutoffTime.getAsDate();
@@ -1194,7 +1194,7 @@ public class Product {
     @Deprecated
     public String getCancellationNote() {
         String result = "";
-        if (product.getProductModel().isPlatter()) {
+        if (isPlatter()) {
             result = "* Orders for this item cancelled later than 3PM on the day before delivery (or 12 Noon on Fri., Sat. and Sun. and certain holidays) will be subject to a 50% fee.";
         }
         return result;
