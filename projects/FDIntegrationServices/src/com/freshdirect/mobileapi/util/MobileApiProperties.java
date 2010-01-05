@@ -32,7 +32,7 @@ public class MobileApiProperties {
 
     private final static String PROP_WHATS_GOOD_CAT_IDS = "mobileapi.whatsgood.catIds";
 
-    private final static String PROP_PREV_ORDER_LIST_LIMIT = "mobileapi.previousorder.listlimit";
+    private final static String PROP_QUICKSHOP_LIST_MAX = "mobileapi.quickshoplist.max";
 
     private final static String PROP_OAS_PROTOCOL = "mobileapi.oas.protocol";
 
@@ -56,7 +56,7 @@ public class MobileApiProperties {
     static {
         defaults.put(PROP_CART_MISC_CHARGE_LABEL, "Fuel Surcharge");
         defaults.put(PROP_MEDIA_PATH, "http://www.freshdirect.com");
-        defaults.put(PROP_PREV_ORDER_LIST_LIMIT, "10");
+        defaults.put(PROP_QUICKSHOP_LIST_MAX, 100);
         defaults.put(PROP_OAS_PROTOCOL, "http");
         defaults.put(PROP_OAS_CACHE_TIMEOUT,60);
         refresh();
@@ -117,8 +117,8 @@ public class MobileApiProperties {
         return get(PROP_MEDIA_PATH);
     }
 
-    public static int getPreviousOrderListLimit() {
-        return getInt(PROP_PREV_ORDER_LIST_LIMIT);
+    public static int getQuickshopListMax() {
+        return getInt(PROP_QUICKSHOP_LIST_MAX);
     }
 
     public static int getOasCacheTimeout() {

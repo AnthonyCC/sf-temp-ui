@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,6 +14,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
+import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.QuickShop;
 import com.freshdirect.mobileapi.controller.data.response.QuickShopLists;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -20,6 +22,8 @@ import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.CustomerCreatedList;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.ListPaginator;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 public class CustomerCreatedListController extends BaseController {
 
@@ -37,7 +41,7 @@ public class CustomerCreatedListController extends BaseController {
             SessionUser user) throws FDException, ServiceException, JsonException {
 
         if (ACTION_GET_SHOPPING_LISTS.equals(action)) {
-            model = getCustomerCreatedLists(model, user);
+            model = getCustomerCreatedLists(model, user, request, response);
         } else if (ACTION_QUICK_SHOP.equals(action)) {
             String cclId = request.getParameter("cclId");
             model = getProductsFromList(model, user, cclId);
@@ -55,9 +59,23 @@ public class CustomerCreatedListController extends BaseController {
      * @throws JsonMappingException
      * @throws IOException
      */
-    private ModelAndView getCustomerCreatedLists(ModelAndView model, SessionUser user) throws FDException, JsonException {
+    private ModelAndView getCustomerCreatedLists(ModelAndView model, SessionUser user, HttpServletRequest request,
+            HttpServletResponse response) throws FDException, JsonException {
         List<CustomerCreatedList> lists = user.getCustomerCreatedList();
-        Message responseMessage = QuickShopLists.initWithList(lists);
+
+        String postData = getPostData(request, response);
+        int page = 1;
+        int resultMax = MobileApiProperties.getQuickshopListMax();
+        LOGGER.debug("PostData received: [" + postData + "]");
+        if (StringUtils.isNotEmpty(postData)) {
+            SearchQuery requestMessage = parseRequestObject(request, response, SearchQuery.class);
+            page = requestMessage.getPage();
+            resultMax = requestMessage.getMax();
+        }
+
+        ListPaginator<CustomerCreatedList> paginator = new ListPaginator<CustomerCreatedList>(lists, resultMax);
+        QuickShopLists responseMessage = QuickShopLists.initWithList(paginator.getPage(page));
+        responseMessage.setTotalResultCount(lists.size());
         setResponseMessage(model, responseMessage, user);
         return model;
     }

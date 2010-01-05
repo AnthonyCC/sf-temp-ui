@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -14,6 +15,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
+import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.request.SimpleRequest;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.controller.data.response.ModifiedOrder;
@@ -22,12 +24,14 @@ import com.freshdirect.mobileapi.controller.data.response.QuickShopLists;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Cart;
+import com.freshdirect.mobileapi.model.CustomerCreatedList;
 import com.freshdirect.mobileapi.model.Order;
 import com.freshdirect.mobileapi.model.OrderHistory;
 import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 /**
@@ -65,7 +69,7 @@ public class OrderController extends BaseController {
             }
             model = getOrderDetail(model, user, orderId);
         } else if (ACTION_GET_QUICK_SHOP_ORDER_LIST.equals(action)) {
-            model = getQuickshopOrders(model, user);
+            model = getQuickshopOrders(model, user, request, response);
         } else if (ACTION_CANCEL_ORDER.equals(action)) {
             String orderId = request.getParameter(PARAM_ORDER_ID);
             if (orderId == null) {
@@ -204,12 +208,22 @@ public class OrderController extends BaseController {
      * @throws JsonMappingException
      * @throws IOException
      */
-    private ModelAndView getQuickshopOrders(ModelAndView model, SessionUser user) throws FDException, JsonException {
+    private ModelAndView getQuickshopOrders(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response)
+            throws FDException, JsonException {
         List<OrderInfo> infos = OrderHistory.getCompletedOrderInfos(user.getCompleteOrderHistory());
-        if(infos.size() > MobileApiProperties.getPreviousOrderListLimit()) {
-            infos = infos.subList(0, MobileApiProperties.getPreviousOrderListLimit());
+
+        String postData = getPostData(request, response);
+        int page = 1;
+        int resultMax = MobileApiProperties.getQuickshopListMax();
+        LOGGER.debug("PostData received: [" + postData + "]");
+        if (StringUtils.isNotEmpty(postData)) {
+            SearchQuery requestMessage = parseRequestObject(request, response, SearchQuery.class);
+            page = requestMessage.getPage();
+            resultMax = requestMessage.getMax();
         }
-        Message responseMessage = QuickShopLists.initWithOrder(infos);
+        ListPaginator<OrderInfo> paginator = new ListPaginator<OrderInfo>(infos, resultMax);
+        QuickShopLists responseMessage = QuickShopLists.initWithOrder(paginator.getPage(page));
+        responseMessage.setTotalResultCount(infos.size());
         setResponseMessage(model, responseMessage, user);
         return model;
     }

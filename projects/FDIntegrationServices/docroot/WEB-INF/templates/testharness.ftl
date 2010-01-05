@@ -236,11 +236,11 @@ function loadStuff() {
   	$("#result").val("");
   } else if (loaddata == "ShoppingLists") {
   	$("#url").val("/saptest12@freshdirect.com/shoppinglists/");
-  	$("#payload").val("");
+  	$("#payload").val('{"page" : "1"}');
   	$("#result").val("");
   } else if (loaddata == "OrderHistoryQuickshop") {
   	$("#url").val("/saptest12@freshdirect.com/orders/quickshop/");
-  	$("#payload").val("");
+  	$("#payload").val('{"page" : "1"}');
   	$("#result").val("");
   } else if (loaddata == "QuickShopLists") {
   	$("#url").val("/saptest12@freshdirect.com/shoppinglist/id/2153098981/quickshop/");

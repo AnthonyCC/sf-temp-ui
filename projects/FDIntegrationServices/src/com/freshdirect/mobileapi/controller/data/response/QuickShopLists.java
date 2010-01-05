@@ -22,6 +22,8 @@ public class QuickShopLists extends Message {
 
     private List<QuickShopList> lists = new ArrayList<QuickShopList>();
 
+    private Integer totalResultCount = 0;    
+    
     /**
      * @param lists
      * @return
@@ -38,6 +40,14 @@ public class QuickShopLists extends Message {
             }
         }
         return newInstance;
+    }
+
+    public Integer getTotalResultCount() {
+        return totalResultCount;
+    }
+
+    public void setTotalResultCount(Integer totalResultCount) {
+        this.totalResultCount = totalResultCount;
     }
 
     /**
