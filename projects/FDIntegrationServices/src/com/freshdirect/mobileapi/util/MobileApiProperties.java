@@ -37,6 +37,7 @@ public class MobileApiProperties {
     private final static String PROP_OAS_PROTOCOL = "mobileapi.oas.protocol";
 
     private final static String PROP_ALCOHOL_AGE_WARNING = "mobileapi.mediapath.alcohol.agewarning";
+
     private final static String PROP_ALCOHOL_HEALTH_WARNING = "mobileapi.mediapath.alcohol.healthwarning";
 
     private final static String PROP_OAS_CACHE_TIMEOUT = "mobileapi.oas.timeout";
@@ -56,9 +57,9 @@ public class MobileApiProperties {
     static {
         defaults.put(PROP_CART_MISC_CHARGE_LABEL, "Fuel Surcharge");
         defaults.put(PROP_MEDIA_PATH, "http://www.freshdirect.com");
-        defaults.put(PROP_QUICKSHOP_LIST_MAX, 100);
+        defaults.put(PROP_QUICKSHOP_LIST_MAX, "100");
         defaults.put(PROP_OAS_PROTOCOL, "http");
-        defaults.put(PROP_OAS_CACHE_TIMEOUT,60);
+        defaults.put(PROP_OAS_CACHE_TIMEOUT, "60");
         refresh();
     }
 
@@ -128,17 +129,18 @@ public class MobileApiProperties {
     public static String getOasCommunicationProtocol() {
         return get(PROP_OAS_PROTOCOL);
     }
-/*
- *     private final static String PROP_ALCOHOL_AGE_WARNING = "mobileapi.mediapath.alcohol.agewarning";
-    private final static String PROP_ALCOHOL_HEALTH_WARNING = "mobileapi.mediapath.alcohol.healthwarning";
 
- */
+    /*
+     *     private final static String PROP_ALCOHOL_AGE_WARNING = "mobileapi.mediapath.alcohol.agewarning";
+        private final static String PROP_ALCOHOL_HEALTH_WARNING = "mobileapi.mediapath.alcohol.healthwarning";
+
+     */
     public static String getAlcoholAgeWarningMediaPath() {
         return get(PROP_ALCOHOL_AGE_WARNING);
     }
+
     public static String getAlcoholHealthWarningMediaPath() {
         return get(PROP_ALCOHOL_HEALTH_WARNING);
     }
-    
-    
+
 }
