@@ -35,7 +35,7 @@ public class DlvReservationModel extends ModelSupport {
 	private RoutingActivityType unassignedActivityType;
 	private String profileName;	
 	private boolean inUPS;
-	private String routingOrderId;
+	//private String routingOrderId;
 	/*private Date unassignedDateTime;
 	
 
@@ -84,7 +84,7 @@ public class DlvReservationModel extends ModelSupport {
 		Date expirationDateTime,
 		String timeslotId,
 		String zoneId,
-		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS,String routingOrderId) {
+		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS) {
 			
 		this.orderId = orderId;
 		this.customerId = customerId;
@@ -99,15 +99,7 @@ public class DlvReservationModel extends ModelSupport {
 		//this.unassignedDateTime=unassignedDateTime;
 		this.unassignedActivityType=unassignedActivityType;
 		this.inUPS=inUPS;
-		this.routingOrderId=routingOrderId;
-	}
-
-	public String getRoutingOrderId() {
-		return routingOrderId;
-	}
-
-	public void setRoutingOrderId(String routingOrderId) {
-		this.routingOrderId = routingOrderId;
+		//this.routingOrderId=routingOrderId;
 	}
 
 	public DlvReservationModel(
@@ -118,9 +110,9 @@ public class DlvReservationModel extends ModelSupport {
 		Date expirationDateTime,
 		String timeslotId,
 		String zoneId,
-		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS,String routingOrderId) {
+		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS) {
 			
-		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type, addressId,deliveryDate,zoneCode/*,unassignedDateTime*/,unassignedActivityType,inUPS,routingOrderId);
+		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type, addressId,deliveryDate,zoneCode/*,unassignedDateTime*/,unassignedActivityType,inUPS);
 		this.setPK(pk);
 
 	}

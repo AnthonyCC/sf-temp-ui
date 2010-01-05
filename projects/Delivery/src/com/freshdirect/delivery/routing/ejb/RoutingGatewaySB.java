@@ -24,10 +24,10 @@ public interface RoutingGatewaySB extends EJBObject {
 	
 	public void sendReserveTimeslotRequest(DlvReservationModel  reservation, ContactAddressModel address, FDTimeslot timeslot)throws RemoteException;
 	
-	public void sendCommitReservationRequest(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) throws RemoteException;
+	public void sendCommitReservationRequest(DlvReservationModel reservation,ContactAddressModel address) throws RemoteException;
 	
 	public void sendReleaseReservationRequest(DlvReservationModel reservation,ContactAddressModel address) throws RemoteException;
 
-	public void sendUpdateReservationRequest(DlvReservationModel reservation,ContactAddressModel address)throws RemoteException;
+	//public void sendUpdateReservationRequest(DlvReservationModel reservation,ContactAddressModel address)throws RemoteException;
 
 }

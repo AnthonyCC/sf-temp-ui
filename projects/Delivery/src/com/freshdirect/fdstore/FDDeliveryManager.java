@@ -510,6 +510,11 @@ public class FDDeliveryManager {
 			newExpTime.add(Calendar.HOUR, 1);
 			DlvManagerSB sb = getDlvManagerHome().create();
 
+			Date timeslotCutoff = reservation.getTimeslot().getCutoffDateTime();
+			
+			if (timeslotCutoff.before(newExpTime.getTime())) {
+				throw new FDResourceException("This timeslot cannot be reserved");
+			}
 			sb.extendReservation(reservation.getPK().getId(), newExpTime.getTime());
 
 			return new FDReservation(reservation.getPK(), reservation.getTimeslot(), newExpTime.getTime(), reservation
@@ -607,7 +612,7 @@ public class FDDeliveryManager {
 				DlvReservationModel reservation=sb.getReservation(rsvId);
 				 //System.out.println("Reservation ID in commitReservation() is -->"+rsvId+" Old routing order id-->"+oldReserve.getRoutingOrderId());
 				//if(reservation.getUnassignedActivityType()==null ||RoutingActivityType.CONFIRM_TIMESLOT.equals(reservation.getUnassignedActivityType()))
-					RoutingUtil.getInstance().sendCommitReservationRequest(reservation, address, oldReserve.getRoutingOrderId());
+					RoutingUtil.getInstance().sendCommitReservationRequest(reservation, address);
 			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -627,7 +632,7 @@ public class FDDeliveryManager {
 			 if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				 DlvReservationModel reservation=sb.getReservation(rsvId);
 				 if(isRestored) {
-					 RoutingUtil.getInstance().sendUpdateReservationRequest(reservation,address);
+					 //RoutingUtil.getInstance().sendUpdateReservationRequest(reservation,address);
 				 } else {
 					RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address);
 				 }
@@ -928,9 +933,9 @@ public class FDDeliveryManager {
 	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) throws FDResourceException{
 		try {
 			
-			
+			System.out.println( "In commitReservationEx()");
 			DlvManagerSB sb = getDlvManagerHome().create();
-			sb.commitReservationEx(reservation,address, previousOrderId);
+			sb.commitReservationEx(reservation, address);
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -953,7 +958,7 @@ public class FDDeliveryManager {
 		} 
 	}
 	
-	public void updateReservationEx(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) throws FDResourceException{
+	/*public void updateReservationEx(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) throws FDResourceException{
 		try {
 			
 			
@@ -965,7 +970,7 @@ public class FDDeliveryManager {
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} 
-	}
+	}*/
 	public List<DlvReservationModel> getUnassignedReservations(Date _date) throws FDResourceException {
 		
 		try {

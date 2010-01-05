@@ -383,8 +383,7 @@ public class DlvManagerDAO {
 			rs.getDate("BASE_DATE"),
 			rs.getString("ZONE_CODE"),
 			RoutingActivityType.getEnum( rs.getString("UNASSIGNED_ACTION")) ,
-			"X".equalsIgnoreCase(rs.getString("IN_UPS"))?true:false,
-			rs.getString("ROUTING_ORDER_ID"))
+			"X".equalsIgnoreCase(rs.getString("IN_UPS"))?true:false)
 			
 			;
 	}

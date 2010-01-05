@@ -108,11 +108,11 @@ public class RoutingUtil {
 			}
 	}
 	
-	public void sendCommitReservationRequest(DlvReservationModel reservation,ContactAddressModel address, String previousOrderId) {
+	public void sendCommitReservationRequest(DlvReservationModel reservation,ContactAddressModel address) {
 		
 		try {
 			RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
-			routingSB.sendCommitReservationRequest(reservation,address, previousOrderId);
+			routingSB.sendCommitReservationRequest(reservation, address);
 
 		} catch (Exception ce) {
 			home=null;
@@ -136,7 +136,7 @@ public class RoutingUtil {
 		
 	}
 	
-	public void sendUpdateReservationRequest(DlvReservationModel reservation,
+	/*public void sendUpdateReservationRequest(DlvReservationModel reservation,
 			ContactAddressModel address) {
 		try {
 			RoutingGatewaySB routingSB = getRoutingGatewayHome().create();
@@ -147,16 +147,16 @@ public class RoutingUtil {
 			ce.printStackTrace();
 			
 		}
-	}
+	}*/
 	public IOrderModel getOrderModel(ContactAddressModel address) {
-
-		return getOrderModel(address,address.getId()!=null?new StringBuilder("T").append(address.getId()).toString():new StringBuilder("T").append((int)(Math.random()/0.00001)).toString());
+		String strOrderNo = address.getId()!=null ? new StringBuilder("T").append(address.getId()).toString():new StringBuilder("T").append((int)(Math.random()/0.00001)).toString();
+		return getOrderModel(address,strOrderNo, strOrderNo);
 	}
 	
-	public IOrderModel getOrderModel(ContactAddressModel address, String orderNumber) {
+	public IOrderModel getOrderModel(ContactAddressModel address, String orderNumber, String reservationId) {
 		
 		IOrderModel order= new OrderModel();
-		order.setDeliveryInfo(getDeliveryModel(address));
+		order.setDeliveryInfo(getDeliveryModel(address, reservationId));
 		order.setCustomerName(new StringBuffer(100).append(address.getLastName()).append(", ").append(address.getFirstName()).toString());
 		order.setCustomerNumber(address.getCustomerId());
 		order.setOrderNumber(orderNumber);
@@ -224,9 +224,10 @@ public class RoutingUtil {
 		return loc;
 	}
 	
-	private IDeliveryModel getDeliveryModel(ContactAddressModel address) {
+	private IDeliveryModel getDeliveryModel(ContactAddressModel address, String reservationId) {
 		IDeliveryModel dlvInfo=new DeliveryModel();
 		dlvInfo.setDeliveryLocation(getLocation(address));
+		dlvInfo.setReservationId(reservationId);
 		return dlvInfo;
 	}
 	

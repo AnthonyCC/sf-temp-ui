@@ -220,7 +220,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
 						
 			port.schedulerConfirmOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), 
-											encodeString(orderModel.getOrderNumber()));
+											encodeString(orderModel.getDeliveryInfo().getReservationId()));
 			
 
 		} catch (RemoteException exp) {			
@@ -251,7 +251,8 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
 					
 			
-			port.schedulerCancelOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), encodeString(orderModel.getOrderNumber()));
+			port.schedulerCancelOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId)
+											, encodeString(orderModel.getDeliveryInfo().getReservationId()));
 			
 
 		} catch (RemoteException exp) {

@@ -153,7 +153,7 @@ public class RoutingDataEncoder {
 		
 		DeliveryAreaOrder order = new DeliveryAreaOrder();
 		order.setIdentity(encodeDeliveryAreaOrderIdentity(schedulerId.getRegionId(),schedulerId.getArea().getAreaCode()
-				,schedulerId.getDeliveryDate(), orderModel.getOrderNumber()));
+				,schedulerId.getDeliveryDate(), orderModel.getDeliveryInfo().getReservationId()));
 		order.setOrderType(orderType);
 		
 		order.setReservedTime(baseCalendar);
@@ -168,7 +168,7 @@ public class RoutingDataEncoder {
 		order.setServiceTime((int)(orderModel.getDeliveryInfo().getServiceTime()*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
-		order.setDescription(locationType);
+		order.setDescription(orderModel.getOrderNumber());
 		
 		order.setLatitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation()
 								.getGeographicLocation().getLatitude())*1000000));
@@ -183,7 +183,7 @@ public class RoutingDataEncoder {
 
 		DeliveryAreaOrder order = new DeliveryAreaOrder();
 		order.setIdentity(encodeDeliveryAreaOrderIdentity(schedulerId.getRegionId(),schedulerId.getArea().getAreaCode()
-				,schedulerId.getDeliveryDate(), orderModel.getOrderNumber()));
+				,schedulerId.getDeliveryDate(), orderModel.getDeliveryInfo().getReservationId()));
 		order.setOrderType(orderType);
 		order.setReservedTime(baseCalendar);
 		
@@ -192,7 +192,7 @@ public class RoutingDataEncoder {
 		order.setServiceTime((int)(orderModel.getDeliveryInfo().getServiceTime()*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
-		order.setDescription(locationType);
+		order.setDescription(orderModel.getOrderNumber());
 
 		order.setLatitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation()
 				.getGeographicLocation().getLatitude())*1000000));

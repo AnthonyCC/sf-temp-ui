@@ -19,19 +19,25 @@ public class TimeSlotLogDAO {
 	
 	private static final String EMPTY_TIMESLOT="1";
 	private static final String AVAILABLE_TIMESLOT="0";
-	private static final String TIMESLOT_LOG_INSERT="INSERT INTO DLV.TIMESLOT_LOG (ID, EVENT_DTM, ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS) VALUES (?,SYSDATE,?,?,?,?,?)";
+	private static final String TIMESLOT_LOG_INSERT="INSERT INTO DLV.TIMESLOT_LOG (ID, EVENT_DTM,RESERVATION_ID, ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS) VALUES (?,SYSDATE,?,?,?,?,?,?)";
 	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO DLV.TIMESLOT_LOG_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME, END_TIME, IS_EMPTY) VALUES (?,?,?,?,?)";
 	
-	public static void addEntry(Connection conn,String orderId,String customerId,RoutingActivityType actionType,List<java.util.List<IDeliverySlot>> slots, int responseTime,String comments ) throws SQLException{
+	public static void addEntry(Connection conn,String reservationId,String orderId,String customerId,RoutingActivityType actionType,List<java.util.List<IDeliverySlot>> slots, int responseTime,String comments ) throws SQLException{
 		
 		PreparedStatement ps = conn.prepareStatement(TIMESLOT_LOG_INSERT);
 		String id = SequenceGenerator.getNextId(conn, "DLV", "TIMESLOT_LOG_SEQUENCE");
 		ps.setString(1, id);
-		ps.setString(2, orderId);
-	    ps.setString(3, customerId);
-	    ps.setString(4, actionType.value());
-	    ps.setInt(5, responseTime);
-	    ps.setString(6, comments);
+		if(reservationId==null || "".equals(reservationId)) {
+			ps.setNull(2,java.sql.Types.VARCHAR);
+		}
+		else {
+			ps.setString(2,reservationId);
+		}
+		ps.setString(3, orderId);
+	    ps.setString(4, customerId);
+	    ps.setString(5, actionType.value());
+	    ps.setInt(6, responseTime);
+	    ps.setString(7, comments);
 	    ps.execute();
 	    ps.close();
 	    if (slots==null) return;
