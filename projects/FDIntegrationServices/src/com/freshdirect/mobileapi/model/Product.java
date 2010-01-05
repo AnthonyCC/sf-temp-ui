@@ -52,6 +52,7 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.attributes.Attribute;
+import com.freshdirect.fdstore.attributes.MultiAttribute;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
@@ -446,17 +447,26 @@ public class Product {
                 }
                 if (QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(
                         QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0) {
+                    
+                    MultiAttribute varMatrix = (MultiAttribute) sku.getVariationMatrix();
+                    List domains = varMatrix==null ? Collections.EMPTY_LIST : (List)varMatrix.getValue();
                     StringBuffer key = new StringBuffer();
                     key.append("*");
-                    if (skuMultAttr != null) {
-                        for (Iterator i = skuMultAttr.iterator(); i.hasNext();) {
-                            DomainValue domainValue = ((DomainValueRef) i.next()).getDomainValue();
-                            key.append(domainValue.getLabel());
-                            key.append(", ");
-                            key.deleteCharAt(key.length() - 2);
+                    for(Iterator i = domains.iterator(); i.hasNext(); ){
+                        DomainValue domainValue = null;
+                        //Added type checking as it was causing exceptions in some cases
+                        if(i.next() instanceof DomainValue) {
+                            domainValue = (DomainValue) i.next();
+                        } else {
+                            domainValue = ((DomainValueRef)i.next()).getDomainValue();
                         }
+                        
+                        key.append(domainValue.getLabel());
+                        key.append(", ");
+                        key.deleteCharAt(key.length()-2);
                     }
                     key.append(" avail");
+                    
                     this.shortTermUnavailable.put(key.toString(), earliestDate);
                 }
 

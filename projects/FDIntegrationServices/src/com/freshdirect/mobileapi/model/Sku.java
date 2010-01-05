@@ -379,4 +379,8 @@ public class Sku {
         return displayPriceString;
     }
 
+    public Attribute getVariationMatrix() {
+        return this.variationMatrix;
+    }
+
 }

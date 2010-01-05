@@ -145,18 +145,21 @@ public class ProductController extends BaseController {
 
         ProductConfiguration productConf = parseRequestObject(request, response, ProductConfiguration.class);
         Sku sku = product.getSkyByCode(productConf.getProduct().getSku().getCode());
-        SalesUnit su = product.getSalesUnitByName(productConf.getSalesUnit().getName());
-        Price price = new Price();
+        if(productConf.getSalesUnit() != null) {
+            
+            SalesUnit su = product.getSalesUnitByName(productConf.getSalesUnit().getName());
+            Price price = new Price();
 
-        try {
-            price.setPrice(product.getPrice(sku, su, productConf.getQuantity(), productConf.getOptions()));
-            if (product.isDisplayEstimatedQuantity()) {
-                price.setEstimatedQuantity(product.getEstimatedQuantity(sku, su, productConf.getQuantity()));
+            try {
+                price.setPrice(product.getPrice(sku, su, productConf.getQuantity(), productConf.getOptions()));
+                if (product.isDisplayEstimatedQuantity()) {
+                    price.setEstimatedQuantity(product.getEstimatedQuantity(sku, su, productConf.getQuantity()));
+                }
+            } catch (PricingException e) {
+                LOGGER.error("PricingException encountered on " + productConf.toString(), e);
             }
-        } catch (PricingException e) {
-            LOGGER.error("PricingException encountered on " + productConf.toString(), e);
+            setResponseMessage(model, price, user);
         }
-        setResponseMessage(model, price, user);
         return model;
 
     }
