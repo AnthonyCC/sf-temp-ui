@@ -91,7 +91,7 @@ public class RoutingDataEncoder {
 				orderModel = (IOrderModel)tmpIterator.next();
 				if(orderModel != null && orderModel.getDeliveryInfo() != null 
 											&& orderModel.getDeliveryInfo().getDeliveryLocation() != null) {					
-					result[intCount++] = encodeOrder(schedulerId, orderModel, locationType, orderType, true);
+					result[intCount++] = encodeBulkOrder(schedulerId, orderModel, locationType, orderType, true);
 				}
 			}
 		}
@@ -145,7 +145,38 @@ public class RoutingDataEncoder {
 				
 		return order;
 	}
+	
+	public static DeliveryAreaOrder encodeBulkOrder(IRoutingSchedulerIdentity schedulerId, IOrderModel orderModel
+			, String locationType
+			, String orderType
+			, boolean needTimeSlot) {
 
+		DeliveryAreaOrder order = new DeliveryAreaOrder();
+		order.setIdentity(encodeDeliveryAreaOrderIdentity(schedulerId.getRegionId(),schedulerId.getArea().getAreaCode()
+				,schedulerId.getDeliveryDate(), orderModel.getOrderNumber()));
+		order.setOrderType(orderType);
+
+		order.setReservedTime(baseCalendar);
+		order.setConfirmed(true);
+
+		order.setQuantity((int)orderModel.getDeliveryInfo().getPackagingInfo().getTotalSize1());
+
+		if(needTimeSlot) {
+			order.setDeliveryWindowStart(getTime(orderModel.getDeliveryInfo().getDeliveryStartTime()));
+			order.setDeliveryWindowEnd(getTime(orderModel.getDeliveryInfo().getDeliveryEndTime()));
+		}
+		order.setServiceTime((int)(orderModel.getDeliveryInfo().getServiceTime()*60));
+		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
+		order.setLocationType(locationType);
+		order.setDescription(locationType);
+
+		order.setLatitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation()
+				.getGeographicLocation().getLatitude())*1000000));
+		order.setLongitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation()
+				.getGeographicLocation().getLongitude())*1000000));
+		return order;
+	}
+	
 	public static DeliveryAreaOrder encodeOrder(IRoutingSchedulerIdentity schedulerId, IOrderModel orderModel
 													, String locationType
 													, String orderType
