@@ -50,14 +50,9 @@ public class RatingPlusScalePriceTag extends ProductRatingTag {
 			
 			int tieredPercentage = impression.getProductModel().getTieredDealPercentage();
 			
-			if (tieredPercentage > 0.0) {
-				// TODO place this calculation into the material / tiered pricing model
-				if (savingsPercentage > 0.0) {
-					tieredPercentage = (int) (((double) tieredPercentage) / (1.0 - savingsPercentage));
-				}
-				scaleString = "SAVE " + tieredPercentage + "%&nbsp;&nbsp;" + scaleString;
-			} else {
-				scaleString = null;
+			// TODO include this calculation into the material / tiered pricing model
+			if (savingsPercentage > 0.0) {
+				tieredPercentage = (int) (((double) tieredPercentage) / (1.0 - savingsPercentage));
 			}
 			
 			String rating = JspMethods.getProductRating(product);
@@ -96,7 +91,7 @@ public class RatingPlusScalePriceTag extends ProductRatingTag {
 					buf.append("<br>");
 				
 				if ( scaleString != null ) {
-					buf.append("&nbsp;&nbsp;" + scaleString);
+					buf.append("&nbsp;&nbsp;" + "SAVE" + (tieredPercentage > 0 ? " " + tieredPercentage + "%" : "!") + "&nbsp;&nbsp;" + scaleString);
 				}
 				buf.append( "</div></font>" );
 			}
