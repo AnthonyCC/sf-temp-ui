@@ -157,7 +157,7 @@ public class FDCustomerManager {
 	static {
 		try {
 			LOCATOR=new FDServiceLocator(FDStoreProperties.getInitialContext());
-			startGiftCardNSMThread();
+//			startGiftCardNSMThread();
 		} catch (NamingException e) {
 			LOGGER.error(e);
 			LOCATOR=new FDServiceLocator();
@@ -3344,13 +3344,16 @@ public class FDCustomerManager {
 				sb.resubmitGCOrders();
 			} catch (CreateException ce) {
 				invalidateManagerHome();
-//				throw new FDResourceException(ce, "Error creating session bean");
 				Logger.warning("Error creating session bean:"+ce);
+				ce.printStackTrace();
+//				throw new FDResourceException(ce, "Error creating session bean");					
 			} catch (RemoteException re) {
 				invalidateManagerHome();
-//				throw new FDResourceException(re, "Error talking to session bean");
+				re.printStackTrace();
 				Logger.warning("Error talking to session bean:"+re);
+//				throw new FDResourceException(re, "Error talking to session bean");				
 			} catch(FDResourceException fe){
+				fe.printStackTrace();
 				Logger.warning("Error looking up for manager:"+fe);
 			}
 		}
