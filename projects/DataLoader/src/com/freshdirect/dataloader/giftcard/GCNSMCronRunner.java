@@ -13,11 +13,12 @@ public class GCNSMCronRunner {
 	public static void main(String[] args) {
 
 		try {
-			LOGGER.info("Inside GCNSMCronRunner..");
+			LOGGER.info("Start GCNSMCronRunner..");
 			FDCustomerManager.resubmitGCOrders();
-			LOGGER.info("Completed GCNSMCronRunner..");
+			LOGGER.info("Stop GCNSMCronRunner..");
 		} catch (Exception e) {			
 			e.printStackTrace();
+			LOGGER.info("Error in GCNSMCronRunner..");
 		}
 	}
 
