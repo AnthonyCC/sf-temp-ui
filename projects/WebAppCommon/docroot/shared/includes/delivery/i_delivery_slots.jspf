@@ -8,6 +8,7 @@
 <%@ page import="com.freshdirect.delivery.DlvZoneInfoModel" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.fdstore.util.CTDeliveryCapacityLogic" %>
+<%@ page import="com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Calendar" %>
@@ -127,20 +128,23 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 							if (normalAvailCapacity < 1 && availCapacity > 0) {
 								request.setAttribute("shownCTSlot", "TRUE");
 							}
-
+							double zonePromoAmountSpec=0;							
+							if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null)
+								zonePromoAmountSpec=FDPromotionZoneRulesEngine.getDiscount(user_ct,slot);
+							
 							%>
-							<div class="slotRow" style="background:#<%= highlightPreReserved ? "f93" : normalAvailCapacity < 1 && availCapacity > 0 ? "996699" : bgcolor %>;padding:1px;padding-top:2px;padding-bottom:2px;">
+							<div class="slotRow" style="background:#<%= zonePromoAmountSpec>0?"8fb16c" :(highlightPreReserved ? "f93" : normalAvailCapacity < 1 && availCapacity > 0 ? "996699" : bgcolor) %>;padding:1px;padding-top:2px;padding-bottom:2px;">
 								<span class="control">
 									<% 
 									if (availCapacity < 1 && !(selectedSlot || preReservedSlot)) {
 										if (isStaticSlot) {
-											%><img src="/media_stat/images/template/help/orangedot_trans.gif" width="10" height="10" alt="Orange = Full"><%
+											%><img src="/media_stat/images/windowsteering/legend_view_full.png" width="10" height="10" alt="Orange = Full"><%
 										} else {
 											%><img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" hspace="4" alt="X = Full"><%
 										}
 									} else {
 										if (isStaticSlot){
-											%><img src="/media_stat/images/template/help/greendot_trans.gif" width="10" height="10" alt="Green = Available<%= normalAvailCapacity < 1 && availCapacity > 0 ? " - Chef's Table Only":"" %>"><%
+											%><img src="/media_stat/images/windowsteering/legend_view_avail.png" width="10" height="10" alt="Green = Available<%= normalAvailCapacity < 1 && availCapacity > 0 ? " - Chef's Table Only":"" %>"><%
 										} else {
 											%><input type="radio"
 												id="deliveryTimeslotId<%= slot.getTimeslotId() %>" name="deliveryTimeslotId"
@@ -149,7 +153,9 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 										}
 									}
 									//int slotEndHour = DateUtil.toCalendar(slot.getBegDateTime()).get(Calendar.HOUR_OF_DAY);
-									%>
+									
+									%>		
+								
 								</span><span class="time"><!-- <%= availCapacity %>, <%= normalAvailCapacity %>, <%= timeslot_page_type_ct %> --><%= slot.getDisplayString(firstSlot) %></span>
 							</div>
 							<%
