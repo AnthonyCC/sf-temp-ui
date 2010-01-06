@@ -13,7 +13,9 @@ public class GCNSMCronRunner {
 	public static void main(String[] args) {
 
 		try {
+			LOGGER.info("Inside GCNSMCronRunner..");
 			FDCustomerManager.resubmitGCOrders();
+			LOGGER.info("Completed GCNSMCronRunner..");
 		} catch (Exception e) {			
 			e.printStackTrace();
 		}
