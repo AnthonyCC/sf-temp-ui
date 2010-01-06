@@ -25,8 +25,8 @@ import com.freshdirect.webapp.util.ProductImpression;
  *
  */
 public class RatingPlusScalePriceTag extends ProductRatingTag {
+	private static final long serialVersionUID = 1814071642083139881L;
 
-	
 	private static final String quickShopStyleScale = " style=\"line-height:16px; font-size: 11px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;\"";		// bold, red
 	
 	double savingsPercentage = 0 ; // savings % off
@@ -47,6 +47,18 @@ public class RatingPlusScalePriceTag extends ProductRatingTag {
 			ProductImpression impression = new ProductImpression(product);			
 			
 			String scaleString = impression.getProductModel().getTieredPrice(savingsPercentage);
+			
+			int tieredPercentage = impression.getProductModel().getTieredDealPercentage();
+			
+			if (tieredPercentage > 0.0) {
+				// TODO place this calculation into the material / tiered pricing model
+				if (savingsPercentage > 0.0) {
+					tieredPercentage = (int) (((double) tieredPercentage) / (1.0 - savingsPercentage));
+				}
+				scaleString = "SAVE " + tieredPercentage + "%&nbsp;&nbsp;" + scaleString;
+			} else {
+				scaleString = null;
+			}
 			
 			String rating = JspMethods.getProductRating(product);
 			
@@ -84,7 +96,7 @@ public class RatingPlusScalePriceTag extends ProductRatingTag {
 					buf.append("<br>");
 				
 				if ( scaleString != null ) {
-					buf.append("&nbsp;&nbsp;" + "Save!  " + scaleString + "");
+					buf.append("&nbsp;&nbsp;" + scaleString);
 				}
 				buf.append( "</div></font>" );
 			}

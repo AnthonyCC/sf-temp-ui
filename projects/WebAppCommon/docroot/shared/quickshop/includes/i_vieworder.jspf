@@ -587,7 +587,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
    
     <br><br>
     
-    <display:RatingPlusScalePrice product="<%= productNode %>" action="<%= actionUrl %>" noBr="true"/>
+    <display:RatingPlusScalePrice product="<%= productNode %>" action="<%= actionUrl %>" noBr="true" leftAlign="true"/>
     </td>
     
     <td align="right">

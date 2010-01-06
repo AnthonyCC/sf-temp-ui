@@ -260,7 +260,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		if (skuCode != null) {
 			try {
 				productInfo = FDCachedFactory.getProductInfo(skuCode);
-				if (productInfo.hasWasPrice()) {
+				if (productInfo.getTieredDealPercentage() > 0) {
 					deal = productInfo.getTieredDealPercentage();
 				}
 			} catch (FDSkuNotFoundException ex) {
