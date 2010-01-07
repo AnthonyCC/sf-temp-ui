@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDException;
@@ -39,7 +40,7 @@ public class WhatsGood {
 
     private static GeneralCacheAdministrator cacheAdmin = GeneralCacheAdministratorFactory.getCacheAdminInstance();
 
-    private static final Logger LOG = Logger.getLogger(WhatsGood.class);
+    private static final Category LOG = Logger.getLogger(WhatsGood.class);
 
     /**
      * Returns list of category Ids configured in the property file (or CMS)
@@ -265,9 +266,9 @@ public class WhatsGood {
                         if (content instanceof ProductModel) {
                             try {
                                 result.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
-                            } catch (ModelException e) {
+                            } catch (Exception e) {
                                 //Don't let one rotten egg ruin it for the bunch
-                                LOG.error("ModelException encountered", e);
+                                LOG.error("ModelException encountered. Product ID=" + ((ProductModel) content).getFullName(), e);
                             }
                         }
                     }
