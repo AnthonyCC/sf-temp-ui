@@ -221,7 +221,7 @@ if (useLoggedIn) {
 		urlG.set("customerEmail", customerEmail);
 		customerId = ts.getErpIDForUserID(customerEmail); 
 		user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
-		cohortId = CohortSelector.getInstance().getCohortName(primaryKey);
+		cohortId = CohortSelector.getInstance().getCohortName(user.getPrimaryKey());
 	}
 }
 
@@ -292,11 +292,13 @@ if (useLoggedIn && user != null) {
 	if (("allItems").equals(cartAlgorithm)) {
 	    FDStoreRecommender.initYmalSource(si, user, request);
 	    source = si.getYmalSource();
-	    si.setCurrentNode(source);
-	} else {
+	    if (!EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature))
+	    	si.setCurrentNode(source);
+	} else if ("recentlyAdded".equals(cartAlgorithm)) {
 		source = YmalUtil.resolveYmalSource(user, null, request);
-		if (YmalUtil.getSelectedCartLine(user) != null)
-			si.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
+	    if (!EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature))
+			if (YmalUtil.getSelectedCartLine(user) != null)
+				si.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
 	}
 } else if (recentOrderlines != null && !"".equals(recentOrderlines)) {
 	List prods = new ArrayList();
