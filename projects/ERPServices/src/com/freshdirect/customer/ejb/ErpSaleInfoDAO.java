@@ -800,10 +800,10 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 		PreparedStatement ps = conn.prepareStatement(GC_NSM_ORD_SEARCH_QUERY);
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
-			Date actionDate = rs.getDate("action_date");			
+		//	Date actionDate = rs.getTimestamp("action_date").;			
 			Long currentTime = System.currentTimeMillis()-(FDStoreProperties.getNSMAuthSkipSecsForGC()*1000);
 			Date currentDate = new Date(currentTime);
-			if(currentDate.after(actionDate)){
+			if(null != rs.getTimestamp("action_date") && rs.getTimestamp("action_date").before(currentDate)){
 				ErpSaleInfo erpSaleInfo = new ErpSaleInfo(
 						rs.getString("ID"),
 						rs.getString("CUSTOMER_ID"),
