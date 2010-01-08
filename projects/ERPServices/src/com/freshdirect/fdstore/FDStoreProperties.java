@@ -464,9 +464,9 @@ public class FDStoreProperties {
 
 		defaults.put(PROP_RESTRICTED_PAYMENT_METHOD_HOME,	"freshdirect.payment.RestrictedPaymentMethod");
 
-		defaults.put(PROP_REFRESHSECS_PRODUCTINFO, "600");
+		defaults.put(PROP_REFRESHSECS_PRODUCTINFO, "6000");
 		defaults.put(PROP_REFRESHSECS_PRODUCT, "7200");
-		defaults.put(PROP_PRODUCT_CACHE_SIZE, "30000");
+		defaults.put(PROP_PRODUCT_CACHE_SIZE, "100");
 
 		// mktadmin
 		defaults.put(MKT_ADMIN_FILE_UPLOAD_SIZE, "2000");
@@ -489,12 +489,12 @@ public class FDStoreProperties {
 
 		defaults.put(PROP_DLV_PROMO_EXP_DATE, "2004-01-01");
 
-		defaults.put(PROP_PRELOAD_STORE, "true");
+		defaults.put(PROP_PRELOAD_STORE, "false");
 		// No default for PROP_WARMUP_CLASS
-		defaults.put(PROP_PRELOAD_NEWNESS, "true");
-		defaults.put(PROP_PRELOAD_REINTRODUCED, "true");
-		defaults.put(PROP_PRELOAD_SMARTSTORE, "true");
-		defaults.put(PROP_PRELOAD_AUTOCOMPLETIONS, "true");
+		defaults.put(PROP_PRELOAD_NEWNESS, "false");
+		defaults.put(PROP_PRELOAD_REINTRODUCED, "false");
+		defaults.put(PROP_PRELOAD_SMARTSTORE, "false");
+		defaults.put(PROP_PRELOAD_AUTOCOMPLETIONS, "false");
 
 		defaults.put(PROP_CMS_MEDIABASEURL, "http://www.freshdirect.com");
 
@@ -556,9 +556,9 @@ public class FDStoreProperties {
 
 		defaults.put(SMARTSTORE_NEWPRODUCTS_DAYS, "30");
 
-		defaults.put(SMARTSTORE_CACHE_DATA_SOURCES, "true");
+		defaults.put(SMARTSTORE_CACHE_DATA_SOURCES, "false");
 		defaults.put(SMARTSTORE_CACHE_DATA_SOURCES_SIZE, "150");
-		defaults.put(SMARTSTORE_CACHE_ONLINE_FACTORS, "true");
+		defaults.put(SMARTSTORE_CACHE_ONLINE_FACTORS, "false");
 		defaults.put(SMARTSTORE_CMS_RECOMM_REFRESH_RATE, Long.toString(Long.MAX_VALUE / 60 / 1000));
 
 		defaults.put(SMARTSTORE_OFFLINE_REC_RECENT_DAYS, "365");
@@ -956,6 +956,12 @@ public class FDStoreProperties {
 	public static Context getInitialContext() throws NamingException {
 		Hashtable env = new Hashtable();
 		env.put(Context.PROVIDER_URL, getProviderURL() );
+		env.put(Context.INITIAL_CONTEXT_FACTORY, getInitialContextFactory() );
+		return new InitialContext(env);
+	}
+	public static Context getRoutingInitialContext() throws NamingException {
+		Hashtable env = new Hashtable();
+		env.put(Context.PROVIDER_URL, getRoutingProviderURL() );
 		env.put(Context.INITIAL_CONTEXT_FACTORY, getInitialContextFactory() );
 		return new InitialContext(env);
 	}

@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
@@ -65,7 +64,6 @@ import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.ejb.DlvRestrictionDAO;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
@@ -78,18 +76,9 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
-import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
-import com.freshdirect.routing.model.IPackagingModel;
-import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
-import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
-import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
-import com.freshdirect.routing.service.proxy.PlantServiceProxy;
-import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
-import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class DlvManagerSessionBean extends SessionBeanSupport {
 
@@ -1647,51 +1636,18 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	public List<java.util.List<IDeliverySlot>> getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> _timeSlots, ContactAddressModel address) {
 		
 		long startTime=System.currentTimeMillis();
-		List<java.util.List<IDeliverySlot>> timeSlots=new ArrayList<java.util.List<IDeliverySlot>>();
-		RoutingUtil util=RoutingUtil.getInstance();
-		IOrderModel order=util.getOrderModel(address);
+		List<java.util.List<IDeliverySlot>> timeSlots=null;
+		//String orderNum=RoutingUtil.getOrderNo(address);
 		try {
-			if(_timeSlots==null ||_timeSlots.isEmpty()|| address==null)
-				return timeSlots;
-			DeliveryServiceProxy dlvService = new DeliveryServiceProxy();
-			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
-			String zoneCode = null;
-			Map<java.util.Date,java.util.List<IDeliverySlot>> routingTimeSlots=util.getDeliverySlot(_timeSlots);
-			//LOGGER.info("getTimeslotForDateRangeAndZoneEx():: DeliverySlot Map:"+routingTimeSlots);
-			Iterator<java.util.Date> it = routingTimeSlots.keySet().iterator();
-			java.util.Date _date = null;
-			List<IDeliverySlot> _tmpSlots = null;
-			boolean isLocationSaved = false;
-			IPackagingModel historyPackageInfo = this.getHistoricOrderSize(order);
-			
-			while(it.hasNext()) {
-				_date = it.next();
-				_tmpSlots = routingTimeSlots.get(_date);
-				if(_tmpSlots != null && _tmpSlots.size() > 0) {
-					zoneCode = _tmpSlots.get(0).getZoneCode();
-					order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(zoneCode));
-					order.getDeliveryInfo().setDeliveryDate(_date);
-					IServiceTimeScenarioModel srvScenario=getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
-					order.getDeliveryInfo().setPackagingInfo(estimateOrderSize(order, srvScenario, historyPackageInfo));
-					order.getDeliveryInfo().setServiceTime(dlvService.estimateOrderServiceTime(order, srvScenario));
-					if(!isLocationSaved) {
-						isLocationSaved = true;
-						this.schedulerSaveLocation(order);
-					}
-					timeSlots.add(schedulerAnalyzeOrder(order, _date, 1, _tmpSlots));
-				}
-				//LOGGER.info("getTimeslotForDateRangeAndZoneEx():: Date:" +RoutingDateUtil.formatDateTime(_date)+" DeliverySlot:"+timeSlots);
-			}
+			timeSlots=RoutingUtil.getTimeslotForDateRangeAndZone(_timeSlots, address);
 			long endTime=System.currentTimeMillis();
-			logTimeslots(null,order.getOrderNumber(),address.getCustomerId(),RoutingActivityType.GET_TIMESLOT,timeSlots,(int)(endTime-startTime),address);
+			//logTimeslots(null,orderNum,address.getCustomerId(),RoutingActivityType.GET_TIMESLOT,timeSlots,(int)(endTime-startTime),address);
+			logTimeslots(null,null,RoutingActivityType.GET_TIMESLOT,timeSlots,(int)(endTime-startTime),address);
 		} catch (Exception e) {
-			logTimeslots(null,order.getOrderNumber(),address.getCustomerId(),RoutingActivityType.GET_TIMESLOT,null,0,address);
+			logTimeslots(null,null,RoutingActivityType.GET_TIMESLOT,null,0,address);
 			e.printStackTrace();
 			LOGGER.debug("Exception in getTimeslotForDateRangeAndZoneEx():"+e.toString());
-		} /*catch (ParseException e) {
-			e.printStackTrace();
-			LOGGER.warn("getTimeslotForDateRangeAndZoneEx():"+e.toString());
-		}*/
+		}
 		
 		return timeSlots;
 	}
@@ -1720,43 +1676,6 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		return _reservation;
 	}
 	
-	private IDeliveryReservation doReserveEx(DlvReservationModel reservation,ContactAddressModel address , FDTimeslot timeslot) {
-		
-		long startTime=System.currentTimeMillis();
-				
-		IDeliverySlot reservedSlot=null;
-		
-		RoutingUtil util=RoutingUtil.getInstance();
-		IOrderModel order=util.getOrderModel(address, reservation.getOrderId(), reservation.getId());
-		IDeliveryReservation _reservation=null;
-		try {
-			
-			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
-			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
-			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(timeslot.getZoneCode()));
-			order=setDeliveryInfo(order,timeslot.getBaseDate());
-			reservedSlot = util.getDeliverySlot(timeslot.getDlvTimeslot());
-			_reservation=schedulerReserveOrder(order,reservedSlot );
-			
-			long endTime=System.currentTimeMillis();
-			logTimeslots(reservation.getId(),order.getOrderNumber(),reservation.getCustomerId(),RoutingActivityType.RESERVE_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime),address);
-			if(_reservation==null || !_reservation.isReserved()) {
-				setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);
-			} else if(reservation.isUnassigned()) {
-				clearUnassignedInfo(reservation.getId());
-			}
-			
-			
-		} catch (Exception e) {
-			logTimeslots(reservation.getId(),order.getOrderNumber(),address.getCustomerId(),RoutingActivityType.RESERVE_TIMESLOT,null,0,address);
-			e.printStackTrace();
-			LOGGER.debug("Exception in reserveTimeslotEx():"+e.toString());
-			LOGGER.debug(reservation);
-			setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);
-		}
-		setRoutingIndicator(reservation.getId(),order.getOrderNumber());
-		return _reservation;
-	}
 	
 	
 	
@@ -1786,57 +1705,25 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		
 		if(reservation==null || address==null ||!reservation.isInUPS()/*|| reservation.getUnassignedActivityType().*/)
 			return ;
-		RoutingUtil util=RoutingUtil.getInstance();
-		IOrderModel order= util.getOrderModel(address, reservation.getOrderId(), reservation.getId());
-		
+		IOrderModel order= RoutingUtil.getOrderModel(address, reservation.getOrderId(), reservation.getId());
 		try {
-			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
-			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
-			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getZoneCode()));
-			order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
-			//this.schedulerUpdateOrder(order, reservation,reservation.getRoutingOrderId());
-			if(reservation.isUnassigned()) {
+			boolean isUpdated=RoutingUtil.updateReservation(reservation, order);
+			if(reservation.isUnassigned()&& isUpdated) {
 				clearUnassignedInfo(reservation.getId());
-			}
-			
+			}else if(!isUpdated) {
+	             throw new RoutingServiceException(null, IIssue.PROCESS_UPDATE_UNSUCCESSFUL);
+	        }
+	        else {
+	             this.setRoutingIndicator(reservation.getId(), order.getOrderNumber());
+	        }
 		} catch (Exception e) {
 			LOGGER.debug("Exception in updateReservationEx():"+e.toString());
 			e.printStackTrace();
 			setUnassignedInfo(reservation.getId(),RoutingActivityType.CONFIRM_TIMESLOT);		
 		}
 	}
-	
-	private void doConfirmEx(DlvReservationModel reservation,ContactAddressModel address) {
-		
-		long startTime=System.currentTimeMillis();
-		System.out.println(" In doConfirmEx()--->"+reservation.getId());
-		RoutingUtil util=RoutingUtil.getInstance();
-		IOrderModel order= util.getOrderModel(address, reservation.getOrderId(), reservation.getId());
-		
-		try {
-			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
-			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
-			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getZoneCode()));
-			order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
-			schedulerConfirmOrder(order, reservation);
-			long endTime=System.currentTimeMillis();
-			logTimeslots(reservation.getId(),order.getOrderNumber(),reservation.getCustomerId(),RoutingActivityType.CONFIRM_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime),address);
-			if(reservation.isUnassigned()) {
-				clearUnassignedInfo(reservation.getId());
-			}
-			
-		} catch (Exception e) {
-			logTimeslots(reservation.getId(),order.getOrderNumber(),address.getCustomerId(),RoutingActivityType.CONFIRM_TIMESLOT,null,0,address);
-			e.printStackTrace();
-			LOGGER.debug("Exception in commitReservationEx():"+e.toString());
-			LOGGER.debug(reservation);
-			
-			setUnassignedInfo(reservation.getId(),RoutingActivityType.CONFIRM_TIMESLOT);
-		}
-	}
-	
 	public void releaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) {
-				
+		
 		if(reservation==null || address==null ||!reservation.isInUPS())
 			return ;		
 		
@@ -1845,36 +1732,6 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		} else {
 			doReleaseReservationEx(reservation, address);
 		}	
-	}
-	
-	private void doReleaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) {
-		
-		long startTime=System.currentTimeMillis();
-		if(reservation==null || address==null ||!reservation.isInUPS())
-			return ;		
-		
-		RoutingUtil util=RoutingUtil.getInstance();
-		IOrderModel order= util.getOrderModel(address,reservation.getOrderId(),reservation.getId());
-		try {
-			DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
-			order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
-			order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(reservation.getZoneCode()));
-			order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
-			schedulerCancelOrder(order,reservation);
-			long endTime=System.currentTimeMillis();
-			logTimeslots(reservation.getId(),order.getOrderNumber(),reservation.getCustomerId(),RoutingActivityType.CANCEL_TIMESLOT,getDeliverySlots(reservation),(int)(endTime-startTime),address);
-			if(reservation.isUnassigned()) {
-				clearUnassignedInfo(reservation.getId());
-			}
-			
-		} catch (Exception e) {
-			logTimeslots(reservation.getId(),order.getOrderNumber(),address.getCustomerId(),RoutingActivityType.CANCEL_TIMESLOT,null,0,address);
-			e.printStackTrace();
-			LOGGER.debug("Exception in releaseReservationEx():"+e.toString());
-			LOGGER.debug(reservation);
-			setUnassignedInfo(reservation.getId(),RoutingActivityType.CANCEL_TIMESLOT);
-		}
-		//setUPSIndicator(reservation.getId());
 	}
 	
 	public void setUnassignedInfo(String reservationId,RoutingActivityType activity ) {
@@ -2001,112 +1858,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	
 	}
-	private List<java.util.List<IDeliverySlot>> getDeliverySlots(DlvReservationModel reservation) {
-		List<IDeliverySlot> _slots=new ArrayList<IDeliverySlot>();
-		try {
-			DlvTimeslotModel timeslotModel= this.getTimeslotById(reservation.getTimeslotId());
-			IDeliverySlot slot=RoutingUtil.getInstance().getDeliverySlot(timeslotModel);
-			_slots.add(slot);
-		} catch (FinderException e) {
-		}
-		List<java.util.List<IDeliverySlot>> slots =new ArrayList<java.util.List<IDeliverySlot>>();
-		slots.add(_slots);
-		return slots;
-	}
-	private List<java.util.List<IDeliverySlot>> getDeliverySlots(FDReservation reservation) {
-		List<IDeliverySlot> _slots=new ArrayList<IDeliverySlot>();
-		try {
-			DlvTimeslotModel timeslotModel= this.getTimeslotById(reservation.getTimeslotId());
-			IDeliverySlot slot=RoutingUtil.getInstance().getDeliverySlot(timeslotModel);
-			_slots.add(slot);
-		} catch (FinderException e) {
-		}
-		List<java.util.List<IDeliverySlot>> slots =new ArrayList<java.util.List<IDeliverySlot>>();
-		slots.add(_slots);
-		return slots;
-	}
+
 	
-	private IOrderModel setDeliveryInfo(IOrderModel order, Date deliveryDate) throws RoutingServiceException {
-		
-		DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
-		order.getDeliveryInfo().setDeliveryDate(deliveryDate);
-		IPackagingModel historyPackageInfo = this.getHistoricOrderSize(order);
-		IServiceTimeScenarioModel srvScenario=getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
-		order.getDeliveryInfo().setPackagingInfo(estimateOrderSize(order, srvScenario, historyPackageInfo));
-		order.getDeliveryInfo().setServiceTime(dlvService.estimateOrderServiceTime(order,srvScenario));
-		return order;
-	}
 	
-	private ILocationModel getLocation(IOrderModel order) throws RoutingServiceException  {
-		GeographyServiceProxy geoSrv = new GeographyServiceProxy();
-		return geoSrv.locateOrder(order);
-	}
-	
-	private IServiceTimeScenarioModel getRoutingScenario(Date dlvDate) throws RoutingServiceException {
-		return new RoutingInfoServiceProxy().getRoutingScenario(dlvDate);
-	}
-	
-	private IPackagingModel estimateOrderSize(IOrderModel order, IServiceTimeScenarioModel scenario, IPackagingModel historyInfo) throws RoutingServiceException {
-		return new PlantServiceProxy().estimateOrderSize(order, scenario, historyInfo);
-	}
-	
-	private IPackagingModel getHistoricOrderSize(IOrderModel order) throws RoutingServiceException {
-		return new PlantServiceProxy().getHistoricOrderSize(order);
-	}
-	
-	private List<IDeliverySlot> schedulerAnalyzeOrder(IOrderModel orderModel, Date startDate, int noOfDays, List<IDeliverySlot> slots) throws RoutingServiceException {
-		
-		return new RoutingEngineServiceProxy().schedulerAnalyzeOrder(orderModel, RoutingServicesProperties.getDefaultLocationType(), RoutingServicesProperties.getDefaultOrderType(), startDate, noOfDays, slots);
-	}
-	
-	private void schedulerSaveLocation(IOrderModel orderModel) throws RoutingServiceException {
-		
-		new RoutingEngineServiceProxy().schedulerSaveLocation(orderModel, RoutingServicesProperties.getDefaultLocationType());
-	}
-	
-	private IDeliveryReservation schedulerReserveOrder(IOrderModel orderModel, IDeliverySlot slot) throws RoutingServiceException {
-		
-		IDeliveryReservation reservation=new RoutingEngineServiceProxy().schedulerReserveOrder(orderModel, slot, RoutingServicesProperties.getDefaultLocationType(), RoutingServicesProperties.getDefaultOrderType());
-		LOGGER.info("schedulerReserveOrder():: DeliveryReservation:"+reservation.isReserved());
-		return reservation;
-	}
-	
-	private void schedulerConfirmOrder(IOrderModel orderModel,DlvReservationModel reservation) throws RoutingServiceException {
-		
-		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
-		orderModel.setOrderNumber(reservation.getOrderId());
-		orderModel.getDeliveryInfo().setReservationId(reservation.getId());
-		//schedulerUpdateOrder(orderModel,reservation, previousOrderId);
-		routingService.schedulerConfirmOrder(orderModel);
-	}
-	
-	private void schedulerUpdateOrder(IOrderModel orderModel,DlvReservationModel reservation, String previousOrderId) throws RoutingServiceException {
-		
-		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
-        orderModel.setOrderNumber(reservation.getOrderId());
-        boolean isUpdated = true;
-        if(orderModel.getOrderNumber() != null && !orderModel.getOrderNumber().equalsIgnoreCase(previousOrderId)) {
-             isUpdated=routingService.schedulerUpdateOrder(orderModel, previousOrderId);
-             LOGGER.debug("routingService.schedulerUpdateOrder() :"+isUpdated);
-        }                       
-        if(!isUpdated) {
-             throw new RoutingServiceException(null, IIssue.PROCESS_UPDATE_UNSUCCESSFUL);
-        }
-        else {
-             this.setRoutingIndicator(reservation.getId(), orderModel.getOrderNumber());
-        }
-	}
-	
-	private void schedulerCancelOrder(IOrderModel orderModel,DlvReservationModel reservation) throws RoutingServiceException {
-		
-		
-		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();
-		orderModel.setOrderNumber( reservation.getOrderId());
-		routingService.schedulerCancelOrder(orderModel);
-		//LOGGER.info("schedulerCancelOrder():: releaseReservationEx:"+"SUCCESS");
-		
-		return ;
-	}
+
 	
 	private void logActivity(EnumTransactionSource source, EnumAccountActivityType type,String initiator, String customerId, String note) {
 		
@@ -2135,7 +1890,8 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		
 		return resp.toString();
 	}
-	private void logTimeslots(String reservationId,String orderId,String customerId,RoutingActivityType actionType,List<java.util.List<IDeliverySlot>> slots, int responseTime,ContactAddressModel address) {
+	//private void logTimeslots(String reservationId,String orderId,String customerId,RoutingActivityType actionType,List<java.util.List<IDeliverySlot>> slots, int responseTime,ContactAddressModel address) {
+	private void logTimeslots(DlvReservationModel reservation,IOrderModel order,RoutingActivityType actionType,List<java.util.List<IDeliverySlot>> slots, int responseTime,ContactAddressModel address) {
 		/*for (List<IDeliverySlot> list : slots) {
 		    for (IDeliverySlot slot : list) {
 		    	System.out.println("Base Date:"+slot.getSchedulerId().getDeliveryDate());
@@ -2146,10 +1902,12 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		    }
 		}*/
 		
+		
+		
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			TimeSlotLogDAO.addEntry(conn,reservationId, orderId, customerId, actionType, slots,responseTime,getAddressString(address)  );
+			TimeSlotLogDAO.addEntry(conn,(null==reservation)?null:reservation.getId(), (null==order)?RoutingUtil.getOrderNo(address):order.getOrderNumber(), (null==reservation)?address.getCustomerId():reservation.getCustomerId() , actionType, slots,responseTime,getAddressString(address)  );
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -2170,5 +1928,80 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		_cModel.setFrom(model, "", "", customerId);
 		return _cModel;
 	}
+	private IDeliveryReservation doReserveEx(DlvReservationModel reservation,ContactAddressModel address , FDTimeslot timeslot) {
+		
+		long startTime=System.currentTimeMillis();
+		IOrderModel order=RoutingUtil.getOrderModel(address, reservation.getOrderId(), reservation.getId());
+		IDeliveryReservation _reservation=null;
+		try {
+			 _reservation=RoutingUtil.reserveTimeslot(order, timeslot);
+			long endTime=System.currentTimeMillis();
+			logTimeslots(reservation,order,RoutingActivityType.RESERVE_TIMESLOT,RoutingUtil.getDeliverySlots(getTimeslotById(reservation.getTimeslotId())),(int)(endTime-startTime),address);
+			if(_reservation==null || !_reservation.isReserved()) {
+					setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);
+			} else if(reservation.isUnassigned()) {
+					clearUnassignedInfo(reservation.getId());
+			}
+	
+		} catch (Exception e) {
+			logTimeslots(reservation,order,RoutingActivityType.RESERVE_TIMESLOT,null,0,address);
+			e.printStackTrace();
+			LOGGER.debug("Exception in reserveTimeslotEx():"+e.toString());
+			LOGGER.debug(reservation);
+			setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);
+		}
+		setRoutingIndicator(reservation.getId(),order.getOrderNumber());
+		return _reservation;
+	}
+
+	private void doConfirmEx(DlvReservationModel reservation,ContactAddressModel address) {
+		
+		long startTime=System.currentTimeMillis();
+		IOrderModel order= RoutingUtil.getOrderModel(address, reservation.getOrderId(), reservation.getId());
+		
+		try {
+            RoutingUtil.confirmTimeslot(reservation, order);
+			long endTime=System.currentTimeMillis();
+			logTimeslots(reservation,order,RoutingActivityType.CONFIRM_TIMESLOT,RoutingUtil.getDeliverySlots(getTimeslotById(reservation.getTimeslotId())),(int)(endTime-startTime),address);
+			if(reservation.isUnassigned()) {
+				clearUnassignedInfo(reservation.getId());
+			}
+			
+		} catch (Exception e) {
+			logTimeslots(reservation,order,RoutingActivityType.CONFIRM_TIMESLOT,null,0,address);
+			e.printStackTrace();
+			LOGGER.debug("Exception in commitReservationEx():"+e.toString());
+			LOGGER.debug(reservation);
+			setUnassignedInfo(reservation.getId(),RoutingActivityType.CONFIRM_TIMESLOT);
+		}
+	}
+	
+	
+	
+	private void doReleaseReservationEx(DlvReservationModel reservation,ContactAddressModel address) {
+		
+		long startTime=System.currentTimeMillis();
+		if(reservation==null || address==null ||!reservation.isInUPS())
+			return ;		
+		
+		IOrderModel order= RoutingUtil.getOrderModel(address,reservation.getOrderId(),reservation.getId());
+		try {
+            RoutingUtil.cancelTimeslot(reservation, order);
+			long endTime=System.currentTimeMillis();
+			logTimeslots(reservation,order,RoutingActivityType.CANCEL_TIMESLOT,RoutingUtil.getDeliverySlots(getTimeslotById(reservation.getTimeslotId())),(int)(endTime-startTime),address);
+			if(reservation.isUnassigned()) {
+				clearUnassignedInfo(reservation.getId());
+			}
+			
+		} catch (Exception e) {
+			logTimeslots(reservation,order,RoutingActivityType.CANCEL_TIMESLOT,null,0,address);
+			e.printStackTrace();
+			LOGGER.debug("Exception in releaseReservationEx():"+e.toString());
+			LOGGER.debug(reservation);
+			setUnassignedInfo(reservation.getId(),RoutingActivityType.CANCEL_TIMESLOT);
+		}
+
+	}
+
 	
 }
