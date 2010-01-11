@@ -282,7 +282,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			} catch (NumberFormatException ne) {
 				isNumber = false;
 			}
-			if (zipCode.length() != 5 || !isNumber) {
+			if (zipCode.length() != 5 || !isNumber || zipCode.equals("00000")) {
 				result.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
 			}
 		}
