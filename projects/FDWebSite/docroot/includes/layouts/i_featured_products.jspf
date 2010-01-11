@@ -73,7 +73,7 @@ List _featuredCats= ((DepartmentModel)currentFolder).getFeaturedCategories();
 }
 			String productPageLink_ = response.encodeURL("/category.jsp?catId=" + dealsCat
             +"&sortBy=name&showThumbnails=true&DisplayPerPage=30&sortDescending=false&disp=null&prodCatId="+prodParent
-            +"&productId="+product.getContentName()+"&trk=trans");
+            +"&productId="+product.getContentName()+"&trk=feat");
 
 
         String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
