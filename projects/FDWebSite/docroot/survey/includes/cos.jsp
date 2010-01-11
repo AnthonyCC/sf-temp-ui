@@ -21,12 +21,7 @@ String survey_source=(String)request.getAttribute("survey_source");
 %>
     
 <fd:CorporateServiceSurvey result='result' actionName='submitCorporateServiceSurvey' successPage='<%=request.getRequestURI()%>'>
-        <%
-        if (!result.isSuccess()) {
-          String errorMsg=SystemMessageList.MSG_MISSING_SURVEY_INFO;
-        %>
-           <%@ include file="/includes/i_error_messages.jspf" %>   
-    <% } %>
+       
 
 <% if (submitted) { %>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -35,12 +30,20 @@ String survey_source=(String)request.getAttribute("survey_source");
     <a href="<%=request.getRequestURI()%>?successPage=<%=redirectSuccessPage%>&#survey"><b>Click here to submit another name.</a>
     </td></tr>
 <% } else { %>
-    <tr><td align="center" class="text12"><b><span class="title18" style="font-size: 28px;">THANK YOU</span><br><span class="text15">For more details about FreshDirect At The Office <a href="javascript:popup('/help/faq_index.jsp?show=cos','large')">click here</a>.<br>
+    <tr><td align="center" class="text12"><b><span class="title18" style="font-size: 28px;">THANK YOU</span><br><span class="text15">For more details about FreshDirect At The Office <a href="javascript:popup('/help/faq_home_pop.jsp?page=cos','large')">click here</a>.<br>
     <a href="<%=request.getRequestURI()%>?successPage=<%=redirectSuccessPage%>&#survey"><b>Click here to submit another name.</a>
     </td></tr>
 <% } %>
 </table>
 <% } else { %>
+<b>Unfortunately we are unable to offer the FreshDirect At The Office corporate service to you at this time.</b> We're expanding all the time based on demand, so to understand your needs, we ask that you fill out the following brief survey. Or, you can skip the survey and continue to our store.
+<br><br>
+ 	<%
+        if (!result.isSuccess()) {
+          String errorMsg=SystemMessageList.MSG_MISSING_SURVEY_INFO;
+        %>
+           <%@ include file="/includes/i_error_messages.jspf" %>   
+    <% } %>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <form method="post" name="corporateServiceSurvey" action="<%=request.getRequestURI()%>#survey">
 <%-- 1 --%>
