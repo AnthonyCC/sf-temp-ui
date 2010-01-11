@@ -26,7 +26,7 @@ function linkTo(url){
     <div class="text12"><img src="/media_stat/images/template/newproduct/wine_request_img.jpg"><br><br><b>Your feedback is important to helping us improve.</b>
     <br>To continue shopping,  <a href="javascript:window.close();"><b>click here</b></a> to close this window.<br><br></div></td></tr>
     <%} else { %>
-    <div class="text12">We will do our best to add to our selection based on your requests.<br>To continue shopping <a href="javascript:window.close();">close this window</a> or <a href="javascript:linkTo('/newproducts.jsp');" onClick="javascript:linkTo('/newproducts.jsp');javascript:window.close();">click here to see our New Products!</a><br><br><br><img src="/media_stat/images/template/newproduct/confirm_berry.jpg" width="70" height="70"></div><br><br><br><br><br></td></tr>
+    <div class="text12">We will do our best to add to our selection based on your requests.<br>To continue shopping <a href="javascript:window.close();">close this window</a> or <a href="javascript:backtoWin('/newproducts.jsp');" onClick="javascript:backtoWin('/newproducts.jsp');javascript:window.close();">click here to see our New Products!</a><br><br><br><img src="/media_stat/images/template/newproduct/confirm_berry.jpg" width="70" height="70"></div><br><br><br><br><br></td></tr>
     <%}%>
 	</table>
 	</tmpl:put>
