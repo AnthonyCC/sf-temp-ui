@@ -8,10 +8,16 @@
     String sortCol=request.getParameter("wine_sort");
     String catView = request.getParameter("cat_view");
     String moreOptions = request.getParameter("moreOptions");
+    String top20catId = request.getParameter("catId");
 
     if(sortCol==null){
         //Defaults to ABC.
         sortCol=com.freshdirect.fdstore.content.util.EnumWineSortType.ABC.getCode();
+        if(null !=top20catId){
+        	if(top20catId.equalsIgnoreCase("usq_grapebuys")||top20catId.equalsIgnoreCase("usq_grapebuys_red")||top20catId.equalsIgnoreCase("usq_grapebuys_sparkling")||top20catId.equalsIgnoreCase("usq_grapebuys_white")){
+        		sortCol=com.freshdirect.fdstore.content.util.EnumWineSortType.PRICE.getCode();
+       		}
+        }
     }
     String sortDesc = request.getParameter("sort_desc");
         if(sortDesc==null){
