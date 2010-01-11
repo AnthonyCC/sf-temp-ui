@@ -267,7 +267,7 @@ if(request.getParameter("message")!=null){
 			<tr valign="right">
 				<td width="25%"></td>
 				<td width="50%" align="center">
-				<a href="/help/contact_fd.jsp?email=&first_name=&last_name=&home_phone=&home_phone_ext=&alt_phone=&alt_phone_ext=&body="><img src="/media_stat/images/template/help/clear.gif" width="46" height="16" border="0" alt="CLEAR"></A>&nbsp;&nbsp;
+				<a href="/help/contact_fd.jsp?home_phone=&home_phone_ext=&alt_phone=&alt_phone_ext=&body="><img src="/media_stat/images/template/help/clear.gif" width="46" height="16" border="0" alt="CLEAR"></A>&nbsp;&nbsp;
 				<input type="image" src="/media_stat/images/template/help/send_message.gif" width="90" height="16"></td>
 				<td width="25%"></td>
 			</tr>
