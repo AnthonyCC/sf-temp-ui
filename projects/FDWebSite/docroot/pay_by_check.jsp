@@ -29,7 +29,7 @@
 Now FreshDirect's <b>online check-payment service</b> gives you another easy option for payment.
 <br><br>
 <b>As Easy as Paying by Credit Card</b><br>
-It's simple to set up and use&mdash;just enter your account and routing number one time. When you check out, select your checking account as the payment method and we'll take it from there. The amount you owe will be automatically deducted from your account by your bank. Of course, all of your private information is <b>kept</b> <a href="javascript:popup('/help/faq_index.jsp?show=security&backTo=/pay_by_check.jsp','large')">private</a>.
+It's simple to set up and use&mdash;just enter your account and routing number one time. When you check out, select your checking account as the payment method and we'll take it from there. The amount you owe will be automatically deducted from your account by your bank. Of course, all of your private information is <b>kept</b> <a href="javascript:popup('/help/faq_home_pop.jsp?page=security&backTo=/pay_by_check.jsp','large')">private</a>.
 <br><br>
 	<SCRIPT LANGUAGE=JavaScript>
 		<!--
