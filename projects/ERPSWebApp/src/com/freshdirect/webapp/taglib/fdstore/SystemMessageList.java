@@ -30,13 +30,13 @@ public interface SystemMessageList {
 
 	// Address
 	public final static String MSG_UNRECOGNIZE_ADDRESS					= "Sorry, we're unable to recognize this <b>address</b>. Please make sure it's entered correctly.";
-	public final static String MSG_UNRECOGNIZE_STREET_NUMBER			= "Sorry, we''re unable to recognize this address. Please make sure the <b>building number</b> is correct.";
-	public final static String MSG_UNRECOGNIZE_APARTMENT_NUMBER			= "Sorry, we''re unable to recognize this apartment #. Please make sure it''s entered correctly.";
-	public final static String MSG_UNRECOGNIZE_STATE					= "Sorry, we''re unable to recognize this state - please make sure it''s entered correctly.";
+	public final static String MSG_UNRECOGNIZE_STREET_NUMBER			= "Sorry, we're unable to recognize this address. Please make sure the <b>building number</b> is correct.";
+	public final static String MSG_UNRECOGNIZE_APARTMENT_NUMBER			= "Sorry, we're unable to recognize this apartment #. Please make sure it's entered correctly.";
+	public final static String MSG_UNRECOGNIZE_STATE					= "Sorry, we're unable to recognize this state - please make sure it's entered correctly.";
 	public final static String MSG_APARTMENT_REQUIRED					= "An apartment # is required for this address.";
 	public final static String MSG_UNRECOGNIZE_ADDRESS_POSSIBLE_MATCHES	= "Sorry, we're unable to recognize this address. Did you mean to enter one of the following instead?";
-	public final static String MSG_ZIP_CODE								= "Sorry, we''re unable to recognize this zip code. Please make sure it''s entered correctly.";
-	public final static String MSG_DEPOT_CODE							= "Sorry, we''re unable to recognize this code.  Please make sure it''s entered correctly.";
+	public final static String MSG_ZIP_CODE								= "Sorry, we're unable to recognize this zip code. Please make sure it's entered correctly.";
+	public final static String MSG_DEPOT_CODE							= "Sorry, we're unable to recognize this code.  Please make sure it's entered correctly.";
 	public final static String MSG_DONT_DELIVER_TO_ADDRESS 				= "We're sorry; FreshDirect does not deliver to this address.  To see where we deliver, <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">click here</a>.";
 	public final static String MSG_CANT_GEOCODE 						= "We''re sorry! You cannot continue at this time because your address isn''t set up in our system. We''re working to enter it as quickly as possible. Please call us toll free at {0} and we''ll inform you when the problem is corrected.<br><br>Meanwhile, feel free to continue browsing our site. We''ll store everything in your cart until you''re able to check out.";
 	public final static String MSG_CANT_GEOCODE_ZIP_CHECK				= "We''re sorry! Your address isn''t set up in our system. We''re working to enter it as quickly as possible. Please call us toll free at {0} and we''ll inform you when the problem is corrected.";
