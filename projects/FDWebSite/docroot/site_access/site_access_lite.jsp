@@ -217,6 +217,7 @@ request.setAttribute("listPos", "CategoryNote");
 							To get started, please<br /> Enter your zip code:<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><input class="text11" type="text" size="13" style="width: 122px" value="<%= zipcode%>" maxlength="5" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" required="true" tabindex="3"><br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br /><input type="image" src="/media_stat/images/template/site_access/go.gif" width="27" height="16" name="site_access_gc_go" border="0" value="Check My Area" alt="GO" tabindex="4">
 						</td>
 					</tr>
+					<tr>
 						<td rowspan="2" colspan="2" valign="bottom"><img src="/media_stat/images/layout/qs_bottom_lft_crnr_purp.gif" width="7" height="8"></td>
 						<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
 						<td rowspan="2" colspan="2" valign="bottom"><img src="/media_stat/images/layout/qs_bottom_rt_crnr_purp.gif" width="7" height="8"></td>

@@ -114,13 +114,13 @@ request.setAttribute("listPos", "CategoryNote");
 				var zipcode = document.forms[0].zipcode.value;
 				var corpZipCode = document.forms[0].corpZipcode.value;
 				if(zipcode !='' && corpZipCode == ''){
-					if(zipcode.length!=5 || isNaN(zipcode)){
+					if(zipcode.length!=5 || isNaN(zipcode) || zipcode=='00000'){
 						document.forms[0].action = '<%=actionURI%>';
 					}else{
 						document.forms[0].action = "/site_access/site_access.jsp";
 					}
 				}else{
-					if(corpZipCode.length != 5 || isNaN(corpZipCode)){
+					if(corpZipCode.length != 5 ||isNaN(corpZipCode) || corpZipCode=='00000'){
 						document.forms[0].action = '<%=actionURI%>';
 					}else{
 						document.forms[0].action = "/site_access/site_access.jsp";
@@ -131,7 +131,7 @@ request.setAttribute("listPos", "CategoryNote");
 			}
 			function gcValidate() {
 				var gcZip = $('gc_<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>').value;
-				if (gcZip.length == 5 && !isNaN(gcZip)) {
+				if(gcZip.length == 5 && !isNaN(gcZip)&& gcZip !='00000') {
 					$('site_access_gc').action = "/site_access/site_access.jsp";
 				}else{
 					$('site_access_gc').action = '<%=actionURI%>';
@@ -278,7 +278,7 @@ request.setAttribute("listPos", "CategoryNote");
 											<% if ( "WEB".equals(serviceType) ) { %>
 												<% if ( result.hasError("technicalDifficulty") ) { %>
 													<font class="text11rbold"><%=result.getError("technicalDifficulty").getDescription() %></font><br /><br />
-												<% } else if ( result.hasError(EnumUserInfoName.DLV_ZIPCODE.getCode()) ) { %>
+												<% } else if ( result.hasError(EnumUserInfoName.DLV_ZIPCODE.getCode()) ) {  %>
 													<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %></font><br /><br />
 												<%}%>
 											<% } %>
