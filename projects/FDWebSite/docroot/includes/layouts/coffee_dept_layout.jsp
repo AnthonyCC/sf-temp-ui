@@ -1,7 +1,6 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -22,10 +21,10 @@ boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
 if(deptId!=null) {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+	currentFolder=ContentFactory.getInstance().getContentNode(deptId);
 	isDepartment = true;
 } else {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+	currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
 
 
@@ -39,7 +38,6 @@ if (sortedColl==null) sortedColl = new ArrayList();
 
 
 
-Attribute coffAttrib = null;
 Image coffImage = null;
 String folderImage  = null;
 String folderImageDim = null;
@@ -55,21 +53,12 @@ for(Iterator itmItr = sortedColl.iterator();itmItr.hasNext();) {
     ContentNodeModel itrItem = (ContentNodeModel)itmItr.next();
     if (!(itrItem instanceof CategoryModel) ) continue; // only renders Categories now
     CategoryModel category = (CategoryModel)itrItem;
-    coffAttrib = category.getAttribute("CAT_PHOTO");
-    if (coffAttrib!=null) {
-        coffImage = (Image)coffAttrib.getValue();
-    }else {
-        coffImage = new Image();
-    }
+    coffImage = category.getCategoryPhotoNotNull();
+
     folderImage = coffImage.getPath();
     folderImageDim = JspMethods.getImageDimensions(coffImage);
 
-    coffAttrib = category.getAttribute("CAT_LABEL");
-    if (coffAttrib!=null) {
-        coffImage = (Image)coffAttrib.getValue();
-    }else {
-        coffImage = new Image();
-    }
+    coffImage = category.getCategoryLabelNotNull();
 
     labelImage = coffImage.getPath();
     labelImageDim=JspMethods.getImageDimensions(coffImage);

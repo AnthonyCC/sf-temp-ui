@@ -33,11 +33,9 @@
 
 
     ContentNodeModel owningFolder = currentFolder;
-    Attribute attribInFeatAll = null;
 
     Image favAllImage = null;
-    attribInFeatAll = currentFolder.getAttribute("FAVORITE_ALL_SHOW_PRICE");
-    boolean showPrices = attribInFeatAll==null?false:((Boolean)attribInFeatAll.getValue()).booleanValue();
+    boolean showPrices = ((ProductContainer)currentFolder).isFavoriteShowPrice();
     String imagePath = null;
     String imageDim = "";
     String clearImage = "/media_stat/images/layout/clear.gif";
@@ -160,19 +158,18 @@
         //!!! not a cool way.  should have some flag called treatAsProduct
        
         if ( contentNode instanceof CategoryModel ) {
-        	
-            folderAsProduct = contentNode.getAttribute("TREAT_AS_PRODUCT") == null ? false : ((Boolean)contentNode.getAttribute("TREAT_AS_PRODUCT").getValue()).booleanValue();
+            CategoryModel categoryModel = (CategoryModel) contentNode;
+            folderAsProduct = categoryModel.getTreatAsProduct();
             
-            Attribute aliasAttr = contentNode.getAttribute("ALIAS");
-            if ( aliasAttr != null ) {
-                ContentRef aliasRef = (ContentRef)aliasAttr.getValue();
-                if (aliasRef instanceof ProductRef) {
-                    aliasNode = ((ProductRef)aliasRef).lookupProduct();
-                } else if(aliasRef instanceof CategoryRef) {
-                    aliasNode = ((CategoryRef)aliasRef).getCategory();
+            ContentNodeModel alias = categoryModel.getAlias();
+            if ( alias != null ) {
+                if (alias instanceof ProductModel) {
+                    aliasNode = alias;
+                } else if(alias instanceof CategoryModel) {
+                    aliasNode = alias;
                 }
-                else if(aliasRef instanceof DepartmentRef){
-                    aliasNode = ((DepartmentRef)aliasRef).getDepartment();
+                else if(alias instanceof DepartmentModel){
+                    aliasNode = alias;
                 }
             }
         }
@@ -239,8 +236,9 @@
         	
             if ( folderAsProduct ) {
                 if ( aliasNode instanceof CategoryModel ) {
-                    if ( aliasNode.getAttribute("CAT_PHOTO") != null ) {
-                        favAllImage = (Image)aliasNode.getAttribute("CAT_PHOTO").getValue();
+                    final Image catPhoto = ((CategoryModel) aliasNode).getCategoryPhoto();
+                    if ( catPhoto != null ) {
+                        favAllImage = catPhoto;
                         imagePath = favAllImage.getPath();
                         imageDim = JspMethods.getImageDimensions(favAllImage);
                         imgWidth = favAllImage.getWidth();
@@ -389,8 +387,9 @@
                     appendColumn.append("<div style=\"margin-left: 8px; text-indent: -8px; \"><a href=\"");
                     appendColumn.append(fldrURL);
                     appendColumn.append("\" ");
-                    if ( aliasNode.getAttribute("CAT_PHOTO") != null ) {
-                        favAllImage = (Image)aliasNode.getAttribute("CAT_PHOTO").getValue();
+                    final Image catPhoto = ((CategoryModel)aliasNode).getCategoryPhoto();
+                    if ( catPhoto != null ) {
+                        favAllImage = catPhoto;
                         imagePath = favAllImage.getPath();
                         appendColumn.append("onMouseover='");
                         appendColumn.append("swapImage(\""+imgName+"\",\""+imagePath+"\"");

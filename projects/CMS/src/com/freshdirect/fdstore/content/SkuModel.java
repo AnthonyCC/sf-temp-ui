@@ -57,12 +57,12 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	    return this.getContentKey().getId();
 	}
 	
-	public List getVariationMatrix() {
+	public List<DomainValue> getVariationMatrix() {
 		ContentNodeModelUtil.refreshModels(this, "VARIATION_MATRIX", variationMatrix, false);
 		return Collections.unmodifiableList(variationMatrix);
 	}
 	
-	public List getVariationOptions() {
+	public List<DomainValue> getVariationOptions() {
 		ContentNodeModelUtil.refreshModels(this, "VARIATION_OPTIONS", variationOptions, false);
 		return Collections.unmodifiableList(variationOptions);
 	}
@@ -139,7 +139,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
     public ProductModel getProductModel() {
     	return (ProductModel)getParentNode();
     }
-
+    
     private AvailabilityI getAvailability() {
 		try {
 
@@ -158,7 +158,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 
 	public List getBrands() {
 		List brandModels = new ArrayList();
-		ContentNodeModelUtil.refreshModels(this, "brands", brandModels, true);
+		ContentNodeModelUtil.refreshModels(this, "brands", brandModels, false);
 
 		List newList = new ArrayList();
 		for (int i = 0; i < brandModels.size(); i++) {

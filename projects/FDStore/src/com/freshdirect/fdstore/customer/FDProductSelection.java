@@ -29,7 +29,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductRef;
+import com.freshdirect.fdstore.content.ProxyProduct;
 import com.freshdirect.framework.util.MathUtil;
 
 public class FDProductSelection implements FDProductSelectionI {
@@ -37,7 +37,7 @@ public class FDProductSelection implements FDProductSelectionI {
 	protected final static NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance(Locale.US);
 	protected final static DecimalFormat QUANTITY_FORMATTER = new DecimalFormat("0.##");
 
-	private final ProductRef productRef;
+	private final ProductModel productRef;
 	protected final ErpOrderLineModel orderLine;
 
 	protected FDConfiguredPrice price;
@@ -48,15 +48,15 @@ public class FDProductSelection implements FDProductSelectionI {
 	private boolean invalidConfig = false;
 	private double fixedPrice;
 
-	public FDProductSelection(FDSku sku, ProductRef productRef, FDConfigurableI configuration) {
+	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration) {
 		this(sku, productRef, configuration, null);
 	}
 
-	public FDProductSelection(FDSku sku, ProductRef productRef, FDConfigurableI configuration, String variantId) {
+	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId) {
 		this.orderLine = new ErpOrderLineModel();
 
 		this.orderLine.setSku(sku);
-		this.productRef = productRef;
+		this.productRef = (productRef instanceof ProxyProduct) ? ((ProxyProduct) productRef).getProduct() : productRef;
 		this.orderLine.setConfiguration( new FDConfiguration(configuration) );
 		
 		this.orderLine.setVariantId(variantId);
@@ -72,7 +72,7 @@ public class FDProductSelection implements FDProductSelectionI {
 			pm = null;
 		}
 
-		this.productRef = pm == null ? new ProductRef("unknown", "unknown") : pm.getProductRef();
+		this.productRef = pm;
 	}
 
 	//
@@ -88,7 +88,7 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.fireConfigurationChange();
 	}
 
-	public ProductRef getProductRef() {
+	public ProductModel getProductRef() {
 		return this.productRef;
 	}
 
@@ -114,11 +114,11 @@ public class FDProductSelection implements FDProductSelectionI {
 	}
 
 	public String getCategoryName() {
-		return this.getProductRef().getCategoryName();
+		return this.getProductRef().getParentId();
 	}
 
 	public String getProductName() {
-		return this.getProductRef().getProductName();
+		return this.getProductRef().getContentName();
 	}
 
 	public double getQuantity() {
@@ -217,7 +217,7 @@ public class FDProductSelection implements FDProductSelectionI {
 	//
 
 	public ProductModel lookupProduct() {
-		return this.productRef.lookupProduct();
+		return this.productRef;
 	}
 
 	public FDProduct lookupFDProduct() {
@@ -401,7 +401,7 @@ public class FDProductSelection implements FDProductSelectionI {
 
 	public String getLabel() {
 		ProductModel prod = this.lookupProduct();
-		String quantText = prod == null ? null : prod.getAttribute("QUANTITY_TEXT_SECONDARY", null);
+		String quantText = prod == null ? null : prod.getQuantityTextSecondary();
 		if (quantText != null) {
 			if ("lb".equalsIgnoreCase(quantText) || "oz".equalsIgnoreCase(quantText)) {
 				return quantText;

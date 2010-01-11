@@ -24,10 +24,10 @@ boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
 if(deptId!=null) {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+	currentFolder=ContentFactory.getInstance().getContentNode(deptId);
 	isDepartment = true;
 } else {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+	currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
 
 
@@ -106,15 +106,12 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
 //***               the Meals Style Pattern                  ***
 //**************************************************************
     ContentNodeModel owningFolder = currentFolder;
-    //Attribute attribInFeatAll = null;
 
     TreeMap deferDisplayProds = new TreeMap(new JspMethods.ContentNodeComparator());
     HashMap deferDisplayPrices = new HashMap();
     HashMap deferDisplayImages   = new HashMap();
     Image favAllImage = null;
-    //attribInFeatAll = currentFolder.getAttribute("FAVORITE_ALL_SHOW_PRICE");
     boolean showPrices = true;
-	//attribInFeatAll==null?false:((Boolean)attribInFeatAll.getValue()).booleanValue();
     boolean folderShown = false;
     String imagePath = null;
     String imageDim = "";
@@ -134,7 +131,6 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
     String tdwidth="100";
 
  // don't display any heading if the favorite collection is empty or the products are unavailable.
-    //attribInFeatAll = currentFolder.getAttribute("FEATURED_PRODUCTS");
     int favoritesShow = 0;
     //List favorites = attribInFeatAll==null ?new ArrayList():(List)attribInFeatAll.getValue();;
     int foldersShown =0, productsShown=0;
@@ -146,7 +142,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
     StringBuffer favoriteProducts = new StringBuffer();
     String imgName = null;
     boolean folderAsProduct = false;
-    ContentNodeModel aliasNode = null;
+    CategoryModel aliasNode = null;
     ContentNodeModel prodParent = null;
     ContentFactory contentFactory = ContentFactory.getInstance();
     Comparator priceComp = new ProductModel.PriceComparator();
@@ -168,26 +164,16 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
         //!!! not a cool way.  should have some flag called treatAsProduct
        
         if (contentNode instanceof CategoryModel) {
-            folderAsProduct = contentNode.getAttribute("TREAT_AS_PRODUCT")==null?false:((Boolean)contentNode.getAttribute("TREAT_AS_PRODUCT").getValue()).booleanValue();
+            CategoryModel category = (CategoryModel) contentNode;
+            folderAsProduct = category.getTreatAsProduct();
             
-            Attribute aliasAttr = contentNode.getAttribute("ALIAS");
-            if (aliasAttr !=null ) {
-                ContentRef aliasRef = (ContentRef)aliasAttr.getValue();
-                if (aliasRef instanceof ProductRef) {
-                    aliasNode = ((ProductRef)aliasRef).lookupProduct();
-                } else if(aliasRef instanceof CategoryRef) {
-                    aliasNode = ((CategoryRef)aliasRef).getCategory();
-                }
-                else if(aliasRef instanceof DepartmentRef){
-                    aliasNode = ((DepartmentRef)aliasRef).getDepartment();
-                }
-            }
+            aliasNode = category.getAlias();
         }
         if (contentNode instanceof CategoryModel && !folderAsProduct) {
             owningFolder = (CategoryModel)contentNode;
             onlyOneProduct = false;
             if (productLinks.size() > 0 ) { //display the stuff we
-				Image catImg = (Image)displayCategory.getAttribute("CAT_LABEL").getValue();
+				Image catImg = displayCategory.getCategoryLabel();
 %>
 <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="550">
 <TR VALIGN="MIDDLE">
@@ -242,7 +228,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
 
             if (folderAsProduct ){
                 if (aliasNode instanceof CategoryModel){
-                    if (aliasNode.getAttribute("CAT_PHOTO") !=null) {
+                    if (aliasNode.getCategoryPhoto() != null) {
                         onlyOneProduct = false;
                     }
                 } 
@@ -331,7 +317,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
                     appendColumn.append("<div style=\"margin-left: 8px; text-indent: -8px;\"><A HREF=\"");
                     appendColumn.append(fldrURL);
                     appendColumn.append("\" ");
-                    if (aliasNode.getAttribute("CAT_PHOTO") !=null) {
+                    if (aliasNode.getCategoryPhoto() != null) {
                         appendColumn.append("onMouseover='");
                         appendColumn.append("swapImage(\""+imgName+"\",\""+imagePath+"\"");
                         appendColumn.append(")");
@@ -383,7 +369,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
     </logic:iterate>
 <%
   if (productLinks.size() > 0) { 
-  Image catImg = new Image(); //(Image)displayCategory.getAttribute("CAT_LABEL").getValue();
+  Image catImg = new Image(); 
 %>
 <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="550">
 <TR VALIGN="MIDDLE">
@@ -416,46 +402,4 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
     deferDisplayImages.put(displayCategory,col1); 
 	}
 /** handle the deffered Unavailable stuff **/
-/* don't show unavailable products
-if (deferDisplayProds.size() > 0 ) {
-    String unAvailableHdrImg = "/media_stat/images/template/currently_not_available21.gif";
-
-%><!--
-<table width="550">
-<TR VALIGN="TOP"><TD WIDTH="550"><br><IMG src="/media_stat/images/layout/cccccc.gif" height="1" width="550"></TD></TR>
-<TR><TD WIDTH="550"><IMG src="/media_stat/images/layout/clear.gif" ALT="" WIDTH="1" HEIGHT="1"></td></tr>
-<TR><TD WIDTH="550" align = "center"><BR><img src="<%//=unAvailableHdrImg%>" border="0" alt=""><br><br></td></tr></table>-->
-<%/*
-    for (Iterator keyItr = deferDisplayProds.keySet().iterator();keyItr.hasNext(); ) {
-        CategoryModel catModl = (CategoryModel)keyItr.next();
-        onlyOneProduct=false;
-		Image catImg = (Image)catModl.getAttribute("CAT_LABEL").getValue();
-		*/
-%><!--
- <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="550">
-<TR VALIGN="MIDDLE">
-<TD WIDTH="550" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" border="0"></TD>
-</TR>
-<TR VALIGN="MIDDLE">
-	<TD WIDTH="550" COLSPAN="4" CLASS="text11"><Font color="#999999"><a href="/category.jsp?catId=<%//=catModl%><%//=trkCode%>"><img src="<%//=catImg.getPath()%>" width="<%//=catImg.getWidth()%>" height="<%//=catImg.getHeight()%>" border="0"></a>&nbsp;&nbsp;<%//=catModl.getBlurb()%></font></TD>
-</TR>
-<TR VALIGN="MIDDLE"><TD WIDTH="550" COLSPAN="4" BGCOLOR="#DDDDDD" CLASS="title11"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></TD></TR>
-<TR VALIGN="MIDDLE">
-<TD WIDTH="550" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4"></TD>
-</TR>
-</TABLE>-->
-<%/*
-     String deferedoutput= displayMSProducts((LinkedList)deferDisplayProds.get(catModl), (LinkedList)deferDisplayPrices.get(catModl),showPrices,false);
-     String imgColl = ((StringBuffer)deferDisplayImages.get(catModl)).toString();
-	 */
-%><!-- <TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="550"><TR VALIGN="TOP">
-<TD width="100"><%//=imgColl%></td><%//=deferedoutput%></tr>
-</table> -->
-<%/*
-   }
-}
-deferDisplayProds=null;
-deferDisplayPrices=null;
-deferDisplayImages=null;
-*/
-// end of meals_style_Layout %>
+%>

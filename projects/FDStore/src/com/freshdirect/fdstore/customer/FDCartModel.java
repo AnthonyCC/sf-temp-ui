@@ -1169,7 +1169,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		Set prodKeysInCart = new HashSet();
 		for (Iterator i = this.getOrderLines().iterator(); i.hasNext();) {
 			FDCartLineI cartLine = (FDCartLineI) i.next();
-			ProductModel model = cartLine.getProductRef().lookupProduct();
+			ProductModel model = cartLine.getProductRef();
 			String productId = model.getContentKey().getId();
 			prodKeysInCart.add(productId);
 		}
@@ -1209,7 +1209,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI cartLine = (FDCartLineI)i.next();
 			if(cartLine.hasDiscount(promoCode)) {
-				uniqueDiscountedProducts.add(cartLine.getProductRef().lookupProduct().getContentKey().getId());
+				uniqueDiscountedProducts.add(cartLine.getProductRef().getContentKey().getId());
 			}
 		}
 		return uniqueDiscountedProducts.size();

@@ -5,27 +5,31 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDKosherInfo;
 import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.attributes.Attribute;
-import com.freshdirect.fdstore.attributes.EnumAttributeType;
-import com.freshdirect.fdstore.attributes.MultiAttribute;
-import com.freshdirect.fdstore.content.*;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.PrioritizedI;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**@author ekracoff on Feb 13, 2004*/
 public class ContentNodeComparator implements Comparator {
-	private static Category LOGGER = LoggerFactory.getInstance(ContentNodeComparator.class);
+	private static Logger LOGGER = LoggerFactory.getInstance(ContentNodeComparator.class);
 
-	List strategy;
+	List<SortStrategyElement> strategy;
 
-	public ContentNodeComparator(List strategy) {
+	public ContentNodeComparator(List<SortStrategyElement> strategy) {
 		this.strategy = strategy;
 	}
 
@@ -35,8 +39,8 @@ public class ContentNodeComparator implements Comparator {
 		ContentNodeModel node2 = (ContentNodeModel) obj2;
 
 		int rslt = 0;
-		for (Iterator i = strategy.iterator(); i.hasNext() && rslt == 0;) {
-			SortStrategyElement strategyElement = (SortStrategyElement) i.next();
+		for (Iterator<SortStrategyElement> i = strategy.iterator(); i.hasNext() && rslt == 0;) {
+			SortStrategyElement strategyElement = i.next();
 			boolean descending = strategyElement.sortDescending();
 
 			rslt = compareByStrategy(node1, node2, strategyElement);
@@ -77,14 +81,17 @@ public class ContentNodeComparator implements Comparator {
 			case SortStrategyElement.PRODUCTS_BY_NAME :
 				return compareByName(node1, node2, strategyElement.getSecondayAttrib());
 
-			case SortStrategyElement.PRODUCTS_BY_ATTRIBUTE :
-				return compareByAttribute(
-					node1,
-					node2,
-					strategyElement.getSecondayAttrib(),
-					strategyElement.getMultiAttribName(),
-					descending);
+			case SortStrategyElement.PRODUCTS_BY_DOMAIN_RATING :
+			    return compareByMultiDomainValue((ProductModel) node1, (ProductModel) node2, strategyElement.getMultiAttribName(), descending);
+//				return compareByAttribute(
+//					node1,
+//					node2,
+//					strategyElement.getSecondayAttrib(),
+//					strategyElement.getMultiAttribName(),
+//					descending);
 
+			case SortStrategyElement.PRODUCTS_BY_WINE_COUNTRY : 
+			    return compareByWineCountry((ProductModel) node1, (ProductModel) node2, descending);
 			case SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY :
 				return groupByCategory(node1, node2, SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY);
 
@@ -109,7 +116,24 @@ public class ContentNodeComparator implements Comparator {
 
 	}
 
-	private int compareByAvailability(ContentNodeModel node1, ContentNodeModel node2) {
+	private int compareByWineCountry(ProductModel node1, ProductModel node2, boolean descending) {
+            ContentKey k1 = node1.getWineCountryKey();
+            ContentKey k2 = node2.getWineCountryKey();
+            if (k1 == null && k2 == null) {
+                return 0;
+            }
+            if (k1 == null) {
+                return descending ? -1 : 1;
+            }
+
+            if (k2 == null) {
+                return descending ? 1 : -1;
+            }
+            return k1.getId().compareTo(k2.getId());
+	}
+	
+
+    private int compareByAvailability(ContentNodeModel node1, ContentNodeModel node2) {
 		// always put unavailable items to the bottom when not sorting by name
 		boolean unav1 = node1 instanceof ProductModel ? ((ProductModel) node1).isUnavailable() 
 				: node1 instanceof SkuModel ? ((SkuModel)node1).isUnavailable() : false;
@@ -239,8 +263,8 @@ public class ContentNodeComparator implements Comparator {
 		try {
 			SkuModel skuModel = null;
 			
-			if (!node.getContentType().equals(ContentNodeI.TYPE_PRODUCT) 
-				 && !node.getContentType().equals(ContentNodeI.TYPE_SKU) ) {
+			if (!node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT) 
+				 && !node.getContentType().equals(ContentNodeModel.TYPE_SKU) ) {
 				return Integer.MAX_VALUE;
 			}
 			if (node instanceof ProductModel){
@@ -306,50 +330,76 @@ public class ContentNodeComparator implements Comparator {
 		return name1.compareToIgnoreCase(name2);
 	}
 
-	private int compareByAttribute(
-		ContentNodeModel node1,
-		ContentNodeModel node2,
-		String attribute,
-		String multiAttribName,
-		boolean descending) {
-		Attribute attrib1 = node1.getAttribute(attribute);
-		Attribute attrib2 = node2.getAttribute(attribute);
+//	private int compareByAttribute(
+//		ContentNodeModel node1,
+//		ContentNodeModel node2,
+//		String attribute,
+//		String multiAttribName,
+//		boolean descending) {
+//		Attribute attrib1 = node1.getAttribute(attribute);
+//		Attribute attrib2 = node2.getAttribute(attribute);
+//
+//		if (attrib1 == null && attrib2 == null)
+//			return 0;
+//
+//		if (attrib1 == null)
+//			return descending ? -1 : 1;
+//
+//		if (attrib2 == null)
+//			return descending ? 1 : -1;
+//
+//		EnumAttributeType type = attrib1.getType();
+//
+//		if (attrib1.equals(attrib2))
+//			return 0;
+//
+//		if (EnumAttributeType.STRING.equals(type))
+//			return ((String) attrib1.getValue()).compareTo((String) attrib2.getValue());
+//
+//		if (EnumAttributeType.INTEGER.equals(type))
+//			return ((Integer) attrib1.getValue()).compareTo((Integer) attrib2.getValue());
+//
+//		if (EnumAttributeType.DOUBLE.equals(type))
+//			return ((Double) attrib1.getValue()).compareTo((Double) attrib2.getValue());
+//
+//		if (attrib1 instanceof MultiAttribute) {
+//			if (multiAttribName == null)
+//				throw new IllegalArgumentException("Unable to sort by MultiAttribute without the name of the attribute your searching for");
+//			return compareMultiAttributes((MultiAttribute) attrib1, (MultiAttribute) attrib2, multiAttribName, descending);
+//		}
+//
+//		if (EnumAttributeType.DOMAINVALUEREF.equals(type)) {
+//		    return ((DomainValue) attrib1.getValue()).getContentKey().getId().compareTo(
+//		            ((DomainValue) attrib2.getValue()).getContentKey().getId());
+//		} else {
+//			throw new IllegalArgumentException("Unable to sort by attribute of type " + attrib1.getType().getName());
+//		}
+//	}
+	
+	
+	private int compareByMultiDomainValue(ProductModel node1, ProductModel node2, String multiAttribName, boolean descending) {
+            List<DomainValue> values1 = node1.getRating();
+            List<DomainValue> values2 = node2.getRating();
+            
+            String value1 = getDomainValue(values1, multiAttribName);
+            String value2 = getDomainValue(values2, multiAttribName);
+            
+            if (value1 == null && value2 == null) {
+                return 0;
+            }
 
-		if (attrib1 == null && attrib2 == null)
-			return 0;
+            if (value1 == null) {
+                return descending ? -1 : 1;
+            }
 
-		if (attrib1 == null)
-			return descending ? -1 : 1;
-
-		if (attrib2 == null)
-			return descending ? 1 : -1;
-
-		EnumAttributeType type = attrib1.getType();
-
-		if (attrib1.equals(attrib2))
-			return 0;
-
-		if (EnumAttributeType.STRING.equals(type))
-			return ((String) attrib1.getValue()).compareTo((String) attrib2.getValue());
-
-		if (EnumAttributeType.INTEGER.equals(type))
-			return ((Integer) attrib1.getValue()).compareTo((Integer) attrib2.getValue());
-
-		if (EnumAttributeType.DOUBLE.equals(type))
-			return ((Double) attrib1.getValue()).compareTo((Double) attrib2.getValue());
-
-		if (attrib1 instanceof MultiAttribute) {
-			if (multiAttribName == null)
-				throw new IllegalArgumentException("Unable to sort by MultiAttribute without the name of the attribute your searching for");
-			return compareMultiAttributes((MultiAttribute) attrib1, (MultiAttribute) attrib2, multiAttribName, descending);
-		}
-
-		if (EnumAttributeType.DOMAINVALUEREF.equals(type)) {
-			return ((DomainValueRef) attrib1.getValue()).getRefName2().compareTo(
-				((DomainValueRef) attrib2.getValue()).getRefName2());
-		} else {
-			throw new IllegalArgumentException("Unable to sort by attribute of type " + attrib1.getType().getName());
-		}
+            if (value2 == null) {
+                return descending ? 1 : -1;
+            }
+            try {
+                return Integer.parseInt(value1) - Integer.parseInt(value2);
+            } catch (NumberFormatException e) {
+                return value1.compareTo(value2);
+            }
 	}
 
 	private int compareByWineAttribute(
@@ -457,8 +507,8 @@ public class ContentNodeComparator implements Comparator {
 	}
 	
 	private int groupByCategory(ContentNodeModel node1, ContentNodeModel node2, int sortType) {
-		boolean isProduct1 = node1 instanceof ProductModel || node1 instanceof SkuModel || node1.getAttribute("TREAT_AS_PRODUCT", false);
-		boolean isProduct2 = node2 instanceof ProductModel || node2 instanceof SkuModel || node2.getAttribute("TREAT_AS_PRODUCT", false);
+		boolean isProduct1 = node1 instanceof ProductModel || node1 instanceof SkuModel || (node1 instanceof CategoryModel && ((CategoryModel)node1).getTreatAsProduct());
+		boolean isProduct2 = node2 instanceof ProductModel || node2 instanceof SkuModel || (node2 instanceof CategoryModel && ((CategoryModel)node2).getTreatAsProduct());
 
 		List parentList1 = new ArrayList();
 		List parentList2 = new ArrayList();
@@ -509,7 +559,7 @@ public class ContentNodeComparator implements Comparator {
 	private void fillParentList(List parentList, ContentNodeModel node) {
 		parentList.clear();
 		ContentNodeModel theNode = (node instanceof SkuModel ? node.getParentNode() : node);
-		if (theNode instanceof CategoryModel && !theNode.getAttribute("TREAT_AS_PRODUCT", false)) {
+		if (theNode instanceof CategoryModel && !((CategoryModel)theNode).getTreatAsProduct()) {
 			//since the node is a category that is not being treated as a product, then place it into the list 
 			parentList.add(theNode);
 		}
@@ -519,43 +569,53 @@ public class ContentNodeComparator implements Comparator {
 		}
 	}
 
-	private int compareMultiAttributes(
-		MultiAttribute attrib1,
-		MultiAttribute attrib2,
-		String multiAttribName,
-		boolean descending) {
-		String value1 = getMultiAttributeValue(attrib1, multiAttribName);
-		String value2 = getMultiAttributeValue(attrib2, multiAttribName);
+        private String getDomainValue(List<DomainValue> values, String attribName) {
+            for (DomainValue dv : values) {
+                if (attribName.equalsIgnoreCase(dv.getDomainContentKey().getId())) {
+                    return dv.getContentKey().getId();
+                }
+            }
+            return null;
+        }
+	
+//	private int compareMultiAttributes(
+//		MultiAttribute attrib1,
+//		MultiAttribute attrib2,
+//		String multiAttribName,
+//		boolean descending) {
+//		String value1 = getMultiAttributeValue(attrib1, multiAttribName);
+//		String value2 = getMultiAttributeValue(attrib2, multiAttribName);
+//
+//		if (value1 == null && value2 == null)
+//			return 0;
+//
+//		if (value1 == null)
+//			return descending ? -1 : 1;
+//
+//		if (value2 == null)
+//			return descending ? 1 : -1;
+//
+//		try {
+//			return Integer.parseInt(value1) - Integer.parseInt(value2);
+//		} catch (NumberFormatException e) {
+//			return value1.compareTo(value2);
+//		}
+//	}
 
-		if (value1 == null && value2 == null)
-			return 0;
-
-		if (value1 == null)
-			return descending ? -1 : 1;
-
-		if (value2 == null)
-			return descending ? 1 : -1;
-
-		try {
-			return Integer.parseInt(value1) - Integer.parseInt(value2);
-		} catch (NumberFormatException e) {
-			return value1.compareTo(value2);
-		}
-	}
-
-	private String getMultiAttributeValue(MultiAttribute attrib, String attribName) {
-		for (Iterator i = attrib.getValues().iterator(); i.hasNext();) {
-			Object obj = i.next();
-
-			if (!(obj instanceof DomainValueRef))
-				break;
-
-			DomainValueRef dvRef = (DomainValueRef) obj;
-			if (attribName.equalsIgnoreCase(dvRef.getRefName()))
-				return dvRef.getRefName2();
-		}
-
-		return null;
-	}
+//	private String getMultiAttributeValue(MultiAttribute attrib, String attribName) {
+//		for (Iterator i = attrib.getValues().iterator(); i.hasNext();) {
+//			Object obj = i.next();
+//
+//			if (obj instanceof DomainValue) {
+//			    DomainValue dv = (DomainValue) obj;
+//			    if (attribName.equalsIgnoreCase(dv.getDomainContentKey().getId())) {
+//			        return dv.getContentKey().getId();
+//			    }
+//			}
+//		}
+//
+//		return null;
+//	}
+//	
 
 }

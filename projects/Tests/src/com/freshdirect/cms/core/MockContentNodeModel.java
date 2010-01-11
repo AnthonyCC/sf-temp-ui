@@ -3,6 +3,7 @@ package com.freshdirect.cms.core;
 import java.util.Collection;
 import java.util.List;
 
+import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
@@ -10,6 +11,7 @@ import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class MockContentNodeModel implements ContentNodeModel {
@@ -82,6 +84,12 @@ public class MockContentNodeModel implements ContentNodeModel {
         // TODO Auto-generated method stub
         return null;
     }
+    
+    @Override
+    public Object getNotInheritedAttributeValue(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     public Collection getParentKeys() {
         return parentKeys;
@@ -138,6 +146,12 @@ public class MockContentNodeModel implements ContentNodeModel {
     }
 
     public AttributeI getCmsAttribute(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+
+    public Object getCmsAttributeValue(String name) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -217,4 +231,24 @@ public class MockContentNodeModel implements ContentNodeModel {
     public String toString() {
         return "Mock["+key+']';
     }
+
+    @Override
+    public String getParentId() {
+        ContentNodeModel pnode = getParentNode();
+        if (pnode != null) {
+            return pnode.getContentName();
+        }
+        return null;
+    }
+    
+    @Override
+    public AttributeDefI getAttributeDef(String name) {
+        return null;
+    }
+    
+    @Override
+    public Image getSideNavImage() {
+        return null;
+    }
+
 }

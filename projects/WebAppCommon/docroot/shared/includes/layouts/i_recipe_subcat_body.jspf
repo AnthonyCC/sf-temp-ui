@@ -74,13 +74,11 @@ for (;qryStringTokn.hasMoreTokens();) {
 <tr>
 	<td>
 	<% 
-	Attribute rcpAttrib = recipeSubCat.getAttribute("label");
-	Attribute rcpAttrib2 = recipeSubCat.getAttribute("editorial");
-	String editorialPath = rcpAttrib2==null?"":((Html)rcpAttrib2.getValue()).getPath(); 
-	Image catLabelImg = null;
+	Html _editorial = recipeSubCat.getRecipeEditorial();
+	String editorialPath = _editorial==null?"":_editorial.getPath(); 
+	Image catLabelImg = recipeSubCat.getLabel();
 	String catLabelPath = null;
-	if (rcpAttrib!=null) {
-	  catLabelImg = (Image)rcpAttrib.getValue();
+	if (catLabelImg!=null) {
 	  catLabelPath = catLabelImg.getPath();
 	} 
 	if (catLabelImg != null) {

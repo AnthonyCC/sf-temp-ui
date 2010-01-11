@@ -72,20 +72,15 @@
 <%
 int displayedRows = 1;
 StringBuffer buf = new StringBuffer(10000);
-ContentNodeModel aliasNode=null;
 String topCatLink="";
 
-Attribute aliasAttr = topCategory.getAttribute("ALIAS");
-if (aliasAttr !=null ) {
-    ContentRef aliasRef = (ContentRef)aliasAttr.getValue();
-    if (aliasRef instanceof ProductRef) {
-        aliasNode = ((ProductRef)aliasRef).lookupProduct();
+ContentNodeModel aliasNode = topCategory.getAlias();
+if (aliasNode !=null ) {
+    if (aliasNode instanceof ProductModel) {
         topCatLink="/product.jsp?catId="+aliasNode.getParentNode()+"&productId="+aliasNode;
-    } else if(aliasRef instanceof CategoryRef) {
-        aliasNode = ((CategoryRef)aliasRef).getCategory();
+    } else if(aliasNode instanceof CategoryModel) {
         topCatLink="/category.jsp?catId="+aliasNode;
-    } else if(aliasRef instanceof DepartmentRef){
-        aliasNode = ((DepartmentRef)aliasRef).getDepartment();
+    } else if(aliasNode instanceof DepartmentModel){
         topCatLink="/department.jsp?deptId="+aliasNode;
     }
 }
@@ -93,9 +88,8 @@ if (aliasNode!=null) {
 } else {
   topCatLink = "/category.jsp?catId="+topCategory;
 }
-Attribute atrCatImage = topCategory.getAttribute("CAT_TITLE");
-if (atrCatImage!=null) {
-	Image catImage = (Image)atrCatImage.getValue();
+Image catImage = topCategory.getCategoryTitle();
+if (catImage!=null) {
 	buf.append("<tr><td><a href=\"");
 	buf.append(topCatLink);
 	buf.append("&trk=snav\">");
@@ -112,11 +106,7 @@ if (atrCatImage!=null) {
 // if this page contains groceryVirtual in the request then paint a fake link
 
 // !!! implement grocery
-Attribute allFldrAttr = topCategory.getAttribute("FAKE_ALL_FOLDER");
-boolean showAnAllFldrLink = false;
-if (allFldrAttr!=null ) {
-    showAnAllFldrLink = ((Boolean)allFldrAttr.getValue()).booleanValue();
-}
+boolean showAnAllFldrLink = topCategory.getFakeAllFolders();
 if (showAnAllFldrLink) {
     buf.append("<tr><td width=\"120\"><div style=\"margin-left:");
     buf.append(8);

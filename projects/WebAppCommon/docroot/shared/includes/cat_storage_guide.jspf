@@ -33,24 +33,25 @@ sortStrategy.add(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_N
 boolean selected = false;
 for(Iterator thisList = sortedColl.iterator(); thisList.hasNext();) {
 	ContentNodeModel cm = (ContentNodeModel) thisList.next();
-	if (!(cm instanceof CategoryModel)) continue;
+	if (!(cm instanceof CategoryModel)) { 
+	    continue;
+	}
     CategoryModel thisCat = (CategoryModel)cm;
-    if ( thisCat instanceof CategoryModel  && thisCat.hasAttribute("CAT_STORAGE_GUIDE_MEDIA") ) {
-                Attribute alias = thisCat.getAttribute("ALIAS");
-                String folder = null;
-                    if (alias!=null) {
-                        ContentRef aliasRef = (ContentRef)alias.getValue();
-                        if (aliasRef instanceof CategoryRef) {
-                            folder = aliasRef.getRefName();
-                        }
-                    } else {
-                            folder = thisCat.getContentName();
-                    }
-                if ( catId.equalsIgnoreCase(folder) ) {
+    if (thisCat.getCategoryStorageGuideMedia() != null ) {
+        ContentNodeModel alias = thisCat.getAlias();
+        String folder = null;
+        if (alias!=null) {
+            if (alias instanceof CategoryModel) {
+            	folder = alias.getContentKey().getId();
+			}
+		} else {
+        	folder = thisCat.getContentName();
+		}
+        if ( catId.equalsIgnoreCase(folder) ) {
                 selected = true;
                 currentFolder = folder;
-                storageMedia = ((MediaI)thisCat.getAttribute("CAT_STORAGE_GUIDE_MEDIA").getValue()).getPath();
-                catImg = (Image)thisCat.getAttribute("CAT_PHOTO").getValue();
+                storageMedia = thisCat.getCategoryStorageGuideMedia().getPath();
+                catImg = (Image)thisCat.getCategoryPhoto();
                 }
 %>
 <% if (selected) { %><font class="text11bold" color="#000000"><%} else {%><a href="/shared/popup.jsp?catId=<%=thisCat.getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large"><% } %><%=thisCat.getFullName()%><% if (selected) { %></font><%} else {%></a><% } %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br>

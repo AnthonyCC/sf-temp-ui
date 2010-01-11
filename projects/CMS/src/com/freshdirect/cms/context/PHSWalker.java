@@ -40,10 +40,8 @@ public class PHSWalker extends ContextWalker {
 	 * Test is TRUE <=> node IS HIDDEN
 	 */
 	public boolean test(ContentNodeI n) {
-		Map attrs = n.getAttributes();
-		AttributeI a_hu = (AttributeI) attrs.get("HIDE_URL");
-
-		return ( (a_hu != null && a_hu.getValue() != null));
+            Object a_hu =  n.getAttributeValue("HIDE_URL");
+            return (a_hu != null);
 	}
 	
 	public ContentKey getLeafKey() {

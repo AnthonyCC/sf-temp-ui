@@ -17,7 +17,7 @@ import javax.imageio.ImageIO;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.fdstore.content.TemplateRenderer;
+import com.freshdirect.framework.content.TemplateRenderer;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 

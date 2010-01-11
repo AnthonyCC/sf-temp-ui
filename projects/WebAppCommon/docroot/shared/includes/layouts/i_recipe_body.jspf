@@ -45,7 +45,7 @@
 		FDConfigurableI configuration = confProd.getConfiguration();
 		FDProductSelection r = new FDProductSelection(
 			new FDSku(prodInfo.getSkuCode(), prodInfo.getVersion()),
-			prod.getProductRef(),
+			prod,
 			configuration);
 			
 		try {
@@ -71,14 +71,10 @@
 %><%
     MediaI recipeDesc = recipe.getDescription();
     Image  recipeLogo = recipe.getLogo();
-    Attribute attrib  = recipe.getAttribute("photo");
-    MediaI recipePhoto = attrib==null ? null : (MediaI) attrib.getValue();
-    attrib  = recipe.getAttribute("ingredientsMedia");
-    MediaI recipeIngrdMedia = attrib==null ? null : (MediaI) attrib.getValue();
-    attrib  = recipe.getAttribute("preparationMedia");
-    MediaI recipePrepdMedia = attrib==null ? null : (MediaI) attrib.getValue();
-    attrib  = recipe.getAttribute("copyrightMedia");
-    MediaI recipeCpyrghtMedia = attrib==null ? null : (MediaI) attrib.getValue();
+    Image recipePhoto = recipe.getPhoto();
+    MediaI recipeIngrdMedia = recipe.getIngredientsMedia();
+    MediaI recipePrepdMedia = recipe.getPreparationMedia();
+    MediaI recipeCpyrghtMedia = recipe.getCopyrightMedia();
 
     String subCatIdParam = "";
     if ( request.getParameter("subCatId")!=null && !"".equals(request.getParameter("subCatId").trim()) ) {

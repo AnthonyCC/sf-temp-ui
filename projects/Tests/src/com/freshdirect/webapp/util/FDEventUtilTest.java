@@ -278,7 +278,7 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 			cartLine =
 				new FDCartLineModel(
 					new FDSku(product),
-					prodNode.getProductRef(),
+					prodNode,
 					new FDConfiguration(quantity, salesUnit.getName(), varMap), null);
 		} else {
 			/*
@@ -289,7 +289,7 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 			cartLine =
 				new FDCartLineModel(
 					new FDSku(product),
-					prodNode.getProductRef(),
+					prodNode,
 					new FDConfiguration(quantity, salesUnit.getName(), varMap),
 					origCartLineId, null, false, null);
 		}

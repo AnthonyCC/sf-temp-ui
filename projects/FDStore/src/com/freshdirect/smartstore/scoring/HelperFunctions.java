@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.FavoriteList;
+import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.StoreModel;
@@ -402,22 +403,21 @@ public class HelperFunctions {
         return SmartStoreUtil.toContentNodesFromKeys(DatabaseScoreFactorProvider.getInstance().getPersonalRecommendations(recommender, erpCustomerId));
     }
 
+    /**
+     * Return a list of featured items.
+     * 
+     * @param model
+     * @return
+     */
     public static List getFeaturedItems(ContentNodeModel model) {
-        if(model instanceof DepartmentModel) {
-            return ((DepartmentModel) model).getFeaturedProducts();
-        } else if (model instanceof CategoryModel) {
-            return ((CategoryModel) model).getFeaturedProducts();
+        if(model instanceof ProductContainer) {
+            return ((ProductContainer) model).getFeaturedProducts();
         } else if (model instanceof ProductModel) {
-        	return ((CategoryModel) getToplevelCategory(model)).getFeaturedProducts();
-        } else {
-            Object value = model.getAttribute("FEATURED_PRODUCTS", null);
-            if (value instanceof List) {
-                return (List) value;
-            }
+                return ((CategoryModel) HelperFunctions.getToplevelCategory(model)).getFeaturedProducts();
         }
         return Collections.EMPTY_LIST;
     }
-
+    
     public static List getCandidateLists(ContentNodeModel model) {
 		List nodes = new ArrayList();
 		if (model instanceof CategoryModel) {

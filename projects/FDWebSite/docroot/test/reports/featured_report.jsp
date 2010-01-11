@@ -150,8 +150,8 @@ padding-right: 0px;
     %>
             <td>
                     <font class="text12">
-                    <%if(!dept.getPK().getId().equals(deptId)){%>
-                    <a href="featured_report.jsp?deptId=<%= dept.getPK().getId() %>&deptName=<%= dept.getFullName() %>"><%= dept.getFullName() %>
+                    <%if(!dept.getContentKey().getId().equals(deptId)){%>
+                    <a href="featured_report.jsp?deptId=<%= dept.getContentKey().getId() %>&deptName=<%= dept.getFullName() %>"><%= dept.getFullName() %>
                     <%}
                             else{%>
                             <b><%= dept.getFullName() %></b>
@@ -205,7 +205,6 @@ padding-right: 0px;
         </tr>	
 		
 <%
-        Attribute prevBannerAttr = null;
         for (Iterator iter = nodes.iterator(); iter.hasNext(); ) { 
             int numOfFavorites = 1;
             NodeHolder nh = (NodeHolder) iter.next();
@@ -229,18 +228,15 @@ padding-right: 0px;
             <td valign=top>
             <%-- begin Our Favorites --%>
 <% 
-                EnumLayoutType layout = EnumLayoutType.getLayoutType(nh.getNode().getAttribute("LAYOUT", 0));
+                EnumLayoutType layout = nh.getNode().getLayout();
                 if (!(layout.equals(EnumLayoutType.FEATURED_ALL) || layout.equals(EnumLayoutType.GROCERY_CATEGORY) || layout.equals(EnumLayoutType.MULTI_CATEGORY))) { %>
                 n/a
 <%              } else {
-                    MultiAttribute faves = (MultiAttribute) nh.getNode().getAttribute("FEATURED_PRODUCTS");
+                    List<ProductModel> faves =  nh.getNode().getFeaturedProducts();
                     if (faves != null) {
                         int c = 0; %>
                         <table CLASS="noBorder">
-<%                       for (Iterator fIter = faves.getValues().iterator(); fIter.hasNext(); ) {
-                            ContentRef cRef = (ContentRef) fIter.next();
-							
-                            ProductModel prd = ((ProductRef)cRef).lookupProduct();
+<%                       for (ProductModel prd : faves) {
                             if (prd != null) { 
                                 SkuModel defaultSku = prd.getDefaultSku();
                                 if (defaultSku != null) {
@@ -259,18 +255,6 @@ padding-right: 0px;
             <%-- end Our Favorites --%>
             </td><td valign=top align=left>
             <%-- begin Promotion --%>
-<%--
-<%          for(int i = 0; i < numOfFavorites; i++){
-                Attribute bannerAttr = (Attribute) nh.getNode().getAttribute("BANNERS");
-                if ((bannerAttr != null) && nh.getNode().isHomeOfAttribute("BANNERS")) {
-                    prevBannerAttr = bannerAttr;%>                
-                    <%@ include file="includes/i_promotion_column.jspf" %>
-<%              }else if(prevBannerAttr != null){
-                    bannerAttr = prevBannerAttr;%>
-                    <%@ include file="includes/i_promotion_column.jspf" %>
-<%              }
-            }%>
---%>
             <%-- end Promotion --%>
             </td>
         </tr>
@@ -287,15 +271,15 @@ padding-right: 0px;
 
     private class NodeHolder {
     
-        private ContentNodeModel node;
+        private ProductContainer node;
         private int depth;
 
-        public NodeHolder(ContentNodeModel cn, int d) {
+        public NodeHolder(ProductContainer cn, int d) {
             node = cn;
             depth = d;
         }
 
-        public ContentNodeModel getNode() {
+        public ProductContainer getNode() {
             return node;
         }
 
@@ -322,7 +306,7 @@ padding-right: 0px;
 		List depts = contentFactory.getStore().getDepartments();
 		for(Iterator i = depts.iterator();i.hasNext(); ){
             DepartmentModel dept = (DepartmentModel) i.next();
-            if (dept.getPK().getId().equals(deptId)) {
+            if (dept.getContentKey().getId().equals(deptId)) {
                 descendDepartment(reportNodes, dept);
             }
 		}

@@ -50,14 +50,14 @@
 		StoreModel storeModel = contentFactory.getStore();
 		folderNodes = storeModel.getDepartments();
 	} else {
-		requestNode = contentFactory.getContentNodeByName(catId);
+		requestNode = contentFactory.getContentNode(catId);
 		if (requestNode instanceof DepartmentModel) {
 			DepartmentModel deptModel = (DepartmentModel) requestNode;
 			folderNodes = deptModel.getCategories();
 		} else if (requestNode instanceof CategoryModel) {
 			CategoryModel catModel = (CategoryModel) requestNode;
-			Attribute attrib=catModel.getAttribute("CONTAINS_BEER");
-			if(user != null && attrib != null && Boolean.TRUE.equals(attrib.getValue()) && !user.isHealthWarningAcknowledged()){
+			boolean containsBeer = catModel.isHavingBeer();
+			if(user != null && containsBeer && !user.isHealthWarningAcknowledged()){
 				String redirectURL = "/order/health_warning.jsp?successPage=/order/build_order_category.jsp"+URLEncoder.encode("?"+request.getQueryString());
 				response.sendRedirect(response.encodeRedirectURL(redirectURL));
 			}
@@ -121,10 +121,9 @@
 					<A HREF="/order/build_order_browse.jsp?catId=<%= folderNode %>"><img src="<%= imgSrc %>" width="<%= imgWidth %>" height="<%= imgHeight %>" border="0" valign="middle"></A>
 <%		} else if (folderNode instanceof CategoryModel) {
 			CategoryModel catModel = (CategoryModel) folderNode;
-			Attribute attribute = catModel.getAttribute("CAT_PHOTO");
-			Image catImage = attribute == null ? null : (Image) attribute.getValue();
+			Image catImage = catModel.getCategoryPhoto();
+			
 			if (catImage == null) {
-				System.out.print("No img for category (" + catModel.getFullName() + ") ");
 				//
 				// No img for Category, so let's try using one from the first product we find
 				//

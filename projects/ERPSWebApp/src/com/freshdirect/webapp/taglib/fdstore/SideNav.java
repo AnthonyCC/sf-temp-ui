@@ -1,14 +1,25 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
-import javax.servlet.jsp.*;
+import javax.servlet.jsp.JspException;
 
-import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.log4j.*;
+import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.content.*;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ArticleMedia;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumShowChildrenType;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 
 public class SideNav extends com.freshdirect.framework.webapp.BodyTagSupport {
@@ -142,7 +153,7 @@ public class SideNav extends com.freshdirect.framework.webapp.BodyTagSupport {
 
 		boolean showFolders = false;
 		boolean showProducts = false;
-		boolean isDept = ContentNodeI.TYPE_DEPARTMENT.equalsIgnoreCase(f.getContentType());
+		boolean isDept = ContentNodeModel.TYPE_DEPARTMENT.equalsIgnoreCase(f.getContentType());
 
 		EnumShowChildrenType sc =isDept ? EnumShowChildrenType.ALWAYS_FOLDERS : ((CategoryModel)f).getSideNavShowChildren();
 		if (EnumShowChildrenType.BROWSE_PATH.equals(sc)) {
@@ -170,14 +181,14 @@ public class SideNav extends com.freshdirect.framework.webapp.BodyTagSupport {
 		}
 
         // get any articles from the article attribute
-        if (f.getAttribute("ARTICLES") !=null ) {
-            List articles = (List)f.getAttribute("ARTICLES").getValue();
+	List articles = (f instanceof CategoryModel) ? ((CategoryModel)f).getArticles() : null;
+	if (articles != null) {
             int articleIdx = 0;
             for (Iterator ai=articles.iterator();ai.hasNext();) {
-				this.navList.add(new ArticleNavigationElement(depth + indent, (ArticleMedia)ai.next(),articleIdx,f));
+                this.navList.add(new ArticleNavigationElement(depth + indent, (ArticleMedia)ai.next(),articleIdx,f));
                 articleIdx++;
             }
-        }
+	}
 		int displayableProds = 0;  // count number of displayed products instead
 		int prodCount=0;
         if (!isDept) {        
@@ -235,7 +246,7 @@ public class SideNav extends com.freshdirect.framework.webapp.BodyTagSupport {
 		}
 
 		try {
-			CategoryModel folder = (CategoryModel)ContentFactory.getInstance().getContentNodeByName( this.catId );
+			CategoryModel folder = (CategoryModel)ContentFactory.getInstance().getContentNode(this.catId);
 
 			if (folder == null) {
 				LOGGER.info("SideNav did not find category "+this.catId);
@@ -245,7 +256,7 @@ public class SideNav extends com.freshdirect.framework.webapp.BodyTagSupport {
 			//Get all the objects
 			CategoryModel topNode = fillFolderInfo(folder);
 			
-			if (ContentNodeI.TYPE_DEPARTMENT.equalsIgnoreCase(topNode.getContentType())) {
+			if (ContentNodeModel.TYPE_DEPARTMENT.equalsIgnoreCase(topNode.getContentType())) {
 				topNode = folder;
 			}
 			pageContext.setAttribute(topCategoryName, topNode);

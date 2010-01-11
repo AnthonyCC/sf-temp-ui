@@ -98,14 +98,13 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 									<%
 									for ( int colIndex = 0; colIndex < maxCols && ((maxRows * colIndex) + rowIndex) < folderList.size(); colIndex++ ) {
 										CategoryModel folder = (CategoryModel)folderList.get((maxRows * colIndex) + rowIndex);
-										Attribute alias = folder.getAttribute("ALIAS");
+										ContentNodeModel alias = folder.getAlias();
 										String folderLink = null;
 										if ( alias != null ) {
-											ContentRef aliasRef = (ContentRef)alias.getValue();
-											if (aliasRef instanceof CategoryRef) {
-											    folderLink = response.encodeURL("/category.jsp?catId=" + aliasRef.getRefName()+"&trk=dnav");
-											} else if (aliasRef instanceof DepartmentRef) {
-											    folderLink = response.encodeURL("/department.jsp?deptId=" + aliasRef.getRefName()+"&trk=dnav");
+											if (alias instanceof CategoryModel) {
+											    folderLink = response.encodeURL("/category.jsp?catId=" + alias.getContentKey().getId() + "&trk=dnav");
+											} else if (alias instanceof DepartmentModel) {
+											    folderLink = response.encodeURL("/department.jsp?deptId=" + alias.getContentKey().getId() + "&trk=dnav");
 											}
 										} else {
 											folderLink = response.encodeURL("/category.jsp?catId=" + folder+"&trk=dnav");

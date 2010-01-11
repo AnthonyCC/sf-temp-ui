@@ -4,11 +4,10 @@ String productId = request.getParameter("productId");
 if (categoryId!=null && productId!=null) {
 	ProductModel product = ContentFactory.getInstance().getProductByName(categoryId, productId);
 	String wSize = "400,585";
-	if (product.getAttribute("DONENESS_GUIDE")!=null) {%>
+	List<Html> donenessGuides = product.getDonenessGuide(); 
+	if (donenessGuides!=null && donenessGuides.size()>0) {%>
 	  <br><b>Fresh Tip</b><br>
 <%
-		Collection donenessGuides = (Collection)product.getAttribute("DONENESS_GUIDE").getValue();
-
 		for (Iterator i= donenessGuides.iterator(); i.hasNext();) {
 		    TitledMedia dg = (TitledMedia) i.next();
 

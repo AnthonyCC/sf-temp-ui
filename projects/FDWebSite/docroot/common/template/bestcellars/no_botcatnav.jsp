@@ -31,25 +31,14 @@
       onload="<%= request.getAttribute("bodyOnLoad")%>" 
       onunload="<%= request.getAttribute("bodyOnUnload")%>" >
 <%
-        String tmplCatId = request.getParameter("catId");
-        String tmplFldrLbl = "/media_stat/images/layout/clear.gif";
-        String tmplNavBar = "/media_stat/images/layout/clear.gif";
 
-         if (tmplCatId!=null) {
-            ContentNodeModel tmplCat = ContentFactory.getInstance().getContentNodeByName(tmplCatId);
-            ContentNodeModel wokingCat = tmplCat.getAttribute("ALIAS")!=null  
-                 ? ((CategoryRef) tmplCat.getAttribute("ALIAS").getValue()).getCategory()
-                 : tmplCat;
-             if (wokingCat!=null && ContentNodeI.TYPE_CATEGORY.equals(wokingCat.getContentType())) {
-               if (wokingCat.getAttribute("CAT_LABEL")!=null) {
-                    tmplFldrLbl = ((MediaI)wokingCat.getAttribute("CAT_LABEL").getValue()).getPath();
-              }
-               if (wokingCat.getAttribute("CATEGORY_NAVBAR")!=null) {
-                    tmplNavBar = ((MediaI)wokingCat.getAttribute("CATEGORY_NAVBAR").getValue()).getPath();
-               }
-                 
-            }
-        }
+	JspMethods.CategoryInfo c = JspMethods.getCategoryInfo(request);
+	String tmplCatId = c.getCatId();
+	String tmplFldrLbl = c.getFldrLbl();
+	String tmplNavBar = c.getNavBar();
+	
+	String fldrLink = c.getLink();
+
 	//
 	// annotation mode, add overlib stuff
 	//

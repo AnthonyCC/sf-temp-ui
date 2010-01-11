@@ -60,12 +60,11 @@ public class ConfigureProductTag extends com.freshdirect.framework.webapp.BodyTa
 			//
 			// Get sku for this ProductModel
 			//
-			SkuModel defaultSku = product.getDefaultSku();
-			if (defaultSku==null) {
+		        String skuCode = product.getDefaultSkuCode();
+			if (skuCode==null) {
 				return SKIP_BODY;
 			}
 
-			String skuCode = defaultSku.getSkuCode();
 			FDProductInfo productInfo = FDCachedFactory.getProductInfo(skuCode);
 			FDProduct fdProd = FDCachedFactory.getProduct( skuCode, productInfo.getVersion() );
 
@@ -77,7 +76,7 @@ public class ConfigureProductTag extends com.freshdirect.framework.webapp.BodyTa
 			// FIXME: variant ID is null here (last param). Is it correct?
 			String configDescValue = this.buildConfiguration(fdProd);
 			this.configProductValue = new FDCartLineModel(new FDSku(fdProd),
-					this.product.getProductRef(), this.configuration, null);
+					this.product, this.configuration, null);
 
 			//
 			// Set variables in PageContext

@@ -296,7 +296,7 @@ public class CreateOrderTestCase extends TestCase {
 				FDCartLineModel cartLine =
 					new FDCartLineModel(
 						new FDSku(productInfo),
-						productmodel.getProductRef(),
+						productmodel,
 						new FDConfiguration(quantity, salesUnit.getName(), optionMap));
 
 				cartLine.refreshConfiguration();

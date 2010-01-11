@@ -38,6 +38,9 @@ public class IncludeMediaTag extends BodyTagSupport {
 
 	public int doStartTag() throws JspException {
 		try {
+		    if (this.name == null) {
+		        throw new NullPointerException("Media path not specified!");
+		    }
 			MediaUtils.render(this.name, this.pageContext.getOut(), this.parameters, this.withErrorReport);
 			
 			return SKIP_BODY;

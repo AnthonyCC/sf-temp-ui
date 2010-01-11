@@ -21,9 +21,9 @@
  
  if (rcpCategory!=null) {
 //attribute doesn't exist yet using zoomLabel temporarily
-   Attribute atrCatImage = rcpCategory.getAttribute("zoomLabel");
-   if (atrCatImage!=null) {
-	Image catImage = (Image)atrCatImage.getValue();		%>
+   Image catImage = rcpCategory.getZoomLabel();
+   if (catImage!=null) {
+	%>
 	<tr><td><a href="<%=response.encodeURL("recipe_cat.jsp?catId="+rcpCategory+"&trk=snav")%>">
 	<img src="<%=catImage.getPath()%>" width="<%=catImage.getWidth()%>" height="<%=catImage.getHeight()%>" border="0"></a><br>&nbsp;
 	</td></tr>

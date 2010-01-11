@@ -1,7 +1,6 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'%>
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
@@ -73,8 +72,8 @@
 				CategoryModel category = ( contentNode instanceof CategoryModel ) ? (CategoryModel)contentNode : (CategoryModel)contentNode.getParentNode();
 		
 				//Check the span for this item
-				colSpan = category.getAttribute( "COLUMN_SPAN", 1 );
-				int colIdx = category.getAttribute( "COLUMN_NUM", 1 );
+				colSpan = category.getColumnSpan();
+				int colIdx = category.getColumnNum();
 		
 				showSeparator[x] = ( colSpan < 2 ) || ( ( colIdx + colSpan - 2 ) <= x );
 			}

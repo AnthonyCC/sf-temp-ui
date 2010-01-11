@@ -3,6 +3,9 @@
  */
 package com.freshdirect.fdstore.customer.ejb;
 
+import java.rmi.RemoteException;
+
+import javax.ejb.CreateException;
 import javax.ejb.EJBHome;
 import javax.naming.NamingException;
 
@@ -17,6 +20,8 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
+import com.freshdirect.monitor.ejb.ErpMonitorHome;
+import com.freshdirect.monitor.ejb.ErpMonitorSB;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
 
 /**
@@ -128,6 +133,22 @@ public class FDSessionBeanSupport extends SessionBeanSupport {
     protected FDCustomerManagerSB getFDCustomerManager() {
         return LOCATOR.getFDCustomerManagerSessionBean();
     }
+
+    
+
+    /**
+     * @return
+     * @see com.freshdirect.fdstore.customer.ejb.FDServiceLocator#getErpMonitorHome()
+     */
+    protected ErpMonitorHome getErpMonitorHome() {
+        return LOCATOR.getErpMonitorHome();
+    }
+    
+    protected ErpMonitorSB getErpMonitor() throws RemoteException, CreateException {
+        return getErpMonitorHome().create();
+    }
+    
+    
 
     /**
      * @param jndiHomeName

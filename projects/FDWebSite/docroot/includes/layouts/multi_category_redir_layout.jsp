@@ -23,12 +23,12 @@
 	String deptId = request.getParameter("deptId"); 
 	boolean isDepartment = false;
 	
-	ContentNodeModel currentFolder = null;
+	ProductContainer currentFolder = null;
 	if(deptId!=null) {
-		currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+		currentFolder=(ProductContainer) ContentFactory.getInstance().getContentNode(deptId);
 		isDepartment = true;
 	} else {
-		currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+		currentFolder=(ProductContainer) ContentFactory.getInstance().getContentNode(catId);
 	}
 	
 	
@@ -53,10 +53,7 @@
 	boolean openedTable = false;
 	//StringBuffer catMediaOut = new StringBuffer(200);
 	boolean hasLeftNav = true;
-	Attribute attrib = currentFolder.getAttribute("SHOW_SIDE_NAV");
-	if (attrib!=null) {
-	    hasLeftNav = ((Boolean)attrib.getValue()).booleanValue();
-	}
+	hasLeftNav = currentFolder.isShowSideNav();
 	
 	if (!hasLeftNav || request.getRequestURI().indexOf("department.jsp")!=-1) {
 	    maxWidth=495;
@@ -75,7 +72,7 @@
 	List availableList = new ArrayList();
 	Map categoryItemCount = new HashMap();
 	SkuModel dfltSku = null;
-	String currentFolderPKId = currentFolder.getPK().getId();
+	String currentFolderPKId = currentFolder.getContentKey().getId();
 	String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
 	CategoryModel cat = null;
 	
@@ -102,14 +99,14 @@ for( int itmIdx=0; itmIdx < availableList.size(); itmIdx++ ) {
      if (contentNode instanceof CategoryModel) {
         cat = (CategoryModel)contentNode;
         
-        if ( cat.getParentNode() != null && cat.getParentNode().getPK().getId().equals(currentFolderPKId) ) { 
+        if ( cat.getParentNode() != null && cat.getParentNode().getContentKey().getId().equals(currentFolderPKId) ) { 
         	
             //we dont want to print heading for categories that are empty..so peek ahead to see if there is an item that it's child
             int peekAhead = itmIdx+1;
             if (peekAhead == availableList.size()) {
                 continue;
             } else {
-                if ( ((ContentNodeModel)availableList.get(peekAhead)).getParentNode().getPK().getId().equals(currentFolderPKId)) {
+                if ( ((ContentNodeModel)availableList.get(peekAhead)).getParentNode().getContentKey().getId().equals(currentFolderPKId)) {
                     continue;
                 }
             }
@@ -140,9 +137,9 @@ for( int itmIdx=0; itmIdx < availableList.size(); itmIdx++ ) {
 			imgWidths = 0;
 			colCount = 0;
             // get the category_top attribute to display 
-            MultiAttribute catTop = (MultiAttribute) cat.getAttribute("CATEGORY_TOP_MEDIA");
-            if ( catTop != null ) {
-                MediaI catTopMedia = (MediaI)catTop.getValue(0);
+            List catTop = cat.getTopMedia();
+            if (catTop.size() > 0) {
+                MediaI catTopMedia = (MediaI)catTop.get(0);
                 if (catTopMedia instanceof Image) { %>
 					<tr>
 						<td width="100%" align="center">

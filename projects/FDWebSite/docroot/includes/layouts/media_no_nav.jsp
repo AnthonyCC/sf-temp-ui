@@ -1,7 +1,6 @@
 <%@ page import="java.text.SimpleDateFormat"
 %><%@ page import='java.util.*'
 %><%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*'
-%><%@ page import='com.freshdirect.fdstore.attributes.Attribute'
 %><%@ page import='com.freshdirect.fdstore.promotion.*'
 %><%@ page import='java.net.URLEncoder'
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
@@ -21,18 +20,18 @@ boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
 if (deptId != null) {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+    currentFolder=ContentFactory.getInstance().getContentNode(deptId);
     isDepartment = true;
 } else {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+    currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
 
 
 // STEP 2 - RENDER CUSTOM CONTENT
 //
-Attribute attrib = currentFolder.getAttribute("MEDIA_CONTENT");
-if (attrib!=null) {
-	String contentPath = ((MediaModel)attrib.getValue()).getPath();
+Html mediaContent = (currentFolder instanceof ProductContainer) ? ((ProductContainer)currentFolder).getMediaContent() : null;
+if (mediaContent!=null) {
+	String contentPath = mediaContent.getPath();
     %><fd:IncludeMedia name='<%= contentPath %>' /><%
 }
 %>

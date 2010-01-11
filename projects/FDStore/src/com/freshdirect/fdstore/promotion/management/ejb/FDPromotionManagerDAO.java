@@ -53,7 +53,76 @@ public class FDPromotionManagerDAO {
 		
 		int i = 1;
 		ps.setString(i++, id);
-		ps.setString(i++, promotion.getPromotionCode());
+		i = setupPreparedStatement(ps, promotion, i);
+		
+		if(promotion.getNotes() !=null) {
+			ps.setString(i++, promotion.getNotes());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if(promotion.isActive()){
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if (promotion.getModifiedBy() != null) {
+			ps.setString(i++, promotion.getModifiedBy());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if(!promotion.isApplyFraud()){
+			ps.setString(i++, "X");
+		}else{
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if(promotion.getProfileOperator() != null && 
+				promotion.getAttributeList() != null && promotion.getAttributeList().size() > 1){
+			ps.setString(i++, promotion.getProfileOperator());
+		}else{
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		if(promotion.isRecommendedItemsOnly()){
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if(promotion.isAllowHeaderDiscount()){
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if (promotion.getMaxItemCount()>0) {
+			ps.setInt(i++,promotion.getMaxItemCount());
+		} else {
+			ps.setNull(i++, Types.INTEGER);					
+		}
+
+
+		if (ps.executeUpdate() != 1) {
+			ps.close();
+			throw new SQLException("row not created");
+		}
+		ps.close();
+		
+		FDPromotionManagerDAO.storeAssignedCustomers(conn, id, promotion.getTmpAssignedCustomerUserIds());
+		FDPromotionManagerDAO.storeAssignedGroups(conn, id, promotion);
+		FDPromotionManagerDAO.storeAttributeList(conn, id, promotion.getAttributeList());
+		
+		if(!promotion.getZipRestrictions().isEmpty()){
+			storeGeography(conn, id, promotion.getZipRestrictions());
+		}
+		return new PrimaryKey(id);
+	}
+
+
+    private static int setupPreparedStatement(PreparedStatement ps, FDPromotionModel promotion, int i) throws SQLException {
+        ps.setString(i++, promotion.getPromotionCode());
 		ps.setString(i++, promotion.getName());
 		ps.setString(i++, promotion.getDescription());		
 		String maxUsage = !"".equals(promotion.getMaxUsage()) ? promotion.getMaxUsage() : "0"; 
@@ -183,71 +252,8 @@ public class FDPromotionManagerDAO {
 		} else {
 			ps.setNull(i++, Types.INTEGER);
 		}
-		
-		if(promotion.getNotes() !=null) {
-			ps.setString(i++, promotion.getNotes());
-		} else {
-			ps.setNull(i++, Types.VARCHAR);
-		}
-		
-		if(promotion.isActive()){
-			ps.setString(i++, "X");
-		} else {
-			ps.setNull(i++, Types.VARCHAR);
-		}
-		
-		if (promotion.getModifiedBy() != null) {
-			ps.setString(i++, promotion.getModifiedBy());
-		} else {
-			ps.setNull(i++, Types.VARCHAR);
-		}
-		
-		if(!promotion.isApplyFraud()){
-			ps.setString(i++, "X");
-		}else{
-			ps.setNull(i++, Types.VARCHAR);
-		}
-		
-		if(promotion.getProfileOperator() != null && 
-				promotion.getAttributeList() != null && promotion.getAttributeList().size() > 1){
-			ps.setString(i++, promotion.getProfileOperator());
-		}else{
-			ps.setNull(i++, Types.VARCHAR);
-		}
-		if(promotion.isRecommendedItemsOnly()){
-			ps.setString(i++, "X");
-		} else {
-			ps.setNull(i++, Types.VARCHAR);
-		}
-		
-		if(promotion.isAllowHeaderDiscount()){
-			ps.setString(i++, "X");
-		} else {
-			ps.setNull(i++, Types.VARCHAR);
-		}
-		
-		if (promotion.getMaxItemCount()>0) {
-			ps.setInt(i++,promotion.getMaxItemCount());
-		} else {
-			ps.setNull(i++, Types.INTEGER);					
-		}
-
-
-		if (ps.executeUpdate() != 1) {
-			ps.close();
-			throw new SQLException("row not created");
-		}
-		ps.close();
-		
-		FDPromotionManagerDAO.storeAssignedCustomers(conn, id, promotion.getTmpAssignedCustomerUserIds());
-		FDPromotionManagerDAO.storeAssignedGroups(conn, id, promotion);
-		FDPromotionManagerDAO.storeAttributeList(conn, id, promotion.getAttributeList());
-		
-		if(!promotion.getZipRestrictions().isEmpty()){
-			storeGeography(conn, id, promotion.getZipRestrictions());
-		}
-		return new PrimaryKey(id);
-	}
+        return i;
+    }
 	
 	private final static String getAllPromotionCodes = "SELECT CODE, MODIFY_DATE FROM CUST.PROMOTION";
 
@@ -572,134 +578,7 @@ public class FDPromotionManagerDAO {
 				+ " ROLLING_EXPIRATION_DAYS = ?, NOTES = ?, ACTIVE = ?, MODIFY_DATE = SYSDATE, MODIFIED_BY = ?, DONOT_APPLY_FRAUD = ? , PROFILE_OPERATOR = ?, recommended_items_only=?, allow_header_discount=?, max_item_count=?  "
 				+ " WHERE ID = ?");
 		int i = 1;
-		ps.setString(i++, promotion.getPromotionCode());
-		ps.setString(i++, promotion.getName());
-		ps.setString(i++, promotion.getDescription());
-		String maxUsage = !"".equals(promotion.getMaxUsage()) ? promotion.getMaxUsage() : "0"; 
-		ps.setInt(i++, Integer.parseInt(maxUsage));
-		if (promotion.getStartDate() != null) {
-			ps.setDate(i++, new java.sql.Date(promotion.getStartDate().getTime()));
-		} else {
-			ps.setNull(i++, Types.DATE);		
-		}
-		if (promotion.getExpirationDate() != null) {
-			ps.setTimestamp(i++, new java.sql.Timestamp(promotion.getExpirationDate().getTime()));
-		} else {
-			ps.setNull(i++, Types.DATE);		
-		}
-		if (!"".equals(promotion.getRedemptionCode())) {
-			ps.setString(i++, promotion.getRedemptionCode());
-		} else {
-			ps.setNull(i++, Types.VARCHAR);		
-		}
-		ps.setString(i++, promotion.getPromotionType());
-		if (!"".equals(promotion.getMinSubtotal())) {
-			ps.setDouble(i++, Double.parseDouble(promotion.getMinSubtotal()));
-		} else {
-			ps.setNull(i++, Types.DOUBLE);					
-		}		
-		if (!"".equals(promotion.getMaxAmount())) {
-			ps.setDouble(i++, Double.parseDouble(promotion.getMaxAmount()));
-		} else {
-			ps.setNull(i++, Types.DOUBLE);					
-		}
-		if (!"".equals(promotion.getPercentOff())) {
-			ps.setDouble(i++, Double.parseDouble(promotion.getPercentOff())/100);
-		} else {
-			ps.setNull(i++, Types.DOUBLE);					
-		}
-		if (!"".equals(promotion.getWaiveChargeType())) {
-			ps.setString(i++, promotion.getWaiveChargeType());
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}		
-
-		if(promotion.isUniqueUse()){
-			ps.setString(i++, "X");
-		}else{
-			ps.setNull(i++, Types.VARCHAR);
-		}
-
-		if (!"".equals(promotion.getCategoryName())) {
-			ps.setString(i++, promotion.getCategoryName());
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}		
-		if (!"".equals(promotion.getProductName())) {
-			ps.setString(i++, promotion.getProductName());
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}
-		if (promotion.isOrderTypeHomeAllowed()) {
-			ps.setString(i++, "X");
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}
-		if (promotion.isOrderTypePickupAllowed()) {
-			ps.setString(i++, "X");
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}
-		if (promotion.isOrderTypeDepotAllowed()) {
-			ps.setString(i++, "X");
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}
-		if (promotion.isOrderTypeCorporateAllowed()) {
-			ps.setString(i++, "X");
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}		
-		if (promotion.getNeedDryGoods()) {
-			ps.setString(i++, "X");
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}
-		if (!"".equals(promotion.getOrderCount())) {
-			ps.setInt(i++, Integer.parseInt(promotion.getOrderCount()));
-		} else {
-			ps.setNull(i++, Types.INTEGER);								
-		}
-		if (!"".equals(promotion.getNeedItemsFrom())) {
-			ps.setString(i++,promotion.getNeedItemsFrom());
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}
-		if (!"".equals(promotion.getExcludeSkuPrefix())) {
-			ps.setString(i++, promotion.getExcludeSkuPrefix());
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}
-		if (!"".equals(promotion.getNeedBrands())) {
-			ps.setString(i++,promotion.getNeedBrands());
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}
-		if (!"".equals(promotion.getExcludeBrands())) {
-			ps.setString(i++,promotion.getExcludeBrands());
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}
-		if(promotion.isRuleBasedPromotion()){
-			ps.setString(i++, "X");
-		}else{
-			ps.setNull(i++, Types.VARCHAR);
-		}
-		if (!"".equals(promotion.getRefProgCampaignCode())) {
-			ps.setString(i++,promotion.getRefProgCampaignCode());
-		} else {
-			ps.setNull(i++, Types.VARCHAR);								
-		}
-		if(promotion.isMaxUsagePerCustomer()){
-			ps.setString(i++, "X");
-		}else{
-			ps.setNull(i++, Types.VARCHAR);
-		}
-		if(promotion.getRollingExpirationDays() != null) {
-			ps.setInt(i++, promotion.getRollingExpirationDays().intValue());
-		} else {
-			ps.setNull(i++, Types.INTEGER);
-		}
+		i = setupPreparedStatement(ps, promotion, i);
 		ps.setString(i++, promotion.getNotes());
 
 		if(promotion.isActive()){

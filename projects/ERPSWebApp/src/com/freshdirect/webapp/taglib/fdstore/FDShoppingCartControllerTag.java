@@ -52,6 +52,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -1194,7 +1195,7 @@ public class FDShoppingCartControllerTag extends
 		// no sales unit, alert user
 		//
 		result.addError(salesUnit == null, paramSalesUnit, "Please select "
-				+ prodNode.getAttribute("SALES_UNIT_LABEL", "Sales Unit"));
+		                + ContentNodeModelUtil.nullValue(prodNode.getSalesUnitLabel(), "Sales Unit")); 
 
 		LOGGER.debug("Consented " + request.getParameter("consented" + suffix));
 		if (prodNode.hasTerms()
@@ -1350,8 +1351,8 @@ public class FDShoppingCartControllerTag extends
 			 * This condition is true whenever there is a new item added to the
 			 * cart.
 			 */
-			cartLine = new FDCartLineModel(new FDSku(product), prodNode
-					.getProductRef(), new FDConfiguration(quantity, salesUnit
+			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
+					new FDConfiguration(quantity, salesUnit
 					.getName(), varMap), variantId);
 		} else {
 			/*
@@ -1359,8 +1360,8 @@ public class FDShoppingCartControllerTag extends
 			 * cartlineId instead of generating a new one.
 			 * 
 			 */
-			cartLine = new FDCartLineModel(new FDSku(product), prodNode
-					.getProductRef(), new FDConfiguration(quantity, salesUnit
+			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
+					new FDConfiguration(quantity, salesUnit
 					.getName(), varMap), origCartLineId, null, false, variantId);
 		}
 

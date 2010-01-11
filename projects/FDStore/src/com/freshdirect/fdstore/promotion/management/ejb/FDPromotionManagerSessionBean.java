@@ -16,6 +16,7 @@ import javax.ejb.FinderException;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpActivityRecord;
@@ -28,6 +29,7 @@ import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionDecorator;
 import com.freshdirect.fdstore.promotion.PromotionI;
@@ -38,12 +40,10 @@ import com.freshdirect.fdstore.promotion.management.FDDuplicatePromoFieldExcepti
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
 
-public class FDPromotionManagerSessionBean extends SessionBeanSupport {
+public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 
-	private final static Category LOGGER = LoggerFactory
+	private final static Logger LOGGER = LoggerFactory
 			.getInstance(FDPromotionManagerSessionBean.class);
-
-	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
 	private static SimpleDateFormat SDF = new SimpleDateFormat("dd-MMM-yyyy");
 
@@ -59,17 +59,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle.getMessage());
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after getting promotions.",
-									sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+		    close(conn);
 		}
 	}
 
@@ -85,17 +75,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle.getMessage());
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after getting promotion.",
-									sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 	
@@ -113,17 +93,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle.getMessage());
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after getting promotion.",
-									sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 		
 	}
@@ -158,17 +128,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 			}
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after creating new promotion.",
-									sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -200,17 +160,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 			}
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after string promotion.",
-									sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 
 	}
@@ -225,17 +175,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after removing promotion.",
-									sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -249,17 +189,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after getting prom customer info.",
-									sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -273,17 +203,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after getting prom customer info.",
-									sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -297,17 +217,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after getting available promos.",
-									sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -323,15 +233,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.error("Unable to close connection after updating.",
-							sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -347,15 +249,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.error("Unable to close connection after updating.",
-							sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -371,15 +265,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.error("Unable to close connection after updating.",
-							sqle2);
-					throw new FDResourceException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -410,17 +296,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after loading all automatic promotions.",
-									sqle2);
-					throw new EJBException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -449,17 +325,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after loading all automatic promotions.",
-									sqle2);
-					throw new EJBException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 	/**
@@ -489,16 +355,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.error(
-							"Unable to close connection after loading the promotion. "
-									+ promoId, sqle2);
-					throw new EJBException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -513,17 +370,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER.error(
-							"Unable to close connection after getting the promotion Id "
-									+ "				for Redemption code "
-									+ redemptionCode, sqle2);
-					throw new EJBException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -545,17 +392,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after refreshing all automatic promotion codes.",
-									sqle2);
-					throw new EJBException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 	/**
@@ -574,17 +411,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after refreshing all automatic promotion codes.",
-									sqle2);
-					throw new EJBException(sqle2);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -646,25 +473,7 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					LOGGER
-							.error(
-									"Unable to close connection after loading all active Promo Variants.",
-									sqle2);
-					throw new EJBException(sqle2);
-				}
-			}
-		}
-	}
-	private ActivityLogHome getActivityLogHome() {
-		try {
-			return (ActivityLogHome) LOCATOR.getRemoteHome(
-					"freshdirect.customer.ActivityLog", ActivityLogHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
+                    close(conn);
 		}
 	}
 

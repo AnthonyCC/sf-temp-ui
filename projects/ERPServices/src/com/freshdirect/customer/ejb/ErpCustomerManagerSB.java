@@ -157,6 +157,9 @@ public interface ErpCustomerManagerSB extends EJBObject {
      */
     public void addInvoice(ErpInvoiceModel invoice, String saleId, ErpShippingInfo shippingInfo) throws ErpTransactionException, RemoteException;
     
+    
+    public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo) throws ErpTransactionException, RemoteException;
+    
     public void reconcileSale(String saleId) throws ErpTransactionException, RemoteException;
     
     public void cutoff(String pk) throws RemoteException;

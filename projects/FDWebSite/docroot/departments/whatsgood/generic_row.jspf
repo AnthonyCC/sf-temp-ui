@@ -4,7 +4,7 @@
 	sortedColl = null; 
 	onlyOneProduct = false;
 	theOnlyProduct = null;
-	currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+	currentFolder = ContentFactory.getInstance().getContentNode(catId);
 	isDept = (currentFolder instanceof DepartmentModel);
 	isCat = (currentFolder instanceof CategoryModel);
 	trkCode= "";
@@ -69,7 +69,7 @@
 			//all products
 
 			sortDescending = "true".equalsIgnoreCase(request.getParameter("sortDescending"));
-			sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
+			sortNameAttrib = ((ProductContainer)currentFolder).getListAs();
 				
 			layoutSettings = new Settings();
 			layoutSettings.setGrabberDepth(grabberDepth); //use passed value

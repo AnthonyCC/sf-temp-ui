@@ -84,7 +84,7 @@
                     String lastFirst = null;
                     String lastSecond = null;
 			
-                    if (productNode.getAttribute("NUTRITION_MULTIPLE", false)) {
+                    if (productNode.isNutritionMultiple()) {
                         multiple = true;
                         skus = productNode.getSkus();
 
@@ -95,10 +95,9 @@
                                 sIter.remove();
                                 continue;
                             }
-					
-                            if (sm.getAttribute("VARIATION_MATRIX") != null) {
-                                List dvals = ((MultiAttribute) sm.getAttribute("VARIATION_MATRIX")).getValues();
-                                DomainValue dv = ((DomainValueRef) dvals.get(0)).getDomainValue();
+							List dvals = sm.getVariationMatrix();
+                            if (dvals != null && dvals.size() > 0) {
+                                DomainValue dv = (DomainValue) dvals.get(0);
                                 if (lastFirst == null) {
                                     lastFirst = dv.getLabel();
                                 } else if (!dv.getLabel().equals(lastFirst)) {
@@ -107,7 +106,7 @@
                                 }
 
                                 if (dvals.size() > 1) {
-                                    dv = ((DomainValueRef) dvals.get(1)).getDomainValue();
+                                    dv = (DomainValue) dvals.get(1);
                                     if (lastSecond == null) {
                                         lastSecond = dv.getLabel();
                                     } else if (!dv.getLabel().equals(lastSecond)) {
@@ -142,7 +141,7 @@
 							<%
 							for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
                                         SkuModel s = (SkuModel) sIter.next();
-                                        List dvals = ((MultiAttribute) s.getAttribute("VARIATION_MATRIX")).getValues();
+                                        List dvals = s.getVariationMatrix();
                                         out.print("<option value=\"" + s.getSkuCode() + "\"");
 								
                                         if (s.getSkuCode().equals(skuCode)) {
@@ -153,7 +152,7 @@
                                         out.print(" >");
 								
 								if (!sameFirstVar) {
-									out.print(((DomainValueRef) dvals.get(0)).getDomainValue().getLabel());
+									out.print(((DomainValue) dvals.get(0)).getLabel());
 								}
 
 								if (!sameFirstVar && ! sameSecondVar) {
@@ -161,7 +160,7 @@
 								}
 
 								if (!sameSecondVar) {
-									out.print(((DomainValueRef) dvals.get(1)).getDomainValue().getLabel());
+									out.print(((DomainValue) dvals.get(1)).getLabel());
 								}
 							}
 							%>
@@ -198,7 +197,7 @@
 							<%
 							for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
                                         SkuModel s = (SkuModel) sIter.next();
-                                        List dvals = ((MultiAttribute) s.getAttribute("VARIATION_MATRIX")).getValues();
+                                        List dvals = s.getVariationMatrix();
                                         out.print("<option value=\"" + s.getSkuCode() + "\"");
 								
                                         if (s.getSkuCode().equals(skuCode)) {
@@ -209,7 +208,7 @@
                                         out.print(" >");
 
 								if (!sameFirstVar) {
-									out.print(((DomainValueRef) dvals.get(0)).getDomainValue().getLabel());
+									out.print(((DomainValue) dvals.get(0)).getLabel());
 								}
 								
 								if (!sameFirstVar && ! sameSecondVar) {
@@ -217,7 +216,7 @@
 								}
 								
 								if (!sameSecondVar)  {
-									out.print(((DomainValueRef)dvals.get(1)).getDomainValue().getLabel());
+									out.print(((DomainValue)dvals.get(1)).getLabel());
 								}
 							}
 							%>
@@ -243,20 +242,22 @@
 				<%@ include file="/shared/includes/product/i_product_about.jspf" %>
 
 <%
-	            if (productNode.getAttribute("PRODUCT_ABOUT")!=null && doShowAbout) {
+				Html prodAbout = productNode.getProductAbout();
+	            if (prodAbout!=null && doShowAbout) {
 	                %><br /><a href="javascript:popup('/shared/popup.jsp?prodId=<%= productNode.getContentName() %>&catId=<%= productNode.getParentNode().getContentName()%>&attrib=PRODUCT_ABOUT&tmpl=large','large');"><b>Learn more about this <%=productNode.getDepartment().getFullName().toLowerCase()%>.</b></a>
 <%
 	            }
 
-			Attribute seasonTextAttrib = productNode.getAttribute("SEASON_TEXT");
+			String seasonText = productNode.getSeasonText();
 				
-			if (seasonTextAttrib!=null) {
-					%><br /><img src="/media_stat/images/layout/cccccc.gif" vspace="6" width="200" height="1"><br /><%=seasonTextAttrib.getValue()%><img src="/media_stat/images/layout/cccccc.gif" vspace="6" width="200" height="1"><br />
+			if (seasonText!=null) {
+					%><br /><img src="/media_stat/images/layout/cccccc.gif" vspace="6" width="200" height="1"><br /><%=seasonText%><img src="/media_stat/images/layout/cccccc.gif" vspace="6" width="200" height="1"><br />
 				<%
 				}
 
-				if (!isProductWine && productNode.hasAttribute("PROD_DESCRIPTION_NOTE")) {
-                        Html media = (Html)productNode.getAttribute("PROD_DESCRIPTION_NOTE").getValue();
+				Html prodDescNoteMedia = productNode.getProductDescriptionNote();
+				if (!isProductWine && prodDescNoteMedia != null) {
+                        Html media =  prodDescNoteMedia;
                         String pathToMedia = media.getPath();
 					%><br /><fd:IncludeMedia name="<%=pathToMedia%>" /><br />
 				<%
@@ -320,8 +321,9 @@
                 <%@ include file="/shared/includes/product/i_bundled_product_info.jspf" %>
 
                         <%
-			if (productNode.getParentNode().hasAttribute("CAT_STORAGE_GUIDE_MEDIA")) {
-					%><br /><img src="/media_stat/images/template/fruit/from_our_experts.gif" width="133" height="13"><br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><a href="javascript:popup('/shared/popup.jsp?catId=<%=productNode.getParentNode().getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large','large')"><%=productNode.getDepartment().getFullName()%> Storage Guide</a><br />
+               CategoryModel _parentNode = (CategoryModel) productNode.getParentNode();
+			if (_parentNode.getCategoryStorageGuideMedia() != null) {
+					%><br /><img src="/media_stat/images/template/fruit/from_our_experts.gif" width="133" height="13"><br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><a href="javascript:popup('/shared/popup.jsp?catId=<%=_parentNode.getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large','large')"><%=productNode.getDepartment().getFullName()%> Storage Guide</a><br />
 				<%
 				}
 			}

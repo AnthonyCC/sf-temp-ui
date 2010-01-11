@@ -425,32 +425,33 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 			+ "and sa.action_type in ('CRO','MOD') and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) "
 			+ "and upper(di.address1) like upper(?) and di.zip = ? and s.type='REG'";
 
-	public static List getOrdersForDateAndAddress(Connection conn, Date date, String address, String zipcode) throws SQLException {
-		List lst = new ArrayList();
+	public static List<DlvSaleInfo> getOrdersForDateAndAddress(Connection conn, Date date, String address, String zipcode) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(ORD_SEARCH_QUERY);
 		ps.setDate(1, new java.sql.Date(date.getTime()));
 		ps.setString(2, "%" + address);
 		ps.setString(3, zipcode);
 
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			DlvSaleInfo info =
-				new DlvSaleInfo(
-					rs.getString("ID"),
-					rs.getString("CUSTOMER_ID"),
-					EnumSaleStatus.getSaleStatus(rs.getString("STATUS")),
-					rs.getString("STOP_SEQUENCE"),
-					rs.getString("FIRST_NAME"),
-					rs.getString("LAST_NAME"));
-			info.setAddress(rs.getString("ADDRESS1"));
-			info.setApartment(rs.getString("APARTMENT"));
-			info.setZipcode(rs.getString("ZIP"));
-
-			lst.add(info);
-		}
-
-		return lst;
+		return collectDlvSaleInfo(ps);
 	}
+
+    private static List<DlvSaleInfo> collectDlvSaleInfo(PreparedStatement ps) throws SQLException {
+        try {
+            List<DlvSaleInfo> lst = new ArrayList<DlvSaleInfo>();
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                DlvSaleInfo info = new DlvSaleInfo(rs.getString("ID"), rs.getString("CUSTOMER_ID"), EnumSaleStatus.getSaleStatus(rs.getString("STATUS")), rs
+                        .getString("STOP_SEQUENCE"), rs.getString("FIRST_NAME"), rs.getString("LAST_NAME"));
+                info.setAddress(rs.getString("ADDRESS1"));
+                info.setApartment(rs.getString("APARTMENT"));
+                info.setZipcode(rs.getString("ZIP"));
+
+                lst.add(info);
+            }
+            return lst;
+        } finally {
+            ps.close();
+        }
+    }
 
 	private static final String redeliveryQuery =
 		"select old.customer_id,old.id, new.status, old.truck_number, old.stop_sequence, old.first_name || ' ' || old.last_name as name, "
@@ -761,32 +762,14 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 			+ "and sa.action_type in ('STL') and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('STL')) "
 			+ "and upper(di.address1) like upper(?) and upper(di.apartment) = UPPER(?) and di.zip = ? and s.type='REG'";
 
-	public static List getLastOrderForAddress(Connection conn, AddressModel address) throws SQLException {
-		List lst = new ArrayList();
+	public static List<DlvSaleInfo> getLastOrderForAddress(Connection conn, AddressModel address) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LAST_ORD_SEARCH_QUERY);
 //		ps.setDate(1, new java.sql.Date(date.getTime()));
 		ps.setString(1, "%" + address.getAddress1());
 		ps.setString(2, address.getApartment());
 		ps.setString(3, address.getZipCode());
 
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			DlvSaleInfo info =
-				new DlvSaleInfo(
-					rs.getString("ID"),
-					rs.getString("CUSTOMER_ID"),
-					EnumSaleStatus.getSaleStatus(rs.getString("STATUS")),
-					rs.getString("STOP_SEQUENCE"),
-					rs.getString("FIRST_NAME"),
-					rs.getString("LAST_NAME"));
-			info.setAddress(rs.getString("ADDRESS1"));
-			info.setApartment(rs.getString("APARTMENT"));
-			info.setZipcode(rs.getString("ZIP"));
-
-			lst.add(info);
-		}
-
-		return lst;
+		return collectDlvSaleInfo(ps);
 	}
 	
 	private static final String GC_NSM_ORD_SEARCH_QUERY =

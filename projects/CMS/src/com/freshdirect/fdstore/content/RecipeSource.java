@@ -11,6 +11,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class RecipeSource extends ContentNodeModelImpl {
 
@@ -122,19 +123,19 @@ public class RecipeSource extends ContentNodeModelImpl {
 	}
 
 	public Html getLeftContent() {
-		return (Html) getAttribute("leftContent", (Html) null);
+            return FDAttributeFactory.constructHtml(this, "leftContent");
 	}
 	
 	public Html getTopContent() {
-		return (Html) getAttribute("topContent", (Html) null);
+            return FDAttributeFactory.constructHtml(this, "topContent");
 	}
 	
 	public Html getBottomContent() {
-		return (Html) getAttribute("bottomContent", (Html) null);
+            return FDAttributeFactory.constructHtml(this, "bottomContent");
 	}
 	
 	public Html getEmailContent() {
-		return (Html) getAttribute("emailContent", (Html) null);
+            return FDAttributeFactory.constructHtml(this, "emailContent");
 	}
 	
 	public List getFeaturedProducts() {
@@ -148,11 +149,11 @@ public class RecipeSource extends ContentNodeModelImpl {
 	}
 	
 	public Image getImage() {
-		return (Image) getAttribute("image", (Image) null);
+	    return FDAttributeFactory.constructImage(this, "image");
 	}
 	
 	public Image getZoomImage() {
-		return (Image) getAttribute("zoomImage", (Image) null);
+            return FDAttributeFactory.constructImage(this, "zoomImage");
 	}
 	
 }

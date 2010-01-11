@@ -60,7 +60,6 @@ public void prodFldrList(Collection itemCollection,ContentNodeModel currentFolde
     String itemDescription = null;
     String itemAltText = null;
     String itemImage = null;
-    Attribute prodFldrAttrib = null;
     Image prodFldrImg = null;
     String unAvailFontStart="";
     String unAvailFontEnd="";
@@ -123,11 +122,7 @@ public void prodFldrList(Collection itemCollection,ContentNodeModel currentFolde
             } // end if !bizobjtype = product
             else {
                     subFolder = (CategoryModel)itmNode;  // go get folder particualrs
-                    prodFldrAttrib = subFolder.getAttribute("CAT_PHOTO");
-                    prodFldrImg = null;
-                    if (prodFldrAttrib !=null) {
-                        prodFldrImg = (Image)prodFldrAttrib.getValue();
-                    }
+                    prodFldrImg = subFolder.getCategoryPhoto();
                     itemImage = prodFldrImg!=null?prodFldrImg.getPath():null;
                     itemURL = response.encodeUrl("/category.jsp?catId="+subFolder+trkCode);
                     itemDescription =subFolder.getBlurb();
@@ -153,11 +148,9 @@ public void prodFldrList(Collection itemCollection,ContentNodeModel currentFolde
                     rowOut.append(itemURL);
                     rowOut.append("\">");
 
-                    prodFldrAttrib = subFolder.getAttribute("CAT_LABEL");
-                    prodFldrImg = new Image();
+                    prodFldrImg = subFolder.getCategoryLabel();
                     itemImage=null;
-                    if (prodFldrAttrib !=null) {
-                        prodFldrImg = (Image)prodFldrAttrib.getValue();
+                    if (prodFldrImg !=null) {
                         itemImage=prodFldrImg.getPath();
                         rowOut.append("<img SRC=\"");
                         rowOut.append(itemImage);
@@ -166,6 +159,7 @@ public void prodFldrList(Collection itemCollection,ContentNodeModel currentFolde
                         rowOut.append(" border=\"0\" alt=\"");
                         rowOut.append("\">");
                     }else {
+                        prodFldrImg = new Image();                        
                         rowOut.append("<FONT CLASS=\"text13bold\">"); 
                         rowOut.append(subFolder.getFullName());
                         rowOut.append("</font>");

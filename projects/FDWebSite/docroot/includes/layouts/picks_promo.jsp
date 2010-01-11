@@ -1,7 +1,6 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.util.*'%>
@@ -14,17 +13,16 @@
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
 String deptId = request.getParameter("deptId");
-ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(deptId);
+ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(deptId);
 
 /* Layout contents */
-Attribute topMediaAttribute = currentFolder.getAttribute("EDITORIAL");
-String picksContent = topMediaAttribute == null ? "" : ((MediaI)topMediaAttribute.getValue()).getPath();
+Html topMedia = currentFolder.getEditorial();
+String picksContent = topMedia == null ? "" : topMedia.getPath();
 
-Attribute middleMediaAttribute = currentFolder.getAttribute("DEPARTMENT_MIDDLE_MEDIA");
+List<Html> middleMedia = ((DepartmentModel) currentFolder).getDepartmentMiddleMedia(); 
+    
 // get only the first content out of the attribute
-String promoContent = middleMediaAttribute == null ? "" : ((MediaI)((List)middleMediaAttribute.getValue()).get(0)).getPath();
-Attribute bottomMediaAttribute = currentFolder.getAttribute("DEPARTMENT_BOTTOM_MEDIA");
-String footer = bottomMediaAttribute == null ? "" : ((MediaI)bottomMediaAttribute.getValue()).getPath();
+String promoContent = middleMedia == null || middleMedia.size()==0 ? "" : ((MediaI)(middleMedia.get(0))).getPath();
 
 %>
 <table border="0" cellpadding="0" cellspacing="0" width="540">

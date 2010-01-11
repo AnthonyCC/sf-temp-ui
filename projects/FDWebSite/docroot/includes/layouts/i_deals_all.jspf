@@ -177,16 +177,13 @@ if (brandValue==null) {
         brandValue="";
 } else {
         //got the brand value..need to get the name.
-        BrandModel bm = (BrandModel) ContentFactory.getInstance().getContentNodeByName(brandValue);
+        BrandModel bm = (BrandModel) ContentFactory.getInstance().getContentNode(brandValue);
         if (bm!=null){
                 brandName= bm.getFullName();
-                Attribute brandAttrib = bm.getAttribute("BRAND_LOGO_SMALL");
-                if (brandAttrib!=null) {
-                        brandLogo = (Image)brandAttrib.getValue();
-                }
-                brandAttrib = bm.getAttribute("BRAND_POPUP_CONTENT");
-                if (brandAttrib!=null) {
-                        TitledMedia tm = (TitledMedia)brandAttrib.getValue();
+                brandLogo = bm.getLogoSmall();
+                Html popupContent = bm.getPopupContent();
+                if (popupContent!=null) {
+                        TitledMedia tm = (TitledMedia)popupContent;
                         EnumPopupType popupType = EnumPopupType.getPopupType(tm.getPopupSize());
                         brandPopupLink = "javascript:pop('" +
                                 response.encodeURL( "/brandpop.jsp?brandId="+bm ) + "'," +
@@ -390,17 +387,12 @@ if(productCode!=null && prodCatId !=null ) {
         if (brandsForProd!=null && brandsForProd.size()>0) {
                 thisBrandModel = (BrandModel)brandsForProd.get(0);
                 thisProdBrand = thisBrandModel.getContentName();
-                //Attribute brandAttrib = thisBrandModel.getAttribute("BRAND_LOGO_SMALL");
-                Attribute brandLogoAttrib = thisBrandModel.getAttribute("BRAND_LOGO_SMALL");
-                Attribute brandAttrib = thisBrandModel.getAttribute("BRAND_POPUP_CONTENT");
-                if (brandAttrib!=null) {
-                        TitledMedia tm = (TitledMedia)brandAttrib.getValue();
+                titleBrandLogo = thisBrandModel.getLogoSmall();
+                Html popupContent = thisBrandModel.getPopupContent();
+                if (popupContent!=null) {
+                        TitledMedia tm = (TitledMedia)popupContent;
                         EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                         brandPopupLink = "javascript:pop('"+response.encodeURL("/brandpop.jsp?brandId="+thisBrandModel)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
-                }
-
-                if (brandLogoAttrib!=null){
-                titleBrandLogo = (Image)brandLogoAttrib.getValue();
                 }
 
                 for (int bx = 0;bx<brandsForProd.size();bx++){
@@ -495,11 +487,10 @@ if(productCode!=null && prodCatId !=null ) {
         // annotation mode
         //
         String productTitle = thisProdBrandLabel + " " + productNode.getFullName().substring(thisProdBrandLabel.length()).trim();
-        MultiAttribute varMatrix = (MultiAttribute)minSku.getAttribute("VARIATION_MATRIX");
-        List domains = varMatrix==null ? Collections.EMPTY_LIST : (List)varMatrix.getValue();
+        List domains = minSku.getVariationMatrix();
         StringBuffer key = new StringBuffer();
         for(Iterator i = domains.iterator(); i.hasNext(); ){
-                DomainValue domainValue = ((DomainValueRef)i.next()).getDomainValue();
+                DomainValue domainValue = ((DomainValue)i.next());
                 key.append(domainValue.getLabel());
                 key.append("  ");
                 key.deleteCharAt(key.length()-1);

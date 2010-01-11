@@ -123,13 +123,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             LOGGER.error("Following SQLException occurred " +se.getMessage());
             throw new EJBException(se.getMessage());
         } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException sqle) {
-                LOGGER.warn("Unable to close connection", sqle);
-            }
+            close(con);
         }
         
     }
@@ -218,13 +212,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     	}catch(SQLException e){
     		throw new EJBException(e);
     	}finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                LOGGER.warn("Unable to close connection", e);
-            }
+            close(conn);
         }
     }
     
@@ -305,13 +293,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             LOGGER.error("Following SQLException occurred " + se.getMessage());
             throw new EJBException(se.getMessage());
         } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException sqle2) {
-                LOGGER.warn("Unable to close connection", sqle2);
-            }
+            close(con);
         }
     }
     
@@ -341,13 +323,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             LOGGER.error("Following SQLException occurred " +se.getMessage());
             throw new EJBException(se.getMessage());
         } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException sqle2) {
-                LOGGER.warn("Unable to close connection", sqle2);
-            }
+            close(con);
         }
     }
     
@@ -382,13 +358,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             throw new EJBException(se.getMessage());
             
         } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException sqle2) {
-                LOGGER.warn("Unable to close connection", sqle2);
-            }
+            close(con);
         }
     }
     /** returns a skuCode from the mapping table for a given upc,
@@ -425,13 +395,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             LOGGER.error("Following SQLException occurred " +se.getMessage());
             throw new EJBException(se.getMessage());
         } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException sqle2) {
-                LOGGER.warn("Unable to close connection", sqle2);
-            }
+            close(con);
         }
     }
     
@@ -500,13 +464,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 			LOGGER.error("Following SQLException occurred " +se.getMessage());
 			throw new EJBException(se.getMessage());
 		} finally {
-			try {
-				if (con != null) {
-					con.close();
-				}
-			} catch (SQLException sqle2) {
-				LOGGER.warn("Unable to close connection", sqle2);
-			}
+                    close(con);
 		}
     }
     
@@ -553,12 +511,12 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 			throw new EJBException(se.getMessage());
 		} finally {
 			try {
-				if (conn != null) conn.close();
 				if (ps != null) ps.close();
 				if (rs != null) rs.close();
 			} catch (SQLException sqle2) {
 				LOGGER.warn("Unable to close connection", sqle2);
 			}
+                    close(conn);
     	}
     }
     

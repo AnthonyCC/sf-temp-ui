@@ -16,20 +16,20 @@
 
     Comparator skuDomainValueComp = new Comparator() {
         public int compare(Object obj1, Object obj2) {
-            MultiAttribute atr1= null;
-            MultiAttribute atr2 =null;
+            List<DomainValue> atr1= null;
+            List<DomainValue> atr2 =null;
             DomainValue dv1=null;
             DomainValue dv2=null;
 
-			atr1 = (MultiAttribute) ((SkuModel) obj1).getAttribute("VARIATION_MATRIX");
-			atr2 = (MultiAttribute) ((SkuModel) obj2).getAttribute("VARIATION_MATRIX");
-			dv1 = ((DomainValueRef) atr1.getValue(0)).getDomainValue();
-			dv2 = ((DomainValueRef) atr2.getValue(0)).getDomainValue();
+			atr1 = ((SkuModel) obj1).getVariationMatrix();
+			atr2 = ((SkuModel) obj2).getVariationMatrix();
+			dv1 = ((DomainValue) atr1.get(0));
+			dv2 = ((DomainValue) atr2.get(0));
 			int diff = dv1.getPriority() - dv2.getPriority();
 					// sort by secondary domain
-			if (diff==0 && (((List)atr1.getValue()).size() > 1) && (((List)atr2.getValue()).size() > 1)) {
-				dv1 = ((DomainValueRef) atr1.getValue(1)).getDomainValue();
-				dv2 = ((DomainValueRef) atr2.getValue(1)).getDomainValue();
+			if (diff==0 && (atr1.size() > 1) && (atr2.size() > 1)) {
+				dv1 = ((DomainValue) atr1.get(1));
+				dv2 = ((DomainValue) atr2.get(1));
 				diff = dv1.getPriority() - dv2.getPriority();
 				if (diff==0) {
 					return dv1.toString().compareTo(dv2.toString()); 
@@ -43,8 +43,8 @@
 
     Comparator skuSecDomainValueComp = new Comparator() {
         public int compare(Object obj1, Object obj2) {
-            DomainValue dv1 = ((DomainValueRef) ((MultiAttribute)((SkuModel)obj1).getAttribute("VARIATION_MATRIX")).getValue(1)).getDomainValue();
-            DomainValue dv2 = ((DomainValueRef) ((MultiAttribute)((SkuModel)obj2).getAttribute("VARIATION_MATRIX")).getValue(1)).getDomainValue();
+            DomainValue dv1 = (DomainValue) ((SkuModel)obj1).getVariationMatrix().get(1);
+            DomainValue dv2 = (DomainValue) ((SkuModel)obj2).getVariationMatrix().get(1);
 			if (dv1.getPriority() > dv2.getPriority()) {
 				return 1;
 			} else {
@@ -110,14 +110,13 @@
 	while ( itr.hasNext() ) {
 	    BrandModel bm = (BrandModel)itr.next();
 	    brandName= bm.getFullName();
-	    Attribute brandAttrib = bm.getAttribute("BRAND_LOGO_SMALL");
-	    // Attribute will not be null, since the getDisplayableBrands only returns brands that have a brand_logo_small
-	    brandLogos.add(brandAttrib.getValue());
-	    brandAttrib = bm.getAttribute("BRAND_POPUP_CONTENT");
+	    // attribute will not be null, since the getDisplayableBrands only returns brands that have a brand_logo_small
+	    brandLogos.add(bm.getLogoSmall());
+	    Html brandAttrib = bm.getPopupContent();
 	    
 	    brandPopupLink=null;
 	    if (brandAttrib!=null) {
-	    	TitledMedia tm = (TitledMedia)brandAttrib.getValue();
+	    	TitledMedia tm = (TitledMedia)brandAttrib;
 	        EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
 	        if (popupType !=null ) {
 	            brandPopupLink="javascript:pop('"+response.encodeURL("/brandpop.jsp?brandId="+bm)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
@@ -145,12 +144,11 @@
 	            earliestDate = DateUtil.addDays( DateUtil.truncate(new Date()), ErpServicesProperties.getHorizonDays() );
 	        }
 	        if(QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0){
-	            MultiAttribute varMatrix = (MultiAttribute) sku.getAttribute("VARIATION_MATRIX");
-	            List domains = varMatrix==null ? Collections.EMPTY_LIST : (List)varMatrix.getValue();
+	            List domains = sku.getVariationMatrix();
 	            StringBuffer key = new StringBuffer();
 	            key.append("*");
 	            for(Iterator i = domains.iterator(); i.hasNext(); ){
-	                DomainValue domainValue = ((DomainValueRef)i.next()).getDomainValue();
+	                DomainValue domainValue = (DomainValue)i.next();
 	                key.append(domainValue.getLabel());
 	                key.append(", ");
 	                key.deleteCharAt(key.length()-2);

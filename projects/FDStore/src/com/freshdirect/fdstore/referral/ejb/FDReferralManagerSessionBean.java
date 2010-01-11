@@ -11,22 +11,18 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.CreateException;
-import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
-import javax.naming.NamingException;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
-import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
-import com.freshdirect.customer.ejb.ErpCustomerHome;
-import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.referral.EnumReferralStatus;
 import com.freshdirect.fdstore.referral.ReferralCampaign;
 import com.freshdirect.fdstore.referral.ReferralChannel;
@@ -38,7 +34,6 @@ import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
 import com.freshdirect.fdstore.referral.ReferralSearchCriteria;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
-import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -46,9 +41,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author jng
  *
  */
-public class FDReferralManagerSessionBean extends SessionBeanSupport  {
+public class FDReferralManagerSessionBean extends FDSessionBeanSupport {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(FDReferralManagerSessionBean.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(FDReferralManagerSessionBean.class);
 
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 		
@@ -61,11 +56,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}
 				
 		return list;		
@@ -80,11 +71,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}				
 		return list;
     }
@@ -98,11 +85,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}			
 		return list;
 	}
@@ -116,11 +99,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}				
 		return list;
 	
@@ -136,11 +115,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}				
 		return list;
 
@@ -160,11 +135,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}
 				
 		return channel;
@@ -184,11 +155,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
  			this.getSessionContext().setRollbackOnly();
  			throw new FDResourceException(e);
  		} finally {
- 			try {
- 				if (conn != null) conn.close();
- 			} catch (SQLException e) {
- 				LOGGER.warn("Exception while trying to close connection: " + e);
- 			}
+                    close(conn);
  		} 			
  		return partner;
  	}
@@ -208,11 +175,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
   			this.getSessionContext().setRollbackOnly();
   			throw new FDResourceException(e);
   		} finally {
-  			try {
-  				if (conn != null) conn.close();
-  			} catch (SQLException e) {
-  				LOGGER.warn("Exception while trying to close connection: " + e);
-  			}
+  		    close(conn);
   		}  				
   		return objective;
   	}
@@ -238,11 +201,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
    			this.getSessionContext().setRollbackOnly();
    			throw new FDResourceException(e);
    		} finally {
-   			try {
-   				if (conn != null) conn.close();
-   			} catch (SQLException e) {
-   				LOGGER.warn("Exception while trying to close connection: " + e);
-   			}
+                    close(conn);
    		}  				
    		return campaign;
    	}
@@ -273,11 +232,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
     			this.getSessionContext().setRollbackOnly();
     			throw new FDResourceException(e);
     		} finally {
-    			try {
-    				if (conn != null) conn.close();
-    			} catch (SQLException e) {
-    				LOGGER.warn("Exception while trying to close connection: " + e);
-    			}
+                    close(conn);
     		}  				
     		return program;
     	}
@@ -298,11 +253,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
  			this.getSessionContext().setRollbackOnly();
  			throw new FDResourceException(e);
  		} finally {
- 			try {
- 				if (conn != null) conn.close();
- 			} catch (SQLException e) {
- 				LOGGER.warn("Exception while trying to close connection: " + e);
- 			}
+                    close(conn);
  		}  				
  		return history;
  	}
@@ -353,11 +304,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			throw new FDResourceException(e);
 		} 		
 		finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 		return referral;
 	}
@@ -375,11 +322,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}
 	}
 	
@@ -394,11 +337,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}
 	}
 
@@ -413,11 +352,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}
 	}
 
@@ -432,11 +367,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}
 	}
 
@@ -451,11 +382,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}
 	}
 
@@ -470,11 +397,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}
 	}
 
@@ -489,11 +412,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}
 	}
 
@@ -508,11 +427,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}
 	}
 
@@ -527,11 +442,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 	}
 
@@ -546,11 +457,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 	}
 	
@@ -621,25 +528,6 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 		    return "com.freshdirect.fdstore.referral.ejb.FDReferralManagerHome";
 	}
 	
-	private ErpCustomerHome getErpCustomerHome() {
-		try {
-			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer", ErpCustomerHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-	
-	private ErpCustomerManagerHome getErpCustomerManagerHome() {
-		try {
-			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager", ErpCustomerManagerHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-	
-
-
 	
 
 	public void updateReferralStatus(String referralId,  String status) throws FDResourceException,  RemoteException {
@@ -652,11 +540,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}
 				
 	}
@@ -671,11 +555,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 	}
 
@@ -689,11 +569,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}
 
 		
@@ -709,11 +585,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 	}
 
@@ -727,11 +599,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 	}
 
@@ -747,11 +615,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 	}
 	
@@ -765,11 +629,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 	}
 
@@ -785,11 +645,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 	}
 
@@ -804,11 +660,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 	}
 
@@ -823,11 +675,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 	}
 
@@ -842,11 +690,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 	}
 
@@ -861,11 +705,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 		return channel;
     }
@@ -880,11 +720,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 		return campaign;
 	}
@@ -899,11 +735,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 		return objective;
 	}
@@ -918,11 +750,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 		return partner;
 	}
@@ -937,11 +765,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 		return program;
 	}		
@@ -957,11 +781,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 		return collection;
 	}
@@ -976,11 +796,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 		return collection;
 	}
@@ -995,11 +811,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 		return collection;
 	}
@@ -1018,11 +830,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Exception while trying to close connection: " + e);
-			}
+                    close(conn);
 		}		
 		return collection;		
 	}
@@ -1040,11 +848,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 				this.getSessionContext().setRollbackOnly();
 				throw new FDResourceException(e);
 			} finally {
-				try {
-					if (conn != null) conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Exception while trying to close connection: " + e);
-				}
+	                    close(conn);
 			}		
 			return isExists;
 	    }
@@ -1061,11 +865,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 				this.getSessionContext().setRollbackOnly();
 				throw new FDResourceException(e);
 			} finally {
-				try {
-					if (conn != null) conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Exception while trying to close connection: " + e);
-				}
+	                    close(conn);
 			}		
 			return isExists;
 	    }
@@ -1082,11 +882,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 					this.getSessionContext().setRollbackOnly();
 					throw new FDResourceException(e);
 				} finally {
-					try {
-						if (conn != null) conn.close();
-					} catch (SQLException e) {
-						LOGGER.warn("Exception while trying to close connection: " + e);
-					}
+		                    close(conn);
 				}		
 				return isExists;
 	    }
@@ -1105,11 +901,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 					this.getSessionContext().setRollbackOnly();
 					throw new FDResourceException(e);
 				} finally {
-					try {
-						if (conn != null) conn.close();
-					} catch (SQLException e) {
-						LOGGER.warn("Exception while trying to close connection: " + e);
-					}
+		                    close(conn);
 				}		
 				return isExists;
 	    }
@@ -1126,11 +918,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 					this.getSessionContext().setRollbackOnly();
 					throw new FDResourceException(e);
 				} finally {
-					try {
-						if (conn != null) conn.close();
-					} catch (SQLException e) {
-						LOGGER.warn("Exception while trying to close connection: " + e);
-					}
+		                    close(conn);
 				}		
 				return isExists;
 	    }
@@ -1148,11 +936,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 					this.getSessionContext().setRollbackOnly();
 					throw new FDResourceException(e);
 				} finally {
-					try {
-						if (conn != null) conn.close();
-					} catch (SQLException e) {
-						LOGGER.warn("Exception while trying to close connection: " + e);
-					}
+		                    close(conn);
 				}		
 				return collection;
 		 }
@@ -1170,11 +954,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 					this.getSessionContext().setRollbackOnly();
 					throw new FDResourceException(e);
 				} finally {
-					try {
-						if (conn != null) conn.close();
-					} catch (SQLException e) {
-						LOGGER.warn("Exception while trying to close connection: " + e);
-					}
+		                    close(conn);
 				}		
 				return collection;
 
@@ -1193,11 +973,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 					this.getSessionContext().setRollbackOnly();
 					throw new FDResourceException(e);
 				} finally {
-					try {
-						if (conn != null) conn.close();
-					} catch (SQLException e) {
-						LOGGER.warn("Exception while trying to close connection: " + e);
-					}
+		                    close(conn);
 				}		
 				return collection;
 		 }
@@ -1215,11 +991,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 					this.getSessionContext().setRollbackOnly();
 					throw new FDResourceException(e);
 				} finally {
-					try {
-						if (conn != null) conn.close();
-					} catch (SQLException e) {
-						LOGGER.warn("Exception while trying to close connection: " + e);
-					}
+		                    close(conn);
 				}		
 				return collection;
 		 }
@@ -1237,11 +1009,7 @@ public class FDReferralManagerSessionBean extends SessionBeanSupport  {
 					this.getSessionContext().setRollbackOnly();
 					throw new FDResourceException(e);
 				} finally {
-					try {
-						if (conn != null) conn.close();
-					} catch (SQLException e) {
-						LOGGER.warn("Exception while trying to close connection: " + e);
-					}
+		                    close(conn);
 				}		
 				return collection;
 

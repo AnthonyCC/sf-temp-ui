@@ -12,7 +12,10 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.EnumLayoutType;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.BodyTagSupport;
@@ -58,7 +61,9 @@ public class LayoutManager extends BodyTagSupport {
 		result.addError((currentNode == null), "currentNode", "The currentNode parameter was not specified.");
 		result.addError((!isDepartment && !isCategory), "nodeType", "The content node type was not specified ");
 		if (!result.isFailure()) {
-			layoutType = currentNode.getAttribute("LAYOUT", -1);
+		    EnumLayoutType layout = ContentNodeModelUtil.getLayout(currentNode, null); 
+		    layoutType = layout != null ? layout.getId() : -1;
+		    
 			Settings lms = setupLayout(request, session, result);
 			pageContext.setAttribute(resultName, result);
 			pageContext.setAttribute(layoutSettingsName, lms);
@@ -75,7 +80,7 @@ public class LayoutManager extends BodyTagSupport {
 		if (sortBy == null)
 			sortBy = "name";
 
-		String sortNameAttrib = currentNode.getAttribute("LIST_AS", "full");
+		String sortNameAttrib = currentNode instanceof ProductContainer ? ((ProductContainer)currentNode).getListAs("full") : "full";
 		if (!sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_GLANCE) && !sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_NAV))
 			sortNameAttrib = SortStrategyElement.SORTNAME_FULL;
 

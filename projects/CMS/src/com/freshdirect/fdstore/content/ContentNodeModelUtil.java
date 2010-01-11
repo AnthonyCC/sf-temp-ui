@@ -11,53 +11,51 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ContentNodeModelUtil {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(ContentNodeModelUtil.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(ContentNodeModelUtil.class);
 
 	static HashMap CONTENT_TO_TYPE_MAP = new HashMap();
 
 	static {
-		CONTENT_TO_TYPE_MAP.put("Store", ContentNodeI.TYPE_STORE);
-		CONTENT_TO_TYPE_MAP.put("Template", ContentNodeI.TYPE_TEMPLATE);
-		CONTENT_TO_TYPE_MAP.put("Department", ContentNodeI.TYPE_DEPARTMENT);
-		CONTENT_TO_TYPE_MAP.put("Category", ContentNodeI.TYPE_CATEGORY);
-		CONTENT_TO_TYPE_MAP.put("Product", ContentNodeI.TYPE_PRODUCT);
-		CONTENT_TO_TYPE_MAP.put("Sku", ContentNodeI.TYPE_SKU);
-		CONTENT_TO_TYPE_MAP.put("Brand", ContentNodeI.TYPE_BRAND);
-		CONTENT_TO_TYPE_MAP.put("Domain", ContentNodeI.TYPE_DOMAIN);
-		CONTENT_TO_TYPE_MAP.put("DomainValue", ContentNodeI.TYPE_DOMAINVALUE);
-		CONTENT_TO_TYPE_MAP.put("ConfiguredProduct", ContentNodeI.TYPE_PRODUCT);
-		CONTENT_TO_TYPE_MAP.put("ConfiguredProductGroup", ContentNodeI.TYPE_PRODUCT);
-		CONTENT_TO_TYPE_MAP.put("ComponentGroup", ContentNodeI.TYPE_COMPONENTGROUP);
-		CONTENT_TO_TYPE_MAP.put("RecipeDepartment", ContentNodeI.TYPE_RECIPE_DEPARTMENT);
-		CONTENT_TO_TYPE_MAP.put("RecipeCategory", ContentNodeI.TYPE_RECIPE_CATEGORY);
-		CONTENT_TO_TYPE_MAP.put("RecipeSubcategory", ContentNodeI.TYPE_RECIPE_SUBCATEGORY);
-		CONTENT_TO_TYPE_MAP.put("Recipe", ContentNodeI.TYPE_RECIPE);
-		CONTENT_TO_TYPE_MAP.put("RecipeVariant", ContentNodeI.TYPE_RECIPE_VARIANT);
-		CONTENT_TO_TYPE_MAP.put("RecipeSection", ContentNodeI.TYPE_RECIPE_SECTION);
-		CONTENT_TO_TYPE_MAP.put("RecipeSource", ContentNodeI.TYPE_RECIPE_SOURCE);
-		CONTENT_TO_TYPE_MAP.put("RecipeAuthor", ContentNodeI.TYPE_RECIPE_AUTHOR);
-		CONTENT_TO_TYPE_MAP.put("FDFolder", ContentNodeI.TYPE_FD_FOLDER);
-		CONTENT_TO_TYPE_MAP.put("BookRetailer", ContentNodeI.TYPE_BOOK_RETAILER);
-		CONTENT_TO_TYPE_MAP.put("RecipeSearchPage", ContentNodeI.TYPE_RECIPE_SEARCH_PAGE);
-		CONTENT_TO_TYPE_MAP.put("RecipeSearchCriteria", ContentNodeI.TYPE_RECIPE_SEARCH_CRITERIA);
-		CONTENT_TO_TYPE_MAP.put("YmalSet", ContentNodeI.TYPE_YMAL_SET);
-		CONTENT_TO_TYPE_MAP.put("StarterList", ContentNodeI.TYPE_STARTER_LIST);
-		CONTENT_TO_TYPE_MAP.put("FavoriteList", ContentNodeI.TYPE_FAVORITE_LIST);
-		CONTENT_TO_TYPE_MAP.put("Recommender", ContentNodeI.TYPE_RECOMMENDER);
-		CONTENT_TO_TYPE_MAP.put("RecommenderStrategy", ContentNodeI.TYPE_RECOMMENDER_STRATEGY);		
+		CONTENT_TO_TYPE_MAP.put("Store", ContentNodeModel.TYPE_STORE);
+		CONTENT_TO_TYPE_MAP.put("Template", ContentNodeModel.TYPE_TEMPLATE);
+		CONTENT_TO_TYPE_MAP.put("Department", ContentNodeModel.TYPE_DEPARTMENT);
+		CONTENT_TO_TYPE_MAP.put("Category", ContentNodeModel.TYPE_CATEGORY);
+		CONTENT_TO_TYPE_MAP.put("Product", ContentNodeModel.TYPE_PRODUCT);
+		CONTENT_TO_TYPE_MAP.put("Sku", ContentNodeModel.TYPE_SKU);
+		CONTENT_TO_TYPE_MAP.put("Brand", ContentNodeModel.TYPE_BRAND);
+		CONTENT_TO_TYPE_MAP.put("Domain", ContentNodeModel.TYPE_DOMAIN);
+		CONTENT_TO_TYPE_MAP.put("DomainValue", ContentNodeModel.TYPE_DOMAINVALUE);
+		CONTENT_TO_TYPE_MAP.put("ConfiguredProduct", ContentNodeModel.TYPE_PRODUCT);
+		CONTENT_TO_TYPE_MAP.put("ConfiguredProductGroup", ContentNodeModel.TYPE_PRODUCT);
+		CONTENT_TO_TYPE_MAP.put("ComponentGroup", ContentNodeModel.TYPE_COMPONENTGROUP);
+		CONTENT_TO_TYPE_MAP.put("RecipeDepartment", ContentNodeModel.TYPE_RECIPE_DEPARTMENT);
+		CONTENT_TO_TYPE_MAP.put("RecipeCategory", ContentNodeModel.TYPE_RECIPE_CATEGORY);
+		CONTENT_TO_TYPE_MAP.put("RecipeSubcategory", ContentNodeModel.TYPE_RECIPE_SUBCATEGORY);
+		CONTENT_TO_TYPE_MAP.put("Recipe", ContentNodeModel.TYPE_RECIPE);
+		CONTENT_TO_TYPE_MAP.put("RecipeVariant", ContentNodeModel.TYPE_RECIPE_VARIANT);
+		CONTENT_TO_TYPE_MAP.put("RecipeSection", ContentNodeModel.TYPE_RECIPE_SECTION);
+		CONTENT_TO_TYPE_MAP.put("RecipeSource", ContentNodeModel.TYPE_RECIPE_SOURCE);
+		CONTENT_TO_TYPE_MAP.put("RecipeAuthor", ContentNodeModel.TYPE_RECIPE_AUTHOR);
+		CONTENT_TO_TYPE_MAP.put("FDFolder", ContentNodeModel.TYPE_FD_FOLDER);
+		CONTENT_TO_TYPE_MAP.put("BookRetailer", ContentNodeModel.TYPE_BOOK_RETAILER);
+		CONTENT_TO_TYPE_MAP.put("RecipeSearchPage", ContentNodeModel.TYPE_RECIPE_SEARCH_PAGE);
+		CONTENT_TO_TYPE_MAP.put("RecipeSearchCriteria", ContentNodeModel.TYPE_RECIPE_SEARCH_CRITERIA);
+		CONTENT_TO_TYPE_MAP.put("YmalSet", ContentNodeModel.TYPE_YMAL_SET);
+		CONTENT_TO_TYPE_MAP.put("StarterList", ContentNodeModel.TYPE_STARTER_LIST);
+		CONTENT_TO_TYPE_MAP.put("FavoriteList", ContentNodeModel.TYPE_FAVORITE_LIST);
+		CONTENT_TO_TYPE_MAP.put("Recommender", ContentNodeModel.TYPE_RECOMMENDER);
+		CONTENT_TO_TYPE_MAP.put("RecommenderStrategy", ContentNodeModel.TYPE_RECOMMENDER_STRATEGY);
 	}
 
 	public static LinkedHashMap TYPE_MODEL_MAP = new LinkedHashMap();
@@ -126,7 +124,7 @@ public class ContentNodeModelUtil {
 
 		if (FDContentTypes.PRODUCT.equals(key.getType())) {
 			com.freshdirect.cms.ContentNodeI node = CmsManager.getInstance().getContentNode(key);
-			parentKey = (ContentKey) node.getAttribute("PRIMARY_HOME").getValue();
+			parentKey = (ContentKey) node.getAttributeValue("PRIMARY_HOME");
 		}
 
 		if (parentKey == null) {
@@ -139,7 +137,7 @@ public class ContentNodeModelUtil {
 			parentKey = (ContentKey) i.next();
 		}
 
-		return ContentFactory.getInstance().getContentNode(parentKey.getId());
+		return ContentFactory.getInstance().getContentNodeByKey(parentKey);
 	}
 
 	public static boolean refreshModels(ContentNodeModelImpl refModel, String refNodeAttr, List childModels, boolean setParent) {
@@ -149,17 +147,15 @@ public class ContentNodeModelUtil {
 	public static boolean refreshModels(ContentNodeModelImpl refModel, String refNodeAttr, List childModels, boolean setParent, boolean inheritedAttrs) {
 
 		synchronized(childModels) {
-			AttributeI attr;
+			Object value;
 
 			if (!inheritedAttrs) {
-				attr = refModel.getCMSNode().getAttribute(refNodeAttr);
+				value = refModel.getCMSNode().getAttributeValue(refNodeAttr);
 			} else {
-				attr = refModel.getCmsAttribute(refNodeAttr);
+				value = refModel.getCmsAttributeValue(refNodeAttr);
 			}
 			
-		    List newKeys = attr == null
-            			 ? null
-            			 : (List) attr.getValue();
+		        List newKeys = (List) value;
 
 			if (newKeys == null) {
 				newKeys = new ArrayList();
@@ -174,34 +170,71 @@ public class ContentNodeModelUtil {
 			for (int i = 0; i < newKeys.size(); i++) {
 				ContentKey key = (ContentKey) newKeys.get(i);
 		
-				// cache instances in navigable relationships
-				boolean cache = setParent;
-		
-				// except: for products, do not cache instances outside primary home 
-				if (cache && FDContentTypes.PRODUCT.equals(key.getType())) {
-					com.freshdirect.cms.ContentNodeI node = CmsManager.getInstance().getContentNode(key);
-					ContentKey priHome = (ContentKey) node.getAttribute("PRIMARY_HOME").getValue();
-					cache = refModel.getContentKey().equals(priHome);
-				}
-				CmsContentNodeAdapter  m;
-				m = (CmsContentNodeAdapter) ContentFactory.getInstance().getContentNodeByKey(key);
-				if (setParent) {
-					if (m == null || !refModel.equals(m.getParentNode())) {
-						m = (CmsContentNodeAdapter) constructModel(key, cache);
-						if (m == null)
-							continue;
-						m.setParentNode(refModel);
-					}
-					m.setPriority(i);
+				ContentNodeModelImpl m = buildChildContentNode(refModel, key, setParent, i);
+                                
+				if (m!=null) {
+                                    childModels.add(m);
 				}
 				
-				
-				childModels.add(m);
 			}
 		
 			return true;
 		}
 	}
+
+    private static ContentNodeModelImpl buildChildContentNode(ContentNodeModelImpl refModel, ContentKey key, boolean setParent, int i) {
+        // cache instances in navigable relationships
+        boolean cache = setParent;
+
+        // except: for products, do not cache instances outside primary home 
+        if (cache && FDContentTypes.PRODUCT.equals(key.getType())) {
+        	com.freshdirect.cms.ContentNodeI node = CmsManager.getInstance().getContentNode(key);
+        	ContentKey priHome = (ContentKey) node.getAttributeValue("PRIMARY_HOME");
+        	cache = refModel.getContentKey().equals(priHome);
+        }
+        if (cache) {
+            ContentNodeModelImpl cachedContentNodeByKey = (ContentNodeModelImpl) ContentFactory.getInstance().getCachedContentNodeByKey(key);
+            if (cachedContentNodeByKey != null) {
+                ContentNodeModel parentNode = cachedContentNodeByKey.getParentNode();
+                if (parentNode == null) {
+                    cachedContentNodeByKey.setParentNode(refModel);
+                    cachedContentNodeByKey.setPriority(i);
+                    return cachedContentNodeByKey;
+                } else if (parentNode != refModel ) {
+                    if (parentNode.getContentKey().getType() == FDContentTypes.PRODUCT && refModel.getContentKey().equals(parentNode.getContentKey())) {
+                        // if the parent is a product, it is possible that we have to construct child objects for not the primary product node.
+                        // in that chase construct an object, but do not cache it
+                        if (refModel instanceof ProductModelImpl && !((ProductModelImpl)refModel).isInPrimaryHome()) {
+                            LOGGER.warn("trying to construct child object of a product " + refModel.getContentKey() + ", which is in "
+                                    + refModel.getParentNode().getContentKey() + " instead of the primary home:"
+                                    + ((ProductModelImpl) refModel).getPrimaryHome().getContentKey());
+                        }
+                        cache = false;
+                    } else if (key.getType() == FDContentTypes.CONFIGURED_PRODUCT) {
+                        LOGGER.warn("Configured product "+key+" already exists at "+parentNode.getContentKey()+", instead of the expected "+refModel.getContentKey());
+                        cache = false;
+                    } else {
+                        throw new RuntimeException("Content node already exists for key:" + key + ", node:" + cachedContentNodeByKey + ", hash:"
+                                + System.identityHashCode(cachedContentNodeByKey) + " but with different parent : " + parentNode.getContentKey() + '('
+                                + System.identityHashCode(parentNode) + ") instead of the expected " + refModel.getContentKey() + "(" + System.identityHashCode(refModel) + ')');
+                    }
+                } else {
+                    return cachedContentNodeByKey;
+                }
+            }
+        }
+        ContentNodeModelImpl m = null;
+        if (setParent) {
+        	m = (ContentNodeModelImpl) constructModel(key, cache);
+        	if (m!=null) {
+        	    m.setPriority(i);
+        	    m.setParentNode(refModel);
+        	}
+        } else {
+        	m = (ContentNodeModelImpl) ContentFactory.getInstance().getContentNodeByKey(key);
+        }
+        return m;
+    }
 
 	static boolean compareKeys(List keys, List models) {
 		if (keys.size() != models.size())
@@ -235,40 +268,39 @@ public class ContentNodeModelUtil {
 	}
 	*/
 
-	public static CategoryModel findParentCategory(List categories, ProductModel m) {
-		CategoryModel foundCategory = null;
-		for (int i = 0; i < categories.size(); i++) {
-			CategoryModel cur = (CategoryModel) categories.get(i);
-
-			ProductModel foundProduct = cur.getPrivateProductByName(m.getContentName());
-			if (foundProduct != null) {
-				foundCategory = cur;
-			}
-
-			if (foundCategory == null) {
-				foundCategory = findParentCategory(cur.getSubcategories(), m);
-			}
-
-			if (foundCategory != null) {
-				com.freshdirect.fdstore.attributes.Attribute hidden = foundCategory.getAttribute("HIDE_URL");
-
-				if ((hidden == null) || (hidden.getValue() == null)) {
-					break;
-				}
-
-				if (hidden.getValue() != null) {
-					String str = (String) hidden.getValue();
-					if ("".equals(str)) {
-						break;
-					} else {
-						foundCategory = null;
-					}
-				}
-			}
-		}
-
-		return foundCategory;
-	}
+        public static CategoryModel findParentCategory(List categories, ProductModel m) {
+            CategoryModel foundCategory = null;
+            for (int i = 0; i < categories.size(); i++) {
+                CategoryModel cur = (CategoryModel) categories.get(i);
+    
+                ProductModel foundProduct = cur.getPrivateProductByName(m.getContentName());
+                if (foundProduct != null) {
+                    foundCategory = cur;
+                }
+    
+                if (foundCategory == null) {
+                    foundCategory = findParentCategory(cur.getSubcategories(), m);
+                }
+    
+                if (foundCategory != null) {
+                    String hidden = foundCategory.getHideUrl();
+    
+                    if (hidden == null) {
+                        break;
+                    }
+    
+                    if (hidden != null) {
+                        if ("".equals(hidden)) {
+                            break;
+                        } else {
+                            foundCategory = null;
+                        }
+                    }
+                }
+            }
+    
+            return foundCategory;
+        }
 
 	private static ProductModel setNearestParentForProduct(ContentNodeModel context, ProductModel product) {
 		CategoryModel foundCategory = null;
@@ -298,9 +330,9 @@ public class ContentNodeModelUtil {
 		}
 		
 		if (foundCategory == null) {
-			AttributeI attr = product.getCmsAttribute("PRIMARY_HOME");
-			ContentKey primaryHomeKey = (ContentKey) attr.getValue();
-			foundCategory = (CategoryModel) ContentFactory.getInstance().getContentNode(primaryHomeKey.getId());
+			Object attr = product.getCmsAttributeValue("PRIMARY_HOME");
+			ContentKey primaryHomeKey = (ContentKey) attr;
+			foundCategory = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(primaryHomeKey);
 		}
 
 		if (foundCategory == product.getParentNode()) {
@@ -311,7 +343,7 @@ public class ContentNodeModelUtil {
 				+ foundCategory + " (was " + product.getParentNode()
 				+ "), in context " + context);
 		
-		CmsContentNodeAdapter a = (CmsContentNodeAdapter) product.clone();
+		ContentNodeModelImpl a = (ContentNodeModelImpl) product.clone();
 		a.setParentNode(foundCategory);
 		return (ProductModel) a;
 	}
@@ -379,8 +411,8 @@ public class ContentNodeModelUtil {
 			//Make sure the category is not hidden.
 			if(cn != null && cn instanceof CategoryModel && !cn.isHidden()){
 				CategoryModel cm = (CategoryModel)cn;
-				if(cm.getAttribute("VIRTUAL_GROUP", (Object)null) != null){
-					s.add(cm);
+				if(cm.getVirtualGroupRefs().size() > 0){
+				    s.add(cm);
 				}
 			}
 		}
@@ -399,4 +431,34 @@ public class ContentNodeModelUtil {
 		}
 		return found;
 	}
+
+	/**
+	 * Return true, if the given parameter is null or has 0 length.
+	 * @param str
+	 * @return
+	 */
+	public static boolean empty(String str) {
+	    return str == null || str.length() == 0;
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 * @param defaultValue
+	 * @return the value if it's not null or empty, otherwise the default value
+	 */
+	public static String nullValue(String value, String defaultValue) {
+	    return empty(value) ? defaultValue : value;
+	}
+	
+        public static EnumLayoutType getLayout(ContentNodeModel node, EnumLayoutType defValue) {
+            if (node instanceof ProductModel) {
+                return ((ProductModel) node).getLayout();
+            }
+            if (node instanceof ProductContainer) {
+                return ((ProductContainer) node).getLayout(defValue);
+            }
+            return defValue;
+        }
+	
 }

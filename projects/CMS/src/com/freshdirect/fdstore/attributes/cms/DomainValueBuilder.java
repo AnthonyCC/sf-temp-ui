@@ -5,23 +5,23 @@
 package com.freshdirect.fdstore.attributes.cms;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.attributes.EnumAttributeType;
-import com.freshdirect.fdstore.content.CategoryRef;
+import com.freshdirect.fdstore.content.ContentFactory;
 
 /**
  * @author mrose
- *
+ * 
  */
-public class CategoryRefBuilder extends AbstractAttributeBuilder {
-    
+public class DomainValueBuilder extends AbstractAttributeBuilder {
+
     public EnumAttributeType getFDAttributeType() {
-        return EnumAttributeType.CATEGORYREF;
-    }
-    
-    public Object buildValue(AttributeDefI aDef, Object value) {
-        ContentNodeI cNode = (ContentNodeI) value;
-        return new CategoryRef(cNode.getKey().getId());
+        return EnumAttributeType.DOMAINVALUEREF;
     }
 
+    public Object buildValue(AttributeDefI aDef, Object value) {
+        ContentKey key = (ContentKey) value;
+        return ContentFactory.getInstance().getDomainValueById(key.getId());
+
+    }
 }

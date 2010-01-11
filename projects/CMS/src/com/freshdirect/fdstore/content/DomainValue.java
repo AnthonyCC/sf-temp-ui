@@ -47,6 +47,10 @@ public class DomainValue extends ContentNodeModelImpl {
 	public Domain getDomain() {
 		return (Domain) this.getParentNode();
 	}
+	
+	public ContentKey getDomainContentKey() {
+	    return getParentNode().getContentKey();
+	}
 
 	public String toString() {
 		return "DomainValue[" + getDomain().toString() + ", " + getLabel() + ", " + getValue() + ", " + getPriority() + "]";

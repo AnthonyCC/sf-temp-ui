@@ -9,13 +9,8 @@
 package com.freshdirect.fdstore.customer;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineModel;
@@ -26,13 +21,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.ProductRef;
-import com.freshdirect.fdstore.promotion.LineItemStrategyI;
-import com.freshdirect.fdstore.promotion.PercentOffApplicator;
-import com.freshdirect.fdstore.promotion.Promotion;
-import com.freshdirect.fdstore.promotion.PromotionFactory;
-import com.freshdirect.fdstore.promotion.PromotionI;
-import com.freshdirect.fdstore.promotion.PromotionStrategyI;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.sap.PosexUtil;
 
@@ -60,12 +49,12 @@ public class FDCartLineModel extends AbstractCartLine {
 		super(orderLine, firstInvoiceLine, lastInvoiceLine, returnLine);
 	}
 
-	public FDCartLineModel(FDSku sku, ProductRef productRef, FDConfigurableI configuration, String variantId) {
+	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId) {
 		super(sku, productRef, configuration, variantId);
 		this.orderLine.setCartlineId(ID_GENERATOR.getNextId());
 	}
 	
-	public FDCartLineModel(FDSku sku, ProductRef productRef, FDConfigurableI configuration, String cartlineId, String recipeSourceId, boolean requestNotification, String variantId) {
+	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String cartlineId, String recipeSourceId, boolean requestNotification, String variantId) {
 		super(sku, productRef, configuration, variantId);
 		this.orderLine.setCartlineId(cartlineId);
 		this.orderLine.setRecipeSourceId(recipeSourceId);

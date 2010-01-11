@@ -4,14 +4,13 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import com.freshdirect.cms.AttributeI;
+import com.freshdirect.cms.AttributeDefI;
+import com.freshdirect.cms.ContentKey;
 
-public interface ContentNodeModel extends ContentNodeI {
+public interface ContentNodeModel {
 
-	public final static Comparator FULL_NAME_COMPARATOR = new Comparator() {
-		public int compare(Object obj1, Object obj2) {
-			ContentNodeModelImpl cn1 = (ContentNodeModelImpl) obj1;
-			ContentNodeModelImpl cn2 = (ContentNodeModelImpl) obj2;
+	public final static Comparator<ContentNodeModel> FULL_NAME_COMPARATOR = new Comparator<ContentNodeModel>() {
+		public int compare(ContentNodeModel cn1, ContentNodeModel cn2) {
 			String name1 = cn1.getFullName();
 			String name2 = cn2.getFullName();
 
@@ -28,10 +27,8 @@ public interface ContentNodeModel extends ContentNodeI {
 	 * This comparator sort the content nodes according to theirs fullname, and if the full names are equals, sort by it's content ids.
 	 * 
 	 */
-    public final static Comparator FULL_NAME_WITH_ID_COMPARATOR = new Comparator() {
-        public int compare(Object obj1, Object obj2) {
-            ContentNodeModel cn1 = (ContentNodeModel) obj1;            
-            ContentNodeModel cn2 = (ContentNodeModel) obj2;
+    public final static Comparator<ContentNodeModel> FULL_NAME_WITH_ID_COMPARATOR = new Comparator<ContentNodeModel>() {
+        public int compare(ContentNodeModel cn1, ContentNodeModel cn2) {
             String name1 = cn1.getFullName();
             String name2 = cn2.getFullName();          
             
@@ -47,8 +44,66 @@ public interface ContentNodeModel extends ContentNodeI {
             return result;
         }
     };
+
+    // from the old ContentNodeI
+    
+    String TYPE_STORE = "X";
+    String TYPE_TEMPLATE = "T";
+    String TYPE_DEPARTMENT = "D";
+    String TYPE_CATEGORY = "C";
+    String TYPE_PRODUCT = "P";
+    String TYPE_CONFIGURED_PRODUCT = "PC";
+    String TYPE_SKU = "S";
+    String TYPE_BRAND = "B";
+    String TYPE_PRODUCTPROXY = "Q";
+    String TYPE_DOMAIN = "Z";
+    String TYPE_DOMAINVALUE = "V";
+    String TYPE_COMPONENTGROUP = "G";
+    String TYPE_RECIPE_DEPARTMENT = "RD";
+    String TYPE_RECIPE_CATEGORY = "RC";
+    String TYPE_RECIPE_SUBCATEGORY = "RSC";
+    String TYPE_RECIPE = "R";
+    String TYPE_RECIPE_VARIANT = "RV";
+    String TYPE_RECIPE_SECTION = "RS";
+    String TYPE_RECIPE_SOURCE = "RSO";
+    String TYPE_RECIPE_AUTHOR = "RA";
+    String TYPE_FD_FOLDER = "FDF";
+    String TYPE_BOOK_RETAILER = "BKR";
+    String TYPE_RECIPE_SEARCH_PAGE = "RSP";
+    String TYPE_RECIPE_SEARCH_CRITERIA = "RSPC";
+    String TYPE_YMAL_SET = "YS";
+    String TYPE_STARTER_LIST = "SL";
+    String TYPE_FAVORITE_LIST = "FL";
+    String TYPE_RECOMMENDER = "RDR";
+    String TYPE_RECOMMENDER_STRATEGY = "RDS";
+
+    public ContentKey getContentKey();
+
+    public String getContentName();
+
+    public String getContentType();
+
+    
+    /**
+     * This method is need to be declared here, because some helper class FDAttributeFactory 
+     * and ContentNodeModelUtil needs this, but do not use from JSP-s or other 'client' codes.
+     * @param name
+     * @return
+     */
+    public Object getCmsAttributeValue(String name);
+
+    
+    public ContentNodeModel getParentNode();
+
+    public boolean hasParentWithName(String[] contentNames);
+    
+    public String getParentId();
+
+    // the end of the ContentNodeI methods
 	
-        public AttributeI getNotInheritedAttribute(String name);
+        public Object getNotInheritedAttributeValue(String name);
+        
+        public AttributeDefI getAttributeDef(String name);
     
 	public String getAltText();
 
@@ -66,8 +121,6 @@ public interface ContentNodeModel extends ContentNodeI {
 
 	public String getKeywords();
 
-	public List getAssocEditorial();
-
 	public boolean isSearchable();
 
 	public boolean isHidden();
@@ -75,6 +128,8 @@ public interface ContentNodeModel extends ContentNodeI {
 	public boolean isDisplayable();
 	
 	public String getHideUrl();
+	
+	public Image getSideNavImage();
 
 	/**
 	 * Generate a path string to this content object, that is suitable for
@@ -90,5 +145,5 @@ public interface ContentNodeModel extends ContentNodeI {
 	 * A collection of ContentKeys.
 	 * @return
 	 */
-	public Collection getParentKeys();
+	public Collection<ContentKey> getParentKeys();
 }

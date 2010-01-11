@@ -1,87 +1,32 @@
+<%@page import="com.freshdirect.fdstore.util.HowToCookItUtil"%>
+<%@page import="com.freshdirect.fdstore.content.view.WebHowToCookIt" %>
 <!-- 
  -->
 <%
-boolean htciShownLabel = false;
-int htciCount = 0;
-MultiAttribute prodMAttrib = (MultiAttribute)productNode.getAttribute("RATING");
+    boolean htciShownLabel = false;
+	int htciCount = 0;
 
-List prodRatingValues = null;
-List htciFolderRefs = null;
-String htciCatId = null;
+	List<WebHowToCookIt> howToCookItResult = HowToCookItUtil.getHowToCookIt(productNode);
 
-if (prodMAttrib !=null) {
-    prodRatingValues = (List)prodMAttrib.getValues();
-}else prodRatingValues = new ArrayList();
-Attribute usageList=productNode.getAttribute("USAGE_LIST");
-Attribute htciFolders = productNode.getAttribute("HOWTOCOOKIT_FOLDERS");
-if (htciFolders !=null) {
-	htciFolderRefs = (List)htciFolders.getValue();
-}
-
-if (htciFolderRefs!=null && usageList!=null && prodRatingValues.size()>0) {
-    List usageDomains = new ArrayList((List)usageList.getValue());
-
-    if (usageDomains!=null && usageDomains.size()>0) {
-        JspMethods.DomainNameComparator domainNameComparator = new JspMethods.DomainNameComparator();
-        //Sort the list of domains using the domainNameComparator in the JspMethods class
-        Collections.sort(usageDomains,domainNameComparator);
-
-        // get a domain then check for the value being set to true in the prodRatingValues list
-        for (Iterator htciI = usageDomains.iterator();htciI.hasNext() /*&& htciCount<3*/;){
-            Domain htciDomain = ((DomainRef)htciI.next()).getDomain();
-            String prodDomainValue = null;
-           // get the matching domainvalue off the prod for this Domain.
-           for(Iterator dvItr = prodRatingValues.iterator();dvItr.hasNext() && prodDomainValue==null ;) {
-                Object obj = dvItr.next();
-                if (!(obj instanceof DomainValueRef))  continue;
-                DomainValue dmv = ((DomainValueRef)obj).getDomainValue(); //dvItr.next();
-                Domain dom = dmv.getDomain();
-                if (htciDomain.getPK().equals(dom.getPK())) {
-                    prodDomainValue = dmv.getValue();
-                } 
-           }
-           if(prodDomainValue==null || !prodDomainValue.equalsIgnoreCase("true")) continue;  //skip this item
-	   htciCatId = null;
-	   boolean foundFolder = false;
-           //ok now find the htci folder that has this domain on it
-           for (Iterator htciFI=htciFolderRefs.iterator();htciFI.hasNext();){
-           	CategoryModel htciCat = ((CategoryRef)htciFI.next()).getCategory();
-           	if (htciCat.isHidden()) continue;
-           	MultiAttribute catMAttrib = (MultiAttribute)htciCat.getAttribute("RATING");
-		if (catMAttrib ==null) continue;
-		List catRatingValues = (List)catMAttrib.getValues();
-		for(Iterator dItr = catRatingValues.iterator();dItr.hasNext() ;) {
-			Object dObj = dItr.next();
-			if (dObj==null || !(dObj instanceof DomainRef))  continue;
-			Domain dom = ((DomainRef)dObj).getDomain(); 
-			if (dom!=null && htciDomain.getPK().equals(dom.getPK())) {
-			   foundFolder=true;
-           		   htciCatId= htciCat.getContentName();
-			   break;
-			} 
-			
-		}
-           	if (!foundFolder) continue;
-           	//ok got one..but is it hidden
-           }
-           if (htciCatId==null) continue; // did not find a how to cook it folder for cooking method..skip it
-           StringBuffer htciLink = new StringBuffer();
-           htciLink.append("<a href=\"");
-           htciLink.append(response.encodeURL("/category.jsp?catId="+htciCatId+"&trk=prod")) ;
-           htciLink.append("\">");
-           htciLink.append(htciDomain.getLabel());
-           htciLink.append("</a>");
-           if (htciShownLabel==false) {%>
-<br><B>How To Cook It</b><br>
-<%           htciShownLabel=true;
-}
-if (htciCount%3==0 && htciCount !=0) { %>
+	for (WebHowToCookIt cookIt : howToCookItResult) {
+		StringBuffer htciLink = new StringBuffer();
+        htciLink.append("<a href=\"");
+        htciLink.append(response.encodeURL("/category.jsp?catId=" + cookIt.getCategoryId() + "&trk=prod"));
+        htciLink.append("\">");
+        htciLink.append(cookIt.getName());
+        htciLink.append("</a>");
+        if (htciShownLabel == false) {
+%>
+<br>
+<b>How To Cook It</b>
 <br>
 <%
-}
-%><%=(htciCount%3)>0?", ":""%><%=htciLink.toString()%><%
-            htciCount++;
+		    htciShownLabel = true;
         }
+        if (htciCount % 3 == 0 && htciCount != 0) {
+			%><br><%
+    	}
+		%><%=(htciCount % 3) > 0 ? ", " : ""%><%=htciLink.toString()%><%
+	    htciCount++;
     }
-}
 %>

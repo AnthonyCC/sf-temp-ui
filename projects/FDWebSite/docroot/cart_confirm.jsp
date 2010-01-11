@@ -55,7 +55,7 @@ Recipe recipe = null;
 <fd:ProductGroup id='prodNode' categoryId='<%= recentOrdLine.getCategoryName() %>' productId='<%= recentOrdLine.getProductName() %>'>
 <%
    orderLineItems.add((FDCartLineI)cart.getRecentOrderLines().get(0));
-    int templateType=prodNode.getAttribute("TEMPLATE_TYPE",1);
+    int templateType=prodNode.getTemplateType(1);
     if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
        jspTemplate = "/common/template/usq_sidenav.jsp";
 	   isWineProductAdded = true;
@@ -64,7 +64,7 @@ Recipe recipe = null;
     }
 
     if (catIdParam!=null && !"".equals(catIdParam)) {
-        ContentNodeI catNode = null;
+        ContentNodeModel catNode = null;
         catNode = ContentFactory.getInstance().getContentNode(catIdParam);
 	if (catNode instanceof RecipeCategory) {
 		jspTemplate ="/common/template/recipe_DLRnavs.jsp" ;
@@ -124,12 +124,12 @@ Recipe recipe = null;
      <td><font class="title18"><%= orderLine.getDescription() %></font>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/product_modify.jsp?cartLine=<%= orderLine.getRandomId() %>&trk=conf"><img src="/media_stat/images/buttons/edit_product.gif" width="32" height="14" alt="Edit" border="0"></a>
      <br><font class="space4pix"><br></font>
      Quantity: <font class="text10bold">
-     <%  Attribute sell_by = prdNode.getAttribute("SELL_BY_SALESUNIT");
-         Attribute quantityTextSecondary = prdNode.getAttribute("QUANTITY_TEXT_SECONDARY");
-         if ( (sell_by == null) || "QUANTITY".equalsIgnoreCase((String)sell_by.getValue()) ){  %>
+     <%  String sell_by = prdNode.getSellBySalesunit();
+         String quantityTextSecondary = prdNode.getQuantityTextSecondary();
+         if ( (sell_by == null) || "".equals(sell_by) || "QUANTITY".equalsIgnoreCase(sell_by) ){  %>
               <%= quantityFormatter.format(orderLine.getQuantity()) %>
  <%        if (quantityTextSecondary != null) { %>
-              <%= quantityTextSecondary.getValue() %>
+              <%= quantityTextSecondary %>
 <%          } else if (isSoldByLB) { %>
                lb
  <%         }
@@ -143,12 +143,12 @@ Recipe recipe = null;
                 }
             }
             String salesUnitDescr = (fdsu != null) ? fdsu.getDescription() : "";
-            if ("SALES_UNIT".equals((String)sell_by.getValue())) { %>
+            if ("SALES_UNIT".equals(sell_by)) { %>
                 <%= salesUnitDescr %>
-    <%      } else if ("BOTH".equals((String)sell_by.getValue())) { %>
+    <%      } else if ("BOTH".equals(sell_by)) { %>
                 <%= quantityFormatter.format(orderLine.getQuantity()) %>
             <%  if (quantityTextSecondary != null) { %>
-                    <%= quantityTextSecondary.getValue() %>
+                    <%= quantityTextSecondary %>
             <%  } else { %>
                     <%= salesUnitDescr %>
     <%          }

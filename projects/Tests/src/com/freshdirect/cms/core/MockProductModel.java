@@ -4,6 +4,7 @@
 package com.freshdirect.cms.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,7 @@ import java.util.Set;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -24,8 +26,8 @@ import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.EnumTemplateType;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductRef;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.YmalSet;
 import com.freshdirect.framework.util.DayOfWeekSet;
@@ -51,6 +53,11 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     public MockProductModel(ContentKey key) {
         super(key);
         // TODO Auto-generated constructor stub
+    }
+    
+    public MockProductModel(String catId, String productId) {
+        super(new ContentKey(FDContentTypes.PRODUCT, productId));
+        setParentKeys(Collections.singleton(new ContentKey(FDContentTypes.CATEGORY, catId)));
     }
 
     /**
@@ -211,27 +218,27 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      * @see com.freshdirect.fdstore.content.ProductModel#getContainerWeightHalfPint()
      */
     @Override
-    public double getContainerWeightHalfPint() {
+    public Double getContainerWeightHalfPint() {
         // TODO Auto-generated method stub
-        return 0;
+        return null;
     }
 
     /* (non-Javadoc)
      * @see com.freshdirect.fdstore.content.ProductModel#getContainerWeightPint()
      */
     @Override
-    public double getContainerWeightPint() {
+    public Double getContainerWeightPint() {
         // TODO Auto-generated method stub
-        return 0;
+        return null;
     }
 
     /* (non-Javadoc)
      * @see com.freshdirect.fdstore.content.ProductModel#getContainerWeightQuart()
      */
     @Override
-    public double getContainerWeightQuart() {
+    public Double getContainerWeightQuart() {
         // TODO Auto-generated method stub
-        return 0;
+        return null;
     }
 
     /* (non-Javadoc)
@@ -328,7 +335,7 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      * @see com.freshdirect.fdstore.content.ProductModel#getDonenessGuide()
      */
     @Override
-    public Html getDonenessGuide() {
+    public List<Html> getDonenessGuide() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -620,6 +627,13 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
         // TODO Auto-generated method stub
         return null;
     }
+    
+    @Override
+    public EnumProductLayout getProductLayout(EnumProductLayout defValue) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
 
     /* (non-Javadoc)
      * @see com.freshdirect.fdstore.content.ProductModel#getProductQualityNote()
@@ -646,14 +660,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     	return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.freshdirect.fdstore.content.ProductModel#getProductRef()
-     */
-    @Override
-    public ProductRef getProductRef() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     /* (non-Javadoc)
      * @see com.freshdirect.fdstore.content.ProductModel#getProductTerms()
@@ -1507,6 +1513,12 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     }
 
     @Override
+    public ContentKey getWineCountryKey() {
+        return null;
+    }
+    
+    
+    @Override
     public Object clone() {
         try {
             return super.clone();
@@ -1532,6 +1544,52 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
 		return null;
 	}
 
+    @Override
+    public int getTemplateType(int defaultValue) {
+        return defaultValue;
+    }
+    
+    @Override
+    public MediaI getMedia(String name) {
+        return null;
+    }
+    
+    @Override
+    public boolean isHasPartiallyFrozen() {
+        return false;
+    }
+    
+    @Override
+    public boolean isHasSalesUnitDescription() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public Html getFddefSource() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getDefaultSkuCode() {
+        return getDefaultSku() != null ? getDefaultSku().getSkuCode() : null;
+    }
+
+    @Override
+    public ProductModel getPrimaryProductModel() {
+        return this;
+    }
+
+    @Override
+    public List<SkuModel> getPrimarySkus() {
+        return getSkus();
+    }
+
+    @Override
+    public boolean isInPrimaryHome() {
+        return true;
+    }
 	/*
 	 * iPhone related
 	 */
@@ -1544,4 +1602,5 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
 	public boolean hideIphone() {
 		return false;
 	}
+
 }

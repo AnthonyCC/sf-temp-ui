@@ -2,142 +2,89 @@
 
 package com.freshdirect.fdstore.content;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
-public class EnumLayoutType implements Serializable {
+public enum EnumLayoutType implements Serializable {
     
-    public final static EnumLayoutType GENERIC              = new EnumLayoutType("Generic", 0);             //(CATEGORY AND DEPARTMENT LAYOUT)
-    public final static EnumLayoutType HORIZONTAL           = new EnumLayoutType("Horizontal", 1);          //(CATEGORY AND DEPARTMENT LAYOUT)
-    public final static EnumLayoutType VERTICAL             = new EnumLayoutType("Vertical", 2);            //(CATEGORY AND DEPARTMENT LAYOUT)
-    public final static EnumLayoutType FEATURED_ALL         = new EnumLayoutType("Featured All", 3);        //SEAFOOD, CHEESE AND MEAT CATEGORIES
-    public final static EnumLayoutType FEATURED_CATEGORY    = new EnumLayoutType("Featured Category", 4);   //MEAT CATEGORIES
-    public final static EnumLayoutType COFFEE_BY_REGION     = new EnumLayoutType("Coffee By Region", 5);    //COFFEE REGION AND ROAST
-    public final static EnumLayoutType PRODUCT_SORT         = new EnumLayoutType("Product Sort", 6);        //TEA CATEGORIES, COFFEE CATEGORIES
-    public final static EnumLayoutType PRODUCT_FOLDER_LIST  = new EnumLayoutType("Product Folder List", 7); //BULK BEEF
-    public final static EnumLayoutType COFFEE_DEPARTMENT    = new EnumLayoutType("Coffee Department", 8);   //( DEPARTMENT LAYOUT)
-    public final static EnumLayoutType GROCERY_DEPARTMENT   = new EnumLayoutType("Grocery Department", 9);  //( Grocery/Frozen/Dair/Specialty DEPARTMENT LAYOUT)
-    public final static EnumLayoutType GROCERY_CATEGORY     = new EnumLayoutType("Grocery Category", 10);   //(Grocery/Frozen/Dair/Specialty cATEGORY page)
-    public final static EnumLayoutType GROCERY_PRODUCT      = new EnumLayoutType("Grocery Product", 11);    //( Grocery/Frozen/Dair/Specialty Product page)
-    public final static EnumLayoutType BULK_MEAT_PRODUCT    = new EnumLayoutType("Bulk Meat Product", 12);    //( Bulk meat category/Product page)
-    public final static EnumLayoutType HOW_TO_COOK_IT	    = new EnumLayoutType("How To Cook It", 13);    //( How to Cook It layout)
-    public final static EnumLayoutType MEALS_STYLE	    	= new EnumLayoutType("Meals Style", 14);    //( Meals department layout)
-    public final static EnumLayoutType MULTI_CATEGORY	    = new EnumLayoutType("Multi Category Layout", 15);    //( Multi Category Layout)
-	public final static EnumLayoutType TRANSAC_MULTI_CATEGORY	    = new EnumLayoutType("Transactional Multi Category", 16);    //( Transactional Multi Category)
-	public final static EnumLayoutType MULTI_CATEGORY_PROD_REDIRECT	= new EnumLayoutType("Multi Category Product Redirect", 17);    //( Transactional Multi Category)
-	public final static EnumLayoutType TRANSAC_GROUPED_ITEMS	= new EnumLayoutType("Transactional Grouped Items", 18);    //( Transactional grouped Items)
-	public final static EnumLayoutType HOLIDAY_MENU	= new EnumLayoutType("Holiday Menu", 19);    //( menu layout)
-	public final static EnumLayoutType THANKSGIVING_CATEGORY	= new EnumLayoutType("Thanksgiving layout", 20);    //( Composite transaction 1)
-	public final static EnumLayoutType GENERIC_WITH_PAGING = new EnumLayoutType("Generic with Paging",22);
-	public final static EnumLayoutType VALENTINES_CATEGORY= new EnumLayoutType("Valentine's Category",23);
-	public final static EnumLayoutType PARTY_PLATTER_CATEGORY = new EnumLayoutType("Party Platter Category",24);
-	public final static EnumLayoutType PICKS_PROMO = new EnumLayoutType("Our Picks",25); //Our picks layout
-	public final static EnumLayoutType VERTICAL_LABELED_CATEGORY = new EnumLayoutType("Vertical Labeled Category", 26); //(DEPARTMENT LAYOUT, Local Foods)
-	public final static EnumLayoutType FEATURED_MENU = new EnumLayoutType("Featured Menu", 27); //(CATEGORY LAYOUT, Easy Meals)
-	public final static EnumLayoutType TOP_TEN = new EnumLayoutType("Top Ten", 28); //(Top Ten Picks)
+    GENERIC              ("Generic", 0),             //(CATEGORY AND DEPARTMENT LAYOUT)
+    HORIZONTAL           ("Horizontal", 1),          //(CATEGORY AND DEPARTMENT LAYOUT)
+    VERTICAL             ("Vertical", 2),            //(CATEGORY AND DEPARTMENT LAYOUT)
+    FEATURED_ALL         ("Featured All", 3),        //SEAFOOD, CHEESE AND MEAT CATEGORIES
+    FEATURED_CATEGORY    ("Featured Category", 4),   //MEAT CATEGORIES
+    COFFEE_BY_REGION     ("Coffee By Region", 5),    //COFFEE REGION AND ROAST
+    PRODUCT_SORT         ("Product Sort", 6),        //TEA CATEGORIES, COFFEE CATEGORIES
+    PRODUCT_FOLDER_LIST  ("Product Folder List", 7), //BULK BEEF
+    COFFEE_DEPARTMENT    ("Coffee Department", 8),   //( DEPARTMENT LAYOUT)
+    GROCERY_DEPARTMENT   ("Grocery Department", 9),  //( Grocery/Frozen/Dair/Specialty DEPARTMENT LAYOUT)
+    GROCERY_CATEGORY     ("Grocery Category", 10),   //(Grocery/Frozen/Dair/Specialty cATEGORY page)
+    GROCERY_PRODUCT      ("Grocery Product", 11),    //( Grocery/Frozen/Dair/Specialty Product page)
+    BULK_MEAT_PRODUCT    ("Bulk Meat Product", 12),    //( Bulk meat category/Product page)
+    HOW_TO_COOK_IT	 ("How To Cook It", 13),    //( How to Cook It layout)
+    MEALS_STYLE	    	 ("Meals Style", 14),    //( Meals department layout)
+    MULTI_CATEGORY	 ("Multi Category Layout", 15),    //( Multi Category Layout)
+    TRANSAC_MULTI_CATEGORY	       ("Transactional Multi Category", 16),    //( Transactional Multi Category)
+    MULTI_CATEGORY_PROD_REDIRECT       ("Multi Category Product Redirect", 17),    //( Transactional Multi Category)
+    TRANSAC_GROUPED_ITEMS	       ("Transactional Grouped Items", 18),    //( Transactional grouped Items)
+    HOLIDAY_MENU	               ("Holiday Menu", 19),    //( menu layout)
+    THANKSGIVING_CATEGORY              ("Thanksgiving layout", 20),    //( Composite transaction 1)
+    GENERIC_WITH_PAGING                ("Generic with Paging",22),
+    VALENTINES_CATEGORY                ("Valentine's Category",23),
+    PARTY_PLATTER_CATEGORY             ("Party Platter Category",24),
+    PICKS_PROMO                        ("Our Picks",25), //Our picks layout
+    VERTICAL_LABELED_CATEGORY          ("Vertical Labeled Category", 26), //(DEPARTMENT LAYOUT, Local Foods)
+    FEATURED_MENU                      ("Featured Menu", 27), //(CATEGORY LAYOUT, Easy Meals)
+    TOP_TEN                            ("Top Ten", 28), //(Top Ten Picks)
 	
-	public final static EnumLayoutType MEAT_DEPT = new EnumLayoutType("Meat Dept", 29); //(Meat Dept Redesign)
-	public final static EnumLayoutType MEAT_DEALS = new EnumLayoutType("Meat Deals", 30); //(Best Meat Deals and EDLP)
-	public final static EnumLayoutType MEAT_CATEGORY = new EnumLayoutType("Meat Category", 31); //(Meat Categories to display Deals and EDLP)
+    MEAT_DEPT                          ("Meat Dept", 29), //(Meat Dept Redesign)
+    MEAT_DEALS                         ("Meat Deals", 30), //(Best Meat Deals and EDLP)
+    MEAT_CATEGORY                      ("Meat Category", 31), //(Meat Categories to display Deals and EDLP)
 	
-	public final static EnumLayoutType MEDIA_INCLUDE = new EnumLayoutType("Media Include", 97); //[APPREQ-77]
+    MEDIA_INCLUDE                      ("Media Include", 97), //[APPREQ-77]
 	
-	public final static EnumLayoutType WINE_CATEGORY = new EnumLayoutType("Wine Category", 100); // Wine Layout
-	public final static EnumLayoutType TRANSAC_MULTI_PAIRED_ITEMS	= new EnumLayoutType("Transactional Multi Paired Items", 101); // Wine Layout
-	public final static EnumLayoutType TEMPLATE_LAYOUT	= new EnumLayoutType("Template Layout", 102); // Wine Layout
+    WINE_CATEGORY                      ("Wine Category", 100), // Wine Layout
+    TRANSAC_MULTI_PAIRED_ITEMS	       ("Transactional Multi Paired Items", 101), // Wine Layout
+    TEMPLATE_LAYOUT	               ("Template Layout", 102), // Wine Layout
 	
-	// this is never rendered by layout manager
-	public final static EnumLayoutType MULTI_ITEM_MEAL_OPTION_HORZ = new EnumLayoutType("Multi Item Meal Layout Option 1", 98); //(Optional category layout 1, Salad Meal)
-	public final static EnumLayoutType MULTI_ITEM_MEAL_OPTION_VERT = new EnumLayoutType("Multi Item Meal Layout Option 2", 99); //(Optional category layout 2, Salad Meal)
+    // this is never rendered by layout manager
+    MULTI_ITEM_MEAL_OPTION_HORZ        ("Multi Item Meal Layout Option 1", 98), //(Optional category layout 1, Salad Meal)
+    MULTI_ITEM_MEAL_OPTION_VERT        ("Multi Item Meal Layout Option 2", 99); //(Optional category layout 2, Salad Meal)
 	
-    private static List types = null;
 
-    static {
-        ArrayList t = new ArrayList();
-        t.add(GENERIC);
-        t.add(HORIZONTAL);
-        t.add(VERTICAL);
-        t.add(FEATURED_ALL);
-        t.add(FEATURED_CATEGORY);
-        t.add(COFFEE_BY_REGION);
-        t.add(PRODUCT_SORT);
-        t.add(PRODUCT_FOLDER_LIST);
-        t.add(COFFEE_DEPARTMENT);
-        t.add(GROCERY_DEPARTMENT);
-        t.add(GROCERY_CATEGORY);
-        t.add(GROCERY_PRODUCT);
-        t.add(BULK_MEAT_PRODUCT);
-        t.add(MEALS_STYLE);
-        t.add(MULTI_CATEGORY);
-        t.add(TRANSAC_MULTI_CATEGORY);
-		t.add(MULTI_CATEGORY_PROD_REDIRECT);
-        t.add(TRANSAC_GROUPED_ITEMS);
-		t.add(HOLIDAY_MENU);
-		t.add(THANKSGIVING_CATEGORY);
-        t.add(GENERIC_WITH_PAGING);
-		t.add(VALENTINES_CATEGORY);
-		t.add(PARTY_PLATTER_CATEGORY);
-		t.add(PICKS_PROMO);
-		t.add(FEATURED_MENU);
-		t.add(MEDIA_INCLUDE);
-		t.add(MULTI_ITEM_MEAL_OPTION_HORZ);
-		t.add(MULTI_ITEM_MEAL_OPTION_VERT);
-		t.add(WINE_CATEGORY);
-		t.add(TRANSAC_MULTI_PAIRED_ITEMS);
-		t.add(TEMPLATE_LAYOUT);
-		t.add(MEAT_DEPT);
-		t.add(MEAT_DEALS);
-		t.add(MEAT_CATEGORY);
-        types = Collections.unmodifiableList(t);
-    }
-
-    public static List getLayoutTypes() {
-        return types;
+    public static List<EnumLayoutType> getLayoutTypes() {
+        return Arrays.asList(values());
     }
 
     public static EnumLayoutType getLayoutType(int lid) {
-	for (int i=0;i < types.size();i++) {
-            EnumLayoutType ls = (EnumLayoutType) types.get(i);
-            if (ls.getId() == lid)
+        for (EnumLayoutType ls : values()) {
+            if (ls.getId() == lid) {
                 return ls;
+            }
         }
         return null;
     }
 
-     public boolean equals(Object o) {
-        if (o instanceof EnumLayoutType) {
-			if (((EnumLayoutType)o).getId() == this.id)
-                return true;
-            else
-                return false;
-        } else {
-            return false;
-        }
-    }
-
-	private EnumLayoutType(String n, int i) {
+    private EnumLayoutType(String n, int i) {
         this.name = n;
         this.id = i;
     }
 
-    public int getId(){
-            return id;
-        }
+    public int getId() {
+        return id;
+    }
 
-    public String getName(){
-            return name;
-        }
+    public String getName() {
+        return name;
+    }
 
     private int id;
     private String name;
-
 
     /**
      * @return Returns true if layout is a kind of grocery
      */
     public boolean isGroceryLayout() {
-    	return (GROCERY_DEPARTMENT.equals(this) || GROCERY_CATEGORY.equals(this) || GROCERY_PRODUCT.equals(this));
+        return (GROCERY_DEPARTMENT.equals(this) || GROCERY_CATEGORY.equals(this) || GROCERY_PRODUCT.equals(this));
     }
 }

@@ -1,24 +1,10 @@
 <%-- Featured Products column --%>
 <%  
-    Attribute attribFeatProds = currentFolder.getAttribute("FEATURED_PRODUCTS");
-    List favorites;
+	List favorites = currentFolder instanceof ProductContainer ? ((ProductContainer) currentFolder).getFeaturedProducts() : Collections.EMPTY_LIST;
+	
     // List validFavorites = new ArrayList();
     List favHTMLPieces = new ArrayList();
     List favHTMLPieceLinks = new ArrayList();
-    if (attribFeatProds!=null && !((List)attribFeatProds.getValue()).isEmpty() ) {
-        List prodList = new ArrayList();
-        for (Iterator itrFav = ((List)attribFeatProds.getValue()).iterator(); itrFav.hasNext();) {
-            ContentRef cr = (ContentRef) itrFav.next();
-            if (!(cr instanceof ProductRef)) continue;
-            ProductModel pm = (ProductModel)JspMethods.getFeaturedProduct(cr);
-            prodList.add(pm);
-        }
-        
-        List filterNames = (List)currentFolder.getAttribute("FILTER_LIST",Collections.EMPTY_LIST);
-        favorites = prodList;
-    } else {
-        favorites = Collections.EMPTY_LIST;
-    }
     
     /// StringBuffer favoriteProducts = new StringBuffer("");
     /// ContentNodeModel prodParent = null;
@@ -79,16 +65,11 @@
 			*/
 
 String dealsCat="";
-Attribute _featCats = currentFolder.getAttribute("FEATURED_CATEGORIES");
-List _featuredCats=null;
-if (_featCats!=null) {
-      _featuredCats = (List)_featCats.getValue();
-	 
-}
+List _featuredCats= ((DepartmentModel)currentFolder).getFeaturedCategories();
 
  if (_featuredCats != null && _featuredCats.size() > 0) {
-         CategoryRef catRef= (CategoryRef)_featuredCats.get(0);
-        dealsCat= catRef.getCategoryName();
+         CategoryModel catRef= (CategoryModel)_featuredCats.get(0);
+        dealsCat= catRef.getContentKey().getId();
 }
 			String productPageLink_ = response.encodeURL("/category.jsp?catId=" + dealsCat
             +"&sortBy=name&showThumbnails=true&DisplayPerPage=30&sortDescending=false&disp=null&prodCatId="+prodParent

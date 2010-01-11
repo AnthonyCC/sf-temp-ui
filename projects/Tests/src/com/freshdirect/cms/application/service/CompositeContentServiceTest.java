@@ -18,7 +18,7 @@ import com.freshdirect.cms.validation.ContentValidationException;
 
 public class CompositeContentServiceTest extends TestCase {
 
-    private ContentServiceI service;
+    protected ContentServiceI service;
 
     protected void setUp() throws Exception {
         service = createService();
@@ -51,7 +51,7 @@ public class CompositeContentServiceTest extends TestCase {
     private final static ContentType VOODOO_TYPE = ContentType.get("VooDoo");
 
     private final static ContentKey  FOO_KEY  = new ContentKey(FOO_TYPE, "fooNode");
-    private final static ContentKey  BAR_KEY  = new ContentKey(BAR_TYPE, "barNode");
+    protected final static ContentKey  BAR_KEY  = new ContentKey(BAR_TYPE, "barNode");
 
     public void testGetAllContentKeys() {
         Set s = service.getContentKeys();
@@ -106,4 +106,19 @@ public class CompositeContentServiceTest extends TestCase {
         assertEquals("zzz_baz", node.getAttributeValue("BAZ"));
     }
 
+    public void testEditing2() throws ContentValidationException {
+        ContentKey zzzKey = new ContentKey(FOO_TYPE, "zzz2");
+        ContentNodeI node = service.createPrototypeContentNode(zzzKey);
+        node.setAttributeValue("FOO", "zzz_foo");
+        node.setAttributeValue("BAZ", "zzz_baz");
+
+        // Cms.getService().storeContentNode(node);
+        // ContentNodeI n = Cms.getService().getContentNode(zzzKey);
+
+        assertEquals(2, node.getAttributes().size());
+        assertEquals("zzz_foo", node.getAttributeValue("FOO"));
+        assertEquals("zzz_baz", node.getAttributeValue("BAZ"));
+    }
+    
+    
 }

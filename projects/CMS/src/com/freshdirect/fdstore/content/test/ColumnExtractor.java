@@ -184,7 +184,7 @@ public abstract class ColumnExtractor {
 		public void cacheAttribute(ContentBundle.RowCache cache) throws AbortRowException {
 			if (!(cache.getContentNodeModel() instanceof ProductModel)) abortRow();
 			List skus = new ArrayList();
-			for(Iterator i = ((ProductModel)cache.getContentNodeModel()).getSkus().iterator(); i.hasNext(); ) {
+			for(Iterator i = ((ProductModel)cache.getContentNodeModel()).getPrimarySkus().iterator(); i.hasNext(); ) {
 				SkuModel skuModel = (SkuModel)i.next();
 				if (!skuModel.isUnavailable()) skus.add(skuModel.getSkuCode());
 				

@@ -13,10 +13,12 @@ public class WebHowToCookIt {
 	
 	private String name;
 	private String linkParams;
+	private String catId;
 	
-	public WebHowToCookIt(String name, String linkParams){
+	public WebHowToCookIt(String name, String linkParams, String catId){
 		this.name = name;
 		this.linkParams = linkParams;
+		this.catId = catId;
 	}
 	
 	public String getName(){
@@ -26,6 +28,10 @@ public class WebHowToCookIt {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public String getCategoryId() {
+            return catId;
+        }
 	
 	public String getLinkParams(){
 		return this.linkParams;

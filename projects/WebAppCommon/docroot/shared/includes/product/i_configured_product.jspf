@@ -47,13 +47,10 @@ if (!isWineLayout && prodBrands!=null && prodBrands.size() > 0 ) {
     BrandModel bm = (BrandModel)prodBrands.get(0);
     if (bm!=null){
         brandName= bm.getFullName();
-        Attribute brandAttrib = bm.getAttribute("BRAND_LOGO_SMALL");
-        if (brandAttrib!=null) {
-            brandLogo = (MediaI)brandAttrib.getValue();
-        }
-        brandAttrib = bm.getAttribute("BRAND_POPUP_CONTENT");
-        if (brandAttrib!=null) {
-            TitledMedia tm = (TitledMedia)brandAttrib.getValue();
+        brandLogo = bm.getLogoSmall();
+        Html popupContent = bm.getPopupContent();
+        if (popupContent!=null) {
+            TitledMedia tm = (TitledMedia)popupContent;
             EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
             if (popupType !=null ) {
                 brandPopupLink = "javascript:pop('"+response.encodeURL("/brandpop.jsp?brandId="+bm)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
@@ -82,12 +79,11 @@ for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
                                             ErpServicesProperties.getHorizonDays());
         }
         if(QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0){
-            MultiAttribute varMatrix = (MultiAttribute) sku.getAttribute("VARIATION_MATRIX");
-            List domains = varMatrix==null ? Collections.EMPTY_LIST : (List)varMatrix.getValue();
+            List domains = sku.getVariationMatrix();
             StringBuffer key = new StringBuffer();
             key.append("*");
             for(Iterator i = domains.iterator(); i.hasNext(); ){
-                DomainValue domainValue = ((DomainValueRef)i.next()).getDomainValue();
+                DomainValue domainValue = (DomainValue)i.next();
                 key.append(domainValue.getLabel());
                 key.append(", ");
                 key.deleteCharAt(key.length()-2);
@@ -134,7 +130,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 
     	String variantId = request.getParameter("variant");
 
-    	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode.getProductRef(), cfg, variantId );
+    	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId );
     }
 
 
@@ -157,7 +153,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
     String defaultSalesUnit = templateLine.getSalesUnit();
 
 
-    String sellBySalesUnit = (null != productNode.getAttribute("SELL_BY_SALESUNIT")) ? (String) productNode.getAttribute("SELL_BY_SALESUNIT").getValue() : null;
+    String sellBySalesUnit = productNode.getSellBySalesunit();
 
     if(sellBySalesUnit != null) {
       if(sellBySalesUnit.equals("QUANTITY") || sellBySalesUnit.equals("")) {
@@ -200,7 +196,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
     <input type="hidden" name="catId" value='<%= templateLine.getCategoryName() %>'>
 
     <%
-    if (productNode.getAttribute("PARTIALLY_FROZEN")!=null && productNode.getDepartment().getFullName().equalsIgnoreCase("SEAFOOD")) {
+    if (productNode.isHasPartiallyFrozen() && productNode.getDepartment().getFullName().equalsIgnoreCase("SEAFOOD")) {
         %><img src="/media_stat/images/template/bakery/snowflake_grey.gif" width="15" height="17" alt="" border="0">&nbsp;<%
     }
 
@@ -238,7 +234,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
     } else {
         // no annotation, just display title
         %><%= productTitle %><br><% } %></font><%=!"".equals(productNode.getSubtitle()) && productNode.getSubtitle() !=null?"<span class=\"title13\">":""%><%=productNode.getSubtitle()%><%=!"".equals(productNode.getSubtitle()) && productNode.getSubtitle() !=null?"</span><br>":""%><%
-    if (productNode.getAttribute("PARTIALLY_FROZEN")!=null && productNode.getDepartment().getFullName().equalsIgnoreCase("BAKERY")) {
+    if (productNode.isHasPartiallyFrozen() && productNode.getDepartment().getFullName().equalsIgnoreCase("BAKERY")) {
         %><br><img src="/media_stat/images/template/bakery/parbaked_frozen_prod.gif" width="147" height="16" alt="" border="0"><br><%
     }
 
@@ -261,9 +257,8 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 <%    	}
     }
 	MediaI chooseSidesImg = null;
-	Attribute chooseSidesAttrib = productNode.getAttribute("DESCRIPTIVE_IMAGE");
-        if (chooseSidesAttrib!=null) {
-            chooseSidesImg = (MediaI)chooseSidesAttrib.getValue();
+	 {
+            chooseSidesImg = productNode.getDescriptiveImage();
 				if (chooseSidesImg != null) {
     %>
     <a href="<%=cgProdLink.toString()%>"><img src="<%=chooseSidesImg.getPath()%>"  vspace="8" border="0" width="<%=chooseSidesImg.getWidth()%>" height="<%=chooseSidesImg.getHeight()%>" alt="Choose Different Options"></a>
@@ -333,7 +328,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
                 priceShown=true;%>
                  <tr><td colspan="2"><table align="left">
                 <TR VALIGN="BOTTOM"><TD>
-                <FONT CLASS="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %></td>
+                <FONT CLASS="text11bold"><%= productNode.getQuantityText() %></td>
                 <td><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></FONT>&nbsp;<input type=text CLASS="text11" size=4 name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);" maxlength="2"></TD>
                 <td WIDTH="14" VALIGN="BOTTOM"><a HREF="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
                     <a HREF="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a>
@@ -344,7 +339,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
                 </table></td></tr>
 <%          } else {  %>
                 <TR VALIGN="BOTTOM" align="right"><TD WIDTH="173">
-                <FONT CLASS="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></FONT>&nbsp;<input type=text CLASS="text11" size=4 name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"></TD>
+                <FONT CLASS="text11bold"><%= productNode.getQuantityText() %><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></FONT>&nbsp;<input type=text CLASS="text11" size=4 name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"></TD>
                 <td WIDTH="14" VALIGN="BOTTOM"><a HREF="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
                     <a HREF="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a>
                 </td>

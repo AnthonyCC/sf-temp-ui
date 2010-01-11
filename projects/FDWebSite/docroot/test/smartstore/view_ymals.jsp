@@ -191,7 +191,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     			if (y1.isActive() != y2.isActive())
     				return y2.isActive() ? +1 : -1;
     			else
-    				return y1.getAttribute("title", "").compareToIgnoreCase(y2.getAttribute("title", ""));
+    				return y1.getTitle().compareToIgnoreCase(y2.getTitle());
     		}
     	});
 
@@ -228,9 +228,8 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 	    	while (it.hasNext()) {
 	    		ContentKey key = (ContentKey) it.next();
 	    		DepartmentModel node = (DepartmentModel) ContentFactory.getInstance().getContentNode(key.getId());
-	    		AttributeI attr = node.getNotInheritedAttribute("ymalSets");
-	    		if (attr != null) {
-	    			Object obj = attr.getValue();
+	    		Object obj = node.getNotInheritedAttributeValue("ymalSets");
+	    		if (obj != null) {
 	    			if (obj instanceof List) {
 	    				List ymals = (List) obj;
 	    				Iterator it2 = ymals.iterator();
@@ -259,9 +258,8 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 	    	while (it.hasNext()) {
 	    		ContentKey key = (ContentKey) it.next();
 	    		CategoryModel node = (CategoryModel) ContentFactory.getInstance().getContentNode(key.getId());
-	    		AttributeI attr = node.getNotInheritedAttribute("ymalSets");
-	    		if (attr != null) {
-	    			Object obj = attr.getValue();
+	    		Object obj = node.getNotInheritedAttributeValue("ymalSets");
+	    		if (obj != null) {
 	    			if (obj instanceof List) {
 	    				List ymals = (List) obj;
 	    				Iterator it2 = ymals.iterator();
@@ -291,9 +289,8 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 	    	while (it.hasNext()) {
 	    		ContentKey key = (ContentKey) it.next();
 	    		ProductModel node = (ProductModel) ContentFactory.getInstance().getContentNode(key.getId());
-	    		AttributeI attr = node.getNotInheritedAttribute("ymalSets");
-	    		if (attr != null) {
-	    			Object obj = attr.getValue();
+	    		Object obj = node.getNotInheritedAttributeValue("ymalSets");
+	    		if (obj != null) {
 	    			if (obj instanceof List) {
 	    				List ymals = (List) obj;
 	    				Iterator it2 = ymals.iterator();
@@ -323,7 +320,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 		%>
 		<tr>
 			<td class="title13<%= !set.isActive() ? " inactive" : "" %>" title="<%= set.isActive() ? "ACTIVE" : "INACTIVE" %>">
-				<%= set.getAttribute("title", "") %> <span style="font-weight: normal;">(<%= set.getContentKey().getId() %>)</span>
+				<%= set.getTitle() %> <span style="font-weight: normal;">(<%= set.getContentKey().getId() %>)</span>
 			</td>
 			<td class="text13<%= !set.isActive() ? " inactive" : "" %>">
 				<%	Iterator it2 = ((TreeSet) sets.get(set)).iterator();

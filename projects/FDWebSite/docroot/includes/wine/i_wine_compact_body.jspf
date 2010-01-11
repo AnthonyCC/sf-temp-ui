@@ -17,7 +17,7 @@ int itemWidth = 0;
 int totalWidth = 0;
 StringBuffer tblCells = new StringBuffer(600);
 StringBuffer tblTextCells = new StringBuffer(600);
-boolean isDepartment = currentFolder.getContentType().equals(ContentNodeI.TYPE_DEPARTMENT);
+boolean isDepartment = currentFolder.getContentType().equals(ContentNodeModel.TYPE_DEPARTMENT);
 String trkCode = "";
 
 if (isDepartment) {
@@ -41,17 +41,16 @@ int rowsPrinted  =0;
 <img src="/media_stat/images/layout/clear.gif" width="1" height="10">
 <logic:iterate indexId="idx" id="displayThing" length="<%= len.toString() %>" offset="<%= offset.toString() %>" collection="<%= displayList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <%
-Attribute attribInGenericLayout = null;
 itemWidth = 0;
 boolean showSelf = false;
-if (displayThing.getContentType().equals(ContentNodeI.TYPE_DEPARTMENT)) {
+if (displayThing.getContentType().equals(ContentNodeModel.TYPE_DEPARTMENT)) {
     showSelf = true;
-} else if (displayThing.getContentType().equals(ContentNodeI.TYPE_CATEGORY)) {
+} else if (displayThing.getContentType().equals(ContentNodeModel.TYPE_CATEGORY)) {
     showSelf = ((CategoryModel)displayThing).getShowSelf();
 }
 
 itemNameFont = "text11";
-if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
+if (displayThing.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
         if(theOnlyProduct==null) {
             theOnlyProduct = (ProductModel)displayThing;
             onlyOneProduct = true;

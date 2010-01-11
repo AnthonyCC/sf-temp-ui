@@ -15,28 +15,13 @@
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10">
 <%
-        String tmplCatId = request.getParameter("catId");
-        String tmplFldrLbl = "/media_stat/images/layout/clear.gif";
-        String tmplNavBar = "/media_stat/images/layout/clear.gif";
 
-        String fldrLink = "#";
-        if (tmplCatId!=null) {
-            ContentNodeModel tmplCat = ContentFactory.getInstance().getContentNodeByName(tmplCatId);
-            ContentNodeModel wokingCat = tmplCat.getAttribute("ALIAS")!=null  
-                 ? ((CategoryRef) tmplCat.getAttribute("ALIAS").getValue()).getCategory()
-                 : tmplCat;
-             
-            if (wokingCat!=null && ContentNodeI.TYPE_CATEGORY.equals(wokingCat.getContentType())) {
-               if (wokingCat.getAttribute("CAT_LABEL")!=null) {
-                    tmplFldrLbl = ((MediaI)wokingCat.getAttribute("CAT_LABEL").getValue()).getPath();
-                    fldrLink = "/category.jsp?catId="+tmplCat;
-              }
-               if (wokingCat.getAttribute("CATEGORY_NAVBAR")!=null) {
-                    tmplNavBar = ((MediaI)wokingCat.getAttribute("CATEGORY_NAVBAR").getValue()).getPath();
-               }
-                 
-            }
-        }
+	JspMethods.CategoryInfo c = JspMethods.getCategoryInfo(request);
+	String tmplCatId = c.getCatId();
+	String tmplFldrLbl = c.getFldrLbl();
+	String tmplNavBar = c.getNavBar();
+	
+	String fldrLink = c.getLink();
 	//
 	// annotation mode, add overlib stuff
 	//

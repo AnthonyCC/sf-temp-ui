@@ -277,7 +277,7 @@ p.fi{margin:20px 0px;}
     							List orderlines = user.getShoppingCart().getOrderLines();
     							for(Iterator i = orderlines.iterator(); i.hasNext();) {
     								FDCartLineI cartLine = (FDCartLineI) i.next();
-    								ProductModel prod = cartLine.getProductRef().lookupProduct();
+    								ProductModel prod = cartLine.getProductRef();
     								if (notFirst) {
     					%>
     					<br>

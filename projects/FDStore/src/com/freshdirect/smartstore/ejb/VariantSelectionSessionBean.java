@@ -13,7 +13,7 @@ import java.util.Map;
 
 import javax.ejb.EJBException;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -22,7 +22,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class VariantSelectionSessionBean extends SessionBeanSupport {
 	private static final long serialVersionUID = 7401851794123258702L;
 
-	private static Category LOGGER = LoggerFactory.getInstance(VariantSelectionSessionBean.class);
+	private static Logger LOGGER = LoggerFactory.getInstance(VariantSelectionSessionBean.class);
 
 
 

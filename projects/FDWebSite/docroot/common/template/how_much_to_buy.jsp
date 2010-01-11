@@ -14,7 +14,7 @@ String catId = request.getParameter("catId");
 
 ProductModel product =  ContentFactory.getInstance().getProductByName(catId,prodId);
 Image prodImg = product.getCategoryImage();
-String recTable = ((Html)product.getAttribute("RECOMMEND_TABLE").getValue()).getPath();
+String recTable = product.getRecommendTable().getPath();
 %>
 <HTML>
 <HEAD>

@@ -29,7 +29,7 @@ public class SkuLabelProvider implements ILabelProvider {
 		}
 
 		// variation matrix
-		List l = (List) node.getAttribute("VARIATION_MATRIX").getValue();
+		List l = (List) node.getAttributeValue("VARIATION_MATRIX");
 		if (l != null && !l.isEmpty()) {
 			for (Iterator i = l.iterator(); i.hasNext();) {
 				ContentKey dvKey = (ContentKey) i.next();

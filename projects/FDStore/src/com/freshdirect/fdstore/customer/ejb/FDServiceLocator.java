@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
+import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
 
 public class FDServiceLocator extends ServiceLocator {
@@ -30,22 +31,6 @@ public class FDServiceLocator extends ServiceLocator {
 
     public FDServiceLocator(Context ctx) {
         super(ctx);
-    }
-
-    public ErpSaleHome getErpSaleHome() {
-        try {
-            return (ErpSaleHome) getRemoteHome("freshdirect.erp.Sale", ErpSaleHome.class);
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-
-    public ErpCustomerHome getErpCustomerHome() {
-        try {
-            return (ErpCustomerHome) getRemoteHome("java:comp/env/ejb/ErpCustomer", ErpCustomerHome.class);
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
     }
 
     public FDCustomerHome getFdCustomerHome() {
@@ -75,14 +60,6 @@ public class FDServiceLocator extends ServiceLocator {
     public DlvManagerHome getDlvManagerHome() {
         try {
             return (DlvManagerHome) getRemoteHome("java:comp/env/ejb/DlvManager", DlvManagerHome.class);
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-
-    public MailerGatewayHome getMailerHome() {
-        try {
-            return (MailerGatewayHome) getRemoteHome("freshdirect.mail.MailerGateway", MailerGatewayHome.class);
         } catch (NamingException e) {
             throw new EJBException(e);
         }
@@ -136,6 +113,40 @@ public class FDServiceLocator extends ServiceLocator {
             throw new EJBException(e);
         }
     }
+    
+
+    public ErpSaleHome getErpSaleHome() {
+        try {
+            return (ErpSaleHome) getRemoteHome("freshdirect.erp.Sale", ErpSaleHome.class);
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+
+    public ErpCustomerHome getErpCustomerHome() {
+        try {
+            return (ErpCustomerHome) getRemoteHome("java:comp/env/ejb/ErpCustomer", ErpCustomerHome.class);
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+
+    public MailerGatewayHome getMailerHome() {
+        try {
+            return (MailerGatewayHome) getRemoteHome("freshdirect.mail.MailerGateway", MailerGatewayHome.class);
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public ErpMonitorHome getErpMonitorHome() {
+        try {
+            return (ErpMonitorHome) getRemoteHome("freshdirect.monitor.Monitor", ErpMonitorHome.class);
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+
     
     public FDSurveySB getSurveySessionBean() {
         try {

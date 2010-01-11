@@ -267,7 +267,7 @@ public class FDCachedFactory {
     	return FDFactory.getNewSkuCodes(days);
     }
 	
-	public static Map getSkusOldness() throws FDResourceException {
+	public static Map<String, Integer> getSkusOldness() throws FDResourceException {
     	return FDFactory.getSkusOldness();
     }
 

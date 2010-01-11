@@ -12,7 +12,7 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductRef;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
@@ -23,16 +23,20 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(SampleStrategy.class);
 
-	private final ProductRef sampleProduct;
+	private final ProductReference sampleProduct;
 	private final double minSubtotal;
 
-	public SampleLineApplicator(ProductRef sampleProduct, double minSubtotal) {
+	public SampleLineApplicator(ProductReference sampleProduct, double minSubtotal) {
 		this.sampleProduct = sampleProduct;
 		this.minSubtotal = minSubtotal;
 	}
 
-	public ProductRef getSampleProduct() {
-		return this.sampleProduct;
+	public ProductModel getSampleProduct() {
+		return this.sampleProduct.lookupProductModel();
+	}
+	
+	public ProductReference getProductReference() {
+	    return this.sampleProduct;
 	}
 
 	public boolean apply(String promotionCode, PromotionContextI context) {
@@ -55,7 +59,7 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 	private FDCartLineI createSampleLine(String promotionCode) throws FDResourceException {
 		ProductModel product = null;	
 		try{
-			product = this.sampleProduct.lookupProduct();	
+			product = this.sampleProduct.lookupProductModel();	
 		}catch(Exception ex){
 			// This is to handle when a invalid category id or product id is set to the sampe promo. 
 			LOGGER.error("The category id or product id for the sample promo "+promotionCode+" is not invalid.");
@@ -85,7 +89,7 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 		FDCartLineModel cartLine =
 			new FDCartLineModel(
 				new FDSku(fdp),
-				product.getProductRef(),
+				product,
 				new FDConfiguration(product.getQuantityMinimum(), su.getName()), null);
 
 		cartLine.setDiscount(new Discount(promotionCode, EnumDiscountType.SAMPLE, 1.0));

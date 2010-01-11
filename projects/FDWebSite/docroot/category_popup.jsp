@@ -13,12 +13,12 @@
     String title     = request.getParameter("title");
     
     ContentFactory cf = ContentFactory.getInstance();
-    ContentNodeModel category = cf.getContentNodeByName(catId);
+    ContentNodeModel category = cf.getContentNode(catId);
     ComponentPopupView cpv = null;
     String listAs=null;
     
     if (category!=null) {
-      listAs = category.getAttribute("LIST_AS","full");
+        listAs = ((ProductContainer)category).getListAs();
     }
     
     String productNameSort=null;

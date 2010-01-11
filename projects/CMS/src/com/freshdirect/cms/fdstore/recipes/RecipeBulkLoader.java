@@ -264,7 +264,7 @@ public class RecipeBulkLoader {
 		}
 
 		// associate the ConfiguredProducts with the group
-		groupNode.getAttribute("items").setValue(keyList);
+		groupNode.setAttributeValue("items",keyList);
 		
 		// add the group node to our node list
 		nodes.add(groupNode);
@@ -354,7 +354,7 @@ public class RecipeBulkLoader {
 			}
 			
 			// associate the section with the appropriate ingredients
-			section.getAttribute("ingredients").setValue(keyList);
+			section.setAttributeValue("ingredients", keyList);
 			
 			// insert the section into the nodes list
 			nodes.add(section);
@@ -415,8 +415,8 @@ public class RecipeBulkLoader {
 		
 		// REQUIRED?
 		token = nextToken(tokenizer, DELIMITERS);
-		bool  = token.equals("YES") ? new Boolean(true) : new Boolean(false);
-		node.getAttribute("REQUIRED").setValue(bool);
+		bool  = token.equals("YES") ? Boolean.TRUE : Boolean.FALSE;
+		node.setAttributeValue("REQUIRED", bool);
 		
 		// SECTION
 		token = nextToken(tokenizer, DELIMITERS);

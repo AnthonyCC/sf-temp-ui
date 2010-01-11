@@ -213,7 +213,7 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 
 
 
-	int typeSpan = (currentCategory != null ? currentCategory.getColumnSpan() : 2);
+	int typeSpan = (currentCategory != null ? currentCategory.getColumnSpan(2) : 2);
 	int brandSpan = 4 - typeSpan;
 
 %>

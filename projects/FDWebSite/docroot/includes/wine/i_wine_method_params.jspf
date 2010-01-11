@@ -208,7 +208,7 @@ public String buildOtherParams(int displayPerPageSetting, int pageNumberValue) {
         boolean isAvailable = false;
         for(Iterator iter=productList.iterator(); iter.hasNext();) {
             ContentNodeModel contentNode = (ContentNodeModel) iter.next();
-            if (contentNode.getContentType().equals(ContentNodeI.TYPE_PRODUCT)){
+            if (contentNode.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)){
                 ProductModel product = (ProductModel) contentNode;
                 List domainValues = product.getWineClassifications();
                 if(domainValues.contains(filter)){

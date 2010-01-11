@@ -1,4 +1,4 @@
-<%if (productDesc!=null) { %>
+<%if (productDesc!=null && productDesc.getPath() != null) { %>
 <FONT CLASS="space2pix"><BR></FONT>
 <fd:IncludeMedia name="<%= productDesc.getPath() %>" />
 <br>

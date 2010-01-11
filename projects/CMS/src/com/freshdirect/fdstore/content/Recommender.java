@@ -36,10 +36,8 @@ public class Recommender extends ContentNodeModelImpl {
 	}
 	
 	public RecommenderStrategy getStrategy() {
-		AttributeI attrib = getCmsAttribute("strategy");
-		if (attrib==null) return null;
-		ContentKey key = (ContentKey) attrib.getValue();
-		return key == null ? null : (RecommenderStrategy) ContentFactory.getInstance().getContentNode(key.getId());
+		ContentKey key = (ContentKey) getCmsAttributeValue("strategy");
+		return key == null ? null : (RecommenderStrategy) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 	
 	public List getScope() {

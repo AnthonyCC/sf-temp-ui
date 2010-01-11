@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -16,7 +17,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.NVL;
 
-public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSource {
+public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSource, HasRedirectUrl, HasTemplateType {
 
 	/** Orders products by department & full name */
 	public final static Comparator DEPTFULL_COMPARATOR = new Comparator() {
@@ -207,9 +208,13 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public EnumProductLayout getProductLayout();
 	
+	public EnumProductLayout getProductLayout(EnumProductLayout defValue);
+	
 	public EnumLayoutType getLayout();
 	
 	public EnumTemplateType getTemplateType();
+	
+	public int getTemplateType(int defaultValue);
 	
 	public String getAlsoSoldAsName();
 	
@@ -245,11 +250,11 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public boolean isNotSearchable();
 	
-	public double getContainerWeightHalfPint();
+	public Double getContainerWeightHalfPint();
 	
-	public double getContainerWeightPint();
+	public Double getContainerWeightPint();
 	
-	public double getContainerWeightQuart();
+	public Double getContainerWeightQuart();
 	
 	public boolean isIncrementMaxEnforce();
 	
@@ -304,6 +309,27 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public List<SkuModel> getSkus();
 
 	public List<String> getSkuCodes();
+	
+	
+	/**
+	 * 
+	 * @return decides that this product model is in his primary home.
+	 */
+        public boolean isInPrimaryHome();
+        
+        /**
+         * 
+         * @return the product model, which is in his primary home
+         */
+        public ProductModel getPrimaryProductModel();
+        
+        /**
+         * 
+         * 
+         * @return the list of sku models of the primary product. Primary product is the product which is in his primary home.
+         */
+        public List<SkuModel> getPrimarySkus();
+	
 	
 	/**
 	 * Get the source product.
@@ -399,16 +425,16 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	 */
 	public List<ContentNodeModel> getRecommendedAlternatives();
 
-	public List getWeRecommendText();
+	public List<ProductModel> getWeRecommendText();
 	
-	public List getWeRecommendImage();
+	public List<ProductModel> getWeRecommendImage();
 	
 	/**
 	 * @return List of Recipe
 	 */
 	public List getRelatedRecipes();
 	
-	public List getProductBundle();
+	public List<ProductModel> getProductBundle();
 
 	
 	public ProductModel getAlsoSoldAs(int idx);
@@ -416,26 +442,28 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	/** Getter for property skus.
 	 * @return Value of property skus.
 	 */
-	public List getAlsoSoldAs();
+	public List<ProductModel> getAlsoSoldAs();
 
 	
-	public List getHowtoCookitFolders();
+	public List<CategoryModel> getHowtoCookitFolders();
 	
 	public CategoryModel getPrimaryHome();
 	
 	public SkuModel getPreferredSku();
 	
-	public List getRating();
+	public List<DomainValue> getRating();
 	
-	public List getUsageList();
+	public List<Domain> getUsageList();
 	
 	public DomainValue getUnitOfMeasure();
 	
-	public List getVariationMatrix();
+	public List<Domain> getVariationMatrix();
 	
-	public List getVariationOptions();
+	public List<Domain> getVariationOptions();
 	
 	public DomainValue getWineCountry();
+	
+	public ContentKey getWineCountryKey();
 	
 	public Image getProdImage();
 	
@@ -472,22 +500,28 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public Html getFreshTips();
 	
-	public Html getDonenessGuide();
+	public List<Html> getDonenessGuide();
 	
 	public Html getFddefFrenching();
 	
 	public Html getFddefGrade();
 	
+	public Html getFddefSource();
+	
 	public Html getFddefRipeness();
+	
+	public boolean isHasSalesUnitDescription();
 	
 	public Html getSalesUnitDescription();
 	
 	public Html getPartallyFrozen();
 	
+	public boolean isHasPartiallyFrozen();
+	
 	
 	public boolean hasComponentGroups();
 	
-	public List getComponentGroups();
+	public List<ComponentGroupModel> getComponentGroups();
 	
 	
 	public Html getProductTermsMedia();
@@ -495,9 +529,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 
 	
 	// other helpers
-	
-	
-	public ProductRef getProductRef();
+
 
 	public DepartmentModel getDepartment();
 
@@ -507,7 +539,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 
 	public boolean enforceQuantityMax();
 
-	public List getAlsoSoldAsRefs();
+	public List<ProductModel> getAlsoSoldAsRefs();
 
 	public Object clone();
 
@@ -521,6 +553,8 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public DayOfWeekSet getBlockedDays();
 
 	public SkuModel getDefaultSku();
+	
+	public String getDefaultSkuCode();
 
 	/**
 	 * @param type a multivalued ErpNutritionInfoType
@@ -634,8 +668,19 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public int getExpertWeight();
 	
-	public List getCountryOfOrigin() throws FDResourceException;
+	public List<String> getCountryOfOrigin() throws FDResourceException;
 	
 	//Gift Card changes
 	public List getGiftcardType();
+	
+	/**
+         * This is used for getting a media attribute, if the usage of the normal getters are not feasible. 
+         * For example, when the name of the attribute comes from the client side. It's not a very fortunate
+         * situation.
+         * 
+         * @param name
+         * @return
+         */
+        public MediaI getMedia(String name);
+
 }

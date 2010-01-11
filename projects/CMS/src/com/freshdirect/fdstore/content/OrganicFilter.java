@@ -21,7 +21,8 @@ public class OrganicFilter extends AbstractProductFilter{
 		
 		SkuModel sku=null;
 			boolean result = false;
-			 for (Iterator iSku = product.getSkus().iterator(); iSku.hasNext() && result==false;) {
+			//LOGGER.debug("IN OrganicFilter with product: "+product.getContentName());
+			 for (Iterator iSku = product.getPrimarySkus().iterator(); iSku.hasNext() && result==false;) {
 			 	sku = (SkuModel) iSku.next();
 				try {
 					if (sku.isUnavailable()) continue;
@@ -34,6 +35,7 @@ public class OrganicFilter extends AbstractProductFilter{
 					throw fre;
 				}
 			 }
+			//LOGGER.debug("product: "+product.getContentName()+"  returning: "+result);
 			return result;
 	}
 

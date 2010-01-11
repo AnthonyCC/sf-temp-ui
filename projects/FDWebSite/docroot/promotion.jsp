@@ -33,14 +33,14 @@
 				deptName = "Kosher";
 			} else {
                 ContentFactory contentFactory = ContentFactory.getInstance();
-                ContentNodeModel currentNode = contentFactory.getContentNodeByName(deptId);
+                ContentNodeModel currentNode = contentFactory.getContentNode(deptId);
                 deptName = ((DepartmentModel)currentNode).getFullName();
             }    
         }
         else if (catId != null) {
                 hasDepartment = true;
                 ContentFactory contentFactory = ContentFactory.getInstance();
-                ContentNodeModel currentNode = contentFactory.getContentNodeByName(catId);
+                ContentNodeModel currentNode = contentFactory.getContentNode(catId);
 				deptId = ((CategoryModel)currentNode).getDepartment().getContentName();
                 continueShoppingLink = response.encodeURL(deptLink+deptId+"&");
                 deptName = ((CategoryModel)currentNode).getDepartment().getFullName();

@@ -43,9 +43,7 @@
     }
 
     CategoryModel parentCat = (CategoryModel)productNode.getParentNode();
-    ContentNodeModel aliasNode = parentCat.getAttribute("ALIAS")!=null  
-         ? ((CategoryRef) parentCat.getAttribute("ALIAS").getValue()).getCategory()
-         : null;
+    ContentNodeModel aliasNode = parentCat.getAlias();
     String alignment="align=\"left\"";
     String prodPageRatingStuff = getProdPageRatings(productNode,response); // get and format the product page ratings
 %>

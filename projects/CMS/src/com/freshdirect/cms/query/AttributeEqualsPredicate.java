@@ -1,7 +1,6 @@
 package com.freshdirect.cms.query;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.AttributeI;
 
 /**
  * {@link org.apache.commons.collections.Predicate} to check for equality of an
@@ -24,8 +23,8 @@ public class AttributeEqualsPredicate extends AbstractAttributePredicate {
 		this.value = value;
 	}
 
-	public boolean evaluate(AttributeI attribute) {
-		Object v = attribute.getValue();
+	@Override
+	public boolean evaluateValue(Object v) {
 		if (v == null && value == null) {
 			return true;
 		}

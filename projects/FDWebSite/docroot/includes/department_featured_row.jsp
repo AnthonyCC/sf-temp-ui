@@ -21,7 +21,7 @@ int MIN_FAVS2SHOW		= 3; //minimum featured products required to show featured se
 int	MAX_FAVS2SHOW		= FAVS_PER_LINE*MAX_FAVSLINES2SHOW; //to keep each row matching
 String catId = request.getParameter("catId");
 System.out.println("department_featured_row>> catId: " + catId);
-ContentNodeModel node = ContentFactory.getInstance().getContentNodeByName(catId);
+ContentNodeModel node = ContentFactory.getInstance().getContentNode(catId);
 boolean isDept = (node instanceof DepartmentModel);
 boolean isCat = (node instanceof CategoryModel);
 String trkCode= "";
@@ -34,7 +34,6 @@ if (isDept) {
     request.setAttribute("trk","cpage");
 }
 boolean sortDescending = "true".equalsIgnoreCase(request.getParameter("sortDescending"));
-//String sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
     
 Settings layoutSettings = new Settings();
 layoutSettings.setGrabberDepth(99);

@@ -74,5 +74,7 @@ public class ClassGenContentServiceTest extends TestCase {
         node = service.getContentNode(key);
         assertNull(node);
     }
+    
+    
 
 }

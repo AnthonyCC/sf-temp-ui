@@ -17,10 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.EnumChargeType;
-import com.freshdirect.fdstore.content.ProductRef;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.AudienceStrategy;
@@ -30,17 +28,17 @@ import com.freshdirect.fdstore.promotion.DCPDiscountRule;
 import com.freshdirect.fdstore.promotion.DateRangeStrategy;
 import com.freshdirect.fdstore.promotion.EnumOrderType;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
-import com.freshdirect.fdstore.promotion.LineItemDiscountApplicator;
-import com.freshdirect.fdstore.promotion.MaxLineItemCountStrategy;
-import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.FraudStrategy;
 import com.freshdirect.fdstore.promotion.GeographyStrategy;
 import com.freshdirect.fdstore.promotion.HeaderDiscountApplicator;
 import com.freshdirect.fdstore.promotion.HeaderDiscountRule;
 import com.freshdirect.fdstore.promotion.LimitedUseStrategy;
+import com.freshdirect.fdstore.promotion.LineItemDiscountApplicator;
+import com.freshdirect.fdstore.promotion.MaxLineItemCountStrategy;
 import com.freshdirect.fdstore.promotion.OrderTypeStrategy;
 import com.freshdirect.fdstore.promotion.PercentOffApplicator;
 import com.freshdirect.fdstore.promotion.ProfileAttributeStrategy;
+import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromoVariantModelImpl;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
@@ -530,7 +528,7 @@ public class FDPromotionDAO {
 		String productName = rs.getString("product_name");
 		wasNull |= rs.wasNull();
 		if (!wasNull) {
-			return new SampleLineApplicator(new ProductRef(categoryName, productName), minSubtotal);
+			return new SampleLineApplicator(new ProductReference(categoryName, productName), minSubtotal);
 		}
 
 		int maxItemCount=rs.getInt("max_item_count");

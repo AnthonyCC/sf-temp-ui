@@ -226,16 +226,16 @@ public class FlexContentHandler extends CmsNodeHandler {
 			if (relDef == null) {
 				LOGGER.warn("No definition for relationship " + rel.name + " on node " + rel.node);
 			} else {
-				rel.node.getAttribute(rel.name).setValue(rel.value);
+				rel.node.setAttributeValue(rel.name, rel.value);
 			}
 		} else if (last instanceof Attribute) {
 			Attribute attr = (Attribute) last;
 
-			AttributeI a = attr.node.getAttribute(attr.name);
+			AttributeDefI a = attr.node.getDefinition().getAttributeDef(attr.name);
 			if (a == null) {
 				LOGGER.warn("No defintiion for attribute " + attr.name + " on node " + attr.node);
 			} else {
-				a.setValue(attr.parseValue());
+				attr.node.setAttributeValue(attr.name, attr.parseValue());
 			}
 		} else if (last instanceof ContentKey) {
 			ContentKey key = (ContentKey) last;

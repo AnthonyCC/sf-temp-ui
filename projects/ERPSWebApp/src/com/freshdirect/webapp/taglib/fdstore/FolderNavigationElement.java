@@ -9,9 +9,8 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.CategoryRef;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 
 public class FolderNavigationElement extends NavigationElement {
 
@@ -24,17 +23,18 @@ public class FolderNavigationElement extends NavigationElement {
 		this.category = f;
 		this.breakAfter = isExpanded;
 
-		Attribute attr = this.category.getAttribute("ALIAS");
+                ContentNodeModel attr = this.category.getAlias();
 		String catId;
 		if (attr==null) {
 			catId = this.category.getContentName();
 		} else {
 			// it's an aliased folder
 			// !!! this lookup will not be neccessary, when we got rid of PK-based ContentRefs
-			catId = ((CategoryRef)attr.getValue()).getCategoryName();
+		    catId = attr.getContentKey().getId();
 			//ContentNodeModel alias = ContentFactory.getInstance().getContentNode( ref.getCategoryId() );
 			//catId = alias.getContentName();
 		}
+		
 		this.url = "/category.jsp?catId="+catId+"&trk=snav";
 	}
 

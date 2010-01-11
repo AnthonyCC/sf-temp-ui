@@ -21,7 +21,6 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
@@ -38,7 +37,6 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -97,7 +95,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
 	private final List variationOptions = new ArrayList();
 	
-	private final List componentGroups = new ArrayList();
+	private final List<ComponentGroupModel> componentGroups = new ArrayList<ComponentGroupModel>();
 	
 	private final List<ContentNodeModel> recommendedAlternatives = new ArrayList<ContentNodeModel>();
 	
@@ -134,10 +132,6 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	
 	public ProductModelImpl(ContentKey cKey) {
 		super(cKey);
-	}
-
-	public ProductRef getProductRef() {
-		return new ProductRef(this.getParentNode().getContentName(), this.getContentName());
 	}
 
 	public DepartmentModel getDepartment() {
@@ -203,7 +197,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	public List<String> getSkuCodes() {
-		List<SkuModel> skus = getSkus();
+		List<SkuModel> skus = getPrimarySkus();
 		List<String> skuCodeList = new ArrayList<String>(skus.size());
 		for (SkuModel i : skus) {
 			skuCodeList.add(i.getSkuCode());
@@ -261,8 +255,9 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		if (sku != null) {
 			try {
 				boolean soldBySalesUnits = isSoldBySalesUnits();
-				if (sku.getProduct().isAutoconfigurable(soldBySalesUnits)) {
-					ret = sku.getProduct().getAutoconfiguration(soldBySalesUnits, getQuantityMinimum());
+				FDProduct fdProduct = sku.getProduct();
+                                if (fdProduct.isAutoconfigurable(soldBySalesUnits)) {
+					ret = fdProduct.getAutoconfiguration(soldBySalesUnits, getQuantityMinimum());
 				}
 			} catch(Exception exc) {}
 		}
@@ -273,7 +268,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * @return List of BrandModels that are referenced by the  property brands.
 	 */
 	public List getBrands() {
-		ContentNodeModelUtil.refreshModels(this, "brands", brandModels, true);
+		ContentNodeModelUtil.refreshModels(this, "brands", brandModels, false);
 
 		List newList = new ArrayList();
 		for (int i = 0; i < brandModels.size(); i++) {
@@ -299,11 +294,11 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 	
 	public boolean isSoldBySalesUnits() {
-		return "SALES_UNIT".equals(getAttribute("SELL_BY_SALESUNIT", ""));
+		return "SALES_UNIT".equals(getSellBySalesunit());
 	}
 
 	public boolean isQualifiedForPromotions() throws FDResourceException {
-		List skus = getSkus();
+		List skus = getPrimarySkus();
 		for (Iterator i = skus.iterator(); i.hasNext();) {
 			try {
 				FDProduct fdp = ((SkuModel) i.next()).getProduct();
@@ -322,7 +317,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * a product is discontinued only if all of its skus are discontinued
 	 * @return  */
 	public boolean isDiscontinued() {
-		List skus = getSkus();
+		List skus = getPrimarySkus();
 		Iterator skuIter = skus.iterator();
 		while (skuIter.hasNext()) {
 			SkuModel sku = (SkuModel) skuIter.next();
@@ -336,7 +331,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * a product is out of season only if all of its skus are out of season
 	 * @return  */
 	public boolean isOutOfSeason() {
-		List skus = getSkus();
+		List skus = getPrimarySkus();
 		Iterator skuIter = skus.iterator();
 		while (skuIter.hasNext()) {
 			SkuModel sku = (SkuModel) skuIter.next();
@@ -350,7 +345,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * a product is unavailable only if all of its skus are unavailable
 	 * @return  */
 	public boolean isUnavailable() {
-		List skus = getSkus();
+		List skus = getPrimarySkus();
 		Iterator skuIter = skus.iterator();
 		while (skuIter.hasNext()) {
 			SkuModel sku = (SkuModel) skuIter.next();
@@ -365,7 +360,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * a product is temp. unavailable only if all of its skus are temp. unavailable
 	 * @return  */
 	public boolean isTempUnavailable() {
-		List skus = getSkus();
+		List skus = getPrimarySkus();
 		Iterator skuIter = skus.iterator();
 		while (skuIter.hasNext()) {
 			SkuModel sku = (SkuModel) skuIter.next();
@@ -379,7 +374,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * @return true if any of its skus is a platter
 	 */
 	public boolean isPlatter() {
-		List skus = getSkus();
+		List skus = getPrimarySkus();
 		Iterator skuIter = skus.iterator();
 		while (skuIter.hasNext()) {
 			SkuModel sku = (SkuModel) skuIter.next();
@@ -396,7 +391,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	public DayOfWeekSet getBlockedDays() {
-		List skus = getSkus();
+		List skus = getPrimarySkus();
 		DayOfWeekSet allBlockedDays = DayOfWeekSet.EMPTY;
 		for (Iterator i = skus.iterator(); i.hasNext();) {
 			SkuModel sku = (SkuModel) i.next();
@@ -416,7 +411,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * @param days
 	 * @return  */
 	public boolean isAvailableWithin(int days) {
-		List skus = getSkus();
+		List skus = getPrimarySkus();
 		Iterator skuIter = skus.iterator();
 		while (skuIter.hasNext()) {
 			SkuModel sku = (SkuModel) skuIter.next();
@@ -430,7 +425,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * a product's earliest availability is the earliest of it's sku's earliest availability
 	 * @return  */
 	public Date getEarliestAvailability() {
-		List skus = getSkus();
+		List skus = getPrimarySkus();
 		Date ea = null;
 		Iterator skuIter = skus.iterator();
 		while (skuIter.hasNext()) {
@@ -458,8 +453,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	public SkuModel getDefaultSku() {
 		List skus = this.getSkus();
 
-		AttributeI a = getCmsAttribute("PREFERRED_SKU");
-		ContentKey preferredSku = a == null ? null : (ContentKey) a.getValue();
+		ContentKey preferredSku = (ContentKey) getCmsAttributeValue("PREFERRED_SKU");
 
 		for (ListIterator li = skus.listIterator(); li.hasNext();) {
 			SkuModel sku = (SkuModel) li.next();
@@ -479,7 +473,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * @return common Set of nutrition information of all available SKUs 
 	 */
 	public Set getCommonNutritionInfo(ErpNutritionInfoType type) throws FDResourceException {
-		List skus = getSkus();
+		List skus = getPrimarySkus();
 		if (!type.isMultiValued()) {
 			throw new IllegalArgumentException(type + " is not multivalued");
 		}
@@ -567,7 +561,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		
 		if (prodBrands.size() > 0) {
 			BrandModel b = (BrandModel) prodBrands.get(0);
-			MediaI brandLogoSmall = (MediaI)b.getAttribute("BRAND_LOGO_SMALL",(Object)null);
+			Image brandLogoSmall = b.getLogoSmall();
 			if (brandLogoSmall!=null) {
 				displayableBrands.add(prodBrands.get(0));
 				numberOfBrands--;
@@ -575,14 +569,14 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		}
 		
 		// now get the remaining brands from the sku
-		List skus = getSkus();
+		List skus = getPrimarySkus();
 		for (Iterator skuItr = skus.iterator();skuItr.hasNext() && numberOfBrands >0;) {
 			SkuModel sku = (SkuModel)skuItr.next();
 			List skuBrands = sku.getBrands();
 			boolean gotOne = false;
 			for (Iterator skbItr=skuBrands.iterator();skbItr.hasNext() && !gotOne; ) {
 				BrandModel b = (BrandModel) skbItr.next();
-				MediaI brandLogoSmall = (MediaI)b.getAttribute("BRAND_LOGO_SMALL",(Object)null);
+				Image brandLogoSmall = b.getLogoSmall();
 				if (brandLogoSmall!=null && !displayableBrands.contains(b) && !sku.isUnavailable()) {
 					numberOfBrands--;
 					displayableBrands.add(b);
@@ -615,7 +609,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 					if ((!"".equals(salesUnitDescr))
 						&& (!"nm".equalsIgnoreCase(salesUnitDescr))
 						&& (!"ea".equalsIgnoreCase(salesUnitDescr))) {
-						if (!this.getAttribute("SELL_BY_SALESUNIT", "").equals("SALES_UNIT")) {
+						if (!getSellBySalesunit().equals("SALES_UNIT")) {
 							return salesUnitDescr;
 						}
 					}
@@ -692,17 +686,16 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	public boolean hasComponentGroups() {
-		return !((List) getAttribute("COMPONENT_GROUPS", Collections.EMPTY_LIST)).isEmpty();
+		return !getComponentGroups().isEmpty();
 	}
 
 	public boolean isCharacteristicsComponentsAvailable(FDConfigurableI config) {
-		List compositeGroups = (List) getAttribute("COMPONENT_GROUPS", Collections.EMPTY_LIST);
+		List<ComponentGroupModel> compositeGroups = getComponentGroups();
 		try {
-			for (Iterator cgItr = compositeGroups.iterator(); cgItr.hasNext();) {
-				ComponentGroupModel cgm = (ComponentGroupModel) cgItr.next();
-				if (cgm.hasCharacteristics() && cgm.isUnavailable(config)) {
-					return false;
-				}
+			for (ComponentGroupModel cgm : compositeGroups) {
+			    if (cgm.hasCharacteristics() && cgm.isUnavailable(config)) {
+				return false;
+			    }
 			}
 			return true;
 		} catch (FDResourceException ex) {
@@ -715,7 +708,11 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	public EnumProductLayout getProductLayout() {
-		return EnumProductLayout.getLayoutType(this.getAttribute("PRODUCT_LAYOUT", EnumProductLayout.PERISHABLE.getId()));
+		return getProductLayout(EnumProductLayout.PERISHABLE);
+	}
+	
+	public EnumProductLayout getProductLayout(EnumProductLayout defValue) {
+            return EnumProductLayout.getLayoutType(this.getAttribute("PRODUCT_LAYOUT", defValue.getId()));
 	}
 
 	public String getSubtitle() {
@@ -739,7 +736,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	public String getRedirectUrl() {
-		return getAttribute("REDIRECT_URL", "");
+            return (String) getCmsAttributeValue("REDIRECT_URL");
 	}
 
 	public String getSellBySalesunit() {
@@ -755,11 +752,11 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	public String getQuantityTextSecondary() {
-		return getAttribute("QUANTITY_TEXT_SECONDARY", "");
+		return getAttribute("QUANTITY_TEXT_SECONDARY", (String) null);
 	}
 
 	public String getServingSuggestion() {
-		return getAttribute("SERVING_SUGGESTION", "");
+		return (String) getCmsAttributeValue("SERVING_SUGGESTION");
 	}
 
 	public String getPackageDescription() {
@@ -767,15 +764,15 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	public String getSeasonText() {
-		return getAttribute("SEASON_TEXT", "");
+		return (String) getCmsAttributeValue("SEASON_TEXT");
 	}
 
 	public String getWineFyi() {
-		return getAttribute("WINE_FYI", "");
+	    return (String) getCmsAttributeValue("WINE_FYI");
 	}
 
 	public String getWineRegion() {
-		return getAttribute("WINE_REGION", "");
+		return (String) getCmsAttributeValue("WINE_REGION");
 	}
 
 	public String getSeafoodOrigin() {
@@ -794,16 +791,16 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return getAttribute("NOT_SEARCHABLE", false);
 	}
 
-	public double getContainerWeightHalfPint() {
-		return new Double(getAttribute("CONTAINER_WEIGHT_HALF_PINT", 0.0)).doubleValue();
+	public Double getContainerWeightHalfPint() {
+		return (Double) getCmsAttributeValue("CONTAINER_WEIGHT_HALF_PINT");
 	}
 
-	public double getContainerWeightPint() {
-		return new Double(getAttribute("CONTAINER_WEIGHT_PINT", 0.0)).doubleValue();
+	public Double getContainerWeightPint() {
+		return (Double) getCmsAttributeValue("CONTAINER_WEIGHT_PINT");
 	}
 
-	public double getContainerWeightQuart() {
-		return new Double(getAttribute("CONTAINER_WEIGHT_QUART", 0.0)).doubleValue();
+	public Double getContainerWeightQuart() {
+		return (Double) getCmsAttributeValue("CONTAINER_WEIGHT_QUART");
 	}
 
 	public boolean isIncrementMaxEnforce() {
@@ -1151,16 +1148,16 @@ inner:
 		return finalList;
 	}
 
-	public List getWeRecommendText() {
+	public List<ProductModel> getWeRecommendText() {
 		ContentNodeModelUtil.refreshModels(this, "WE_RECOMMEND_TEXT", weRecommendText, false);
 
-		return new ArrayList(weRecommendText);
+		return new ArrayList<ProductModel>(weRecommendText);
 	}
 
-	public List getWeRecommendImage() {
+	public List<ProductModel> getWeRecommendImage() {
 		ContentNodeModelUtil.refreshModels(this, "WE_RECOMMEND_IMAGE", weRecommendImage, false);
 
-		return new ArrayList(weRecommendImage);
+		return new ArrayList<ProductModel>(weRecommendImage);
 	}
 
 
@@ -1169,211 +1166,187 @@ inner:
 		return Collections.unmodifiableList(relatedRecipes);
 	}
 
-	public List getProductBundle() {
+	public List<ProductModel> getProductBundle() {
 		ContentNodeModelUtil.refreshModels(this, "PRODUCT_BUNDLE", productBundle, false);
 
 		return new ArrayList(productBundle);
 	}
 
-	public List getHowtoCookitFolders() {
+	public List<CategoryModel> getHowtoCookitFolders() {
 		ContentNodeModelUtil.refreshModels(this, "HOWTOCOOKIT_FOLDERS", howtocookitFolders, false);
 
 		return new ArrayList(howtocookitFolders);
 	}
 
 	public CategoryModel getPrimaryHome() {
-            AttributeI attribute = getCmsAttribute("PRIMARY_HOME");
-            if (attribute==null) {
-                return null;
-            }
-            ContentKey key = (ContentKey) attribute.getValue();
+	    ContentKey key = (ContentKey) getCmsAttributeValue("PRIMARY_HOME");
     
-            return key == null ? null : (CategoryModel) ContentFactory.getInstance().getContentNode(key.getId());
+            return key == null ? null : (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key);
         }
 
 	public SkuModel getPreferredSku() {
-		AttributeI att = getCmsAttribute("PREFERRED_SKU");
-		if (att == null) return null;
-		ContentKey key = (ContentKey) att.getValue();
-		
-		return key == null
-  	         ? null
-             : (SkuModel) ContentFactory.getInstance().getContentNode(key.getId());
+	    ContentKey key = (ContentKey) getCmsAttributeValue("PREFERRED_SKU");
+
+	    return key == null ? null
+             : (SkuModel) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
-	public List getRating() {
+	public List<DomainValue> getRating() {
 		ContentNodeModelUtil.refreshModels(this, "RATING", rating, false);
 
 		return new ArrayList(rating);
 	}
 
-	public List getUsageList() {
+	public List<Domain> getUsageList() {
 		ContentNodeModelUtil.refreshModels(this, "USAGE_LIST", usageList, false);
 
 		return new ArrayList(usageList);
 	}
 
 	public DomainValue getUnitOfMeasure() {
-		ContentKey key = (ContentKey) getCmsAttribute("UNIT_OF_MEASURE").getValue();
+		ContentKey key = (ContentKey) getCmsAttributeValue("UNIT_OF_MEASURE");
 		
 		return key == null
   	         ? null
-             : (DomainValue) ContentFactory.getInstance().getContentNode(key.getId());
+             : (DomainValue) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
-	public List getVariationMatrix() {
+	public List<Domain> getVariationMatrix() {
 		ContentNodeModelUtil.refreshModels(this, "VARIATION_MATRIX", variationMatrix, false);
 
 		return new ArrayList(variationMatrix);
 	}
 
-	public List getVariationOptions() {
+	public List<Domain> getVariationOptions() {
 		ContentNodeModelUtil.refreshModels(this, "VARIATION_OPTIONS", variationOptions, false);
 
 		return new ArrayList(variationOptions);
 	}
 
-	public DomainValue getWineCountry() {		
-		Attribute a = getAttribute("WINE_COUNTRY");
-		return a == null ? null : ((DomainValueRef) a.getValue()).getDomainValue();		
+	public DomainValue getWineCountry() {
+	    ContentKey key = (ContentKey) getCmsAttributeValue("WINE_COUNTRY");
+	    return key != null ? ContentFactory.getInstance().getDomainValueById(key.getId()) : null;
+	}
+	
+	public ContentKey getWineCountryKey() {
+	    return (ContentKey) getCmsAttributeValue("WINE_COUNTRY");
 	}
 			
 
 	public Image getProdImage() {
-		return (Image) getAttribute("PROD_IMAGE", (Image) null); 
+            return FDAttributeFactory.constructImage(this, "PROD_IMAGE");
 	}
 
 	public Image getFeatureImage() {
-		ContentKey key = (ContentKey) getCmsAttribute("PROD_IMAGE_FEATURE").getValue();
+		ContentKey key = (ContentKey) getCmsAttributeValue("PROD_IMAGE_FEATURE");
 		
 		return key == null
   	         ? null
-             : (Image) ContentFactory.getInstance().getContentNode(key.getId());
+             : (Image) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
 	public Image getRatingRelatedImage() {
-		ContentKey key = (ContentKey) getCmsAttribute("RATING_RELATED_IMAGE").getValue();
-		
-		return key == null
-  	         ? null
-             : (Image) ContentFactory.getInstance().getContentNode(key.getId());
+            return FDAttributeFactory.constructImage(this, "RATING_RELATED_IMAGE");
 	}
 
 	public Image getAlternateImage() {
-		return (Image) getAttribute("ALTERNATE_IMAGE", (Image) null); 
+            return FDAttributeFactory.constructImage(this, "ALTERNATE_IMAGE");
 	}
 
 	public Image getDescriptiveImage() {
-		return (Image) getAttribute("DESCRIPTIVE_IMAGE", (Image) null); 
+            return FDAttributeFactory.constructImage(this, "DESCRIPTIVE_IMAGE");
 	}
 
 	public Image getRolloverImage() {
-
-		AttributeI attr = getCmsAttribute("PROD_IMAGE_ROLLOVER");
-		if ( attr == null )
-			return null;
-		
-		Attribute attr2 = FDAttributeFactory.getAttribute( attr );
-		if ( attr2 == null )
-			return null;
-		
-		return (Image) attr2.getValue();
+	    return FDAttributeFactory.constructImage(this, "PROD_IMAGE_ROLLOVER");
 	}
 
 	public Html getProductAbout() {		
-		Attribute a = getAttribute("PRODUCT_ABOUT");
-		return a == null ? null : (Html) a.getValue();		
+	    return FDAttributeFactory.constructHtml(this, "PRODUCT_ABOUT");
 	}
 
 	public Html getRecommendTable() {
-		ContentKey key = (ContentKey) getCmsAttribute("RECOMMEND_TABLE").getValue();
-		
-		return key == null
-  	         ? null
-             : (Html) ContentFactory.getInstance().getContentNode(key.getId());
+	    return FDAttributeFactory.constructHtml(this, "RECOMMEND_TABLE");
 	}
 
 	public Html getProductQualityNote() {
-		ContentKey key = (ContentKey) getCmsAttribute("PRODUCT_QUALITY_NOTE").getValue();
+		ContentKey key = (ContentKey) getCmsAttributeValue("PRODUCT_QUALITY_NOTE");
 		
 		return key == null
   	         ? null
-             : (Html) ContentFactory.getInstance().getContentNode(key.getId());
+             : (Html) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
 	public Html getProductDescriptionNote() {		
-		Attribute a = getAttribute("PROD_DESCRIPTION_NOTE");
-		return a == null ? null : (Html) a.getValue();			
+            return FDAttributeFactory.constructHtml(this, "PROD_DESCRIPTION_NOTE");
 	}
 
 	public Html getFreshTips() {
-		ContentKey key = (ContentKey) getCmsAttribute("FRESH_TIPS").getValue();
+		ContentKey key = (ContentKey) getCmsAttributeValue("FRESH_TIPS");
 		
 		return key == null
   	         ? null
-             : (Html) ContentFactory.getInstance().getContentNode(key.getId());
+             : (Html) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
-	public Html getDonenessGuide() {
-		ContentKey key = (ContentKey) getCmsAttribute("DONENESS_GUIDE").getValue();
-		
-		return key == null
-  	         ? null
-             : (Html) ContentFactory.getInstance().getContentNode(key.getId());
-	}
+        public List<Html> getDonenessGuide() {
+            return FDAttributeFactory.constructWrapperList(this, "DONENESS_GUIDE");
+        }
 
 	public Html getFddefFrenching() {
-		ContentKey key = (ContentKey) getCmsAttribute("FDDEF_FRENCHING").getValue();
-		
-		return key == null
-  	         ? null
-             : (Html) ContentFactory.getInstance().getContentNode(key.getId());
+            return FDAttributeFactory.constructHtml(this, "FDDEF_FRENCHING");
 	}
 
-	public Html getFddefGrade() {
-		ContentKey key = (ContentKey) getCmsAttribute("FDDEF_GRADE").getValue();
-		
-		return key == null
-  	         ? null
-             : (Html) ContentFactory.getInstance().getContentNode(key.getId());
+	public Html getFddefGrade () {
+	    return FDAttributeFactory.constructHtml(this, "FDDEF_GRADE");
 	}
+
+        public Html getFddefSource () {
+            return FDAttributeFactory.constructHtml(this, "FDDEF_SOURCE");
+        }
+	
+	
 
 	public Html getFddefRipeness() {
-		ContentKey key = (ContentKey) getCmsAttribute("FDDEF_RIPENESS").getValue();
-		
-		return key == null
-  	         ? null
-             : (Html) ContentFactory.getInstance().getContentNode(key.getId());
+            return FDAttributeFactory.constructHtml(this, "FDDEF_RIPENESS");
+	}
+	
+	public boolean isHasSalesUnitDescription() {
+	    return getCmsAttributeValue("SALES_UNIT_DESCRIPTION") != null;
 	}
 
 	public Html getSalesUnitDescription() {
-		ContentKey key = (ContentKey) getCmsAttribute("SALES_UNIT_DESCRIPTION").getValue();
+		ContentKey key = (ContentKey) getCmsAttributeValue("SALES_UNIT_DESCRIPTION");
 		
 		return key == null
   	         ? null
-             : (Html) ContentFactory.getInstance().getContentNode(key.getId());
+             : (Html) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
+	public boolean isHasPartiallyFrozen() {
+	    return getCmsAttributeValue("PARTIALLY_FROZEN") != null;
+	}
+	
 	public Html getPartallyFrozen() {
-		ContentKey key = (ContentKey) getCmsAttribute("PARTIALLY_FROZEN").getValue();
+		ContentKey key = (ContentKey) getCmsAttributeValue("PARTIALLY_FROZEN");
 		
 		return key == null
   	         ? null
-             : (Html) ContentFactory.getInstance().getContentNode(key.getId());
+             : (Html) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
-	public List getComponentGroups() {
+	public List<ComponentGroupModel> getComponentGroups() {
 		ContentNodeModelUtil.refreshModels(this, "COMPONENT_GROUPS", componentGroups, false);
 
-		return new ArrayList(componentGroups);
+		return new ArrayList<ComponentGroupModel>(componentGroups);
 	}
 
 	public Html getProductTermsMedia() {
-		ContentKey key = (ContentKey) getCmsAttribute("PRODUCT_TERMS_MEDIA").getValue();
+		ContentKey key = (ContentKey) getCmsAttributeValue("PRODUCT_TERMS_MEDIA");
 		
 		return key == null
   	         ? null
-             : (Html) ContentFactory.getInstance().getContentNode(key.getId());
+             : (Html) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
 	// new Wine store changes
@@ -1400,7 +1373,19 @@ inner:
 	}
 	
 	public String getWineType() {
-		return getAttribute("WINE_TYPE", "");
+		return (String)getCmsAttributeValue("WINE_TYPE");
+	}
+	
+	/**
+	 * This is used for getting a media attribute, if the usage of the normal getters are not feasible. 
+	 * For example, when the name of the attribute comes from the client side. It's not a very fortunate
+	 * situation.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public MediaI getMedia(String name) {
+	    return (MediaI) FDAttributeFactory.constructWrapperValue(this, name);
 	}
 
 	public List getNewWineType() {
@@ -1445,39 +1430,32 @@ inner:
 	}
 
 	public Html getWineReview1() {
-		Attribute a = getAttribute("WINE_REVIEW1");
-		return a == null ? null : (Html) a.getValue();			
+            return FDAttributeFactory.constructHtml(this, "WINE_REVIEW1");
 	}
 	
 	public int getExpertWeight() {
-		Attribute a = getAttribute("SS_EXPERT_WEIGHTING");
-		return a == null ? 0 : ((Number)a.getValue()).intValue();
+            Object value = FDAttributeFactory.constructWrapperValue(this, "SS_EXPERT_WEIGHTING");
+            return value instanceof Number ? ((Number)value).intValue() : 0;
 	}
 
 	public Html getWineReview2() {
-		Attribute a = getAttribute("WINE_REVIEW2");
-		return a == null ? null : (Html) a.getValue();			
+            return FDAttributeFactory.constructHtml(this, "WINE_REVIEW2");
 	}
 
 	public Html getWineReview3() {
-		Attribute a = getAttribute("WINE_REVIEW3");
-		return a == null ? null : (Html) a.getValue();					
+            return FDAttributeFactory.constructHtml(this, "WINE_REVIEW3");
 	}
 
 	public Html getProductBottomMedia() {
-		Attribute a = getAttribute("PRODUCT_BOTTOM_MEDIA");
-		return a == null ? null : (Html) a.getValue();		
+            return FDAttributeFactory.constructHtml(this, "PRODUCT_BOTTOM_MEDIA");
 	}
 
 	public CategoryModel getPerfectPair() {
-		AttributeI a = getCmsAttribute("PERFECT_PAIR");
-		if(a==null)
-		   return null;
-		ContentKey key = (ContentKey) a.getValue();
+		ContentKey key = (ContentKey) getCmsAttributeValue("PERFECT_PAIR");
 		
 		return key == null
   	         ? null
-             : (CategoryModel) ContentFactory.getInstance().getContentNode(key.getId());
+             : (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key);
 
 	}
 
@@ -1497,7 +1475,7 @@ inner:
     public EnumOrderLineRating getProductRatingEnum() throws FDResourceException {
         EnumOrderLineRating rating = EnumOrderLineRating.NO_RATING;
 
-        List skus = getSkus();
+        List skus = getPrimarySkus();
         SkuModel sku = null;
         // remove the unavailable sku's
         for (ListIterator li = skus.listIterator(); li.hasNext();) {
@@ -1604,4 +1582,22 @@ inner:
 		return new ArrayList(giftcardTypes);		
 	}
 
+	public boolean isInPrimaryHome() {
+	    ContentKey primaryHome = (ContentKey) getCmsAttributeValue("PRIMARY_HOME");
+	    return primaryHome != null && primaryHome.equals(getParentNode().getContentKey());
+	}
+	
+	public ProductModel getPrimaryProductModel() {
+	    return isInPrimaryHome() ? this : (ProductModel) ContentFactory.getInstance().getContentNodeByKey(getContentKey());
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @return the list of sku models of the primary product. Primary product is the product which is in his primary home.
+	 */
+	public List<SkuModel> getPrimarySkus() {
+	    return getPrimaryProductModel().getSkus();
+	}
+	
 }

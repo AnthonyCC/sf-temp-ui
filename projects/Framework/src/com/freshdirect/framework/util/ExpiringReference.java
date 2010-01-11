@@ -3,13 +3,13 @@ package com.freshdirect.framework.util;
 /**
  * Wrapper for caching a single object, with timed expiration and appropriate synchronization. 
  */
-public abstract class ExpiringReference {
+public abstract class ExpiringReference<X> {
 
 	protected final long refreshPeriod;
 
 	protected long lastRefresh = 0;
 
-	protected Object referent;
+	protected X referent;
 
 	/**
 	 * @param refreshPeriod in milliseconds
@@ -18,7 +18,7 @@ public abstract class ExpiringReference {
 		this.refreshPeriod = refreshPeriod;
 	}
 
-	public synchronized Object get() {
+	public synchronized X get() {
 		if (System.currentTimeMillis() - lastRefresh > this.refreshPeriod) {
 			this.referent = this.load();
 
@@ -28,7 +28,7 @@ public abstract class ExpiringReference {
 	}
 
 	/** Template method that gets invoked whenever the reference has to be loaded */
-	protected abstract Object load();
+	protected abstract X load();
 
 	public synchronized void forceRefresh() {
 		lastRefresh = 0;

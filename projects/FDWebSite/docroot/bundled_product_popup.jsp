@@ -14,17 +14,9 @@
     
     ContentFactory cf = ContentFactory.getInstance();    
     ProductModel product = cf.getProduct(parent);
-    ContentNodeModel category = cf.getContentNodeByName(catId);
+    ContentNodeModel category = cf.getContentNode(catId);
     
-    List productBundle = new ArrayList();
-    List refs = (List)product.getAttribute("PRODUCT_BUNDLE").getValue();
-
-        for(Iterator i = refs.iterator(); i.hasNext();){
-            ContentRef cRef = (ContentRef)i.next();
-            if(cRef instanceof ProductRef){
-                productBundle.add(((ProductRef)cRef).lookupProduct());
-            }
-        }
+    List<ProductModel> productBundle = product.getProductBundle();
 
     ComponentPopupView cpv = new ComponentPopupView(category, parent, productBundle, title, level);
     request.setAttribute("componentView", cpv);

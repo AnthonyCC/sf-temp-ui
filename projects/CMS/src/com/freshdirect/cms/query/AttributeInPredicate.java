@@ -3,7 +3,6 @@ package com.freshdirect.cms.query;
 import java.util.Set;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentNodeI;
 
 /**
@@ -28,8 +27,7 @@ public class AttributeInPredicate extends AbstractAttributePredicate {
 		this.values = values;
 	}
 
-	public boolean evaluate(AttributeI attribute) {
-		Object v = attribute.getValue();
+	public boolean evaluateValue(Object v) {
 		if (v == null && values == null) {
 			return true;
 		}

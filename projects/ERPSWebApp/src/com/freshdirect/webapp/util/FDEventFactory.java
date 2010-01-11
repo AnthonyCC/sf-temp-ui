@@ -13,6 +13,7 @@ import com.freshdirect.event.FDCartLineEvent;
 import com.freshdirect.event.FDEditCartEvent;
 import com.freshdirect.event.FDRemoveCartEvent;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -153,10 +154,10 @@ public class FDEventFactory {
 	}
 
 	private static void setParamsToEvent(FDCartLineI cartline, FDCartLineEvent event, String cclId) {
-		CategoryModel category = cartline.getProductRef().lookupCategory();
+		DepartmentModel department = cartline.getProductRef().getDepartment();
 		event.setCategoryId(add(cartline.getCategoryName()));//Param 3
 		event.setCartlineId(add(cartline.getCartlineId())); //Param 5
-		event.setDepartment(add(category.getDepartment().getFullName())); //Param 4
+		event.setDepartment(add(department.getFullName())); //Param 4
 		event.setSkuCode(add(cartline.getSkuCode())); //Param 2
 		event.setProductId(add(cartline.getProductName())); //Param 1
 		event.setQuantity(add(String.valueOf(cartline.getQuantity()))); //Param 6

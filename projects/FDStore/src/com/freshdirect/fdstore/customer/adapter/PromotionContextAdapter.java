@@ -269,7 +269,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 				eligible = OrderPromotionHelper.isRecipeEligible(recipeSourceId, contentKeys);
 			}
 			if(!eligible){
-				ProductModel model = cartLine.getProductRef().lookupProduct();
+				ProductModel model = cartLine.getProductRef();
 				String productId = model.getContentKey().getId();
 				DCPDPromoProductCache dcpdCache = this.user.getDCPDPromoProductCache();
 				//Check if the line item product is already evaluated.

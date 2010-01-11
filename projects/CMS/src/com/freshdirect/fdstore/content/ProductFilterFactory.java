@@ -42,20 +42,21 @@ public class ProductFilterFactory {
 	 * @return list of ProductFilterI
 	 *
 	 */
-	public List getFilters(List FilterNames) {
+    public List<ProductFilterI> getFilters(List<String> filterNames) {
 
-		List prodFilters = new ArrayList();
+        List<ProductFilterI> prodFilters = new ArrayList<ProductFilterI>();
 
-		if (FilterNames!=null && !FilterNames.isEmpty()) {
-			for(Iterator iFNames=FilterNames.iterator(); iFNames.hasNext();){
-				ProductFilterI prodFilter = (ProductFilterI) prodFilterMap.get(((String)iFNames.next()).toUpperCase());
-				if (prodFilter!=null) prodFilters.add(prodFilter);
-			}
-		}
+        if (filterNames != null && !filterNames.isEmpty()) {
+            for (Iterator<String> iFNames = filterNames.iterator(); iFNames.hasNext();) {
+                ProductFilterI prodFilter = (ProductFilterI) prodFilterMap.get(iFNames.next().toUpperCase());
+                if (prodFilter != null) {
+                    prodFilters.add(prodFilter);
+                }
+            }
+        }
 
-		return prodFilters;
+        return prodFilters;
 
-	}
-
+    }
 
 }

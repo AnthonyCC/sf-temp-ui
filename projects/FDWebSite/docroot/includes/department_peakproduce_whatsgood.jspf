@@ -19,7 +19,7 @@
 
 	rowColl = new ArrayList();
   
-	currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+	currentFolder = ContentFactory.getInstance().getContentNode(catId);
 	isDept = (currentFolder instanceof DepartmentModel);
 	isCat = (currentFolder instanceof CategoryModel);
 	trkCode= "";
@@ -95,7 +95,7 @@
 				//fruit subcat
 				log(myDebug, "ROW "+curRow+": in peak produce row fruit subcat found : "+contentNode);
 					catId = contentNode.toString();
-					currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+					currentFolder = ContentFactory.getInstance().getContentNode(catId);
 					tmpList=new ArrayList();
 					
 				/* check if we only want featured items */
@@ -130,7 +130,7 @@
 				log(myDebug, "ROW "+curRow+": in peak produce row veg subcat found : "+contentNode);
 
 				catId = contentNode.toString();
-				currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+				currentFolder = ContentFactory.getInstance().getContentNode(catId);
 
 				tmpList=new ArrayList();
 					

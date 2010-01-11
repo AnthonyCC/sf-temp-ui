@@ -1,3 +1,4 @@
+<%@page import="java.util.Collections"%>
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
@@ -6,44 +7,32 @@
 
 <%
 /*------ page dependencies:   --------------------------------------------------
-    - DepartmentModel department
+    - DepartmentModel departmentModel
+    - ContentNodeModel department -- unfortunate 
     - layout type constants defined in catLayoutManager.jsp
 --------------------------------------------------------------------------------*/
 Image deptMngrImg = null;
 MediaI deptMngrFile = null;
-Attribute dptBottAttrib = null;
 
-dptBottAttrib=department.getAttribute("DEPT_MGR"); //department manager image with name
+deptMngrImg = departmentModel.getMgrPhoto(); //department manager image with name
 
-if (dptBottAttrib !=null) {
-    deptMngrImg = (Image)dptBottAttrib.getValue();
-}
-
-dptBottAttrib=department.getAttribute("DEPT_MGR_BIO"); //department manager bio with file
-
-if (dptBottAttrib !=null) {
-    deptMngrFile = (MediaI)dptBottAttrib.getValue();
-}
+deptMngrFile=departmentModel.getDepartmentManagerBio(); //department manager bio with file
 
 String bioLink = "#";
 if (deptMngrFile !=null) {
     bioLink = "javascript:popup('/shared/popup.jsp?deptId="+ request.getParameter("deptId") +"&attrib=DEPT_MGR_BIO&tmpl=large','large');";
 }
 
-dptBottAttrib = department.getAttribute("LAYOUT_TYPE");
-int dptLayout = dptBottAttrib==null?-1:((Integer)dptBottAttrib.getValue()).intValue();
 String scURL = "";
 
-dptBottAttrib = department.getAttribute("ASSOC_EDITORIAL");
-List assocEditorial = new ArrayList();
-if (dptBottAttrib !=null) {
-    assocEditorial = (List)dptBottAttrib.getValue();
+List assocEditorial = departmentModel.getAssocEditorial();
+if (assocEditorial == null) {
+    assocEditorial = Collections.EMPTY_LIST;
 }
 
-dptBottAttrib = department.getAttribute("DEPARTMENT_BOTTOM");
-List deptBottom = new ArrayList();
-if (dptBottAttrib !=null) {
-    deptBottom = (List)dptBottAttrib.getValue();
+List deptBottom = departmentModel.getDepartmentBottom();
+if (deptBottom == null) { 
+    deptBottom = Collections.EMPTY_LIST;
 }
 
 Map secondaryCategories = new TreeMap();
@@ -57,8 +46,9 @@ for(Iterator catItr = categories.iterator();catItr.hasNext();){
     }
 }
 
-boolean showBars = (deptMngrImg!=null || deptBottom.size() > 0 || secondaryCategories.size() > 0);
+boolean showBars = (deptMngrImg!=null ||  deptBottom.size() > 0 || secondaryCategories.size() > 0);
 %>
+
 
 <BR>
         <%if(showBars){%><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="550" HEIGHT="1" BORDER="0"><BR><%}%>
@@ -120,19 +110,18 @@ if (deptBottom.size() > 0 ) {
             String scImgDims="";
             boolean makeNewRow=false;
             scURL = response.encodeURL("/category.jsp?catId="+sc+"&trk="+trkCode);
-            if (sc.getAttribute("ALIAS") !=null) {
-                ContentRef contentRef = (ContentRef)sc.getAttribute("ALIAS").getValue();
-                if (contentRef instanceof CategoryRef) {
-                    scURL = response.encodeURL("/category.jsp?catId="+contentRef.getRefName()+"&trk="+trkCode);
-               } else if (contentRef instanceof DepartmentRef) {
-                    scURL = response.encodeURL("/department.jsp?catId="+contentRef.getRefName()+"&trk="+trkCode);
+            ContentNodeModel alias = sc.getAlias();
+            if (alias !=null) {
+                if (alias instanceof CategoryModel) {
+                    scURL = response.encodeURL("/category.jsp?catId="+alias.getContentKey().getId()+"&trk="+trkCode);
+               } else if (alias instanceof DepartmentModel) {
+                    scURL = response.encodeURL("/department.jsp?catId="+alias.getContentKey().getId()+"&trk="+trkCode);
                }
              }
-
-            dptBottAttrib = sc.getAttribute("CAT_PHOTO");
-            if (dptBottAttrib!=null) {
-                scImgPath = ((Image)dptBottAttrib.getValue()).getPath();
-                scImgDims = JspMethods.getImageDimensions((Image)dptBottAttrib.getValue());
+			final Image catPhoto = sc.getCategoryPhoto();
+            if (catPhoto!=null) {
+                scImgPath = catPhoto.getPath();
+                scImgDims = JspMethods.getImageDimensions(catPhoto);
             }
             if ((scInCol%2)==0  || makeNewRow) {
                 scInCol=0;

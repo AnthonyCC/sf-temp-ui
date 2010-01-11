@@ -43,28 +43,29 @@ if ("KOSHER".equalsIgnoreCase(attrib)) {
         special = true;
         notMediaFile = true; 
         if (deptId!=null){
-                dep = (DepartmentModel)cf.getContentNodeByName(deptId);
+                dep = (DepartmentModel)cf.getContentNode(deptId);
                 deptName = dep.getFullName();
                 //pathToMedia = "/shared/includes/dept_storage_guide.jspf";  not media file included below
                 title = deptName + " Storage Guide";
         } else {
-                cat = (CategoryModel)cf.getContentNodeByName(catId);
+                cat = (CategoryModel)cf.getContentNode(catId);
                 catName = cat.getFullName();
                 //pathToMedia = "/shared/includes/cat_storage_guide.jspf";  not media file included below
                 title = catName + " Storage Guide";
         }
 } else if ("DEPT_MGR_BIO".equalsIgnoreCase(attrib) || "PARTIALLY_FROZEN".equalsIgnoreCase(attrib)) {
-        dep = (DepartmentModel)cf.getContentNodeByName(deptId);
+        dep = (DepartmentModel)cf.getContentNode(deptId);
         deptName = dep.getFullName();
         special = true; 
                 if ("DEPT_MGR_BIO".equalsIgnoreCase(attrib)) {
+                    MediaI deptMgrBio = dep.getDepartmentManagerBio();
                         if (spec != null) {
                         pathToMedia = "/media/editorial/manager_bios/" + spec + ".html";
                         } else {
-                        pathToMedia = ((MediaI)dep.getAttribute(attrib).getValue()).getPath();
+                        pathToMedia = deptMgrBio.getPath();
                         }
                         
-                        if (dep.getAttribute(attrib).getValue() instanceof TitledMedia) {
+                        if (deptMgrBio instanceof TitledMedia) {
                                 if (spec != null) {
                                         if ("craig_kominiak".equalsIgnoreCase(spec)) {
                                         title = "Craig Kominiak, Bakery";
@@ -76,7 +77,7 @@ if ("KOSHER".equalsIgnoreCase(attrib)) {
                                         title = "Michael Stark, Chef de Cuisine";
                                         }
                                 } else {
-                                title = ((TitledMedia)dep.getAttribute(attrib).getValue()).getMediaTitle();
+                                title = ((TitledMedia)deptMgrBio).getMediaTitle();
                                 }
                         } else {
                                 title = deptName + " - Department Manager";
@@ -95,11 +96,12 @@ if ("KOSHER".equalsIgnoreCase(attrib)) {
         prodImg = prod.getCategoryImage();
         dept = prod.getDepartment();
         deptName = dept.getFullName();
-        pathToMedia = ((MediaI)prod.getAttribute(attrib).getValue()).getPath();
-        if (prod.getAttribute(attrib).getValue() instanceof TitledMedia) {
-                title = ((TitledMedia)prod.getAttribute(attrib).getValue()).getMediaTitle();
+        MediaI deptIzeMedia = prod.getMedia(attrib);
+        pathToMedia = deptIzeMedia.getPath();
+        if (deptIzeMedia instanceof TitledMedia) {
+                title = ((TitledMedia)deptIzeMedia).getMediaTitle();
         } else {
-                cat = (CategoryModel)cf.getContentNodeByName(catId);
+                cat = (CategoryModel)cf.getContentNode(catId);
                 catName = cat.getFullName();
                 if ("FDDEF_FRENCHING".equalsIgnoreCase(attrib)) {
                         title = "About Frenching";
@@ -123,8 +125,10 @@ if (!special && !"FDDEF_GRADE".equalsIgnoreCase(attrib) && !"FDDEF_SOURCE".equal
 }
 
 String recTable = null;
-if (!special && prod.hasAttribute("RECOMMEND_TABLE")) {
-recTable = ((Html)prod.getAttribute("RECOMMEND_TABLE").getValue()).getPath();
+// if special==true prod is null. 
+Html recTableHtml  = prod != null ? prod.getRecommendTable() : null;
+if (!special && recTableHtml!=null) {
+   recTable = recTableHtml.getPath();
 }
 
 boolean isWine = dept != null && "win".equalsIgnoreCase(dept.getContentName());

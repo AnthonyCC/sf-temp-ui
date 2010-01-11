@@ -14,20 +14,20 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.smartstore.CmsRecommenderService;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class CategoryModel extends ContentNodeModelImpl {
+public class CategoryModel extends ProductContainer {
 	private static final long serialVersionUID = 5787890004203680537L;
 
-	private static final Category LOGGER = LoggerFactory.getInstance(CategoryModel.class);
+	private static final Logger LOGGER = LoggerFactory.getInstance(CategoryModel.class);
 
 	private static final Executor threadPool = new ThreadPoolExecutor(5, 5, 60,
 			TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
@@ -87,8 +87,10 @@ public class CategoryModel extends ContentNodeModelImpl {
 
 	private List productModels = new ArrayList();
 
-	private List featuredProductModels = new ArrayList();
+	private List<ProductModel> featuredProductModels = new ArrayList<ProductModel>();
 	
+	private final List featuredBrandModels = new ArrayList();
+
 	/**
 	 * List of ProductModels and CategoryModels.
 	 */
@@ -104,6 +106,9 @@ public class CategoryModel extends ContentNodeModelImpl {
 	
 	private List wineSideNavFullsList = new ArrayList();
 	
+	private List<ProductModel> howToCookItProducts = new ArrayList<ProductModel> ();
+	
+        final private List<CategoryModel> virtualGroups = new ArrayList<CategoryModel>();
 	
 	public CategoryModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
@@ -119,6 +124,14 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return (DepartmentModel) start;
 	}
 	
+	public CategoryModel getTopCategory() {
+	    ContentNodeModel parentNode2 = getParentNode();
+	    if (parentNode2 instanceof CategoryModel) {
+	        return ((CategoryModel)parentNode2).getTopCategory();
+	    }
+	    return this;
+	}
+
 	public boolean isUseAlternateImages() {
 		return getAttribute( "USE_ALTERNATE_IMAGES", false );
 	}
@@ -135,8 +148,8 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return getAttribute("SIDENAV_PRIORITY", 1);
 	}
 
-	public int getColumnSpan() {
-		return getAttribute("COLUMN_SPAN", 2);
+	public int getColumnSpan(int defaultValue) {
+		return getAttribute("COLUMN_SPAN", defaultValue);
 	}
 
 	public boolean getFakeAllFolders() {
@@ -152,16 +165,42 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return getAttribute("SIDENAV_SHOWSELF", false);
 	}
 
+	/**
+	 * 
+	 * @return CAT_LABEL
+	 */
 	public Image getCategoryLabel() {
-		return (Image)getAttribute("CAT_LABEL", (Object)null);
+	    return FDAttributeFactory.constructImage(this, "CAT_LABEL");
 	}
 	
-	public Image getCategoryPhoto() {
-		return (Image)getAttribute("CAT_PHOTO", (Object)null);
+        /**
+         * Return the CAT_LABEL image, if the attribute is null, then it returns an
+         * empty image object.
+         * 
+         * @return
+         */
+        public final Image getCategoryLabelNotNull() {
+            Image img = getCategoryLabel();
+            if (img != null) {
+                return img;
+            } else {
+                return new Image();
+            }
+        }	
+	
+	
+	
+	public Image getCategoryNavBar() {
+	    return FDAttributeFactory.constructImage(this, "CATEGORY_NAVBAR");
 	}
 	
-	public List<Object> getCategoryTopMedia() {
-		return (List<Object>)getAttribute( "CATEGORY_TOP_MEDIA", (Object)null );		
+	/**
+	 * Use getTopMedia
+	 * @return
+	 */
+	@Deprecated
+	public List<Html> getCategoryTopMedia() {
+		return getTopMedia();
 	}
 
 	
@@ -183,7 +222,7 @@ public class CategoryModel extends ContentNodeModelImpl {
 	
 	
 	public Html getSeparatorMedia() {
-		return (Html)getAttribute("SEPARATOR_MEDIA",(Html)null);
+	    return FDAttributeFactory.constructHtml(this, "SEPARATOR_MEDIA");
 	}
 
 	public List getSubcategories() {
@@ -208,11 +247,11 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return new ArrayList(productModels);
 	}
 	
-	/* [APPREQ-77] */
-	public Html getMediaContent() {
-		return (Html)getAttribute("MEDIA_CONTENT",(Html)null);
+	public List<ProductModel> getHowToCookItProducts() {
+	    ContentNodeModelUtil.refreshModels(this, "HOW_TO_COOK_IT_PRODUCTS", this.howToCookItProducts, false);
+	    return new ArrayList<ProductModel> (howToCookItProducts);
 	}
-
+	
 	/* [APPREQ-160] SmartStore, Category Level Aggregation */
 	public boolean isDYFAggregated() {
 		return getAttribute("SS_LEVEL_AGGREGATION", false);
@@ -226,30 +265,26 @@ public class CategoryModel extends ContentNodeModelImpl {
 	
 	
 	
-	public Image getCategoryDetailImage() {
-		return (Image)getAttribute("CATEGORY_DETAIL_IMAGE", (Object)null);
+	public final Image getCategoryDetailImage() {
+	    return FDAttributeFactory.constructImage(this, "CATEGORY_DETAIL_IMAGE");
 	}
 	 	
 	public List getWineSortCriteria() {
-		// TODO Auto-generated method stub		
 		ContentNodeModelUtil.refreshModels(this, "WINE_SORTING", wineSortCriteriaList, false,true);
 		return new ArrayList(wineSortCriteriaList);		
 	}
 	
 	public List getWineFilterCriteria() {
-		// TODO Auto-generated method stub		
 		ContentNodeModelUtil.refreshModels(this, "WINE_FILTER", wineFilterCriteriaList, false,true);
 		return new ArrayList(wineFilterCriteriaList);		
 	}
 
 	public List getWineSideNavSections() {
-		// TODO Auto-generated method stub		
 		ContentNodeModelUtil.refreshModels(this, "SIDE_NAV_SECTIONS", wineSideNavSectionsList, false);
 		return new ArrayList(wineSideNavSectionsList);		
 	}
 
 	public List getWineSideNavFullList() {
-		// TODO Auto-generated method stub		
 		ContentNodeModelUtil.refreshModels(this, "SIDE_NAV_FULL_LIST", wineSideNavFullsList, false);
 		return new ArrayList(wineSideNavFullsList);		
 	}
@@ -260,13 +295,13 @@ public class CategoryModel extends ContentNodeModelImpl {
 	}
 	
 	public Recommender getRecommender() {
-		return (Recommender) getAttribute("recommender", (Recommender) null);
+            return FDAttributeFactory.lookup(this, "recommender", (Recommender) null);
 	}
 	
-	/** @return List of {@link CategoryRef} */
-	public List getVirtualGroupRefs() {
-		com.freshdirect.fdstore.attributes.Attribute vGroup = this.getAttribute("VIRTUAL_GROUP");
-		return vGroup == null ? null : (List) vGroup.getValue();
+	/** @return List of {@link CategoryModel} */
+	public List<CategoryModel> getVirtualGroupRefs() {
+            ContentNodeModelUtil.refreshModels(this, "VIRTUAL_GROUP", virtualGroups, false);
+            return new ArrayList<CategoryModel>(virtualGroups);
 	}
 
 	public List getProducts() {
@@ -284,7 +319,7 @@ public class CategoryModel extends ContentNodeModelImpl {
 				Collection aliasProds = this.categoryAlias.processCategoryAlias();
 				if (aliasProds != null) { // if we had an error..then we get null, cause empty list is valid
 					for (Iterator pItr = aliasProds.iterator(); pItr.hasNext();) {
-						CmsContentNodeAdapter newProd = (CmsContentNodeAdapter) ((CmsContentNodeAdapter) pItr.next()).clone();
+					        ContentNodeModelImpl newProd = (ContentNodeModelImpl) ((ContentNodeModelImpl) pItr.next()).clone();
 						newProd.setParentNode(this);
 						newProd.setPriority(prodList.size());
 						if (!prodList.contains(newProd)) { // don't put a duplicate product in there
@@ -312,7 +347,7 @@ public class CategoryModel extends ContentNodeModelImpl {
 				List recProds = (List) recommendedProductsRef.get();
 				if (recProds != null) {
 					for (Iterator pItr = recProds.iterator(); pItr.hasNext();) {
-						CmsContentNodeAdapter newProd = (CmsContentNodeAdapter) ((CmsContentNodeAdapter) pItr.next()).clone();
+					        ContentNodeModelImpl newProd = (ContentNodeModelImpl) ((ContentNodeModelImpl) pItr.next()).clone();
 						newProd.setParentNode(this);
 						newProd.setPriority(prodList.size());
 						if (!prodList.contains(newProd)) {
@@ -332,10 +367,10 @@ public class CategoryModel extends ContentNodeModelImpl {
     private List getFilterList() {
         List filterList;
 
-        AttributeI filters = getCmsAttribute("FILTER_LIST");
-        if ((filters != null) && (filters.getValue() != null)) {
+        String filters = (String) getCmsAttributeValue("FILTER_LIST");
+        if (filters != null) {
             filterList = new ArrayList();
-            StringTokenizer stFilterNames = new StringTokenizer((String) filters.getValue(), ",");
+            StringTokenizer stFilterNames = new StringTokenizer(filters, ",");
             for (; stFilterNames.hasMoreTokens();) {
                 String tok = stFilterNames.nextToken();
                 if (!filterList.contains(tok)) {
@@ -348,7 +383,7 @@ public class CategoryModel extends ContentNodeModelImpl {
         return filterList;
     }
 
-	//** ProductRef.lookupProduct() is the main user..
+	//** ContentFactory.getProductByName() is the main user..
 	public ProductModel getProductByName(String productId) {
 		Collection prods = getProducts();
 		for (Iterator pItr = prods.iterator(); pItr.hasNext();) {
@@ -360,7 +395,7 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return null;
 	}
 
-	//** ProductRef.lookupProduct() is the main user..
+	//** setNearestParentForProduct() is the main user..
 	public ProductModel getPrivateProductByName(String productId) {
 		Collection prods = getPrivateProducts();
 		for (Iterator pItr = prods.iterator(); pItr.hasNext();) {
@@ -372,7 +407,16 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return null;
 	}
 	
-	public List getFeaturedProducts() {
+	/**
+	 * 
+	 * @return CategoryModel, same as getAliasCategory
+	 */
+	public CategoryModel getAlias() {
+	    return getAliasCategory();
+	}
+	
+	@Override
+	public List<ProductModel> getFeaturedProducts() {
 		boolean bRefreshed = ContentNodeModelUtil.refreshModels(
 			this,
 			"FEATURED_PRODUCTS",
@@ -382,7 +426,16 @@ public class CategoryModel extends ContentNodeModelImpl {
 		if (bRefreshed) {
 			ContentNodeModelUtil.setNearestParentForProducts(this, featuredProductModels);
 		}
-		return new ArrayList(featuredProductModels);
+		return new ArrayList<ProductModel>(featuredProductModels);
+	}
+
+	/** Getter for property featured brands.
+	 * @return List of BrandModels that are referenced by the  property brands.
+	 */
+	public List getFeaturedBrands() {
+		ContentNodeModelUtil.refreshModels(this, "FEATURED_BRANDS", featuredBrandModels, false);
+
+		return new ArrayList(featuredBrandModels);
 	}
 
 	/**
@@ -398,36 +451,26 @@ public class CategoryModel extends ContentNodeModelImpl {
 	 * @return content key of the category/department this alias category
 	 * points to. If it this category is not a alias category , return null.
 	 */
-
-	public ContentKey getAliasAttributeValue() {
-		ContentRef attrValue = (ContentRef) this.getAttribute("ALIAS", (Object)null);
-		if(attrValue != null){
-			ContentKey refKey = null;
-		    if(attrValue instanceof CategoryRef) {
-		    	refKey = ((CategoryRef)attrValue).getCategory().getContentKey();
-		    } else if(attrValue instanceof DepartmentRef){
-		    	refKey = ((DepartmentRef)attrValue).getDepartment().getContentKey();
-		    }
-		    return refKey;
-		}
-		return null;
-	}
-	
+        public ContentKey getAliasAttributeValue() {
+            return (ContentKey) this.getCmsAttributeValue("ALIAS");
+        }	
 
 	/**
 	 * Returns alias category if has
 	 *
 	 * @return category<CategoryModel>
 	 */
-	public CategoryModel getAliasCategory() {
-		ContentRef attrValue = (ContentRef) this.getAttribute("ALIAS", (Object)null);
-		if (attrValue instanceof CategoryRef) {
-	    	return ((CategoryRef)attrValue).getCategory();
-		}
-
-		return null;
-	}
+        public CategoryModel getAliasCategory() {
+            ContentKey key = getAliasAttributeValue();
+            if (key != null) {
+                return (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key);
+            }
+            return null;
+        }
 	
+	public boolean getTreatAsProduct() {
+	    return getAttribute("TREAT_AS_PRODUCT", false);
+	}
 	
 	/**
 	 * Recursive method to get all brands.
@@ -459,20 +502,20 @@ public class CategoryModel extends ContentNodeModelImpl {
 	}
 
 	private class CategoryAlias implements Serializable {
-		private final List categoryRefs;
-		private final List productFilterNames;
+		private final List<CategoryModel> categoryRefs;
+		private final List<String> productFilterNames;
 
-		public CategoryAlias(List categoryRefs, List prodFilterNames) {
+		public CategoryAlias(List<CategoryModel> categoryRefs, List<String> prodFilterNames) {
 			this.categoryRefs = categoryRefs;
 			this.productFilterNames = prodFilterNames;
-			LOGGER.debug("Filter Name = " + productFilterNames);
+			// LOGGER.debug("Filter Name = " + productFilterNames);
 		}
 
-		public Collection processCategoryAlias() throws FDResourceException {
-			Collection products = new ArrayList();
+		public Collection<ProductModel> processCategoryAlias() throws FDResourceException {
+			Collection<ProductModel> products = new ArrayList<ProductModel>();
 			try {
-				for (Iterator ci = categoryRefs.iterator(); ci.hasNext();) {
-					CategoryModel cm = ((CategoryRef) ci.next()).getCategory();
+				for (Iterator<CategoryModel> ci = categoryRefs.iterator(); ci.hasNext();) {
+					CategoryModel cm = ci.next();
 					products.addAll(cm.getProducts());
 				}
 				return filterProducts((List) products);
@@ -482,20 +525,20 @@ public class CategoryModel extends ContentNodeModelImpl {
 			}
 		}
 
-		private List filterProducts(List nodes) throws FDResourceException {
-			List productFilters = null;
+		private List<ProductModel> filterProducts(List<ProductModel> nodes) throws FDResourceException {
+			List<ProductFilterI> productFilters = null;
 
 			if (this.productFilterNames != null && !this.productFilterNames.isEmpty()) {
 				productFilters = ProductFilterFactory.getInstance().getFilters(this.productFilterNames);
-				LOGGER.debug(" List of Filters = " + productFilters.size());
+				// LOGGER.debug(" List of Filters = " + productFilters.size());
 			} else
 				productFilters = Collections.EMPTY_LIST;
-			List nodeList = nodes;
+			List<ProductModel> nodeList = nodes;
 			try {
-				for (Iterator fi = productFilters.iterator(); fi.hasNext() && !nodeList.isEmpty();) {
-					ProductFilterI prodFilter = (ProductFilterI) fi.next();
-					LOGGER.debug(" about to apply filter:" + prodFilter.getClass().getName());
-					nodeList = new ArrayList(prodFilter.apply(nodeList));
+				for (Iterator<ProductFilterI> fi = productFilters.iterator(); fi.hasNext() && !nodeList.isEmpty();) {
+					ProductFilterI prodFilter = fi.next();
+					// LOGGER.debug(" about to apply filter:" + prodFilter.getClass().getName());
+					nodeList = new ArrayList<ProductModel>(prodFilter.apply(nodeList));
 				}
 			} catch (FDResourceException fdre) {
 				LOGGER.error("caught resource exception atttempting to get products from category", fdre);
@@ -506,4 +549,50 @@ public class CategoryModel extends ContentNodeModelImpl {
 
 	}
 
+	/**
+         * 
+         * @return CategoryModel looked up by RATING_HOME
+         */
+        public CategoryModel getRatingHome() {
+            ContentKey key = (ContentKey) getCmsAttributeValue("RATING_HOME");
+            
+            return key != null ? (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key) : null;
+        }
+        
+        @SuppressWarnings("unchecked")
+        public List<Html> getArticles() {
+            return FDAttributeFactory.constructWrapperList(this, "ARTICLES");
+        }
+        
+        @SuppressWarnings("unchecked")
+        public List<Html> getTopMedia() {
+            return FDAttributeFactory.constructWrapperList(this, "CATEGORY_TOP_MEDIA");
+        }
+
+        @SuppressWarnings("unchecked")
+        public List<Html> getMiddleMedia() {
+            return FDAttributeFactory.constructWrapperList(this, "CATEGORY_MIDDLE_MEDIA");
+        }
+
+        @SuppressWarnings("unchecked")
+        public List<Html> getBottomMedia() {
+            return FDAttributeFactory.constructWrapperList(this, "CATEGORY_BOTTOM_MEDIA");
+        }
+        
+        public Html getPreviewMedia() {
+            return FDAttributeFactory.constructHtml(this, "CATEGORY_PREVIEW_MEDIA");
+        }
+        
+        public String getMaterialCharacteristic() {
+            return (String) getCmsAttributeValue("MATERIAL_CHARACTERISTIC");
+        }
+        
+        public Html getAlternateContent() {
+            return FDAttributeFactory.constructHtml(this, "ALTERNATE_CONTENT");
+        }
+        
+        public Html getCategoryStorageGuideMedia() {
+            return FDAttributeFactory.constructHtml(this, "CAT_STORAGE_GUIDE_MEDIA");
+        }
+        
 }

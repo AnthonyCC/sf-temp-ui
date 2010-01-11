@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.content.attributes.EnumAttributeName;
@@ -22,6 +21,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DateUtil;
 
 public class ConfiguredProduct extends ProxyProduct {
@@ -34,10 +34,6 @@ public class ConfiguredProduct extends ProxyProduct {
 
 	public ConfiguredProduct(ContentKey key) {
 		super(key);
-	}
-
-	public ProductRef getProductRef() {
-		return new ProductRef(getProduct().getParentNode().getContentName(), getProduct().getContentName());
 	}
 
 	public DepartmentModel getDepartment() {
@@ -92,11 +88,11 @@ public class ConfiguredProduct extends ProxyProduct {
 	 * @return the SKU code associated with this configuration
 	 */
 	public String getSkuCode() {
-		AttributeI attr   = super.getCmsAttribute("SKU");
+		Object attr   = super.getCmsAttributeValue("SKU");
 		if (attr == null) {
 			return null;
 		}
-		ContentKey skuKey = (ContentKey) attr.getValue();
+		ContentKey skuKey = (ContentKey) attr;
 		return skuKey == null ? null : skuKey.getId();
 	}
 
@@ -118,43 +114,43 @@ public class ConfiguredProduct extends ProxyProduct {
 	}
 
 	public Html getProductDescription() {
-		return (Html) getAttribute("PROD_DESCR", (Html) null);
+	    return FDAttributeFactory.constructHtml(this, "PROD_DESCR");
 	}
 
 	public Html getProductDescriptionNote() {
-		return (Html) getAttribute("PROD_DESCRIPTION_NOTE", (Html) null);
+            return FDAttributeFactory.constructHtml(this, "PROD_DESCRIPTION_NOTE");
 	}
 
 	public Html getProductQualityNote() {
-		return (Html) getAttribute("PRODUCT_QUALITY_NOTE", (Html) null);
+            return FDAttributeFactory.constructHtml(this, "PRODUCT_QUALITY_NOTE");
 	}
 
 	public Image getCategoryImage() {
-		return (Image) getAttribute("PROD_IMAGE", IMAGE_BLANK);
+            return FDAttributeFactory.constructImage(this, "PROD_IMAGE", IMAGE_BLANK);
 	}
 
 	public Image getConfirmImage() {
-		return (Image) getAttribute("PROD_IMAGE_CONFIRM", IMAGE_BLANK);
+            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_CONFIRM", IMAGE_BLANK);
 	}
 
 	public Image getDetailImage() {
-		return (Image) getAttribute("PROD_IMAGE_DETAIL", IMAGE_BLANK);
+            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_DETAIL", IMAGE_BLANK);
 	}
 
 	public Image getFeatureImage() {
-		return (Image) getAttribute("PROD_IMAGE_FEATURE", IMAGE_BLANK);
+            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_FEATURE", IMAGE_BLANK);
 	}
 
 	public Image getZoomImage() {
-		return (Image) getAttribute("PROD_IMAGE_ZOOM", IMAGE_BLANK);
+            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_ZOOM", IMAGE_BLANK);
 	}
 
 	public Image getAlternateImage() {
-		return (Image) getAttribute("ALTERNATE_IMAGE", (Image) null);
+            return FDAttributeFactory.constructImage(this, "ALTERNATE_IMAGE");
 	}
 
 	public Image getDescriptiveImage() {
-		return (Image) getAttribute("DESCRIPTIVE_IMAGE", IMAGE_BLANK);
+	    return FDAttributeFactory.constructImage(this, "DESCRIPTIVE_IMAGE");
 	}
 
 	public List getAlsoSoldAs() {
@@ -212,14 +208,14 @@ public class ConfiguredProduct extends ProxyProduct {
 	}
 	
 	public String getSalesUnit() {
-		AttributeI suAttr = super.getCmsAttribute("SALES_UNIT");
-		return suAttr == null ? "EA" : (String) suAttr.getValue();
+		Object suAttr = super.getCmsAttributeValue("SALES_UNIT");
+		return suAttr == null ? "EA" : (String) suAttr;
 	}
 	
 	public Map getOptions() {
-		AttributeI optAttr = super.getCmsAttribute("OPTIONS");
+		Object optAttr = super.getCmsAttributeValue("OPTIONS");
 		Map options = optAttr == null ? Collections.EMPTY_MAP
-				: ErpOrderLineUtil.convertStringToHashMap((String) optAttr.getValue());
+				: ErpOrderLineUtil.convertStringToHashMap((String) optAttr);
 		if (!options.isEmpty()) {
 			// perform a bit of cleanup (remove extra options)
 			FDProduct fdp = getFDProduct();
@@ -253,8 +249,14 @@ public class ConfiguredProduct extends ProxyProduct {
 		}
 	}
 	
+        @Override
 	public EnumProductLayout getProductLayout() {
 		return EnumProductLayout.CONFIGURED_PRODUCT;
+	}
+	
+	@Override
+	public EnumProductLayout getProductLayout(EnumProductLayout defValue) {
+	    return EnumProductLayout.CONFIGURED_PRODUCT;
 	}
 
 	public boolean isPreconfigured() {
@@ -380,5 +382,21 @@ public class ConfiguredProduct extends ProxyProduct {
 	public int getExpertWeight() {
 		return getProduct().getExpertWeight();
 	}
+
+    @Override
+    public ProductModel getPrimaryProductModel() {
+        return this;
+    }
+
+    @Override
+    public List<SkuModel> getPrimarySkus() {
+        return getSkus();
+    }
+
+    @Override
+    public boolean isInPrimaryHome() {
+        return true;
+    }
+
 
 }

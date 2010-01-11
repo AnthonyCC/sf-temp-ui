@@ -1,7 +1,7 @@
 <% 
-    boolean container_half_pint = (productNode.getAttribute("CONTAINER_WEIGHT_HALF_PINT") != null);
-    boolean container_pint      = (productNode.getAttribute("CONTAINER_WEIGHT_PINT") != null);
-    boolean container_quart     = (productNode.getAttribute("CONTAINER_WEIGHT_QUART") != null);
+    boolean container_half_pint = (productNode.getContainerWeightHalfPint() != null);
+    boolean container_pint      = (productNode.getContainerWeightPint() != null);
+    boolean container_quart     = (productNode.getContainerWeightQuart() != null);
 
     if (container_half_pint || container_pint || container_quart) { 
 
@@ -68,19 +68,19 @@
 	</tr>
 	<tr>
         <%  if (container_half_pint) { %>
-		<td valign="bottom" align="center"><%= productNode.getAttribute("CONTAINER_WEIGHT_HALF_PINT").getValue() %> lb</td>
+		<td valign="bottom" align="center"><%= productNode.getContainerWeightHalfPint() %> lb</td>
         <%  }
             if (container_half_pint && (container_pint || container_quart)) {   %>
         <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
         <%  }
             if (container_pint) { %>
-		<td valign="bottom" align="center"><%= productNode.getAttribute("CONTAINER_WEIGHT_PINT").getValue() %> lb</td>
+		<td valign="bottom" align="center"><%= productNode.getContainerWeightPint() %> lb</td>
         <%  }
             if (container_pint && container_quart) {   %>
 		<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
         <%  }
             if (container_quart) { %>
-		<td valign="bottom" align="center"><%= productNode.getAttribute("CONTAINER_WEIGHT_QUART").getValue() %> lb</td>
+		<td valign="bottom" align="center"><%= productNode.getContainerWeightQuart() %> lb</td>
         <%  }   %>
 	</tr>
 </table>

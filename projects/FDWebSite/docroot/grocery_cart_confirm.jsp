@@ -23,7 +23,7 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 	   // [APPREQ-425] jump to single item cart confirm page if only one item is added
 	   FDCartLineI l = cart.getRecentOrderLines().get(0);
 	   
-	   String redir = "/cart_confirm.jsp?catId="+ request.getParameter("catId") + "&productId=" + l.getProductRef().getProductName();
+	   String redir = "/cart_confirm.jsp?catId="+ request.getParameter("catId") + "&productId=" + l.getProductRef().getContentName();
 %><jsp:forward page="<%= redir %>" /><%
    }
 %></fd:FDShoppingCart><%
@@ -37,7 +37,7 @@ String productId=request.getParameter("productId");
 String jspTemplate = "/common/template/both_dnav.jsp";
 
 if (catIdParam!=null && !"".equals(catIdParam)) {
-  ContentNodeI catNode = null;
+  ContentNodeModel catNode = null;
   catNode = ContentFactory.getInstance().getContentNode(catIdParam);
   if (catNode instanceof RecipeCategory) {
         jspTemplate ="/common/template/recipe_DLRnavs.jsp" ;
@@ -46,9 +46,9 @@ if (catIdParam!=null && !"".equals(catIdParam)) {
 
 if (productId!=null && !"".equals(productId)) {
 
-  ContentNodeI _prodNode = null;
+  ContentNodeModel _prodNode = null;
   _prodNode = ContentFactory.getInstance().getContentNode(productId);
-  int templateType=_prodNode.getAttribute("TEMPLATE_TYPE",1);
+  int templateType=_prodNode instanceof HasTemplateType ? ((HasTemplateType)_prodNode).getTemplateType(1) : 1;  
   if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
        jspTemplate = "/common/template/usq_sidenav.jsp";
        
@@ -86,7 +86,7 @@ Recipe recipe = null;
 	if (orderLine.getRecipeSourceId() != null) {
 		context = ContentFactory.getInstance().getContentNode( orderLine.getRecipeSourceId() );
 	} else {
-		context = orderLine.getProductRef().lookupProduct();
+		context = orderLine.getProductRef();
 	}
 	request.setAttribute("sitePage", context.getPath());
 	%>

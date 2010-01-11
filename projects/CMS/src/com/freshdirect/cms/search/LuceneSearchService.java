@@ -4,13 +4,13 @@
  */
 package com.freshdirect.cms.search;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 import org.apache.log4j.Category;
 import org.apache.lucene.analysis.LowerCaseFilter;
@@ -27,28 +26,23 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.HitCollector;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -95,7 +89,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 		FIELD_CONTENT_KEY, FULL_NAME_INDEX, "FULL_NAME", "AKA"
 	};
 
-	private final static StemmingAnalyzer STEMMER = new StemmingAnalyzer();
+	private final static StemmingAnalyzer STEMMER = new StemmingAnalyzer(Version.LUCENE_22);
 
 	/** Map of ContentType -> List of AttributeIndex */
 	private Map contentIndexes = new HashMap();
@@ -104,6 +98,8 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	
 	private String indexLocation = null;
 
+	private FSDirectory indexDirectory = null;
+	
 	private IndexReader reader;
 	
 	private LuceneSpellingSuggestionService spellService;
@@ -116,12 +112,25 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	public String getIndexLocation() {
 		return indexLocation;
 	}
+	
+	public synchronized FSDirectory getIndexDirectory() throws IOException {
+	    if (indexDirectory == null) {
+	        indexDirectory = FSDirectory.open(new File(indexLocation));
+	    }
+	    return indexDirectory;
+	}
 
 	/**
 	 * @param indexLocation path to index directory
 	 */
 	public void setIndexLocation(String indexLocation) {
-		this.indexLocation = indexLocation;
+	    synchronized (this) {
+                if (indexDirectory != null) {
+                    indexDirectory.close();
+                    indexDirectory = null;
+                }
+	    }
+            this.indexLocation = indexLocation;
 	}
 
 	/**
@@ -174,8 +183,8 @@ public class LuceneSearchService implements ContentSearchServiceI {
 		return contentIndexes.keySet();
 	}
 
-	private IndexReader createReader() throws IOException {
-		return IndexReader.open(getIndexLocation());
+	private IndexReader createReader(boolean readOnly) throws IOException {
+		return IndexReader.open(getIndexDirectory(), readOnly);
 	}
 
 	/* (non-Javadoc)
@@ -184,7 +193,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	public synchronized void index(Collection<ContentNodeI> contentNodes) {
 		try {
 			// delete old documents
-			IndexReader localReader = createReader();
+			IndexReader localReader = createReader(false);
 			int count = 0;
 			for (Iterator i = contentNodes.iterator(); i.hasNext();) {
 				ContentNodeI node = (ContentNodeI) i.next();
@@ -197,7 +206,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			localReader.close();
 
 			// index new documents
-			IndexWriter writer = new IndexWriter(getIndexLocation(), STEMMER, false);
+			IndexWriter writer = new IndexWriter(getIndexDirectory(), STEMMER, false, new MaxFieldLength(1024));
 			count = 0;
 			for (Iterator i = contentNodes.iterator(); i.hasNext();) {
 				ContentNodeI node = (ContentNodeI) i.next();
@@ -213,7 +222,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
 			// replace old reader
 			localReader = this.reader;
-			this.reader = createReader();
+			this.reader = createReader(true);
 			if (localReader != null) {
 				localReader.close();
 			}
@@ -231,14 +240,14 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			LOGGER.debug("Starting optimization process");
 
 			// index new documents
-			IndexWriter writer = new IndexWriter(getIndexLocation(), STEMMER, false);
+			IndexWriter writer = new IndexWriter(getIndexDirectory(), STEMMER, false, new MaxFieldLength(1024));
 
 			writer.optimize();
 			writer.close();
 
 			// replace old reader
 			IndexReader localReader = this.reader;
-			this.reader = createReader();
+			this.reader = createReader(false);
 			if (localReader != null) {
 				localReader.close();
 			}
@@ -315,19 +324,19 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
         // CHANGED doc.add(Field.Keyword(FIELD_CONTENT_KEY,
         // node.getKey().getEncoded()));
-        doc.add(new Field(FIELD_CONTENT_KEY, node.getKey().getEncoded(), Field.Store.YES, Field.Index.UN_TOKENIZED));
+        doc.add(new Field(FIELD_CONTENT_KEY, node.getKey().getEncoded(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
         // CHANGED doc.add(Field.UnStored(FIELD_CONTENT_TYPE,
         // node.getKey().getType().getName()));
-        doc.add(new Field(FIELD_CONTENT_TYPE, node.getKey().getType().getName(), Field.Store.NO, Field.Index.TOKENIZED));
+        doc.add(new Field(FIELD_CONTENT_TYPE, node.getKey().getType().getName(), Field.Store.NO, Field.Index.ANALYZED));
         // CHANGED doc.add(Field.UnStored(FIELD_CONTENT_ID,
         // node.getKey().getId()));
-        doc.add(new Field(FIELD_CONTENT_ID, node.getKey().getId(), Field.Store.NO, Field.Index.TOKENIZED));
+        doc.add(new Field(FIELD_CONTENT_ID, node.getKey().getId(), Field.Store.NO, Field.Index.ANALYZED));
 
         for (Iterator i = indexes.iterator(); i.hasNext();) {
             AttributeIndex ad = (AttributeIndex) i.next();
 
-            Object atrValue = node.getAttribute(ad.getAttributeName()).getValue();
+            Object atrValue = node.getAttributeValue(ad.getAttributeName());
 
             //
             // TODO: handle attributes whose value doesn't
@@ -338,15 +347,12 @@ public class LuceneSearchService implements ContentSearchServiceI {
             String value = atrValue != null ? atrValue.toString() : null;
 
             if (ad.getAttributeName().equalsIgnoreCase("keywords") && this.dictionary != null) {
-                AttributeI attribute = node.getAttribute("FULL_NAME");
-                if (attribute != null) {
-                    Object fullNameObj = attribute.getValue();
-                    if (fullNameObj instanceof String) {
-                        String fullName = (String) fullNameObj;
-                        String newValue = this.dictionary.getAdditionalKeywords(fullName, value);
-                        if (newValue.length()>0) {
-                            value = newValue;
-                        }
+                Object fullNameObj = node.getAttributeValue("FULL_NAME");
+                if (fullNameObj instanceof String) {
+                    String fullName = (String) fullNameObj;
+                    String newValue = this.dictionary.getAdditionalKeywords(fullName, value);
+                    if (newValue.length()>0) {
+                        value = newValue;
                     }
                 }
             }
@@ -369,7 +375,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
                             }
                             StringBuffer comp = new StringBuffer((String) tokens.get(p)).append(' ').append(tokens.get(tokens.size() - 1));
                             // System.out.println("COMPOUND WORD: " + comp);
-                            doc.add(new Field(FULL_NAME_INDEX, comp.toString(), Field.Store.NO, Field.Index.UN_TOKENIZED));
+                            doc.add(new Field(FULL_NAME_INDEX, comp.toString(), Field.Store.NO, Field.Index.NOT_ANALYZED));
                         }
 
                         if (tokens.size() > 2 && tokens.size() < 4) {
@@ -381,22 +387,22 @@ public class LuceneSearchService implements ContentSearchServiceI {
                             }
                             // System.out.println("TRI COMPOUND WORD: "+
                             // buff.toString());
-                            doc.add(new Field(FULL_NAME_INDEX, buff.toString(), Field.Store.NO, Field.Index.UN_TOKENIZED));
+                            doc.add(new Field(FULL_NAME_INDEX, buff.toString(), Field.Store.NO, Field.Index.NOT_ANALYZED));
                         }
                     }
                 }
 
                 // CHANGED doc.add(Field.Text(ad.getAttributeName(), value));
-                doc.add(new Field(ad.getAttributeName(), value, Field.Store.YES, Field.Index.TOKENIZED));
+                doc.add(new Field(ad.getAttributeName(), value, Field.Store.YES, Field.Index.ANALYZED));
                 // CHANGED doc.add(Field.Text(ad.getAttributeName() +
                 // STEMMED_SUFFIX, value));
-                doc.add(new Field(ad.getAttributeName() + STEMMED_SUFFIX, value, Field.Store.YES, Field.Index.TOKENIZED));
+                doc.add(new Field(ad.getAttributeName() + STEMMED_SUFFIX, value, Field.Store.YES, Field.Index.ANALYZED));
 
                 // extract potential brand names and add them to the search
                 List brandNames = brandNameExtractor.extract(value);
                 for (Iterator bni = brandNames.iterator(); bni.hasNext();) {
                     String canonicalBrandName = StringUtil.removeAllWhiteSpace(bni.next().toString());
-                    doc.add(new Field(ad.getAttributeName(), canonicalBrandName, Field.Store.YES, Field.Index.UN_TOKENIZED));
+                    doc.add(new Field(ad.getAttributeName(), canonicalBrandName, Field.Store.YES, Field.Index.NOT_ANALYZED));
                 }
             }
         }
@@ -406,7 +412,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
 	public void initialize() {
 		try {
-			boolean exists = IndexReader.indexExists(getIndexLocation());
+			boolean exists = IndexReader.indexExists(getIndexDirectory());
 			boolean indexGood = true;
 			if (exists) {
 				Collection indexedFields = getReader().getFieldNames(IndexReader.FieldOption.INDEXED);
@@ -435,7 +441,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			
 			if (!exists) {
 				LOGGER.info("Creating index at " + getIndexLocation());
-				IndexWriter writer = new IndexWriter(getIndexLocation(), STEMMER, true);
+				IndexWriter writer = new IndexWriter(getIndexDirectory(), STEMMER, true, new MaxFieldLength(1024));
 				writer.optimize();
 				writer.close();
 			}
@@ -455,7 +461,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
 	private IndexReader getReader() throws IOException {
 		if (this.reader == null) {
-			this.reader = createReader();
+			this.reader = createReader(true);
 		}
 		return this.reader;
 	}
@@ -470,7 +476,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			IndexSearcher searcher = new IndexSearcher(getReader());
 
 			// changed interface
-			Query q = MultiFieldQueryParser.parse(
+			Query q = MultiFieldQueryParser.parse(Version.LUCENE_30,
 					new String[] {
 							query, // FIELD_CONTENT_ID
 							query, // FULL_NAME
@@ -499,19 +505,19 @@ public class LuceneSearchService implements ContentSearchServiceI {
 					}
 			    , STEMMER);
 
-			Hits hits = searcher.search(q);
+			TopDocs hits = searcher.search(q, maxHits);
 
-			if (hits.length() == 0) {
+			if (hits.totalHits == 0) {
 				return Collections.EMPTY_LIST;
 			}
 
-			List<SearchHit> h = new ArrayList<SearchHit>(hits.length());
-			int max = Math.min(maxHits, hits.length());
+			List<SearchHit> h = new ArrayList<SearchHit>(hits.totalHits);
+			int max = Math.min(maxHits, hits.totalHits);
 			for (int i = 0; i < max; i++) {
-				Document doc = hits.doc(i);
+				Document doc = searcher.doc(hits.scoreDocs[i].doc);
 				
 				ContentKey key = ContentKey.decode(doc.get(FIELD_CONTENT_KEY));
-				h.add(new SearchHit(key, hits.score(i), doc.get("KEYWORDS")));
+				h.add(new SearchHit(key, hits.scoreDocs[i].score, doc.get("KEYWORDS")));
 			}
 			return h;
 
@@ -523,19 +529,24 @@ public class LuceneSearchService implements ContentSearchServiceI {
 		
 	}
 
-	private static class StemmingAnalyzer extends StandardAnalyzer {
-		
-		public TokenStream tokenStream(String fieldName, Reader reader) {
-			TokenStream ts = super.tokenStream(fieldName, reader);
-			ts = new ISOLatin1AccentFilter(ts);
-			if (fieldName.endsWith(STEMMED_SUFFIX)) {
-				// added "lower case" as this is suggested in the Lucene API docs
-				return new PorterStemFilter(new LowerCaseFilter(ts));
-			}
-			return ts;
-		}
+    private static class StemmingAnalyzer extends StandardAnalyzer {
 
-	}
+        public StemmingAnalyzer(Version matchVersion) {
+            super(matchVersion);
+        }
+
+        public TokenStream tokenStream(String fieldName, Reader reader) {
+            TokenStream ts = super.tokenStream(fieldName, reader);
+            ts = new ISOLatin1AccentFilter(ts);
+            if (fieldName.endsWith(STEMMED_SUFFIX)) {
+                // added "lower case" as this is suggested in the Lucene API
+                // docs
+                return new PorterStemFilter(new LowerCaseFilter(ts));
+            }
+            return ts;
+        }
+
+    }
 	
 	/**
 	 * Accept edit distance, If it is less or equal to a quarter of the longer string's length + 1 (and even
@@ -574,7 +585,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
     
     
-    
+    /*
     public Hits collectWords() throws IOException {
         final BooleanQuery query = new BooleanQuery(); // contains all terms and
                                                        // prefix
@@ -583,6 +594,6 @@ public class LuceneSearchService implements ContentSearchServiceI {
         Hits hits = s.search(query);
         LOGGER.info("product found:" + hits.length());
         return hits;
-    }
+    }*/
     
 }

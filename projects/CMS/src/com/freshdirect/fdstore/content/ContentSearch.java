@@ -349,6 +349,18 @@ public class ContentSearch {
             return Collections.EMPTY_LIST;
         }
     }
+    
+
+    @SuppressWarnings("unchecked")
+    public List<String> getAutocompletions(String prefix, AutocompleteService.Predicate predicate) {
+        initAutocompleter();
+        if (this.autocompletion!=null) {
+            return this.autocompletion.getAutocompletions(prefix, predicate);
+        } else {
+            return Collections.EMPTY_LIST;
+        }
+    }
+    
 
     private AutocompleteService initAutocompleter() {
         synchronized(this) {

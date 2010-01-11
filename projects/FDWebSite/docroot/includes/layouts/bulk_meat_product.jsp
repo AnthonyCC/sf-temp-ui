@@ -49,8 +49,6 @@ request.setAttribute("successPage",singleSuccessPage);
 <%
 request.removeAttribute("successPage");
 
-Attribute blkAttrib;
-
 int unAvailableCount=0;
 Image catPhoto = null;
 String hideURL = currentFolder.getHideUrl();
@@ -59,15 +57,13 @@ if (hideURL!=null) {
     response.sendRedirect(redirectURL);
     return;
 }
-
-blkAttrib=currentFolder.getAttribute("CATEGORY_DETAIL_IMAGE");
-if (blkAttrib!=null) {
-    catPhoto = (Image)blkAttrib.getValue();
-}else {
+catPhoto = ((CategoryModel) currentFolder).getCategoryDetailImage();
+if (catPhoto==null) {
     catPhoto = new Image();
 }
-blkAttrib = currentFolder.getAttribute("EDITORIAL");
-String blkIntroCopy = blkAttrib==null?"":((MediaI)blkAttrib.getValue()).getPath();
+Html editorial = currentFolder.getEditorial();
+String blkIntroCopy = editorial==null?"":editorial.getPath();
+
 SkuModel defaultSku=null;
 // get the first product off the list of products that were returned.  we'll need it for 
 // the a.k. name, and variations.
@@ -101,8 +97,7 @@ for(Iterator itr= sortedColl.iterator();itr.hasNext();){
 
     akaName = firstProduct.getAka();
 
-    blkAttrib = firstProduct.getAttribute("PACKAGE_DESCRIPTION");
-    if(blkAttrib!=null) packageDesc=(String)blkAttrib.getValue();
+    packageDesc = firstProduct.getPackageDescription();
 
     //get the smallest sku
     prodSkus = firstProduct.getSkus();
@@ -131,7 +126,7 @@ for(Iterator itr= sortedColl.iterator();itr.hasNext();){
     prodMinQuantity = firstProduct.getQuantityMinimum();
     prodMaxQuantity = user.getQuantityMaximum(firstProduct);
     prodIncrement = firstProduct.getQuantityIncrement();
-    quantityText = (String)firstProduct.getAttribute("QUANTITY_TEXT").getValue();
+    quantityText = firstProduct.getQuantityText();
     firstFDProduct = defaultSku.getProduct(); //FDCachedFactory.getProduct( FDCachedFactory.getProductInfo(defaultSku.getSkuCode()) );
     break;
 }
@@ -179,13 +174,11 @@ if (firstProduct!=null) {
         BrandModel bm = (BrandModel)prodBrands.get(0);
         if (bm!=null){
             brandName= bm.getFullName();
-            Attribute brandAttrib = bm.getAttribute("BRAND_LOGO_SMALL");
-            if (brandAttrib!=null) {
-                brandLogo = (Image)brandAttrib.getValue();
-            } //else brandLogo = new Image("/media_stat/layout/clear.gif",50,20);  //testing purposes olnly
-            brandAttrib = bm.getAttribute("BRAND_POPUP_CONTENT");
-            if (brandAttrib!=null) {
-                TitledMedia tm = (TitledMedia)brandAttrib.getValue();
+            brandLogo = bm.getLogoSmall();
+
+            Html popupContent = bm.getPopupContent();
+            if (popupContent!=null) {
+                TitledMedia tm = (TitledMedia)popupContent;
                 EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                 brandPopupLink = "javascript:pop('"+response.encodeURL("/brandpop.jsp?brandId="+bm)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
             }
@@ -315,10 +308,7 @@ String prodDescPath = null;
     } else {
         prodDescPath = bulkProduct.getProductDescription().getPath();
     }
-    blkAttrib=bulkProduct.getAttribute("DESCRIPTIVE_IMAGE");
-    if (blkAttrib!=null) {
-        optionImage = (Image)blkAttrib.getValue();
-    }
+    optionImage=bulkProduct.getDescriptiveImage();
 %>
     <TR VALIGN="TOP">
     <TD WIDTH="175">
@@ -354,12 +344,13 @@ String prodDescPath = null;
         </fd:FDProductInfo>
 <%
             DomainValue domainValue = null;
-            MultiAttribute ma =(MultiAttribute)sku.getAttribute("VARIATION_MATRIX");
-            domainValue = ma!=null?((DomainValueRef)ma.getValue(0)).getDomainValue():null;
+            List<DomainValue> variationMatrix =sku.getVariationMatrix();
+            domainValue = variationMatrix!=null && variationMatrix.size()>0 ?(DomainValue)variationMatrix.get(0):null;
             String matrixValue = null;
             if (domainValue!=null) {
-                if (bulkProduct.getAttribute("FDDEF_GRADE")!=null) { 
-                   gradePath = ((MediaI)bulkProduct.getAttribute("FDDEF_GRADE").getValue()).getPath();
+                Html _fdDefGrade = bulkProduct.getFddefGrade();
+                if (_fdDefGrade!=null) { 
+                   gradePath = ((MediaI)_fdDefGrade).getPath();
                    String popup = "/shared/popup.jsp?catId="+catId + "&prodId="+bulkProduct.getContentName(); 
                    matrixValue = "<A HREF=\"javascript:popup('"+popup+"&attrib=FDDEF_GRADE&tmpl=large','large')\">"+domainValue.getLabel().toUpperCase()+"</A>";
                 } else {
@@ -420,7 +411,7 @@ if (isOnePricedByLb) { %>
 <A HREF="javascript:popup('/help/estimated_price.jsp','small')">Est. Price:</a>
 <%
 } else { %>Price:<%}
-%>&nbsp;</FONT><INPUT TYPE="text" CLASS="text11" NAME="PRICE" SIZE="7" onFocus="blur();"
+%>&nbsp;</FONT><INPUT TYPE="text" CLASS="text11" NAME="PRICE" SIZE="7" onFocus="blur();"/>
 <!-- stuff for the bulk meat customization goes here -->
 <% 
    List variations = Arrays.asList(firstFDProduct.getVariations());

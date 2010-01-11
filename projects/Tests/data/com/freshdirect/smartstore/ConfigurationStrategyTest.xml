@@ -30,6 +30,7 @@
     </skus>
 	<QUANTITY_MAXIMUM>99.99</QUANTITY_MAXIMUM>
 	<QUANTITY_INCREMENT>1.0</QUANTITY_INCREMENT>
+	<PRIMARY_HOME><Category ref="category_mea0004561"/></PRIMARY_HOME>
   </Product>
 
   <Product id="product_mea0004561a">
@@ -40,6 +41,7 @@
     </skus>
 	<QUANTITY_MAXIMUM>99.99</QUANTITY_MAXIMUM>
 	<QUANTITY_INCREMENT>1.0</QUANTITY_INCREMENT>
+	<PRIMARY_HOME><Category ref="category_mea0004561"/></PRIMARY_HOME>
   </Product>
 
   <ConfiguredProduct id="configured_product_mea0004561a">

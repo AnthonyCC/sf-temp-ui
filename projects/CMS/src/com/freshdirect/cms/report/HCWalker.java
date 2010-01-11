@@ -33,12 +33,11 @@ public class HCWalker extends ContextWalker {
 			return true;
 		}
 
-		Map attrs = n.getAttributes();
-		AttributeI a_hu = (AttributeI) attrs.get("HIDE_URL");
-		AttributeI a_ns = (AttributeI) attrs.get("NOT_SEARCHABLE");
+		Object a_hu =  n.getAttributeValue("HIDE_URL");
+	        Object a_ns =  n.getAttributeValue("NOT_SEARCHABLE");
 
-		boolean flag = ( (a_hu != null && a_hu.getValue() != null) ||
-			(a_ns != null && Boolean.TRUE.equals(a_ns.getValue()) )
+		boolean flag = ( (a_hu != null ) ||
+			(a_ns != null && Boolean.TRUE.equals(a_ns) )
 		);
 		
 		// store in dirty cache on positive test case

@@ -21,8 +21,8 @@ public class AttributeContainsNocasePredicate extends AbstractAttributePredicate
 		                 : value.toString().toLowerCase();
 	}
 
-	public boolean evaluate(AttributeI attribute) {
-		Object v = attribute.getValue();
+	@Override
+	public boolean evaluateValue(Object v) {
 		if (v == null && value == null) {
 			return true;
 		}

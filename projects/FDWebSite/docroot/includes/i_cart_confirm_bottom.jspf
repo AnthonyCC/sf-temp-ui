@@ -38,9 +38,7 @@
 
 		if (cat != null && cat instanceof CategoryModel) {
 			// get top category of category
-			while (cat != null && cat.getParentNode() instanceof CategoryModel) {
-				cat = cat.getParentNode();
-			}
+			cat = ((CategoryModel)cat).getTopCategory();
 
 			continueShoppingLink = response
 					.encodeURL("/category.jsp?catId="
@@ -61,24 +59,22 @@
 						+ "&trk=confcatlink");
 		continueShoppingName = department.getFullName();
 	} else {
-		if (cat != null) {
-			int templateType = cat.getAttribute("TEMPLATE_TYPE", 1);
+		if (cat != null && cat instanceof CategoryModel) {
+		    CategoryModel pc = (CategoryModel) cat;
+			int templateType = pc.getTemplateType(1);
 			if (EnumTemplateType.WINE.equals(EnumTemplateType
 					.getTemplateType(templateType))) {
-				int layouttype = cat.getAttribute("LAYOUT", -1);
+				int layouttype = pc.getLayoutType(-1);
 				if (EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId() == layouttype
 						|| EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId() == layouttype) {
 					//Then get the Top level parent.
-					while (cat != null
-							&& cat.getParentNode() instanceof CategoryModel) {
-						cat = cat.getParentNode();
-					}
+					pc = pc.getTopCategory();
 				}
 				continueShoppingLink = response
 						.encodeURL("/category.jsp?catId="
-								+ cat.getContentName()
+								+ pc.getContentName()
 								+ "&trk=confcatlink");
-				continueShoppingName = cat.getFullName();
+				continueShoppingName = pc.getFullName();
 			} else {
 				continueShoppingLink = response
 						.encodeURL("/category.jsp?catId=" + topCategory
@@ -90,7 +86,8 @@
 
 	FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 %>
-		<table cellpadding="0" cellspacing="0" border="0" width="400">
+		
+<%@page import="com.freshdirect.fdstore.content.ProductContainer"%><table cellpadding="0" cellspacing="0" border="0" width="400">
 		<tr>
 			<td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
 			<td><img src="/media_stat/images/layout/clear.gif" width="140" height="8"></td>

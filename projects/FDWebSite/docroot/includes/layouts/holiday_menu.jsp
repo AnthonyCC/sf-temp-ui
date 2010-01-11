@@ -24,10 +24,10 @@ boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
 if(deptId!=null) {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+	currentFolder=ContentFactory.getInstance().getContentNode(deptId);
 	isDepartment = true;
 } else {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+	currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
 
 
@@ -89,20 +89,10 @@ if (sortedColl==null) sortedColl = new ArrayList();
 
         folderAsProduct = false;
         if (contentNode.getContentType().equals(ContentNodeModel.TYPE_CATEGORY)) {
-            folderAsProduct = contentNode.getAttribute("TREAT_AS_PRODUCT")==null?false:((Boolean)contentNode.getAttribute("TREAT_AS_PRODUCT").getValue()).booleanValue();
+            CategoryModel category = (CategoryModel) contentNode;
+            folderAsProduct = category.getTreatAsProduct();
 
-            Attribute aliasAttr = contentNode.getAttribute("ALIAS");
-            if (aliasAttr !=null ) {
-                ContentRef aliasRef = (ContentRef)aliasAttr.getValue();
-                if (aliasRef instanceof ProductRef) {
-                    aliasNode = ((ProductRef)aliasRef).lookupProduct();
-                } else if(aliasRef instanceof CategoryRef) {
-                    aliasNode = ((CategoryRef)aliasRef).getCategory();
-                }
-                else if(aliasRef instanceof DepartmentRef){
-                    aliasNode = ((DepartmentRef)aliasRef).getDepartment();
-                }
-            }
+            aliasNode = category.getAlias();
         }
 
         if (contentNode.getContentType().equals(ContentNodeModel.TYPE_CATEGORY) && !folderAsProduct) {

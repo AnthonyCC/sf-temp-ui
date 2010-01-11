@@ -102,8 +102,8 @@ public class TellAFriendProduct extends TellAFriend {
 		if (productNode == null) {
 			return "";
 		} else {
-			SkuModel defaultSku = productNode.getDefaultSku();
-			FDProductInfo productInfo = FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
+			String defaultSku = productNode.getDefaultSkuCode();
+			FDProductInfo productInfo = FDCachedFactory.getProductInfo(defaultSku);
 			return CURRENCY_FORMATTER.format(productInfo.getDefaultPrice()) +"/"+productInfo.getDefaultPriceUnit().toLowerCase();
 		}
 	}

@@ -17,7 +17,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.attributes.Attribute;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public abstract class AbstractProductModelImpl extends ContentNodeModelImpl implements ProductModel {
 
@@ -25,7 +25,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
 	private List alsoSoldAs = new ArrayList();
 	private List alsoSoldAsList = new ArrayList();
-	private List alsoSoldAsRefs = new ArrayList();
+	private List<ProductModel> alsoSoldAsRefs = new ArrayList();
 
 	public AbstractProductModelImpl(ContentKey key) {
 		super(key);
@@ -57,7 +57,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	
 
 	private Image getImage(String key) {
-		return (Image) getAttribute(key, IMAGE_BLANK);
+            return FDAttributeFactory.constructImage(this, key, IMAGE_BLANK);
 	}
 
 	public Image getCategoryImage() {
@@ -80,6 +80,10 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		return getImage("PROD_IMAGE_ZOOM");
 	}
 
+	public int getTemplateType(int defaultValue) {
+	    Integer i = (Integer) getCmsAttributeValue("TEMPLATE_TYPE");
+	    return i != null ? i.intValue() : defaultValue;
+	}
 
 	public ProductModel getAlsoSoldAs(int idx) {
 		return (ProductModel) getAlsoSoldAs().get(idx);
@@ -96,31 +100,30 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	/** Getter for property skus.
 	 * @return Value of property skus.
 	 */
-	public List getAlsoSoldAs() {
+	public List<ProductModel> getAlsoSoldAs() {
 		boolean bRefreshed = ContentNodeModelUtil.refreshModels(this, "ALSO_SOLD_AS", alsoSoldAs, false);
 
 		if (bRefreshed) {
 			ContentNodeModelUtil.setNearestParentForProducts(getParentNode(), alsoSoldAs);
 		}
 
-		ArrayList refs = new ArrayList();
+		ArrayList<ProductModel> refs = new ArrayList<ProductModel>();
 		for (Iterator iter = alsoSoldAs.iterator(); iter.hasNext();) {
 			ProductModel pm = (ProductModel) iter.next();
-			ProductRef ref = new ProductRef(pm.getParentNode().getContentName(), pm.getContentName());
-			refs.add(ref);
+			refs.add(pm);
 		}
 		return refs;
 	}
 
-	public List getAlsoSoldAsRefs() {
+	public List<ProductModel> getAlsoSoldAsRefs() {
 		boolean bRefreshed = ContentNodeModelUtil.refreshModels(this, "ALSO_SOLD_AS", alsoSoldAsList, false);
 
 		if (bRefreshed) {
 			ContentNodeModelUtil.setNearestParentForProducts(getParentNode(), alsoSoldAsList);
 			alsoSoldAsRefs.clear();
 			for (Iterator tmp = alsoSoldAsList.iterator(); tmp.hasNext();) {
-				ContentNodeModel m = (ContentNodeModel) tmp.next();
-				alsoSoldAsRefs.add(new ProductRef(m.getParentNode().getContentName(), m.getContentName()));
+			    ProductModel m = (ProductModel) tmp.next();
+			    alsoSoldAsRefs.add(m);
 			}
 		}
 		return alsoSoldAsRefs;
@@ -128,18 +131,16 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
 	
 	public Html getProductDescription() {
-		Attribute a = getAttribute("PROD_DESCR");
-		return a == null ? null : (Html) a.getValue();
+	    return FDAttributeFactory.constructHtml(this, "PROD_DESCR");
 	}
 
 	public boolean hasTerms() {
-		Attribute a = getAttribute("PRODUCT_TERMS_MEDIA");
-		return a == null ? false : true;
+	    Object a = getCmsAttributeValue("PRODUCT_TERMS_MEDIA");
+	    return a == null ? false : true;
 	}
 	
 	public Html getProductTerms() {
-		Attribute a = getAttribute("PRODUCT_TERMS_MEDIA");
-		return a == null ? null : (Html) a.getValue();
+            return FDAttributeFactory.constructHtml(this, "PRODUCT_TERMS_MEDIA");
 	}
 	
 	public boolean isShowTopTenImage() {
@@ -148,13 +149,8 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	
 	public String getDefaultPrice() {
 			try {
-				SkuModel skuModel = getDefaultSku();
-				if(skuModel == null)
-					return "";
-				FDProductInfo productInfo = skuModel.getProductInfo();
-				if(productInfo == null)
-					return "";
-				return productInfo.getDefaultPrice() + "/" +productInfo.getDefaultPriceUnit();
+				FDProductInfo productInfo = getDefaultProductInfo();
+				return productInfo != null ? productInfo.getDefaultPrice() + "/" +productInfo.getDefaultPriceUnit() : ""; 
 			} catch (FDResourceException e) {
 				throw new RuntimeException(e);
 			} catch (FDSkuNotFoundException e) {
@@ -172,13 +168,8 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	
 	public String getDefaultPriceOnly() {
 		try {
-			SkuModel skuModel = getDefaultSku();
-			if(skuModel == null)
-				return "";
-			FDProductInfo productInfo = skuModel.getProductInfo();
-			if(productInfo == null)
-				return "";
-			return productInfo.getDefaultPrice() + "";
+			FDProductInfo productInfo = getDefaultProductInfo();
+			return productInfo!= null ? productInfo.getDefaultPrice() + "" : "";
 		} catch (FDResourceException e) {
 			throw new RuntimeException(e);
 		} catch (FDSkuNotFoundException e) {
@@ -188,19 +179,24 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	
 	public String getDefaultUnitOnly() {
 		try {
-			SkuModel skuModel = getDefaultSku();
-			if(skuModel == null)
-				return "";
-			FDProductInfo productInfo = skuModel.getProductInfo();
-			if(productInfo == null)
-				return "";
-			return productInfo.getDefaultPriceUnit();
+			FDProductInfo productInfo = getDefaultProductInfo();
+			return productInfo != null ? productInfo.getDefaultPriceUnit() : "";
 		} catch (FDResourceException e) {
 			throw new RuntimeException(e);
 		} catch (FDSkuNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
+
+    private FDProductInfo getDefaultProductInfo() throws FDResourceException, FDSkuNotFoundException {
+        SkuModel skuModel = getDefaultSku();
+        if (skuModel == null) {
+            return null;
+        } else {
+            FDProductInfo productInfo = skuModel.getProductInfo();
+            return productInfo;
+        }
+    }
 	
 	public boolean isNew() {
 		try {
@@ -217,13 +213,13 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	}
 	
 	public int getDealPercentage(String skuCode) {
-		SkuModel defaultSku = getDefaultSku();
+		String defaultSku = getDefaultSkuCode();
                 if (skuCode == null) {
-			skuCode = defaultSku != null ? defaultSku.getSkuCode() : null;
+			skuCode = defaultSku;
 		} else {
 			if (getSkuCodes().indexOf(skuCode) < 0) {
 				// invalid sku code using default
-				skuCode = defaultSku.getSkuCode();
+				skuCode = defaultSku;
 			}
 		}
 		FDProductInfo productInfo = null;
@@ -275,13 +271,13 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	}
 	
 	public int getHighestDealPercentage(String skuCode) {
-		SkuModel defaultSku = getDefaultSku();
+		String defaultSku = getDefaultSkuCode();
 		if (skuCode == null) {
-			skuCode = defaultSku != null ? defaultSku.getSkuCode() : null;
+			skuCode = defaultSku;
 		} else {
 			if (getSkuCodes().indexOf(skuCode) < 0) {
 				// invalid sku code using default
-				skuCode = defaultSku.getSkuCode();
+				skuCode = defaultSku;
 			}
 		}
 		FDProductInfo productInfo = null;
@@ -385,12 +381,12 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	}
 
 	public String getAboutPriceFormatted(double savingsPercentage) {
-		SkuModel skuCode = getDefaultSku();
+		String skuCode = getDefaultSkuCode();
 
 		if (skuCode != null) {
 			try {
 				FDProductInfo productInfo = FDCachedFactory
-						.getProductInfo(skuCode.getSkuCode());
+						.getProductInfo(skuCode);
 				if (productInfo != null) {
 					String displayPriceString = null;
 					FDProduct fdProduct = FDCachedFactory
@@ -440,10 +436,10 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		return getAttribute("RELATED_PRODUCTS_HEADER", null);
 	}
 	
-	public List getCountryOfOrigin() throws FDResourceException{
-		List coolInfo=new ArrayList();
+	public List<String> getCountryOfOrigin() throws FDResourceException{
+		List<String> coolInfo=new ArrayList();
 		
-		List skus = getSkus(); 
+		List skus = getPrimarySkus(); 
 	       SkuModel sku = null;
 	       //remove the unavailable sku's
 	       for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
@@ -457,7 +453,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	           sku = (SkuModel)skus.get(0);  // we only need one sku
 	           FDProductInfo productInfo;
 				try {
-					productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode());
+					productInfo = sku.getProductInfo();
 					List countries=productInfo.getCountryOfOrigin();
 					String text=getCOOLText(countries);
 					if(!"".equals(text))
@@ -498,7 +494,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
     			   if(sku.getVariationMatrix()!=null && sku.getVariationMatrix().size()>0) {
     				   domainValue= ((DomainValue)sku.getVariationMatrix().get(0)).getValue();
     				   try {
-    					   productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode());
+    					   productInfo = sku.getProductInfo();
     					   countries=productInfo.getCountryOfOrigin();
     					   text=getCOOLText(countries);
     				   } catch (FDSkuNotFoundException ignore) {
@@ -539,17 +535,23 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		}
 		return temp.toString();
 	}
+	
+	@Override
+	public String getDefaultSkuCode() {
+	    SkuModel sku = getDefaultSku();
+	    return sku != null ? sku.getSkuCode() : null;
+	}
 
 	/*
 	 * iPhone related
 	 */
 	@Override
 	public Image getAlternateProductImage() {
-		return (Image) getAttribute("ALTERNATE_PROD_IMAGE", (Image) null); 
+	    return FDAttributeFactory.constructImage(this, "ALTERNATE_PROD_IMAGE");
 	}
 
 	@Override
 	public boolean hideIphone() {
-		return getAttribute("HIDE_IPHONE", false);
+	    return getAttribute("HIDE_IPHONE", false);
 	}
 }

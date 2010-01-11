@@ -9,7 +9,7 @@ import java.util.concurrent.Executor;
 /**
  * @author csongor
  */
-public abstract class BalkingExpiringReference extends ExpiringReference {
+public abstract class BalkingExpiringReference<X> extends ExpiringReference<X> {
 	final static Category LOGGER = LoggerFactory.getInstance(BalkingExpiringReference.class);
 
 	private Runnable loader = null;
@@ -26,7 +26,7 @@ public abstract class BalkingExpiringReference extends ExpiringReference {
 		public void run() {
 			LOGGER.debug("task is scheduled for execution.");
 			try {
-				Object _new = load();
+				X _new = load();
 				loaded(_new);
 				LOGGER.debug("task is finished.");
 			} catch (Exception e) {
@@ -63,7 +63,7 @@ public abstract class BalkingExpiringReference extends ExpiringReference {
 	 * @param initializer
 	 *            pre-initialize the reference until the new value is generated
 	 */
-	public BalkingExpiringReference(long refreshPeriod, Executor executor, Object initializer) {
+	public BalkingExpiringReference(long refreshPeriod, Executor executor, X initializer) {
 		super(refreshPeriod);
 		this.referent = initializer;
 		this.executor = executor;
@@ -74,12 +74,12 @@ public abstract class BalkingExpiringReference extends ExpiringReference {
 		return System.currentTimeMillis() - lastRefresh > this.refreshPeriod;
 	}
 	
-	public synchronized Object get() {
+	public synchronized X get() {
 		reload();
 		return this.referent;
 	}
 	
-	protected synchronized void loaded(Object _new) {
+	protected synchronized void loaded(X _new) {
 		if (referent == _new)
 			// failed next time will retry
 			lastRefresh = 0;

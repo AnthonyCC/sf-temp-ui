@@ -1,6 +1,5 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.util.*'%>
@@ -14,25 +13,20 @@
 <%
 String catId = request.getParameter("catId");
 boolean isGroceryVirtual=false;
-ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
 boolean allSoldOut=true;
 boolean previewMode = ContentFactory.getInstance().getPreviewMode();
 //on Nov 28, 12am They want to see the holiday meals coming soon content, so use the cut-off logic
 Calendar cutOffPoint = new GregorianCalendar(2004,Calendar.NOVEMBER,27,23,59,59);
 Calendar rightNow = Calendar.getInstance();
 boolean pastCutOff = !previewMode && !rightNow.before(cutOffPoint);
-Attribute middleMedia = currentFolder.getAttribute("MIDDLE_MEDIA");
-String midMediaPath=null;
-if (middleMedia!=null) {
-    midMediaPath = ((MediaI)middleMedia.getValue()).getPath();
-}
-midMediaPath="/media_stat/images/thanksgiving/thanks_warning_main.txt";
+String midMediaPath="/media_stat/images/thanksgiving/thanks_warning_main.txt";
 
 Collection sortedColl = (Collection) request.getAttribute("itemGrabberResult");
 if (sortedColl==null) sortedColl = new ArrayList();
         for(Iterator itr=sortedColl.iterator(); itr.hasNext() && allSoldOut;) {
             ContentNodeModel cn = (ContentNodeModel) itr.next();
-            if (!cn.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) continue;
+            if (!cn.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) continue;
             if ( !((ProductModel)cn).isUnavailable()) {
                allSoldOut=false;
             }
@@ -62,15 +56,16 @@ if (sortedColl==null) sortedColl = new ArrayList();
 <%
         for(Iterator itr=sortedColl.iterator(); itr.hasNext();) {
             ContentNodeModel cn = (ContentNodeModel) itr.next();
-            if (!cn.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) continue;
+            if (!cn.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) continue;
 
             ProductModel pm = (ProductModel)cn;
             DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getParentNode().getContentName(),pm,"full",true);
             boolean prodUnavailable = pm.isUnavailable();
             SkuModel defaultSku = !prodUnavailable?pm.getDefaultSku():(SkuModel)pm.getSkus().get(0);
-            String suLabel = "".equals(pm.getAttribute("SALES_UNIT_LABEL",""))
+            String _salesUnitLabel = pm.getSalesUnitLabel();
+            String suLabel = "".equals(_salesUnitLabel)
                 ? ""
-                : " (Serves " + pm.getAttribute("SALES_UNIT_LABEL","")+")";
+                : " (Serves " + _salesUnitLabel+")";
 %>
             <fd:FDProductInfo id="productInfo" skuCode="<%= defaultSku.getSkuCode() %>">
 <%

@@ -91,7 +91,7 @@ public class HCProducer implements Runnable {
 			ContentNodeI node = mgr.getContentNode(prodKey);
 			
 			// primary home
-			ContentKey priHomeKey = (ContentKey) node.getAttribute("PRIMARY_HOME").getValue();
+			ContentKey priHomeKey = (ContentKey) node.getAttributeValue("PRIMARY_HOME");
 			
 			if (priHomeKey == null)
 				continue;

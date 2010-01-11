@@ -2,7 +2,6 @@
 <%@ page import='java.util.*'  %>
 <%@ page import='com.freshdirect.ErpServicesProperties' %>
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
 <%@ page import='java.net.URLEncoder'%>
@@ -29,9 +28,9 @@ String deptId = request.getParameter("deptId");
 
 ContentNodeModel currentFolder = null;
 if(deptId!=null) {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+    currentFolder=ContentFactory.getInstance().getContentNode(deptId);
 } else {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+    currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
 
 CategoryModel categoryModel=null;
@@ -146,7 +145,7 @@ int itemTotal = sortedColl.size();
 
 String itemNameFont = null;
 Image itemImage;
-String currentFolderPKId = currentFolder.getPK().getId();
+String currentFolderPKId = currentFolder.getContentKey().getId();
 String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
 CategoryModel cat = null;
 
@@ -202,7 +201,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 	<tr valign="top">
 		<td width="95%" style="padding-right:8px;">
 			<div class="center_prod_name">
-				<%-- a href="/category.jsp?catId=< %=currentCat.getPK().getId()% >&trk=cPage" --%><%=currentCat.getFullName()%><%--/a--%>
+				<%-- a href="/category.jsp?catId=< %=currentCat.getContentKey().getId()% >&trk=cPage" --%><%=currentCat.getFullName()%><%--/a--%>
 			</div>
 			<div class="padt6">
 				<fd:IncludeMedia name="<%=ediDescPath%>" />

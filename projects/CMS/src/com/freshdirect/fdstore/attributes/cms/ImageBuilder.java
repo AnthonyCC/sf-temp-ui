@@ -6,6 +6,7 @@ package com.freshdirect.fdstore.attributes.cms;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.fdstore.attributes.EnumAttributeType;
 import com.freshdirect.fdstore.content.Image;
@@ -22,30 +23,29 @@ public class ImageBuilder extends AbstractAttributeBuilder {
 	}
 
 	public Object buildValue(AttributeDefI aDef, Object value) {
-		ContentNodeI cNode = (ContentNodeI) value;
-		AttributeI patr = cNode.getAttribute("path");
+		ContentNodeI cNode = ((ContentKey) value).lookupContentNode();
 
-		String path;
+		String path = (String) cNode.getAttributeValue("path");
 		
 		// FIXME this is due to invalid data
-		if (patr == null || patr.getValue() == null) {
+		if (path == null) {
 			System.err.println("ImageBuilder.buildValue(): image without path " + cNode);
 			path = cNode.getKey().getId();
-		} else {
-			path = (String)patr.getValue();
 		}
-		if (cNode.getAttribute("width") == null || cNode.getAttribute("width").getValue() == null) {
+		
+		Object widthObj = cNode.getAttributeValue("width"); 
+		if (widthObj == null) {
 			System.err.println("ImageBuilder.buildValue(): Image without width " + cNode);
 			return new Image(path, 1, 1);
 		}
 
-		int width = ((Integer) cNode.getAttribute("width").getValue()).intValue();
-		int height = ((Integer) cNode.getAttribute("height").getValue()).intValue();
-		if (cNode.getAttribute("title") == null) {
+		int width = ((Integer) widthObj).intValue();
+		int height = ((Integer) cNode.getAttributeValue("height")).intValue();
+		if (cNode.getAttributeValue("title") == null) {
 			Image i = new Image(path, width, height);
 			return i;
 		} else {
-			String title = (String) cNode.getAttribute("title").getValue();
+			String title = (String) cNode.getAttributeValue("title");
 			return new TitledMedia(new Image(path, width, height), title, null);
 		}
 	}

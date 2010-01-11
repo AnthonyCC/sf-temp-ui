@@ -627,7 +627,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    						FDCartLineModel cartLine = (FDCartLineModel) it.next();
 	    					%>
 	    				<p style="font-weight: normal;" title="<%= cartLine.lookupProduct().getFullName() %>"
-	    						><%= cartLine.getProductRef().getProductName() %></p>
+	    						><%= cartLine.getProductRef().getContentKey().getId() %></p>
 	    					<% } %>
 	    				<% } %>
 	    				<p class="result">

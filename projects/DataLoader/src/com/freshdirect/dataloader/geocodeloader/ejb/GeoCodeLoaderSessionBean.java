@@ -2,55 +2,30 @@ package com.freshdirect.dataloader.geocodeloader.ejb;
 
 
 
-import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import javax.ejb.CreateException;
 import javax.ejb.EJBException;
-import javax.naming.NamingException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.dataloader.geocodeloader.GeoCodeFailedException;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
-import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
-import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.command.Capture;
-import com.freshdirect.payment.command.PaymentCommandI;
-import com.freshdirect.payment.ejb.PaymentGatewayHome;
-import com.freshdirect.payment.ejb.PaymentGatewaySB;
-import com.freshdirect.payment.ejb.PaymentHome;
-import com.freshdirect.payment.ejb.PaymentSB;
 
 public class GeoCodeLoaderSessionBean extends SessionBeanSupport {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(GeoCodeLoaderSessionBean.class);
-
-	private final static ServiceLocator LOCATOR = new ServiceLocator();
+	private final static Logger LOGGER = LoggerFactory.getInstance(GeoCodeLoaderSessionBean.class);
 
 //	private final static String QUERY_SELECT_DELIVERYINFO =
 //		" select *   from  ( select a.*, rownum rnum   from  ( "+ 
@@ -154,14 +129,7 @@ public class GeoCodeLoaderSessionBean extends SessionBeanSupport {
 //			}
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (con != null) {
-					con.close();
-					con = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("SQLException while cleaning up", se);
-			}
+                    close(con);
 		}
 	}
 
@@ -230,14 +198,7 @@ public class GeoCodeLoaderSessionBean extends SessionBeanSupport {
 //			}
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (con != null) {
-					con.close();
-					con = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("SQLException while cleaning up", se);
-			}
+                    close(con);
 		}
 		
 		return addressList;

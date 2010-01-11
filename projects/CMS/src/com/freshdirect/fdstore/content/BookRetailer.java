@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.content;
 import java.text.MessageFormat;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class BookRetailer extends ContentNodeModelImpl {
 
@@ -23,7 +24,7 @@ public class BookRetailer extends ContentNodeModelImpl {
 	}
 
 	public Image getLogo() {
-		return (Image) getAttribute("logo", (Image) null);
+	    return FDAttributeFactory.constructImage(this, "logo");
 	}
 	
 	public String createIsbnLink(String isbn) {

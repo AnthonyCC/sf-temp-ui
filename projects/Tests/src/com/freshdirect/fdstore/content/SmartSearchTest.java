@@ -147,6 +147,7 @@ public class SmartSearchTest extends TestCase {
         GlobalCompiler.getInstance().addVariable(ScoreProvider.GLOBAL_POPULARITY, Expression.RET_FLOAT);
         GlobalCompiler.getInstance().addVariable(ScoreProvider.USER_FREQUENCY, Expression.RET_FLOAT);
         initTag();
+        ContentSearch.getInstance().setDisableAutocompleter(true);
     }
 
     void initTag() {

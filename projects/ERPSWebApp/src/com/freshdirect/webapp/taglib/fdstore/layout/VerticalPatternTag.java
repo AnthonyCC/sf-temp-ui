@@ -193,13 +193,13 @@ public class VerticalPatternTag extends com.freshdirect.framework.webapp.BodyTag
 			if ( currentNode instanceof CategoryModel ) {
 				if ( !returnCategory )
 					continue;
-				if ( !showFolders && ((CategoryModel)currentNode).getAttribute( "TREAT_AS_PRODUCT", false ) )
+				if ( !showFolders && ((CategoryModel)currentNode).getTreatAsProduct() )
 					continue;				
 			}			
 
 			// get category 
 			CategoryModel category;
-			if ( currentNode instanceof CategoryModel ) { // && !contentNode.getAttribute( "TREAT_AS_PRODUCT", false ) ) {					
+			if ( currentNode instanceof CategoryModel ) { // && !contentNode.getTreatAsProduct() ) {					
 				category = (CategoryModel)currentNode;
 			} else {
 				// use the parent-category
@@ -207,16 +207,17 @@ public class VerticalPatternTag extends com.freshdirect.framework.webapp.BodyTag
 			}
 
 			
-			int colIdx  = category.getAttribute( "COLUMN_NUM", 1 ) - 1 ; // -1 to have 0 based index			
-			int colSpan = category.getAttribute( "COLUMN_SPAN", 1 );
+			int colIdx  = category.getColumnNum() - 1 ; // -1 to have 0 based index			
+			int colSpan = category.getColumnSpan();
 			
 			// skip if column index is invalid 
 			if ( colIdx < 0 || colIdx >= maxColumns ) 
 				continue;
 
 			if ( isLabeled() ) {
-				if ( currentNode instanceof CategoryModel && currentNode.hasAttribute("CAT_LABEL") && ((CategoryModel)currentNode).getDepartment().equals(currentNode.getParentNode()) ) {
-					headers[ colIdx ] = ((CategoryModel)currentNode).getCategoryLabel();
+			    Image catLabel = currentNode instanceof CategoryModel ? ((CategoryModel)currentNode).getCategoryLabel() : null;
+				if ( catLabel != null && ((CategoryModel)currentNode).getDepartment().equals(currentNode.getParentNode()) ) {
+					headers[ colIdx ] = catLabel;
 					continue;
 				}
 			}

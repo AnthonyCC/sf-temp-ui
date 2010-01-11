@@ -174,7 +174,7 @@ public class Order {
 
             ProductConfiguration productConfiguration = new ProductConfiguration();
             try {
-                Product productData = Product.wrap(product.getProductRef().lookupProduct(), user.getFDSessionUser().getUser());
+                Product productData = Product.wrap(product.getProductRef(), user.getFDSessionUser().getUser());
                 Sku sku = productData.getSkyByCode(product.getSkuCode());
 
                 if (productData.hasTerms()) {

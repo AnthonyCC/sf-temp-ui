@@ -1,11 +1,8 @@
 <%
                         List alsoSoldAsList = null;
-                        String myPKID = productNode.getPK().getId();
+                        String myPKID = productNode.getContentKey().getId();
                         Map keepMap = new HashMap();
                         // get the also sold as stuff
-
-                        Attribute prdAttrib = null;
-
 
                         alsoSoldAsList = productNode.getAlsoSoldAsRefs();
 
@@ -16,13 +13,12 @@
                             StringBuffer asaNames = new StringBuffer();
 
                             for(Iterator asaItr = alsoSoldAsList.iterator();asaItr.hasNext();) {
-                                ContentRef cr = (ContentRef)asaItr.next();
-                                if (cr.getRefName().equals(pcat.getContentName())){
-                                    ProductModel asaProd = ((ProductRef)cr).lookupProduct();
+                                ProductModel asaProd = (ProductModel)asaItr.next();
+                                if (asaProd.getParentId().equals(pcat.getContentName())){
                                     if (asaProd.getParentNode().isHidden()) continue;
-                                    Attribute asaName = asaProd.getAttribute("ALSO_SOLD_AS_NAME");
-                                    String asaLabel = asaName==null ? asaProd.getFullName() : (String)asaName.getValue();
-                                    keepMap.put(cr,asaLabel);
+                                    String asaName = asaProd.getAlsoSoldAsName();
+                                    String asaLabel = asaName==null ? asaProd.getFullName() : asaName;
+                                    keepMap.put(asaProd,asaLabel);
                                 }
 
                             }
@@ -30,13 +26,12 @@
                             // ok..walk through the list again..now look for items that are missing from the keep list that have different display names
                             //(note:seafood items need this logic. cause the whole and Steak and fillet items live in different folders
                              for(Iterator asaItr = alsoSoldAsList.iterator();asaItr.hasNext();) {
-                                ContentRef cr = (ContentRef)asaItr.next();
-                                ProductModel asaProd = ((ProductRef)cr).lookupProduct();
+                                ProductModel asaProd = (ProductModel)asaItr.next();
                                 if (asaProd.getParentNode().isHidden()) continue;
-                                 Attribute asaName = asaProd.getAttribute("ALSO_SOLD_AS_NAME");
-                                 String asaLabel = asaName==null ? asaProd.getFullName() : (String)asaName.getValue();
-                                 if (!keepMap.containsKey(cr)  && !keepMap.containsValue(asaLabel)) {
-                                     keepMap.put(cr,asaLabel);
+                                 String asaName = asaProd.getAlsoSoldAsName();
+                                 String asaLabel = asaName==null ? asaProd.getFullName() : asaName;
+                                 if (!keepMap.containsKey(asaProd)  && !keepMap.containsValue(asaLabel)) {
+                                     keepMap.put(asaProd,asaLabel);
                                  }
                              }
 
@@ -47,16 +42,14 @@
                             StringBuffer asaHTML = new StringBuffer();
                             boolean hasLinkableItem = false;
                             for(Iterator asaItr = keepSet.iterator();asaItr.hasNext();) {
-                                ContentRef cr = (ContentRef)asaItr.next();
-                                ProductModel asaPM = ((ProductRef)cr).lookupProduct();
+                                ProductModel asaPM = (ProductModel)asaItr.next();
                                 if (asaPM==null || asaPM.isUnavailable()) continue;
                                 asaURL = response.encodeURL("/product.jsp?catId="+asaPM.getParentNode()+"&productId="+asaPM+"&trk=prod");
-                                asaLabel = (String)keepMap.get(cr);
-                                prdAttrib = asaPM.getAttribute("ALSO_SOLD_AS_NAME");
+                                asaLabel = (String)keepMap.get(asaPM);
                                 if (asaHTML.length() > 0) {
                                     asaHTML.append("&nbsp;&#183;&nbsp;");
                                 }
-                                if (asaPM.getPK().getId().equals(myPKID)) {
+                                if (asaPM.getContentKey().getId().equals(myPKID)) {
                                     asaHTML.append(asaLabel);
                                 } else {
                                     hasLinkableItem = true;

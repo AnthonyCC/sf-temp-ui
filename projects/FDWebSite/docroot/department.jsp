@@ -14,7 +14,8 @@ String deptId=request.getParameter("deptId");
 final boolean isIncludeDeptBottom = !"dai".equals(deptId) && !"gro".equals(deptId) && !"hba".equals(deptId) && !"fro".equals(deptId);
 %>
 
-<fd:CheckLoginStatus guestAllowed="true" />
+
+<%@page import="com.freshdirect.fdstore.util.RatingUtil"%><fd:CheckLoginStatus guestAllowed="true" />
 <fd:Department id='department' departmentId='<%= deptId %>'/>
 
 <%
@@ -28,7 +29,9 @@ request.setAttribute("sitePage", department.getPath());
 request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,SideCartBottom,WineTopRight,WineBotLeft,WineBotMiddle,WineBotRight");
 
 
-ContentNodeModel currentFolder = department;
+final ContentNodeModel currentFolder = department;
+// it must be tested ...
+final DepartmentModel departmentModel = (DepartmentModel) department;
 
 if (!ContentFactory.getInstance().getPreviewMode()) {
     if (currentFolder.isHidden()) {
@@ -37,16 +40,16 @@ if (!ContentFactory.getInstance().getPreviewMode()) {
     }
 }
 //if there is  redirect_url setting  then go to that url regardless of the previewmode setting
-Attribute attrib=currentFolder.getAttribute("REDIRECT_URL");
-if (attrib!=null && attrib.getValue() !=null) {
-    String redirectURL = response.encodeRedirectURL((String)attrib.getValue());
+String redirectURL = (currentFolder instanceof HasRedirectUrl ? ((HasRedirectUrl)currentFolder).getRedirectUrl() : null);
+if (redirectURL !=null) {
+    redirectURL = response.encodeRedirectURL(redirectURL);
     response.sendRedirect(redirectURL);
     return;
 }
 
 
 //[APPREQ-77] Page uses include media type layout
-int layouttype = currentFolder.getAttribute("LAYOUT", -1);
+int layouttype = departmentModel.getLayoutType(-1);
 boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_INCLUDE.getId());
 
 %><tmpl:insert template='<%= (isIncludeMediaLayout ? "/common/template/no_nav.jsp" : "/common/template/right_nav.jsp") %>'>
@@ -74,44 +77,17 @@ try {
         %><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10">
         <%@ include file="/common/template/includes/catLayoutManager.jspf" %><br><%
     } else {
-		Attribute introCopyAttribute = department.getAttribute("EDITORIAL");
-	    String introCopy = (introCopyAttribute == null ? "" : ((Html)introCopyAttribute.getValue()).getPath());
+		Html introCopyAttribute = department.getEditorial();
+	    String introCopy = (introCopyAttribute == null ? "" : introCopyAttribute.getPath());
 	    String introTitle = department.getEditorialTitle();
 	    StringBuffer organicLegend = new StringBuffer();
 	    String deptIdentifier = department.getFullName().toUpperCase();
-	    Image deptImage = (Image)department.getAttribute("DEPT_PHOTO").getValue();
+	    Image deptImage = (Image)departmentModel.getPhoto();
 	
 
 	    //  get the rating & ranking stuff
-	    Attribute tmpAttribute = department.getAttribute("RATING_GROUP_NAMES");
-	    StringBuffer rateNRankLinks = new StringBuffer();
-	    
-	    if (tmpAttribute !=null) {
-	        StringTokenizer stRRNames = new StringTokenizer((String)tmpAttribute.getValue(),",");
-	        while (stRRNames.hasMoreTokens()) {
-	            String rrName = stRRNames.nextToken().toUpperCase();
-	            // go find the attribute with that name and it's label
-	            tmpAttribute = department.getAttribute(rrName);
-	            if (tmpAttribute !=null) {
-	                if (rateNRankLinks.length() > 1) rateNRankLinks.append(" | ");
-	                rateNRankLinks.append("<a href=\"");
-	                rateNRankLinks.append(response.encodeURL("/rating_ranking.jsp?deptId="+department+"&ratingGroupName="+rrName));
-	                rateNRankLinks.append("\"");
-
-	                // get the label for this rating group name.
-	                tmpAttribute = department.getAttribute(rrName+"_LABEL");
-	                if (tmpAttribute!=null) {
-	                    rateNRankLinks.append((String)tmpAttribute.getValue());
-	                } else {
-	                  rateNRankLinks.append(rrName.replace('_',' '));
-	                }
-	                rateNRankLinks.append("</a>");
-	            }
-	        }
-	    }
-
-
-
+	    String ratingGroupNames = departmentModel.getRatingGroupNames();
+	    String rateNRankLinks = RatingUtil.buildDepartmentRatingLink(departmentModel, response);
 
 	    // temporary: if grocery, wine or bakery department..then we dont want to use the stantard logic
 	    if ( "OUR_PICKS, FRO, GRO, DAI, SPE".indexOf(department.getContentName().toUpperCase())==-1 &&

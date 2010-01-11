@@ -292,7 +292,7 @@ public class OrderConsumer implements IConsumer {
 				FDCartLineModel cartLine =
 					new FDCartLineModel(
 						new FDSku(productInfo),
-						productmodel.getProductRef(),
+						productmodel,
 						new FDConfiguration(quantity, salesUnit.getName(), optionMap), null);
 
 				cartLine.refreshConfiguration();

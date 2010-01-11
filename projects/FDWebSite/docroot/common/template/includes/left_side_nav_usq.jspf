@@ -135,7 +135,7 @@ int displayedRows = 1;
 StringBuffer buf = new StringBuffer(10000);
 ContentNodeModel aliasNode=null;
 
-ContentNodeModel currCat = ContentFactory.getInstance().getContentNodeByName(request.getParameter("catId"));
+ContentNodeModel currCat = ContentFactory.getInstance().getContentNode(request.getParameter("catId"));
 String topParent= getTopParentCategory(currCat).getContentName();
 String topCatLink="/category.jsp?catId="+currCat;	
 	//displayedRows++;
@@ -143,12 +143,8 @@ String topCatLink="/category.jsp?catId="+currCat;
 
 
 // !!! implement grocery
-Attribute allFldrAttr = currCat.getAttribute("FAKE_ALL_FOLDER");
 
-boolean showAnAllFldrLink = false;
-if (allFldrAttr!=null ) {
-    showAnAllFldrLink = ((Boolean)allFldrAttr.getValue()).booleanValue();
-}
+boolean showAnAllFldrLink = currCat instanceof CategoryModel ? ((CategoryModel)currCat).getFakeAllFolders() : false;
 
 List breakDepths = new LinkedList();
 NavigationElement navElem=null;
@@ -190,7 +186,7 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
     }
     boolean isSelectedCat = false;
     boolean showChildren = false;
-    ContentNodeModel navCat = ContentFactory.getInstance().getContentNodeByName(navElem.getContentName());
+    ContentNodeModel navCat = ContentFactory.getInstance().getContentNode(navElem.getContentName());
     if(navCat != null && navCat instanceof CategoryModel && navElem.getDepth() == 0) {
         CategoryModel cm = (CategoryModel) navCat;
         showChildren = EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren());

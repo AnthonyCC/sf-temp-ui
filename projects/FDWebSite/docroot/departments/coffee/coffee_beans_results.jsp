@@ -41,7 +41,6 @@ String tasteValue = null;
 String typeValue = null;
 String goodForEspresso = null;
 String cellColor = null;
-MultiAttribute prodRatingDomVals = null;
 List ratingValues = null;
 StringBuffer criteriaFound = new StringBuffer();
 
@@ -98,14 +97,13 @@ for(Iterator itr= coffeeCollection.iterator();itr.hasNext() && matchCounter<15;)
      ProductModel coffeeProduct = (ProductModel)item;
      StringBuffer matchNames=new StringBuffer();
      boolean matched = true;
-     prodRatingDomVals = (MultiAttribute)coffeeProduct.getAttribute("RATING");
-     ratingValues = prodRatingDomVals==null?new ArrayList():prodRatingDomVals.getValues();
+     ratingValues = coffeeProduct.getRating();
 
-     // get the values for the attributes that participate in the criteria. from the Rating and Usage MultiAttribute)
+     // get the values for the attributes that participate in the criteria. from the Rating and Usage Attribute)
     for(Iterator dvItr = ratingValues.iterator();dvItr.hasNext() ;) {
         Object obj = dvItr.next();
-        if (!(obj instanceof DomainValueRef)) continue;
-        DomainValue dmv = ((DomainValueRef)obj).getDomainValue(); 
+        if (obj instanceof DomainValue) {
+        DomainValue dmv = (DomainValue)obj; 
         Domain dom = dmv.getDomain();
         if (dom.getName().equalsIgnoreCase("coffee_type")) {
             typeValue = dmv.getValue();
@@ -119,6 +117,7 @@ for(Iterator itr= coffeeCollection.iterator();itr.hasNext() && matchCounter<15;)
             decafValue = dmv.getValue();
         } else if (dom.getName().equalsIgnoreCase("goodforespresso")) {
             goodForEspresso = dmv.getValue();
+        }
         }
 
     }
@@ -223,7 +222,7 @@ List sortStrategy = new ArrayList();
 if ("price".equalsIgnoreCase(sortCol)) {
   sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRICE,false));
 } else {
-   sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_ATTRIBUTE,"RATING",sortCol,sortInReverseOrder));
+   sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_DOMAIN_RATING,sortInReverseOrder,sortCol));
 }
 sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME,SortStrategyElement.SORTNAME_FULL,false));
 %>
@@ -321,13 +320,12 @@ for (int displayLoop=0;displayLoop<loopCounter;displayLoop++) {
         bodyImg = "&nbsp;&#8212;&nbsp;";
         acidityImg = "&nbsp;&#8212;&nbsp;";
         typeValue = null;
-        prodRatingDomVals = (MultiAttribute)coffeeProduct.getAttribute("RATING");
-        ratingValues = prodRatingDomVals==null?new ArrayList():prodRatingDomVals.getValues();
+        ratingValues = coffeeProduct.getRating();
         
         for(Iterator dvItr = ratingValues.iterator();dvItr.hasNext() ;) {
             Object obj = dvItr.next();
-            if (!(obj instanceof DomainValueRef)) continue;
-            DomainValue dmv = ((DomainValueRef)obj).getDomainValue(); 
+            if (obj instanceof DomainValue) {
+            DomainValue dmv = ((DomainValue)obj); 
             Domain dom = dmv.getDomain();
             if (dom.getName().equalsIgnoreCase("coffee_type")) {
                 typeValue = dmv.getValue();
@@ -344,7 +342,7 @@ for (int displayLoop=0;displayLoop<loopCounter;displayLoop++) {
             } else  if (dom.getName().equalsIgnoreCase("decaffeinated")) {
                 decafValue = dmv.getValue();
             }
-
+            }
         }
 
         prodCounter++;

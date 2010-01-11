@@ -7,19 +7,16 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.content.attributes.EnumAttributeName;
-import com.freshdirect.customer.ErpOrderLineModel;
-import com.freshdirect.customer.ErpReturnLineModel;
-import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.customer.ErpInvoiceLineI;
+import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.customer.ErpReturnLineI;
+import com.freshdirect.customer.ErpReturnLineModel;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.content.AvailabilityFactory;
-import com.freshdirect.fdstore.content.ProductRef;
-import com.freshdirect.fdstore.promotion.PercentOffApplicator;
-import com.freshdirect.fdstore.promotion.Promotion;
-import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 
 public abstract class AbstractCartLine extends FDProductSelection implements FDCartLineI {
 	
@@ -35,7 +32,7 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 
 	private final String variantId;
 
-	protected AbstractCartLine(FDSku sku, ProductRef productRef, FDConfigurableI configuration, String variantId) {
+	protected AbstractCartLine(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId) {
 		super(sku, productRef, configuration, variantId);
 
 		this.firstInvoiceLine = null;

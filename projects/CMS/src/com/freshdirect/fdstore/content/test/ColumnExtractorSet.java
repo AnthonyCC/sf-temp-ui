@@ -93,7 +93,7 @@ public interface ColumnExtractorSet {
 			
 			ListConcatenation all = new ListConcatenation();
 			
-			for(Iterator i = productModel.getSkus().iterator(); i.hasNext(); ) {
+			for(Iterator i = productModel.getPrimarySkus().iterator(); i.hasNext(); ) {
 				SkuModel skuModel = (SkuModel)i.next();
 				
 				// only available skus

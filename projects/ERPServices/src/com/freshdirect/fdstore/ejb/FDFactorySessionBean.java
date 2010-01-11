@@ -207,7 +207,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
     
-    public Map getSkusOldness() throws FDResourceException {
+    public Map<String, Integer> getSkusOldness() throws FDResourceException {
 		if (this.infoHome==null) {
 			this.lookupInfoHome();	
 		}

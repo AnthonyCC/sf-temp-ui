@@ -56,7 +56,7 @@ if (!ContentFactory.getInstance().getPreviewMode() && productNode.isHidden()) {
 
 // [redirection] if there is a redirect_url setting.. then go to that regardless of the preview mode
 String redir = productNode.getRedirectUrl();
-if (!"".equals(redir) && !"nm".equalsIgnoreCase(redir)) {
+if (redir !=null && !"".equals(redir) && !"nm".equalsIgnoreCase(redir)) {
     String redirectURL = response.encodeRedirectURL(redir);
 	if (redirectURL.toUpperCase().indexOf("/PRODUCT.JSP?")==-1) {
         StringBuffer buf = new StringBuffer(redirectURL);
@@ -137,6 +137,7 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 %>
 <%@ include file="/includes/product/cutoff_notice.jspf" %>
 <%@ include file="/includes/product/i_dayofweek_notice.jspf" %>
+<!-- product layout : <%= prodPageLayout.getLayoutPath() %> --> 
 <jsp:include page="<%= prodPageLayout.getLayoutPath() %>" flush="false"/>
 
 </fd:FDShoppingCart>

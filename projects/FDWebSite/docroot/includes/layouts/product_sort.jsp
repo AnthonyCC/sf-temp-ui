@@ -34,6 +34,7 @@ if(deptId!=null) {
 } else {
 	currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
+final ProductContainer productContainer = (currentFolder instanceof ProductContainer) ? (ProductContainer) currentFolder : null; 
 
 boolean onlyOneProduct = false;
 ProductModel theOnlyProduct = null;
@@ -47,7 +48,6 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 	CategoryModel lastProdFolder = null;
 	ProductModel lastProduct = null;
 	CategoryModel workFolder = null;
-        Attribute prodSortAttrib = null;
         List ratingAttribs = null;
 	String url = null;
 	String colLabel = null;
@@ -58,17 +58,10 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
         boolean isBooleanDomain = false;
         boolean isNumeric = true;
 	//com.bluemartini.htmlapp.Collection attributeCollection = currentFolder.getCollection("ATR_attr_display_list");
-        boolean breakOnSubfolder = false;
-        prodSortAttrib = currentFolder.getAttribute("RATING_BREAK_ON_SUBFOLDERS");
-        if (prodSortAttrib!=null) {
-            breakOnSubfolder = ((Boolean)prodSortAttrib.getValue()).booleanValue();
-        }
+        boolean breakOnSubfolder = productContainer.isRatingBreakOnSubfolders();
 
 
-        prodSortAttrib = currentFolder.getAttribute("RATING");
-        if (prodSortAttrib !=null) {
-            ratingAttribs = (List)prodSortAttrib.getValue();
-        }else ratingAttribs = new ArrayList();
+        ratingAttribs = productContainer.getRating();
 
 	int atrDisplayCount = 2;
 	if (ratingAttribs !=null) {
@@ -78,7 +71,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
         if (orderBy==null) {
            // get the rating attibute collection and get the first rating thing off of it
             if (ratingAttribs.size() > 0) {
-                Domain raDMV = ((DomainRef)ratingAttribs.get(0)).getDomain();
+                Domain raDMV = (Domain) ratingAttribs.get(0);
                 orderBy = raDMV.getName().toLowerCase();
             }else orderBy="name";
         }
@@ -93,8 +86,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
     int remainColWidth = 0;
     boolean showRelatedRatingImage = false;
     Comparator priceComp = new ProductModel.PriceComparator();
-    prodSortAttrib = currentFolder.getAttribute("SHOW_RATING_RELATED_IMAGE");
-    showRelatedRatingImage = prodSortAttrib==null?false:((Boolean)prodSortAttrib.getValue()).booleanValue();
+    showRelatedRatingImage = productContainer.isShowRatingRelatedImage();
     if (showRelatedRatingImage) {
 		tablewidth=425;
 	  	tdwidth=96; 
@@ -188,7 +180,7 @@ boolean reverseOrderBy = false;
 List sortStrategy = new ArrayList();
 sortStrategy.add(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY));
 for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
-        Domain ratingAttrib = ((DomainRef)aItr.next()).getDomain();
+        Domain ratingAttrib = (Domain) aItr.next();
         List domainValues = ratingAttrib.getDomainValues();
         colLabel="";
         minusChar="-&nbsp;";
@@ -227,7 +219,7 @@ for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
 	//should this column label be linked?.  if currently ordered by it, then No.
         if(orderBy.equalsIgnoreCase(colRatingName)){
             if (isBooleanDomain || isNumeric) reverseOrderBy=true;
-             sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_ATTRIBUTE,"RATING",orderBy,reverseOrderBy));
+             sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_DOMAIN_RATING,reverseOrderBy,orderBy));
 %>
 <%=minusChar%><%=colLabel%><%=plusChar%>
 <%	}else{ %>
@@ -270,7 +262,7 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
 
    workFolder = (CategoryModel)prod.getParentNode();
     // is the folder displayable or a decaf folder ?
-    if (lastFolder==null || !workFolder.getPK().equals(lastFolder.getPK())) {
+    if (lastFolder==null || !workFolder.getContentKey().equals(lastFolder.getContentKey())) {
         shownFolderLabel = false;
     }
 
@@ -312,10 +304,9 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
 
 %><TR VALIGN="MIDDLE" BGCOLOR="<%=bgcolor%>">
 <%
-        prodSortAttrib = prod.getAttribute("RATING_RELATED_IMAGE");
+		Image ratingImage = prod.getRatingRelatedImage();
         String itmImage = "";
-        if (prodSortAttrib !=null && showRelatedRatingImage) {
-                Image ratingImage = (Image)prodSortAttrib.getValue();
+        if (ratingImage !=null && showRelatedRatingImage) {
                 StringBuffer flagTag = new StringBuffer();
                 flagTag.append("<img src=\"");
                 flagTag.append(ratingImage.getPath());
@@ -335,32 +326,19 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
     //We've got a products. Now locate each display attribute on the product
         int colCounter = 2;
         for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
-            Domain ratingAttrib = ((DomainRef)aItr.next()).getDomain();
+            Domain ratingAttrib = (Domain) aItr.next();
             List domainValues = ratingAttrib.getDomainValues();
-            MultiAttribute prodSortMAttrib = (MultiAttribute)prod.getAttribute("RATING");
-            List prodDomainValues = null;
+            List prodDomainValues = prod.getRating();
             String prodDomainValue = null;
 
-            if (prodSortMAttrib !=null) {
-                prodDomainValues = (List)prodSortMAttrib.getValues();
-            }else prodDomainValues = new ArrayList();
             
             boolean foundDomain = false;
            // get the matching domainvalue off the prod for this Domain.
             isBooleanDomain = false;
             isNumeric = false;
 
-            
-            for(Iterator dvItr = prodDomainValues.iterator();dvItr.hasNext() && !foundDomain ;) {
-                Object obj = dvItr.next();
-                if (!(obj instanceof DomainValueRef)) continue;
-                DomainValue dmv = ((DomainValueRef)obj).getDomainValue(); //dvItr.next();
-                Domain dom = dmv.getDomain();
-                if (ratingAttrib.getPK().equals(dom.getPK())) {
-                    prodDomainValue = dmv.getValue();
-                    foundDomain = true;
-                } 
-            }
+            prodDomainValue = HowToCookItUtil.getProductDomainValue(prodDomainValues, ratingAttrib.getContentKey().getId(), null);
+            foundDomain = prodDomainValue != null;
             if(foundDomain) {
                 if ("true".equalsIgnoreCase(prodDomainValue) || "false".equalsIgnoreCase(prodDomainValue)) {
                     isBooleanDomain = true;

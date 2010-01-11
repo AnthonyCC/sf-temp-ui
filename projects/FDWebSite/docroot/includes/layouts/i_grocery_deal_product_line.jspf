@@ -62,11 +62,10 @@
     }
 
     String thisProdBrandLabel = displayProduct.getPrimaryBrandName();
-	MultiAttribute varMatrix = (MultiAttribute)sku.getAttribute("VARIATION_MATRIX");
-	List domains = varMatrix==null ? Collections.EMPTY_LIST : (List)varMatrix.getValue();
+	List domains = sku.getVariationMatrix();
 	StringBuffer key = new StringBuffer();
 	for(Iterator mi = domains.iterator(); mi.hasNext(); ){
-		DomainValue domainValue = ((DomainValueRef)mi.next()).getDomainValue();
+		DomainValue domainValue = (DomainValue)mi.next();
 		key.append(domainValue.getLabel());
 		key.append("  ");
 		key.deleteCharAt(key.length()-1);

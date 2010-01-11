@@ -69,7 +69,7 @@ if (!variant.isAvailable()) {
 
 
 if (catIdParam!=null && !"".equals(catIdParam)) {
-  ContentNodeI catNode = null;
+  ContentNodeModel catNode = null;
   catNode = ContentFactory.getInstance().getContentNode(catIdParam);
   if (catNode instanceof CategoryModel) {
 	jspTemplate = "/common/template/left_dnav.jsp";

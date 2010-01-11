@@ -559,7 +559,7 @@ public class CreateGiftCardOrderTestCase extends TestCase {
 				FDCartLineModel cartLine =
 					new FDCartLineModel(
 						new FDSku(productInfo),
-						productmodel.getProductRef(),
+						productmodel,
 						new FDConfiguration(quantity, salesUnit.getName(), optionMap),null);
 
 				cartLine.setFixedPrice(50);

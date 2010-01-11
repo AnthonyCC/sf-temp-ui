@@ -6,8 +6,9 @@ import java.util.List;
 
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
-public class RecipeCategory extends ContentNodeModelImpl {
+public class RecipeCategory extends ContentNodeModelImpl implements HasRedirectUrl {
 
 	private final List subcategories = new ArrayList();
 	private final List featuredRecipes = new ArrayList();
@@ -21,7 +22,7 @@ public class RecipeCategory extends ContentNodeModelImpl {
 	}
 
 	public String getRedirectUrl() {
-		return getAttribute("REDIRECT_URL", "");
+            return (String) getCmsAttributeValue("REDIRECT_URL");
 	}
 
 	/**
@@ -35,23 +36,20 @@ public class RecipeCategory extends ContentNodeModelImpl {
 	}
 
 	public Domain getClassification() {
-		DomainRef domRef= (DomainRef) getAttribute("classification", (DomainRef) null);
-		
-		return domRef == null
-	     ? null
-         : domRef.getDomain();
+	    ContentKey key = (ContentKey) getCmsAttributeValue("classification");
+	    return key != null ? ContentFactory.getInstance().getDomainById(key.getId()) : null;
 	}
 
 	public Image getPhoto() {
-		return (Image) getAttribute("photo", (Image) null);
+            return FDAttributeFactory.constructImage(this, "photo");
 	}
 
 	public Image getLabel() {
-		return (Image) getAttribute("label", (Image) null);
+            return FDAttributeFactory.constructImage(this, "label");
 	}
 
 	public Image getZoomLabel() {
-		return (Image) getAttribute("zoomLabel", (Image) null);
+            return FDAttributeFactory.constructImage(this, "zoomLabel");
 	}
 	
 	public List getFeaturedRecipes() {
@@ -60,10 +58,8 @@ public class RecipeCategory extends ContentNodeModelImpl {
 	}
 
 	public RecipeSource getFeaturedSource() {
-		AttributeI attrib = getCmsAttribute("featuredSource");
-		if (attrib==null) return null;
-		ContentKey key = (ContentKey) attrib.getValue();
-		return key == null ? null : (RecipeSource) ContentFactory.getInstance().getContentNode(key.getId());
+	        ContentKey key = (ContentKey) getCmsAttributeValue("featuredSource");
+		return key == null ? null : (RecipeSource) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 	
 	public boolean isSecondaryCategory() {
@@ -76,6 +72,10 @@ public class RecipeCategory extends ContentNodeModelImpl {
 
 	public String getFullName() {
 		return getName();
+	}
+	
+	public Html getRecipeEditorial() {
+	    return FDAttributeFactory.constructHtml(this, "editorial");
 	}
 
 }

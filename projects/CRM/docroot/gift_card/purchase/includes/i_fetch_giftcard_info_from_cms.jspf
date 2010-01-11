@@ -24,7 +24,7 @@
 			System.out.println("prodNameToUse 1 "+prodNameToUse);
 		*/
 
-		ContentNodeModel categoryRef = ContentFactory.getInstance().getContentNodeByName(catIdToUse);
+		ContentNodeModel categoryRef = ContentFactory.getInstance().getContentNode(catIdToUse);
 			//System.out.println("prodNameToUse 1 ");
 		ProductModel prodRef = ContentFactory.getInstance().getProductByName(catIdToUse, prodNameToUse);
 			//System.out.println("prodNameToUse 2 ");

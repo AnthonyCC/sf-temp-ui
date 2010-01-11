@@ -28,10 +28,10 @@ boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
 if(deptId!=null) {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+	currentFolder=ContentFactory.getInstance().getContentNode(deptId);
 	isDepartment = true;
 } else {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+	currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
 
 
@@ -46,14 +46,12 @@ if (sortedColl==null) sortedColl = new ArrayList();
 //***         the How To cook it Patterrn                    ***
 //**************************************************************
     ContentNodeModel owningFolder = currentFolder;
-    Attribute attribInFeatAll = null;
 
     TreeMap deferDisplayProds = new TreeMap(contentNodeComparator);
     HashMap deferDisplayPrices = new HashMap();
     HashMap deferDisplayImages   = new HashMap();
     Image favAllImage = null;
-    attribInFeatAll = currentFolder.getAttribute("FAVORITE_ALL_SHOW_PRICE");
-    boolean showPrices = attribInFeatAll==null?false:((Boolean)attribInFeatAll.getValue()).booleanValue();
+    boolean showPrices = ((ProductContainer)currentFolder).isFavoriteShowPrice();
     boolean folderShown = false;
     String imagePath = null;
     String imageDim = "";
@@ -72,9 +70,8 @@ if (sortedColl==null) sortedColl = new ArrayList();
 
 
  // don't display any heading if the favorite collection is empty or the products are unavailable.
-    attribInFeatAll = currentFolder.getAttribute("FEATURED_PRODUCTS");
     int favoritesShow = 0;
-    List favorites = attribInFeatAll==null ?new ArrayList():(List)attribInFeatAll.getValue();;
+    List favorites =  ((ProductContainer)currentFolder).getFeaturedProducts();
     int foldersShown =0, productsShown=0;
     LinkedList productLinks = new LinkedList();
     LinkedList productPrices = new LinkedList();
@@ -89,7 +86,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
     ContentFactory contentFactory = ContentFactory.getInstance();
     Comparator priceComp = new ProductModel.PriceComparator();
 %>
-    <logic:iterate id='contentRef' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ContentRef">
+    <logic:iterate id='contentRef' collection="<%=favorites%>" type="java.lang.Object">
 <% 
         ProductModel product = JspMethods.getFeaturedProduct(contentRef); //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
         if (product.isDiscontinued() || product.isUnavailable()) continue;
@@ -196,8 +193,8 @@ if (sortedColl==null) sortedColl = new ArrayList();
 <TR VALIGN="MIDDLE">
 	<TD WIDTH="400" COLSPAN="4" CLASS="title11"><%=displayCategory.getFullName()%></td></tr>
 <%
-        Attribute introCpyAttrib = displayCategory.getAttribute("EDITORIAL");
-        String introCopyPath = introCpyAttrib==null?"":((Html)introCpyAttrib.getValue()).getPath();
+        Html introCpyAttrib = displayCategory.getEditorial();
+        String introCopyPath = introCpyAttrib==null?"":introCpyAttrib.getPath();
         if ( introCopyPath!=null && introCopyPath.trim().length() > 0) {
 %>
 <%//gray line%>
@@ -209,15 +206,14 @@ if (sortedColl==null) sortedColl = new ArrayList();
 </TABLE>
 <%
                // get the list of products that are eligible to be prepared for this group
-               Attribute htiProds = displayCategory.getAttribute("HOW_TO_COOK_IT_PRODUCTS");
-               if (htiProds==null) continue;
-                List htciProdList = (List)htiProds.getValue();
+               List htciProdList = displayCategory.getHowToCookItProducts();
+               if (htciProdList==null || htciProdList.size() ==0) continue;
                 col1.setLength(0);
                 productLinks.clear();
                 productPrices.clear();
                 gotAvailProdImg = false;
 %>                
-    <logic:iterate id='contentRef' collection="<%=htciProdList%>" type="com.freshdirect.fdstore.content.ContentRef">
+    <logic:iterate id='contentRef' collection="<%=htciProdList%>" type="java.lang.Object">
 <% 
         ProductModel product = JspMethods.getFeaturedProduct(contentRef); //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
         if (product.isDiscontinued() || product.isUnavailable()) continue;

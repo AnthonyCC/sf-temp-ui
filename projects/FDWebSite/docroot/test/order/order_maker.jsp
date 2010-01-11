@@ -54,7 +54,7 @@
                 skumodel = sku;
             }
         }
-        CategoryModel categorymodel = ((CategoryRef) productmodel.getAttribute("PRIMARY_HOME").getValue()).getCategory();
+        CategoryModel categorymodel = productmodel.getPrimaryHome();
         DepartmentModel deptmodel = categorymodel.getDepartment();
 
         // creates the minimum number of configured products to exercise
@@ -134,7 +134,7 @@
             
 			FDConfiguration conf = new FDConfiguration(quantity, salesUnit.getName(), optionMap);
 
-			FDCartLineModel cartLine = new FDCartLineModel(new FDSku(productInfo), productmodel.getProductRef(), conf, null);
+			FDCartLineModel cartLine = new FDCartLineModel(new FDSku(productInfo), productmodel, conf, null);
 
             lines.add(cartLine);
         }
@@ -173,18 +173,18 @@
 		//
 		// add description of sku variations
 		//
-		if (sku.getAttribute("VARIATION_MATRIX") != null) {
-			List varMatr = (List) sku.getAttribute("VARIATION_MATRIX").getValue();
+		List<DomainValue> varMatr = sku.getVariationMatrix();
+		if (varMatr != null && varMatr.size() > 0) {
 			for (Iterator varIter = varMatr.iterator(); varIter.hasNext();) {
-				DomainValue dv = ((DomainValueRef) varIter.next()).getDomainValue();
+				DomainValue dv = ((DomainValue) varIter.next());
 				if (confDescr.length() > 0) confDescr.append(", ");
 				confDescr.append( dv.getLabel() );
 			}
 		}
-		if (sku.getAttribute("VARIATION_OPTIONS") != null) {
-			List varOpts = (List) sku.getAttribute("VARIATION_OPTIONS").getValue();
-			for (Iterator optIter = varOpts.iterator(); optIter.hasNext();) {
-				DomainValue dv = ((DomainValueRef) optIter.next()).getDomainValue();
+		List<DomainValue> variationOptions = sku.getVariationOptions();
+		if (variationOptions != null && variationOptions.size()>0) {
+			for (Iterator optIter = variationOptions.iterator(); optIter.hasNext();) {
+				DomainValue dv = ((DomainValue) optIter.next());
 				if (confDescr.length() > 0) confDescr.append(", ");
 				confDescr.append( dv.getLabel() );
 			}

@@ -47,6 +47,10 @@ public final class Domain extends ContentNodeModelImpl {
         return new ArrayList(valueModels);
     }
     
+    public List<ContentKey> getDomainValueKeys() {
+        return (List<ContentKey>) getCmsAttributeValue("domainValues");
+    }
+    
     public DomainValue getDomainValue(String value) {
         Iterator vIter = valueModels.iterator();
         while (vIter.hasNext()) {

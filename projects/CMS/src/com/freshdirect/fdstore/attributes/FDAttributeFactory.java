@@ -4,6 +4,7 @@
  */
 package com.freshdirect.fdstore.attributes;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,28 +12,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.EnumDefI;
 import com.freshdirect.cms.RelationshipDefI;
-import com.freshdirect.fdstore.attributes.cms.BooleanBuilder;
-import com.freshdirect.fdstore.attributes.cms.BrandRefBuilder;
-import com.freshdirect.fdstore.attributes.cms.CategoryRefBuilder;
-import com.freshdirect.fdstore.attributes.cms.DepartmentRefBuilder;
-import com.freshdirect.fdstore.attributes.cms.DomainRefBuilder;
-import com.freshdirect.fdstore.attributes.cms.DomainValueRefBuilder;
-import com.freshdirect.fdstore.attributes.cms.DoubleBuilder;
+import com.freshdirect.fdstore.attributes.cms.DomainValueBuilder;
+import com.freshdirect.fdstore.attributes.cms.GenericContentNodeBuilder;
 import com.freshdirect.fdstore.attributes.cms.GenericNodeBuilder;
 import com.freshdirect.fdstore.attributes.cms.HtmlBuilder;
 import com.freshdirect.fdstore.attributes.cms.ImageBuilder;
-import com.freshdirect.fdstore.attributes.cms.IntegerBuilder;
-import com.freshdirect.fdstore.attributes.cms.ProductRefBuilder;
-import com.freshdirect.fdstore.attributes.cms.SkuRefBuilder;
-import com.freshdirect.fdstore.attributes.cms.StringBuilder;
+import com.freshdirect.fdstore.attributes.cms.PrimitiveBuilder;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -41,26 +37,76 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class FDAttributeFactory {
 	
-	private final static Category LOGGER = LoggerFactory.getInstance(FDAttributeFactory.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(FDAttributeFactory.class);
 
-	public static Attribute getAttribute(AttributeI attr) {
-		if (attr != null) {
-			Object value = attr.getValue();
-			if (value == null) {
-				return null;
-			}
+	/**
+	 * Construct the backward compatible wrapper objects for a node, without constructing the deprecated
+	 * (Multi)Attribute objects.
+	 * 
+	 * @param node
+	 * @param attribName
+	 * @return
+	 */
+	public static Object constructWrapperValue(ContentNodeModel node, String attribName) {
+	    Object value = node.getCmsAttributeValue(attribName);
+	    if (value != null) {
+	        AttributeDefI attributeDef = node.getAttributeDef(attribName);
+	        FDAttributeBuilderI builder = getBuilder(attributeDef, value);
+	        return builder.constructValue(attributeDef, value);
+	    }
+	    return null;
+	}
+	
+	/**
+	 * Construct an image object.
+	 * @param node
+	 * @param attribName
+	 * @return
+	 */
+	public static Image constructImage(ContentNodeModel node, String attribName) {
+	    return (Image) constructWrapperValue(node, attribName);
+	}
 
-			AttributeDefI attrDef = attr.getDefinition();
-			FDAttributeBuilderI builder = getBuilder(attrDef, value);
-
-			if (builder != null) {
-				return builder.build(attrDef, value);
-			} else {
-				LOGGER.warn("Couldn't find builder for " + attrDef.getName() + " : " + value.getClass().getName());
-			}
-		}
-		return null;
-
+        public static Image constructImage(ContentNodeModel node, String attribName, Image defValue) {
+            Image i = (Image) constructWrapperValue(node, attribName);
+            return i != null ? i : defValue;
+        }
+	
+        /**
+         * Construct an Html object.
+         * @param node
+         * @param attribName
+         * @return
+         */
+        public static Html constructHtml(ContentNodeModel node, String attribName) {
+            return (Html) constructWrapperValue(node, attribName);
+        }
+	
+        /**
+         * Construct the backward compatible wrapper objects for a node, without constructing the deprecated
+         * (Multi)Attribute objects.
+         * 
+         * @param node
+         * @param attribName
+         * @return
+         */
+	public static List constructWrapperList(ContentNodeModel node, String attribName) {
+            Object value = node.getCmsAttributeValue(attribName);
+            if (value != null) {
+                AttributeDefI attributeDef = node.getAttributeDef(attribName);
+                FDAttributeBuilderI builder = getBuilder(attributeDef, value);
+                return (List) builder.constructValue(attributeDef, value);
+            }
+            return Collections.EMPTY_LIST;
+	}
+	
+	public static <X> X lookup(ContentNodeModel node, String attribName, X defValue) {
+            Object value = node.getCmsAttributeValue(attribName);
+            if (value instanceof ContentKey) {
+                return (X) ContentFactory.getInstance().getContentNodeByKey((ContentKey) value);
+            } else {
+                return defValue;
+            }
 	}
 
 	private static FDAttributeBuilderI getBuilder(AttributeDefI attrDef, Object value) {
@@ -78,7 +124,7 @@ public class FDAttributeFactory {
 				Set types = new HashSet();
 				for (Iterator i = valueList.iterator(); i.hasNext();) {
 					ContentKey cKey = (ContentKey) i.next();
-					types.add(cKey.lookupContentNode().getKey().getType().getName());
+					types.add(cKey.getType().getName());
 				}
 				if (types.isEmpty())
 					return null; // no 
@@ -113,21 +159,20 @@ public class FDAttributeFactory {
 
 	private final static FDAttributeBuilderI GENERIC_NODE_BUILDER = new GenericNodeBuilder();
 	
-	private final static Map typeMap = new HashMap();
+	private final static Map<String,FDAttributeBuilderI> typeMap = new HashMap<String,FDAttributeBuilderI>();
 	static {
-		typeMap.put("Department", new DepartmentRefBuilder());
-		typeMap.put("Category", new CategoryRefBuilder());
-		typeMap.put("Product", new ProductRefBuilder());
-		typeMap.put("Sku", new SkuRefBuilder());
-		typeMap.put("Brand", new BrandRefBuilder());
+		typeMap.put("Department", new GenericContentNodeBuilder(EnumAttributeType.DEPARTMENT));
+		typeMap.put("Category", new GenericContentNodeBuilder(EnumAttributeType.CATEGORYREF));
+		typeMap.put("Product", new GenericContentNodeBuilder(EnumAttributeType.PRODUCTREF));
+		typeMap.put("Sku", new GenericContentNodeBuilder(EnumAttributeType.SKUREF));
+                typeMap.put("Domain", new GenericContentNodeBuilder(EnumAttributeType.DOMAIN));
 		typeMap.put("Image", new ImageBuilder());
 		typeMap.put("Html", new HtmlBuilder());
-		typeMap.put("Domain", new DomainRefBuilder());
-		typeMap.put("DomainValue", new DomainValueRefBuilder());
-		typeMap.put("Integer", new IntegerBuilder());
-		typeMap.put("Double", new DoubleBuilder());
-		typeMap.put("Boolean", new BooleanBuilder());
-		typeMap.put("String", new StringBuilder());
+		typeMap.put("DomainValue", new DomainValueBuilder());
+		typeMap.put("Integer", new PrimitiveBuilder(EnumAttributeType.INTEGER));
+		typeMap.put("Double", new PrimitiveBuilder(EnumAttributeType.DOUBLE));
+		typeMap.put("Boolean", new PrimitiveBuilder(EnumAttributeType.BOOLEAN));
+		typeMap.put("String", new PrimitiveBuilder(EnumAttributeType.STRING));
 	}
 
 }

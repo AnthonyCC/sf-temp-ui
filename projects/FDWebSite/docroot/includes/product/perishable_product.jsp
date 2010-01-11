@@ -34,7 +34,7 @@
 
 	//String snowFlakeImage = "/media_stat/images/template/snwflk_icon.gif";
 	String prodPageRatingStuff = getProdPageRatings( productNode, response ); // get and format the product page ratings
-	int templateType = productNode.getAttribute( "TEMPLATE_TYPE", 1 );
+	int templateType = productNode.getTemplateType(1);
 
 	if ( productNode == null ) {
 		throw new JspException( "Product not found in Content Management System" );

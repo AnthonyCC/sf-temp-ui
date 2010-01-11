@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.template;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.Map.Entry;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -19,7 +19,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeI;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -76,7 +76,7 @@ public class TemplateContext extends BaseTemplateContext{
 	 * @param trackingCode trackingCode to append to link as <code>trk</code> parameter
 	 * @return relative URL string, or null if no link is available.
 	 */
-	public String getHref(ContentNodeI node, String trackingCode) {
+	public String getHref(ContentNodeModel node, String trackingCode) {
 		String link;
 		if (node instanceof ProductModel) {
 			// link to product in its category			
@@ -103,8 +103,8 @@ public class TemplateContext extends BaseTemplateContext{
 	 * @param id encoded ID String ("ContentType:id")
 	 * @return the contentnode or null if it does not exist
 	 */
-	public ContentNodeI getNode(String id) {
-		ContentNodeI node = null;
+	public ContentNodeModel getNode(String id) {
+		ContentNodeModel node = null;
 		if (id.startsWith("Product:")) {
 			int sep = id.indexOf('@');
 			if (sep!=-1) {
@@ -130,13 +130,13 @@ public class TemplateContext extends BaseTemplateContext{
 	 * Get multiple content nodes by ID.
 	 * 
 	 * @param ids List of encoded ID Strings ("ContentType:id") (never null)
-	 * @return List of {@link ContentNodeI} (never null)
+	 * @return List of {@link ContentNodeModel} (never null)
 	 */
 	public List getNodes(List ids) {
 		ArrayList ret = new ArrayList();
 		for (Iterator i = ids.iterator(); i.hasNext();) {
 			String id = (String) i.next();
-			ContentNodeI node = getNode(id);
+			ContentNodeModel node = getNode(id);
 			if (node != null) {
 				ret.add(node);
 			}
@@ -148,7 +148,7 @@ public class TemplateContext extends BaseTemplateContext{
 	 * Get multiple content nodes by IDs with associated parameters.
 	 * 
 	 * @param idMap Map of encoded ID Strings ("ContentType:id") -> Object
-	 * @return Map of {@link ContentNodeI} -> Object
+	 * @return Map of {@link ContentNodeModel} -> Object
 	 */
 	public Map getNodesMap(Map idMap) {		
 		
@@ -156,7 +156,7 @@ public class TemplateContext extends BaseTemplateContext{
 		for (Iterator i=idMap.entrySet().iterator(); i.hasNext(); ) {
 			Map.Entry e = (Map.Entry) i.next();
 			String contentId = (String) e.getKey();
-			ContentNodeI node = getNode(contentId);
+			ContentNodeModel node = getNode(contentId);
 			ret.put(node, e.getValue());
 		}		
 		return ret;
@@ -168,7 +168,7 @@ public class TemplateContext extends BaseTemplateContext{
 	 * @param node Content node
 	 * @return false if the node is null, or unavailable
 	 */
-	public boolean isAvailable(ContentNodeI node) {
+	public boolean isAvailable(ContentNodeModel node) {
 		if (node == null) {
 			return false;
 		}
@@ -192,10 +192,10 @@ public class TemplateContext extends BaseTemplateContext{
 	 *  Return the pricing with the correct sales unit for the node.
 	 *  Code copied from the JspMethods class.
 	 */
-	public String getPrice(ContentNodeI node) {
+	public String getPrice(ContentNodeModel node) {
 		String       price = "";
 		
-		if (node.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
+		if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
 			ProductModel product    = (ProductModel) node;
 			SkuModel     defaultSku = product.getDefaultSku();
 			
@@ -214,17 +214,17 @@ public class TemplateContext extends BaseTemplateContext{
 		return price;
 	}
 	
-	public String getBasePrice(ContentNodeI node) {
+	public String getBasePrice(ContentNodeModel node) {
 		String       price = "";
 		//System.out.println("********** inside getBasePrice "+node);
-		if (node.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
+		if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
 			ProductModel product    = (ProductModel) node;
-			SkuModel     defaultSku = product.getDefaultSku();
+			String     defaultSku = product.getDefaultSkuCode();
 			//System.out.println("********** inside getBasePrice default sku: "+defaultSku);
 			
 			try {
 				if (defaultSku != null) {
-					FDProductInfo pi    = FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
+					FDProductInfo pi    = FDCachedFactory.getProductInfo(defaultSku);
 					//pi.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pi.getDefaultPriceUnit().toLowerCase())
 					price =  currencyFormatter.format(pi.getBasePrice());
 					//System.out.println("********** inside getBasePrice baseprice: "+price);
@@ -241,10 +241,10 @@ public class TemplateContext extends BaseTemplateContext{
 	 *  Return the pricing with the correct sales unit for the node.
 	 *  Code copied from the JspMethods class.
 	 */
-	public String getWinePrice(ContentNodeI node) {
+	public String getWinePrice(ContentNodeModel node) {
 		String       price = "";
 		
-		if (node.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
+		if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
 			ProductModel product    = (ProductModel) node;
 			SkuModel     defaultSku = product.getDefaultSku();
 			
@@ -275,7 +275,7 @@ public class TemplateContext extends BaseTemplateContext{
 		int count = 0;
 		for (Iterator i = ret.entrySet().iterator(); i.hasNext(); ) {
 			Map.Entry e = (Map.Entry) i.next();			
-			ContentNodeI node = (ContentNodeI) e.getKey();
+			ContentNodeModel node = (ContentNodeModel) e.getKey();
 			if (count>=maxItemCount || !isAvailable(node)) {
 				i.remove();
 			} else {
@@ -311,7 +311,7 @@ public class TemplateContext extends BaseTemplateContext{
 		int c = 0;
 		for (Iterator i = avMap.entrySet().iterator(); i.hasNext(); c++) {
 			Map.Entry e = (Entry) i.next();
-			ContentNodeI nodeI=(ContentNodeI)e.getKey();
+			ContentNodeModel nodeI=(ContentNodeModel)e.getKey();
 									
 			if(nodeI!=null)
 			{		
@@ -341,7 +341,7 @@ public class TemplateContext extends BaseTemplateContext{
 		List ret = new ArrayList();
 		int count = 0;
 		for (Iterator i = nodes.iterator(); i.hasNext(); ) {
-			ContentNodeI node = (ContentNodeI) i.next();
+		        ContentNodeModel node = (ContentNodeModel) i.next();
 			if (!isAvailable(node)) {
 				continue;
 			}
@@ -360,7 +360,7 @@ public class TemplateContext extends BaseTemplateContext{
 	 * @param node the node to be presented (never null)
 	 * @return the image (never null)
 	 */
-	public Image getDefaultImage(ContentNodeI node) {
+	public Image getDefaultImage(ContentNodeModel node) {
 		Image img = null;
 		if (node instanceof ProductModel) {
 			img = ((ProductModel) node).getCategoryImage();
@@ -393,7 +393,7 @@ public class TemplateContext extends BaseTemplateContext{
 	 * Apple Pricing -[APPDEV-209].
 	 * Method to get the price/lb, for display. 
 	 */
-	public String getAboutPrice(ContentNodeI node)throws JspException {
+	public String getAboutPrice(ContentNodeModel node)throws JspException {
 		return JspMethods.getAboutPriceForDisplay(node);
 	}	
 }

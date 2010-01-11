@@ -8,6 +8,13 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<%!
+	String getParentId(ContentNodeModel model) {
+		CategoryModel primaryHome = model instanceof ProductModel ? ((ProductModel)model).getPrimaryHome() : null;
+        return primaryHome == null ? model.getParentNode().getContentName():primaryHome.getContentName();
+	}
+
+%>
 <%
 List delicateMild       = new ArrayList();
 List delicateModerate   = new ArrayList();
@@ -21,7 +28,7 @@ List meatyFull          = new ArrayList();
 
 String catId = "sea_finder";
 String selected = request.getParameter("sel");
-ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
 
 List strategy = new ArrayList();
 strategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, SortStrategyElement.SORTNAME_GLANCE, false));
@@ -55,32 +62,33 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
             
                     <logic:iterate id="fish" collection="<%= seafoodCollection %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                         <%      
-                                if(!fish.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) continue;
-                                                        
-                                if(((ProductModel)fish).isUnavailable()){
-                                    Attribute attr = fish.getAttribute("ALSO_SOLD_AS");
-                                    List alsoSoldAs = attr == null ? Collections.EMPTY_LIST :(List)attr.getValue();
+                                if(!fish.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) continue;
                                     
-                                    ContentNodeModel cm = null;
-                                    for(Iterator i = alsoSoldAs.iterator();i.hasNext() && ((ProductModel)fish).isUnavailable();){ 
-                                        ContentRef ref = (ContentRef)i.next();
-                                        if(!ref.getType().equals(ContentNodeI.TYPE_PRODUCT)) continue;
-                                        cm = ContentFactory.getInstance().getProductByName(ref.getRefName(), ref.getRefName2());
-                                        if(!((ProductModel)cm).isUnavailable()){
-                                            fish = cm;
+                        		ProductModel fishProduct = (ProductModel)fish;
+                                if(fishProduct.isUnavailable()){
+                                    List alsoSoldAs = fishProduct.getAlsoSoldAs();
+                                    
+                                    for(Iterator i = alsoSoldAs.iterator();i.hasNext() && fishProduct.isUnavailable();){ 
+                                        Object ref = i.next();
+                                        if(ref instanceof ProductModel) {
+	                                        ProductModel cm = (ProductModel) ref;
+	                                        if(!cm.isUnavailable()){
+	                                            fishProduct = cm;
+	                                        }
                                         }
                                     }
+                                    fish = fishProduct;
                                 }
                                 
-                                if(!((ProductModel)fish).isUnavailable()){
+                                
+                                if(!fishProduct.isUnavailable()){
                                     
                                     int flavorRating = -1;
                                     int firmRating = -1;
 
-                                    Attribute rating = (Attribute)fish.getAttribute("RATING");
-                                    for (Iterator ai = ((List) rating.getValue()).iterator(); ai.hasNext(); ) {
-                                        DomainValueRef dvRef = (DomainValueRef) ai.next();
-                                        DomainValue dv = dvRef.getDomainValue();
+                                    List<DomainValue> rating = fishProduct.getRating();
+                                    for (Iterator<DomainValue> ai = rating.iterator(); ai.hasNext(); ) {
+                                        DomainValue dv = ai.next();
                                         Domain d = dv.getDomain();
                                         
                                         if("firm".equals(d.getName())){ 
@@ -95,27 +103,27 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                     if(firmRating > 0 && flavorRating > 0){
                                         if(firmRating < 3 ) {
                                             if(flavorRating < 3){
-                                                delicateMild.add(fish);
+                                                delicateMild.add(fishProduct);
                                             } else if( flavorRating == 3 ){
-                                                delicateModerate.add(fish);
+                                                delicateModerate.add(fishProduct);
                                             } else if( flavorRating > 3 ){
-                                                delicateFull.add(fish);
+                                                delicateFull.add(fishProduct);
                                             }
                                         } else if(firmRating == 3){
                                             if(flavorRating < 3){
-                                                flakyMild.add(fish);
+                                                flakyMild.add(fishProduct);
                                             } else if( flavorRating == 3 ){
-                                                flakyModerate.add(fish);
+                                                flakyModerate.add(fishProduct);
                                             } else if( flavorRating > 3 ){
-                                                flakyFull.add(fish);                                
+                                                flakyFull.add(fishProduct);                                
                                             }
                                         } else if(firmRating > 3){
                                             if(flavorRating < 3){
-                                                meatyMild.add(fish);
+                                                meatyMild.add(fishProduct);
                                             } else if( flavorRating == 3 ){
-                                                meatyModerate.add(fish);
+                                                meatyModerate.add(fishProduct);
                                             } else if( flavorRating > 3 ){
-                                                meatyFull.add(fish);                                
+                                                meatyFull.add(fishProduct);                                
                                             }
                                         }
                                     }
@@ -154,8 +162,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= delicateMild %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
-                                        Attribute phAttrib = ((ProductModel)fish).getAttribute("PRIMARY_HOME");
-                                        String phName = phAttrib == null ? fish.getParentNode().getContentName():((ContentRef)phAttrib.getValue()).getRefName();
+	                                    String phName = getParentId(fish);
                                     %>
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != delicateMild.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
@@ -164,8 +171,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= delicateModerate %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
-                                        Attribute phAttrib = ((ProductModel)fish).getAttribute("PRIMARY_HOME");
-                                        String phName = phAttrib == null ? fish.getParentNode().getContentName():((ContentRef)phAttrib.getValue()).getRefName();
+	                                    String phName = getParentId(fish);
                                     %>
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != delicateModerate.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
@@ -174,8 +180,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= delicateFull %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
-                                        Attribute phAttrib = ((ProductModel)fish).getAttribute("PRIMARY_HOME");
-                                        String phName = phAttrib == null ? fish.getParentNode().getContentName():((ContentRef)phAttrib.getValue()).getRefName();
+	                                    String phName = getParentId(fish);
                                     %>
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != delicateFull.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
@@ -199,8 +204,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= flakyMild %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
-                                        Attribute phAttrib = ((ProductModel)fish).getAttribute("PRIMARY_HOME");
-                                        String phName = phAttrib == null ? fish.getParentNode().getContentName():((ContentRef)phAttrib.getValue()).getRefName();
+	                                    String phName = getParentId(fish);
                                     %>
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != flakyMild.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
@@ -209,8 +213,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= flakyModerate %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
-                                        Attribute phAttrib = ((ProductModel)fish).getAttribute("PRIMARY_HOME");
-                                        String phName = phAttrib == null ? fish.getParentNode().getContentName():((ContentRef)phAttrib.getValue()).getRefName();
+	                                    String phName = getParentId(fish);
                                     %>
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != flakyModerate.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
@@ -219,8 +222,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= flakyFull %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
-                                        Attribute phAttrib = ((ProductModel)fish).getAttribute("PRIMARY_HOME");
-                                        String phName = phAttrib == null ? fish.getParentNode().getContentName():((ContentRef)phAttrib.getValue()).getRefName();
+	                                    String phName = getParentId(fish);
                                     %>
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != flakyFull.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
@@ -244,8 +246,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= meatyMild %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
-                                        Attribute phAttrib = ((ProductModel)fish).getAttribute("PRIMARY_HOME");
-                                        String phName = phAttrib == null ? fish.getParentNode().getContentName():((ContentRef)phAttrib.getValue()).getRefName();
+                                    String phName = getParentId(fish);
                                     %>
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != meatyMild.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
@@ -254,8 +255,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             <td class='bodycells'> 
                                 <logic:iterate id="fish" collection="<%= meatyModerate %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
-                                        Attribute phAttrib = ((ProductModel)fish).getAttribute("PRIMARY_HOME");
-                                        String phName = phAttrib == null ? fish.getParentNode().getContentName():((ContentRef)phAttrib.getValue()).getRefName();
+                                    String phName = getParentId(fish);
                                     %>
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != meatyModerate.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
@@ -264,8 +264,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= meatyFull %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
-                                        Attribute phAttrib = ((ProductModel)fish).getAttribute("PRIMARY_HOME");
-                                        String phName = phAttrib == null ? fish.getParentNode().getContentName():((ContentRef)phAttrib.getValue()).getRefName();
+                                    String phName = getParentId(fish);
                                     %>
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != meatyFull.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>

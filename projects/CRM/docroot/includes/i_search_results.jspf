@@ -150,7 +150,7 @@
     	boolean isPricedByLB = ("LB".equalsIgnoreCase(salesUnitDesc));
 	    boolean isSoldByLB = isPricedByLB && ("LB".equalsIgnoreCase(salesUnitDesc));
 	//	ProductModel productNode = product;
-	    String sellBySalesUnit = (null != productNode.getAttribute("SELL_BY_SALESUNIT")) ? (String) productNode.getAttribute("SELL_BY_SALESUNIT").getValue() : null;
+	    String sellBySalesUnit = productNode.getSellBySalesunit();
 
 	    if (isSoldByLB)
     	    salesUnitDesc = "lb";
@@ -172,7 +172,7 @@
 		//
 		boolean showCrossSells = false;
 		
-		if ( productNode.hasAttribute("RELATED_PRODUCTS") ) {
+		if ( productNode.getYmals().size() > 0 ) {
 			showCrossSells = true;
 		}
 %>

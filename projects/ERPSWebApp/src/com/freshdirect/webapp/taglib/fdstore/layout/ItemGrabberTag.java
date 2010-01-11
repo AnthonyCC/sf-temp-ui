@@ -210,7 +210,7 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 				rtnValue = true;
 			}
 
-			if ( (!subFolder.getAttribute("TREAT_AS_PRODUCT", false) && depth>0) && 
+			if ( (!subFolder.getTreatAsProduct() && depth>0) && 
 			     ( (EnumShowChildrenType.ALWAYS.equals(subFolder.getShowChildren()) ||
 			        (ignoreShowChildren && !EnumShowChildrenType.NEVER.equals(subFolder.getShowChildren()))		//get prods if show_children, regardless of show folder setting
 			       ) 

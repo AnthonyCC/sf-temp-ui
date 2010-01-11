@@ -33,14 +33,14 @@ String catIdParam       = request.getParameter("catId");
 String jspTemplate = "/common/template/both_dnav.jsp";
 
 if (catIdParam!=null && !"".equals(catIdParam)) {
-  ContentNodeI catNode = null;
+  ContentNodeModel catNode = null;
   catNode = ContentFactory.getInstance().getContentNode(catIdParam);
   if (catNode instanceof RecipeCategory) {
         jspTemplate ="/common/template/recipe_DLRnavs.jsp" ;
   }
   
 
-    int templateType=catNode.getAttribute("TEMPLATE_TYPE",1);
+    int templateType=catNode instanceof HasTemplateType ? ((HasTemplateType)catNode).getTemplateType(1) : 1;
     if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
        jspTemplate = "/common/template/usq_sidenav.jsp";
     } else { //assuming the default (Generic) Template
@@ -87,7 +87,7 @@ Recipe recipe = null;
 	if (orderLine.getRecipeSourceId() != null) {
 		context = ContentFactory.getInstance().getContentNode( orderLine.getRecipeSourceId() );
 	} else {
-		context = orderLine.getProductRef().lookupProduct();
+		context = orderLine.getProductRef();
 	}
 	request.setAttribute("sitePage", context.getPath());
 	%>

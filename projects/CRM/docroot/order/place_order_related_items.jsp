@@ -37,7 +37,7 @@
 	
 	ContentFactory contentFactory = ContentFactory.getInstance();
 	CategoryModel origCat = (CategoryModel) contentFactory.getContentNode(categoryId);
-	ProductModel origProduct = (new ProductRef(categoryId, productId)).lookupProduct();
+	ProductModel origProduct = contentFactory.getProduct(categoryId, productId);
 %>
 
 <jsp:include page='/includes/order_header.jsp'/>
@@ -75,29 +75,25 @@
 
 			<%-- ~~~~~~~~~~~~~ BEGIN PRODUCT DISPLAY SECTION ~~~~~~~~~~~~~ --%>
 <%
-	if ( origProduct != null && origProduct.hasAttribute("RELATED_PRODUCTS") ) {
+	List relatedProducts = origProduct != null ? origProduct.getYmals() : null; 
+	if ( relatedProducts != null && relatedProducts.size() >0 ) {
 		//int productCounter = 0;
 		//int minimumQuantity = 1;
 		//int itemsShown = 0;
 		//String lastCatName = null;
 		
-		Attribute relatedItemsAtt = origProduct.getAttribute("RELATED_PRODUCTS");
-		Collection relatedItems = (Collection) relatedItemsAtt.getValue();
 		List recipes = searchResults.getRecipes();
 		List products = new ArrayList();
-		for (Iterator it = relatedItems.iterator(); it.hasNext(); ) {
+		for (Iterator it = relatedProducts.iterator(); it.hasNext(); ) {
 			Object obj = it.next();
 			
-			if (obj instanceof ContentRef) {
-				ContentRef cf = (ContentRef) obj;
-				if (cf instanceof ProductRef) {
-				    ProductModel product = contentFactory.getProduct( (ProductRef)cf );
-				    if ( product != null && !product.isDiscontinued() ) {
-				    	products.add(product);
-				    }
-				} else if (cf instanceof CategoryRef) {
-				   // products.add( ((CategoryRef)cf).getCategory());
-				}
+			if (obj instanceof ProductModel) {
+			    ProductModel product = (ProductModel)obj ;
+			    if ( product != null && !product.isDiscontinued() ) {
+			    	products.add(product);
+			    }
+			} else if (obj instanceof CategoryModel) {
+			   // products.add( ((CategoryModel)cf));
 			}
 		}
 		String offSet = "0";

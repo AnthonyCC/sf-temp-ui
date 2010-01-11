@@ -62,7 +62,7 @@
 		StoreModel storeModel = contentFactory.getStore();
 		folderNodes = storeModel.getDepartments();
 	} else {
-		requestNode = contentFactory.getContentNodeByName(catId);
+		requestNode = contentFactory.getContentNode(catId);
 		if (requestNode instanceof DepartmentModel) {
 			DepartmentModel deptModel = (DepartmentModel) requestNode;
 			folderNodes = deptModel.getCategories();
@@ -159,8 +159,7 @@
 					<A HREF="/order/build_order_browse.jsp?catId=<%= folderNode %>"><img src="<%= imgSrc %>" width="<%= imgWidth %>" height="<%= imgHeight %>" border="0" valign="middle"></A>
 <%		} else if (folderNode instanceof CategoryModel) {
 			CategoryModel catModel = (CategoryModel) folderNode;
-			Attribute attribute = catModel.getAttribute("CAT_PHOTO");
-			Image catImage = attribute == null ? null : (Image) attribute.getValue();
+			Image catImage = catModel.getCategoryPhoto();
 			if (catImage == null) {
 				System.out.print("No img for category (" + catModel.getFullName() + ") ");
 				//

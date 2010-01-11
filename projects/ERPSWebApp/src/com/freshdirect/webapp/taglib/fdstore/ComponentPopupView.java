@@ -50,21 +50,6 @@ public class ComponentPopupView {
 		return title;
 	}
 	
-/* No longer use DeptManager images
- * 
- *
- *    	public String getDeptMgrImagePath() {
- *		Attribute dptBottAttrib = department.getAttribute("DEPT_MGR"); //department manager image with name
- *
- *		String path = "";
- *		if (dptBottAttrib != null) {
- *			Image deptMngrImg = (Image) dptBottAttrib.getValue();
- *			path = deptMngrImg.getPath();
- *		}
- *		return path;
- *	}
- */
-
 
 
 }

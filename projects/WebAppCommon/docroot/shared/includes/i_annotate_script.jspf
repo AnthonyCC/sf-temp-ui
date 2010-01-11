@@ -7,12 +7,12 @@
 
     	String variation = "";
     	{
-			MultiAttribute varMtx = (MultiAttribute)skuModel.getAttribute("VARIATION_MATRIX");
-			if (varMtx!=null) {
+			List<DomainValue> varMtx = skuModel.getVariationMatrix();
+			if (varMtx!=null && varMtx.size()>0) {
 				variation="<B>";
-				for (Iterator vi=varMtx.getValues().iterator(); vi.hasNext(); ) {
-					DomainValueRef v = (DomainValueRef)vi.next();
-					variation+= v.getRefName2()+" ";
+				for (Iterator vi=varMtx.iterator(); vi.hasNext(); ) {
+					DomainValue v = (DomainValue)vi.next();
+					variation+= v.getContentKey().getId()+" ";
 				}
 				variation+="</B>";
 			}

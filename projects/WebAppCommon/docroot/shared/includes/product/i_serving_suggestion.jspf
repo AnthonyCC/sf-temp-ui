@@ -1,4 +1,7 @@
-<% if (productNode.getAttribute("SERVING_SUGGESTION")!=null) {%>
+<% 
+{
+	String _serving_suggestion = productNode.getServingSuggestion();
+if (_serving_suggestion!=null) {%>
 <br>
 <table width="0" cellspacing="0" cellpadding="0">
 	<tr>
@@ -10,8 +13,9 @@
 		</td>		
 		<td align=right>
 			<b>How much should I buy?</b><br>
-			<%=productNode.getAttribute("SERVING_SUGGESTION").getValue()%>
+			<%=_serving_suggestion %>
 		</td>
 	</tr>
 </table>
-<% }%>
+<% }
+}%>

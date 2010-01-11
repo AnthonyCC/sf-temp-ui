@@ -1,20 +1,20 @@
 <%
-	if (productNode.getAttribute("WINE_TYPE")!=null) {
-		String wineType = productNode.getAttribute("WINE_TYPE", null);
+	String wineType = productNode.getWineType();
+	if (wineType!=null) {
 	%>
 	<b>What:</b> <%= wineType %><br>
 <%	}%>
 
 <%
-	if (productNode.getAttribute("WINE_REGION")!=null) {
-		String wineRegion = productNode.getAttribute("WINE_REGION", null);
+	String wineRegion = productNode.getWineRegion();
+	if (wineRegion!=null) {
 	%>
 	<b>Where:</b> <%= wineRegion %><br>
 <%	}%>
 
 <%
-	if (productNode.getAttribute("WINE_FYI")!=null) {
-		String wineFyi = productNode.getAttribute("WINE_FYI", null);
+	String wineFyi = productNode.getWineFyi();
+	if (wineFyi!=null) {
 	%>
 	<b>FYI:</b> <%= wineFyi %><br>
 <%	}%>

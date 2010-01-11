@@ -425,7 +425,7 @@ log(myDebug, "PAGE : Starting What's Good...");
 					isDepartment = true;
 					
 					//this determines where the products are pulled from...
-					currentFolder=ContentFactory.getInstance().getContentNodeByName(dealsFrom);
+					currentFolder=ContentFactory.getInstance().getContentNode(dealsFrom);
 					
 					/*
 						...and the dept context (if null, not used)

@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.customer.adapter;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -119,7 +118,7 @@ public class OrderPromotionHelper {
 			//Check for virtual category.
 			if(virtualCats == null){
 				//Load the first time only within this method.
-				virtualCats = findVirtualCategories(contentKeys);
+				virtualCats = ContentNodeModelUtil.findVirtualCategories(contentKeys);
 			}
 			//Handling Products in Eligible Virtual Categories.
 			if(virtualCats.size() > 0 && ContentNodeModelUtil.isProductInVirtualCategories(virtualCats, model)){
@@ -130,24 +129,12 @@ public class OrderPromotionHelper {
 	}
 	
 	public static boolean isRecipeEligible(String recipeSourceId , Set contentKeys) {
-		ContentKey rkey = getContentKey(EnumDCPDContentType.RECIPE.getName(),recipeSourceId); 
+		ContentKey rkey = ContentNodeModelUtil.getContentKey(EnumDCPDContentType.RECIPE.getName(), recipeSourceId); 
 		if(rkey != null && contentKeys.contains(rkey)){
 			//Line item is eligible for the recipe-id-level discount.
 			return true;
 		}
 		return false;
-	}
-	
-	public static ContentKey getContentKey(String type,String contentId ){
-		return ContentNodeModelUtil.getContentKey(type, contentId);
-	}
-	
-	public static ContentKey getAliasCategoryRef(String type, String contentId){
-		return ContentNodeModelUtil.getAliasCategoryRef(type, contentId);
-	}
-
-	public static Set findVirtualCategories(Set contentKeys){
-		return ContentNodeModelUtil.findVirtualCategories(contentKeys);
 	}
 	
 	

@@ -174,7 +174,7 @@ class FDFactory {
 		}
 	}
 
-	public static Map getSkusOldness() throws FDResourceException {
+	public static Map<String, Integer> getSkusOldness() throws FDResourceException {
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}

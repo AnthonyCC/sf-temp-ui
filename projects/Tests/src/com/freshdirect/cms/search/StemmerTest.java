@@ -9,6 +9,7 @@ import org.apache.lucene.analysis.LowerCaseTokenizer;
 import org.apache.lucene.analysis.PorterStemFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 
 import junit.framework.TestCase;
 
@@ -27,8 +28,8 @@ public class StemmerTest extends TestCase {
 		
 		Set S = new HashSet();
 		
-		while((t = stream.next()) != null) {
-			String term = t.termText();
+		while(stream.incrementToken()) {
+			String term = stream.getAttribute(TermAttribute.class).term();
 			if ("x".equals(term)) {
 				S.clear();
 				continue;

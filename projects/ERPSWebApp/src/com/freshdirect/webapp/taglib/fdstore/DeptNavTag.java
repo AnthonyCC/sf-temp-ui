@@ -12,9 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.CategoryRef;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentRef;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
@@ -52,23 +50,21 @@ public class DeptNavTag extends AbstractGetterTag {
 			dept = (DepartmentModel)ContentFactory.getInstance().getContentNode( this.deptId );
 		}
 
-		List deptNavAttrib = dept == null ? null : dept.getDeptNav();
+		List<CategoryModel> deptNavAttrib = dept == null ? null : dept.getDeptNav();
 
 		List<CategoryModel> catList = null;
-		if ( deptNavAttrib == null ) {
+		if (deptNavAttrib == null || deptNavAttrib.size() == 0) {
 			// !!! filter off stuff based on hide flags?
 			catList = dept.getCategories();
 		} else {
 //			List refList = (List)deptNavAttrib;
 			catList = new ArrayList( deptNavAttrib.size() );
 			for ( Iterator i = deptNavAttrib.iterator(); i.hasNext(); ) {
-				ContentRef ref = (ContentRef)i.next();
-				if ( !( ref instanceof CategoryRef ) )
-					continue;
-				CategoryModel cat = ( (CategoryRef)ref ).getCategory();
-				if ( cat != null ) {
-					catList.add( cat );
-				}
+			    Object ref = i.next();
+			    if (ref instanceof CategoryModel) { 
+			        CategoryModel cat = (CategoryModel) ref;
+			        catList.add(cat);
+			    }
 			}
 		}
 

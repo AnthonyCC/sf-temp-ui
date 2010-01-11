@@ -39,7 +39,7 @@ String chefPickIndicator = "<img src=\"/media_stat/images/layout/star11.gif\" bo
 String prodPopup = "prod_desc_popup.jsp?";
 String prodPopUpSize = "small";
 
-EnumProductLayout prodLayout = EnumProductLayout.getLayoutType(productNode.getAttribute("PRODUCT_LAYOUT",EnumProductLayout.PARTY_PLATTER.getId()));
+EnumProductLayout prodLayout = productNode.getProductLayout(EnumProductLayout.PARTY_PLATTER);
 
 String prodNameAttribute = JspMethods.getProductNameToUse(parentCat);
 int maxWidth=430;
@@ -47,19 +47,17 @@ String suLabel="";
 Collection pgErrs=((ActionResult)result).getErrors();
 StringBuffer errMsgBuff = new StringBuffer();
 Map availOptSkuMap = new HashMap();
-Attribute attrib = parentCat.getAttribute("EDITORIAL");
 String introCopyPath=null;
 MediaI imgMedia=null;
 
-if (attrib!=null) {
-    MediaI mediaI = (MediaI)attrib.getValue();
-    introCopyPath = mediaI.getPath();
-}
-attrib = parentCat.getAttribute("CAT_PHOTO");
-if (attrib!=null) {
-    imgMedia = (MediaI)attrib.getValue();
+{
+    MediaI mediaI = parentCat.getEditorial();
+    if (mediaI != null) {
+        introCopyPath = mediaI.getPath();
+    }
 }
 
+imgMedia = parentCat.getCategoryPhoto();
     
 List prodSkus = productNode.getSkus();
 
@@ -104,7 +102,7 @@ if (!hasTemplate) {
 
 	String variantId = request.getParameter("variant");
 
-	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode.getProductRef(), cfg, variantId);
+	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId);
 }
 //* check to see if any of the mandatory variations are all unavailable.  (rule: platter unavailable if all comp of a var is unavail)
 //* while we're at it, save skucode and productModel for future use.
@@ -186,22 +184,24 @@ if (EnumProductLayout.MULTI_ITEM_MEAL.equals(prodLayout)) {
 	<br><span class="space8pix"><br></span>
 	</td></tr>
   	<% 
-	attrib =productNode.getAttribute("PROD_IMAGE_DETAIL");
-
-	if (attrib!=null) {
-    	imgMedia = (MediaI)attrib.getValue();
-	} 
+  	{
+		Image _image =productNode.getDetailImage();
+		if (_image!=null) {
+	    	imgMedia = _image;
+		}
+  	}
 	%>
 	<tr>
 	<td valign="top"><%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  } %></td>
 	<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
 	<%
 	String prodDescr = "";
-	attrib = productNode.getAttribute("PROD_DESCR"); 
-		if (attrib!=null) {
-			MediaI mediaI = (MediaI)attrib.getValue();
+	{
+	    Html mediaI = productNode.getProductDescription();
+		if (mediaI!=null) {
 			prodDescr = mediaI.getPath();
-		} 
+		}
+	}
 	%>
 	
 	<td valign="top" width="90%"><% if (prodDescr!=null && prodDescr.indexOf("blank_file.txt") < 0) { %><fd:IncludeMedia name='<%=prodDescr %>'/><span class="space8pix"><br><br></span><%  }  %>
@@ -240,9 +240,9 @@ if (isAvailable ) { %>
 		List varList = new ArrayList();
 		List prodList = new ArrayList();
 		//List prodList = new ArrayList();
-		attrib = stepCat.getAttribute("MATERIAL_CHARACTERISTIC");
-		if (attrib!=null) {
-			StringTokenizer matCharTkns = new StringTokenizer((String)attrib.getValue(),",");
+		String _matChar = stepCat.getMaterialCharacteristic();
+		if (_matChar!=null) {
+			StringTokenizer matCharTkns = new StringTokenizer(_matChar,",");
 			for (;matCharTkns.hasMoreTokens(); ) {
 				matCharNames.add(matCharTkns.nextToken());
 			}
@@ -262,29 +262,18 @@ if (isAvailable ) { %>
 				}
 			}
 		} 
-		attrib = stepCat.getAttribute("FEATURED_PRODUCTS");
-		List featuredProdIds = new ArrayList();
-		if (attrib!=null) {
-			for (Iterator itr=((List)attrib.getValue()).iterator(); itr.hasNext();) {
-				ContentRef cr = (ContentRef) itr.next();
-				if (!(cr instanceof ProductRef)) continue;
-				if (!featuredProdIds.contains(cr.getRefName2())) {
-					featuredProdIds.add(cr.getRefName2());
-				}
-			}
-		}
+		List featuredProdIds = stepCat.getFeaturedProductIds();
+		
 		introCopyPath=null;
 		imgMedia=null;
-		attrib = stepCat.getAttribute("EDITORIAL"); 
-		if (attrib!=null) {
-			MediaI mediaI = (MediaI)attrib.getValue();
-			introCopyPath = mediaI.getPath();
+		{
+		    MediaI mediaI = stepCat.getEditorial();
+		    if (mediaI!=null) {
+				introCopyPath = mediaI.getPath();
+		    }
 		}
 
-		attrib = stepCat.getAttribute("CAT_PHOTO");
-		if (attrib!=null) {
-			imgMedia = (MediaI)attrib.getValue();
-		}  
+		imgMedia = stepCat.getCategoryPhoto();
 
 		//show category image and into copy if there are characteristics names
 		if (matCharNames.size()>0) { 	%>
@@ -364,7 +353,8 @@ if (isAvailable ) { %>
 	} else {
 		//if not modifying then go get the optional stuff, which is in a subfolder of this products parent
 	    boolean openTable = true;
-	    int layout = stepCat.getAttribute("LAYOUT", EnumLayoutType.MULTI_ITEM_MEAL_OPTION_HORZ.getId());
+		EnumLayoutType layoutType=  stepCat.getLayout(EnumLayoutType.MULTI_ITEM_MEAL_OPTION_HORZ);
+	    int layout = layoutType.getId();
 		if (!cartMode.equals(CartName.MODIFY_CART)  && !cartMode.equals(CartName.QUICKSHOP) && stepCat.getProducts().size()>0 ) {
 		   boolean headingDone=false;		   int optCnt=0;
 		   FDProduct fdProd = null;
@@ -499,9 +489,8 @@ if (isAvailable ) { %>
 	<%
 		} 
 	 } 
-        attrib =parentCat.getAttribute("CATEGORY_MIDDLE_MEDIA");
-        List catMidMedias =  attrib==null?new ArrayList():(List)attrib.getValue();
-        if (catMidMedias.size()>0) {  %>
+        List catMidMedias = parentCat.getMiddleMedia();
+        if (catMidMedias != null && catMidMedias.size()>0) {  %>
             <FONT CLASS="space4pix"><br><br></FONT>
             <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=maxWidth%>">
                <TR VALIGN="TOP">
@@ -657,8 +646,7 @@ if (isAvailable ) { %>
 	</td></tr></table>
 <% } 
 
-	attrib =parentCat.getAttribute("CATEGORY_BOTTOM_MEDIA");
-	List catBottomMedias =  attrib==null?new ArrayList():(List)attrib.getValue();
+	List catBottomMedias =  parentCat.getBottomMedia();
 	if (catBottomMedias.size()>0  && !CartName.MODIFY_CART.equals(cartMode) ) {
     %>
     <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=maxWidth%>">

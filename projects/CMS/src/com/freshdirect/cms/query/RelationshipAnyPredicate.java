@@ -45,12 +45,9 @@ public class RelationshipAnyPredicate extends AbstractAttributePredicate {
 		this.predicate = predicate;
 	}
 	
-	protected boolean evaluate(AttributeI attribute) {
-		if (attribute == null) {
-			return false;
-		}
-		
-		List          keys         = (List) attribute.getValue();
+	@Override
+	protected boolean evaluateValue(Object v) {
+		List          keys         = (List) v;
 		if (keys == null) {
 			return false;
 		}

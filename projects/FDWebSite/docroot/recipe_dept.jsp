@@ -32,9 +32,10 @@ if (!ContentFactory.getInstance().getPreviewMode()) {
     }
 }
 //if there is  redirect_url setting  then go to that url regardless of the previewmode setting
-Attribute attrib=recipeDepartment.getAttribute("REDIRECT_URL");
-if (attrib!=null && attrib.getValue() !=null) {
-    String redirectURL = response.encodeRedirectURL((String)attrib.getValue());
+String redirectURL = (recipeDepartment instanceof HasRedirectUrl ? ((HasRedirectUrl)recipeDepartment).getRedirectUrl() : null); 
+
+if (redirectURL!=null) {
+    redirectURL = response.encodeRedirectURL(redirectURL);
     response.sendRedirect(redirectURL);
     return;
 }

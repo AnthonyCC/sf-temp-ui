@@ -1,7 +1,6 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -164,7 +163,6 @@ public ByRegionObject bldByRegionCols(Collection prodCollection,HttpServletRespo
 
     Object[] foldersAndProds = sortedColl.toArray();
     CategoryModel subFolder = null;
-    Attribute rgnAttribute = null;
     Image catImage = null;
     Image lblImage = null;
     StringBuffer map = new StringBuffer();
@@ -194,27 +192,14 @@ public ByRegionObject bldByRegionCols(Collection prodCollection,HttpServletRespo
 
 <FONT CLASS="space4pix"><br></FONT><FONT CLASS="text10bold"><%=subFolder.getFullName()%>:</FONT><BR>
 <%      } else if (subFolder.getShowSelf()==true) {
-            rgnAttribute = subFolder.getAttribute("CAT_PHOTO");
-            if (rgnAttribute!=null) {
-                catImage = (Image)rgnAttribute.getValue();
-            }else {
-                catImage = new Image();
-            }
-            rgnAttribute = subFolder.getAttribute("CAT_LABEL");
-            if (rgnAttribute!=null) {
-                lblImage = (Image)rgnAttribute.getValue();
-            }else {
-                lblImage = new Image();
-            }
+    		catImage = subFolder.getCategoryPhotoNotNull(); 
+
+    		lblImage = subFolder.getCategoryLabelNotNull();
             folderURL=  response.encodeURL("category.jsp?catId="+subFolder+"&trk="+trkCode);
             fldrDescription = subFolder.getBlurb();
 
             //since there is no Category_description attribute as yet, use the intro copy attribute for now
-           // rgnAttribute = subFolder.getAttribute("EDITORIAL");
 
-          //  if (rgnAttribute !=null ){
-          //      fldrDescription = ((Html)rgnAttribute.getValue()).getPath();
-           // }
 if(folderShownCount>0){
 %>
 </TD></TR>

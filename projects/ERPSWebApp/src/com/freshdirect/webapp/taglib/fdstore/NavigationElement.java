@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentNodeI;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Image;
@@ -44,7 +43,7 @@ public abstract class NavigationElement {
                 } else {
                     // find closest displayable parent category
                     CategoryModel foundCat = null;
-                    ContentNodeI tempNode = node.getParentNode();
+                    ContentNodeModel tempNode = node.getParentNode();
                     while (!(tempNode instanceof DepartmentModel)) {
                             CategoryModel cat = (CategoryModel)tempNode;
                             if ( cat.getSideNavShowSelf() ) {
@@ -94,7 +93,7 @@ public abstract class NavigationElement {
 	
 	
 	public boolean hasSideNavImage() {
-		return (this.node.getAttribute("SIDENAV_IMAGE")!=null);
+		return (this.node.getSideNavImage()!=null);
 	}
 
 	public String getAltText(){
@@ -102,10 +101,7 @@ public abstract class NavigationElement {
 	}
 	
 	public Image getSideNavImage() {
-		if (hasSideNavImage()) {
-			return (Image) this.node.getAttribute("SIDENAV_IMAGE").getValue();
-		}
-		return null;
+	    return (Image) this.node.getSideNavImage();
 	}
 
 	/**

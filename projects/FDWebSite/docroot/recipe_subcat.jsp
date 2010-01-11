@@ -14,7 +14,6 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus />
 <%
-Attribute attrib = null;
 ContentFactory contentFactory = ContentFactory.getInstance();
 ContentNodeModel recipeCategory = contentFactory.getContentNode(request.getParameter("catId"));
 RecipeSubcategory recipeSubCat = (RecipeSubcategory)contentFactory.getInstance().getContentNode(request.getParameter("subCatId"));
@@ -29,23 +28,23 @@ if (recipeSubCat==null) {
 request.setAttribute("sitePage", recipeCategory.getPath());
 request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductNote,SideCartBottom");
 
-attrib=recipeCategory.getAttribute("HIDE_URL");
+String hideUrl=recipeCategory.getHideUrl();
 if (!contentFactory.getInstance().getPreviewMode()) {
-    if (attrib!=null) {
-        String redirectURL = response.encodeRedirectURL((String)attrib.getValue());
+    if (hideUrl!=null) {
+        String redirectURL = response.encodeRedirectURL(hideUrl);
 	   if (redirectURL.toUpperCase().indexOf("/RECIPE_SUBCAT.JSP?")==-1) {
            response.sendRedirect(redirectURL);
            return;
 	   }       
     }
 }
-attrib=recipeCategory.getAttribute("REDIRECT_URL");
-if (attrib!=null && !"nm".equalsIgnoreCase((String)attrib.getValue())  && !"".equals(attrib.getValue())) {
-    String redirectURL = response.encodeRedirectURL((String)attrib.getValue());
-	   if (redirectURL.toUpperCase().indexOf("/RECIPE_SUBCAT.JSP?")==-1) {
-           response.sendRedirect(redirectURL);
-           return;
-	   }       
+String redirectURL = (recipeCategory instanceof HasRedirectUrl ? ((HasRedirectUrl)recipeCategory).getRedirectUrl() : null); 
+if (redirectURL!=null && !"nm".equalsIgnoreCase(redirectURL) && !"".equals(redirectURL)) {
+    redirectURL = response.encodeRedirectURL(redirectURL);
+	if (redirectURL.toUpperCase().indexOf("/RECIPE_SUBCAT.JSP?")==-1) {
+        response.sendRedirect(redirectURL);
+        return;
+    }       
 }
 
 %>

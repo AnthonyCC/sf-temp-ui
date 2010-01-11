@@ -9,8 +9,9 @@ import java.util.Set;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
-public class RecipeDepartment extends ContentNodeModelImpl {
+public class RecipeDepartment extends ContentNodeModelImpl implements HasRedirectUrl {
 
 	private final List categories = new ArrayList();
 	private final List featuredRecipes = new ArrayList();
@@ -45,7 +46,7 @@ public class RecipeDepartment extends ContentNodeModelImpl {
 	}
 	
 	public String getRedirectUrl() {
-		return getAttribute("REDIRECT_URL", "");
+            return (String) getCmsAttributeValue("REDIRECT_URL");
 	}
 
 	public List getDepartmentNav() {
@@ -72,7 +73,7 @@ public class RecipeDepartment extends ContentNodeModelImpl {
 
 	/* it's not a typo: the featured recipe category is actually a RecipeSubcategory */
 	public RecipeSubcategory getFeaturedRecipeCategory() {
-		return (RecipeSubcategory) getAttribute("featuredRecipeCategory", (RecipeSubcategory) null);
+		return FDAttributeFactory.lookup(this, "featuredRecipeCategory", (RecipeSubcategory) null);
 	}
 	
 	public List getFeaturedProducts() {
@@ -108,14 +109,17 @@ public class RecipeDepartment extends ContentNodeModelImpl {
 		return Collections.unmodifiableList(availSources);
 	
 	}
-	public CategoryModel getFeaturedProductCategory() {
-		CategoryRef catRef= (CategoryRef) getAttribute("featuredProductCategory", (CategoryRef) null);
-		return catRef==null ? null : catRef.getCategory();
 
+	public CategoryModel getFeaturedProductCategory() {
+	    return FDAttributeFactory.lookup(this, "featuredProductCategory", (CategoryModel) null);
 	}
 	
 	public String getPath() {
 		return "www.freshdirect.com/" + getContentName();
 	}
+	
+        public Html getRecipeEditorial() {
+            return FDAttributeFactory.constructHtml(this, "editorial");
+        }
 	
 }

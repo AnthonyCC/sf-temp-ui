@@ -25,12 +25,12 @@ String mediaPath = null;
 String show = request.getParameter("show");
 
 if (brandId!=null) {
-    brandNode = (BrandModel)ContentFactory.getInstance().getContentNodeByName(brandId);
+    brandNode = (BrandModel)ContentFactory.getInstance().getContentNode(brandId);
     if (brandNode!=null) {
         brandName = brandNode.getFullName();
-        Attribute brandAttrib = brandNode.getAttribute("BRAND_POPUP_CONTENT");
-        if (brandAttrib!=null) {
-            TitledMedia tm = (TitledMedia)brandAttrib.getValue();
+        Html _popupContent = brandNode.getPopupContent();
+        if (_popupContent!=null) {
+            TitledMedia tm = (TitledMedia)_popupContent;
             EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
             if (show != null && !"".equals(show)) {
 				mediaPath = show;
@@ -40,8 +40,7 @@ if (brandId!=null) {
             widthValue = popupType.getWidth();
         }
         // Build the featured item list, if any
-        Attribute featProds = brandNode.getAttribute("FEATURED_PRODUCTS");
-        List favorites = featProds==null ?new ArrayList():(List)featProds.getValue();
+        List favorites = brandNode.getFeaturedProducts();
         String imgName = null;
         boolean folderAsProduct = false;
         ContentNodeModel aliasNode = null;
@@ -52,20 +51,23 @@ if (brandId!=null) {
         int imgSizeSum = 0;
         int itemCount = 0;
     %>
-        <logic:iterate id='contentRef' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ContentRef">
+        <logic:iterate id='contentRef' collection="<%=favorites%>" type="java.lang.Object">
     <% 
-            if ( !(contentRef instanceof ProductRef) && !(contentRef instanceof SkuRef)) continue;
+            if ( !(contentRef instanceof ProductModel) && !(contentRef instanceof SkuModel)) { 
+                continue;
+            }
+    		ProductModel product = null;
             String skuCode = null;
-            ProductRef prodRef = null;
-            if (contentRef instanceof SkuRef) {
-                prodRef = new ProductRef(((SkuRef)contentRef).getRefName(),((SkuRef)contentRef).getRefName2());
-                skuCode = ((SkuRef)contentRef).getRefName3();
-            } else prodRef = (ProductRef)contentRef;
-
-            ProductModel product = prodRef.lookupProduct(); 
+            if (contentRef instanceof SkuModel) {
+                SkuModel sku = (SkuModel) contentRef;
+                product = sku.getProductModel();
+            } else {
+                product = (ProductModel) contentRef;
+            }
+            
             if (product.isDiscontinued() || product.isUnavailable()) {
-			favItemCount--;
-			continue;
+				favItemCount--;
+				continue;
 			}
 
             SkuModel sku = product.getDefaultSku();

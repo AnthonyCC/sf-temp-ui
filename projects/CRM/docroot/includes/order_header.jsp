@@ -1,9 +1,8 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.fdstore.content.ProductModel" %>
-<%@ page import="com.freshdirect.fdstore.content.ProductRef" %>
 <%@ page import="com.freshdirect.fdstore.FDReservation" %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
-
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 
@@ -29,6 +28,7 @@ boolean makegood = "true".equals(request.getParameter("makegood")) || "true".equ
 String referencedOrder = request.getParameter("orig_sale_id") != null ? request.getParameter("orig_sale_id") : (String)session.getAttribute("referencedOrder");
 
 %>
+
 
 <script language="javascript">
 	
@@ -115,7 +115,7 @@ String referencedOrder = request.getParameter("orig_sale_id") != null ? request.
 		String productId = request.getParameter("productId");
 		String categoryId = request.getParameter("catId");
 		leftColumnTitle = "Related Items for ";
-		ProductModel originalProduct = (new ProductRef(categoryId, productId)).lookupProduct();
+		ProductModel originalProduct = ContentFactory.getInstance().getProductByName(categoryId, productId);
 		leftColumnTitle += originalProduct.getFullName();
 	}
 %>

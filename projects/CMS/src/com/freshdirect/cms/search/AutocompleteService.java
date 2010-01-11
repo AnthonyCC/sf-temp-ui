@@ -18,6 +18,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class AutocompleteService {
 
+    public interface Predicate {
+        boolean allow(String s);
+    }
+    
     private final Category   LOGGER                    = LoggerFactory.getInstance(AutocompleteService.class);
 
     private final static int MAX_AUTOCOMPLETE_HITS     = 20;
@@ -45,6 +49,29 @@ public class AutocompleteService {
     }
 
     public List<String> getAutocompletions(String prefix) {
+        List<HitCounter> result = getAutocompletionHits(prefix);
+
+        List<String> words = new ArrayList<String>(Math.min(result.size(), MAX_AUTOCOMPLETE_HITS));
+        for (int i = 0; i < result.size() && i < MAX_AUTOCOMPLETE_HITS; i++) {
+            words.add(result.get(i).prefix);
+        }
+        return words;
+    }
+
+    public List<String> getAutocompletions(String prefix, Predicate predicate) {
+        List<HitCounter> result = getAutocompletionHits(prefix);
+        List<String> words = new ArrayList<String>(result.size());
+        for (int i = 0; i < result.size() && words.size() < MAX_AUTOCOMPLETE_HITS; i++) {
+            String s = result.get(i).prefix;
+            if (predicate.allow(s)) {
+                words.add(s);
+            }
+        }
+        return words;
+        
+    }
+    
+    List<HitCounter> getAutocompletionHits(String prefix) {
         HitCounter start = new HitCounter(prefix.toLowerCase(), 0, null);
         HitCounter end = new HitCounter(start.prefix + '\uffff', 0, null);
 
@@ -58,12 +85,7 @@ public class AutocompleteService {
                 return h2.number - h1.number;
             }
         });
-
-        List<String> words = new ArrayList<String>(result.size());
-        for (int i = 0; i < result.size() && i < MAX_AUTOCOMPLETE_HITS; i++) {
-            words.add(result.get(i).prefix);
-        }
-        return words;
+        return result;
     }
 
     private List<String> filterWords(String[] words) {
@@ -92,7 +114,8 @@ public class AutocompleteService {
 
                 createCounters(counters, fullname);
 
-                String unaccented = ISOLatin1AccentFilter.removeAccents(fullname);
+                char[] buf = fullname.toCharArray();
+                String unaccented = ISOLatin1AccentFilter.removeAccents(buf, buf.length);
                 // String.replace returns the same object if no change occured, so == is good for comparison 
                 if (!unaccented.equals(fullname)) {
                     createCounters(counters, unaccented);

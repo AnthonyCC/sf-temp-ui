@@ -8,14 +8,7 @@
 
 <%
 
-Image deptMngrImg = null;
-Attribute dptBottAttrib = null;
-
-dptBottAttrib = dept.getAttribute("DEPT_MGR"); //department manager image with name
-
-if (dptBottAttrib !=null) {
-    deptMngrImg = (Image)dptBottAttrib.getValue();
-}
+Image deptMngrImg = (dept instanceof ProductContainer ? ((ProductContainer) dept).getMgrPhoto() : null);
 
 %>
 	<logic:iterate id="variation" collection="<%= variations %>" type="com.freshdirect.fdstore.FDVariation" indexId="idx">	

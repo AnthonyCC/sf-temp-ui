@@ -18,6 +18,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DateRange;
 
 public class Recipe extends ContentNodeModelImpl implements ContentStatusI, YmalSource {
@@ -112,10 +113,8 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	}
 	
 	public RecipeSource getSource() {
-		AttributeI attrib = getCmsAttribute("source");
-		if (attrib==null) return null;
-		ContentKey key = (ContentKey) attrib.getValue();
-		return key == null ? null : (RecipeSource) ContentFactory.getInstance().getContentNode(key.getId());
+		ContentKey key = (ContentKey) getCmsAttributeValue("source");
+		return key == null ? null : (RecipeSource) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
 	public List getAuthors() {
@@ -485,27 +484,27 @@ inner:
 	}
 
 	public Html getDescription() {
-		return (Html) getAttribute("description", (Html) null);
+            return FDAttributeFactory.constructHtml(this, "description");
 	}
 	
 	public Html getIngredientsMedia() {
-		return (Html) getAttribute("ingredientsMedia", (Html) null);
+            return FDAttributeFactory.constructHtml(this, "ingredientsMedia");
 	}
 
 	public Html getPreparationMedia() {
-		return (Html) getAttribute("preparationMedia", (Html) null);
+            return FDAttributeFactory.constructHtml(this, "preparationMedia");
 	}
 	
 	public Html getCopyrightMedia() {
-		return (Html) getAttribute("copyrightMedia", (Html) null);
+            return FDAttributeFactory.constructHtml(this, "copyrightMedia");
 	}
 	
 	public Image getPhoto() {
-		return (Image) getAttribute("photo", (Image) null);
+            return FDAttributeFactory.constructImage(this, "photo");
 	}
 
 	public Image getLogo() {
-		return (Image) getAttribute("logo", (Image) null);
+            return FDAttributeFactory.constructImage(this, "logo");
 	}
 	
 	public boolean isAvailable() {
@@ -645,5 +644,9 @@ inner:
 			return activeYmalSet.getProductsHeader();
 		else
 			return null;
+	}
+	
+	public Image getTitleImage() {
+	    return FDAttributeFactory.constructImage(this, "titleImage");
 	}
 }

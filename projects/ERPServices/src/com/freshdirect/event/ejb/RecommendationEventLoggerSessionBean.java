@@ -119,13 +119,7 @@ public class RecommendationEventLoggerSessionBean extends SessionBeanSupport {
 			LOGGER.warn("Could not log " + events.size() + " impressions",e);
 			throw new RemoteException("Could not log " + events.size() + " impressions",e);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Unable to close connection", e);
-				throw new RemoteException("Unable to close connection", e);
-			}
+                    close(conn);
 		}
 	}
 	
@@ -138,13 +132,7 @@ public class RecommendationEventLoggerSessionBean extends SessionBeanSupport {
 			LOGGER.warn("Could not log event: " + event,e);
 			throw new RemoteException("Could not log event: " + event,e);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				LOGGER.warn("Unable to close connection", e);
-				throw new RemoteException("Unable to close connection", e);
-			}
+                    close(conn);
 		}
 	}
 	

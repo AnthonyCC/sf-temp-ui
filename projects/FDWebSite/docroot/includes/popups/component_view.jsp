@@ -30,8 +30,12 @@
     }
     
     String catImg = "/media_stat/images/layout/clear.gif";
-    if(cpv.getCategory().getAttribute("CAT_TITLE")!=null){
-        catImg = ((Image)cpv.getCategory().getAttribute("CAT_TITLE").getValue()).getPath();
+    {
+        ContentNodeModel _cat = cpv.getCategory();
+        Image _catImg = _cat instanceof ProductContainer ? ((ProductContainer)_cat).getCategoryTitle() : null;
+        if (_catImg != null) {
+            catImg = _catImg.getPath();
+        }
     }
 %>
 
@@ -63,11 +67,8 @@
                 <td valign="top" width='349'>
 <%
 if (level.equalsIgnoreCase("home")){
-    Attribute attr = cpv.getCategory().getAttribute("EDITORIAL");
-    MediaI media = null;
-    if(attr != null){
-        media = (MediaI)attr.getValue();
-    }
+    MediaI media = cpv.getCategory().getEditorial();
+
 %>
                     <table border="0" cellpadding="0" cellspacing="0" width="349">
                         <tr>
@@ -81,8 +82,8 @@ if (level.equalsIgnoreCase("home")){
                         <logic:iterate id='item' collection="<%=products%>" type='com.freshdirect.fdstore.content.ProductModel' indexId="idx">
                                     <tr>
 					<td>
-						<% if(item.getAttribute("PROD_IMAGE")!=null){
-							Image prodImg = (Image)item.getAttribute("PROD_IMAGE").getValue(); %>
+						<% Image prodImg = item.getProdImage();
+						   if (prodImg != null) { %>
 						<img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" border="0">
 						<% } %>
                                                 <font class="space4pix"><br><br></font>

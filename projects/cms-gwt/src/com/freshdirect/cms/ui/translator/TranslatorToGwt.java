@@ -98,7 +98,7 @@ public class TranslatorToGwt {
 		GwtContentNode gwtNode = new GwtContentNode( contentKey.getType().getName(), contentKey.getId() );
 		gwtNode.setLabel( node.getLabel() );
 		
-		for ( String key : (Set<String>)node.getAttributes().keySet() ) {
+		for ( String key : (Set<String>)node.getDefinition().getAttributeNames() ) {
 			AttributeI attribute = node.getAttribute( key );
 			ModifiableAttributeI attr = translateAttribute(attribute.getDefinition(), attribute.getValue(), tabDefs != null ? tabDefs.getCustomFieldDefinition(key) : null, contentKey);
 			gwtNode.setOriginalAttribute( key, attr );

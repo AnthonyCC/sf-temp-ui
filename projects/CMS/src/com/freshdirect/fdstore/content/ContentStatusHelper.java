@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.content;
 
 import java.util.Date;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.fdstore.FDStoreProperties;
 
 
@@ -17,7 +16,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
  */
 public class ContentStatusHelper implements ContentStatusI {
 	
-    private CmsContentNodeAdapter node;
+    private ContentNodeModelImpl node;
     
     private final static Date MAX_DATE = new Date(Long.MAX_VALUE);
     private final static Date MIN_DATE = new Date(0L);
@@ -26,7 +25,7 @@ public class ContentStatusHelper implements ContentStatusI {
      * Constructor.
      * @param adapter the content node using this helper
      */
-	public ContentStatusHelper (CmsContentNodeAdapter adapter) {
+	public ContentStatusHelper (ContentNodeModelImpl adapter) {
 		node = adapter;
 	}
 	
@@ -37,8 +36,8 @@ public class ContentStatusHelper implements ContentStatusI {
      * @see com.freshdirect.fdstore.content.ContentStatusI#getEndDate()
      */
 	public Date getStartDate() {
-	    AttributeI a = node.getCmsAttribute("startDate");
-		return a == null ? MIN_DATE : (Date) a.getValue();
+	    Object a = node.getCmsAttributeValue("startDate");
+	    return a == null ? MIN_DATE : (Date) a;
 	}
 	    
 	/**
@@ -47,8 +46,8 @@ public class ContentStatusHelper implements ContentStatusI {
 	 * @ return end date
 	 */
 	public Date getEndDate() {
-		AttributeI a = node.getCmsAttribute("endDate");
-		return a == null ? MAX_DATE : (Date) a.getValue();
+		Object a = node.getCmsAttributeValue("endDate");
+		return a == null ? MAX_DATE : (Date) a;
 	}	
 		
 	/** 

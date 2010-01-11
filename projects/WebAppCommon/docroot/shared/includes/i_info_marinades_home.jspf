@@ -14,8 +14,8 @@
 				Image prodImg = null;
 
 				marProduct =  ContentFactory.getInstance().getProduct(option.getAttribute("skucode",""));
-				if(marProduct.getAttribute("PROD_IMAGE")!=null){
-				prodImg = (Image)marProduct.getAttribute("PROD_IMAGE").getValue();
+				prodImg = marProduct.getProdImage();
+				if(prodImg!=null){
 		%>
 		
 		<tr valign="top">

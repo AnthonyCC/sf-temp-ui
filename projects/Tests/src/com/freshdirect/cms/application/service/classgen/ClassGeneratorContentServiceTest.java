@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.freshdirect.cms.AttributeI;
+import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.service.CompositeContentService;
 import com.freshdirect.cms.application.service.CompositeContentServiceTest;
@@ -41,5 +43,26 @@ public class ClassGeneratorContentServiceTest extends CompositeContentServiceTes
         services.add(s3);
 
         return new CompositeContentService(services);
+    }
+    
+    
+    public void testAttribEquals() {
+        ContentNodeI barNode = service.getContentNode(BAR_KEY);
+        assertEquals(2, barNode.getDefinition().getAttributeNames().size());
+        assertEquals("barValue", barNode.getAttributeValue("BAR"));
+        assertEquals("bazValue", barNode.getAttributeValue("BAZ"));
+
+        AttributeI attributeI = barNode.getAttribute("BAR");
+        assertNotNull("bar-attr 1", attributeI);
+        assertEquals("node ", barNode, attributeI.getContentNode());
+        
+        AttributeI otherAttr = barNode.getAttribute("BAR");
+        assertNotNull("bar-attr 1", otherAttr);
+        assertTrue("multiple call, same attribute", attributeI.equals(otherAttr));
+        
+        AttributeI bazAttr = barNode.getAttribute("BAZ");
+        assertNotNull("baz-attr", bazAttr);
+        assertFalse("baz is not bar", attributeI.equals(bazAttr));
+        assertFalse("baz is never bar", otherAttr.equals(bazAttr));
     }
 }

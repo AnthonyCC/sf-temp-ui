@@ -27,7 +27,7 @@ public class PreviewLinkProvider {
 		if (FDContentTypes.PRODUCT.equals(type)) {
 			ContentNodeI productNode = key.lookupContentNode();
 			if (productNode != null) {
-				ContentKey priHome = (ContentKey) productNode.getAttribute("PRIMARY_HOME").getValue();
+				ContentKey priHome = (ContentKey) productNode.getAttributeValue("PRIMARY_HOME");
 				if (priHome != null) {
 					return "/product.jsp?catId=" + priHome.getId() + "&productId=" + id;
 				}

@@ -151,7 +151,7 @@ String sPage = firstProductNode != null ? "/grocery_cart_confirm.jsp?catId="
 			String href = "/quickshop/every_item.jsp?action=clearValues" + (hasDeptId ? "&qsDeptId=" + qsDeptId : "");
 			ContentNodeModel currDept = null;
 			if (!"all".equalsIgnoreCase(qsDeptId)) {
-				currDept = ContentFactory.getInstance().getContentNodeByName(qsDeptId);
+				currDept = ContentFactory.getInstance().getContentNode(qsDeptId);
 			}
 		%>
 		<TD WIDTH="35"><A HREF="<%= href %>"><img src="/media_stat/images/template/quickshop/l_arrow_996699.gif" width="29" height="28" border="0" alt="CONTINUE SHOPPING"></A></TD>

@@ -10,6 +10,7 @@ import java.util.Set;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.customer.adapter.OrderPromotionHelper;
 
 /**
@@ -28,7 +29,7 @@ public class DCPDiscountApplicator  implements PromotionApplicatorI {
 	}
 	
 	public void addContent(String type, String id){
-		Object refKey = OrderPromotionHelper.getAliasCategoryRef(type, id);
+		Object refKey = ContentNodeModelUtil.getAliasCategoryRef(type, id);
 		if(FDStoreProperties.isDCPDAliasHandlingEnabled() && refKey != null){
 			/*
 			 * refKey is not null when content id is pointing to a ALIAS category.
@@ -38,7 +39,7 @@ public class DCPDiscountApplicator  implements PromotionApplicatorI {
 			contentKeys.add(refKey);
 		} else {
 			//Regular category or department or recipe id or virtual group.
-			contentKeys.add(OrderPromotionHelper.getContentKey(type, id));	
+			contentKeys.add(ContentNodeModelUtil.getContentKey(type, id));	
 		}
 	}
 	

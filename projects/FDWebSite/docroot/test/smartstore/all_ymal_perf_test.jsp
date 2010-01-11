@@ -286,7 +286,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 		<tr>
 			<td class="left">
 				<p class="title13">
-					Smart Recommendations Runtime for <%= product == null ? " <span class=\"not-found\">orphan</span> " : "active" %> YMAL set <%= set.getAttribute("title", "") %>
+					Smart Recommendations Runtime for <%= product == null ? " <span class=\"not-found\">orphan</span> " : "active" %> YMAL set <%= set.getTitle() %>
 					<% if (product != null) { %>with Product <%= product.getFullName() %><% } else { %>without product<% } %>:
 					<span style="font-weight: normal"><%= format.format(runtime) %> milliseconds 
 					(<%= format.format(runtime / i_noOfCycles) %> milliseconds / request)</span>

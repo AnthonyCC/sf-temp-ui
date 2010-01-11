@@ -1,5 +1,4 @@
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
@@ -16,17 +15,13 @@
 <%
 String catId = request.getParameter("catId");
 
-ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
 
-Attribute introCopyAttribute = currentFolder.getAttribute("EDITORIAL");
-String introCopy = introCopyAttribute==null?"":((Html)introCopyAttribute.getValue()).getPath();
+Html introCopyHtml = currentFolder.getEditorial();
+String introCopy = introCopyHtml==null?"":introCopyHtml.getPath();
 
-Attribute catImageAttrib = currentFolder.getAttribute("CAT_PHOTO");
+MediaModel catImage = ((ProductContainer) currentFolder).getCategoryPhoto();
 
-MediaModel catImage = null;
-	if (catImageAttrib!=null) {
-		catImage = (MediaModel)catImageAttrib.getValue();
-	}
 %>
 <tmpl:insert template='/common/template/dnav.jsp'>
 
@@ -47,11 +42,7 @@ Collection itemsColl = rtnColl;
 %>
 <logic:iterate id="job" collection="<%= itemsColl %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <% 
-Attribute sideNavSetting = job.getAttribute("SIDENAV_BOLD"); 
-boolean mainHeader = false;
-if (sideNavSetting != null) {
-	mainHeader = ((Boolean)sideNavSetting.getValue()).booleanValue();
-}
+boolean mainHeader = (job instanceof CategoryModel) ? ((CategoryModel)job).getSideNavBold() : false;
 if (mainHeader) {
 %>	
 	<b><%=job.getFullName()%></b><br><span class="space8pix"><br></span>

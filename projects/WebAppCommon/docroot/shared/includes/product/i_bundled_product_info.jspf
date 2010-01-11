@@ -1,6 +1,6 @@
 <%
-    Attribute bundleAttr = productNode.getAttribute("PRODUCT_BUNDLE");
-    if(bundleAttr != null){
+	List<ProductModel> products = productNode.getProductBundle();
+    if(products != null && products.size() > 0){
         String prodSku = ((SkuModel)productNode.getSku(0)).getSkuCode();
         
 %>

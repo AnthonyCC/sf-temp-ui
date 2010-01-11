@@ -22,11 +22,11 @@
 //**** Methods used on the product pages.  **** 
 
 public DepartmentModel findDepartment (String deptId) throws FDResourceException {
-		return (DepartmentModel)ContentFactory.getInstance().getContentNodeByName(deptId);
+		return (DepartmentModel)ContentFactory.getInstance().getContentNode(deptId);
 }
 
 public String findParentOfCategory (String catId) throws FDResourceException {
-		CategoryModel categoryNode = (CategoryModel)ContentFactory.getInstance().getContentNodeByName(catId);
+		CategoryModel categoryNode = (CategoryModel)ContentFactory.getInstance().getContentNode(catId);
 		DepartmentModel dept = categoryNode.getDepartment();
 		return dept.getContentName();
 }
@@ -114,9 +114,9 @@ public String getProdPageRatings(ProductModel _productNode, HttpServletResponse 
 	</td></tr>
 <tr><td class="text15">
 <%
-			Attribute seasonTextAttrib = productNode.getAttribute("SEASON_TEXT");
-			if (seasonTextAttrib!=null) {
-			%><%=seasonTextAttrib.getValue()%><br><br><% } %>
+			String seasonText = productNode.getSeasonText();
+			if (seasonText!=null) {
+			%><%=seasonText%><br><br><% } %>
 
 	<% if (prodPageRatingStuff != null && !"".equals(prodPageRatingStuff)) { %><%= prodPageRatingStuff %><br><br><% } %>
 	

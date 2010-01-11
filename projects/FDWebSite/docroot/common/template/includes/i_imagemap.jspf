@@ -5,22 +5,19 @@
  String rightURL = null;
  String catIdParam = request.getParameter("catId");
  if (catIdParam!=null) {
-    ContentNodeModel deptOfCat = ((CategoryModel)ContentFactory.getInstance().getContentNodeByName(catIdParam)).getDepartment();
+     DepartmentModel deptOfCat = ((CategoryModel)ContentFactory.getInstance().getContentNode(catIdParam)).getDepartment();
     List navList = null;
      if (deptOfCat!=null) {
-        Attribute navListAtr = deptOfCat.getAttribute("DEPT_NAV");
-        if (navListAtr!=null) {
-            navList = (List)navListAtr.getValue();
-        }
+         navList = deptOfCat.getDeptNav();
     
     }
-    if (navList!=null) {
+    if ((navList!=null) && navList.size()>0) {
 int prevIndex=-1;
         int listIndex = 0;
         int nextIndex=1;
         for (;listIndex < navList.size();listIndex++,nextIndex++,prevIndex++) {
-            ContentRef cref = (ContentRef)navList.get(listIndex);
-            if (cref.getRefName().equals(catIdParam)) {
+            ContentNodeModel cref = (ContentNodeModel)navList.get(listIndex);
+            if (cref.getContentKey().getId().equals(catIdParam)) {
                 break;
             }
         }
@@ -29,14 +26,14 @@ int prevIndex=-1;
         if (nextIndex >= navList.size()) nextIndex = 0;
         
         if (prevIndex>=0) {
-            CategoryRef cref = (CategoryRef) navList.get(prevIndex);
-           leftURL = "/category.jsp?catId="+cref.getRefName();
-           leftAltText = cref.getCategory().getFullName();
+            CategoryModel cref = (CategoryModel) navList.get(prevIndex);
+           leftURL = "/category.jsp?catId="+cref.getContentKey().getId();
+           leftAltText = cref.getFullName();
         }
         if (nextIndex<navList.size()) {
-            CategoryRef cref = (CategoryRef) navList.get(nextIndex);
-           rightURL = "/category.jsp?catId="+cref.getRefName();
-           rightAltText = cref.getCategory().getFullName();
+            CategoryModel cref = (CategoryModel) navList.get(nextIndex);
+           rightURL = "/category.jsp?catId="+cref.getContentKey().getId();
+           rightAltText = cref.getFullName();
         }
     }
 }

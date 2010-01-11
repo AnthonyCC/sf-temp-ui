@@ -1,6 +1,5 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.util.*'%>
@@ -14,26 +13,26 @@
 <%
 String catId = request.getParameter("catId");
 boolean isGroceryVirtual=false;
-ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+CategoryModel currentFolder = (CategoryModel) ContentFactory.getInstance().getContentNode(catId);
 boolean allSoldOut=true;
 boolean previewMode = ContentFactory.getInstance().getPreviewMode();
-Attribute previewMedia = currentFolder.getAttribute("CATEGORY_PREVIEW_MEDIA");
+MediaI previewMedia = currentFolder.getPreviewMedia();
 String previewMediaPath=null;
 if (previewMedia!=null) {
-	previewMediaPath = ((MediaI)previewMedia.getValue()).getPath();
+	previewMediaPath = ((MediaI)previewMedia).getPath();
 }
 
 Collection sortedColl = (Collection) request.getAttribute("itemGrabberResult");
 if (sortedColl==null) sortedColl = new ArrayList();
 for(Iterator itr=sortedColl.iterator(); itr.hasNext() && allSoldOut;) {
 	ContentNodeModel cn = (ContentNodeModel) itr.next();
-	if (!cn.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) continue;
+	if (!cn.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) continue;
 	if ( !((ProductModel)cn).isUnavailable()) {
 	   allSoldOut=false;
 	}
 }   
-	Attribute introCopyAttribute = currentFolder.getAttribute("EDITORIAL");
-	String introCopy = introCopyAttribute==null?"":((Html)introCopyAttribute.getValue()).getPath();
+	Html editorial = currentFolder.getEditorial();
+	String introCopy = editorial==null ? "" : editorial.getPath();
 	String introTitle = currentFolder.getEditorialTitle();
 
         if (allSoldOut && previewMediaPath!=null && !"".equals(previewMediaPath)) { %>
@@ -71,8 +70,8 @@ for(Iterator itr=sortedColl.iterator(); itr.hasNext() && allSoldOut;) {
 <%
   if (!allSoldOut ) {  %>
           <TABLE border="0" cellPadding="0" cellSpacing="0">
-<%          List middleMediaList = (List) currentFolder.getAttribute("CATEGORY_MIDDLE_MEDIA",Collections.EMPTY_LIST);
-		if (middleMediaList.size() > 0) {  %>
+<%          List middleMediaList = currentFolder.getMiddleMedia();
+		if (middleMediaList != null && middleMediaList.size() > 0) {  %>
               <tr><td colspan="3">		
 <%			for (Iterator middleMedia = middleMediaList.iterator(); middleMedia.hasNext();) {
 				Html middleMediaPath = (Html)middleMedia.next();
@@ -83,7 +82,7 @@ for(Iterator itr=sortedColl.iterator(); itr.hasNext() && allSoldOut;) {
 <%     
         for(Iterator itr=sortedColl.iterator(); itr.hasNext();) {
             ContentNodeModel cn = (ContentNodeModel) itr.next();
-            if (!cn.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) continue;
+            if (!cn.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) continue;
 
             ProductModel pm = (ProductModel)cn;
             DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getParentNode().getContentName(),pm,"full",true);

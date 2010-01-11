@@ -26,14 +26,14 @@
 	// create separate lists for each category
 	List multiList = new ArrayList();
 	List l = null;
-	String currentFolderPKId = currentFolder.getPK().getId();
+	String currentFolderPKId = currentFolder.getContentKey().getId();
 	boolean hasAnyProducts = false;
 
 	Iterator it = sortedCollection.iterator();
 	while ( it.hasNext() ) {
 		ContentNodeModel node = (ContentNodeModel)it.next();		
 		
-		if ( node instanceof CategoryModel && node.getParentNode() != null && node.getParentNode().getPK().getId().equals(currentFolderPKId) ) {
+		if ( node instanceof CategoryModel && node.getParentNode() != null && node.getParentNode().getContentKey().getId().equals(currentFolderPKId) ) {
 			// add new separating category
 			multiList.add( node );
 			l = new ArrayList();
@@ -73,10 +73,10 @@
 			}			    
 			
 			// get the category_top attribute to display
-			List<Object> catTop =( (CategoryModel)obj ).getCategoryTopMedia();
-			if ( catTop != null && catTop.size() > 0 ) {
-				MediaI catTopMedia = (MediaI)catTop.get( 0 );
-				if ( catTopMedia instanceof Image ) { 
+			List catTop = ( (CategoryModel)obj ).getTopMedia();
+			if (catTop != null && catTop.size() > 0) {
+				MediaI catTopMedia = (MediaI) catTop.get(0);
+				if (catTopMedia instanceof Image) { 
 					%><img src="<%=catTopMedia.getPath()%>" <%=JspMethods.getImageDimensions( (Image)catTopMedia )%> /><% 
 				} else { 
 					%><fd:IncludeMedia name="<%= catTopMedia.getPath()%>" /><% 

@@ -197,7 +197,7 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 					    FDProductInfo prodInfo = FDCachedFactory.getProductInfo(product.getSkuCode());
 					
 					    FDProductSelection productSelection =
-					    	new FDProductSelection(prodInfo,product.getProductRef(),product.getConfiguration());
+					    	new FDProductSelection(prodInfo,product,product.getConfiguration());
 					    OrderLineUtil.describe(productSelection);
 					    quickCart.addProduct(productSelection);
 					} catch (FDSkuNotFoundException e) {

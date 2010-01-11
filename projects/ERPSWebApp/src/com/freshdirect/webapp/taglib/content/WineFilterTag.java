@@ -3,14 +3,12 @@ package com.freshdirect.webapp.taglib.content;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.fdstore.content.ContentNodeI;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -55,7 +53,7 @@ public class WineFilterTag extends com.freshdirect.framework.webapp.BodyTagSuppo
     	List filteredList =  new ArrayList();
     	for(Iterator iter = displayList.iterator(); iter.hasNext();){
     		ContentNodeModel contentNode = (ContentNodeModel) iter.next();
-    		if (contentNode.getContentType().equals(ContentNodeI.TYPE_PRODUCT)){
+    		if (contentNode.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)){
     			ProductModel product = (ProductModel) contentNode;
     			List domainValues = product.getWineClassifications();
     			for(Iterator domainIter = domainValues.iterator(); domainIter.hasNext();){

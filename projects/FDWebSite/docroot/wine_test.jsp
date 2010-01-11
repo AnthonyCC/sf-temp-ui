@@ -12,7 +12,6 @@
 
 <%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='com.freshdirect.fdstore.content.ProductModel' %>
-<%@ page import='com.freshdirect.fdstore.content.ProductRef' %>
 <%@ page import='com.freshdirect.fdstore.content.Domain' %>
 <%@ page import='com.freshdirect.fdstore.content.Html' %>
 <%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
@@ -49,12 +48,11 @@
 <%
 
   if(contentId!=null){
-        ContentNodeModel model1=ContentFactory.getInstance().getContentNodeByName(contentId);                
+        ContentNodeModel model1=ContentFactory.getInstance().getContentNode(contentId);                
         String parentName=model1.getParentNode().getContentName();
         System.out.println("model :"+model1+" parentName :"+parentName);
         
-        ProductRef ref=new ProductRef(parentName,contentId);
-		ProductModel model= ContentFactory.getInstance().getProduct(ref);								
+		ProductModel model= ContentFactory.getInstance().getProduct(parentName, contentId);								
 		System.out.println("model new1 :"+model);	
         
    
@@ -69,8 +67,7 @@
 <TD><b>Wine Sorting Domain Values :</b></TD>
 <TD>
 <%
-	    CategoryRef catRef=new CategoryRef(parentName);
-	    CategoryModel catModel1=catRef.getCategory();
+	    CategoryModel catModel1=(CategoryModel) ContentFactory.getInstance().getContentNode(parentName);
         
         List wineSortList=catModel1.getWineSortCriteria();		
 		if(wineSortList!=null && wineSortList.size()>0){
@@ -413,7 +410,7 @@ DomainValue value=model.getWineCountry();
 	    CategoryModel catModel =model.getPerfectPair();
 	    String catStr="";
 	    if(catModel!=null){
-	    	catStr="<b> Category Id:</b><font color='blue' size='4'>"+catModel.getPK().getId()+"</font><b>: Category Name :</b><font color='blue' size='4'>"+catModel.getFullName()+"</font><B>: Department :</B><font color='blue' size='4'>"+catModel.getDepartment().getFullName()+"</font>";
+	    	catStr="<b> Category Id:</b><font color='blue' size='4'>"+catModel.getContentKey().getId()+"</font><b>: Category Name :</b><font color='blue' size='4'>"+catModel.getFullName()+"</font><B>: Department :</B><font color='blue' size='4'>"+catModel.getDepartment().getFullName()+"</font>";
 	    }
 
 %>

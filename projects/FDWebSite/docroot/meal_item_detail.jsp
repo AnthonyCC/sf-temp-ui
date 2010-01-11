@@ -30,7 +30,7 @@ ContentFactory cf = ContentFactory.getInstance();
 List skus = new ArrayList();
 ProductModel product =  ContentFactory.getInstance().getProductByName(mcatId,mproductId);
 
-if (!((List)product.getAttribute("COMPONENT_GROUPS",Collections.EMPTY_LIST)).isEmpty()) {
+if (!product.getComponentGroups().isEmpty()) {
     String redirectURL = "/cg_meal_item_detail.jsp?" + request.getQueryString();
     response.sendRedirect(response.encodeRedirectURL(redirectURL));
     return;
@@ -45,7 +45,6 @@ SkuModel defaultSku = product.getDefaultSku();
 Image productImage = product.getDetailImage();
 
 Map availOptSkuMap = new HashMap();
-Attribute attrib = parentCat.getAttribute("EDITORIAL");
     
 List prodSkus = productNode.getSkus();
 
@@ -125,9 +124,9 @@ int prodCount = 0;%>
 		CategoryModel stepCat = (CategoryModel)sci.next();
 		List matCharNames=new ArrayList();
 		List prodList = new ArrayList();
-		attrib = stepCat.getAttribute("MATERIAL_CHARACTERISTIC");
-		if (attrib!=null) {
-			StringTokenizer matCharTkns = new StringTokenizer((String)attrib.getValue(),",");
+		String _matChar = stepCat.getMaterialCharacteristic();
+		if (_matChar!=null) {
+			StringTokenizer matCharTkns = new StringTokenizer(_matChar,",");
 			for (;matCharTkns.hasMoreTokens(); ) {
 				matCharNames.add(matCharTkns.nextToken());
 			}

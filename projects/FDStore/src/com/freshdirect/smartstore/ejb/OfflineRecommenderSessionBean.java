@@ -9,16 +9,12 @@ import java.sql.Types;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ejb.CreateException;
 import javax.ejb.EJBException;
-import javax.naming.Context;
-import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.Image;
@@ -28,65 +24,31 @@ import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
+import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.ProductDisplayUtil;
-import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 
-public class OfflineRecommenderSessionBean extends SessionBeanSupport {
+public class OfflineRecommenderSessionBean extends FDSessionBeanSupport {
 	private static final long serialVersionUID = 8606750945494173083L;
 
 	private static final Logger LOGGER = LoggerFactory
 			.getInstance(OfflineRecommenderSessionBean.class);
 
-	private static FDCustomerManagerHome customerManagerHome = null;
-
-	private static void lookupCustomerManagerHome() throws FDResourceException {
-		if (customerManagerHome != null) {
-			return;
-		}
-		Context ctx = null;
-		try {
-			ctx = FDStoreProperties.getInitialContext();
-			customerManagerHome = (FDCustomerManagerHome) ctx
-					.lookup(FDStoreProperties.getFDCustomerManagerHome());
-		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
-		} finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-				}
-			} catch (NamingException ne) {
-				LOGGER.warn("Cannot close Context while trying to cleanup", ne);
-			}
-		}
-	}
-
-	private static void invalidateCustomerManagerHome() {
-		customerManagerHome = null;
-	}
 
 	private FDUserI getUserById(String customerId) throws FDResourceException {
-		lookupCustomerManagerHome();
 		try {
-			FDCustomerManagerSB sb = customerManagerHome.create();
+			FDCustomerManagerSB sb = getFDCustomerManager();
 			FDIdentity identity = new FDIdentity(customerId);
 			FDUser user = sb.recognize(identity);
 			return user;
-		} catch (CreateException ce) {
-			invalidateCustomerManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
-			invalidateCustomerManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		} catch (FDAuthenticationException ae) {
-			invalidateCustomerManagerHome();
 			throw new FDResourceException(ae, "Unrecognized user");
 		}
 	}

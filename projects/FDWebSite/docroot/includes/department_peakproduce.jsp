@@ -74,7 +74,7 @@
 			%>
 				<fd:IncludeMedia name="<%=mediaPath%>" />
 
-	<% ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(request.getParameter("deptId")); %>
+	<% ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(request.getParameter("deptId")); %>
 	<table cellpadding="0" cellspacing="0" border="0">
 		<tr valign="bottom">
 			<logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.fdstore.content.SkuModel">

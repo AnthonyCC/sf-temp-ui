@@ -48,7 +48,16 @@ public class ContentNodeGenerator {
     private final static int PREFIX_SEARCH = 3;
     private final static boolean PREFIX_DEBUG = true;
     
-    public static int GETATTRIBUTE_MODE = SWITCH; 
+    public static int GETATTRIBUTE_MODE = SWITCH;
+    
+    /**
+     * This flag enables specific optimization, if set to true, memory consumption is greatly reduced, but 
+     * in the getAttribute call, every time a new Attribute object have to be created. 
+     *  For now, we don't enable this. 
+     */
+    boolean lazy = true; 
+    
+    boolean debugGetAttributeCalls = false;
     
     private static final Logger LOG             = Logger.getLogger(ContentNodeGenerator.class);
 
@@ -382,9 +391,11 @@ public class ContentNodeGenerator {
             StringBuilder getChildKeys = new StringBuilder();
             getChildKeys.append("public java.util.Set getChildKeys() {  \n" +
             		" java.util.Set result = new java.util.HashSet();\n");
-            if (debug) {
+            if (debug || debugGetAttributeCalls) {
                 getAttribute.append(" System.out.println(\""+def.getType()+ " - getAttribute : \"+name + \" of \"+getKey());");
-                getAttributeValue.append(" System.out.println(\""+def.getType()+ " - getAttributeValue : \"+name + \" of \"+getKey());");
+                if (debug) {
+                    getAttributeValue.append(" System.out.println(\""+def.getType()+ " - getAttributeValue : \"+name + \" of \"+getKey());");
+                }
             }
             
             if (hasAttributes) {
@@ -408,11 +419,13 @@ public class ContentNodeGenerator {
                 AttributeDefI attributeDef = (AttributeDefI) attributeMap.get(name);
                 CtField field = createField(def.getType(), class1, attributeDef);
 
-                String attributeFieldName = getAttributeFieldName(attributeDef);
-                initAttributes.append("  this.").append(attributeFieldName).append(" = new ")
-                    .append(getImplementationClassName(def.getType(), attributeDef)).append("();\n");
-                initAttributes.append("  this.").append(attributeFieldName).append(".setNode(this);\n");
-
+                String attributeFieldName = lazy ? getCreateAttribute(def.getType(), attributeDef) :  getAttributeFieldName(attributeDef);
+                if (!lazy) {
+                    initAttributes.append("  this.").append(attributeFieldName).append(" = new ")
+                        .append(getImplementationClassName(def.getType(), attributeDef)).append("();\n");
+                    initAttributes.append("  this.").append(attributeFieldName).append(".setNode(this);\n");
+                }
+                
                 getAttribute.append(" case ").append(name.hashCode()).append(" : { \n");
                 getAttributeValue.append(" case ").append(name.hashCode()).append(" : { \n");
                 setAttributeValue.append(" case ").append(name.hashCode()).append(" : { \n");
@@ -728,10 +741,11 @@ public class ContentNodeGenerator {
             class1.addMethod(CtNewMethod.make(buf.toString(), class1));
         }
         CtClass attrClass = createAttributeClass( contentType, class1, attributeDef, type);
-        
-        
-        CtField f2 = new CtField(attrClass, getAttributeFieldName(attributeDef), class1);
-        class1.addField(f2);
+
+        if (!lazy) {
+            CtField f2 = new CtField(attrClass, getAttributeFieldName(attributeDef), class1);
+            class1.addField(f2);
+        }
         
         return f;
     }
@@ -746,6 +760,18 @@ public class ContentNodeGenerator {
 
     private String getAttributeFieldName(AttributeDefI attributeDef) {
         return "_$$" + attributeDef.getName();
+    }
+
+    /**
+     * Return a code fragment which creates an attribute.
+     * 
+     * @param type
+     * @param attributeDef
+     * @return
+     */
+    private String getCreateAttribute(ContentType type, AttributeDefI attributeDef) {
+        String name= getImplementationClassName(type, attributeDef);
+        return "new " + name + "(this)";
     }
 
     
@@ -765,6 +791,11 @@ public class ContentNodeGenerator {
             c.setBody(null); 
             atClass.addConstructor(c);
             
+        }
+        {
+            CtConstructor c = new CtConstructor(new CtClass[] { objectClass }, atClass);
+            c.setBody(" { super(); setNode($1); }");
+            atClass.addConstructor(c);
         }
         
         {
@@ -791,6 +822,11 @@ public class ContentNodeGenerator {
             atClass.addMethod(CtNewMethod.make("public String toString() { return \""+type.getName()+':'+attributeDef.getName()+"=\"+getValue() + \"("+fieldType.getSimpleName()+
                     ")\";}", atClass));
         }
+        {
+            atClass.addMethod(CtNewMethod.make("public boolean equals(Object object) { \n"+
+                    "  return (object instanceof "+name+ ") && (node == (("+name+")object).node);\n }", atClass));
+        }
+        
         if (attributeDef instanceof RelationshipDefI) {
             atClass.addInterface(pool.get(RelationshipI.class.getName()));
         }

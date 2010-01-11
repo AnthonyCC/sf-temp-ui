@@ -76,7 +76,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 							Discount dis=new Discount(promotionCode,EnumDiscountType.PERCENT_OFF,percentOff);
 							model.setDiscount(dis);
 							String savingsId = model.getSavingsId();
-							String productId = model.getProductRef().lookupProduct().getContentKey().getId();							
+							String productId = model.getProductRef().getContentKey().getId();							
 							recommendedItemMap.put(productId, savingsId);
 							appliedCnt++;
 						}		
@@ -91,7 +91,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 							Discount dis=new Discount(promotionCode,EnumDiscountType.PERCENT_OFF,percentOff);
 							model.setDiscount(dis);
 							String savingsId = model.getSavingsId();
-							String productId = model.getProductRef().lookupProduct().getContentKey().getId();							
+							String productId = model.getProductRef().getContentKey().getId();							
 							recommendedItemMap.put(productId, savingsId);
 							model.setDiscountFlag(true);
 							appliedCnt++;
@@ -104,7 +104,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 			if(orderLines.size()>0){
 				for(int i=0;i<orderLines.size();i++){
 					FDCartLineI cartModel=(FDCartLineModel)orderLines.get(i);	 
-						String productId = cartModel.getProductRef().lookupProduct().getContentKey().getId();
+						String productId = cartModel.getProductRef().getContentKey().getId();
 						if(!cartModel.hasDiscount(promotionCode) && recommendedItemMap.containsKey(productId)){								
 							Discount dis=new Discount(promotionCode,EnumDiscountType.PERCENT_OFF,percentOff);
 							cartModel.setDiscount(dis);

@@ -2,11 +2,11 @@
 //**** Methods used on the product pages.  **** 
 
 public DepartmentModel findDepartment (String deptId) throws FDResourceException {
-		return (DepartmentModel)ContentFactory.getInstance().getContentNodeByName(deptId);
+		return (DepartmentModel)ContentFactory.getInstance().getContentNode(deptId);
 }
 
 public String findParentOfCategory (String catId) throws FDResourceException {
-		CategoryModel categoryNode = (CategoryModel)ContentFactory.getInstance().getContentNodeByName(catId);
+		CategoryModel categoryNode = (CategoryModel)ContentFactory.getInstance().getContentNode(catId);
 		DepartmentModel dept = categoryNode.getDepartment();
 		return dept.getContentName();
 }

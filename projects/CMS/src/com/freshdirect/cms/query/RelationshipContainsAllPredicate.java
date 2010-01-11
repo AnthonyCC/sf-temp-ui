@@ -3,7 +3,6 @@ package com.freshdirect.cms.query;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.RelationshipDefI;
 
 /**
@@ -25,8 +24,9 @@ public class RelationshipContainsAllPredicate extends
 		super(relationshipDef, contentKeys);
 	}
 
-	public boolean evaluate(AttributeI attribute) {
-		List keys = (List) attribute.getValue();
+	@Override
+	public boolean evaluateValue(Object v) {
+		List keys = (List) v;
 		if (keys == null || keys.isEmpty()) {
 			return false;
 		}

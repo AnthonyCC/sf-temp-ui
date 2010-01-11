@@ -80,7 +80,7 @@ public interface FDFactorySB extends EJBObject {
     public Collection getNewSkuCodes(int days) throws RemoteException, FDResourceException;
 	
 	/** @return map of sku codes --&gt; oldness pairs */
-    public Map getSkusOldness() throws RemoteException, FDResourceException;
+    public Map<String, Integer> getSkusOldness() throws RemoteException, FDResourceException;
 
     /** @return list of sku codes */
     public Collection getReintroducedSkuCodes(int days) throws RemoteException, FDResourceException;

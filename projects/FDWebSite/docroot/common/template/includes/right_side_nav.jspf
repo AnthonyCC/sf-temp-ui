@@ -15,7 +15,7 @@
 Map recentProdIds = null ;
 String requestURI = request.getRequestURI().toLowerCase();
 ContentFactory contentFactory = ContentFactory.getInstance();
-ContentNodeModel cnm = contentFactory.getContentNodeByName(request.getParameter("catId"));
+ContentNodeModel cnm = contentFactory.getContentNode(request.getParameter("catId"));
 String requestProdId = request.getParameter("productId")==null?"":request.getParameter("productId");
 if (requestURI.indexOf("cart_confirm.jsp")!=-1){
     List recentOrderLines = rsnCart.getRecentOrderLines();
@@ -29,60 +29,18 @@ if (requestURI.indexOf("cart_confirm.jsp")!=-1){
     recentProdIds=new HashMap();
 }
 if (cnm==null) {
-     cnm = ContentFactory.getInstance().getContentNodeByName(request.getParameter("deptId"));
+     cnm = ContentFactory.getInstance().getContentNode(request.getParameter("deptId"));
 }
 if (cnm!=null) {
 boolean rsnIsOnProductPage = requestURI.indexOf("product.jsp")!=-1?true:false;
 
-Attribute rsNavAttrib = cnm.getAttribute("BANNERS");
-
-Banner oneBanner = null;
 Image bannerImg=null;
 String bannerURL = null;
 ContentNodeModel bannerSubject = null;
 String contentLink = null;
-if (rsNavAttrib != null) {
-    oneBanner = (Banner)rsNavAttrib.getValue() ;
-    if (oneBanner.getMedia()!=null) {
-       bannerImg = (Image)oneBanner.getMedia();
-    }
 
-    if (oneBanner.isSubjectALink() && oneBanner.getContentLink()!=null) {
-        contentLink = oneBanner.getContentLink();
-        if (contentLink.toLowerCase().indexOf("javascript")!=-1) {
-            bannerURL = contentLink;
-        } else {
-            bannerURL = response.encodeURL(contentLink);
-        }
-    } else {
-        ContentRef  contRef = (ContentRef )oneBanner.getSubject();
-        if ((contRef instanceof CategoryRef)   && !contRef.getRefName().equals(cnm.getContentName())) {
-             bannerURL = response.encodeURL("/category.jsp?catId="+contRef.getRefName()+"&trk=promo");
-        } else if ((contRef instanceof ProductRef) )  {
-            if (!contRef.getRefName2().equals(requestProdId) && (!recentProdIds.containsKey(contRef.getRefName2())) ) {
-                 // create the url if the product is available
-              ProductModel product = ((ProductRef)contRef).lookupProduct();
-        //!!! is item available tomorrow? tomorrow is today + 2  !!!
-        if (!product.isUnavailable() && product.isAvailableWithin(2)) {
-		bannerURL = response.encodeURL("/product.jsp?catId=" + contRef.getRefName() + "&productId=" + contRef.getRefName2()+"&trk=promo");
-              }
-            }
-        } else if(contRef instanceof DepartmentRef) {
-             bannerURL = response.encodeURL("/department.jsp?deptId=" + contRef.getRefName()+"&trk=promo");
-        }
-    }
-}
-
-List weRecommendTextProds = new ArrayList();//null;
-List weRecommendImgProds = new ArrayList();
-rsNavAttrib= cnm.getAttribute("WE_RECOMMEND_TEXT"); //PRODUCTS THAT SHOULD JUST HAVE THEIR NAMES DISPLAYED
-if (rsNavAttrib!=null) {
-    weRecommendTextProds = (List)rsNavAttrib.getValue();
-}
-rsNavAttrib= cnm.getAttribute("WE_RECOMMEND_IMAGE");  // NOT IMAGES, BUT PRODUCTS THAT WE SHOULD DISPLAY ALONG WITH THE THUMBNAIL IMAGE
-if (rsNavAttrib!=null) {
-    weRecommendImgProds = (List)rsNavAttrib.getValue();
-}
+List<ProductModel> weRecommendTextProds = (cnm instanceof ProductModel ? ((ProductModel)cnm).getWeRecommendText() : new ArrayList<ProductModel>());
+List<ProductModel> weRecommendImgProds = (cnm instanceof ProductModel ? ((ProductModel)cnm).getWeRecommendImage() : new ArrayList<ProductModel>());
 
 %>
 <%-- promotional item (image) goes here --%>
@@ -148,15 +106,15 @@ if(weRecommendTextProds.size() > 0) {
     for(Iterator wrItr=weRecommendTextProds.iterator();wrItr.hasNext() && weRecCount<3;) {
     
     Object contentRefObj = wrItr.next();
-        if (!(contentRefObj instanceof ProductRef)) continue;
-        ProductModel prdMdl = ((ProductRef)contentRefObj).lookupProduct();
+        if (!(contentRefObj instanceof ProductModel)) continue;
+        ProductModel prdMdl = ((ProductModel)contentRefObj);
         if (prdMdl!=null) {
             if (prdMdl.isUnavailable() || prdMdl.isDiscontinued()) continue;
             // build the link so that it would also work for the grocery categories
             if (prdMdl.isGrocery()) {
-               prdURL= response.encodeUrl("/category.jsp?catId="+((ProductRef)contentRefObj).getRefName()+"&prodCatId="+((ProductRef)contentRefObj).getRefName()+"&productId="+prdMdl+"&trk=promo");
+               prdURL= response.encodeUrl("/category.jsp?catId="+prdMdl.getParentId()+"&prodCatId="+prdMdl.getParentId()+"&productId="+prdMdl.getContentKey().getId()+"&trk=promo");
             } else {
-               prdURL= response.encodeUrl("/product.jsp?catId="+((ProductRef)contentRefObj).getRefName()+"&productId="+prdMdl+"&trk=promo");
+               prdURL= response.encodeUrl("/product.jsp?catId="+prdMdl.getParentId()+"&productId="+prdMdl.getContentKey().getId()+"&trk=promo");
             }
 %>
 <div style="margin-left: 8px; text-indent: -8px;"><A HREF="<%=prdURL%>"><%=prdMdl.getGlanceName()%></a><br></div>
@@ -176,8 +134,8 @@ if(weRecommendImgProds.size() > 0) {
    String prdURL=null;
     for(Iterator wrItr=weRecommendImgProds.iterator();wrItr.hasNext() && weRecCount<2;) {
         Object contentRefObj = wrItr.next();
-        if (!(contentRefObj instanceof ContentRef )) continue;
-        ProductModel prdMdl = ((ProductRef)contentRefObj).lookupProduct();
+        if (!(contentRefObj instanceof ProductModel )) continue;
+        ProductModel prdMdl = ((ProductModel)contentRefObj);
         if (prdMdl!=null) { 
             if (prdMdl.isUnavailable() || prdMdl.isDiscontinued()) continue;
             String prdCatID = prdMdl.getParentNode().getContentName();
@@ -236,11 +194,11 @@ if(weRecommendImgProds.size() > 0) {
   ContentNodeModel currentFolder = null;
   String deptName = "foo";
   if(deptId!=null) {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+    currentFolder=ContentFactory.getInstance().getContentNode(deptId);
     if(currentFolder != null)
 	    deptName = currentFolder.getFullName();
   } else {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+    currentFolder=ContentFactory.getInstance().getContentNode(catId);
     String path = "";
     
     if(currentFolder != null) {

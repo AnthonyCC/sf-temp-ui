@@ -5,7 +5,6 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='java.net.URLEncoder'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -57,14 +56,10 @@ if (source != null) {
 }
 
 MediaI recipeDesc = recipe.getDescription();
-Attribute attrib  = recipe.getAttribute("titleImage");
-MediaI recipePhoto = attrib==null ? null : (MediaI) attrib.getValue();
-attrib  = recipe.getAttribute("ingredientsMedia");
-MediaI recipeIngrdMedia = attrib==null ? null : (MediaI) attrib.getValue();
-attrib  = recipe.getAttribute("preparationMedia");
-MediaI recipePrepdMedia = attrib==null ? null : (MediaI) attrib.getValue();
-attrib  = recipe.getAttribute("copyrightMedia");
-MediaI recipeCpyrghtMedia = attrib==null ? null : (MediaI) attrib.getValue();
+Image recipePhoto = recipe.getTitleImage();
+MediaI recipeIngrdMedia = recipe.getIngredientsMedia();
+MediaI recipePrepdMedia = recipe.getPreparationMedia();
+MediaI recipeCpyrghtMedia = recipe.getCopyrightMedia();
 
 	
 %>

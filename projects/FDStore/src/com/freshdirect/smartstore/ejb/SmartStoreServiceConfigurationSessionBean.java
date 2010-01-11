@@ -48,34 +48,6 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 	private static final String GET_TAB_STRAT_PRIOS = "SELECT SITE_FEATURE_ID, PRIMARY_PRIORITY, SECONDARY_PRIORITY " +
 			"FROM CUST.SS_TAB_STRATEGY_PRIORITY WHERE TAB_STRATEGY_ID = ?";
 	
-    protected void close(ResultSet rs) {
-		if (rs != null) {
-			try {
-				rs.close();
-			} catch (SQLException e) {
-			}
-		}
-	}
-
-	protected void close(PreparedStatement rs) {
-		if (rs != null) {
-			try {
-				rs.close();
-			} catch (SQLException e) {
-			}
-		}
-	}
-
-	protected void close(Connection rs) {
-		if (rs != null) {
-			try {
-				rs.close();
-			} catch (SQLException e) {
-			}
-		}
-	}
-
-
 
 	/**
 	 * Configures a recommendation service

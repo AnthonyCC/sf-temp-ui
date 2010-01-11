@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -23,18 +22,19 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	 */
 	public abstract ProductModel getProduct();
 
-	public AttributeI getCmsAttribute(String name) {
-		AttributeI   a = super.getCmsAttribute(name);
-		if (a != null) {
-			return a;
-		}
-		ProductModel p = getProduct();
-		if (p != null) {
-			return p.getCmsAttribute(name);
-		}
-		
-		return null;
-	}
+        @Override
+        public Object getCmsAttributeValue(String name) {
+            Object a = super.getCmsAttributeValue(name);
+            if (a != null) {
+                return a;
+            }
+            ProductModel p = getProduct();
+            if (p != null) {
+                return p.getCmsAttributeValue(name);
+            }
+    
+            return null;
+        }
 
 	//
 	// proxy pass-thru methods
@@ -68,7 +68,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getAttribute("INVISIBLE", false);
 	}
 
-	public List getAlsoSoldAsRefs() {
+	public List<ProductModel> getAlsoSoldAsRefs() {
 		return getProduct().getAlsoSoldAs();
 	}
 
@@ -182,10 +182,6 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 
 	public String getKeywords() {
 		return getProduct().getKeywords();
-	}
-
-	public List getAssocEditorial() {
-		return getProduct().getAssocEditorial();
 	}
 
 	public boolean isSearchable() {
@@ -310,15 +306,15 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().isNotSearchable();
 	}
 
-	public double getContainerWeightHalfPint() {
+	public Double getContainerWeightHalfPint() {
 		return getProduct().getContainerWeightHalfPint();
 	}
 
-	public double getContainerWeightPint() {
+	public Double getContainerWeightPint() {
 		return getProduct().getContainerWeightPint();
 	}
 
-	public double getContainerWeightQuart() {
+	public Double getContainerWeightQuart() {
 		return getProduct().getContainerWeightQuart();
 	}
 
@@ -442,16 +438,21 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getUnitOfMeasure();
 	}
 
-	public List getVariationMatrix() {
+	public List<Domain> getVariationMatrix() {
 		return getProduct().getVariationMatrix();
 	}
 
-	public List getVariationOptions() {
+	public List<Domain> getVariationOptions() {
 		return getProduct().getVariationOptions();
 	}
 
 	public DomainValue getWineCountry() {
 		return getProduct().getWineCountry();
+	}
+	
+	@Override
+	public ContentKey getWineCountryKey() {
+            return getProduct().getWineCountryKey();
 	}
 
 	public Image getProdImage() {
@@ -498,7 +499,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getFreshTips();
 	}
 
-	public Html getDonenessGuide() {
+	public List<Html> getDonenessGuide() {
 		return getProduct().getDonenessGuide();
 	}
 
@@ -520,6 +521,11 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 
 	public Html getPartallyFrozen() {
 		return getProduct().getPartallyFrozen();
+	}
+	
+	@Override
+	public boolean isHasPartiallyFrozen() {
+	    return getProduct().isHasPartiallyFrozen();
 	}
 
 	public List getComponentGroups() {
@@ -626,4 +632,24 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public List getGiftcardType(){
 		return getProduct().getGiftcardType();
 	}
+
+    @Override
+    public MediaI getMedia(String name) {
+        return getProduct().getMedia(name);
+    }
+
+    @Override
+    public boolean isHasSalesUnitDescription() {
+        return getProduct().isHasSalesUnitDescription();
+    }
+    
+    @Override
+    public Html getFddefSource() {
+        return getProduct().getFddefSource();
+    }
+    
+    @Override
+    public String getDefaultSkuCode() {
+        return getProduct().getDefaultSkuCode();
+    }
 }

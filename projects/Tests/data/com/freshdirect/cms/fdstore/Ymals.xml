@@ -354,6 +354,9 @@
       <YmalSet ref="ymal_set_4_to_6"/>
       <YmalSet ref="ymal_set_completed"/>
     </ymalSets>
+    <PRIMARY_HOME>
+    	<Category ref="category_mea0004561"></Category>
+    </PRIMARY_HOME>
   </Product>
 
   <Product id="product_mea0004562">
@@ -361,6 +364,9 @@
     <skus>
       <Sku ref="MEA0004562"/>
     </skus>
+    <PRIMARY_HOME>
+    	<Category ref="category_mea0004562"/>
+    </PRIMARY_HOME>
   </Product>
 
   <Product id="product_mea0004563">
@@ -368,6 +374,9 @@
     <skus>
       <Sku ref="MEA0004563"/>
     </skus>
+    <PRIMARY_HOME>
+    	<Category ref="category_mea0004563"/>
+    </PRIMARY_HOME>
   </Product>
 
   <Product id="product_mea0004564">
@@ -375,6 +384,9 @@
     <skus>
       <Sku ref="MEA0004564"/>
     </skus>
+    <PRIMARY_HOME>
+    	<Category ref="category_mea0004564"/>
+    </PRIMARY_HOME>
   </Product>
 
   <Product id="product_mea0004565">
@@ -382,6 +394,9 @@
     <skus>
       <Sku ref="MEA0004565"/>
     </skus>
+    <PRIMARY_HOME>
+    	<Category ref="category_mea0004565"/>
+    </PRIMARY_HOME>
   </Product>
 
   <Product id="product_mea0004566">
@@ -389,6 +404,9 @@
     <skus>
       <Sku ref="MEA0004566"/>
     </skus>
+    <PRIMARY_HOME>
+    	<Category ref="category_mea0004566"/>
+    </PRIMARY_HOME>
   </Product>
 
   <Product id="product_mea0004567">
@@ -396,6 +414,9 @@
     <skus>
       <Sku ref="MEA0004567"/>
     </skus>
+    <PRIMARY_HOME>
+    	<Category ref="category_mea0004567"/>
+    </PRIMARY_HOME>
   </Product>
   
   <Product id="product_mea0004568">
@@ -403,6 +424,9 @@
     <skus>
       <Sku ref="MEA0004568"/>
     </skus>
+    <PRIMARY_HOME>
+    	<Category ref="category_mea0004568"/>
+    </PRIMARY_HOME>
   </Product>
 
   <Product id="product_mea0004561_unavailable">

@@ -21,8 +21,8 @@ public class KosherForPassoverFilter extends AbstractProductFilter{
 		
 		SkuModel sku=null;
 			boolean result = false;
-			 for (Iterator iSku = product.getSkus().iterator(); iSku.hasNext() && result==false;) {
-			 	sku = (SkuModel) iSku.next();
+			for (Iterator<SkuModel> iSku = product.getPrimarySkus().iterator(); iSku.hasNext() && result==false;) {
+			 	sku = iSku.next();
 				try {
 					if (sku.isUnavailable()) continue;
 					result = sku.getProduct().hasClaim(EnumClaimValue.KOSHER_FOR_PASSOVER);

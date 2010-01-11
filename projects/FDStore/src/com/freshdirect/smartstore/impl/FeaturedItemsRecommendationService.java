@@ -9,6 +9,7 @@ import java.util.List;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
@@ -57,19 +58,7 @@ public class FeaturedItemsRecommendationService extends AbstractRecommendationSe
      * @return
      */
     public static List getFeaturedItems(ContentNodeModel model) {
-        if(model instanceof DepartmentModel) {
-            return ((DepartmentModel) model).getFeaturedProducts();
-        } else if (model instanceof CategoryModel) {
-            return ((CategoryModel) model).getFeaturedProducts();
-        } else if (model instanceof ProductModel) {
-        	return ((CategoryModel) HelperFunctions.getToplevelCategory(model)).getFeaturedProducts();
-        } else {
-            Object value = model.getAttribute("FEATURED_PRODUCTS", null);
-            if (value instanceof List) {
-                return (List) value;
-            }
-        }
-        return Collections.EMPTY_LIST;
+        return HelperFunctions.getFeaturedItems(model);
     }
 
 }

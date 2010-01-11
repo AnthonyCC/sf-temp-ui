@@ -2,6 +2,8 @@
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.fdstore.content.util.*'  %><%@ page import='com.freshdirect.fdstore.*, com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@page import="com.freshdirect.fdstore.util.HowToCookItUtil"%>
+<%@page import="com.freshdirect.fdstore.util.RatingUtil"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -11,8 +13,6 @@
     java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
 <% 
-Attribute attrib = null;
-
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId");
 String productId = request.getParameter("productId");
@@ -23,12 +23,14 @@ if (deptId!=null) isDept = true;
 boolean isGroceryVirtual=false;
 ContentNodeModel currentFolder = null;
 if(isDept) {
- currentFolder = ContentFactory.getInstance().getContentNodeByName(deptId);
+ currentFolder = ContentFactory.getInstance().getContentNode(deptId);
  unSortLink = response.encodeURL("/department.jsp?deptId="+deptId+"&trk=rate");
 } else {
- currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+ currentFolder = ContentFactory.getInstance().getContentNode(catId);
  unSortLink = response.encodeURL("/category.jsp?catId="+catId+"&trk=rate");
 }
+final ProductContainer productContainer = (currentFolder instanceof ProductContainer) ? (ProductContainer) currentFolder : null; 
+
 String productIdURL = "";
 if (productId!=null) {
     productIdURL = "&productId="+productId;
@@ -36,9 +38,8 @@ if (productId!=null) {
 boolean noLeftNav = true;
 String jspTemplate =null;
 
-attrib = currentFolder.getAttribute("SHOW_SIDE_NAV");
-if (attrib!=null) {
-    noLeftNav = !((Boolean)attrib.getValue()).booleanValue();
+if (productContainer!=null) {
+    noLeftNav = !productContainer.isShowSideNav();
 }
 // Assign the correct template
 if (noLeftNav) {
@@ -46,11 +47,7 @@ if (noLeftNav) {
 } else {
     jspTemplate = "/common/template/left_dnav.jsp";
 }
-boolean breakOnSubfolder = false;
-attrib = currentFolder.getAttribute("RATING_BREAK_ON_SUBFOLDERS");
-if (attrib!=null) {
-    breakOnSubfolder = ((Boolean)attrib.getValue()).booleanValue();
-}
+boolean breakOnSubfolder = productContainer != null ? productContainer.isRatingBreakOnSubfolders() : false;
 %>
 <tmpl:insert template='<%=jspTemplate%>'>
 <%
@@ -74,8 +71,7 @@ if (noLeftNav==true) {
 }
 
 String introTitle = currentFolder.getEditorialTitle();
-attrib=currentFolder.getAttribute("SEASON_TEXT");
-String containsSeasonText = attrib==null?"":(String)attrib.getValue();
+String containsSeasonText = productContainer.getSeasonText();
 String inSeasonNow = "/media_stat/images/template/in_season_now.gif";
 String organicAvailable = "/media_stat/images/template/organic.gif";
 String scalesImage = "/media_stat/images/template/scales.gif";
@@ -83,7 +79,6 @@ String scalesImage = "/media_stat/images/template/scales.gif";
 CategoryModel lastProdFolder = null;
 ProductModel lastProduct = null;
 CategoryModel workFolder = null;
-Attribute prodSortAttrib = null;
 List ratingAttribs = null;
 String url = null;
 String colLabel = null;
@@ -98,14 +93,12 @@ boolean isBooleanDomain = false;
 boolean isRating = false;
 boolean isNumeric = false;
 String tdwidth="92";
-boolean showRelatedRatingImage = false;
-prodSortAttrib = currentFolder.getAttribute("SHOW_RATING_RELATED_IMAGE");
-showRelatedRatingImage = prodSortAttrib==null?false:((Boolean)prodSortAttrib.getValue()).booleanValue();
+boolean showRelatedRatingImage = productContainer != null ? productContainer.isShowRatingRelatedImage() : false;
 
-prodSortAttrib = currentFolder.getAttribute(ratingGroupName);
-if (prodSortAttrib !=null) {
-    ratingAttribs = (List)prodSortAttrib.getValue();
-}else ratingAttribs = new ArrayList();
+ratingAttribs = productContainer != null ? productContainer.getRatingDomain(ratingGroupName) : null;
+if (ratingAttribs == null) { 
+    ratingAttribs = new ArrayList();
+}
 int atrDisplayCount = 0;
 if (ratingAttribs !=null) {
    atrDisplayCount = ratingAttribs.size();
@@ -115,47 +108,9 @@ if (orderBy==null) {
     orderBy = "name";
 }
 
-
 //  get the rating & ranking stuff
-    Attribute tmpAttribute = currentFolder.getAttribute("RATING_GROUP_NAMES");
-    StringBuffer rateNRankLinks = new StringBuffer();
-    
-    if (tmpAttribute !=null) {
-        StringTokenizer stRRNames = new StringTokenizer((String)tmpAttribute.getValue(),",");
-        while (stRRNames.hasMoreTokens()) {
-            String rrName = stRRNames.nextToken().toUpperCase();
-            boolean isSameRatingGroup = ratingGroupName.equalsIgnoreCase(rrName);
-            String ordrBy = "";
-            // go find the attribute with that name and it's label
-            tmpAttribute = currentFolder.getAttribute(rrName);
-            if (tmpAttribute !=null) {
-                // get the rating attibute collection and get the first rating thing off of it
-                tmpAttribute = currentFolder.getAttribute(rrName);
-                List ra = (List)tmpAttribute.getValue();
-                if (ra.size() > 0) {
-                    Domain raDMV = ((DomainRef)ra.get(0)).getDomain();
-                    ordrBy = "&orderBy="+raDMV.getName().toLowerCase();
-                }
+	String rateNRankLinks = RatingUtil.buildRatingRankingLinkBuilder(productContainer, response, productIdURL, ratingGroupName);
 
-                if (rateNRankLinks.length() > 1) rateNRankLinks.append(" | ");
-                if (!isSameRatingGroup) {
-                    rateNRankLinks.append("<a href=\"");
-                    rateNRankLinks.append(response.encodeURL("/rating_ranking.jsp?catId="+currentFolder+"&ratingGroupName="+rrName+ordrBy+productIdURL));
-                    rateNRankLinks.append("\">");
-                }
-            }
-                // get the label for this rating group name.
-            tmpAttribute = currentFolder.getAttribute(rrName+"_LABEL");
-            if (tmpAttribute!=null) {
-                rateNRankLinks.append((String)tmpAttribute.getValue());
-            } else {
-              rateNRankLinks.append(rrName.replace('_',' '));
-            }
-            if (!isSameRatingGroup) {
-                rateNRankLinks.append("</a>");
-            }
-        }
-    } 
 %>
 <table width="<%=tablewid%>" border="0" cellspacing="0" cellpadding="0">
 <% if ( !"nm".equalsIgnoreCase(introTitle) && introTitle!=null && introTitle.trim().length() > 0 && !introTitle.equals("")) { %>
@@ -206,7 +161,7 @@ if (breakOnSubfolder) {
   sortStrategy.add(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY));
 }
 for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
-        Domain ratingAttrib = ((DomainRef)aItr.next()).getDomain();
+        Domain ratingAttrib = (Domain) aItr.next();
         List domainValues = ratingAttrib.getDomainValues();
         colLabel="";
         minusChar = "";
@@ -254,7 +209,7 @@ for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
             if(orderBy.equals("produce_rating"))
                 sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_RATING, reverseOrder));
             else
-                sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_ATTRIBUTE,"RATING",orderBy,reverseOrder));            
+                sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_DOMAIN_RATING,reverseOrder,orderBy));            
                 
             
 %>
@@ -293,7 +248,7 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
    workFolder = (CategoryModel)prod.getParentNode();
    if (breakOnSubfolder) {
         // is the folder displayable or a decaf folder ?
-        if (lastFolder==null || !workFolder.getPK().equals(lastFolder.getPK())) {
+        if (lastFolder==null || !workFolder.getContentKey().equals(lastFolder.getContentKey())) {
             shownFolderLabel = false;
         }
 
@@ -359,12 +314,11 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
 
 %><TR VALIGN="MIDDLE" BGCOLOR="<%=bgcolor%>">
 <%
-        prodSortAttrib = prod.getAttribute("RATING_RELATED_IMAGE");
+		Image ratingImage = prod.getRatingRelatedImage();
         String itmImage = "";
         String boldOn = "";
         String boldOff = "";
-        if (prodSortAttrib !=null && showRelatedRatingImage) {
-                Image ratingImage = (Image)prodSortAttrib.getValue();
+        if (ratingImage !=null && showRelatedRatingImage) {
                 StringBuffer flagTag = new StringBuffer();
                 flagTag.append("<img src=\"");
                 flagTag.append(ratingImage.getPath());
@@ -385,9 +339,9 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
 <TD WIDTH="<%= nameColWidth %>"><%=itmImage%><A HREF="<%=url%>"><%=boldOn%><%=prod.getFullName()%><%=boldOff%></A></TD>
 <%     }
     //We've got a products. Now locate each display attribute on the product
-        MultiAttribute prodSortMAttrib = (MultiAttribute)prod.getAttribute("RATING");
+        List<DomainValue> prodSortMAttrib = prod.getRating();
         for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
-            Domain ratingAttrib = ((DomainRef)aItr.next()).getDomain();
+            Domain ratingAttrib = (Domain) aItr.next();
             String colAttrName = ratingAttrib.getName();
             String prodDomainValue = null;
             boolean foundDomain = false;
@@ -395,22 +349,9 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
             if(colAttrName.equals("produce_rating")){
                 //Skip retreiving the value from Domain object.
             } else {
-                List prodDomainValues = null;
-                if (prodSortMAttrib !=null) {
-                    prodDomainValues = (List)prodSortMAttrib.getValues();
-                }else prodDomainValues = new ArrayList();
                // get the matching domainvalue off the prod for this Domain.
-                for(Iterator dvItr = prodDomainValues.iterator();dvItr.hasNext() && !foundDomain ;) {
-                    Object obj = dvItr.next();
-                    if (!(obj instanceof DomainValueRef))  continue;
-                    
-                    DomainValue dmv = ((DomainValueRef)obj).getDomainValue(); //dvItr.next();
-                    Domain dom = dmv.getDomain();
-                    if (ratingAttrib.getPK().equals(dom.getPK())) {
-                        prodDomainValue = dmv.getValue();
-                        foundDomain = true;
-                    } 
-                }
+               	prodDomainValue = HowToCookItUtil.getProductDomainValue(prodSortMAttrib, ratingAttrib.getContentKey().getId(), null);
+                foundDomain = prodDomainValue != null;
             }
             String cellColor = bgcolor;
             // get the imgae that should be displayed to right of this thing

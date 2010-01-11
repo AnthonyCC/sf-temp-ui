@@ -1,7 +1,7 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*,com.freshdirect.fdstore.content.util.SortStrategyElement' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute, com.freshdirect.fdstore.content.util.EnumWineSortType' %>
+<%@ page import='com.freshdirect.fdstore.content.util.EnumWineSortType' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -18,21 +18,14 @@
 <%@ page import='com.freshdirect.fdstore.FDProductInfo' %>
 <%@ page import='com.freshdirect.fdstore.FDResourceException' %>
 <%@ page import='com.freshdirect.fdstore.FDSkuNotFoundException' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
-<%@ page import='com.freshdirect.fdstore.content.CategoryRef' %>
 <%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
-<%@ page import='com.freshdirect.fdstore.content.ContentNodeI' %>
 <%@ page import='com.freshdirect.fdstore.content.ContentNodeModel' %>
-<%@ page import='com.freshdirect.fdstore.content.ContentRef' %>
 <%@ page import='com.freshdirect.fdstore.content.DepartmentModel' %>
 <%@ page import='com.freshdirect.fdstore.content.Domain' %>
-<%@ page import='com.freshdirect.fdstore.content.DomainRef' %>
 <%@ page import='com.freshdirect.fdstore.content.DomainValue' %>
-<%@ page import='com.freshdirect.fdstore.content.DomainValueRef' %>
 <%@ page import='com.freshdirect.fdstore.content.Image' %>
 <%@ page import='com.freshdirect.fdstore.content.ProductModel' %>
-<%@ page import='com.freshdirect.fdstore.content.ProductRef' %>
 <%@ page import='com.freshdirect.fdstore.content.SkuModel' %>
 <%@ page import='com.freshdirect.fdstore.customer.FDUserI' %>
 
@@ -41,11 +34,11 @@
     String catId = request.getParameter("catId"); 
     String deptId = request.getParameter("deptId"); 
     
-       ContentNodeModel currentFolder = null;
+       ProductContainer currentFolder = null;
     if(deptId!=null) {
-	    currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+	    currentFolder=(ProductContainer) ContentFactory.getInstance().getContentNode(deptId);
     } else {
-    	currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+    	currentFolder=(ProductContainer) ContentFactory.getInstance().getContentNode(catId);
     }
  %>   
 <%@ include file="/includes/wine/i_wine_method_params.jspf" %> 
@@ -288,7 +281,7 @@ SkuModel dfltSku = null;
 <%
 index++;
 
-if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
+if (displayThing.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
    ProductModel displayProduct = (ProductModel)displayThing;
    Image productImage=displayProduct.getCategoryImage();
    
@@ -377,7 +370,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
           
      */
 	 String wineLink = "";
-	 wineLink += "product.jsp?productId="+displayProduct +"&catId="+displayProduct.getParentNode().getPK().getId()+ moreOptionParams.toString()+"&trk=cpage";
+	 wineLink += "product.jsp?productId="+displayProduct +"&catId="+displayProduct.getParentNode().getContentKey().getId()+ moreOptionParams.toString()+"&trk=cpage";
 %>
 <tr><td colspan="3" <%=index > 1 ? "style=\"border-top:solid 1px #CCCCCC;\"":""%>><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"></td></tr>
 <tr>
@@ -397,10 +390,10 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
                     <td  style="padding-right:2px;"><INPUT TYPE="text" NAME="quantity_big_<%=index%>" SIZE="2" MAXLENGTH="2" CLASS="text11" value="<%=Math.round(displayProduct.getQuantityMinimum()) %>" onChange="chgQty('quantity_big_<%=index%>',0,<%= displayProduct.getQuantityMinimum() %>,<%= user.getQuantityMaximum(displayProduct) %>);"></td>
                     <td width="12" valign="bottom"><A HREF="javascript:chgQty('quantity_big_<%=index%>',<%= displayProduct.getQuantityIncrement()%>,<%= displayProduct.getQuantityMinimum() %>,<%= user.getQuantityMaximum(displayProduct) %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="lesser quantity"></A><br/><A HREF="javascript:chgQty('quantity_big_<%=index%>',-<%= displayProduct.getQuantityIncrement()%>,<%= displayProduct.getQuantityMinimum() %>,<%= user.getQuantityMaximum(displayProduct) %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="lesser quantity"></A></td>
                     <td style="padding-left:3px;">
-                    <input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart_small.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="76" height="17" HSPACE="2" VSPACE="2" border="0" onClick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>');" /><br>
+                    <input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart_small.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="76" height="17" HSPACE="2" VSPACE="2" border="0" onClick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getContentKey().getId()%>','quantity_big_<%=index%>','<%=skuCode%>');" /><br>
                     </td>
 					<fd:CCLCheck>
-						<td><a href="/unsupported.jsp" onclick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>'); return CCL.save_items('wine_cat_detail',this,'action=CCL:AddToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a></td>
+						<td><a href="/unsupported.jsp" onclick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getContentKey().getId()%>','quantity_big_<%=index%>','<%=skuCode%>'); return CCL.save_items('wine_cat_detail',this,'action=CCL:AddToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a></td>
                 	</fd:CCLCheck> 
             </tr>
       </table>                                
@@ -425,7 +418,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 </form>
 
 <%
-int templateType=currentFolder.getAttribute("TEMPLATE_TYPE",1);
+int templateType=currentFolder.getTemplateType(1);
 %><br>
 <%@ include file="/includes/wine/i_wine_category_bottom.jspf" %> 
 </fd:FDShoppingCart>

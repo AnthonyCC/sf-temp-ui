@@ -26,10 +26,10 @@ boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
 if(deptId!=null) {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+	currentFolder=ContentFactory.getInstance().getContentNode(deptId);
 	isDepartment = true;
 } else {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+	currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
 
 
@@ -58,7 +58,7 @@ if (request.getRequestURI().toLowerCase().indexOf("department.jsp")!=-1) {
 
 String itemNameFont = null;
 Image itemImage;
-String currentFolderPKId = currentFolder.getPK().getId();
+String currentFolderPKId = currentFolder.getContentKey().getId();
 String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
 CategoryModel cat = null;
 DisplayObject displayObj = null;
@@ -127,13 +127,13 @@ for (int itemIndex=0; itemIndex < sortedList.size();itemIndex++) {
           cat = (CategoryModel)contentNode;
           firstProduct = true; //first prod under this
           
-          if (cat.getParentNode()!=null && cat.getParentNode().getPK().getId().equals(currentFolderPKId)) {
+          if (cat.getParentNode()!=null && cat.getParentNode().getContentKey().getId().equals(currentFolderPKId)) {
           //dont print heading for categories that are empty..so peek ahead to see if there is an item that it's child
             int peekAhead = itemIndex +1;
             if (peekAhead == sortedList.size()) {
                 continue;
             } else {
-                if ( ((ContentNodeModel)sortedList.get(peekAhead)).getParentNode().getPK().getId().equals(currentFolderPKId)) {
+                if ( ((ContentNodeModel)sortedList.get(peekAhead)).getParentNode().getContentKey().getId().equals(currentFolderPKId)) {
                     continue;
                 }
             }
@@ -157,9 +157,9 @@ for (int itemIndex=0; itemIndex < sortedList.size();itemIndex++) {
 
 <%
           newCategoryCount++;
-          // get the category_top attribute to display 
-          if (cat.hasAttribute("CAT_LABEL")) {
-          Image catHeader = (Image)cat.getAttribute("CAT_LABEL").getValue();
+          // get the category_top attribute to display
+          Image catHeader = cat.getCategoryLabel();
+          if (catHeader != null) {
 %>
           <table width="<%=maxWidth%>"  align="center" cellpadding="0" cellspacing="0" border="0">
           <tr><td>

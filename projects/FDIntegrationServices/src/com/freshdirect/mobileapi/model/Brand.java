@@ -2,12 +2,9 @@ package com.freshdirect.mobileapi.model;
 
 import java.io.IOException;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-
-import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.MediaI;
-import com.freshdirect.fdstore.content.TitledMedia;
+import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.mobileapi.util.ProductUtil;
 
 public class Brand {
@@ -32,22 +29,18 @@ public class Brand {
      */
     private String description = "";
 
-    @SuppressWarnings("deprecation")
     public static Brand wrap(BrandModel brandModel) {
         Brand brand = new Brand();
-        Attribute logo = brandModel.getAttribute("BRAND_LOGO_SMALL");
-        Attribute content = brandModel.getAttribute("BRAND_POPUP_CONTENT");
+        Image brandLogo = brandModel.getLogoSmall();
+        Html content = brandModel.getPopupContent();
         if (content != null) {
-            TitledMedia tm = (TitledMedia) content.getValue();
             try {
-                brand.description = ProductUtil.readContent(ProductUtil.resolve(tm.getPath()));
+                brand.description = ProductUtil.readContent(ProductUtil.resolve(content.getPath()));
             } catch (IOException e) {
                 brand.description = "";
             }
-
         }
-        if(logo != null) {
-            MediaI brandLogo = (MediaI) logo.getValue();
+        if(brandLogo != null) {
             brand.height = brandLogo.getHeight();
             brand.width = brandLogo.getWidth();
             brand.logo = brandLogo.getPath();

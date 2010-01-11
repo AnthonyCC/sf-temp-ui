@@ -5,8 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
-public class RecipeSubcategory extends ContentNodeModelImpl {
+public class RecipeSubcategory extends ContentNodeModelImpl implements HasRedirectUrl {
 
 	private final List groupBy = new ArrayList();
 
@@ -29,14 +30,12 @@ public class RecipeSubcategory extends ContentNodeModelImpl {
 	}
 	
 	public String getRedirectUrl() {
-		return getAttribute("REDIRECT_URL", "");
+		return (String) getCmsAttributeValue("REDIRECT_URL");
 	}
 
 	public DomainValue getClassification() {
-		DomainValueRef domvalRef = (DomainValueRef) getAttribute("classification",(DomainValueRef) null);
-		return domvalRef==null
-		? null
-		:domvalRef.getDomainValue();
+	    ContentKey key = (ContentKey) getCmsAttributeValue("classification");
+	    return key != null ? ContentFactory.getInstance().getDomainValueById(key.getId()) : null;
 	}
 	
 	public List getGroupBy() {
@@ -60,8 +59,12 @@ public class RecipeSubcategory extends ContentNodeModelImpl {
 	}
 	
 	public Image getLabel() {
-		return (Image) getAttribute("label", (Image) null);
+	    return FDAttributeFactory.constructImage(this, "label");
 	}
+	
+        public Html getRecipeEditorial() {
+            return FDAttributeFactory.constructHtml(this, "editorial");
+        }
 
 	public String getPath() {
 		return getParentNode().getPath() + "/" + getContentName();

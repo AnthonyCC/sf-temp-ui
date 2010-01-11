@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.RelationshipDefI;
 
@@ -22,8 +21,8 @@ public class RelationshipContainsAnyPredicate extends
 		super(relationshipDef, contentKeys);
 	}
 
-	public boolean evaluate(AttributeI attribute) {
-		List keys = (List) attribute.getValue();
+	public boolean evaluateValue(Object v) {
+		List keys = (List) v;
 		if (keys == null || keys.isEmpty()) {
 			return false;
 		}

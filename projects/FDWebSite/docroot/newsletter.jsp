@@ -58,7 +58,7 @@ params.put("baseUrl", "");
 
 		ContentNodeModel currentFolder = null;
 		if (catId!=null) {
-			currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+			currentFolder=ContentFactory.getInstance().getContentNode(catId);
 			if ("picks_love".equalsIgnoreCase(catId)) {
 				deptId = "gro";
 				isDepartment = true;
@@ -68,7 +68,7 @@ params.put("baseUrl", "");
 			<%
 			}
 		} else {
-			currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+			currentFolder=ContentFactory.getInstance().getContentNode(catId);
 		}
 	%>
 		

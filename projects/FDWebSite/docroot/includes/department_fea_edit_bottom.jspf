@@ -9,19 +9,13 @@
         		<td width="100%" align="center" colspan="2">
 	<%  
 	Image deptFeatImage = null;
-	Attribute dptBottAttrib = null;
 	DepartmentModel dept = (DepartmentModel) currentFolder;
 	
-	dptBottAttrib = department.getAttribute("ASSOC_EDITORIAL");
-	List assocEditorial = new ArrayList();
-	if (dptBottAttrib !=null) {
-	    assocEditorial = (List)dptBottAttrib.getValue();
-	}
+	List assocEditorial = dept.getAssocEditorial();
 	
-	dptBottAttrib = department.getAttribute("DEPARTMENT_BOTTOM");
-	List deptBottom = new ArrayList();
-	if (dptBottAttrib !=null) {
-	    deptBottom = (List)dptBottAttrib.getValue();
+	List deptBottom = dept.getDepartmentBottom();
+	if (deptBottom ==null) {
+	    deptBottom = Collections.EMPTY_LIST;
 	}
 	
     List favorites = dept.getFeaturedProducts();

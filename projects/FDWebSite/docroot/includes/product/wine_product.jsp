@@ -39,9 +39,7 @@
     }
 
     CategoryModel parentCat = (CategoryModel)productNode.getParentNode();
-    ContentNodeModel aliasNode = parentCat.getAttribute("ALIAS")!=null  
-         ? ((CategoryRef) parentCat.getAttribute("ALIAS").getValue()).getCategory()
-         : null;
+    ContentNodeModel aliasNode = parentCat.getAlias();
     String alignment="align=\"right\"";
     String prodPageRatingStuff = getProdPageRatings(productNode,response); // get and format the product page ratings
 %>
@@ -75,9 +73,9 @@
 		<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
 	</oscache:cache>
 <%
-	if (productNode.getAttribute("WINE_TYPE")!=null   || 
-            productNode.getAttribute("WINE_REGION")!=null || 
-	    productNode.getAttribute("WINE_FYI")!=null) {  %>
+	if (productNode.getWineType()!=null   || 
+            productNode.getWineRegion()!=null || 
+	    productNode.getWineFyi()!=null) {  %>
         <br><img src="/media_stat/images/layout/cccccc.gif" border="0" width="250" height="1"><br><br>
 	<%@ include file="/shared/includes/product/wine_info.jspf" %><br>
 <%  } %>

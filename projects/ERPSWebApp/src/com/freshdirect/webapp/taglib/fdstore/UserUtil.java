@@ -102,7 +102,7 @@ public class UserUtil {
 		    		SavedRecipientModel srm = (SavedRecipientModel)i.next();
 		    		
 			            FDCartLineModel cartLine = new FDCartLineModel( new FDSku(productInfo), 
-		                		  productmodel.getProductRef(), new FDConfiguration(quantity, salesUnit.getName(), optionMap),null);
+		                		  productmodel, new FDConfiguration(quantity, salesUnit.getName(), optionMap),null);
 		
 		            cartLine.setFixedPrice(srm.getAmount());
 		            cartLine.refreshConfiguration();                
@@ -167,7 +167,7 @@ public class UserUtil {
 		    		SavedRecipientModel srm = (SavedRecipientModel)i.next();
 		    		
 			            FDCartLineModel cartLine = new FDCartLineModel( new FDSku(productInfo), 
-		                		  productmodel.getProductRef(), new FDConfiguration(quantity, salesUnit.getName(), optionMap),null);
+		                		  productmodel, new FDConfiguration(quantity, salesUnit.getName(), optionMap),null);
 		
 		            cartLine.setFixedPrice(srm.getAmount());
 		            cartLine.refreshConfiguration();                
@@ -265,7 +265,7 @@ public class UserUtil {
 		    FDSalesUnit salesUnit = units[n % units.length];
 		    
 		    FDCartLineModel cartLine = new FDCartLineModel( new FDSku(productInfo), 
-          		  productmodel.getProductRef(), new FDConfiguration(totalQuantity, salesUnit.getName(), optionMap),null);		
+          		  productmodel, new FDConfiguration(totalQuantity, salesUnit.getName(), optionMap),null);		
 		    cartLine.setFixedPrice(productInfo.getDefaultPrice()*totalQuantity);//TODO: check whether it gives the required price or not.
 		    cartLine.refreshConfiguration();                
 		

@@ -19,11 +19,11 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%!
 public DepartmentModel findDepartment (String deptId) throws FDResourceException {
-		return (DepartmentModel)ContentFactory.getInstance().getContentNodeByName(deptId);
+		return (DepartmentModel)ContentFactory.getInstance().getContentNode(deptId);
 }
 
 public String findParentOfCategory (String catId) throws FDResourceException {
-		CategoryModel categoryNode = (CategoryModel)ContentFactory.getInstance().getContentNodeByName(catId);
+		CategoryModel categoryNode = (CategoryModel)ContentFactory.getInstance().getContentNode(catId);
 		DepartmentModel dept = categoryNode.getDepartment();
 		return dept.getContentName();
 }
@@ -97,9 +97,9 @@ public String getProdPageRatings(ProductModel _productNode, HttpServletResponse 
 	//
 	// Check request for a default config
 	//
-	Attribute crmAttrib=productNode.getAttribute("HIDE_URL");
-	if (crmAttrib!=null) {
-		String redirectURL = response.encodeRedirectURL((String)crmAttrib.getValue());
+	String hideUrl =productNode.getHideUrl();
+	if (hideUrl!=null) {
+		String redirectURL = response.encodeRedirectURL((String)hideUrl);
 		//response.sendRedirect(redirectURL);
 	//	return;
 	}
@@ -195,7 +195,7 @@ termCounter++; %>
 		FDConfiguration configuration = new FDConfiguration(Double.parseDouble( request.getParameter("qty") ), request.getParameter("salesUnit"), options);
 		String variantId = request.getParameter("variant");
     	templateLine = new FDCartLineModel( new FDSku(defaultProduct), 
-    	     (productNode.isPreconfigured() ? ((ConfiguredProduct)productNode).getProduct().getProductRef() : productNode.getProductRef()), 
+    	     (productNode.isPreconfigured() ? ((ConfiguredProduct)productNode).getProduct() : productNode), 
     	      configuration, variantId);
     }
 %>

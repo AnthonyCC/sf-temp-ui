@@ -44,7 +44,7 @@ boolean sameFirstVar = true;
 boolean sameSecondVar = true;
 String lastFirst = null;
 String lastSecond = null;
-if (prod.getAttribute("NUTRITION_MULTIPLE", false)) {
+if (prod.isNutritionMultiple()) {
     multiple = true;
     skus = prod.getSkus();
 
@@ -54,9 +54,9 @@ if (prod.getAttribute("NUTRITION_MULTIPLE", false)) {
             sIter.remove();
             continue;
         }
-        if (sm.getAttribute("VARIATION_MATRIX") != null) {
-            List dvals = ((MultiAttribute) sm.getAttribute("VARIATION_MATRIX")).getValues();
-            DomainValue dv = ((DomainValueRef) dvals.get(0)).getDomainValue();
+        List dvals = sm.getVariationMatrix();
+        if (dvals != null && dvals.size()>0) {
+            DomainValue dv = ((DomainValue) dvals.get(0));
             if (lastFirst == null) {
                 lastFirst = dv.getLabel();
             } else if (!dv.getLabel().equals(lastFirst)) {
@@ -64,7 +64,7 @@ if (prod.getAttribute("NUTRITION_MULTIPLE", false)) {
                 sameFirstVar = false;
             }
             if (dvals.size() > 1) {
-                dv = ((DomainValueRef) dvals.get(1)).getDomainValue();
+                dv = ((DomainValue) dvals.get(1));
                 if (lastSecond == null) {
                     lastSecond = dv.getLabel();
                 } else if (!dv.getLabel().equals(lastSecond)) {
@@ -109,16 +109,16 @@ if (prod.getAttribute("NUTRITION_MULTIPLE", false)) {
                                 <select name="skuCode" onChange="javascript:viewChoice(this.options[this.selectedIndex].value)">
                                 <%  for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
                                         SkuModel s = (SkuModel) sIter.next();
-                                        List dvals = ((MultiAttribute) s.getAttribute("VARIATION_MATRIX")).getValues();
+                                        List dvals = s.getVariationMatrix();
                                         out.print("<option value=\"" + s.getSkuCode() + "\"");
                                         if (s.getSkuCode().equals(skuCode)) {
                                             out.print(" SELECTED");
                                             fdprd = s.getProduct();
                                         }
                                         out.print(" >");
-                                        if (!sameFirstVar) out.print(((DomainValueRef) dvals.get(0)).getDomainValue().getLabel());
+                                        if (!sameFirstVar) out.print(((DomainValue) dvals.get(0)).getLabel());
                                         if (!sameFirstVar && ! sameSecondVar) out.print(" - ");
-                                        if (!sameSecondVar) out.print(((DomainValueRef) dvals.get(1)).getDomainValue().getLabel());
+                                        if (!sameSecondVar) out.print(((DomainValue) dvals.get(1)).getLabel());
 										out.print("</option>");
                                     } %>
                                 </select>
@@ -147,16 +147,16 @@ if (prod.getAttribute("NUTRITION_MULTIPLE", false)) {
                                 <select name="skuCode" onChange="javascript:viewChoice(this.options[this.selectedIndex].value)">
                                 <%  for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
                                         SkuModel s = (SkuModel) sIter.next();
-                                        List dvals = ((MultiAttribute) s.getAttribute("VARIATION_MATRIX")).getValues();
+                                        List dvals = s.getVariationMatrix();
                                         out.print("<option value=\"" + s.getSkuCode() + "\"");
                                         if (s.getSkuCode().equals(skuCode)) {
                                             out.print(" SELECTED");
                                             fdprd = s.getProduct();
                                         }
                                         out.print(" >");
-                                        if (!sameFirstVar) out.print(((DomainValueRef) dvals.get(0)).getDomainValue().getLabel());
+                                        if (!sameFirstVar) out.print(((DomainValue) dvals.get(0)).getLabel());
                                         if (!sameFirstVar && ! sameSecondVar) out.print(" - ");
-                                        if (!sameSecondVar) out.print(((DomainValueRef) dvals.get(1)).getDomainValue().getLabel());
+                                        if (!sameSecondVar) out.print(((DomainValue) dvals.get(1)).getLabel());
                                     } %>
                                 </select>
                                 </form>

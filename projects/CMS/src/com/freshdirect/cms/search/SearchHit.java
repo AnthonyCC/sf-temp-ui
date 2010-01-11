@@ -6,7 +6,6 @@ package com.freshdirect.cms.search;
 import java.io.Serializable;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.content.ContentNodeI;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 
 /**

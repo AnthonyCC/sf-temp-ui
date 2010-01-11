@@ -185,7 +185,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 		regularProducts.append("</font>");
         regularProducts.append("</a><br>");
 		
-		String subtitle = product.getAttribute("SUBTITLE","");
+		String subtitle = product.getSubtitle();
 		 if (subtitle.length()>0) {
 			regularProducts.append("<font class=\"text11\">");
 			regularProducts.append(subtitle);

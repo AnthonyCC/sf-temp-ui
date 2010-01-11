@@ -20,7 +20,6 @@
 <%@ page import="com.freshdirect.cms.ContentKey" %>
 <%@ page import="com.freshdirect.cms.fdstore.FDContentTypes" %>
 
-<%@ page import="com.freshdirect.fdstore.content.ProductRef" %>
 <%@ page import="com.freshdirect.fdstore.content.SkuModel" %>
 <%@ page import="com.freshdirect.fdstore.content.ProductModel" %>
 <%@ page import="com.freshdirect.fdstore.content.AvailabilityI" %>
@@ -108,7 +107,7 @@ FDCartLineModel createCartLine(String skuCode, double quantity, String salesUnit
 		FDConfiguration conf = new FDConfiguration(quantity,salesUnit,options);
 
 		if (skuModel.getProductModel() != null) {
-			line = new FDCartLineModel(new FDSku(fdProd),skuModel.getProductModel().getProductRef(),conf,null);
+			line = new FDCartLineModel(new FDSku(fdProd),skuModel.getProductModel(),conf,null);
 		} else {
 			LOG.info("[" + skuCode + "]-> skuModel.getProductModel() = NULL, Skipping ...");
 		}

@@ -75,7 +75,7 @@ if ( skuSize == 0 ) {
         FDConfiguration cfg = new FDConfiguration(qty, request.getParameter("salesUnit"), tmpConfig);
 
     	String variantId = request.getParameter("variant");
-        templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode.getProductRef(), cfg, variantId );
+        templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId );
     }
 
     double defaultQuantity = templateLine.getQuantity();
@@ -152,7 +152,7 @@ if ( skuSize == 0 ) {
 				    //
 				    boolean isPricedByLB = ( "LB".equalsIgnoreCase( ( defaultProduct.getPricing().getMaterialPrices()[0] ).getPricingUnit() ) );
 				    boolean isSoldByLB = isPricedByLB && ( "LB".equalsIgnoreCase( ( defaultProduct.getSalesUnits()[0] ).getName() ) );
-				    String sellBySalesUnit = (null != productNode.getAttribute("SELL_BY_SALESUNIT")) ? (String) productNode.getAttribute("SELL_BY_SALESUNIT").getValue() : null;
+				    String sellBySalesUnit = productNode.getSellBySalesunit();
 
 				    if ( sellBySalesUnit != null && ( sellBySalesUnit.equals("QUANTITY") || sellBySalesUnit.equals("") ) ) {
 					      sellBySalesUnit = null;
@@ -164,7 +164,7 @@ if ( skuSize == 0 ) {
 				    // display estimated qty if there's no salesUnitDropdown, it's priced by the pound and not sold by the pount
 				    boolean displayEstimatedQuantity = !displaySalesUnitsOnly && isPricedByLB && !isSoldByLB;
 				    boolean salesUnitFirst = ( sellBySalesUnit == null ) && !hasSingleSalesUnit && isPricedByLB && !isSoldByLB;
-				    boolean hasVariationMatrix = ( defaultSku.getAttribute("VARIATION_MATRIX") != null );
+				    boolean hasVariationMatrix = ( defaultSku.getVariationMatrix().size() > 0);
 					boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays().isEmpty();    
 				%>
 				
@@ -199,7 +199,7 @@ if ( skuSize == 0 ) {
 
     			<%    
     				if ( !isWineLayout ) {
-	    				if ( productNode.getAttribute("PARTIALLY_FROZEN") != null && productNode.getDepartment().getFullName().equalsIgnoreCase("SEAFOOD") ) {
+	    				if ( productNode.isHasPartiallyFrozen() && productNode.getDepartment().getFullName().equalsIgnoreCase("SEAFOOD") ) {
 	        				%><img src="/media_stat/images/template/bakery/snowflake_grey.gif" width="15" height="17" alt="" border="0">&nbsp;<%
 	    				}
 	    				
@@ -251,7 +251,7 @@ if ( skuSize == 0 ) {
 				        // no annotation, just display title
 				        %><font class="title18"><%= productTitle %></font><br/><%
 				    }
-				    if ( productNode.getAttribute("PARTIALLY_FROZEN") != null && productNode.getDepartment().getFullName().equalsIgnoreCase("BAKERY") ) {
+				    if ( productNode.isHasPartiallyFrozen() && productNode.getDepartment().getFullName().equalsIgnoreCase("BAKERY") ) {
 				        %><br/><img src="/media_stat/images/template/bakery/parbaked_frozen_prod.gif" width="147" height="16" alt="" border="0"><br/><%
 				    }
 				
@@ -259,8 +259,9 @@ if ( skuSize == 0 ) {
 				    if ( (akaName != null) && !"".equals(akaName) ) {
 				        %>"<%= akaName %>"<br/><%
 				    }
-				    if ( productNode.getAttribute("PACKAGE_DESCRIPTION") != null ) {
-				        %><br/><%= productNode.getAttribute("PACKAGE_DESCRIPTION").getValue() %><br/><%
+				    String _packDesc = productNode.getPackageDescription();
+				    if ( _packDesc != null && _packDesc.length() > 0 ) {
+				        %><br/><%= _packDesc %><br/><%
 				    }
 
 				    if ( displayShortTermUnavailability && shortTermUnavailable.size() > 0 ) {
@@ -287,8 +288,7 @@ if ( skuSize == 0 ) {
     
 <%-- ==================================================== SKUS BOX ============================================================================= --%>
 				<%
-					MultiAttribute matrixAttrib = (MultiAttribute)productNode.getAttribute("VARIATION_MATRIX");
-					List domains = matrixAttrib==null ? Collections.EMPTY_LIST : (List)matrixAttrib.getValue();
+					List<Domain> domains = productNode.getVariationMatrix();
 					
 					if ( hasSingleSku ) {
 						%><%@ include file="/shared/includes/product/i_product_single_sku_box.jspf" %><%
@@ -308,7 +308,7 @@ if ( skuSize == 0 ) {
 
 	        		<%
 	        			String onChangeText = "";
-	        			if ( productNode.getAttribute("SALES_UNIT_DESCRIPTION") != null ) {
+	        			if ( productNode.isHasSalesUnitDescription() ) {
 				            String currCat = productNode.getParentNode().toString(); //hack for small popup in fish steak&fillet, porkchop, beef roast
 				            onChangeText = "checkFDDefAndPrice( this.form, this.options[this.selectedIndex].value, \'" + popup + "&attrib=SALES_UNIT_DESCRIPTION&tmpl=";
 				            
@@ -333,13 +333,13 @@ if ( skuSize == 0 ) {
 	        		%>
 	        		<select name="salesUnit" class="text11" style="width:165px" onChange="<%= onChangeText %>">
         		
-						<option value=""><%= productNode.getAttribute("SALES_UNIT_LABEL").getValue() %></option>
+						<option value=""><%= productNode.getSalesUnitLabel() %></option>
 						
 				        <logic:iterate id="salesUnit" collection="<%= defaultProduct.getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
 				            <option value="<%= salesUnit.getName() %>"<%= salesUnit.getName().equals(defaultSalesUnit) ? " SELECTED" : ""%>>&nbsp;<%= salesUnit.getDescription() %></option>
 				        </logic:iterate>
 				        
-        				<% if ( productNode.getAttribute("SALES_UNIT_DESCRIPTION") != null ) { // size %>
+        				<% if ( productNode.isHasSalesUnitDescription() ) { // size %>
             				<option value="FDD">NEED HELP CHOOSING?</option>
             			<% } %>
         			</select><br/>
@@ -570,14 +570,14 @@ if ( skuSize == 0 ) {
 								<%
 									if ( "SALES_UNIT".equalsIgnoreCase(sellBySalesUnit) || (sellBySalesUnit == null) ) {
 										// select by sales unit only
-										%><font class="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %></font>&nbsp;<%
+										%><font class="text11bold"><%= productNode.getQuantityText() %></font>&nbsp;<%
 									} else if ( "BOTH".equalsIgnoreCase(sellBySalesUnit) ) {
 										// select by sales unit and quantity
-										%><font class="text11bold"><%= productNode.getAttribute("SALES_UNIT_LABEL").getValue() %></font>&nbsp;<%
+										%><font class="text11bold"><%= productNode.getSalesUnitLabel() %></font>&nbsp;<%
 									}
 								
-									Attribute salesUnitDescAttr = productNode.getAttribute("SALES_UNIT_DESCRIPTION");
-									String onChangeText = salesUnitDescAttr != null ?
+									Html salesUnitDesc = productNode.getSalesUnitDescription();
+									String onChangeText = salesUnitDesc != null ?
 											"checkFDDefAndPrice(this.form,this.options[this.selectedIndex].value,'" + popup + "&attrib=SALES_UNIT_DESCRIPTION&tmpl=small','small');" : 
 											"pricing.setSalesUnit(this.value);";
 								%>
@@ -589,8 +589,7 @@ if ( skuSize == 0 ) {
 									</logic:iterate>
 									
 									<%
-									if ( salesUnitDescAttr != null ) {
-										String salesUnitDesc = ((MediaI)productNode.getAttribute("SALES_UNIT_DESCRIPTION").getValue()).getPath();
+									if ( salesUnitDesc != null ) {
 										%><option value="FDD">NEED HELP CHOOSING?</option><%
 									}
 									%>
@@ -614,7 +613,7 @@ if ( skuSize == 0 ) {
 									<table cellpadding="0" cellspacing="0" border="0" <%= !isWineLayout ? "align=\"right\"" : "" %>> 									
 										<%-- Nested Table 4 Quantity box with increment/decrement arrows AND price --%>
 										<tr>
-											<td style="padding-right:4px;" class="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %></td>
+											<td style="padding-right:4px;" class="text11bold"><%= productNode.getQuantityText() %></td>
 											<td class="text11"><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %> <input type="text" class="text11" size="4" name="quantity" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);" maxlength="2"></td>
 											<td width="12" align="right"><a href="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
 											<td style="padding-left:6px;" class="text11bold">Price</td>
@@ -631,7 +630,7 @@ if ( skuSize == 0 ) {
 									<%-- Nested Table 5 Quantity box with increment/decrement arrows by each, price below --%>
 									<table cellpadding="0" cellspacing="0" border="0"> 
 										<tr>
-											<td style="padding-right:4px;" class="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></td>
+											<td style="padding-right:4px;" class="text11bold"><%= productNode.getQuantityText() %><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></td>
 			                				<td class="text11"><input type="text" class="text11" size="4" name="quantity" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"></td>
 											<td width="12" align="right"><a href="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
 			                			</tr>

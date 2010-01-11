@@ -16,11 +16,11 @@
 
 <%@ include file="/common/template/includes/globalnav_top.jspf" %><%!
 public ContentNodeModel findDepartment (String deptId) throws FDResourceException {
-		return ContentFactory.getInstance().getContentNodeByName(deptId);
+		return ContentFactory.getInstance().getContentNode(deptId);
 }
 
 public ContentNodeModel findParentOfCategory (String catId) throws FDResourceException {
-		ContentNodeModel categoryNode = (ContentNodeModel)ContentFactory.getInstance().getContentNodeByName(catId);
+		ContentNodeModel categoryNode = (ContentNodeModel)ContentFactory.getInstance().getContentNode(catId);
 		ContentNodeModel dept = null;
 		if (categoryNode instanceof RecipeCategory) {
 			dept = RecipeDepartment.getDefault();

@@ -1015,7 +1015,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			+ " and hst.version = (select min(version) from erps.product where sku_code=prd.sku_code and NVL(unavailability_status,' ') <> 'TEST')"
 			+ "and prd.unavailability_status is null";
 	
-	public Map getSkusOldness() {
+	public Map<String, Integer> getSkusOldness() {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;

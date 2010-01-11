@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ComponentGroupModel extends ContentNodeModelImpl {
@@ -30,15 +31,30 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 	private List characteristics;
 
 	private List optionalProds = new ArrayList();
+	
+	private List<ProductModel> chefsPicks = new ArrayList<ProductModel>();
 
 	public ComponentGroupModel(ContentKey cKey) {
 		super(cKey);
 	}
 
+	/**
+	 * Return image from the HEADER_IMAGE attribute, and IMAGE_BLANK if not specified.
+	 * @return
+	 */
 	public Image getHeaderImage() {
-		return (Image) getAttribute("HEADER_IMAGE", IMAGE_BLANK);
+            return FDAttributeFactory.constructImage(this, "HEADER_IMAGE", IMAGE_BLANK);
 	}
 
+	/**
+	 * Return image from the HEADER_IMAGE attribute, and null if not specified
+	 * @return
+	 */
+        public Image getHeaderImageIfExists() {
+            return FDAttributeFactory.constructImage(this, "HEADER_IMAGE");
+        }
+	
+	
 	/** 
 	 * @return List of String (ERP characteristic names)
 	 */
@@ -48,8 +64,8 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 				FDProduct fdp = getHeaderSku().getProduct();
 				FDVariation[] fdvs = fdp.getVariations();
 
-				AttributeI attribErpChars = getCmsAttribute("CHARACTERISTICS");
-				List erpChars = attribErpChars != null ? (List) attribErpChars.getValue() : Collections.EMPTY_LIST;
+				final List<ContentKey> attribErpChars = (List<ContentKey>) getCmsAttributeValue("CHARACTERISTICS");
+				final List<ContentKey> erpChars = attribErpChars != null ? attribErpChars : Collections.EMPTY_LIST;
 				characteristics = new ArrayList();
 				for (Iterator itr = erpChars.iterator(); itr.hasNext();) {
 					String erpCharacteristic = ((ContentKey) itr.next()).getId();
@@ -196,6 +212,19 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 	public boolean isShowInPopupOnly() {
 		int ddStyle=this.getAttribute("COMPONENTGROUP_LAYOUT", EnumComponentGroupLayout.VERTICAL.getId());
 		return ddStyle==EnumComponentGroupLayout.POPUP_ONLY.getId();
+	}
+
+	/**
+	 * This override is here, because this is the proper place for this method, not in the parent ContentNodeModelImpl
+	 */
+	@Override
+        public Html getEditorial() {
+	    return FDAttributeFactory.constructHtml(this, "EDITORIAL");
+        }
+
+	public List<ProductModel> getChefsPicks() {
+            ContentNodeModelUtil.refreshModels(this, "CHEFS_PICKS", chefsPicks, false);
+            return new ArrayList<ProductModel>(chefsPicks);
 	}
 }
 

@@ -1178,6 +1178,15 @@
         <ORGANIC>false</ORGANIC>
   </Sku>
 
+  <Sku id="FRU0005131x">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="source_Farm_Fresh"/>
+                <DomainValue ref="size_Medium"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
   <Sku id="FRU0005131A">
         <KOSHER>false</KOSHER>
         <VARIATION_MATRIX>
@@ -1349,19 +1358,19 @@
   <Product id="product_multi_sku">
     <skus>
 	    <Sku ref="FRU0004716"/>
-	    <Sku ref="FRU0004715"/>
+	    <Sku ref="FRU0004715y"/>
     </skus>
   </Product>
 
   <Product id="product_multi_variation_options">
     <skus>
-	    <Sku ref="FRU0004715"/>
+	    <Sku ref="FRU0004715x"/>
     </skus>
   </Product>
 
   <Product id="product_multi_sales_units">
     <skus>
-	    <Sku ref="FRU0005131"/>
+	    <Sku ref="FRU0005131x"/>
     </skus>
   </Product>
 

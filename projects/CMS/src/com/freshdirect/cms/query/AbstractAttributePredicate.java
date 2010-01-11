@@ -35,19 +35,19 @@ public abstract class AbstractAttributePredicate implements Predicate,
 			return false;
 		}
 		String attrName = attributeDef.getName();
-		AttributeI attr = node.getAttribute(attrName);
+		AttributeDefI attr = node.getDefinition().getAttributeDef(attrName);
 		if (attr == null) {
 			return false;
 		}
-		if (!attr.getDefinition().getAttributeType().equals(
+		if (!attr.getAttributeType().equals(
 				attributeDef.getAttributeType())) {
 			throw new IllegalArgumentException("Attribute " + attrName
 					+ " is not of type " + attributeDef.getAttributeType()
 					+ " on " + node);
 		}
-		return this.evaluate(attr);
+		return this.evaluateValue(node.getAttributeValue(attrName));
 	}
 
-	protected abstract boolean evaluate(AttributeI attribute);
+	protected abstract boolean evaluateValue(Object value);
 
 }

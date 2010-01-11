@@ -21,7 +21,7 @@
 	String parentCat = request.getParameter("parentCat");
 	String catId_1 = parentCat+"_feat";
 	String catId_2 = parentCat+"_edlp"; 
-	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_1);
+	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId_1);
 	System.out.println("category_featured_row>> catId_1: " + catId_1 + " catId_2: " + catId_2);
 	List edlpProducts=new ArrayList();
 	Collection dealCol = new ArrayList();
@@ -53,8 +53,8 @@
 <fd:ItemSorter nodes='<%=(List)dealCol%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
 <% } %>
 <%-- Grab edlp items --%>
-<% currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_2); %>
-<% if(currentFolder != null && currentFolder instanceof CategoryModel){ %>
+<% currentFolder = ContentFactory.getInstance().getContentNode(catId_2); %>
+<% if(currentFolder instanceof CategoryModel){ %>
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
 	id='rtnColl' 

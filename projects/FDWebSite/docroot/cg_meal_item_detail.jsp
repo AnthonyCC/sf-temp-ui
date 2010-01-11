@@ -60,7 +60,6 @@ ContentFactory  contentFactory     = null;
 SkuModel        defaultSku         = null;
 Image           productImage       = null;
 List            prodSkus           = null;
-Attribute       attrib             = null;
 List            compositeGroups    = null;
 Map             variations         = new HashMap();
 
@@ -77,7 +76,6 @@ if (product != null) {
     defaultSku        = product.getDefaultSku();
     productImage      = product.getDetailImage();
     prodSkus          = productNode.getSkus();
-    attrib            = parentCat.getAttribute("EDITORIAL");
 } else if (variant != null) {
     prodSkus          = new ArrayList(variant.getDistinctSkus());
 }
@@ -101,7 +99,7 @@ if (hasSingleSku) {
 
 if (productNode != null) {
 
-    compositeGroups = (List)productNode.getAttribute("COMPONENT_GROUPS",Collections.EMPTY_LIST);
+    compositeGroups = (List)productNode.getComponentGroups();
 
     try {
         for(int i=0; i<compositeGroups.size(); i++) {
@@ -349,10 +347,8 @@ int prodCount = 0;%>
         }
 
         MediaI recipeDesc = recipe.getDescription();
-        attrib  = recipe.getAttribute("titleImage");
-        MediaI recipePhoto = attrib==null ? null : (MediaI) attrib.getValue();
-        attrib  = recipe.getAttribute("ingredientsMedia");
-        MediaI recipeIngrdMedia = attrib==null ? null : (MediaI) attrib.getValue();
+        MediaI recipePhoto = recipe.getTitleImage();
+        MediaI recipeIngrdMedia = recipe.getIngredientsMedia();
 %>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
     <tr valign="top">

@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
@@ -28,25 +28,18 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.attributes.Attribute;
-import com.freshdirect.fdstore.attributes.MultiAttribute;
 import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.CategoryRef;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeI;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentRef;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Domain;
-import com.freshdirect.fdstore.content.DomainRef;
 import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.DomainValueRef;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductRef;
 import com.freshdirect.fdstore.content.SkuModel;
-import com.freshdirect.fdstore.util.ProductDisplayUtil;
+import com.freshdirect.fdstore.util.HowToCookItUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -58,7 +51,7 @@ import com.freshdirect.framework.webapp.ActionResult;
  */
 public class JspMethods {
 
-	private static Category LOGGER = LoggerFactory
+	private static Logger LOGGER = LoggerFactory
 			.getInstance(JspMethods.class);
 
 	public final static ProductModel.PriceComparator priceComp = new ProductModel.PriceComparator();
@@ -106,8 +99,8 @@ public class JspMethods {
 	}
 
 	public static String getProductNameToUse(ContentNodeModel topFolder) {
-		Attribute attribute = topFolder.getAttribute("LIST_AS");
-		String useName = attribute == null ? "" : (String) attribute.getValue();
+		Object attribute = topFolder.getCmsAttributeValue("LIST_AS");
+		String useName = attribute instanceof String ? (String) attribute : "" ;
 		String displayAttribute = null;
 		if ("nav".equalsIgnoreCase(useName)) {
 			displayAttribute = "nav";
@@ -161,22 +154,22 @@ public class JspMethods {
 		return taxonomy;
 	}
 
-	public static String getDisplayName(ContentNodeModel content_node,
-			ProductModel prodNode) {
-		if (content_node == null
-				|| prodNode == null
-				|| !(ContentNodeI.TYPE_CATEGORY.equals(content_node
-						.getContentType())))
-			return "";
-		String nameToUse = JspMethods.getProductNameToUse(content_node);
-		if (nameToUse == null || nameToUse.equalsIgnoreCase("full"))
-			return prodNode.getFullName();
-		if (nameToUse != null && nameToUse.equalsIgnoreCase("nav"))
-			return prodNode.getNavName();
-		if (nameToUse != null && nameToUse.equalsIgnoreCase("glance"))
-			return prodNode.getGlanceName();
-		return prodNode.getFullName();
-	}
+//	public static String getDisplayName(ContentNodeModel content_node,
+//			ProductModel prodNode) {
+//		if (content_node == null
+//				|| prodNode == null
+//				|| !(ContentNodeI.TYPE_CATEGORY.equals(content_node
+//						.getContentType())))
+//			return "";
+//		String nameToUse = JspMethods.getProductNameToUse(content_node);
+//		if (nameToUse == null || nameToUse.equalsIgnoreCase("full"))
+//			return prodNode.getFullName();
+//		if (nameToUse != null && nameToUse.equalsIgnoreCase("nav"))
+//			return prodNode.getNavName();
+//		if (nameToUse != null && nameToUse.equalsIgnoreCase("glance"))
+//			return prodNode.getGlanceName();
+//		return prodNode.getFullName();
+//	}
 
 	public static String getDisplayName(ProductModel prodNode, String nameToUse) {
 		if (prodNode == null)
@@ -243,35 +236,11 @@ public class JspMethods {
 		}
 	}
 
-	public static String getAttributeValue(ProductModel theProduct,
-			String domainName, String maName) {
-		MultiAttribute prodSortMAttrib = (MultiAttribute) theProduct
-				.getAttribute(maName);
-		List prodDomainValues = null;
-		String prodDomainValue = "";
-
-		if (prodSortMAttrib != null) {
-			prodDomainValues = prodSortMAttrib.getValues();
-		} else
-			prodDomainValues = new ArrayList();
-
-		boolean foundDomain = false;
-		// get the matching domainvalue off the prod for this Domain.
-		for (Iterator dvItr = prodDomainValues.iterator(); dvItr.hasNext()
-				&& !foundDomain;) {
-			Object obj = dvItr.next();
-			if (!(obj instanceof DomainValueRef)) {
-				continue;
-			}
-			DomainValue dmv = ((DomainValueRef) obj).getDomainValue();
-			Domain dom = dmv.getDomain();
-			if (dom.getName().equalsIgnoreCase(domainName)) {
-				prodDomainValue = dmv.getValue();
-				foundDomain = true;
-			}
-		}
-		return prodDomainValue;
-	}
+        public static String getAttributeValue(ProductModel theProduct, String domainName) {
+            List<DomainValue> ratings = theProduct.getRating();
+            return HowToCookItUtil.getProductDomainValue(ratings, domainName, "");
+        }
+	
 
 	public static class ContentNodeComparator implements Comparator {
 
@@ -293,34 +262,22 @@ public class JspMethods {
 
 	public static class DomainNameComparator implements Comparator {
 
-		// handles Domains or DomainRefs, DomainValue and DomainValueRefs
+		// handles Domains or DomainRefs, DomainValue
 		public int compare(Object obj1, Object obj2) {
 			String name1 = null;
 			String name2 = null;
 			if (obj1 instanceof Domain) {
 				name1 = ((Domain) obj1).getName();
 			}
-			if (obj1 instanceof DomainRef) {
-				name1 = ((DomainRef) obj1).getDomainName();
-			}
 			if (obj1 instanceof DomainValue) {
 				name1 = ((DomainValue) obj1).getDomain().getName();
-			}
-			if (obj1 instanceof DomainValueRef) {
-				name1 = ((DomainValueRef) obj1).getDomainName();
 			}
 
 			if (obj2 instanceof Domain) {
 				name2 = ((Domain) obj1).getName();
 			}
-			if (obj2 instanceof DomainRef) {
-				name2 = ((DomainRef) obj2).getDomainName();
-			}
 			if (obj2 instanceof DomainValue) {
 				name2 = ((DomainValue) obj2).getDomain().getName();
-			}
-			if (obj2 instanceof DomainValueRef) {
-				name2 = ((DomainValueRef) obj2).getDomainName();
 			}
 
 			if (name1 == null || name2 == null)
@@ -343,11 +300,9 @@ public class JspMethods {
 		private String attribName = null;
 		private boolean reverseOrder = false;
 		private boolean includeCategory = true;
-		private String MultiAttribName = null;
 
-		public MyAttributeComparator(String attribName, String maName) {
+		public MyAttributeComparator(String attribName) {
 			this.attribName = attribName;
-			this.MultiAttribName = maName;
 		}
 
 		public void setReverseOrder(boolean flag) {
@@ -366,7 +321,7 @@ public class JspMethods {
 			CategoryModel parentCategory = null;
 			ContentNodeModel cn1 = (ContentNodeModel) obj1;
 			ContentNodeModel cn2 = (ContentNodeModel) obj2;
-			if (ContentNodeI.TYPE_CATEGORY.equals(cn1.getContentType())) {
+			if (ContentNodeModel.TYPE_CATEGORY.equals(cn1.getContentType())) {
 				sortField1 = leadZeroes(((CategoryModel) cn1).getPriority(), 6)
 						+ cn1.getFullName() + ":";
 			} else {
@@ -376,7 +331,7 @@ public class JspMethods {
 				if (!"name".equalsIgnoreCase(attribName)
 						&& !"price".equalsIgnoreCase(attribName)) {
 					attribValue1 = getAttributeValue((ProductModel) cn1,
-							attribName, MultiAttribName);
+							attribName);
 				} else if ("price".equalsIgnoreCase(attribName)) {
 					if (((ProductModel) cn1).isUnavailable()) {
 						attribValue1 = JspMethods.leadZeroes("9999.99", 8);
@@ -398,7 +353,7 @@ public class JspMethods {
 				}
 			}
 
-			if (ContentNodeI.TYPE_CATEGORY.equals(cn2.getContentType())) {
+			if (ContentNodeModel.TYPE_CATEGORY.equals(cn2.getContentType())) {
 				sortField2 = JspMethods.leadZeroes(((CategoryModel) cn2)
 						.getPriority(), 6)
 						+ cn2.getFullName() + ":";
@@ -409,7 +364,7 @@ public class JspMethods {
 				if (!"name".equalsIgnoreCase(attribName)
 						&& !"price".equalsIgnoreCase(attribName)) {
 					attribValue2 = getAttributeValue((ProductModel) cn2,
-							attribName, MultiAttribName);
+							attribName);
 				} else if ("price".equalsIgnoreCase(attribName)) {
 					if (((ProductModel) cn2).isUnavailable()) {
 						attribValue2 = JspMethods.leadZeroes("9999.99", 8);
@@ -466,7 +421,7 @@ public class JspMethods {
 		// sort the items by folder + (specified-attribute | Name | price)
 		List sortedList = new ArrayList(CatsAndProds);
 		MyAttributeComparator sortByRatingAttribute = new MyAttributeComparator(
-				orderBy, "RATING");
+				orderBy);
 		sortByRatingAttribute.setReverseOrder(reverseOrder);
 		sortByRatingAttribute.setIncludeCategory(includeFolder);
 		Collections.sort(sortedList, sortByRatingAttribute);
@@ -643,7 +598,6 @@ public class JspMethods {
 		String itemName = "";
 		int imageWidth = 0;
 		int imageHeight = 0;
-		Attribute attribute = null;
 		String itemURL = "";
 		String itemAltText = "";
 		String rolloverImage = "";
@@ -663,7 +617,7 @@ public class JspMethods {
 		Image itemImage = null;
 		indicators.setLength(0);
 		SkuModel dfltSku = null;
-		if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
+		if (displayThing.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
 			displayProduct = (ProductModel) displayThing;
 			dfltSku = displayProduct.getDefaultSku();
 			String thisProdBrandLabel = null;
@@ -707,11 +661,7 @@ public class JspMethods {
 			displayObj.setRating(getProductRating(displayProduct));
 
 			if (useAltImage) {
-				Attribute altImgAttrib = displayProduct
-						.getAttribute("ALTERNATE_IMAGE");
-				if (altImgAttrib != null) {
-					itemImage = (Image) altImgAttrib.getValue();
-				}
+				itemImage = displayProduct.getAlternateImage();
 			}
 			if (itemImage == null) {
 				itemImage = displayProduct.getCategoryImage();// displayProduct.getContent("ATR_image_product").getString("url");
@@ -745,11 +695,10 @@ public class JspMethods {
 			itemAltText = displayProduct.getFullName();// getString("ATR_full_name",
 														// itemName);
 			if (gotoPrimaryHome) {
-				Attribute attrib = displayProduct.getAttribute("PRIMARY_HOME");
-				if (attrib != null) {
-					CategoryRef catRef = (CategoryRef) attrib.getValue();
+				CategoryModel primaryHome = displayProduct.getPrimaryHome();
+				if (primaryHome != null) {
 					itemURL = response.encodeURL("product.jsp?productId="
-							+ displayProduct + "&catId=" + catRef.getRefName()
+							+ displayProduct + "&catId=" + primaryHome.getContentKey().getId()
 							+ trackingCode);
 				}
 			} else {
@@ -757,9 +706,11 @@ public class JspMethods {
 						+ displayProduct + "&catId=" + categoryId
 						+ trackingCode);
 			}
-			attribute = displayProduct.getAttribute("PROD_IMAGE_ROLLOVER");
-			rolloverImage = attribute == null ? "" : ((Image) attribute
-					.getValue()).getPath();
+			{ 
+			    Image dispRolloverImage = displayProduct.getRolloverImage();
+			
+			    rolloverImage = dispRolloverImage == null ? "" : dispRolloverImage.getPath();
+			}
 			if (!rolloverImage.equals("")) {
 				rolloverText.append("onMouseover='");
 				rolloverText.append("swapImage(\"" + imgName + "\",\""
@@ -790,12 +741,12 @@ public class JspMethods {
 			 */
 			indicators.append("&nbsp;");
 			// }
-		} else if (ContentNodeI.TYPE_CATEGORY.equals(displayThing
+		} else if (ContentNodeModel.TYPE_CATEGORY.equals(displayThing
 				.getContentType())) {
+		        CategoryModel displayCategory = (CategoryModel) displayThing; 
 			displayFolder = (CategoryModel) displayThing;
-			attribute = displayFolder.getAttribute("CAT_PHOTO");
-			itemImage = attribute == null ? null : (Image) attribute.getValue();
-			imagePath = attribute == null ? "" : itemImage.getPath();// getContent("ATR_image_category_photo").getString("url");
+			itemImage = displayCategory.getCategoryPhoto();
+			imagePath = itemImage == null ? "" : itemImage.getPath();// getContent("ATR_image_category_photo").getString("url");
 			itemName = displayFolder.getFullName();
 			imageWidth = itemImage == null ? 0 : itemImage.getWidth(); // displayFolder.getContent("ATR_image_category_photo").getString("ATR_image_width");
 			imageHeight = itemImage == null ? 0 : itemImage.getHeight(); // displayFolder.getContent("ATR_image_category_photo").getString("ATR_image_height");
@@ -811,17 +762,14 @@ public class JspMethods {
 			itemURL = response.encodeURL("/category.jsp?catId=" + displayFolder
 					+ trackingCode);
 			// }
-
-			if (displayFolder.getAttribute("ALIAS") != null) {
-				ContentRef contentRef = (ContentRef) displayFolder
-						.getAttribute("ALIAS").getValue();
-				if (ContentNodeI.TYPE_CATEGORY.equals(contentRef.getType())) {
+			ContentNodeModel alias = displayCategory.getAlias();
+			if (alias != null) {
+				if (ContentNodeModel.TYPE_CATEGORY.equals(alias.getContentType())) {
 					itemURL = response.encodeURL("/category.jsp?catId="
-							+ contentRef.getRefName() + trackingCode);
-				} else if (ContentNodeI.TYPE_DEPARTMENT.equals(contentRef
-						.getType())) {
+							+ alias.getContentKey().getId() + trackingCode);
+				} else if (ContentNodeModel.TYPE_DEPARTMENT.equals(alias.getContentType())) {
 					itemURL = response.encodeURL("/department.jsp?catId="
-							+ contentRef.getRefName() + trackingCode);
+							+ alias.getContentKey().getId() + trackingCode);
 				}
 			}
 
@@ -837,10 +785,10 @@ public class JspMethods {
 				indicators.append("&nbsp;");
 			}
 		} else if (displayThing.getContentType().equals(
-				ContentNodeI.TYPE_DEPARTMENT)) {
-			displayFolder = (DepartmentModel) displayThing;
-			attribute = displayFolder.getAttribute("DEPT_PHOTO");
-			itemImage = attribute == null ? null : (Image) attribute.getValue();
+		            ContentNodeModel.TYPE_DEPARTMENT)) {
+			displayFolder = displayThing;
+			DepartmentModel department = (DepartmentModel) displayThing;
+			itemImage = department.getPhoto();
 			imagePath = itemImage == null ? "" : itemImage.getPath();
 			itemName = displayFolder.getFullName();
 			imageWidth = itemImage == null ? 0 : itemImage.getWidth();
@@ -873,6 +821,19 @@ public class JspMethods {
 
 	}
 	
+	/**
+	 * This is here for marker, some jsp-s still call it, but the meaning of the 
+	 * original function is questionable.
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	public static ProductModel getFeaturedProduct(Object obj) {
+	    if (obj instanceof ProductModel) {
+	        return (ProductModel) obj;
+	    }
+	    return null;
+	}
     private final static String ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
     public static String safeJavaScriptVariable(String s) {
@@ -888,13 +849,13 @@ public class JspMethods {
         return buf.toString();
     }
 
-	public static ProductModel getFeaturedProduct(ContentRef cr) {
+/*	private static ProductModel getFeaturedProduct_original(ContentRef cr) {
 		if (!cr.getType().equals(ContentNodeI.TYPE_PRODUCT))
 			return null;
 		return getFeaturedProduct((ProductRef) cr);
 	}
 
-	public static ProductModel getFeaturedProduct(ProductRef pf) {
+	private static ProductModel getFeaturedProduct_original(ProductRef pf) {
 		// the content ref must have a category and Product Id in it
 		if (pf == null || !pf.getType().equals(ContentNodeI.TYPE_PRODUCT)) {
 			return null;
@@ -926,7 +887,7 @@ public class JspMethods {
 		}
 		return product;
 	}
-
+*/
 	public static java.text.NumberFormat currencyFormatter = java.text.NumberFormat
 			.getCurrencyInstance(Locale.US);
 
@@ -1000,16 +961,16 @@ public class JspMethods {
 	 *            ContentNodeI
 	 * @return
 	 */
-	public static String getAboutPriceForDisplay(ContentNodeI node)
+	public static String getAboutPriceForDisplay(ContentNodeModel node)
 			throws JspException {
 		String displayPriceString = "";
-		if (node.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
+		if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
 			ProductModel product = (ProductModel) node;
-			SkuModel defaultSku = product.getDefaultSku();
+			String defaultSku = product.getDefaultSkuCode();
 			try {
 				if (defaultSku != null) {
 					FDProductInfo pi = FDCachedFactory
-							.getProductInfo(defaultSku.getSkuCode());
+							.getProductInfo(defaultSku);
 					displayPriceString = getAboutPriceForDisplay(pi);
 				}
 			} catch (FDResourceException fdre) {
@@ -1069,6 +1030,65 @@ public class JspMethods {
 		strNumber = strNumber.replaceAll(",", ".");
 		Double numberDouble = new Double(strNumber);
 		return numberDouble.doubleValue();
-
 	}
+	
+	
+	public static class CategoryInfo {
+	    CategoryModel category;
+	    String catId;
+	    String fldrLbl;
+	    String navBar;
+	    String link;
+            CategoryModel workingCategory;
+            public CategoryModel getCategory() {
+                return category;
+            }
+            public String getCatId() {
+                return catId;
+            }
+            public String getFldrLbl() {
+                return fldrLbl;
+            }
+            public String getNavBar() {
+                return navBar;
+            }
+            public String getLink() {
+                return link;
+            }
+            public CategoryModel getWorkingCategory() {
+                return workingCategory;
+            }
+            
+	}
+	
+    public static CategoryInfo getCategoryInfo(HttpServletRequest request) {
+        CategoryInfo c = new CategoryInfo();
+        c.catId = request.getParameter("catId");
+        c.fldrLbl = "/media_stat/images/layout/clear.gif";
+        c.navBar = "/media_stat/images/layout/clear.gif";
+
+        c.link = "#";
+
+        if (c.catId != null) {
+            ContentNodeModel tmplCat = ContentFactory.getInstance().getContentNode(c.catId);
+            c.category = (tmplCat instanceof CategoryModel) ? (CategoryModel) tmplCat : null;
+            CategoryModel wokingCat = c.category != null ? c.category.getAliasCategory() : null;
+            c.workingCategory = wokingCat != null ? wokingCat : c.category;
+
+            if (wokingCat != null && ContentNodeModel.TYPE_CATEGORY.equals(wokingCat.getContentType())) {
+                Image categoryLabel = wokingCat.getCategoryLabel();
+                if (categoryLabel != null) {
+                    c.fldrLbl = categoryLabel.getPath();
+                    c.link = "/category.jsp?catId=" + tmplCat;
+                }
+                MediaI navbar = wokingCat.getCategoryNavBar();
+                if (navbar != null) {
+                    c.navBar = navbar.getPath();
+                }
+
+            }
+        }
+        return c;
+    }
+	
 }

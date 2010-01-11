@@ -13,10 +13,10 @@ public final class ProductConfigurationStrategy implements
 		ConfigurationStrategy {
 	public ProductImpression configure(ProductModel productModel, ConfigurationContext context) {
 		
-		if (productModel.isAutoconfigurable() && productModel.getDefaultSku() != null) {
+		if (productModel.isAutoconfigurable() && productModel.getDefaultSkuCode() != null) {
 			return new TransactionalProductImpression(
 				productModel,
-				productModel.getDefaultSku().getSkuCode(),
+				productModel.getDefaultSkuCode(),
 				productModel.getAutoconfiguration());
 		} else {
 			return new ProductImpression(productModel);

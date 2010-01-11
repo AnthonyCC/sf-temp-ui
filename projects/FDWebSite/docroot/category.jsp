@@ -10,18 +10,21 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
-<fd:CheckLoginStatus />
+
+<%@page import="com.freshdirect.fdstore.util.RatingUtil"%><fd:CheckLoginStatus />
 
 <%
-	Attribute attrib = null;
 	Set brands = null ; // set in the grocery_category_layout page. will be referenced by  i_bottom_template
 	
 	String catId = request.getParameter("catId");
 	boolean isGroceryVirtual=false;
 	boolean isWineLayout = false;
 	String deptId = null;
+	// it should be CategoryModel ... 
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
-	if ( currentFolder instanceof CategoryModel ) {
+	final ProductContainer productContainer = (currentFolder instanceof ProductContainer) ? (ProductContainer) currentFolder : null;
+	final CategoryModel categoryModel = (currentFolder instanceof CategoryModel) ? (CategoryModel) currentFolder : null;
+	if (categoryModel != null) {
 	     deptId=((CategoryModel)currentFolder).getDepartment().getContentName();
 	}
 	
@@ -40,45 +43,46 @@
 	if (request.getParameter("groceryVirtual")!=null ) {
 	    isGroceryVirtual=true;
 	}
-	attrib=currentFolder.getAttribute("HIDE_URL");
+	String hideUrl = currentFolder.getHideUrl();
 	if (!ContentFactory.getInstance().getPreviewMode()) {
-	    if (attrib!=null) {
-	        String redirectURL = response.encodeRedirectURL((String)attrib.getValue());
+	    if (hideUrl!=null) {
+	        String redirectURL = response.encodeRedirectURL(hideUrl);
 		   if (redirectURL.toUpperCase().indexOf("/CATEGORY.JSP?")==-1) {
 	           response.sendRedirect(redirectURL);
 	           return;
 		   }       
 	    }
 	}
-	attrib=currentFolder.getAttribute("REDIRECT_URL");
-	if (attrib!=null && !"nm".equalsIgnoreCase((String)attrib.getValue())  && !"".equals(attrib.getValue())) {
-	    String redirectURL = response.encodeRedirectURL((String)attrib.getValue());
-		   if (redirectURL.toUpperCase().indexOf("/CATEGORY.JSP?")==-1) {
-	           response.sendRedirect(redirectURL);
-	           return;
-		   }       
+	{
+	    String redirectURL = (currentFolder instanceof HasRedirectUrl ? ((HasRedirectUrl)currentFolder).getRedirectUrl() : null); 
+		if (redirectURL!=null && !"nm".equalsIgnoreCase(redirectURL)  && !"".equals(redirectURL)) {
+			redirectURL = response.encodeRedirectURL(redirectURL);
+			if (redirectURL.toUpperCase().indexOf("/CATEGORY.JSP?")==-1) {
+				response.sendRedirect(redirectURL);
+		        return;
+			}       
+		}
 	}
-	attrib=currentFolder.getAttribute("CONTAINS_BEER");
+	boolean containsBeer = (categoryModel != null && categoryModel.isHavingBeer()); 
 	FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
-	if(attrib != null && Boolean.TRUE.equals(attrib.getValue()) && !yser.isHealthWarningAcknowledged()){
+	if(containsBeer && !yser.isHealthWarningAcknowledged()){
 		String redirectURL = "/health_warning.jsp?successPage=/category.jsp"+URLEncoder.encode("?"+request.getQueryString());
 		response.sendRedirect(response.encodeRedirectURL(redirectURL));
+		return;
 	}
 	
-	attrib = currentFolder.getAttribute("SHOW_SIDE_NAV");
-	if (attrib!=null) {
-	    noLeftNav = !((Boolean)attrib.getValue()).booleanValue();
+	if (productContainer!=null) {
+	    noLeftNav = !productContainer.isShowSideNav();
 	}
-	attrib = currentFolder.getAttribute("ALTERNATE_CONTENT");
-	if (attrib!=null) {
+	Html alternateContent = categoryModel != null ? categoryModel.getAlternateContent() : null;
+	if (alternateContent!=null) {
 		showAlternateContent = true;
-		alternateContentFile = ((MediaModel)attrib.getValue()).getPath();
+		alternateContentFile = alternateContent.getPath();
 	}
 	
-	
-	
-	int templateType=currentFolder.getAttribute("TEMPLATE_TYPE",1);
-	int layouttype = currentFolder.getAttribute("LAYOUT", -1);
+	int templateType = productContainer != null ? productContainer.getTemplateType(1) : 1;
+
+	int layouttype = productContainer != null ? productContainer.getLayoutType(-1) : -1;
 	
 	if ( noLeftNav && layouttype==EnumLayoutType.GROCERY_PRODUCT.getId() ) 
 		noLeftNav= false;
@@ -160,8 +164,8 @@
 			%><fd:IncludeMedia name='<%= alternateContentFile %>' /><%
 		} else {
 		
-			Attribute introCopyAttribute = currentFolder.getAttribute("EDITORIAL");
-			String introCopy = introCopyAttribute==null?"":((Html)introCopyAttribute.getValue()).getPath();
+			Html introCopyAttribute = currentFolder.getEditorial();
+			String introCopy = introCopyAttribute==null?"":introCopyAttribute.getPath();
 		            
 			String introTitle = currentFolder.getEditorialTitle();
 		    
@@ -175,7 +179,6 @@
 			boolean showLine = false;   // if true, the last gray line prior to the categories-display will be printed
 			
 			//  get the rating & ranking stuff
-		    Attribute tmpAttribute = currentFolder.getAttribute("RATING_GROUP_NAMES");
 		    StringBuffer rateNRankLinks = new StringBuffer();
 		
 		    if ( !isIncludeMediaLayout 
@@ -183,41 +186,7 @@
 		            && EnumLayoutType.VALENTINES_CATEGORY.getId() != layouttype 
 		            && EnumLayoutType.PARTY_PLATTER_CATEGORY.getId() != layouttype ) { // don't paint intro stuff if we'll be using bulkMeat layout
 		    	
-				if ( tmpAttribute != null ) {
-					StringTokenizer stRRNames = new StringTokenizer( (String)tmpAttribute.getValue(), "," );
-			        while ( stRRNames.hasMoreTokens() ) {
-			            String rrName = stRRNames.nextToken().toUpperCase();
-			            String ordrBy = "&orderBy=price";
-		
-			            // go find the attribute with that name and it's label
-			            tmpAttribute = currentFolder.getAttribute(rrName);
-			            if ( tmpAttribute != null ) {
-			                tmpAttribute = currentFolder.getAttribute(rrName);
-			                List ra = (List)tmpAttribute.getValue();
-			                if ( ra.size() > 0 ) {
-			                    Domain raDMV = ((DomainRef)ra.get(0)).getDomain();
-			                    if ( raDMV != null ) {
-			                        ordrBy = "&orderBy=" + raDMV.getName().toLowerCase();
-			                    }
-			                }
-			            }
-			            if ( rateNRankLinks.length() > 1 ) 
-			            	rateNRankLinks.append("<td class=\"text11bold\">&nbsp;|&nbsp;</td>");
-			            
-			            rateNRankLinks.append("<td class=\"text11bold\"><a href=\"");
-			            rateNRankLinks.append( response.encodeURL("/rating_ranking.jsp?catId=" + currentFolder + "&ratingGroupName=" + rrName + ordrBy ) );
-			            rateNRankLinks.append("\"><b>");
-		
-			            // get the label for this rating group name.
-			            tmpAttribute = currentFolder.getAttribute(rrName+"_LABEL");
-			            if ( tmpAttribute != null ) {
-			                rateNRankLinks.append(((String)tmpAttribute.getValue())); //.toUpperCase());
-			            } else {
-			              rateNRankLinks.append((rrName.replace('_',' '))); //.toUpperCase());
-			            }
-			            rateNRankLinks.append("</b></a></td>");
-			        }
-			    }
+		        rateNRankLinks.append(RatingUtil.buildCategoryRatingLink(productContainer, response));
 		            
 				if ( !noCache 
 					|| EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layouttype 
@@ -250,10 +219,10 @@
 								if ( !introTitle.equals("") ) { %>
 									<font class="title16"><%=introTitle%></font>
 								<% }
-								Attribute seasonTextAttrib = currentFolder.getAttribute("SEASON_TEXT");
-								if ( seasonTextAttrib != null ) { %>
+								String seasonText = productContainer.getSeasonText();
+								if (seasonText != null ) { %>
 									<br/><img src="/media_stat/images/layout/clear.gif" height="4" width="1"><br/>
-									<font class="text12orbold"><%= seasonTextAttrib.getValue() %></font>
+									<font class="text12orbold"><%= seasonText %></font>
 								<% } %>
 							</td></tr>
 						<% }
@@ -272,8 +241,8 @@
 								&& introCopy.trim().length() > 0 
 								&& introCopy.indexOf("blank_file.txt") == -1 
 								&& !( layouttype == EnumLayoutType.GROCERY_CATEGORY.getId() 
-										&& currentFolder.getAttribute("EDITORIAL") != null 
-										&& currentFolder.getAttribute("CAT_LABEL") != null ) 
+										&& currentFolder.getEditorial() != null 
+										&& (currentFolder instanceof CategoryModel && ((CategoryModel)currentFolder).getCategoryLabel() != null )) 
 							) { 
 							
 							if ( layouttype != EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId() ) 
@@ -318,9 +287,9 @@
 							<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
 							
 							<%
-							MultiAttribute brandtAttrib = (MultiAttribute)currentFolder.getAttribute("CATEGORY_TOP_MEDIA");
-							if ( brandtAttrib != null ) { %>
-								<tr><td><fd:IncludeMedia name="<%= ( (Html)brandtAttrib.getValue(0) ).getPath() %>" /></td></tr>
+							List brandAttrib = (currentFolder instanceof CategoryModel) ? ((CategoryModel)currentFolder).getTopMedia() : null; 
+							if (brandAttrib != null && brandAttrib.size() > 0) { %>
+								<tr><td><fd:IncludeMedia name="<%= ( (Html)brandAttrib.get(0) ).getPath() %>" /></td></tr>
 							<% } 
 						} // end of if intro copy set to blank, do nothing
 						
@@ -336,14 +305,11 @@
 					
 				} else if ( EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId() == layouttype ) {
 				 	//paint the category_detail_image, intro copy and full name
-					attrib = currentFolder.getAttribute("CATEGORY_DETAIL_IMAGE");
-					MediaModel catDetailImg = null;
-					if ( attrib != null ) {
-						catDetailImg = (MediaModel)attrib.getValue();
-					}
+					MediaModel catDetailImg = categoryModel != null ? categoryModel.getCategoryDetailImage() : null;
+					
 				    
-				    Attribute editorialAttribute = currentFolder.getAttribute("EDITORIAL");
-					String catEditorialPath = editorialAttribute==null ? "" : ( (Html)editorialAttribute.getValue() ).getPath();
+				    Html editorialAttribute = currentFolder.getEditorial();
+					String catEditorialPath = editorialAttribute==null ? "" : editorialAttribute.getPath();
 					        					    
 					%>
 					

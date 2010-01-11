@@ -6,7 +6,7 @@ boolean filterDiscontinued = true;
 boolean returnHiddenFolders = false;
 boolean ignoreDuplicateProducts = true;
 boolean returnSecondaryFolders = true;
-String storageMedia = ((MediaI)dep.getAttribute("DEPT_STORAGE_GUIDE_MEDIA").getValue()).getPath();
+String storageMedia = dep.getDeptStorageGuideMedia().getPath();
 %>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr><td><fd:IncludeMedia name="<%=storageMedia%>" /></td></tr>
@@ -25,7 +25,7 @@ sortStrategy.add(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_N
 //remove items with no storage guide attribute
 for(Iterator thisList = sortedColl.iterator(); thisList.hasNext();) {
     Object catObject = thisList.next();
-    if ( catObject instanceof CategoryModel  && ( ((CategoryModel)catObject).hasAttribute("DEPT_STORAGE_GUIDE_MEDIA") || ((CategoryModel)catObject).hasAttribute("CAT_STORAGE_GUIDE_MEDIA")  )) {
+    if ( catObject instanceof CategoryModel  && ( ((CategoryModel)catObject).getCategoryStorageGuideMedia() != null )) {
        catList.add(catObject);
     } else {
         continue;
@@ -36,7 +36,7 @@ for(Iterator thisList = sortedColl.iterator(); thisList.hasNext();) {
 
 <fd:ItemSorter nodes='<%=catList %>' strategy='<%=sortStrategy%>'/>
 <%
-Image initCatImg = (Image)((CategoryModel)catList.get(0)).getAttribute("CAT_PHOTO").getValue();
+Image initCatImg = (Image)((CategoryModel)catList.get(0)).getCategoryPhoto();
 %>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr valign="top">
@@ -64,7 +64,7 @@ Image initCatImg = (Image)((CategoryModel)catList.get(0)).getAttribute("CAT_PHOT
                         int itemIndex = (maxRows * colIndex) + rowIndex;
                         if (itemIndex < itemCount) {
                     thisCat = (CategoryModel)catList.get(itemIndex);
-                                catImg =  (Image)thisCat.getAttribute("CAT_PHOTO").getValue();
+                                catImg =  (Image)thisCat.getCategoryPhoto();
                                 mouseOver = "swapImage('catImage','"+ catImg.getPath() +"')";
                         }
 %>

@@ -109,7 +109,7 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 		
 		for (Iterator i = cartMerged.getOrderLines().iterator(); i.hasNext();) {
 			FDCartLineI line     = (FDCartLineI) i.next();
-			ProductModel model = line.getProductRef().lookupProduct();
+			ProductModel model = line.getProductRef();
 			String productId = model.getContentKey().getId();
 			if((savedProdKeys.contains(productId) && !currProdKeys.contains(productId)) && 
 					savedSavingIds.contains(line.getSavingsId()) && currSavingIds.contains(line.getSavingsId())){

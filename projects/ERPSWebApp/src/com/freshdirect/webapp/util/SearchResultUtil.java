@@ -19,11 +19,8 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.CategoryRef;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentRef;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -183,7 +180,7 @@ public class SearchResultUtil {
 
 		String productPrice = null;
 		Comparator priceComp = new ProductModel.PriceComparator();
-		List skus = product.getSkus();
+		List skus = product.getPrimarySkus();
 		for (ListIterator li = skus.listIterator(); li.hasNext();) {
 			SkuModel sku = (SkuModel) li.next();
 			if (sku.isUnavailable()) {
@@ -360,16 +357,9 @@ public class SearchResultUtil {
 	///////// utility methods /////////
 	///////////////////////////////////
 
-	private static CategoryModel getLinkCat(CategoryModel category) {
-		Attribute alias = category.getAttribute("ALIAS");
-		if (alias != null) {
-			ContentRef aliasRef = (ContentRef) alias.getValue();
-			if (aliasRef instanceof CategoryRef)
-				return ((CategoryRef) aliasRef).getCategory();
-			//else if (aliasRef instanceof DepartmentRef) return (DepartmentRef)aliasRef;
-
-		}
-		return category;
-	}
+        private static CategoryModel getLinkCat(CategoryModel category) {
+            CategoryModel aliasCat = category.getAliasCategory();
+            return aliasCat != null ? aliasCat : category;
+        }
 
 }

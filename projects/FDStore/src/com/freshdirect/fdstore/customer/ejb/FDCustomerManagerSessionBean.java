@@ -841,34 +841,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		ErpPaymentMethodException {
 		try {
 
-			ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(info.getIdentity().getErpCustomerPK()));
-
-			//
-			// DO FRAUD CHECK
-			//
-			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
-			boolean foundFraud = fraudSB.checkDuplicatePaymentMethodFraud(info.getIdentity().getErpCustomerPK(), paymentMethod);
-			if (foundFraud) {
-				this.getSessionContext().setRollbackOnly();
-				throw new ErpDuplicatePaymentMethodException("Duplicate account information.");
-			}
-
-			//
-			// Check external negative file for E-Checks, Credit Cards will alway return APPROVED
-			//
-			foundFraud = false;
-			try {
-				PaymentFraudManager paymentFraudManager = new PaymentFraudManager();
-				if (!paymentFraudManager.verifyAccountExternal(paymentMethod)) {
-					foundFraud = true;
-				}
-			} catch (ErpTransactionException e) {
-				foundFraud = false;  // if there's an exception (can't communication with external source) --> allow user to add payment method
-			}
-			if (foundFraud) {
-				this.getSessionContext().setRollbackOnly();
-				throw new ErpPaymentMethodException("Account is not valid");
-			}
+			ErpCustomerEB erpCustomerEB = checkPaymentMethodModification(info, paymentMethod);
 
 			erpCustomerEB.addPaymentMethod(paymentMethod);
 
@@ -976,35 +949,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		ErpDuplicatePaymentMethodException,
 		ErpPaymentMethodException {
 		try {
-			ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(
-				new PrimaryKey(info.getIdentity().getErpCustomerPK()));
-
-			//
-			// DO FRAUD CHECK
-			//
-			ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
-			boolean foundFraud = fraudSB.checkDuplicatePaymentMethodFraud(info.getIdentity().getErpCustomerPK(), paymentMethod);
-			if (foundFraud) {
-				this.getSessionContext().setRollbackOnly();
-				throw new ErpDuplicatePaymentMethodException("Duplicate account information.");
-			}
-
-			//
-			// Check external negative file for E-Checks, Credit Cards will alway return APPROVED
-			//
-			foundFraud = false;
-			try {
-				PaymentFraudManager paymentFraudManager = new PaymentFraudManager();
-				if (!paymentFraudManager.verifyAccountExternal(paymentMethod)) {
-					foundFraud = true;
-				}
-			} catch (ErpTransactionException e) {
-				foundFraud = false;  // if there's an exception (can't communication with external source) --> allow user to add payment method
-			}
-			if (foundFraud) {
-				this.getSessionContext().setRollbackOnly();
-				throw new ErpPaymentMethodException("Account is not valid");
-			}
+			ErpCustomerEB erpCustomerEB = checkPaymentMethodModification(info, paymentMethod);
 
 			erpCustomerEB.updatePaymentMethod(paymentMethod);
 
@@ -1019,6 +964,40 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 
 	}
+
+    private ErpCustomerEB checkPaymentMethodModification(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FinderException, RemoteException,
+            CreateException, ErpDuplicatePaymentMethodException, ErpPaymentMethodException {
+        ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(
+        	new PrimaryKey(info.getIdentity().getErpCustomerPK()));
+
+        //
+        // DO FRAUD CHECK
+        //
+        ErpFraudPreventionSB fraudSB = getErpFraudHome().create();
+        boolean foundFraud = fraudSB.checkDuplicatePaymentMethodFraud(info.getIdentity().getErpCustomerPK(), paymentMethod);
+        if (foundFraud) {
+        	this.getSessionContext().setRollbackOnly();
+        	throw new ErpDuplicatePaymentMethodException("Duplicate account information.");
+        }
+
+        //
+        // Check external negative file for E-Checks, Credit Cards will alway return APPROVED
+        //
+        foundFraud = false;
+        try {
+        	PaymentFraudManager paymentFraudManager = new PaymentFraudManager();
+        	if (!paymentFraudManager.verifyAccountExternal(paymentMethod)) {
+        		foundFraud = true;
+        	}
+        } catch (ErpTransactionException e) {
+        	foundFraud = false;  // if there's an exception (can't communication with external source) --> allow user to add payment method
+        }
+        if (foundFraud) {
+        	this.getSessionContext().setRollbackOnly();
+        	throw new ErpPaymentMethodException("Account is not valid");
+        }
+        return erpCustomerEB;
+    }
 
 	/**
 	 * remove a payment method for the customer
@@ -4090,90 +4069,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 
 
-			public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
-			throws ErpTransactionException {
-
-			try {
-				ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-
-				ErpSaleModel saleModel = (ErpSaleModel)eb.getModel();
-
-				EnumSaleStatus status = saleModel.getStatus();
-
-		        if (status.equals(EnumSaleStatus.ENROUTE) || status.equals(EnumSaleStatus.PAYMENT_PENDING) || status.equals(EnumSaleStatus.REFUSED_ORDER)
-		            || status.equals(EnumSaleStatus.PENDING) || status.equals(EnumSaleStatus.RETURNED) || status.equals(EnumSaleStatus.REDELIVERY)
-		            || status.equals(EnumSaleStatus.CAPTURE_PENDING))
-		        {
-		            ErpInvoiceModel invoiceOnSale = saleModel.getFirstInvoice();
-					if (invoiceOnSale.equals(invoice)) {
-						LOGGER.info("Got duplicate invoice for sale#: " + saleId);
-						return;
-					} else {
-						throw new EJBException("Got another different invoice for sale#: " + saleId);
-					}
-
-				}
-
-				if (!status.equals(EnumSaleStatus.INPROCESS)) {
-					throw new EJBException("Sale#: " + saleId + " is not in correct status to add invoice");
-				}
-
-				// FIXME fix Discount promotionCode, since parser cannot provide it
-
-				List invDiscountLines = invoice.getDiscounts();
-				List oldDiscountLines = saleModel.getRecentOrderTransaction().getDiscounts();
-				if (invDiscountLines != null && !invDiscountLines.isEmpty() && oldDiscountLines != null && !oldDiscountLines.isEmpty()) {
-
-					if (oldDiscountLines.size() != invDiscountLines.size()) {
-						throw new EJBException("Discount line count mismatch, expected "
-							+ oldDiscountLines.size()
-							+ ", invoice had "
-							+ invDiscountLines.size());
-					}
-
-					// FIXME furhter validation should be performed to ensure discount lines match up (no can do, w/o promo codes)
-
-					List pList = new ArrayList();
-					for (Iterator invPromosIter = invDiscountLines.iterator(), oldPromosIter = oldDiscountLines.iterator();
-						invPromosIter.hasNext() && oldPromosIter.hasNext(); ) {
-						ErpDiscountLineModel  invDiscountLine = (ErpDiscountLineModel) invPromosIter.next();
-						ErpDiscountLineModel  oldDiscountLine = (ErpDiscountLineModel) oldPromosIter.next();
-						Discount invDisc = invDiscountLine.getDiscount();
-						Discount oldDisc = oldDiscountLine.getDiscount();
-						pList.add(new ErpDiscountLineModel(new Discount(oldDisc.getPromotionCode(), oldDisc.getDiscountType(), invDisc.getAmount())));
-					}
-					invoice.setDiscounts(pList);
-				}
-
-				// !!! fix Delivery charge tax
-				double tax = invoice.getTax();
-				if(tax > 0){
-					ErpAbstractOrderModel order = saleModel.getRecentOrderTransaction();
-					for(Iterator i = invoice.getCharges().iterator(); i.hasNext(); ) {
-						ErpChargeLineModel invCharge = (ErpChargeLineModel) i.next();
-						ErpChargeLineModel orderCharge = order.getCharge(invCharge.getType());
-
-						if(orderCharge != null) {
-							invCharge.setTaxRate(orderCharge.getTaxRate());
-						}
-					}
-				}
-
-
-				ErpCustomerManagerSB managerSB = this.getErpCustomerManagerHome().create();
-				managerSB.addInvoice(invoice, saleId, shippingInfo);
-				managerSB.reconcileSale(saleId);
-
-
-
-			} catch (ErpTransactionException e) {
-				throw e;
-			} catch (Exception e) {
-				LOGGER.warn("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
-				throw new EJBException("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
-			}
-		}
-
+                public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo) throws ErpTransactionException {
+            
+                    try {
+                        this.getErpCustomerManagerHome().create().addAndReconcileInvoice(saleId, invoice, shippingInfo);
+                    } catch (ErpTransactionException e) {
+                        throw e;
+                    } catch (Exception e) {
+                        LOGGER.warn("Unexpected Exception while trying to process invoice for order#: " + saleId, e);
+                        throw new EJBException("Unexpected Exception while trying to process invoice for order#: " + saleId, e);
+                    }
+                }
 
 		public void authorizeSale(String erpCustomerID, String saleID, EnumSaleType type,CustomerRatingI cra) throws FDResourceException, ErpSaleNotFoundException {
 

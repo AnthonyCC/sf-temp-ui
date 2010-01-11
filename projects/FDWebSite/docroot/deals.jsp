@@ -1,5 +1,4 @@
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -11,14 +10,13 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus />
 <%
-Attribute attrib = null;
 Set brands = null ; // set in the grocery_category_layout page. will be referenced by  i_bottom_template
 
 String catId = request.getParameter("catId");
 boolean isGroceryVirtual=false;
 boolean isWineLayout = false;
 String deptId = null;
-ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
 System.out.println("currentFolder *************** "+currentFolder);
 /*if(currentFolder instanceof CategoryModel) {
      deptId=((CategoryModel)currentFolder).getDepartment().getContentName();

@@ -4,7 +4,7 @@
 
 ContentFactory cf = ContentFactory.getInstance();
 List skus = new ArrayList();
-CategoryModel parentCat = (CategoryModel) productNode.getParentNode();
+final CategoryModel parentCat = (CategoryModel) productNode.getParentNode();
 String errImage = "<img src=\"/media_stat/images/layout/error.gif\" border=\"0\">";
 String noErrImage = ""; 
 String chefPickIndicator = "<img src=\"/media_stat/images/layout/star11.gif\" border=\"0\">";
@@ -15,20 +15,16 @@ String suLabel="";
 Collection pgErrs=((ActionResult)result).getErrors();
 StringBuffer errMsgBuff = new StringBuffer();
 Map availOptSkuMap = new HashMap();
-Attribute attrib = parentCat.getAttribute("EDITORIAL");
 String introCopyPath=null;
 MediaI imgMedia=null;
 
-if (attrib!=null) {
-    MediaI mediaI = (MediaI)attrib.getValue();
+MediaI mediaI = parentCat.getEditorial();
+if (mediaI != null) {
     introCopyPath = mediaI.getPath();
 }
-attrib = parentCat.getAttribute("CAT_PHOTO");
-if (attrib!=null) {
-    imgMedia = (MediaI)attrib.getValue();
-}
 
-    
+imgMedia = parentCat.getCategoryPhoto();
+
 List prodSkus = productNode.getSkus();
 
 boolean hasTemplate = templateLine!=null;
@@ -72,7 +68,7 @@ if (!hasTemplate) {
 
 	String variantId = request.getParameter("variant");
 
-	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode.getProductRef(), cfg, variantId);
+	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId);
 }
 //* check to see if any of the mandatory variations are all unavailable.  (rule: platter unavailable if all comp of a var is unavail)
 //* while we're at it, save skucode and productModel for future use.
@@ -144,21 +140,24 @@ if (pgErrs.size()>0) {
 	<br><span class="space8pix"><br></span>
 	</td></tr>
   	<% 
-	attrib = parentCat.getAttribute("PROD_IMAGE_DETAIL");
-	if (attrib!=null) {
-    	imgMedia = (MediaI)attrib.getValue();
-	} 
+  	{
+  		Image _img = parentCat.getProductDetailImage();
+  		if (_img!=null) {
+  		    imgMedia = _img;
+  		}
+  	}
 	%>
 	<tr>
 	<td><%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  } %></td>
 	<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
 	<%
 	String prodDescr = "";
-	attrib = productNode.getAttribute("PROD_DESCR"); 
-		if (attrib!=null) {
-			MediaI mediaI = (MediaI)attrib.getValue();
-			prodDescr = mediaI.getPath();
-		} 
+	{
+	    Html _html = productNode.getProductDescription();
+	    if (_html != null) {
+	        prodDescr = _html.getPath();
+	    }
+	}
 	%>
 	
 	<td width="90%"><% if (prodDescr!=null && prodDescr.indexOf("blank_file.txt") < 0) { %><br><bt><fd:IncludeMedia name='<%=prodDescr %>'/><span class="space8pix"><br><br></span><%  }  %>
@@ -187,9 +186,10 @@ if (isAvailable ) { %>
 		List varList = new ArrayList();
 		List prodList = new ArrayList();
 		//List prodList = new ArrayList();
-		attrib = stepCat.getAttribute("MATERIAL_CHARACTERISTIC");
-		if (attrib!=null) {
-			StringTokenizer matCharTkns = new StringTokenizer((String)attrib.getValue(),",");
+		String _matChar = stepCat.getMaterialCharacteristic();
+		
+		if (_matChar!=null) {
+			StringTokenizer matCharTkns = new StringTokenizer(_matChar,",");
 			for (;matCharTkns.hasMoreTokens(); ) {
 				matCharNames.add(matCharTkns.nextToken());
 			}
@@ -209,29 +209,18 @@ if (isAvailable ) { %>
 				}
 			}
 		} 
-		attrib = stepCat.getAttribute("FEATURED_PRODUCTS");
-		List featuredProdIds = new ArrayList();
-		if (attrib!=null) {
-			for (Iterator itr=((List)attrib.getValue()).iterator(); itr.hasNext();) {
-				ContentRef cr = (ContentRef) itr.next();
-				if (!(cr instanceof ProductRef)) continue;
-				if (!featuredProdIds.contains(cr.getRefName2())) {
-					featuredProdIds.add(cr.getRefName2());
-				}
-			}
-		}
+		List featuredProdIds = stepCat.getFeaturedProductIds();
+		
 		introCopyPath=null;
 		imgMedia=null;
-		attrib = stepCat.getAttribute("EDITORIAL"); 
-		if (attrib!=null) {
-			MediaI mediaI = (MediaI)attrib.getValue();
-			introCopyPath = mediaI.getPath();
+		{
+			MediaI _mediaI = stepCat.getEditorial(); 
+			if (_mediaI!=null) {
+				introCopyPath = _mediaI.getPath();
+			}
 		}
 
-		attrib = stepCat.getAttribute("CAT_PHOTO");
-		if (attrib!=null) {
-			imgMedia = (MediaI)attrib.getValue();
-		}  
+		imgMedia = stepCat.getCategoryPhoto();
 
 		//show category image and into copy if there are characteristics names
 		if (matCharNames.size()>0) { 	%>
@@ -315,7 +304,7 @@ if (isAvailable ) { %>
 	
 	//temporary hardcode until layout setting corrected
 	//
-	//int layout = stepCat.getAttribute("LAYOUT", EnumLayoutType.MULTI_ITEM_MEAL_OPTION_HORZ.getId());
+	//
 	int layout = EnumLayoutType.MULTI_ITEM_MEAL_OPTION_VERT.getId();
 	
 		//if not modifying then go get the optional stuff, which is in a subfolder of this products parent
@@ -464,9 +453,8 @@ if (isAvailable ) { %>
 	<%
 		} 
 	 } 
-        attrib =parentCat.getAttribute("CATEGORY_MIDDLE_MEDIA");
-        List catMidMedias =  attrib==null?new ArrayList():(List)attrib.getValue();
-        if (catMidMedias.size()>0) {  %>
+        List catMidMedias =  parentCat.getMiddleMedia();
+        if (catMidMedias != null && catMidMedias.size()>0) {  %>
             <FONT CLASS="space4pix"><br><br></FONT>
             <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=maxWidth%>">
                <TR VALIGN="TOP">
@@ -614,8 +602,7 @@ if (isAvailable ) { %>
 	</td></tr></table>
 <% } 
 
-	attrib =parentCat.getAttribute("CATEGORY_BOTTOM_MEDIA");
-	List catBottomMedias =  attrib==null?new ArrayList():(List)attrib.getValue();
+	List catBottomMedias =  parentCat.getBottomMedia();
 	if (catBottomMedias.size()>0  && !CartName.MODIFY_CART.equals(cartMode) ) {
     %>
     <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=maxWidth%>">

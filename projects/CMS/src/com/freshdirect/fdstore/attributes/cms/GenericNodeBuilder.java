@@ -5,7 +5,7 @@
 package com.freshdirect.fdstore.attributes.cms;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.fdstore.attributes.EnumAttributeType;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -19,9 +19,9 @@ public class GenericNodeBuilder extends AbstractAttributeBuilder {
 
 	public Object buildValue(AttributeDefI aDef, Object value) {
 		RelationshipDefI relDef = (RelationshipDefI) aDef;
-		ContentNodeI cNode = (ContentNodeI) value;
+		ContentKey key = (ContentKey) value;
 		ContentNodeModel model = ContentNodeModelUtil.constructModel(
-				cNode.getKey(), relDef.isNavigable());
+				key, relDef.isNavigable());
 		return model;
 	}
 

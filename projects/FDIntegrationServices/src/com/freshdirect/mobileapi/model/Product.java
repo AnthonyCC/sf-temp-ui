@@ -51,22 +51,16 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
-import com.freshdirect.fdstore.attributes.Attribute;
-import com.freshdirect.fdstore.attributes.MultiAttribute;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentRef;
 import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.DomainValueRef;
 import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductRef;
 import com.freshdirect.fdstore.content.SkuModel;
-import com.freshdirect.fdstore.content.TitledMedia;
 import com.freshdirect.fdstore.content.view.ProductRating;
 import com.freshdirect.fdstore.content.view.WebProductRating;
 import com.freshdirect.fdstore.customer.FDUser;
@@ -86,7 +80,6 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.GeneralCacheAdministratorFactory;
 import com.freshdirect.mobileapi.util.ProductUtil;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.webapp.taglib.fdstore.GetDlvRestrictionsTag;
 import com.freshdirect.webapp.util.CCFormatter;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.RestrictionUtil;
@@ -418,7 +411,7 @@ public class Product {
                 //
                 // Matrix for ordering skus by domain value. 
 
-                List skuMultAttr = sku.getOriginalSku().getVariationMatrix();
+                List<DomainValue> skuMultAttr = sku.getOriginalSku().getVariationMatrix();
 
                 if (skuMultAttr != null && skuMultAttr.size() > 0) {
                     DomainValue key = (DomainValue) skuMultAttr.get(0);
@@ -448,22 +441,15 @@ public class Product {
                 if (QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(
                         QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0) {
                     
-                    MultiAttribute varMatrix = (MultiAttribute) sku.getVariationMatrix();
-                    List domains = varMatrix==null ? Collections.EMPTY_LIST : (List)varMatrix.getValue();
+                    List<DomainValue> domains = sku.getVariationMatrix() == null ? Collections.EMPTY_LIST : sku.getVariationMatrix();
                     StringBuffer key = new StringBuffer();
                     key.append("*");
-                    for(Iterator i = domains.iterator(); i.hasNext(); ){
-                        DomainValue domainValue = null;
-                        //Added type checking as it was causing exceptions in some cases
-                        if(i.next() instanceof DomainValue) {
-                            domainValue = (DomainValue) i.next();
-                        } else {
-                            domainValue = ((DomainValueRef)i.next()).getDomainValue();
-                        }
-                        
+
+                    for (Iterator<DomainValue> i = domains.iterator(); i.hasNext();) {
+                        DomainValue domainValue = i.next();
                         key.append(domainValue.getLabel());
                         key.append(", ");
-                        key.deleteCharAt(key.length()-2);
+                        key.deleteCharAt(key.length() - 2);
                     }
                     key.append(" avail");
                     
@@ -513,11 +499,11 @@ public class Product {
         }
 
         if (ProductLayout.COMPONENTGROUPMEAL.name().equalsIgnoreCase(getLayout())) {
-            List componentGroups = (List) product.getProductModel().getAttribute("COMPONENT_GROUPS", Collections.EMPTY_LIST);
-            for (Object componentGroup : componentGroups) {
+            List<ComponentGroupModel> componentGroups = (List) product.getProductModel().getComponentGroups();
+            for (ComponentGroupModel componentGroup : componentGroups) {
                 ComponentGroup cgp;
                 try {
-                    cgp = new ComponentGroup((ComponentGroupModel) componentGroup, this);
+                    cgp = new ComponentGroup(componentGroup, this);
                     this.componentGroups.add(cgp);
                 } catch (FDException e) {
                     throw new ModelException("Unable to get ComponentGroup", e);
@@ -911,15 +897,12 @@ public class Product {
      */
     public String getFdDefSource() throws ModelException {
         String result = "";
-        Attribute fddefSource = product.getProductModel().getAttribute("FDDEF_SOURCE");
+        Html fddefSource = product.getProductModel().getFddefSource();
         if (fddefSource != null) {
-            TitledMedia tm = (TitledMedia) fddefSource.getValue();
-            if (tm != null) {
-                try {
-                    result = ProductUtil.readContent(ProductUtil.resolve(tm.getPath()));
-                } catch (IOException e) {
-                    LOG.warn("Error reading FDDEF_SOURCE file " + tm.getPath(), e);
-                }
+            try {
+                result = ProductUtil.readContent(ProductUtil.resolve(fddefSource.getPath()));
+            } catch (IOException e) {
+                LOG.warn("Error reading FDDEF_SOURCE file " + fddefSource.getPath(), e);
             }
         }
         return result;
@@ -931,11 +914,9 @@ public class Product {
      */
     public String getFdDefGrade() {
         String result = "";
-        if (product.getProductModel().getAttribute("FDDEF_GRADE") != null) {
-            Html content = product.getProductModel().getFddefGrade();
-            if (content != null) {
-                result = ProductUtil.readHtml(content);
-            }
+        Html content = product.getProductModel().getFddefGrade();
+        if (content != null) {
+            result = ProductUtil.readHtml(content);
         }
         return result;
     }
@@ -946,11 +927,9 @@ public class Product {
      */
     public String getFdDefFrenching() {
         String result = "";
-        if (product.getProductModel().getAttribute("FDDEF_FRENCHING") != null) {
-            Html content = product.getProductModel().getFddefFrenching();
-            if (content != null) {
-                result = ProductUtil.readHtml(content);
-            }
+        Html content = product.getProductModel().getFddefFrenching();
+        if (content != null) {
+            result = ProductUtil.readHtml(content);
         }
         return result;
     }
@@ -961,11 +940,9 @@ public class Product {
      */
     public String getFdDefRipeness() {
         String result = "";
-        if (product.getProductModel().getAttribute("FDDEF_RIPENESS") != null) {
-            Html content = product.getProductModel().getFddefRipeness();
-            if (content != null) {
-                result = ProductUtil.readHtml(content);
-            }
+        Html content = product.getProductModel().getFddefRipeness();
+        if (content != null) {
+            result = ProductUtil.readHtml(content);
         }
         return result;
     }
@@ -1065,8 +1042,8 @@ public class Product {
         try {
             result = product.getProductModel().getCountryOfOrigin();
             if (result.size() == 0) {
-                String seafoodOrigin = product.getProductModel().getAttribute("SEAFOOD_ORIGIN", null);
-                if (seafoodOrigin != null) {
+                String seafoodOrigin = product.getProductModel().getSeafoodOrigin();
+                if (seafoodOrigin != null && seafoodOrigin.length()>0) {
                     result.add(seafoodOrigin);
                 }
             }
@@ -1250,12 +1227,11 @@ public class Product {
      */
     public List<Product> getAlsoSoldAs() throws ModelException {
         List<Product> result = new ArrayList<Product>();
-        List alsoSoldAsRefs = product.getProductModel().getAlsoSoldAsRefs();
+        List<ProductModel> alsoSoldAsRefs = product.getProductModel().getAlsoSoldAsRefs();
         if (alsoSoldAsRefs != null) {
-            Iterator it = alsoSoldAsRefs.iterator();
+            Iterator<ProductModel> it = alsoSoldAsRefs.iterator();
             while (it.hasNext()) {
-                ContentRef cr = (ContentRef) it.next();
-                ProductModel asaProd = ((ProductRef) cr).lookupProduct();
+                ProductModel asaProd = it.next();
                 if (!asaProd.getParentNode().isHidden() && !asaProd.isUnavailable()) {
                     try {
                         result.add(new Product(asaProd, this.user, this.variant));
@@ -1612,14 +1588,12 @@ public class Product {
     @SuppressWarnings("deprecation")
     public String getPartiallyFrozen() {
         String result = "";
-        if (product.getProductModel().getAttribute("PARTIALLY_FROZEN") != null) {
-            TitledMedia tm = (TitledMedia) product.getProductModel().getAttribute("PARTIALLY_FROZEN").getValue();
-            if (tm != null) {
-                try {
-                    result = ProductUtil.readContent(ProductUtil.resolve(tm.getPath()));
-                } catch (IOException e) {
-                    LOG.warn("Error reading PARTIALLY_FROZEN file " + tm.getPath(), e);
-                }
+        Html partiallyFrozen = product.getProductModel().getPartallyFrozen();
+        if (partiallyFrozen != null) {
+            try {
+                result = ProductUtil.readContent(ProductUtil.resolve(partiallyFrozen.getPath()));
+            } catch (IOException e) {
+                LOG.warn("Error reading PARTIALLY_FROZEN file " + partiallyFrozen.getPath(), e);
             }
         }
 
@@ -1627,7 +1601,7 @@ public class Product {
     }
 
     public boolean isMultipleNutrition() {
-        return product.getProductModel().getAttribute("NUTRITION_MULTIPLE", false);
+        return product.getProductModel().isNutritionMultiple();
     }
 
     public List<ComponentGroup> getComponentGroups() {

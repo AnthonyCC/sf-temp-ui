@@ -73,10 +73,9 @@ class DepartmentInfoVisitor implements ContentVisitorI {
 	
 	public void visit(SkuModel sku) {
 		ProductModel prod = (ProductModel)sku.getParentNode();
-		Attribute ph = prod.getAttribute("PRIMARY_HOME");
+		CategoryModel ph = prod.getPrimaryHome();
 		if (ph != null) {
-			CategoryRef catRef = (CategoryRef)ph.getValue();
-			if (!catRef.getCategoryName().equals(prod.getParentNode().getContentName())) {
+			if (!ph.getContentKey().getId().equals(prod.getParentNode().getContentName())) {
 				// skip SKUs not in their primary homes
 				return;
 			}
@@ -290,7 +289,7 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 	<% if (selectedDeptInfo==null) { %>	
 			<b>&laquo; Select a department to view it's details</b>
 	<% } else { 
-			DepartmentModel dept = (DepartmentModel)ContentFactory.getInstance().getContentNodeByName(selectedDeptInfo.getContentName());
+			DepartmentModel dept = (DepartmentModel)ContentFactory.getInstance().getContentNode(selectedDeptInfo.getContentName());
 	%>
 		<table width="100%" cellpadding="0" cellspacing="4" border="0" align="center">
 			<tr>

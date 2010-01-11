@@ -5,6 +5,7 @@
 package com.freshdirect.fdstore.attributes.cms;
 
 import com.freshdirect.cms.AttributeDefI;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.fdstore.attributes.EnumAttributeType;
 import com.freshdirect.fdstore.content.Html;
@@ -21,15 +22,16 @@ public class HtmlBuilder extends AbstractAttributeBuilder {
     }
     
     public Object buildValue(AttributeDefI aDef, Object value) {
-        ContentNodeI cNode = (ContentNodeI) value;
-        String path = (String) cNode.getAttribute("path").getValue();
+        ContentNodeI cNode = ((ContentKey) value).lookupContentNode();
+        String path = (String) cNode.getAttributeValue("path");
 
-		if (cNode.getAttribute("title").getValue()==null  && cNode.getAttribute("popupSize").getValue()==null) {
+		if (cNode.getAttributeValue("title")==null  
+		        && cNode.getAttributeValue("popupSize")==null) {
 			Html h = new Html(path);
 			return new TitledMedia(h, "", "");
 		} else {
-			String title = (String) cNode.getAttribute("title").getValue();
-			String sizeName = (String)cNode.getAttribute("popupSize").getValue();
+			String title = (String) cNode.getAttributeValue("title");
+			String sizeName = (String)cNode.getAttributeValue("popupSize");
 			return new TitledMedia(new Html(path), title, sizeName);
 		}
     }

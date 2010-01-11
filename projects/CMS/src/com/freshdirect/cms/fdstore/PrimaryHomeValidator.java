@@ -35,7 +35,7 @@ public class PrimaryHomeValidator implements ContentValidatorI {
 	public void validate(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI node, CmsRequestI request) {
 		ContentType t = node.getKey().getType();
 		if (FDContentTypes.PRODUCT.equals(t)) {
-			ContentKey priHome = (ContentKey) node.getAttribute("PRIMARY_HOME").getValue();
+			ContentKey priHome = (ContentKey) node.getAttributeValue("PRIMARY_HOME");
 
 			Set<ContentKey> parentKeys = service.getParentKeys(node.getKey());
 			if (parentKeys.isEmpty()) {
@@ -70,7 +70,7 @@ public class PrimaryHomeValidator implements ContentValidatorI {
 				}
 				
 				ContentNodeI clone = node.copy();
-				clone.getAttribute("PRIMARY_HOME").setValue(ph);
+				clone.setAttributeValue("PRIMARY_HOME",ph);
 
 				request.addNode(clone);
 			}

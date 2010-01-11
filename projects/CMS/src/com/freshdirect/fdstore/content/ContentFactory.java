@@ -45,10 +45,8 @@ public class ContentFactory {
 
 	private static ContentFactory instance = new ContentFactory();
 
-	private static BalkingExpiringReference productNewnesses = null;
-	
-	private static final Object syncPn = new Object();
-	
+	private static BalkingExpiringReference<Map<ContentKey, Integer>> productNewnesses = null;
+
 	/**
 	 * @label caches
 	 */
@@ -57,8 +55,8 @@ public class ContentFactory {
 	/** Map of String (IDs) -> ContentNodeModel */
 	private final Map<String, ContentNodeModel> contentNodes;
 
-	/** Map of {@link ContentKey} (IDs) -> {@link com.freshdirect.fdstore.content.ContentNodeI} */
-	private final Map<ContentKey, com.freshdirect.fdstore.content.ContentNodeI> nodesByKey;
+	/** Map of {@link ContentKey} (IDs) -> {@link com.freshdirect.fdstore.content.ContentNodeModel} */
+	private final Map<ContentKey, ContentNodeModel> nodesByKey;
 	
 	private final Object sync = new Object();
 
@@ -80,7 +78,7 @@ public class ContentFactory {
 
 		// ISTVAN, chagned HashMap to ConcurrentHashMap
 		this.contentNodes = new ConcurrentHashMap<String, ContentNodeModel>();
-		this.nodesByKey = new ConcurrentHashMap<ContentKey, com.freshdirect.fdstore.content.ContentNodeI>();
+		this.nodesByKey = new ConcurrentHashMap<ContentKey, ContentNodeModel>();
 		this.skuProduct = new LruCache<String,ProductModel>(5000);
 	}
 
@@ -159,28 +157,20 @@ public class ContentFactory {
 
 		return m;
 	}
-
-	/**
-	 * Get a ContentNode by contentName.
-	 * 
-	 * @deprecated use {@link #getContentNode(String)}
-	 */
-	public ContentNodeModel getContentNodeByName(String contentName) {
-		return getContentNode(contentName);
+	
+	public ContentNodeModel getContentNode(ContentType type, String id) {
+	    return getContentNodeByKey(new ContentKey(type, id));
 	}
+	
 
 	void registerContentNode(ContentNodeModel node) {
 		this.contentNodes.put(node.getContentName(), node);
 		this.nodesByKey.put(node.getContentKey(), node);
 	}
 
-	/**
-	 * Get a ProductModel using ContentRef
-	 */
-	public ProductModel getProduct(ProductRef ref) {
-		return this.getProductByName(ref.getCategoryName(), ref.getProductName());
+	public ProductModel getProduct(ProductModel ref) {
+	    return ref;
 	}
-
 	/**
 	 * Get a ProductModel in it's primary home, using a skuCode
 	 */
@@ -190,32 +180,31 @@ public class ContentFactory {
 		if (prod != null)
 			return prod;
 
-		// get ProductRefs for sku
-		List refs = getProdRefsForSku(skuCode);
+		// get ProductModelss for sku
+		List<ProductModel> refs = getProdRefsForSku(skuCode);
 
 		if (refs.size() == 0) {
 			throw new FDSkuNotFoundException("SKU " + skuCode + " not found");
 		}
 
 		// find the one in the PRIMARY_HOME (if there's one)
-		CategoryRef primaryHome = null;
-		for (Iterator i = refs.iterator(); i.hasNext();) {
-			ProductRef pRef = (ProductRef) i.next();
+		CategoryModel primaryHome = null;
+		for (Iterator<ProductModel> i = refs.iterator(); i.hasNext();) {
+		        prod = i.next();
 
-			prod = this.getProduct(pRef);
-			if (prod == null) {
+		        if (prod == null) {
 				// product not found, skip
 				continue;
 			}
 
 			if (primaryHome == null) {
-				Attribute ph = prod.getAttribute("PRIMARY_HOME");
+				CategoryModel ph = prod.getPrimaryHome();
 				if (ph != null) {
-					primaryHome = (CategoryRef) ph.getValue();
+				    primaryHome = (CategoryModel) ph;
 				}
 			}
 
-			if (primaryHome != null && primaryHome.getCategoryName().equals(pRef.getCategoryName())) {
+			if (primaryHome != null && primaryHome.getContentKey().getId().equals(prod.getParentId())) {
 				// whew, this is in the primary home, cache the result
 				this.skuProduct.put(skuCode, prod);
 				return prod;
@@ -242,7 +231,7 @@ public class ContentFactory {
 	public ProductModel getProductByName(String catName, String prodName) {
 		this.getStore(); // ensure Store is loaded
 
-		CategoryModel category = (CategoryModel) this.getContentNodeByName(catName);
+		CategoryModel category = (CategoryModel) this.getContentNode(catName);
 		if (category == null) {
 			// no such category
 			return null;
@@ -266,45 +255,47 @@ public class ContentFactory {
 	private static Executor threadPool = new ThreadPoolExecutor(1, 1, 60,
 			TimeUnit.SECONDS, new LinkedBlockingQueue(), new ThreadPoolExecutor.DiscardPolicy());
 
-	public Collection getNewProducts(int days, String deptId) throws FDResourceException {
+	public Collection<ProductModel> getNewProducts(int days, String deptId) throws FDResourceException {
+		final ContentFactory cf = ContentFactory.getInstance();
 		final Integer cacheKey = new Integer(days);
 		if (newProductsCache.get(cacheKey) == null) {
-			Collection items;
-			newProductsCache.put(cacheKey, items = findProductsWithAge(days));
+			Collection<ProductModel> items = findProductsWithAge(days);
+			newProductsCache.put(cacheKey, items);
 			LOGGER.info("loaded " + days + "-day new products cache with "
 					+ items.size() + " items");
 		}
-		Collection cached = (Collection) newProductsCache.get(cacheKey);
+		Collection<ProductModel> cached = (Collection<ProductModel>) newProductsCache.get(cacheKey);
 		if (cached != null) {
-			List list = new ArrayList(cached);
-			filterProdsByDept(list, deptId);
-			return new HashSet(list);
+			List<ProductModel> list = new ArrayList<ProductModel>(cached);
+			cf.filterProdsByDept(list, deptId);
+			return new HashSet<ProductModel>(list);
 		} else
 			return null;
 	}
 	
-	private Collection findProductsWithAge(int days) throws FDResourceException {
-		List products = new ArrayList();
-		Iterator it = getProductNewnesses().entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
-			ProductModel p = (ProductModel) entry.getKey();
-			int age = Math.abs(((Integer) entry.getValue()).intValue());
-			if (age <= days && filterProduct(p) != null)
-				products.add(p);
+	private Collection<ProductModel> findProductsWithAge(int days) throws FDResourceException {
+		List<ProductModel> products = new ArrayList<ProductModel>();
+		for (Map.Entry<ContentKey, Integer> entry : getProductNewnesses().entrySet()) {
+		    ContentKey key = entry.getKey();
+                    int age = Math.abs(((Integer) entry.getValue()).intValue());
+                    if (age <= days) {
+                        ContentNodeModel nodeModel = getContentNodeByKey(key);
+                        if (nodeModel instanceof ProductModel && filterProduct((ProductModel)nodeModel) != null) {
+                            products.add((ProductModel) nodeModel);
+                        }
+                    }
 		}
 		return products;
 	}
-
-
-	public Map getProductNewnesses() throws FDResourceException {
-		synchronized (syncPn) {
+	
+	public Map<ContentKey, Integer> getProductNewnesses() throws FDResourceException {
+		synchronized (sync) {
 			if (productNewnesses == null) {
-				Map pn = extractProductNewnesses();
-				productNewnesses = new BalkingExpiringReference(DAY_IN_MILLIS, threadPool, pn) {
-					protected Object load() {
+			        Map<ContentKey, Integer> pn = extractProductNewnesses();
+				productNewnesses = new BalkingExpiringReference<Map<ContentKey, Integer>>(DAY_IN_MILLIS, threadPool, pn) {
+					protected Map<ContentKey, Integer> load() {
 						try {
-							Map pn = extractProductNewnesses();
+							Map<ContentKey, Integer> pn = extractProductNewnesses();
 							newProductsCache.clear();
 							return pn;
 						} catch (FDResourceException e) {
@@ -315,29 +306,27 @@ public class ContentFactory {
 				};
 			}
 		}
-		return (Map) productNewnesses.get();
+		return productNewnesses.get();
 	}
 
-	private Map extractProductNewnesses() throws FDResourceException {
-		Map so = FDCachedFactory.getSkusOldness();
-		Map pn = new HashMap(so.size());
-		Iterator it = so.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
-			ProductModel key;
-			try {
-				key = this.getProduct(entry.getKey().toString());
-				if (key != null) {
-					int nv = -((Integer) entry.getValue()).intValue();
-					if (pn.containsKey(key)) {
-						int ov = ((Integer) pn.get(key)).intValue();
-						if (nv > ov)
-							pn.put(key, new Integer(nv));
-					} else
-						pn.put(key, new Integer(nv));
-				}
-			} catch (FDSkuNotFoundException e) {
-			}
+	private Map<ContentKey, Integer> extractProductNewnesses() throws FDResourceException {
+		final ContentFactory cf = ContentFactory.getInstance();
+		Map<String, Integer> so = FDCachedFactory.getSkusOldness();
+		Map<ContentKey, Integer> pn = new HashMap<ContentKey, Integer>(so.size());
+		for (Map.Entry<String, Integer> e : so.entrySet()) {
+		    ProductModel key = cf.filterProduct(e.getKey().toString());
+                    if (key != null) {
+                        ContentKey ckey = key.getContentKey();
+                        int nv = -((Integer) e.getValue()).intValue();
+                        if (pn.containsKey(ckey)) {
+                            int ov = ((Integer) pn.get(ckey)).intValue();
+                            if (nv > ov) {
+                                pn.put(ckey, new Integer(nv));
+                            }
+                        } else {
+                            pn.put(ckey, new Integer(nv));
+                        }
+                    }
 		}
 		return pn;
 	}
@@ -383,39 +372,33 @@ public class ContentFactory {
 		/** map of ProductModel -> Integer */
 		Map limbo = new HashMap();
 
-		for (Iterator pIter = coll.iterator(); pIter.hasNext();) {
-			String skuCode = (String) pIter.next();
-			try {
-				ProductModel prod = this.getProduct(skuCode);
-
-				if (prod.isHidden() || !prod.isSearchable() || prod.isUnavailable()) {
-					continue;
-				}
-
-				int skuSize = prod.getSkus().size();
-				if (skuSize == 1) {
-					// single sku, just add it to list
-					prods.add(prod);
-
-				} else {
-					// more than one sku, need to maintain sku counts 
-					Integer remaining = (Integer) limbo.get(prod);
-					if (remaining == null) {
-						limbo.put(prod, new Integer(skuSize));
-					} else {
-						int r = remaining.intValue() - 1;
-						limbo.put(prod, new Integer(r));
-						if (r == 0) {
-							// no more skus left, it's okay to include this in the list
-							prods.add(prod);
-						}
-					}
-				}
-
-			} catch (FDSkuNotFoundException fdsnfe) {
-				LOGGER.info("No matching product node for sku " + skuCode);
-			}
-		}
+                for (Iterator pIter = coll.iterator(); pIter.hasNext();) {
+                    String skuCode = (String) pIter.next();
+                    ProductModel prod = this.filterProduct(skuCode);
+        
+                    if (prod != null) {
+                        int skuSize = prod.getPrimarySkus().size();
+                        if (skuSize == 1) {
+                            // single sku, just add it to list
+                            prods.add(prod);
+        
+                        } else {
+                            // more than one sku, need to maintain sku counts
+                            Integer remaining = (Integer) limbo.get(prod);
+                            if (remaining == null) {
+                                limbo.put(prod, new Integer(skuSize));
+                            } else {
+                                int r = remaining.intValue() - 1;
+                                limbo.put(prod, new Integer(r));
+                                if (r == 0) {
+                                    // no more skus left, it's okay to include this in
+                                    // the list
+                                    prods.add(prod);
+                                }
+                            }
+                        }
+                    }
+                }
 		LOGGER.debug("Dubious products " + limbo);
 		return prods;
 	}
@@ -426,6 +409,23 @@ public class ContentFactory {
 		} else
 			return prod;
 	}
+	
+    private ProductModel filterProduct(String skuCode) {
+        try {
+            ProductModel prod = this.getProduct(skuCode);
+
+            if (prod.isHidden() || !prod.isSearchable() || prod.isUnavailable()) {
+                return null;
+            }
+
+            return prod;
+        } catch (FDSkuNotFoundException fdsnfe) {
+            LOGGER.info("No matching product node for sku " + skuCode);
+            return null;
+        }
+    }
+    
+	
 
 	private void filterProdsByDept(List prods, String dept) {
 		if (dept == null) {
@@ -512,10 +512,10 @@ public class ContentFactory {
 				cNode = (DomainValue) ContentNodeModelUtil.constructModel(ckey, false);
 			}
 			Domain d = (Domain) cNode.getParentNode();
-			List dValues = (List) d.getAttribute("domainValues").getValue();
+			List<ContentKey> dValues = d.getDomainValueKeys();
 			for (int i = 0; i < dValues.size(); i++) {
-				DomainValueRef dvr = (DomainValueRef) dValues.get(i);
-				if (dvr.getRefName2().equals(cNode.getContentName())) {
+			        ContentKey dvr = dValues.get(i);
+				if (dvr.equals(cNode.getContentKey())) {
 					cNode.setPriority(i + 1);
 					break;
 				}
@@ -580,9 +580,9 @@ public class ContentFactory {
 		nodesByKey.put(domainValue.getContentKey(), domainValue);
 	}
 
-	private List getProdRefsForSku(String skuCode) {
+	private List<ProductModel> getProdRefsForSku(String skuCode) {
 		ContentServiceI manager = CmsManager.getInstance();
-		List prodRefs = new ArrayList();
+		List<ProductModel> prodRefs = new ArrayList();
 
 		ContentNodeI skuNode = manager.getContentNode(new ContentKey(FDContentTypes.SKU, skuCode));
 		if (skuNode == null)
@@ -594,7 +594,7 @@ public class ContentFactory {
 			Collection categoryKeys = manager.getParentKeys(prodKey);
 			for (Iterator j = categoryKeys.iterator(); j.hasNext();) {
 				ContentKey catKey = (ContentKey) j.next();
-				prodRefs.add(new ProductRef(catKey.getId(), prodKey.getId()));
+				prodRefs.add(getProductByName(catKey.getId(), prodKey.getId()));
 			}
 		}
 
@@ -614,6 +614,12 @@ public class ContentFactory {
 			
 		return model;
 	}
+	
+	public ContentNodeModel getCachedContentNodeByKey(ContentKey key) {
+	    this.getStore();
+	    return (ContentNodeModel) nodesByKey.get(key);
+	}
+	
 	
 	public Set getParentKeys(ContentKey key) {
 		Set s = CmsManager.getInstance().getParentKeys(key);

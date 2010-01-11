@@ -8,9 +8,11 @@ public class SortStrategyElement {
 	public final static int PRODUCTS_BY_NAME = 2;
 	public final static int PRODUCTS_BY_KOSHER = 3;
 	public final static int PRODUCTS_BY_NUTRITION = 4;
-	public final static int PRODUCTS_BY_ATTRIBUTE = 5;
+	//public final static int PRODUCTS_BY_ATTRIBUTE = 5;
 	public final static int PRODUCTS_BY_WINE_ATTRIBUTE = 6;
 	public final static int PRODUCTS_BY_RATING = 7;
+	public final static int PRODUCTS_BY_DOMAIN_RATING = 8;
+        public final static int PRODUCTS_BY_WINE_COUNTRY = 9;
 
 	public final static int GROUP_BY_CATEGORY_NAME = 200;
 	public final static int GROUP_BY_CATEGORY_PRIORITY = 201;
@@ -43,6 +45,13 @@ public class SortStrategyElement {
 		this.sortDescending = sortDescending;
 		this.multiAttribName = multiAttribName;
 	}
+
+        public SortStrategyElement(int sortType, boolean sortDescending, String multiAttribName){
+            this.sortType = sortType;
+            this.sortDescending = sortDescending;
+            this.secondaryAttrib = null;
+            this.multiAttribName = multiAttribName;
+        }
 	
 	public int getSortType(){
 		return sortType;
@@ -59,5 +68,10 @@ public class SortStrategyElement {
 	public String getMultiAttribName(){
 		return multiAttribName;
 	}
+	@Override
+    public String toString() {
+        return "SortStrategy[type:" + sortType + (multiAttribName != null ? ",attr=" + multiAttribName : "")
+                + (secondaryAttrib != null ? ",secondary=" + secondaryAttrib : "") + ",descending=" + sortDescending + "]";
+    }
 
 }

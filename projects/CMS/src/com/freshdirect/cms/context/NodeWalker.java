@@ -49,12 +49,11 @@ public class NodeWalker extends ContextWalker {
 	 * NOTE: it returns the reversed state (True <=> HIDDEN(node) or NOT_SEARCHABLE(node)
 	 */
 	public boolean test(ContentNodeI n) {
-		Map attrs = n.getAttributes();
-		AttributeI a_hu = (AttributeI) attrs.get("HIDE_URL");
-		AttributeI a_ns = (AttributeI) attrs.get("NOT_SEARCHABLE");
+		Object a_hu =  n.getAttributeValue("HIDE_URL");
+		Object a_ns =  n.getAttributeValue("NOT_SEARCHABLE");
 
-		return ( (a_hu != null && a_hu.getValue() != null) ||
-			(a_ns != null && Boolean.TRUE.equals(a_ns.getValue()) )
+		return ( (a_hu != null) ||
+			(a_ns != null && Boolean.TRUE.equals(a_ns) )
 		);
 	}
 

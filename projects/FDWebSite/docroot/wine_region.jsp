@@ -2,7 +2,6 @@
 <%@ page import='java.util.*'  %>
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.content.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -17,13 +16,15 @@
 <%
 String catId = request.getParameter("catId"); 
 String filterValue = request.getParameter("filter");
-ContentNodeModel currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+ContentNodeModel currentFolder=ContentFactory.getInstance().getContentNode(catId);
+final CategoryModel categoryModel = (currentFolder instanceof CategoryModel) ? (CategoryModel) currentFolder : null;
 
-Attribute hasAlcohol=currentFolder.getAttribute("CONTAINS_BEER");
+boolean hasAlcohol=categoryModel != null && categoryModel.isHavingBeer();
 FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
-if(hasAlcohol != null && Boolean.TRUE.equals(hasAlcohol.getValue()) && !yser.isHealthWarningAcknowledged()){
+if(hasAlcohol && !yser.isHealthWarningAcknowledged()){
     String redirectURL = "/health_warning.jsp?successPage=/wine_region.jsp"+URLEncoder.encode("?"+request.getQueryString());
     response.sendRedirect(response.encodeRedirectURL(redirectURL));
+    return;
 }
 List displayList = new ArrayList();
 Domain wcDomain = ContentFactory.getInstance().getDomainById("wine_country");
@@ -47,7 +48,7 @@ Collection sortedColl = (Collection) request.getAttribute("itemGrabberResult");
 if (sortedColl==null) sortedColl = new ArrayList();
 for(Iterator availItr = sortedColl.iterator();availItr.hasNext();) {
     ContentNodeModel contentNode  = (ContentNodeModel)availItr.next();
-    if (contentNode.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
+    if (contentNode.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
       if (((ProductModel)contentNode).isUnavailable()) continue;
         displayList.add(contentNode);
     }
@@ -57,7 +58,7 @@ for(Iterator availItr = sortedColl.iterator();availItr.hasNext();) {
 <%
 List sortStrategy = new ArrayList();
 sortStrategy.add(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, false));
-sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_ATTRIBUTE, "WINE_COUNTRY",false));
+sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_WINE_COUNTRY, false));
 sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, SortStrategyElement.SORTNAME_NAV, false));
 %>
 <fd:ItemSorter nodes='<%=displayList%>' strategy='<%=sortStrategy%>'/>
@@ -100,16 +101,16 @@ sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, S
 <%
   String lastCatId ="";
   String lastFilterValue = null;
-  Attribute attrib;
   boolean shownALabel=false;
   for(Iterator prodItr = displayList.iterator(); prodItr.hasNext();) { 
       ProductModel displayProd = (ProductModel)prodItr.next();
       CategoryModel parentCat = (CategoryModel)displayProd.getParentNode();
       String brandName = displayProd.getPrimaryBrandName();
       String prodName = displayProd.getFullName();
-      String  wineRegion = displayProd.getAttribute("WINE_REGION",null);
-      String curFilterValue = displayProd.getAttribute("WINE_COUNTRY")==null ? "Other" 
-        : ((DomainValueRef)displayProd.getAttribute("WINE_COUNTRY").getValue()).getDomainValue().getLabel();
+      String  wineRegion = displayProd.getWineRegion();
+      DomainValue _wineCountry= displayProd.getWineCountry();
+      String curFilterValue = _wineCountry==null ? "Other" 
+        : _wineCountry.getLabel();
       //skip items that do not match the filtered value, if one is specified.
       if (filterValue!=null && !"".equals(filterValue)&& curFilterValue!=null && !filterValue.equalsIgnoreCase(curFilterValue)) {
           continue;
@@ -120,8 +121,8 @@ sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, S
         if (!lastCatId.equalsIgnoreCase(parentCat.getContentName())) {
           lastFilterValue=null;
           lastCatId = parentCat.getContentName();
-          attrib = parentCat.getAttribute("CAT_LABEL");
-          String imgPath = attrib!=null ? ((MediaI) attrib.getValue()).getPath()  : "/media_stat/images/layout/clear.gif";
+          Image _img  = parentCat.getCategoryLabel();
+          String imgPath = _img!=null ?  _img.getPath()  : "/media_stat/images/layout/clear.gif";
          
 %>
         <tr><td><%if (shownALabel){%><br><%}%><img src="<%=imgPath%>"></td></tr>

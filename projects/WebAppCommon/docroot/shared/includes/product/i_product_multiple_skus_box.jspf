@@ -12,11 +12,11 @@
     Iterator skui = skus.iterator();
     while ( skui.hasNext() ) {
         SkuModel sku = (SkuModel)skui.next();
-        MultiAttribute skuMatrix = (MultiAttribute)sku.getAttribute("VARIATION_MATRIX");
-        DomainValueRef dvr = (DomainValueRef)skuMatrix.getValue(0);
-        if ( dvr == null ) 
-        	continue;
-        DomainValue key = dvr.getDomainValue();
+	List<DomainValue> domainValues = sku.getVariationMatrix();
+        if (domainValues.size()==0) {
+            continue;
+        }
+        DomainValue key = (DomainValue)domainValues.get(0);
         if ( matrix.containsKey(key) ) {
             List coll = (List)matrix.get(key);
             coll.add(sku);
@@ -44,13 +44,14 @@
 
         // do all skus have the same optional variations?
         boolean allSameOption = true;
-        if ( ((SkuModel)group.get(0)).getAttribute("VARIATION_OPTIONS")!=null ) {
-            String dvId = ((DomainValueRef) ((MultiAttribute)((SkuModel)group.get(0)).getAttribute("VARIATION_OPTIONS")).getValue(0)).getDomainValue().getPK().getId();
+        List<DomainValue> variationOption = ((SkuModel)group.get(0)).getVariationOptions();
+        if ( variationOption!=null && variationOption.size()>0) {
+            String dvId = ((DomainValue) variationOption.get(0)).getContentKey().getId();
             
             Iterator skuIter = group.iterator();
             while ( skuIter.hasNext() ) {
                 SkuModel sku = (SkuModel) skuIter.next();
-                allSameOption &= dvId.equals(((DomainValueRef) ((MultiAttribute)sku.getAttribute("VARIATION_OPTIONS")).getValue(0)).getDomainValue().getPK().getId());
+                allSameOption &= dvId.equals( ((DomainValue) sku.getVariationOptions().get(0)).getContentKey().getId());
             }
         }
 
@@ -74,15 +75,17 @@
              <tr valign="bottom">
                  <td colspan="2" align="right"><br/>
                      <%
-                      if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
-                          TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
+                      Html _fdDefGrade = productNode.getFddefGrade();
+                      Html _fdDefSource = productNode.getFddefSource();
+                      if (_fdDefSource!=null) {
+                          TitledMedia tm = (TitledMedia)_fdDefSource;
                           EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                           String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
                           
                           %><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase() %></b></a><%
                           
-                      } else if (productNode.getAttribute("FDDEF_GRADE")!=null) {
-                          TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_GRADE").getValue();
+                      } else if (_fdDefGrade!=null) {
+                          TitledMedia tm = (TitledMedia)_fdDefGrade;
                           EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                           String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
                           
@@ -125,11 +128,12 @@
                       String labelLink3 = ")</b>";
                       String labelNolink = "";
                       if (hasSecondaryDomain) {
-                          DomainValue secDomainValue = ((DomainValueRef) ((MultiAttribute)sku.getAttribute("VARIATION_MATRIX")).getValue(1)).getDomainValue();
+                          DomainValue secDomainValue = ((DomainValue) sku.getVariationMatrix().get(1));
                           labelLink1 = secDomainValue.getLabel() + " <b>(";
                           labelNolink = secDomainValue.getLabel();
-                          if ((sku.getAttribute("VARIATION_OPTIONS") != null) && (group.size() > 1) && !allSameOption) {
-                              DomainValue optDomainValue = ((DomainValueRef) ((MultiAttribute)sku.getAttribute("VARIATION_OPTIONS")).getValue(0)).getDomainValue();
+                          List<DomainValue> variationOptions = sku.getVariationOptions();
+                          if ((variationOptions != null && variationOptions.size()>0) && (group.size() > 1) && !allSameOption) {
+                              DomainValue optDomainValue = ((DomainValue) variationOptions.get(0));
                               labelNolink += " <b>(" + optDomainValue.getLabel() +")</b>";
                               labelLink2 = optDomainValue.getLabel();
                           }
@@ -148,23 +152,26 @@
                     		
 <%-- ============================================================================================================================================= --%>
 		<% if ( !hasSecondaryDomain ) {
+            Html _fdDefGrade = productNode.getFddefGrade();
+            Html _fdDefSource = productNode.getFddefSource();
+            Html _fdDefFrenching = productNode.getFddefFrenching();
 			
-			if (productNode.getAttribute("FDDEF_GRADE")!=null) {
-				TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_GRADE").getValue();
+			if (_fdDefGrade!=null) {
+				TitledMedia tm = (TitledMedia)_fdDefGrade;
 				EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
 				String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
 			
 				%><b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b><%
 				
-			} else if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
-				TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
+			} else if (_fdDefSource!=null) {
+				TitledMedia tm = (TitledMedia)_fdDefSource;
 				EnumPopupType popupType = EnumPopupType.getPopupType(tm.getPopupSize());
 				String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
 				
 				%><b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b><%
 				
-			} else if (productNode.getAttribute("FDDEF_FRENCHING")!=null) {
-				TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_FRENCHING").getValue();
+			} else if (_fdDefFrenching!=null) {
+				TitledMedia tm = (TitledMedia)_fdDefFrenching;
 				EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
 				String path = popup + "&attrib=FDDEF_FRENCHING" + "&tmpl=" + tm.getPopupSize();
 				
@@ -203,8 +210,9 @@
 <%-- ============================================================================================================================================= --%>
 		<% } else { // for !hasSecondaryDomain 
                                       
-                   		if (productNode.getAttribute("FDDEF_RIPENESS")!=null && !"".equals(labelLink2)) {
-                               TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_RIPENESS").getValue();
+		    		Html _fdDefRipeness = productNode.getFddefRipeness();
+                   		if (_fdDefRipeness!=null && !"".equals(labelLink2)) {
+                               TitledMedia tm = (TitledMedia)_fdDefRipeness;
                                EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                                String path = popup + "&attrib=FDDEF_RIPENESS" + "&tmpl=" + tm.getPopupSize();
                                %>

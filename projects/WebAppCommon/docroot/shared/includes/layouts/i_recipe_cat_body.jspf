@@ -6,8 +6,8 @@
 */
 boolean isPreviewMode =ContentFactory.getInstance().getPreviewMode();
 
-Attribute rcpAttrib = recipeCategory.getAttribute("editorial");
-String editorialPath = rcpAttrib==null? null:((Html)rcpAttrib.getValue()).getPath(); 
+Html _editorial = ((RecipeCategory)recipeCategory).getRecipeEditorial();
+String editorialPath = _editorial==null? null:_editorial.getPath(); 
 
 Image catPhoto = ((RecipeCategory)recipeCategory).getPhoto();
 

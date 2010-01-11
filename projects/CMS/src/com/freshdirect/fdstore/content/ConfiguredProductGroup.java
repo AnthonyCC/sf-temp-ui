@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.OncePerRequestDateCache;
@@ -38,13 +37,7 @@ public class ConfiguredProductGroup extends ConfiguredProduct {
 	 *  @return the availabe configured product (see above)
 	 */
 	private ConfiguredProduct getAvailableConfiguredProduct() {
-		AttributeI itemsAttr = getCMSNode().getAttribute("items");
-		if (itemsAttr == null) {
-			// TODO: handle use case of no product available in the group
-			return null;
-		}
-
-		List items = (List) itemsAttr.getValue();
+		List items = (List) getCMSNode().getAttributeValue("items");
 		if (items == null || items.isEmpty()) {
 			return null;
 		}
@@ -95,16 +88,10 @@ public class ConfiguredProductGroup extends ConfiguredProduct {
 	 *          inside this group
 	 */
 	private ConfiguredProduct getFirstConfiguredProduct() {
-		AttributeI itemsAttr = getCMSNode().getAttribute("items");
-		if (itemsAttr == null) {
-			// TODO: handle use case of no product available in the group
-			return null;
-		}
-
-		List items = (List) itemsAttr.getValue();
-		if (items == null || items.isEmpty()) {
-			return null;
-		}
+            List items = (List) getCMSNode().getAttributeValue("items");
+            if (items == null || items.isEmpty()) {
+                    return null;
+            }
 		
 		ContentFactory contentFactory = ContentFactory.getInstance();
 

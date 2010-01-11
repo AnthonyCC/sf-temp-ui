@@ -37,22 +37,21 @@ if (result == null || productNode==null || cartMode==null || user==null ){
 <%
 ContentFactory cf = ContentFactory.getInstance();
 List skus = new ArrayList();
-CategoryModel parentCat = (CategoryModel) productNode.getParentNode();
+final CategoryModel parentCat = (CategoryModel) productNode.getParentNode();
 String errImage = "<img src=\"/media_stat/images/layout/error.gif\" border=\"0\">";
 String noErrImage = ""; 
 String chefPickIndicator = "<img src=\"/media_stat/images/layout/star11.gif\" border=\"0\">";
 String prodPopup = "prod_desc_popup.jsp?";
 String prodPopUpSize = "small";
 
-EnumProductLayout prodLayout = EnumProductLayout.getLayoutType(productNode.getAttribute("PRODUCT_LAYOUT",EnumProductLayout.PARTY_PLATTER.getId()));
+EnumProductLayout prodLayout = productNode.getProductLayout(EnumProductLayout.PARTY_PLATTER);
 boolean paintOptionalVertical= true;
 String prodNameAttribute = JspMethods.getProductNameToUse(parentCat);
 int maxWidth=430;
 String suLabel="";
 Collection pgErrs=((ActionResult)result).getErrors();
 StringBuffer errMsgBuff = new StringBuffer();
-Attribute attrib = parentCat.getAttribute("EDITORIAL");
-String packageDescription = productNode.getAttribute("PACKAGE_DESCRIPTION","");
+String packageDescription = productNode.getPackageDescription();
 MediaI imgMedia=null;
    
 List prodSkus = productNode.getSkus();
@@ -76,11 +75,11 @@ if (hasSingleSku) {
 
 }
 
-List componentGroups = (List)productNode.getAttribute("COMPONENT_GROUPS",Collections.EMPTY_LIST);
+List<ComponentGroupModel> componentGroups = productNode.getComponentGroups();
 Map variations = new HashMap();
 try {
 	for(int i=0; i<componentGroups.size(); i++) {
-	 variations.putAll(((ComponentGroupModel)componentGroups.get(i)).getVariationOptions() );
+	 variations.putAll(componentGroups.get(i).getVariationOptions() );
 	}
 } catch (FDResourceException fde) {
          //* EAT EM UP, mmmmmmm  
@@ -113,7 +112,7 @@ if (!hasTemplate) {
 
 	String variantId = request.getParameter("variant");
 	
-	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode.getProductRef(), cfg, variantId);
+	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId);
 }
 
 
@@ -173,16 +172,11 @@ if (pgErrs.size()>0) {
        + parentCat  + "&mproductId=" +productNode  + "&mskuCode=" + defaultSku + "&";
 	prodPopUpSize = "large_long" ;     
 	String prodDescr = "";
-	attrib = productNode.getAttribute("PROD_DESCR"); 
-	if (attrib!=null) {
-		MediaI mediaI = (MediaI)attrib.getValue();
+	MediaI mediaI = productNode.getProductDescription(); 
+	if (mediaI!=null) {
 		prodDescr = mediaI.getPath();
 	} 
-	attrib =productNode.getAttribute("PROD_IMAGE_DETAIL");
-
-	if (attrib!=null) {
-    		imgMedia = (MediaI)attrib.getValue();
-	} 
+	imgMedia =productNode.getDetailImage();
 
 	String prodSubtitle=productNode.getSubtitle();
 %>
@@ -253,29 +247,24 @@ if (isAvailable ) {
 				}
 			}
 		}
-		
-		attrib = compGroup.getAttribute("CHEFS_PICKS");
+		List<ProductModel> chefsPicks = compGroup.getChefsPicks();
 		List featuredProdIds = new ArrayList();
-		if (attrib!=null) {
-			for (Iterator itr=((List)attrib.getValue()).iterator(); itr.hasNext();) {
-				ProductRef cr = (ProductRef) itr.next();
-				if (!featuredProdIds.contains(cr.getRefName2())) {
-					featuredProdIds.add(cr.getRefName2());
+		if (chefsPicks!=null) {
+			for (ProductModel cr : chefsPicks) {
+				if (!featuredProdIds.contains(cr.getContentKey().getId())) {
+					featuredProdIds.add(cr.getContentKey().getId());
 				}
 			}
 		} 
 		String mediaPath=null;
-		imgMedia=null;
-		attrib = compGroup.getAttribute("EDITORIAL"); 
-		if (attrib!=null) {
-			MediaI mediaI = (MediaI)attrib.getValue();
-			mediaPath = mediaI.getPath();
+		{
+		    MediaI editorialMedia = compGroup.getEditorial();
+			if (editorialMedia!=null) {
+				mediaPath = editorialMedia.getPath();
+			}
 		}
 
-		attrib = compGroup.getAttribute("HEADER_IMAGE");
-		if (attrib!=null) {
-			imgMedia = (MediaI)attrib.getValue();
-		}  
+		imgMedia = compGroup.getHeaderImageIfExists();
 
 		//show ComponentGroup  Header Image and Editorial if there are characteristics names
 		if (matCharNames.size()>0) { 	%>
@@ -291,7 +280,6 @@ if (isAvailable ) {
 		boolean isChefsPick = false;
 		if (matCharNames.size() > 0) {
 			boolean showOptions = compGroup.isShowOptions();
-			Attribute atb = compGroup.getAttribute("OPTIONS_DROPDOWN_STYLE");
 			boolean paintDropdownVertical = compGroup.isOptionsDropDownVertical();
 			ProductModel oneProd =(ProductModel)prodList.get(0);
 			Image prodImage =oneProd.getCategoryImage();
@@ -382,7 +370,7 @@ if (isAvailable ) {
 		//if not modifying then go get the optional stuff, which is in a subfolder of this products parent
 	    	 boolean openTable = true;
 	    	 List optionalProducts = compGroup.getAvailableOptionalProducts(); //compGroup.getOptionalProducts(); 
-	    	 int layout = EnumLayoutType.MULTI_ITEM_MEAL_OPTION_HORZ.getId(); //stepCat.getAttribute("LAYOUT", EnumLayoutType.MULTI_ITEM_MEAL_OPTION_HORZ.getId());
+	    	 int layout = EnumLayoutType.MULTI_ITEM_MEAL_OPTION_HORZ.getId(); 
 	    	 if (!cartMode.equals(CartName.MODIFY_CART)  && 
 		     !CartName.MODIFY_LIST.equals(cartMode) && 
 		     !CartName.ACCEPT_ALTERNATIVE.equals(cartMode) &&
@@ -514,9 +502,9 @@ if (isAvailable ) {
 	} %>
 	  <br>
 <%      } 
-        attrib =parentCat.getAttribute("CATEGORY_MIDDLE_MEDIA");
-        List catMidMedias =  attrib==null?new ArrayList():(List)attrib.getValue();
-        if (catMidMedias.size()>0) {  %>
+        
+        List catMidMedias = parentCat.getMiddleMedia();
+        if (catMidMedias != null && catMidMedias.size()>0) {  %>
             <FONT CLASS="space4pix"><br><br></FONT>
             <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=maxWidth%>">
                <TR VALIGN="TOP">
@@ -767,9 +755,8 @@ if (isAvailable ) {
 	</td></tr></table>
 <% } 
 
-	attrib =parentCat.getAttribute("CATEGORY_BOTTOM_MEDIA");
-	List catBottomMedias =  attrib==null?new ArrayList():(List)attrib.getValue();
-	if (catBottomMedias.size()>0  && !CartName.MODIFY_CART.equals(cartMode) ) {
+	List catBottomMedias = parentCat.getBottomMedia();
+	if (catBottomMedias != null && catBottomMedias.size()>0  && !CartName.MODIFY_CART.equals(cartMode) ) {
     %>
     <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=maxWidth%>">
        <TR VALIGN="TOP">

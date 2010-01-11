@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,31 +18,24 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.mail.MessagingException;
-import javax.naming.NamingException;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.ERPSessionBeanSupport;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpCancelOrderModel;
-import com.freshdirect.customer.ErpDeliveryConfirmModel;
 import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
-import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
-import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpSaleEB;
-import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.core.ServiceLocator;
-import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.mail.EmailI;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.MathUtil;
@@ -54,7 +46,6 @@ import com.freshdirect.giftcard.EnumGCDeliveryMode;
 import com.freshdirect.giftcard.EnumGiftCardStatus;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
-import com.freshdirect.giftcard.ErpGCSettlementInfo;
 import com.freshdirect.giftcard.ErpGiftCardAuthModel;
 import com.freshdirect.giftcard.ErpGiftCardBalanceTransferModel;
 import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
@@ -71,7 +62,6 @@ import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.mail.ErpEmailFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.GiftCardOrderInfo;
-import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumGiftCardTransactionStatus;
 import com.freshdirect.payment.EnumGiftCardTransactionType;
@@ -79,11 +69,9 @@ import com.freshdirect.payment.GivexException;
 import com.freshdirect.payment.GivexResponseModel;
 import com.freshdirect.payment.ejb.GivexServerGateway;
 
-public class GiftCardManagerSessionBean extends SessionBeanSupport {
+public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 	
-	private final static Category LOGGER = LoggerFactory.getInstance(GiftCardManagerSessionBean.class);
-	
-	private final static ServiceLocator LOCATOR = new ServiceLocator();
+	private final static Logger LOGGER = LoggerFactory.getInstance(GiftCardManagerSessionBean.class);
 	
 	private final static int AUTH_HOURS;
 	
@@ -201,13 +189,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 			LOGGER.warn("SQLException while loading gift cards by sale id.", e);
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup", e);
-			}
+                    close(conn);
 		}	
 	}
 	
@@ -233,13 +215,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 		} catch (Exception e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("error while saving customer request", e);
-			}
+                    close(conn);
 		}
 		return recepientList;
 	}
@@ -263,13 +239,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 		} catch (Exception e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("error while saving customer request", e);
-			}
+                    close(conn);
 		}
 		return recipientListAll;
 	}
@@ -397,13 +367,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 		} catch (Exception e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("error while saving customer request", e);
-			}
+                    close(conn);
 		}				
 	}
 	
@@ -433,14 +397,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("error while saving customer request", e);
-				throw e;
-			}
+                    close(conn);
 		}
 		return id;		
 	}
@@ -510,13 +467,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 				LOGGER.warn("SQLException while cancelling the delivery pass.", e);
 				throw new EJBException(e);
 			} finally {
-				try {
-					if (conn != null) {
-						conn.close();
-					}
-				} catch (SQLException e) {
-					LOGGER.warn("SQLException while closing conn in cleanup", e);
-				}
+	                    close(conn);
 			}
 			return giftCard;
 		   
@@ -570,13 +521,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 			}/*catch(FDResourceException fdre){
 				throw new EJBException(fdre);
 			}*/ finally {
-				try {
-					if (conn != null) {
-						conn.close();
-					}
-				} catch (SQLException e) {
-					LOGGER.warn("SQLException while closing conn in cleanup", e);
-				}
+	                    close(conn);
 			}		   		   
 	   }
 
@@ -651,13 +596,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 			LOGGER.warn("SQLException while cancelling the delivery pass.", e);
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup", e);
-			}
+                    close(conn);
 		}
 		
 	}
@@ -731,13 +670,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 			LOGGER.warn("SQLException while applying pending auths to balance.", e);
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup", e);
-			}
+                    close(conn);
 		}
 		return giftcard;
 	}
@@ -891,13 +824,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("error while saving customer request", e);
-			}
+                    close(conn);
 		}
 		return model;		
 	}
@@ -1271,21 +1198,6 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 	}
 	
 
-	private ErpSaleHome getErpSaleHome() {
-		try {
-			return (ErpSaleHome) LOCATOR.getRemoteHome("freshdirect.erp.Sale", ErpSaleHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
-
-	private ErpCustomerHome getErpCustomerHome() {
-		try {
-			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer", ErpCustomerHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
 	
 	
 	/**
@@ -1328,13 +1240,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 		} catch (Exception e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("error while saving customer request", e);
-			}
+		    close(conn);
 		}
 		return recepientList;
 	}
@@ -1351,13 +1257,6 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	private MailerGatewayHome getMailerHome() {
-		try {
-			return (MailerGatewayHome) LOCATOR.getRemoteHome("freshdirect.mail.MailerGateway", MailerGatewayHome.class);
-		} catch (NamingException e) {
-			throw new EJBException(e);
-		}
-	}
 	
 	public List getGiftCardRecepientsForOrder(String saleId) throws RemoteException,FDResourceException{
 		Connection conn = null;
@@ -1368,13 +1267,7 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 		} catch (Exception e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("error while saving customer request", e);
-			}
+                    close(conn);
 		}
 		return recepientList;
 	}
@@ -1615,5 +1508,6 @@ public class GiftCardManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}		
 	}
-	
+
+
 }

@@ -21,7 +21,7 @@
 	int	MAX_PROD2SHOW		= PRODUCTS_PER_LINE*MAX_PRODLINES2SHOW; //to keep each row matching
 	String catId_1 = FDStoreProperties.getDeptMeatDealsCatId();
 	String catId_2 = FDStoreProperties.getDeptEDLPCatId(); 
-	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_1);
+	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId_1);
 	System.out.println("multi_cat_dept>> catId_1: " + catId_1 + " catId_2: " + catId_2);
 	List edlpProducts=new ArrayList();
 	List prodList=new ArrayList();
@@ -70,8 +70,8 @@
 <% } %>
 
 <%-- Grab edlp items --%>
-<% currentFolder = ContentFactory.getInstance().getContentNodeByName(catId_2); %>
-<% if(currentFolder != null && currentFolder instanceof CategoryModel){ %>
+<% currentFolder = ContentFactory.getInstance().getContentNode(catId_2); %>
+<% if(currentFolder instanceof CategoryModel){ %>
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
 	id='rtnColl' 

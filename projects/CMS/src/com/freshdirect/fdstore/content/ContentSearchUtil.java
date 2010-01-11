@@ -401,8 +401,8 @@ public class ContentSearchUtil {
 		// compare content keys and ContentNodeI's
 		Comparator comp = new Comparator() {
 			public int compare(Object o1, Object o2) {
-				ContentKey k1 = o1 instanceof ContentNodeI ? ((ContentNodeI)o1).getContentKey() : (ContentKey)o1;
-				ContentKey k2 = o2 instanceof ContentNodeI ? ((ContentNodeI)o2).getContentKey() : (ContentKey)o2;
+				ContentKey k1 = o1 instanceof ContentNodeModel ? ((ContentNodeModel)o1).getContentKey() : (ContentKey)o1;
+				ContentKey k2 = o2 instanceof ContentNodeModel ? ((ContentNodeModel)o2).getContentKey() : (ContentKey)o2;
 				
 				// try to be lucky and imagine they have different hashcodes
 				if (k1.hashCode() < k2.hashCode()) return -1;
@@ -425,8 +425,8 @@ public class ContentSearchUtil {
 		for(int i=0; i< S2.length; SS2.addAll(S2[i++]));
 		
 		Iterator i1 = SS1.iterator(), i2 = SS2.iterator(); // iterators
-		ContentKey c1 = i1.hasNext() ? ((ContentNodeI)i1.next()).getContentKey() : null; // head element 1
-		ContentKey c2 = i2.hasNext() ? ((ContentNodeI)i2.next()).getContentKey() : null; // head element 2
+		ContentKey c1 = i1.hasNext() ? ((ContentNodeModel)i1.next()).getContentKey() : null; // head element 1
+		ContentKey c2 = i2.hasNext() ? ((ContentNodeModel)i2.next()).getContentKey() : null; // head element 2
 		
 		// step through the steps in parallel; each time processing at least one
 		while(c1 != null && c2 != null) {
@@ -436,8 +436,8 @@ public class ContentSearchUtil {
 			else ++S2MinusS1; // in S2 only
 			
 			// move pointer(s)
-			if (c <= 0) c1 = i1.hasNext() ? ((ContentNodeI)i1.next()).getContentKey() : null;
-			if (c >= 0) c2 = i2.hasNext() ? ((ContentNodeI)i2.next()).getContentKey() : null;		
+			if (c <= 0) c1 = i1.hasNext() ? ((ContentNodeModel)i1.next()).getContentKey() : null;
+			if (c >= 0) c2 = i2.hasNext() ? ((ContentNodeModel)i2.next()).getContentKey() : null;		
 		}
 		
 		// leftovers

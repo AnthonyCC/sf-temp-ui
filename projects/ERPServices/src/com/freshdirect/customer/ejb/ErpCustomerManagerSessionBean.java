@@ -36,6 +36,7 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.PaymentMethodI;
+import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
@@ -73,6 +74,7 @@ import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
+import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpInvoiceLineModel;
@@ -829,6 +831,88 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(re);
 		}
 	}
+	
+	public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
+	        throws ErpTransactionException {
+	        
+	        try {
+	                ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+	                
+	                ErpSaleModel saleModel = (ErpSaleModel)eb.getModel();
+	                
+	                EnumSaleStatus status = saleModel.getStatus();
+	        
+	        if (status.equals(EnumSaleStatus.ENROUTE) || status.equals(EnumSaleStatus.PAYMENT_PENDING) || status.equals(EnumSaleStatus.REFUSED_ORDER)
+	            || status.equals(EnumSaleStatus.PENDING) || status.equals(EnumSaleStatus.RETURNED) || status.equals(EnumSaleStatus.REDELIVERY)
+	            || status.equals(EnumSaleStatus.CAPTURE_PENDING))
+	        {
+	            ErpInvoiceModel invoiceOnSale = saleModel.getFirstInvoice();
+	                        if (invoiceOnSale.equals(invoice)) {
+	                                LOGGER.info("Got duplicate invoice for sale#: " + saleId);
+	                                return;
+	                        } else {
+	                                throw new EJBException("Got another different invoice for sale#: " + saleId);
+	                        }
+
+	                } 
+	                
+	                if (!status.equals(EnumSaleStatus.INPROCESS)) {
+	                        throw new EJBException("Sale#: " + saleId + " is not in correct status to add invoice");
+	                }
+	                
+	                // FIXME fix Discount promotionCode, since parser cannot provide it
+	                
+	                List invDiscountLines = invoice.getDiscounts();
+	                List oldDiscountLines = saleModel.getRecentOrderTransaction().getDiscounts();
+	                if (invDiscountLines != null && !invDiscountLines.isEmpty() && oldDiscountLines != null && !oldDiscountLines.isEmpty()) {
+	                        
+	                        if (oldDiscountLines.size() != invDiscountLines.size()) {
+	                                throw new EJBException("Discount line count mismatch, expected "
+	                                        + oldDiscountLines.size()
+	                                        + ", invoice had "
+	                                        + invDiscountLines.size());
+	                        }
+
+	                        // FIXME furhter validation should be performed to ensure discount lines match up (no can do, w/o promo codes)
+
+	                        List pList = new ArrayList();
+	                        for (Iterator invPromosIter = invDiscountLines.iterator(), oldPromosIter = oldDiscountLines.iterator(); 
+	                                invPromosIter.hasNext() && oldPromosIter.hasNext(); ) {
+	                                ErpDiscountLineModel  invDiscountLine = (ErpDiscountLineModel) invPromosIter.next();
+	                                ErpDiscountLineModel  oldDiscountLine = (ErpDiscountLineModel) oldPromosIter.next();
+	                                Discount invDisc = invDiscountLine.getDiscount();
+	                                Discount oldDisc = oldDiscountLine.getDiscount();
+	                                pList.add(new ErpDiscountLineModel(new Discount(oldDisc.getPromotionCode(), oldDisc.getDiscountType(), invDisc.getAmount())));                                                                                                                                  
+	                        }
+	                        invoice.setDiscounts(pList);
+	                }
+
+	                // !!! fix Delivery charge tax
+	                double tax = invoice.getTax();
+	                if(tax > 0){
+	                        ErpAbstractOrderModel order = saleModel.getRecentOrderTransaction();
+	                        for(Iterator i = invoice.getCharges().iterator(); i.hasNext(); ) {
+	                                ErpChargeLineModel invCharge = (ErpChargeLineModel) i.next();
+	                                ErpChargeLineModel orderCharge = order.getCharge(invCharge.getType());
+	                                
+	                                if(orderCharge != null) {
+	                                        invCharge.setTaxRate(orderCharge.getTaxRate());
+	                                }
+	                        }
+	                }
+	                
+	                addInvoice(invoice, saleId, shippingInfo);
+	                reconcileSale(saleId);
+	                
+	        } catch (ErpTransactionException e) {
+	                throw e;
+	        } catch (Exception e) {
+	                LOGGER.warn("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
+	                throw new EJBException("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
+	        }
+	}
+
+	
 
 	private void reconcileInvoicedCredits(PrimaryKey customerPK, List invoicedCredits, List appliedCredits)
 		throws RemoteException, FinderException {
@@ -1794,7 +1878,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private SapOrderAdapter adaptDonationOrder(PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CustomerRatingI rating) throws ErpTransactionException{
+	private SapOrderAdapter adaptDonationOrder(PrimaryKey erpCustomerPk, ErpAbstractOrderModel order, CustomerRatingI rating) {
 		try {
 			// find relevant customer
 			int count = 0;
@@ -2579,7 +2663,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				PrimaryKey salePK=new PrimaryKey(saleID);
 				ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(salePK);
 				ErpAbstractOrderModel orderModel=saleEB.getCurrentOrder();
-				SapOrderAdapter sapOrder = this.adaptOrder(erpCustomerPk, orderModel, rating);
+				SapOrderAdapter sapOrder = this.adaptDonationOrder(erpCustomerPk, orderModel, rating);
 				SapGatewaySB sapSB = this.getSapGatewayHome().create();
 				sapOrder.setWebOrderNumber(salePK.getId());
 				sapSB.sendCreateSalesOrder(sapOrder,saleType);

@@ -10,6 +10,8 @@
 package com.freshdirect.framework.core;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.ejb.CreateException;
@@ -116,7 +118,7 @@ public abstract class SessionBeanSupport implements SessionBean {
     	return SequenceGenerator.getNextId(conn, schema);
     }
 
-    protected void close(Connection conn) {
+    protected final void close(Connection conn) {
         try {
             if (conn != null) {
                 conn.close();
@@ -125,5 +127,27 @@ public abstract class SessionBeanSupport implements SessionBean {
             LOGGER.error("problem in closing connection : " + this.getClass().getName() + " err: " + sqle.getMessage(), sqle);
         }
     }
+    
+    protected final void close(ResultSet rs) {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException sqle) {
+                LOGGER.error("problem in closing result set: " + this.getClass().getName() + " err: " + sqle.getMessage(), sqle);
+            }
+        }
+    }
+
+    
+    protected final void close(PreparedStatement rs) {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException sqle) {
+                LOGGER.error("problem in closing prepared statement: " + this.getClass().getName() + " err: " + sqle.getMessage(), sqle);
+            }
+        }
+    }
+    
 
 }

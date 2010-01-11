@@ -5,77 +5,71 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.attributes.Attribute;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
-public class DepartmentModel extends ContentNodeModelImpl {
+public class DepartmentModel extends ProductContainer {
 
 	private final List featuredProductModels = new ArrayList();
 
 	private final List<CategoryModel> categoryModels = new ArrayList<CategoryModel>();
-
+	
+	private final List<CategoryModel> deptNav = new ArrayList<CategoryModel>();
+	
+	private final List<CategoryModel> featuredCategories = new ArrayList<CategoryModel> ();
+	
 	public DepartmentModel(ContentKey cKey) {
 		super(cKey);
 	}
 
 
 	public Image getTitleImage() {
-		return (Image) getAttribute("DEPT_TITLE", (Image) null);
+            return FDAttributeFactory.constructImage(this, "DEPT_TITLE");
 	}
 
 	public Image getPhoto() {
-		return (Image) getAttribute("DEPT_PHOTO", (Image) null);
+            return FDAttributeFactory.constructImage(this, "DEPT_PHOTO");
 	}
 
 	public Image getPhotoSmall() {
-		return (Image) getAttribute("DEPT_PHOTO_SMALL", (Image) null);
-	}
-
-	public Image getMgrPhoto() {
-		return (Image) getAttribute("DEPT_MGR", (Image) null);
+            return FDAttributeFactory.constructImage(this, "DEPT_PHOTO_SMALL");
 	}
 
 	public Image getMgrPhotoNoName() {
-		return (Image) getAttribute("DEPT_MGR_NONAME", (Image) null);
+            return FDAttributeFactory.constructImage(this, "DEPT_MGR_NONAME");
 	}
 
 	public Image getGlobalNavBar() {
-		return (Image) getAttribute("DEPT_NAVBAR", (Image) null);
+            return FDAttributeFactory.constructImage(this, "DEPT_NAVBAR");
 	}
 
 	public Image getGlobalNavBarRollover() {
-		return (Image) getAttribute("DEPT_NAVBAR_ROLLOVER", (Image) null);
-	}
-	
-	public List getDeptNav() {
-		return (List)getAttribute( "DEPT_NAV", (Object)null );
+            return FDAttributeFactory.constructImage(this, "DEPT_NAVBAR_ROLLOVER");
 	}
 	
 	public boolean isUseAlternateImages() {
 		return getAttribute( "USE_ALTERNATE_IMAGES", false );
 	}
 	
+       /**
+         * this is a Department level attribute, ASSOC_EDITORIAL
+         */
+        @SuppressWarnings("unchecked")
+        public List<Html> getAssocEditorial() {
+            return (List<Html>) FDAttributeFactory.constructWrapperList(this, "ASSOC_EDITORIAL");
+        }
+
 	/**
 	 * @return List of Html
 	 */
-	public List getAssocEditorial() {
-		Attribute a = getAttribute("ASSOC_EDITORIAL");
-		return (List) (a==null ? null : a.getValue());
+	public List<Html> getDepartmentBottom() {
+            return FDAttributeFactory.constructWrapperList(this, "DEPARTMENT_BOTTOM");
 	}
 	
 	/**
 	 * @return List of Html
 	 */
-	public List getDepartmentBottom() {
-		Attribute a = getAttribute("DEPARTMENT_BOTTOM");
-		return (List) (a==null ? null : a.getValue());
-	}
-	
-	/**
-	 * @return List of Html
-	 */
-	public List getDepartmentMiddleMedia() {
-		Attribute a = getAttribute("DEPARTMENT_MIDDLE_MEDIA");
-		return (List) (a==null ? null : a.getValue());
+	public List<Html> getDepartmentMiddleMedia() {
+            return FDAttributeFactory.constructWrapperList(this, "DEPARTMENT_MIDDLE_MEDIA");
 	}
 	
 
@@ -88,8 +82,27 @@ public class DepartmentModel extends ContentNodeModelImpl {
 
 		return new ArrayList<CategoryModel>(categoryModels);
 	}
+	
+        public List<CategoryModel> getFeaturedCategories() {
+            ContentNodeModelUtil.refreshModels(this, "FEATURED_CATEGORIES", featuredCategories, false);
 
-	public List getFeaturedProducts() {
+            return new ArrayList<CategoryModel>(featuredCategories);
+        }
+	
+	
+        public List<CategoryModel> getDeptNav() {
+            ContentNodeModelUtil.refreshModels(this, "DEPT_NAV", deptNav, false);
+    
+            return new ArrayList<CategoryModel>(deptNav);
+        }	
+	
+	@Override
+	public List<CategoryModel> getSubcategories() {
+	    return getCategories();
+	}
+
+	@Override
+	public List<ProductModel> getFeaturedProducts() {
 		boolean bRefreshed = ContentNodeModelUtil.refreshModels(
 			this,
 			"FEATURED_PRODUCTS",
@@ -102,12 +115,10 @@ public class DepartmentModel extends ContentNodeModelImpl {
 		return new ArrayList(featuredProductModels);
 	}
 
-	/* [APPREQ-77] */
-	public Html getMediaContent() {
-		return (Html)getAttribute("MEDIA_CONTENT",(Html)null);
+	public Html getDeptStorageGuideMedia() {
+	    return FDAttributeFactory.constructHtml(this, "DEPT_STORAGE_GUIDE_MEDIA");
 	}
-
-
+	
 	public static Comparator DepartmentNameComparator = new Comparator() {
 		public int compare(Object o1, Object o2) {
 			DepartmentModel dept1 = (DepartmentModel) o1;

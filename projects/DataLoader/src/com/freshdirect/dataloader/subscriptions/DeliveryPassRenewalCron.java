@@ -229,7 +229,7 @@ public class DeliveryPassRenewalCron {
 		product=FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(skuCode));
 		salesUnit=product.getSalesUnits()[0];
 		FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), prodNode
-				.getProductRef(), new FDConfiguration(quantity, salesUnit
+				, new FDConfiguration(quantity, salesUnit
 				.getName(), varMap), null);
 
 		try {

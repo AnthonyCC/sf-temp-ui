@@ -25,10 +25,10 @@ boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
 if (deptId!=null) {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+    currentFolder=ContentFactory.getInstance().getContentNode(deptId);
     isDepartment = true;
 } else {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+    currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
 
 
@@ -110,7 +110,6 @@ String newProdsFldrId = currentFolder.getContentName().toLowerCase()+"_new";
     int imgIndex = 0;
     com.freshdirect.fdstore.content.CategoryModel categoryModel = null;
         ContentNodeModel itmNode = null;
-        Attribute attribGroDept = null;
         Image groDeptImage = null;
         boolean makeImageCol = true;
         StringBuffer tmpColumn = new StringBuffer();
@@ -118,11 +117,7 @@ String newProdsFldrId = currentFolder.getContentName().toLowerCase()+"_new";
             itmNode = (ContentNodeModel)itmIter.next();
             if (! (itmNode instanceof CategoryModel)) continue;  //ignore anything that's not a Category
             categoryModel = (CategoryModel)itmNode;
-            groDeptImage = null;
-            attribGroDept= categoryModel.getAttribute("CAT_PHOTO");
-            if (attribGroDept !=null) {
-                groDeptImage = (Image)attribGroDept.getValue();
-            }
+            groDeptImage = categoryModel.getCategoryPhoto();
 
             if (makeImageCol && !categoryModel.getContentName().equalsIgnoreCase(newProdsFldrId)) { //build the image column
                 makeImageCol = false;
@@ -175,15 +170,10 @@ String newProdsFldrId = currentFolder.getContentName().toLowerCase()+"_new";
 
 <%
 // display the featured brands, based on each of the featured categories
-        List featuredCats = null;
+        List featuredCats = ((DepartmentModel)currentFolder).getFeaturedCategories();
         List featuredBrands = null;
         int trimAt=10;
 
-        Attribute dptBottAttrib = currentFolder.getAttribute("FEATURED_CATEGORIES");
-        if (dptBottAttrib!=null) {
-            featuredCats = (List)dptBottAttrib.getValue();
-        }
-        
         int brandsShown=0;
 
         if (featuredCats != null && featuredCats.size() > 0) { %>
@@ -197,51 +187,46 @@ String newProdsFldrId = currentFolder.getContentName().toLowerCase()+"_new";
             <tr><td colspan="6">
 <%
 			for (int fc = 0; fc < featuredCats.size(); fc++) {
-                CategoryRef catRef= (CategoryRef)featuredCats.get(fc);
-                String catRefUrl = response.encodeURL("/category.jsp?catId="+catRef.getCategoryName()+"&trk=feat");
-                CategoryModel catMod = catRef.getCategory();
-                dptBottAttrib = catMod.getAttribute("FEATURED_BRANDS");
+                CategoryModel catMod= (CategoryModel)featuredCats.get(fc);
+                String catRefUrl = response.encodeURL("/category.jsp?catId="+catMod.getContentKey().getId()+"&trk=feat");
+  
+                featuredBrands = catMod.getFeaturedBrands();
+                brandsShown=0;
+                %>
+                <%-- // do not display featured category name anymore
+                <br>
+       			<FONT CLASS="text11bold"><a href="<%= catRefUrl %>"><%= catMod.getFullName() %></A>
+       			<br/><br/>
+       			</FONT>
+       			--%>
+       			<%
+       			for(int i=0; i<featuredBrands.size();i++){
+                //&& brandsShown<10 - show all avail prods
+                    BrandModel brandMod= (BrandModel)featuredBrands.get(i);
 
-                if (dptBottAttrib !=null) {
-                    featuredBrands = (List)dptBottAttrib.getValue();
-                    brandsShown=0;
-                    %>
-                    <%-- // do not display featured category name anymore
-                    <br>
-           			<FONT CLASS="text11bold"><a href="<%= catRefUrl %>"><%= catMod.getFullName() %></A>
-           			<br/><br/>
-           			</FONT>
-           			--%>
-           			<%
-           			for(int i=0; i<featuredBrands.size();i++){
-                    //&& brandsShown<10 - show all avail prods
-                        BrandModel brandMod= ((BrandRef)featuredBrands.get(i)).getBrand();
+                    if (brandMod==null) continue;
+                    Image bLogo = brandMod.getLogoMedium();
+                    //if (dptBottAttrib==null) continue; //no image
+                    if (bLogo==null) {
+                        bLogo = new Image();
+                        bLogo.setPath("/media_stat/images/layout/clear.gif");
+                        bLogo.setWidth(12);
+                        bLogo.setHeight(30);
+                     };
 
-                        if (brandMod==null) continue;
-                        dptBottAttrib = brandMod.getAttribute("BRAND_LOGO_MEDIUM");
-                        //if (dptBottAttrib==null) continue; //no image
-                        Image bLogo = new Image();
-                        if (dptBottAttrib==null) {
-                            bLogo.setPath("/media_stat/images/layout/clear.gif");
-                            bLogo.setWidth(12);
-                            bLogo.setHeight(30);
-                         } else bLogo = (Image)dptBottAttrib.getValue();
-
-                        String brandLink = response.encodeURL("/category.jsp?catId="+catMod+"&brandValue="+brandMod.getContentName()+"&groceryVirtual="+catMod+"&trk=feat");
-                        brandsShown++;
-%>
-						
-                        <a href="<%= brandLink %>"><img src="<%= bLogo.getPath() %>" width="<%= bLogo.getWidth() %>" height="<%= bLogo.getHeight() %>" alt="<%= brandMod.getFullName() %>" border="0"></a><%= (brandsShown%trimAt)==0 ? "<br/>": "" %>
+                    String brandLink = response.encodeURL("/category.jsp?catId="+catMod+"&brandValue="+brandMod.getContentName()+"&groceryVirtual="+catMod+"&trk=feat");
+                    brandsShown++;
+%>	
+                    <a href="<%= brandLink %>"><img src="<%= bLogo.getPath() %>" width="<%= bLogo.getWidth() %>" height="<%= bLogo.getHeight() %>" alt="<%= brandMod.getFullName() %>" border="0"></a><%= (brandsShown%trimAt)==0 ? "<br/>": "" %>
 <%                      
                 }
-                    
+                   
 				// put a break between categories, if any brand images were displayed
-                if (brandsShown > 0) { 
-					%><font class="space4pix"><br></font><%
+				if (brandsShown > 0) { 
+		 		%><font class="space4pix"><br></font><%
 				}
-            }
-        }
-    }
+        	}
+    	}
 %>
 					</td>
 				</tr>

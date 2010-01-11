@@ -1,8 +1,8 @@
 <%
     String productQuailityNote =null;
-    Attribute attribProdQuality = productNode.getAttribute("PRODUCT_QUALITY_NOTE");
+    Html attribProdQuality = productNode.getProductQualityNote();
     if (attribProdQuality !=null) {
-        productQuailityNote = ((MediaI) attribProdQuality.getValue()).getPath();
+        productQuailityNote = attribProdQuality.getPath();
     }
     if (!productNode.isUnavailable() && productQuailityNote!=null ) {
 %>

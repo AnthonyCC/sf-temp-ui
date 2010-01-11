@@ -72,7 +72,7 @@ public class CartLineItem {
         Map<String, String> completeVariations = buildSelectedVariations(product.getVariations(), userSelectVariations);
         FDConfiguration fDConfiguration = new FDConfiguration(quantity, salesUnit, completeVariations);
 
-        fdCartline = new FDCartLineModel(fDSku, prodNode.getProductRef(), fDConfiguration, variantId);
+        fdCartline = new FDCartLineModel(fDSku, prodNode, fDConfiguration, variantId);
     }
 
     private Map<String, String> buildSelectedVariations(FDVariation[] variations, Map<String, String> userSelectVariations) {

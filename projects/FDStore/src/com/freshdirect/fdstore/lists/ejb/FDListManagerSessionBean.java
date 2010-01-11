@@ -74,13 +74,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after getEveryItemEverOrdered", e);
-				}
-			}
+		    close(conn);
 		}
 	}
 	
@@ -93,13 +87,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after getCustomerList", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -112,13 +100,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after getCustomerList", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -131,13 +113,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after storeCustomerList", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -151,13 +127,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after removeCustomerListItem", e);
-				}
-			}
+                    close(conn);
 		}
 		return result;
 	}
@@ -176,13 +146,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after removeCustomerListItem", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 	
@@ -200,13 +164,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after removeCustomerListItem", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 	
@@ -220,13 +178,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after removeCustomerListItem", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -254,13 +206,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after removeCustomerListItem", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 	
@@ -284,13 +230,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (FDAuthenticationException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after removeCustomerListItem", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -305,13 +245,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch(SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after removeCustomerListItem", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -360,13 +294,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		{
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after removeCustomerListItem", e);
-				}
-			}
+                    close(conn);
 		}
 	}
 
@@ -382,13 +310,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after getCustomerCreatedList", e);
-				}
-			}
+                    close(conn);
 		}			
 	}
 	
@@ -401,13 +323,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after getListName", e);
-				}
-			}
+                    close(conn);
 		}			
 	}
 	
@@ -424,13 +340,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after renameList", e);
-				}
-			}
+                    close(conn);
 		}	
 	}
 	
@@ -445,13 +355,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 			System.out.println(">>> " + e);
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after renameList", e);
-				}
-			}
+                    close(conn);
 		}	
 	}
 }

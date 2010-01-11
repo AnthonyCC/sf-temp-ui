@@ -8,7 +8,7 @@ if(prevSortCol != null && sortCol != null && !prevSortCol.equals(sortCol)) {
 }
 session.setAttribute("prevSortCol", sortCol);
 
-String sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
+String sortNameAttrib = ((ProductContainer)currentFolder).getListAs();
 if (!sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_GLANCE) && !sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_NAV))
     sortNameAttrib = SortStrategyElement.SORTNAME_FULL;
     

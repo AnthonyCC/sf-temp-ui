@@ -214,9 +214,9 @@ public class OrderLineUtil {
 			if ((!"".equals(salesUnitDescr))
 				&& (!"nm".equalsIgnoreCase(salesUnitDescr))
 				&& (!"ea".equalsIgnoreCase(salesUnitDescr))) {
-				if (!prodNode.getAttribute("SELL_BY_SALESUNIT", "").equals("SALES_UNIT")) {
+				if (!prodNode.getSellBySalesunit().equals("SALES_UNIT")) {
 					confDescr.append(salesUnitDescr);
-				} else if ((prodNode.getSkus().size() == 1)
+				} else if ((prodNode.getPrimarySkus().size() == 1)
 					&& (prodNode.getVariationMatrix().isEmpty())
 					&& (product.getSalesUnits().length == 1)
 					&& (product.getSalesUnits()[0].getName().equalsIgnoreCase("EA"))) {
@@ -244,7 +244,7 @@ public class OrderLineUtil {
 			// only add this to the description if it can be used to uniquely describe the selected sku
 			//
 			boolean useThis = false;
-			List skus = prodNode.getSkus();
+			List skus = prodNode.getPrimarySkus();
 			for (ListIterator li = skus.listIterator(); li.hasNext();) {
 				SkuModel s = (SkuModel) li.next();
 				if (s.isUnavailable()) {
@@ -320,7 +320,7 @@ public class OrderLineUtil {
 		} catch (FDSkuNotFoundException ex) {
 			throw new FDResourceException(ex);
 		}
-		boolean soldBySalesUnit = "SALES_UNIT".equals(productNode.getAttribute("SELL_BY_SALESUNIT", ""));
+		boolean soldBySalesUnit = "SALES_UNIT".equals(productNode.getSellBySalesunit());
 
 		if (!soldBySalesUnit && !cartLine1.getSalesUnit().equals(cartLine2.getSalesUnit())) {
 			return false;
@@ -356,7 +356,7 @@ public class OrderLineUtil {
 		} catch (FDSkuNotFoundException ex) {
 			throw new FDResourceException(ex);
 		}
-		boolean soldBySalesUnit = "SALES_UNIT".equals(productNode.getAttribute("SELL_BY_SALESUNIT", ""));
+		boolean soldBySalesUnit = "SALES_UNIT".equals(productNode.getSellBySalesunit());
 	
 		if (!soldBySalesUnit && !cartLine1.getSalesUnit().equals(cartLine2.getSalesUnit())) {
 			return false;

@@ -96,7 +96,8 @@ String catId = request.getParameter("catId");
 String deptId = request.getParameter("deptId"); 
 Integer daysInt = (Integer)DAYS.get( request.getParameter("days") );
 int days = daysInt==null ? DEFAULT_DAYS : daysInt.intValue();
-ContentNodeModel currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+ContentNodeModel currentFolder=ContentFactory.getInstance().getContentNode(catId);
+final CategoryModel categoryModel = (currentFolder instanceof CategoryModel) ? (CategoryModel) currentFolder : null;
 String daysIndx=null;
 
 for(Iterator kItr = DAYS.keySet().iterator(); kItr.hasNext() && daysIndx==null; ) {
@@ -106,11 +107,12 @@ for(Iterator kItr = DAYS.keySet().iterator(); kItr.hasNext() && daysIndx==null; 
     }
 }
 
-Attribute hasAlcohol=currentFolder.getAttribute("CONTAINS_BEER");
+boolean hasAlcohol=categoryModel != null && categoryModel.isHavingBeer();
 FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);
-if(hasAlcohol != null && Boolean.TRUE.equals(hasAlcohol.getValue()) && !yser.isHealthWarningAcknowledged()){
+if(hasAlcohol && !yser.isHealthWarningAcknowledged()){
 	String redirectURL = "/health_warning.jsp?successPage=/newwines.jsp"+URLEncoder.encode("?"+request.getQueryString());
 	response.sendRedirect(response.encodeRedirectURL(redirectURL));
+	return;
 }
 
 int pageNumber = 1;

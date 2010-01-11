@@ -15,17 +15,13 @@
 <%
 String catId = request.getParameter("catId");
 
-ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
 
-Attribute introCopyAttribute = currentFolder.getAttribute("EDITORIAL");
-String introCopy = introCopyAttribute==null?"":((Html)introCopyAttribute.getValue()).getPath();
+Html introCopyAttribute = currentFolder.getEditorial();
+String introCopy = introCopyAttribute==null ? "": introCopyAttribute.getPath();
 
-Attribute catImageAttrib = currentFolder.getAttribute("CAT_PHOTO");
+MediaModel catImage = ((ProductContainer) currentFolder).getCategoryPhoto();
 
-MediaModel catImage = null;
-	if (catImageAttrib!=null) {
-		catImage = (MediaModel)catImageAttrib.getValue();
-	}
 %>
 <tmpl:insert template='/common/template/left_dnav.jsp'>
 

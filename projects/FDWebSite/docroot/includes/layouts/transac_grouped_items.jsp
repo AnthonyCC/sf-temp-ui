@@ -2,7 +2,6 @@
 <%@ page import='java.util.*'  %>
 <%@ page import='com.freshdirect.ErpServicesProperties' %>
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
 <%@ page import='java.net.URLEncoder'%>
@@ -26,11 +25,11 @@ FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId"); 
 
-ContentNodeModel currentFolder = null;
+ProductContainer currentFolder = null;
 if(deptId!=null) {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+    currentFolder=(ProductContainer) ContentFactory.getInstance().getContentNode(deptId);
 } else {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+    currentFolder=(ProductContainer) ContentFactory.getInstance().getContentNode(catId);
 }
 
 
@@ -87,7 +86,7 @@ if (request.getRequestURI().toLowerCase().indexOf("department.jsp")!=-1) {
 
 String itemNameFont = null;
 Image itemImage;
-String currentFolderPKId = currentFolder.getPK().getId();
+String currentFolderPKId = currentFolder.getContentKey().getId();
 String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
 CategoryModel cat = null;
 
@@ -115,7 +114,7 @@ for(Iterator collIter = sortedColl.iterator();collIter.hasNext() ;) {
 int itemsToDisplay = sortedList.size();
 // setup for succpage redirect ....
 String succPage = "";
-int templateType=currentFolder.getAttribute("TEMPLATE_TYPE",1);
+int templateType=currentFolder.getTemplateType(1);
 if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
     request.setAttribute("successPage","/wine_cart_confirm.jsp?catId="+request.getParameter("catId"));
     succPage = "/wine_cart_confirm.jsp?catId="+request.getParameter("catId");

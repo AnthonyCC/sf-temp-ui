@@ -20,10 +20,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.attributes.Attribute;
-import com.freshdirect.fdstore.attributes.MultiAttribute;
 import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.DomainValueRef;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.QuickDateFormat;
@@ -35,7 +32,7 @@ public class Sku {
     @SuppressWarnings("unchecked")
     private List domains = Collections.EMPTY_LIST;
 
-    private SkuModel skuModel;
+    private final SkuModel skuModel;
 
     private String domainLabel;
 
@@ -43,9 +40,9 @@ public class Sku {
 
     private FDProductInfo productInfo;
 
-    private Attribute variationMatrix;
+    private final List<DomainValue> variationMatrix;
 
-    private MultiAttribute variationOptions;
+    private final List<DomainValue> variationOptions;
 
     private String rating;
 
@@ -61,8 +58,14 @@ public class Sku {
 
     private String fdContentType;
 
+    private Sku(SkuModel skuModel) {
+        this.skuModel = skuModel;
+        this.variationMatrix = skuModel.getVariationMatrix();
+        this.variationOptions = skuModel.getVariationOptions();
+    }
+    
     public static Sku wrap(SkuModel skuModel) {
-        Sku sku = new Sku();
+        Sku sku = new Sku(skuModel);
         try {
             sku.productInfo = FDCachedFactory.getProductInfo(skuModel.getSkuCode());
         } catch (FDResourceException e) {
@@ -73,9 +76,6 @@ public class Sku {
             e.printStackTrace();
         }
 
-        sku.skuModel = skuModel;
-        sku.variationMatrix = skuModel.getAttribute("VARIATION_MATRIX");
-        sku.variationOptions = (MultiAttribute) skuModel.getAttribute("VARIATION_OPTIONS");
 
         // BEGIN i_product_skus_rating
         boolean matchFound = false; //default to false
@@ -225,7 +225,7 @@ public class Sku {
     }
 
     public String getDomainValueId() {
-        String dvId = ((DomainValueRef) variationOptions.getValue(0)).getDomainValue().getContentName();
+        String dvId = variationOptions.get(0).getContentName();
         return dvId;
     }
 
@@ -263,13 +263,11 @@ public class Sku {
 
         if (this.hasSecondaryDomain()) {
             String optionalDomainLabel = "";
-            DomainValue secDomainValue = ((DomainValueRef) ((MultiAttribute) skuModel.getAttribute("VARIATION_MATRIX")).getValue(1))
-                    .getDomainValue();
+            DomainValue secDomainValue = variationMatrix.get(1);
             DomainValue optDomainValue = null;
 
             if (this.hasVariationOptions() && (this.domain.getSkus().size() > 1) && !this.domain.isAllSameOption()) {
-                optDomainValue = ((DomainValueRef) ((MultiAttribute) skuModel.getAttribute("VARIATION_OPTIONS")).getValue(0))
-                        .getDomainValue();
+                optDomainValue = skuModel.getVariationOptions().get(0);
                 optionalDomainLabel = "(" + optDomainValue.getLabel() + ")";
 
             }
@@ -295,7 +293,7 @@ public class Sku {
     public int getSecondaryDomainValuePriority() {
         int result = 0;
         if (hasSecondaryDomain()) {
-            DomainValue dv1 = ((DomainValueRef) ((MultiAttribute) skuModel.getAttribute("VARIATION_MATRIX")).getValue(1)).getDomainValue();
+            DomainValue dv1 = variationMatrix.get(1);
             result = dv1.getPriority();
         }
         return result;
@@ -304,7 +302,7 @@ public class Sku {
     public int getPrimaryDomainValuePriority() {
         int result = 0;
         if (hasPrimaryDomain()) {
-            DomainValue dv1 = ((DomainValueRef) ((MultiAttribute) skuModel.getAttribute("VARIATION_MATRIX")).getValue(0)).getDomainValue();
+            DomainValue dv1 = variationMatrix.get(0);
             result = dv1.getPriority();
         }
         return result;
@@ -379,7 +377,7 @@ public class Sku {
         return displayPriceString;
     }
 
-    public Attribute getVariationMatrix() {
+    public List<DomainValue> getVariationMatrix() {
         return this.variationMatrix;
     }
 

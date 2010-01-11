@@ -42,7 +42,7 @@
 		int gcInitialCard = 0;
 
 	ContentNodeModel categoryRef = null;
-	categoryRef = ContentFactory.getInstance().getContentNodeByName(catId);
+	categoryRef = ContentFactory.getInstance().getContentNode(catId);
 	System.out.println("catId "+catId);
 	if (categoryRef!=null) {
 		System.out.println("categoryRef "+categoryRef);

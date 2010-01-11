@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.DbTestCaseSupport;
-import com.freshdirect.fdstore.content.ProductRef;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
 import com.freshdirect.fdstore.promotion.DateRangeStrategy;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
@@ -18,7 +18,6 @@ import com.freshdirect.fdstore.promotion.LimitedUseStrategy;
 import com.freshdirect.fdstore.promotion.OrderTypeStrategy;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionGeography;
-import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.fdstore.promotion.SampleLineApplicator;
 import com.freshdirect.fdstore.promotion.SampleStrategy;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -82,7 +81,7 @@ public class FDPromotionDAOTestCase extends DbTestCaseSupport {
 		assertEquals("Sample Product Promo 1", p2.getDescription());
 		assertEquals(EnumPromotionType.SAMPLE, p2.getPromotionType());
 		SampleLineApplicator papp2 = (SampleLineApplicator) p2.getApplicator();
-		assertEquals(new ProductRef("foo1", "bar1"), papp2.getSampleProduct());
+		assertEquals(new ProductReference("foo1", "bar1"), papp2.getProductReference());
 		assertEquals(75.0, papp2.getMinSubtotal(), 0.001);
 
 		assertEquals(6, p2.getStrategies().size());

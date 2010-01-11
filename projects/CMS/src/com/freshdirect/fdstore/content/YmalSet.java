@@ -99,8 +99,8 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	 *  @return the start date of the YMAL set.
 	 */
 	public Date getStartDate() {
-		AttributeI a = getCmsAttribute("startDate");
-		return a == null ? new Date(0) : (Date) a.getValue();
+		Date a = (Date) getCmsAttributeValue("startDate");
+		return a == null ? new Date(0) : (Date) a;
 	}
 
 	/**
@@ -110,8 +110,8 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	 *  @return the end date of the YMAL set.
 	 */
 	public Date getEndDate() {
-		AttributeI a = getCmsAttribute("endDate");
-		return a == null ? new Date(Long.MAX_VALUE) : (Date) a.getValue();
+		Date a = (Date) getCmsAttributeValue("endDate");
+		return a == null ? new Date(Long.MAX_VALUE) : (Date) a;
 	}
 
 	/**
@@ -456,6 +456,10 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	
 	public String getYmalHeader() {
 		return getProductsHeader();
+	}
+	
+	public String getTitle() {
+	    return getAttribute("title", ""); 
 	}
 	
 	public List getRecommenders() {

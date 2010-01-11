@@ -8,8 +8,8 @@
     Comparator priceComp = new ProductModel.PriceComparator();
     boolean isPreviewMode =ContentFactory.getInstance().getPreviewMode();
 
-    Attribute editorialAttrib = recipeDepartment.getAttribute("editorial");
-    String editorialPath = editorialAttrib==null?"":((Html)editorialAttrib.getValue()).getPath(); 
+    Html _editorial = ((RecipeDepartment)recipeDepartment).getRecipeEditorial();
+    String editorialPath = _editorial==null?"":_editorial.getPath(); 
     String deptIdentifier = recipeDepartment.getFullName(); 
     List featuredRecipes = ((RecipeDepartment)recipeDepartment).getFeaturedRecipes();
     List featuredProducts =((RecipeDepartment)recipeDepartment).getAvailableFeaturedProducts();
@@ -48,11 +48,9 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 			<logic:iterate id="recipeCategory" collection="<%= recipeDepartment.getCategories() %>" type="com.freshdirect.fdstore.content.RecipeCategory">
 			<% 
 				if (recipeCategory.isSecondaryCategory()) continue;  
-				Attribute rcpAttrib = recipeCategory.getAttribute("label");
-				Image catLabelImg = null;
+				Image catLabelImg = recipeCategory.getLabel();
 				String catLabelPath = null;
-				if (rcpAttrib!=null) {
-					catLabelImg = (Image)rcpAttrib.getValue();
+				if (catLabelImg!=null) {
 			    	catLabelPath = catLabelImg.getPath();
 				} 
 		        Domain catClassification = recipeCategory.getClassification(); 

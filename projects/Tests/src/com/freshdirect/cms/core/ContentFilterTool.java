@@ -202,7 +202,7 @@ public class ContentFilterTool {
                     addContentKeys(otherKeys, (ContentNodeModel) b.get(i));
                 }
             }
-            List skus = pm.getSkus();
+            List skus = pm.getPrimarySkus();
             if (skus!=null) {
                 for (int i=0;i<skus.size();i++) {
                     addContentKeys(otherKeys, (ContentNodeModel) skus.get(i));

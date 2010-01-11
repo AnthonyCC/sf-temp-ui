@@ -2,10 +2,6 @@ package com.freshdirect.fdstore.content;
 
 import java.util.Date;
 
-import com.freshdirect.cms.AttributeI;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.CmsContentNodeAdapter;
-
 
 /**
  * Interface for content nodes subject to currency and workflow status.

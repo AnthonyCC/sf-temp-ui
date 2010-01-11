@@ -12,7 +12,6 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.CategoryRef;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
@@ -232,8 +231,7 @@ public class DCPDReportGenerator {
 	    if (virtualGroup != null) {
 	    	Iterator vit = virtualGroup.iterator();
 	    	while(vit.hasNext()) {
-	    		CategoryRef cref = (CategoryRef) vit.next();
-	    		CategoryModel vcatNode = cref.getCategory();
+	    		CategoryModel vcatNode = (CategoryModel) vit.next();
 
 	    	    if (!ctx.isProductsOnlyView()) {
 		            if (ctx.isRenderCSV()) {

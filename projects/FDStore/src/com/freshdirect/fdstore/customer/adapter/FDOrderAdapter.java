@@ -1166,7 +1166,7 @@ public class FDOrderAdapter implements FDOrderI {
 		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI cartLine = (FDCartLineI)i.next();
 			if(cartLine.hasDiscount(promoCode)) {
-				uniqueDiscountedProducts.add(cartLine.getProductRef().lookupProduct().getContentKey().getId());
+				uniqueDiscountedProducts.add(cartLine.getProductRef().getContentKey().getId());
 			}
 		}
 		return uniqueDiscountedProducts.size();
