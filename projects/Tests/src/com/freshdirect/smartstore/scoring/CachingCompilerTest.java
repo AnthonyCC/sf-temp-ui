@@ -108,6 +108,7 @@ public class CachingCompilerTest extends TestCase {
     public void testCachingDataGenerator() throws CompileException, InterruptedException {
         DataGenerator dataGenerator = compiler.createDataGenerator("cache4", "explicitList:atLeast(globalfact,1)");
         assertTrue("caching enabled", dataGenerator instanceof CachingDataGenerator);
+        ((CachingDataGenerator)dataGenerator).setCacheEnabled(true);
 
         List firstLiveResult = dataGenerator.generate(input, dataAccess);
         assertNotNull("result", firstLiveResult);
