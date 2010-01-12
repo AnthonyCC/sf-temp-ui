@@ -50,6 +50,7 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 		mainPanel.setLayout( new RowLayout( Orientation.VERTICAL ) );
 		mainPanel.setHeaderVisible( false );
 		mainPanel.setBorders( true );	
+		mainPanel.setBodyBorder(false);
 		mainPanel.addStyleName( "product-config-editor" );
 		
 		// === SKU ===
@@ -78,6 +79,7 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 		optionLayout.setCellPadding( 2 );
 		ContentPanel optionPanel = new ContentPanel( optionLayout );
 		optionPanel.setBorders( false );
+		optionPanel.setBodyBorder( false );
 		optionPanel.setHeaderVisible( false );
 		
 		
