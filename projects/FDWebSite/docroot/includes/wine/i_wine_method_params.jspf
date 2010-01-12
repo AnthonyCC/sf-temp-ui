@@ -16,7 +16,7 @@
         if(null !=top20catId){
         	if(top20catId.equalsIgnoreCase("usq_grapebuys")||top20catId.equalsIgnoreCase("usq_grapebuys_red")||top20catId.equalsIgnoreCase("usq_grapebuys_sparkling")||top20catId.equalsIgnoreCase("usq_grapebuys_white")){
         		sortCol=com.freshdirect.fdstore.content.util.EnumWineSortType.PRICE.getCode();
-       		}
+			}
         }
     }
     String sortDesc = request.getParameter("sort_desc");
