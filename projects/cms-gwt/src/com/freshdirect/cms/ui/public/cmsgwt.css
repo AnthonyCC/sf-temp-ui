@@ -247,7 +247,7 @@ a.commandLink-active:hover {
 }
 
 .grid-cell-wrap .x-grid3-cell-inner {
-	white-space: normal ! important;
+	white-space: normal;
 }
 
 /* ====== publish status and publish message severity colors ====== */
