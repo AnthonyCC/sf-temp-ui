@@ -101,6 +101,9 @@ public class ContentKey implements Serializable {
 	 * @throws IllegalArgumentException for malformed keys
 	 */
 	public static ContentKey decode(String key) {
+		if ( key == null ) {
+			throw new IllegalArgumentException("Invalid null key ");
+		}
 		int p = key.indexOf(SEPARATOR);
 		if (p < 0) {
 			throw new IllegalArgumentException("Invalid key " + key);

@@ -123,9 +123,22 @@ public class GwtContentNode implements Serializable {
 	 * Changes the value of an attribute. 
 	 */
 	public void changeValue( String attributeKey, Serializable newValue ) {
+		System.err.println(attributeKey + " changeValue: " + newValue);
 		changedValues.put( attributeKey, newValue );
 	}
-	
+
+
+	/**
+	 * Reset attribute
+	 * 
+	 * @param attributeKey Attribute key
+	 */
+	public void reset(String attributeKey) {
+		if (changedValues.containsKey(attributeKey)) {
+			changedValues.remove(attributeKey);
+		}
+	}
+
 	/** 
 	 * Returns the Set of the changed attributes keys.  
 	 */
@@ -145,6 +158,10 @@ public class GwtContentNode implements Serializable {
         	return (ProductConfigAttribute)attributeI;
         
         return attributeI != null ? attributeI.getValue() : null;
+    }
+    
+    public ContentNodeModel toContentNodeModel() {
+    	return new ContentNodeModel( type, label, nodeKey );
     }
 
 }

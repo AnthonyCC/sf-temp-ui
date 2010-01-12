@@ -50,18 +50,25 @@ public class Context {
 	}
 
 	/**
-	 * @return slash-separated path, never null
+	 * @return slash-separated path, never null.
+	 * Slash is not good for separator character, 
+	 * media type nodes will have an invalid path!
 	 */
+	@Deprecated
 	public String getPath() {
-		return getPath("");
+		return getPath( "", '/' );
 	}
 
-	private String getPath(String path) {
-		path = "/" + this.cKey.getEncoded() + path;
-		if (this.isRoot()) {
+	private String getPath( String path, char separator ) {
+		path = separator + this.cKey.getEncoded() + path;
+		if ( this.isRoot() ) {
 			return path;
 		}
-		return this.parentContext.getPath(path);
+		return this.parentContext.getPath( path, separator );
+	}
+	
+	public String getPath( char separator ) {
+		return getPath( "", separator );
 	}
 
 	/**

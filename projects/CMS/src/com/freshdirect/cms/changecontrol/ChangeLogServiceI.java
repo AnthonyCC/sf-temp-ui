@@ -49,6 +49,31 @@ public interface ChangeLogServiceI {
 	 * 
 	 * @return List of {@link ChangeSet} (never null)
 	 */
-	public List<ChangeSet> getChangesBetween(Date startDate, Date endDate);
+	public List<ChangeSet> getChangesBetween( Date startDate, Date endDate );
+
+	/**
+	 * Get changes by a specific user.
+	 * 
+	 * @param userId user ID (never null)
+	 * 
+	 * @return List of {@link ChangeSet} (never null)
+	 */
+	public List<ChangeSet> getChangesByUser( String userId );
+	
+	
+	/**
+	 * Get change sets by combined query parameters.
+	 * All of the above queries combined.
+	 * Any parameter can be null.
+	 * 
+	 * @param key content key 
+	 * @param startDate start date
+	 * @param endDate end date
+	 * @param userId user ID
+	 * 
+	 * @return List of {@link ChangeSet} (never null)
+	 */
+	public List<ChangeSet> getChangeSets( ContentKey key, String userId, Date startDate, Date endDate );
+	
 
 }

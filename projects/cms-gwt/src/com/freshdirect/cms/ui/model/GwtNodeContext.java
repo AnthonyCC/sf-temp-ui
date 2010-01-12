@@ -65,7 +65,7 @@ public class GwtNodeContext implements Serializable {
 	/**
 	 * 	Returns a context path by label.
 	 * 
-	 * @param path
+	 * @param otherContextPath
 	 * @return
 	 */
 	public String getPathByLabel( String label ) {
@@ -106,4 +106,17 @@ public class GwtNodeContext implements Serializable {
 		return inheritedAttr.get( key );
 	}
 		
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append( "GwtNodeContext[" );
+		sb.append( size() );
+		sb.append( "]:[" );
+		for ( String s : contextPaths.values() ) {
+			sb.append( s );
+			sb.append( ';' );
+		}
+		sb.append( "]" );
+		return sb.toString();
+	}
 }

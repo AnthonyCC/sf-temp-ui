@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
@@ -21,8 +22,6 @@ import com.freshdirect.framework.core.SequenceGenerator;
 
 /**
  * DAO implementation for {@link com.freshdirect.cms.changecontrol.DbChangeLogService}.
- * 
- * @FIXME resource leaks: unclosed result sets after {@link #buildChangeSets(ResultSet)}
  */
 class ChangeSetDao {
 
@@ -34,31 +33,96 @@ class ChangeSetDao {
 	private static String ORDER_BY = "ORDER BY cs.ID, contentnode_id";
 
 	public ChangeSet retrieve(Connection conn, String id) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(SELECT + " AND cs.id = ? " + ORDER_BY);
+		PreparedStatement ps = conn.prepareStatement(SELECT + "AND cs.id = ? " + ORDER_BY);
 		ps.setString(1, id);
 		ResultSet rs = ps.executeQuery();
 
-		return (ChangeSet) buildChangeSets(rs).get(0);
+		ChangeSet result = buildChangeSets(rs).get(0);
+		ps.close();
+		return result;
 	}
 
 	public List<ChangeSet> getChangeHistory(Connection conn, ContentKey key) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(SELECT + " AND cnc.contenttype = ? AND cnc.contentnode_id = ?" + ORDER_BY);
+		PreparedStatement ps = conn.prepareStatement(SELECT + "AND cnc.contenttype = ? AND cnc.contentnode_id = ? " + ORDER_BY);
 		ps.setString(1, key.getType().getName());
 		ps.setString(2, key.getId());
 		ResultSet rs = ps.executeQuery();
-		return buildChangeSets(rs);
+		
+		List<ChangeSet> result = buildChangeSets(rs);
+		ps.close();
+		return result;
 	}
 
 	public List<ChangeSet> getChangesBetween(Connection conn, Date startDate, Date endDate) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(SELECT + "AND cs.timestamp between ? and ? " + ORDER_BY);
-		System.out.println("start time: " + startDate + "    end time: " + endDate);
 		ps.setTimestamp(1, new Timestamp(startDate.getTime()));
 		ps.setTimestamp(2, new Timestamp(endDate.getTime()));
 		ResultSet rs = ps.executeQuery();
 
-		return buildChangeSets(rs);
+		List<ChangeSet> result = buildChangeSets(rs);
+		ps.close();
+		return result;
 	}
 
+	public List<ChangeSet> getChangesByUser(Connection conn, String userId ) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(SELECT + "AND user_id = ? " + ORDER_BY);
+		ps.setString(1, userId);
+		ResultSet rs = ps.executeQuery();
+
+		List<ChangeSet> result = buildChangeSets(rs);
+		ps.close();
+		return result;
+	}
+	
+	public List<ChangeSet> getChangeSets( Connection conn, ContentKey contentKey, String userId, Date startDate, Date endDate ) throws SQLException {
+
+		StringBuilder query = new StringBuilder( SELECT );
+		if ( contentKey != null ) {
+			query.append( "AND cnc.contenttype = ? AND cnc.contentnode_id = ? " );
+		}
+		if ( userId != null ) {
+			query.append( "AND user_id = ? " );
+		}
+		if ( startDate != null && endDate != null ) {
+			// both dates are set
+			query.append( "AND cs.timestamp between ? and ? " );
+		} else if ( startDate != null ) {
+			// only startDate is set
+			query.append( "AND cs.timestamp > ? " );			
+		} else if ( endDate != null ) {
+			// only endDate is set
+			query.append( "AND cs.timestamp < ? " );			
+		}
+		query.append( ORDER_BY );
+		
+		Logger.getLogger( this.getClass() ).info( "QUERY = " + query.toString() );
+
+		PreparedStatement ps = conn.prepareStatement( query.toString() );
+		int paramCounter = 1;
+
+		if ( contentKey != null ) {
+			ps.setString( paramCounter++, contentKey.getType().getName() );
+			ps.setString( paramCounter++, contentKey.getId() );
+		}
+		if ( userId != null ) {
+			ps.setString( paramCounter++, userId );
+		}
+		if ( startDate != null && endDate != null ) {
+			ps.setTimestamp( paramCounter++, new Timestamp( startDate.getTime() ) );
+			ps.setTimestamp( paramCounter++, new Timestamp( endDate.getTime() ) );
+		} else if ( startDate != null ) {
+			ps.setTimestamp( paramCounter++, new Timestamp( startDate.getTime() ) );
+		} else if ( endDate != null ) {
+			ps.setTimestamp( paramCounter++, new Timestamp( endDate.getTime() ) );
+		}
+
+		ResultSet rs = ps.executeQuery();
+		List<ChangeSet> result = buildChangeSets(rs);
+		
+		ps.close();
+		return result;
+	}	
+	
 	private List<ChangeSet> buildChangeSets(ResultSet rs) throws SQLException {
 		List<ChangeSet> sets = new ArrayList<ChangeSet>();
 		String prevNodeId = null;
@@ -67,7 +131,7 @@ class ChangeSetDao {
 		ChangeSet cs = null;
 		ContentNodeChange cnc = null;
 		while (rs.next()) {
-			if (!rs.getObject("CHANGESET_ID").equals(prevSetId)) {
+			if ( !rs.getObject("CHANGESET_ID").equals(prevSetId) ) {
 				cs = new ChangeSet();
 				cs.setPK(new PrimaryKey(rs.getString("CHANGESET_ID")));
 				cs.setUserId(rs.getString("USER_ID"));

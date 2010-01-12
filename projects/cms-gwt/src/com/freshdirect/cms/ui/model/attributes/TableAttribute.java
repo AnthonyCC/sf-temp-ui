@@ -9,8 +9,9 @@ import java.util.List;
  * 
  */
 public class TableAttribute extends BaseAttribute implements ModifiableAttributeI, Serializable {
-	
-    public enum ColumnType {
+	private static final long serialVersionUID = 8700958168223826246L;
+
+	public enum ColumnType {
         NORMAL, ATTRIB, KEY, CLASS, GROUPING
     }
 

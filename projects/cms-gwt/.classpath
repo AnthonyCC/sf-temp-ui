@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="lib" path="hosted-config"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
@@ -10,5 +10,9 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Framework"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.2.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/gwt-dev-oophm.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/gwt-user.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +50,7 @@ public class DbTypeService implements ContentTypeServiceI {
 
 	private DataSource dataSource = null;
 
-	private Map defsByType;
+	private Map<ContentType,ContentTypeDefI> defsByType;
 
 	public DbTypeService() {
 		super();
@@ -70,10 +69,9 @@ public class DbTypeService implements ContentTypeServiceI {
 		try {
 			conn = getConnection();
 			
-			Map defs = new HashMap();
-			Set types = loadContentTypesFromDb(conn);
-			for (Iterator i = types.iterator(); i.hasNext();) {
-				ContentType type = (ContentType) i.next();
+			Map<ContentType,ContentTypeDefI> defs = new HashMap<ContentType,ContentTypeDefI>();
+			Set<ContentType> types = loadContentTypesFromDb(conn);
+			for (ContentType type : types) {
 				defs.put(type, loadContentTypeDefinitionFromDb(conn, type));
 			}
 			
@@ -96,8 +94,8 @@ public class DbTypeService implements ContentTypeServiceI {
 
 	private final static String contentTypesQuery = "select id, name, description from cms_contenttype";
 
-	private Set loadContentTypesFromDb(Connection conn) throws SQLException {
-		Set returnSet = new HashSet();
+	private Set<ContentType> loadContentTypesFromDb(Connection conn) throws SQLException {
+		Set<ContentType> returnSet = new HashSet<ContentType>();
 
 		PreparedStatement ps = conn.prepareStatement(contentTypesQuery);
 		ResultSet rs = ps.executeQuery();
@@ -230,15 +228,15 @@ public class DbTypeService implements ContentTypeServiceI {
 		return m;
 	}
 
-	public Set getContentTypes() {
+	public Set<ContentType> getContentTypes() {
 		return Collections.unmodifiableSet(defsByType.keySet());
 	}
 
 	/* (non-Javadoc)
 	 * @see com.freshdirect.cms.application.ContentTypeServiceI#getContentTypeDefinitions()
 	 */
-	public Set getContentTypeDefinitions() {
-	    return new HashSet(defsByType.values());
+	public Set<ContentTypeDefI> getContentTypeDefinitions() {
+	    return new HashSet<ContentTypeDefI>(defsByType.values());
 		//return Collections.unmodifiableSet(defsByType.entrySet());
 	}
 

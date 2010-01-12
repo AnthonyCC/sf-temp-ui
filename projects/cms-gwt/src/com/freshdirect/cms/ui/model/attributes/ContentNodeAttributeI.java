@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.extjs.gxt.ui.client.widget.form.Field;
 
-public interface ContentNodeAttributeI {
+public interface ContentNodeAttributeI extends Serializable {
 
 	public String getLabel();
 	public String getType();

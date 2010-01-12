@@ -3,7 +3,6 @@ package com.freshdirect.cms.application.service;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,15 +30,15 @@ public class CompositeTypeService implements ContentTypeServiceI {
 	private final Category LOGGER = LoggerFactory.getInstance(CompositeTypeService.class);
 	
 	/** List of {@link ContentTypeServiceI} */
-	private final List contentTypeServices;
+	private final List<? extends ContentTypeServiceI> contentTypeServices;
 
 	/** Map of {@link ContentType} -> {@link ContentTypeDefI} */
-	private final Map contentTypeDefMap = new HashMap();
+	private final Map<ContentType,ContentTypeDefI> contentTypeDefMap = new HashMap<ContentType,ContentTypeDefI>();
 
 	/**
 	 * @param contentTypeServices List of {@link ContentTypeServiceI}
 	 */
-	public CompositeTypeService(List contentTypeServices) {
+	public CompositeTypeService(List<? extends ContentTypeServiceI> contentTypeServices) {
 		this.contentTypeServices = contentTypeServices;
 		this.initialize();
 	}
@@ -47,27 +46,25 @@ public class CompositeTypeService implements ContentTypeServiceI {
 	private void initialize() {
 		LOGGER.info("initialize:  " + contentTypeServices);
 		contentTypeDefMap.clear();
-		for (Iterator i = contentTypeServices.iterator(); i.hasNext();) {
-			ContentTypeServiceI contentTypeService = (ContentTypeServiceI) i.next();
+		for (ContentTypeServiceI contentTypeService :  contentTypeServices) {
+			// ContentTypeServiceI contentTypeService = (ContentTypeServiceI) i.next();
 
 			// Consolidate contentType's into master content type definitions
-			Set contentTypes = contentTypeService.getContentTypes();
-			for (Iterator j = contentTypes.iterator(); j.hasNext();) {
-				ContentType type = (ContentType) j.next();
+			Set<ContentType> contentTypes = contentTypeService.getContentTypes();
+			for (ContentType type : contentTypes) {
 				addToContentTypeDefMap(contentTypeDefMap, type, contentTypeService.getContentTypeDefinition(type));
 			}
 		}
 	}
 
-	private void addToContentTypeDefMap(Map map, ContentType type, ContentTypeDefI def) {
+	private void addToContentTypeDefMap(Map<ContentType,ContentTypeDefI> map, ContentType type, ContentTypeDefI def) {
 		ContentTypeDef found = (ContentTypeDef) map.get(type);
 		if (found == null) {
 			found = new ContentTypeDef(this, type, def.getLabel());
 			map.put(type, found);
 		}
-		Collection defs = def.getSelfAttributeDefs();
-		for (Iterator i = defs.iterator(); i.hasNext();) {
-			AttributeDefI attr = (AttributeDefI) i.next();
+		Collection<AttributeDefI> defs = def.getSelfAttributeDefs();
+		for (AttributeDefI attr :  defs) {
 			if (attr != null) {
 				if (found.getSelfAttributeDef(attr.getName()) != null) {
 					LOGGER.warn("Found duplicate attribute name: " + attr.getName() + " in type: " + type.toString());
@@ -78,12 +75,12 @@ public class CompositeTypeService implements ContentTypeServiceI {
 		}
 	}
 
-	public Set getContentTypes() {
+	public Set<ContentType> getContentTypes() {
 		return contentTypeDefMap.keySet();
 	}
 
-	public Set getContentTypeDefinitions() {
-		return new HashSet(contentTypeDefMap.values());
+	public Set<ContentTypeDefI> getContentTypeDefinitions() {
+		return new HashSet<ContentTypeDefI>(contentTypeDefMap.values());
 	}
 
 	public ContentTypeDefI getContentTypeDefinition(ContentType type) {
@@ -91,8 +88,7 @@ public class CompositeTypeService implements ContentTypeServiceI {
 	}
 
 	public String generateUniqueId(ContentType type) {
-		for (Iterator i = contentTypeServices.iterator(); i.hasNext();) {
-			ContentTypeServiceI contentTypeService = (ContentTypeServiceI) i.next();
+		for (ContentTypeServiceI contentTypeService : contentTypeServices) {
 			String				id                 = contentTypeService.generateUniqueId(type);
 			
 			if (id != null) {

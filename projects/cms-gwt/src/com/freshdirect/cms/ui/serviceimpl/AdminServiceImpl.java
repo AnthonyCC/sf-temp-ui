@@ -29,8 +29,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class AdminServiceImpl extends RemoteServiceServlet implements AdminService {
+	private static final long serialVersionUID = 1263043539819341529L;
 
-    final static Logger LOG = LoggerFactory.getInstance(AdminServiceImpl.class);
+	final static Logger LOG = LoggerFactory.getInstance(AdminServiceImpl.class);
     
     ExecutorService executor = Executors.newSingleThreadExecutor();
 

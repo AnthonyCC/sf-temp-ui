@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="/Framework"/>
 	<classpathentry kind="src" path="/ERPServices"/>
 	<classpathentry kind="src" path="/FDStore"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/poi.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
 	<classpathentry kind="src" path="/Delivery"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/opencsv-1.8.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/microba-0.4.4.2.jar"/>

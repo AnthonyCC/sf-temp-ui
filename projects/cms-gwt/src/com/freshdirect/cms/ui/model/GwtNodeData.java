@@ -1,16 +1,14 @@
 package com.freshdirect.cms.ui.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.freshdirect.cms.ui.client.contenteditor.ContentEditor;
-import com.freshdirect.cms.ui.client.contenteditor.ContentForm;
 import com.freshdirect.cms.ui.client.fields.ChangeTrackingField;
+import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.fields.SaveListenerField;
-import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -27,6 +25,8 @@ public class GwtNodeData implements Serializable {
 	String previewUrl;
 	
 	boolean readonly;
+
+	private String currentContext;
 	
 	public GwtNodeData() {
 		readonly = false;
@@ -112,22 +112,12 @@ public class GwtNodeData implements Serializable {
     }
 
 
-	/**
-	 * This method creates the necessary fields, and controls in the given panel.
-	 * @param panel
-	 */
-	public void setupUI(ContentPanel panel, String contextPath ) {
-        if ( tabDefinition == null || tabDefinition.getTabIds() == null || tabDefinition.getTabIds().size() == 0 ) {
-            ContentForm contentForm = new ContentForm(this, contextPath);
-            contentForm.addStyleName("fixed");
-            panel.add(contentForm);
-        } else {
-            ContentEditor ce = new ContentEditor(this, contextPath);
-            ce.addStyleName("fixed");
-            panel.add(ce);
-        }
-	}
 	
+
+	public boolean hasTabs() {
+		return !(tabDefinition == null || tabDefinition.getTabIds() == null || tabDefinition.getTabIds().size() == 0);
+	}
+
 	/**
 	 * This method collects the values from the UI fields into the attributes before sending to the server.
 	 * @return the extra, related nodes.
@@ -169,21 +159,58 @@ public class GwtNodeData implements Serializable {
 		}
 	}
 	
+
+	/**
+	 * Returns node value suitable as form item
+	 * 
+	 * @param attributeKey
+	 * @return
+	 */
+	public Serializable getFormValue(String attributeKey) {
+        Serializable value = this.node.getAttributeValue(attributeKey);
+        if (value instanceof Collection<?> && ((Collection<?>) value).isEmpty()) {
+            value = null;
+        }
+        return value;
+	}
+	
+	public Serializable getFieldValue(String attributeKey) {
+		ContentNodeAttributeI attr = this.node.getOriginalAttribute(attributeKey);
+		Field<Serializable> field= attr.getFieldObject();
+		if(field == null) {
+			return attr.getValue();
+		}
+		return field.getValue();
+	}
+
+
 	public boolean isChanged() {
 		for ( Map.Entry<String, ContentNodeAttributeI> e : node.getOriginalAttributes().entrySet() ) {
-			Field<Serializable> fieldObject = e.getValue().getFieldObject();
-			// field object can be null, if the field not rendered
-			if ( fieldObject != null ) {
-				Serializable value = fieldObject.getValue();
-				Serializable oldValue = node.getOriginalAttributeValue( e.getKey() );
-				if ( !equal( value, oldValue ) ) {
-					return true;
-				}
-			}
+			if (isDirty(e.getKey(), e.getValue()))
+				return true;
 		}
 		return false;
 	}    
     
+	public boolean isAttributeChanged(String attributeKey) {
+		final ContentNodeAttributeI a = node.getOriginalAttribute(attributeKey);
+		return a != null && isDirty(attributeKey, a);
+	}
+
+	protected boolean isDirty(String attributeKey, ContentNodeAttributeI attr) {
+		Field<Serializable> fieldObject = attr.getFieldObject();
+		// field object can be null, if the field not rendered
+		if ( fieldObject != null ) {
+			Serializable value = fieldObject.getValue();
+			Serializable oldValue = node.getOriginalAttributeValue( attributeKey );
+			if ( !equal( value, oldValue ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 	public static boolean equal( Serializable value, Serializable oldValue ) {
 		if ( value != null ) {
 			if ( value instanceof String ) {
@@ -203,15 +230,45 @@ public class GwtNodeData implements Serializable {
 		}
 	}
 
-    public String getHeaderMarkup() {
-        return "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" id=\"pageTitle\">" +
-                "<tbody><tr><td class=\"context\"></td><td width=\"75\" valign=\"bottom\" align=\"right\" rowspan=\"2\" style=\"line-height: 0pt;\">" +
-                    "<img width=\"75\" height=\"66\" src=\"img/banners/" + node.getType() + ".gif\"/></td></tr><tr><td valign=\"bottom\">" +
-                        "<h1 title=\"" + node.getKey()+ "\"><nobr><span id=\"fadeError\">" + node.getLabel() + "</span></nobr></h1>" +
-                    "</td></tr></tbody></table>" +
-                    "<table width=\"100%\" style=\"border-collapse:collapse\"><tr><td width=\"50%\" class=\"pageHeader\">" + node.getKey().replace( ':', ' ' ) + "</td>" +
-                        "<td class=\"pageHeader\"><div class=\"rigthPanel\"> " + (previewUrl!=null ? "<a class=\"previewLink\" href=\""+previewUrl+"\" target=\"_blank\" title=\"Preview...\">Preview...</a>" : "") +
-             "</div></td></tr></table>";
-    }
 
+
+	/**
+	 * Adjust field values of inherited attributes according to the given context path
+	 * 
+	 * @param contextPath
+	 */
+	@SuppressWarnings( "unchecked" )
+	public void changeContext(String contextPath) {
+        Map<String, ContentNodeAttributeI> attributes = getNode().getOriginalAttributes();
+        Map<String, ContentNodeAttributeI> inheritedAttrs = getContexts().getInheritedAttributes(contextPath);
+
+        if (inheritedAttrs == null || attributes == null) {
+            return;
+        }
+
+        for (String key : attributes.keySet()) {
+            ContentNodeAttributeI attribute = attributes.get(key);
+            Field<Serializable> fieldObject = (Field<Serializable>) attribute.getFieldObject();
+
+            if (fieldObject != null && fieldObject instanceof InheritanceField && attribute.isInheritable() && inheritedAttrs.containsKey(key)) {
+                InheritanceField<Serializable> inheritanceField = (InheritanceField<Serializable>) fieldObject;
+
+                ContentNodeAttributeI inhAttr = inheritedAttrs.get(key);
+                if (inhAttr != null && inheritanceField.isOverrideValue()) {
+                    inheritanceField.setInheritedValue(inhAttr.getValue());
+                }
+            }
+        }
+	}
+
+	public String getCurrentContext() {
+		if (currentContext == null) {
+			return getDefaultContextPath();
+		}
+		return currentContext;
+	}
+	
+	public void setCurrentContext(String context) {
+		currentContext = context;
+	}
 }

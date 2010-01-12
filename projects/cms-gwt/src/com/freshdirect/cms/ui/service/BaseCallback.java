@@ -10,7 +10,7 @@ public abstract class BaseCallback<X> implements AsyncCallback<X> {
 
     @Override
     public final void onFailure(Throwable error) {
-    	MainLayout.stopProgress();
+    	MainLayout.getInstance().stopProgress();
         if (error instanceof InvocationException && error.getMessage().contains("<!--SESSION EXPIRATION-->")) {
             Location.reload();
             return;

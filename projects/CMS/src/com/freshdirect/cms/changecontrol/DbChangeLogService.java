@@ -110,4 +110,42 @@ public class DbChangeLogService implements ChangeLogServiceI {
 		}
 	}
 
+	public List<ChangeSet> getChangesByUser( String userId ) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChangeSetDao dao = new ChangeSetDao();
+			return dao.getChangesByUser( conn, userId );
+		} catch (SQLException e) {
+			throw new CmsRuntimeException(e);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e1) {
+					throw new CmsRuntimeException(e1);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public List<ChangeSet> getChangeSets( ContentKey contentKey, String userId, Date startDate, Date endDate ) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChangeSetDao dao = new ChangeSetDao();
+			return dao.getChangeSets( conn, contentKey, userId, startDate, endDate );
+		} catch (SQLException e) {
+			throw new CmsRuntimeException(e);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e1) {
+					throw new CmsRuntimeException(e1);
+				}
+			}
+		}
+	}
 }

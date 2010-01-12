@@ -60,7 +60,7 @@ public class PublishDao extends HibernateDaoSupport {
 	 *  
 	 *  @return a list containing all Publish objects.
 	 */
-	public List getAllPublishes() {
+	public List<Publish> getAllPublishes() {
 		return query("from Publish");
 	}
 	
@@ -73,8 +73,8 @@ public class PublishDao extends HibernateDaoSupport {
 	 * @param orderBy
 	 * @return (List<Publish>) publishes
 	 */
-	public List fetchPublishes(String qualifiers, String orderBy) {
-		List results = new ArrayList();
+	public List<Publish> fetchPublishes(String qualifiers, String orderBy) {
+		List<Publish> results = new ArrayList<Publish>();
 
 		Connection conn = currentSession().connection();
 		
@@ -102,8 +102,8 @@ public class PublishDao extends HibernateDaoSupport {
 				p.setLastModified(records.getDate(5));
 				p.setStatus(EnumPublishStatus.getEnum(records.getString(6)));
 				
-				
 				p.setMessages(Collections.EMPTY_LIST);
+				
 				// add to list
 				results.add(p);
 			}
@@ -136,11 +136,11 @@ public class PublishDao extends HibernateDaoSupport {
 	 */
 	public Publish getMostRecentPublish() {
 		try {
-			List		list = query("from Publish "
+			List<Publish> list = query("from Publish "
 			               + " where timestamp = (select max(publish.timestamp) from Publish publish "
 	                       + " where status = '" + EnumPublishStatus.COMPLETE.getName() + "')");
 	
-			return list.size() > 0 ? (Publish) list.get(0) : null;
+			return list.size() > 0 ? list.get(0) : null;
 		} catch (ConstraintViolationException e) {
 			// this happens if there are no complete publishes in the database
 			// this the above nested query fails
@@ -156,10 +156,10 @@ public class PublishDao extends HibernateDaoSupport {
          */
         public Publish getMostRecentNotCompletedPublish() {
             try {
-                    List            list = query("from Publish "
+                    List<Publish> list = query("from Publish "
                                    + " where timestamp = (select max(publish.timestamp) from Publish publish) ");
     
-                    return list.size() > 0 ? (Publish) list.get(0) : null;
+                    return list.size() > 0 ? list.get(0) : null;
             } catch (ConstraintViolationException e) {
                     // this happens if there are no complete publishes in the database
                     // this the above nested query fails
@@ -180,9 +180,9 @@ public class PublishDao extends HibernateDaoSupport {
 	 *         or null if there is no previous publish.
 	 */
 	public Publish getPreviousPublish(Publish publish) {
-		List list = fetchPublishes("timestamp < (select p.timestamp from CMS.PUBLISH p where p.id = " + publish.getId() + ") ", "timestamp desc");
+		List<Publish> list = fetchPublishes("timestamp < (select p.timestamp from CMS.PUBLISH p where p.id = " + publish.getId() + ") ", "timestamp desc");
 		
-		return list.size() > 0 ? (Publish) list.get(0) : null;
+		return list.size() > 0 ? list.get(0) : null;
 	}
 	
 	public void savePublish(Publish publish) {

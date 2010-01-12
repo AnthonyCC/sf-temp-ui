@@ -11,27 +11,37 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 
 public class AlternateRenderer implements ContainerParamFactoryI {
 
-	private TemplateFormLayout layout;
+	protected FormItemLayout layout;
 	
-	public AlternateRenderer() {			
-	}
-	
-	public AlternateRenderer(TemplateFormLayout l) {
+	public AlternateRenderer(FormItemLayout l) {
 		layout = l;
 	}
 	
+	/**
+	 * Generates a parameters set from specified field
+	 * 
+	 * Parameters
+	 * 
+	 * 0 - Field ID
+	 * 1 - Field Label
+	 * 2 - label width
+	 * 3 - left padding
+	 * 4 - label separator
+	 * 5 - background color
+	 * 6 - 'x-form-clear-left'
+	 * 7 - label style
+	 */
+	@Override
 	public Params getParams(Field<Serializable> field, int index, El target) {
-		String ls = field.getLabelSeparator() != null ? field.getLabelSeparator() : layout.getLabelSeparator();
-		Params p = new Params();
+		Params p = new Params();		
 		p.add(field.getId());
 		p.add(field.getFieldLabel());
 		p.add("width:" + layout.getLabelWidth() + "px");
-		p.add("padding-left:" + (layout.getLabelWidth() + 5) + "px");
-		p.add(ls);
+		p.add("padding-left:0px");
+		p.add(field.getLabelSeparator() != null ? field.getLabelSeparator() : layout.getLabelSeparator());
 		p.add(field.isHideLabel() ? "x-hide-label" : "" + (index % 2  == 0 ? "" : " gray"));
 		p.add("x-form-clear-left");
 		p.add(field.getLabelStyle());
 		return p;
 	}
-	
 }

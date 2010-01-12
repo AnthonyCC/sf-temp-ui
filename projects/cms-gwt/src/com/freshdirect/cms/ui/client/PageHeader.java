@@ -3,6 +3,7 @@ package com.freshdirect.cms.ui.client;
 import com.extjs.gxt.ui.client.widget.HtmlContainer;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -22,6 +23,7 @@ public class PageHeader extends LayoutContainer {
                 + "<div id=\"buttonPanel\">BUTTONS</div></div>");
 
         buttonPanel = new HorizontalPanel();
+        buttonPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
         
         headerMarkup.add(buttonPanel, "#buttonPanel");
 

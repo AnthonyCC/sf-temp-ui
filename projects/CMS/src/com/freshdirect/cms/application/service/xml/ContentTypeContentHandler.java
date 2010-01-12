@@ -58,8 +58,9 @@ public class ContentTypeContentHandler extends DefaultHandler {
 	private final ContentTypeServiceI typeService;
 
 	/** Map of ContentType -> ContentTypeDef */
-	private Map types = new HashMap();
+	private Map<ContentType,ContentTypeDefI> types = new HashMap<ContentType,ContentTypeDefI>();
 
+	@SuppressWarnings("unchecked")
 	private Stack stack = new Stack();
 	
 	public ContentTypeContentHandler(ContentTypeServiceI typeService) {
@@ -69,7 +70,7 @@ public class ContentTypeContentHandler extends DefaultHandler {
 	/**
 	 * @return Map of String (type name) -> ContentTypeDefI
 	 */
-	public Map getContentTypes() {
+	public Map<ContentType,ContentTypeDefI> getContentTypes() {
 		return types;
 	}
 	

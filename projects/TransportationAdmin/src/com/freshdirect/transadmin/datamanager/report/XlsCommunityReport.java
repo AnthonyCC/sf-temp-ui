@@ -51,8 +51,6 @@ public class XlsCommunityReport extends BaseXlsReport implements ICommunityRepor
 		    HSSFRow row = sheet.createRow(rownum++);
 		    HSSFCell hssfCell = row.createCell(cellnum);
 
-	        setCellEncoding(hssfCell);
-
 	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
 	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 	        hssfCell.setCellValue(new HSSFRichTextString(REPORT_TITLE));

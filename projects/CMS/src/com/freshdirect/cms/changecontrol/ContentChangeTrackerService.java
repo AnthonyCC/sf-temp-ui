@@ -45,11 +45,11 @@ public class ContentChangeTrackerService extends ProxyContentService {
 	 */
 	public CmsResponseI handle(CmsRequestI request) {
 
-		List reqNodes = request.getNodes();
+		Collection<ContentNodeI> reqNodes = request.getNodes();
 
-		Set keys = new HashSet();
-		for (Iterator i = reqNodes.iterator(); i.hasNext();) {
-			ContentNodeI node = (ContentNodeI) i.next();
+		Set<ContentKey> keys = new HashSet<ContentKey>();
+		for (Iterator<ContentNodeI> i = reqNodes.iterator(); i.hasNext();) {
+			ContentNodeI node = i.next();
 			keys.add(node.getKey());
 		}
 

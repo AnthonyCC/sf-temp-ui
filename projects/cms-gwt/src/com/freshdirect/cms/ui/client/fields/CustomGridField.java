@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.Field;
@@ -114,7 +115,7 @@ public class CustomGridField extends OneToManyRelationField implements SaveListe
 	        store.add(model);
 	        grid.show();
 	        grid.getView().refresh(false);
-	        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(this));       
+	        fireEvent(Events.Change, new FieldEvent(this));       
         }
     }
     

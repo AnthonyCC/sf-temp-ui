@@ -6,6 +6,7 @@ import org.apache.commons.lang.enums.Enum;
  * Enumeration of all attribute types.
  */
 public class EnumAttributeType extends Enum {
+	private static final long serialVersionUID = 636327470114226135L;
 
 	public static final EnumAttributeType BOOLEAN = new EnumAttributeType("B", "Boolean", Boolean.FALSE);
 	public static final EnumAttributeType INTEGER = new EnumAttributeType("I", "Integer", new Integer(0));
@@ -43,13 +44,4 @@ public class EnumAttributeType extends Enum {
 	public static EnumAttributeType getEnum(String name) {
 		return (EnumAttributeType) getEnum(EnumAttributeType.class, name);
 	}
-
-//	public static Map getEnumMap() {
-//		return getEnumMap(EnumAttributeType.class);
-//	}
-//
-//	public static List getEnumList() {
-//		return getEnumList(EnumAttributeType.class);
-//	}
-
 }

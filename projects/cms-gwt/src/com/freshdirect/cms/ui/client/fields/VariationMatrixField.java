@@ -13,11 +13,12 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.freshdirect.cms.ui.client.WorkingSet;
-import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
+import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
@@ -30,8 +31,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class VariationMatrixField extends OneToManyRelationField implements SaveListenerField {
 
     private final class DropDownChangeListener implements Listener<FieldEvent> {
-        private final List<ContentNodeModel>               skuDomainValues;
-        private ContentNodeModel oldValue;
+
+		private final List<ContentNodeModel>	skuDomainValues;
+		private ContentNodeModel				oldValue;
 
         private DropDownChangeListener(List<ContentNodeModel> skuDomainValues, ContentNodeModel oldValue) {
             this.skuDomainValues = skuDomainValues;
@@ -102,6 +104,9 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
             field.setValueField("key");
             field.setDisplayField("label");     
             field.setEditable(false);
+            field.setTriggerAction(TriggerAction.ALL);
+
+            
             if (value == null) {
                 field.setValue(null);
             } else {
@@ -127,9 +132,7 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
     }
 
     private final static String SKU_DOMAIN_VALUES = "VARIATION_MATRIX";
-
     private final static String ATTR_DOMAIN_LIST = "VARIATION_MATRIX";
-//    private final static String ATTR_DOMAIN_VALUES = "domainValues";
 
     GwtContentNode node;
     /**
@@ -154,15 +157,17 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
             
             Field<Serializable> field = attribute.getFieldObject();
             // we hope that field is already initialized ... if not, we are in a deep trouble ..
-            field.addListener(AttributeChangeEvent.TYPE, new Listener<AttributeChangeEvent>() {
-                @Override
-                public void handleEvent(AttributeChangeEvent be) {
-                    Object newValue = be.getField().getValue();
-                    if (newValue instanceof List) {
-                        reloadDomains((List<ContentNodeModel>) newValue, true);
-                    }                    
-                }
-            });
+            if(field!=null) {
+                field.addListener(Events.Change, new Listener<FieldEvent>() {
+                    @Override
+                    public void handleEvent(FieldEvent be) {
+                        Object newValue = be.getField().getValue();
+                        if (newValue instanceof List) {
+                            reloadDomains((List<ContentNodeModel>) newValue, true);
+                        }                    
+                    }
+                });            	
+            }
             
             List<ContentNodeModel> domains = (List)attribute.getModelValues();
             

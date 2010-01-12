@@ -2,6 +2,7 @@ package com.freshdirect.cms.ui.client.nodetree;
 
 import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.util.KeyNav;
+import com.extjs.gxt.ui.client.widget.NodeTree;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 
 

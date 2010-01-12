@@ -34,38 +34,26 @@ public class PublishMessageLoader implements DataProxy<PagingLoadResult<GwtPubli
             final AsyncCallback<PagingLoadResult<GwtPublishMessage>> callback) {
         final PagingLoadConfig config = (PagingLoadConfig) loadConfig;
 
-        String newSortOrder = config.getSortDir().name() + '-' + config.getSortField();
-        boolean needReload = false;
-        if (lastOrder != null) {
-            if (!lastOrder.equals(newSortOrder)) {
-                needReload = true;
-            }
-        } else {
-            lastOrder = newSortOrder;
-        }
+		query.setPublishMessageRange(config.getOffset(), config.getLimit());
+		query.setPublishDirection(config.getSortDir());
+		query.setPublishSortType(config.getSortField());
 
-        if (needReload || config.getOffset() + config.getLimit() > publishMessages.size()) {
-            query.setPublishMessageRange(config.getOffset(), config.getLimit());
-            query.setPublishDirection(config.getSortDir());
-            query.setPublishSortType(config.getSortField());
+		CmsGwt.getContentService().getChangeSets(query,
+				new BaseCallback<ChangeSetQueryResponse>() {
+					@Override
+					public void onSuccess(ChangeSetQueryResponse result) {
+						BasePagingLoadResult<GwtPublishMessage> pbl = new BasePagingLoadResult<GwtPublishMessage>(
+								result.getPublishMessages(), result.getQuery()
+										.getPublishMessageStart(), result
+										.getPublishMessageCount());
+						callback.onSuccess(pbl);
+					}
 
-            CmsGwt.getContentService().getChangeSets(query, new BaseCallback<ChangeSetQueryResponse>() {
-                @Override
-                public void onSuccess(ChangeSetQueryResponse result) {
-                    BasePagingLoadResult<GwtPublishMessage> pbl = new BasePagingLoadResult<GwtPublishMessage>(result.getPublishMessages(), result.getQuery()
-                            .getPublishMessageStart(), result.getPublishMessageCount());
-                    callback.onSuccess(pbl);
-                }
-
-                @Override
-                public void errorOccured(Throwable error) {
-                    callback.onFailure(error);
-                }
-            });
-        } else {
-            BasePagingLoadResult<GwtPublishMessage> pbl = new BasePagingLoadResult<GwtPublishMessage>(publishMessages, config.getOffset(), publishMessageCount);
-            callback.onSuccess(pbl);
-        }
+					@Override
+					public void errorOccured(Throwable error) {
+						callback.onFailure(error);
+					}
+				});
 
     }
 

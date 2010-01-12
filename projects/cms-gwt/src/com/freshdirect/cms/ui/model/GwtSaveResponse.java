@@ -8,16 +8,11 @@ import com.freshdirect.cms.ui.model.publish.GwtValidationError;
 
 public class GwtSaveResponse implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
-    String                    changesetId;
-    
-    GwtChangeSet                changeSet;
-
-    List<GwtValidationError>     validationMessages;
+	String						changesetId;
+	GwtChangeSet				changeSet;
+	List<GwtValidationError>	validationMessages;
 
     public GwtSaveResponse() {
     }

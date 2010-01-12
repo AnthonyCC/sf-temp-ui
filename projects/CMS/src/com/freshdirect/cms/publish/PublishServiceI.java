@@ -26,7 +26,7 @@ public interface PublishServiceI {
 	 * 
 	 * @return List of {@link Publish}
 	 */
-	public List getPublishHistory();
+	public List<Publish> getPublishHistory();
 
 	/**
 	 * Get information about a specific publish.
@@ -44,12 +44,12 @@ public interface PublishServiceI {
 	public Publish getMostRecentPublish();
 	
 	
-        /**
-         *  Return the most recent Publish object, probably this is work in progress.
-         * 
-         *  @return the most recent Publish object.
-         */
-        public Publish getMostRecentNotCompletedPublish();
+    /**
+     *  Return the most recent Publish object, probably this is work in progress.
+     * 
+     *  @return the most recent Publish object.
+     */
+    public Publish getMostRecentNotCompletedPublish();
 	
 
 	/**

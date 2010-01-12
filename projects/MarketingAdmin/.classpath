@@ -8,7 +8,7 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/log4j.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jstl.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/standard.jar"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/poi-3.0-rc4-20070503.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Delivery"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/opencsv-1.8.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>

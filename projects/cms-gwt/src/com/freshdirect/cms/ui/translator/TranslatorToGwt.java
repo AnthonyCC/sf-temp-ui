@@ -1,6 +1,7 @@
 package com.freshdirect.cms.ui.translator;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -36,8 +38,8 @@ import com.freshdirect.cms.meta.RelationshipDef;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.publish.Publish;
 import com.freshdirect.cms.publish.PublishMessage;
-import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
-import com.freshdirect.cms.ui.model.BulkEditModel;
+import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
+import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
 import com.freshdirect.cms.ui.model.EnumModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
@@ -53,9 +55,10 @@ import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
 import com.freshdirect.cms.ui.model.attributes.SimpleAttribute;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
+import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeDetail;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
-import com.freshdirect.cms.ui.model.changeset.GwtContentNodeChange;
+import com.freshdirect.cms.ui.model.changeset.GwtNodeChange;
 import com.freshdirect.cms.ui.model.publish.GwtPublishData;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
 import com.freshdirect.cms.ui.service.ServerException;
@@ -74,24 +77,26 @@ public class TranslatorToGwt {
     private final static String CLASS_COL = "CLASS$";
     private final static String GROUP_COL = "GROUP$";
     
+    public static final DateFormat US_DATE_FORMAT = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.US);
+    
     
 	public static ContentNodeModel getContentNodeModel( ContentNodeI node ) {
 		return toContentNodeModel( node.getKey() );
 	}
 
-	public static BulkEditModel getBulkModel( ContentNodeI node ) {
-		BulkEditModel model = new BulkEditModel( node.getDefinition().getType().getName(), node.getLabel(), node.getKey().getEncoded() );
-                if (node.getAttributeValue("FULL_NAME") != null) {
-                    model.setFullName(String.valueOf(node.getAttributeValue("FULL_NAME")));
-                }
-                if (node.getAttributeValue("GLANCE_NAME") != null) {
-                    model.setGlanceName(String.valueOf(node.getAttributeValue("GLANCE_NAME")));
-                }
-                if (node.getAttributeValue("NAV_NAME") != null) {
-                    model.setNavName(String.valueOf(node.getAttributeValue("NAV_NAME")));
-                }
-		return model;
-	}
+//	public static BulkEditModel getBulkModel( ContentNodeI node ) {
+//		BulkEditModel model = new BulkEditModel( node.getDefinition().getType().getName(), node.getLabel(), node.getKey().getEncoded() );
+//                if (node.getAttributeValue("FULL_NAME") != null) {
+//                    model.setFullName(String.valueOf(node.getAttributeValue("FULL_NAME")));
+//                }
+//                if (node.getAttributeValue("GLANCE_NAME") != null) {
+//                    model.setGlanceName(String.valueOf(node.getAttributeValue("GLANCE_NAME")));
+//                }
+//                if (node.getAttributeValue("NAV_NAME") != null) {
+//                    model.setNavName(String.valueOf(node.getAttributeValue("NAV_NAME")));
+//                }
+//		return model;
+//	}
 
 	public static GwtContentNode getGwtNode( ContentNodeI node, TabDefinition tabDefs ) {
 		ContentKey contentKey = node.getKey();
@@ -233,7 +238,7 @@ public class TranslatorToGwt {
 			if ( cxNode == null )
 				break;
 			Map<String,AttributeI> inheritedAttributes = (Map<String,AttributeI>)cxNode.getInheritedAttributes();			
-			nodeContext.addContext( cx.getPath(), cx.getLabel(), translateAttributeMap( inheritedAttributes, tabs, key ) );
+			nodeContext.addContext( cx.getPath(TreeContentNodeModel.pathSeparator.charAt(0)), cx.getLabel(), translateAttributeMap( inheritedAttributes, tabs, key ) );
 		}		
 		return nodeContext;
 	}
@@ -482,19 +487,18 @@ public class TranslatorToGwt {
         return null;
     }
     
-    private static ContentNodeModel toContentNodeModel( ContentKey key ) {
+    private static TreeContentNodeModel toContentNodeModel( ContentKey key ) {
         ContentNodeI node = key.getContentNode();
-        ContentNodeModel result = new ContentNodeModel (
+        TreeContentNodeModel result = new TreeContentNodeModel (
         		key.getType().getName(), 
         		node != null ? node.getLabel() : key.getId(), 
-        		key.getEncoded(),
-        		false
+        		key.getEncoded()
         );
         prepareModel(node, result);
         return result;
     }
     
-    private static OneToManyModel toOneToManyModel(ContentKey key, int idx) {
+    private static OneToManyModel toOneToManyModel( ContentKey key, int idx ) {
         ContentNodeI node = key.getContentNode();
         OneToManyModel result = new OneToManyModel(
                 key.getType().getName(), 
@@ -505,9 +509,11 @@ public class TranslatorToGwt {
         return result;
     }
 
-    private static void prepareModel(ContentNodeI node, ContentNodeModel result) {
+    private static void prepareModel( ContentNodeI node, ContentNodeModel result ) {
         if (node != null) {
-            result.setHasChildren(node.getChildKeys().size() > 0);
+        	if ( result instanceof TreeContentNodeModel ) {
+                ( (TreeContentNodeModel)result ).setHasChildren( node.getChildKeys().size() > 0 );
+        	}
             if (result.isHtmlType()) {
                 Object path = node.getAttributeValue("path");
                 result.setPreviewUrl(FDStoreProperties.getCmsMediaBaseURL() + path);
@@ -523,45 +529,117 @@ public class TranslatorToGwt {
         }
     }
 
+    
+    // =========================== PUBLISH ===========================  
+
+	public static GwtPublishData getPublishData( Publish p ) {
+		GwtPublishData d = new GwtPublishData();
+		d.setId( p.getId() );
+		d.setComment( p.getDescription() );
+		d.setPublisher( p.getUserId() );
+		d.setCreated( p.getTimestamp() != null ?
+				US_DATE_FORMAT.format(p.getTimestamp()) : "" );
+		d.setLastModified( p.getLastModified() != null ?
+				US_DATE_FORMAT.format(p.getLastModified()) : "" );
+		d.setStatus( p.getStatus().getName() );
+		return d;
+    }
+
+    public static GwtPublishMessage getPublishMessage( PublishMessage pm ) {
+    	
+    	String contentKey = pm.getContentKey() == null ? null : pm.getContentKey().getEncoded();
+        GwtPublishMessage g = new GwtPublishMessage( pm.getContentType(), contentKey );
+		g.setMessage( pm.getMessage() );
+		g.setTimestamp( pm.getTimestamp() );
+		g.setSeverity( pm.getSeverity() );
+        return g;
+    }
+    
+    public static List<GwtPublishMessage> getPublishMessages(List<PublishMessage> list, int start, int end) {
+        start = Math.max(start, 0);
+        end = Math.min(end, list.size());
+        List<GwtPublishMessage> result = new ArrayList<GwtPublishMessage>(end - start);
+        for (int i = start; i < end; i++) {
+            result.add(getPublishMessage(list.get(i)));
+        }
+        return result;
+    }
+
+    public static List<GwtPublishMessage> getPublishMessages(Publish publish, ChangeSetQuery query) {
+    	if (query.getMessageSeverity() == -1) {    		
+    		return getPublishMessages(publish.getMessages(), query.getPublishMessageStart(), query.getPublishMessageEnd());
+    	}
+    	List<PublishMessage> filteredList = new ArrayList<PublishMessage>();
+    	for (PublishMessage message : publish.getMessages()) {    		
+    		if (message.getSeverity() == query.getMessageSeverity()) {
+    			filteredList.add(message);
+    		}
+    	}    	
+    	return getPublishMessages(filteredList, query.getPublishMessageStart(), query.getPublishMessageEnd());
+    }    
+    
+    
     // =========================== CHANGE SETS ===========================  
 	
-    public static List<GwtChangeSet> getGwtChangeSets(List<ChangeSet> changeSet) {
-        List<GwtChangeSet> result = new ArrayList<GwtChangeSet>(changeSet.size());
-        for (ChangeSet s : changeSet) {
-            result.add(getGwtChangeSet(s));
-        }
-        return result;
-    }
+	public static List<GwtChangeSet> getGwtChangeSets( List<ChangeSet> changeSet, ChangeSetQuery query ) {
+		List<GwtChangeSet> result = new ArrayList<GwtChangeSet>( changeSet.size() );
+		for ( ChangeSet s : changeSet ) {
+			/*
+			 * Contributor filter
+			 */
+			if (query.getContributor() == null || s.getUserId().equals(query.getContributor())) {
+				result.add( getGwtChangeSet( s, query ) );
+			}
+		}
+		return result;
+	}
 
-	public static List<GwtChangeSet> getGwtChangeSets(ChangeSet changeSet) {
-        List<GwtChangeSet> result = new ArrayList<GwtChangeSet>(1);
-        result.add(getGwtChangeSet(changeSet));
-        return result;
-    }
+	public static List<GwtChangeSet> getGwtChangeSets( ChangeSet changeSet ) {
+		List<GwtChangeSet> result = new ArrayList<GwtChangeSet>( 1 );
+		result.add( getGwtChangeSet( changeSet, new ChangeSetQuery() ) );
+		return result;
+	}
 
-    public static GwtChangeSet getGwtChangeSet(ChangeSet changeSet) {    	
-		GwtChangeSet gwt = new GwtChangeSet();
-		gwt.setChangeSetId( changeSet.getId() );
-		gwt.setUserId( changeSet.getUserId() );
-		gwt.setModifiedDate( changeSet.getModifiedDate() );
-		gwt.setNote( changeSet.getNote() );
-        for ( ContentNodeChange cnc : (List<ContentNodeChange>)changeSet.getNodeChanges() ) {
-            gwt.addChange(getGwtContentNodeChange(cnc));
-        }
-        return gwt;
-    }
+	public static GwtChangeSet getGwtChangeSet( ChangeSet changeSet, ChangeSetQuery query ) {
+		GwtChangeSet gwt = new GwtChangeSet( 
+				changeSet.getId(), 
+				changeSet.getUserId(), 
+				changeSet.getModifiedDate(), 
+				changeSet.getNote() 
+			);		
+		
+		for ( ContentNodeChange cnc : (List<ContentNodeChange>)changeSet.getNodeChanges() ) {
+			/*
+			 * Content type filter
+			 */
+			try {
+				if (query.getContentType() == null || cnc.getContentKey().getType().getName().equals(query.getContentType())) {
+					gwt.addChange( getGwtContentNodeChange( cnc ) );
+				}
+			} catch (NullPointerException e) {}
+		}
+		return gwt;
+	}
 
-    private static GwtContentNodeChange getGwtContentNodeChange(ContentNodeChange cnc) {    	
-		GwtContentNodeChange gcnc = new GwtContentNodeChange( cnc.getContentKey().getEncoded(), cnc.getChangeType().getName() );
-		gcnc.setPreviewLink( PreviewLinkProvider.getLink( cnc.getContentKey() ) );
-		ContentNodeI contentNode = cnc.getContentKey().getContentNode();
-		gcnc.setLabel( contentNode != null ? contentNode.getLabel() : cnc.getContentKey().getEncoded() );
+	private static GwtNodeChange getGwtContentNodeChange( ContentNodeChange cnc ) {
+		ContentKey key = cnc.getContentKey();
+		ContentNodeI node = key.getContentNode();
+		
+		GwtNodeChange gcnc = new GwtNodeChange( 
+				key.getType().getName(),				
+				node == null ? "" : node.getLabel() == null ? "" : node.getLabel(), 
+				key.getEncoded(), 
+				cnc.getChangeType().getName(), 
+				PreviewLinkProvider.getLink( key ) 
+			);		
+		
 		for ( ChangeDetail cd : (List<ChangeDetail>)cnc.getChangeDetails() ) {
 			gcnc.addDetail( new GwtChangeDetail( cd.getAttributeName(), cd.getOldValue(), cd.getNewValue() ) );
 		}
 		return gcnc;
-    }
-
+	}	
+		
+    // =========================== ... ===========================  
     
     private static ContentNodeI findEditor(ContentType type) {
         String typeName = type.getName();
@@ -606,41 +684,27 @@ public class TranslatorToGwt {
 
     	return new ProductConfigParams( salesUnits, enumAttrs );
     }
-	
-	public static GwtPublishData getPublishData( Publish p ) {
-		GwtPublishData d = new GwtPublishData();
-		d.setId( p.getId() );
-		d.setComment( p.getDescription() );
-		d.setPublisher( p.getUserId() );
-		d.setCreated( p.getTimestamp() );
-		d.setStatus( p.getStatus().getName(), p.getStatus().getDescription() );
-		return d;
-    }
-
-    public static GwtPublishMessage getPublishMessage( PublishMessage pm ) {
-    	
-    	String contentKey = pm.getContentKey() == null ? null : pm.getContentKey().getEncoded();
-        GwtPublishMessage g = new GwtPublishMessage( pm.getContentType(), contentKey );
-		g.setMessage( pm.getMessage() );
-		g.setTimestamp( pm.getTimestamp() );
-		g.setSeverity( pm.getSeverity() );
-        return g;
-    }
     
-    public static List<GwtPublishMessage> getPublishMessages(List<PublishMessage> list, int start, int end) {
-        start = Math.max(start, 0);
-        end = Math.min(end, list.size());
-        List<GwtPublishMessage> result = new ArrayList<GwtPublishMessage>(end - start);
-        for (int i = start; i < end; i++) {
-            result.add(getPublishMessage(list.get(i)));
+    @SuppressWarnings( "unchecked" )
+	public static Map<String, List<ContentNodeModel>> getDomainValues( List<ContentNodeModel> domains ) {
+        Map<String, List<ContentNodeModel>> result = new HashMap<String, List<ContentNodeModel>>();
+        
+        for (ContentNodeModel domain : domains) {
+            ContentKey key = (ContentKey) TranslatorFromGwt.getServerValue(domain);
+            ContentNodeI node = key.getContentNode();
+            List<ContentKey> domainValues = (List<ContentKey>) node.getAttributeValue("domainValues");
+            
+            List<ContentNodeModel> tempList = new ArrayList<ContentNodeModel>();
+            for (ContentKey domainValue : domainValues) {
+                tempList.add(TranslatorToGwt.getContentNodeModel(domainValue.getContentNode()));
+            }
+            
+            result.put(domain.getKey(), tempList);            
         }
         return result;
+    	
     }
-
-    public static List<GwtPublishMessage> getPublishMessages(Publish publish, int start, int end) {
-        return getPublishMessages(publish.getMessages(), start, end);
-    }
-
+	
     /**
      * This method encapsulates the stack trace into the message of the server
      * 
@@ -648,7 +712,7 @@ public class TranslatorToGwt {
      * @throws ServerException
      */
     public static ServerException wrap(Throwable ex) {
-        StringBuilder sw = new StringBuilder();
+    	StringBuilder sw = new StringBuilder();
         sw.append(ex.getClass().toString()).append(" : ").append(ex.getMessage()).append('\n');
         StackTraceElement[] stackTrace = ex.getStackTrace();
         if (stackTrace != null) {

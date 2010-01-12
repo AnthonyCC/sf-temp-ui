@@ -1,5 +1,6 @@
 package com.freshdirect.cms.ui.client;
 
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -10,8 +11,11 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.freshdirect.cms.ui.client.contenteditor.ContentEditorFactory;
 import com.freshdirect.cms.ui.client.fields.OneToManyRelationField;
 import com.freshdirect.cms.ui.model.GwtContentNode;
+import com.freshdirect.cms.ui.model.GwtContextualizedNodeData;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 
 /**
@@ -35,19 +39,23 @@ public class NewContentNodePopup extends Window {
         this.field = field;
 
         setHeading("New " + result.getNode().getType() + " - " + result.getNode().getKey());
-        setLayout(new BorderLayout());
+        setLayout(new FitLayout());
         setSize(840, 600);
         setModal(true);
         setMaximizable(true);
+        setClosable(false);
 
-        ContentPanel panel = new ContentPanel();
-        panel.setHeaderVisible(false);
-        panel.setScrollMode(Scroll.AUTO);
-        panel.setBorders(false);
-        panel.setBodyBorder(false);
+//        ContentPanel panel = new ContentPanel();
+//        panel.setHeaderVisible(false);
+//        panel.setScrollMode(Scroll.AUTO);
+//        panel.setBorders(false);
+//        panel.setBodyBorder(false);
+//        panel.setLayout(new FitLayout());
+//        panel.add();
 
-        result.setupUI(panel, null);
-        add(panel, new BorderLayoutData(LayoutRegion.CENTER));
+        
+        add(ContentEditorFactory.getEditor(new GwtContextualizedNodeData(nodeData, null)));
+        setButtonAlign(HorizontalAlignment.CENTER);
 
         Button cancelButton = new Button("Cancel");
         cancelButton.addListener(Events.OnClick, new Listener<BaseEvent>() {

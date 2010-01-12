@@ -17,6 +17,7 @@ import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.freshdirect.cms.ui.client.CmsGwt;
@@ -104,6 +105,8 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 			salesUnitField.setForceSelection( true );
 			salesUnitField.setAllowBlank( false );
 			salesUnitField.setFieldLabel( "Sales unit" );
+			salesUnitField.setTriggerAction(TriggerAction.ALL);
+
 			
 			String su = attribute.getSalesUnit();
 			if ( su == null ) {
@@ -146,6 +149,8 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 				configField.setForceSelection( true );
 				configField.setAllowBlank( false );
 				configField.setFieldLabel( id );
+				configField.setTriggerAction(TriggerAction.ALL);
+
 				
 				String optionValue = attribute.getConfigOption( id );	
 				if ( optionValue == null ) {

@@ -25,6 +25,8 @@ public class ChangeSetQueryResponse implements Serializable {
     long elapsedTime;
     String lastInfo;
     
+    protected String label;
+    
 
     public ChangeSetQueryResponse() {
     }
@@ -102,5 +104,11 @@ public class ChangeSetQueryResponse implements Serializable {
         return publishMessages;
     }
     
-
+	public String getLabel() {
+		return label;
+	}	
+	public void setLabel( String nodeLabel ) {
+		this.label = nodeLabel;
+	}
+	
 }

@@ -4,8 +4,9 @@ import java.util.Set;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
@@ -13,8 +14,9 @@ import com.extjs.gxt.ui.client.widget.form.MultiField;
 import com.extjs.gxt.ui.client.widget.layout.ColumnData;
 import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
+import com.freshdirect.cms.ui.model.ContentNodeModel;
+import com.google.gwt.user.client.Element;
 
 public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 
@@ -26,6 +28,9 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
     private ContentNodeModel value;
     private Set<String> allowedTypes;
     
+    private AdapterField af;
+    private int buttonWidth = 0;
+    
     protected boolean readonly;
 
 	final static int                       MAIN_LABEL_WIDTH = 415;
@@ -33,8 +38,9 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
     public OneToOneRelationField(Set<String> aTypes, boolean readonly) {
         super();
         allowedTypes = aTypes;
-        this.readonly = readonly;
         initialize();
+        
+        setReadOnly(readonly);
     }
 
     @Override
@@ -59,11 +65,9 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 	
     private void initialize() {
     	
-		ContentPanel cp = new ContentPanel();		
-		cp.setWidth(MAIN_LABEL_WIDTH + 50);
+    	LayoutContainer cp = new LayoutContainer();		
 		cp.setLayout( new ColumnLayout() );
-		cp.setHeaderVisible( false );
-		cp.setBorders( false );
+		cp.setBorders( true );
 		
 		if ( !readonly ) {
 	        relationButton = new IconButton("rel-button");
@@ -76,20 +80,18 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 	                    public void handleEvent(BaseEvent be) {
 	                    	ContentNodeModel model = popup.getSelectedItem();
 							setValue( model );
-	                        fireEvent(AttributeChangeEvent.TYPE, new AttributeChangeEvent(OneToOneRelationField.this));
-//	                        NodeTree.removeItemFromOrphans( model.getKey() );
-//	                        MainLayout.getMainTree().invalidate();
-//	                        MainLayout.scrollHack();
+	                        fireEvent(Events.Change, new FieldEvent(OneToOneRelationField.this));
 	                    }
 	                });
 	                popup.show();
 	            }
 	        });
 			cp.add( relationButton, new ColumnData( 20.0 ) );
+			buttonWidth += 20;
 		}
 
 		valueField = new LabelField();
-		cp.add( valueField, new ColumnData( 420.0 ) );
+		cp.add( valueField );
 
 		if ( !readonly ) { 
 	        deleteButton = new IconButton("delete-button");
@@ -101,16 +103,17 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 	            }
 	        });
 			cp.add( deleteButton, new ColumnData( 20.0 ) );
+			buttonWidth += 20;
 		}
         
-		AdapterField f = new AdapterField( cp );
-		f.setWidth( MAIN_LABEL_WIDTH + 70 );
+		af = new AdapterField( cp );
+		af.setResizeWidget(true);
 		
 		if ( readonly ) {
-			f.setReadOnly( true );
+			af.setReadOnly( true );
 		}
 		
-		add(f);
+		add(af);
 		
     }
 	
@@ -138,6 +141,33 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
         
     @Override
     public void setReadOnly(boolean readOnly) {
+        this.readonly = readOnly;
+
         super.setReadOnly(readOnly);
+
+        if (relationButton != null) {
+            relationButton.setEnabled(!readOnly);
+        }
+        if (deleteButton != null) {
+        	deleteButton.setEnabled(!readOnly);
+        }
     }    
+    
+    @Override
+    public void setWidth(int width) {
+    	af.setWidth(width);
+    	valueField.setWidth(width - buttonWidth -2);
+    	super.setWidth(width);
+    }
+    
+    @Override
+    protected void onRender(Element target, int index) {
+    	originalValue=getValue();
+    	super.onRender(target, index);
+    }
+    
+    @Override
+    public void reset() {
+    	setValue(originalValue);
+    }
 }

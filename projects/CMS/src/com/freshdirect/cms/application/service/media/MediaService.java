@@ -27,15 +27,15 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsResponseI;
-import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.MediaServiceI;
 import com.freshdirect.cms.application.service.AbstractContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNode;
 import com.freshdirect.cms.util.DaoUtil;
 
-public class MediaService extends AbstractContentService implements ContentServiceI {
+public class MediaService extends AbstractContentService implements MediaServiceI {
 
 	private final DataSource dataSource;
 	private final ContentTypeServiceI typeService;
@@ -277,4 +277,35 @@ public class MediaService extends AbstractContentService implements ContentServi
 		return typeService;
 	}
 
+	@Override
+	public ContentNodeI getContentNode(String uri) {
+		if (uri == null) {
+			return null;
+		}
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			PreparedStatement ps = conn.prepareStatement("select id, uri, type, width, height from cms_media where uri = ? order by uri");
+			ps.setString(1, uri);
+			ResultSet rs = ps.executeQuery();
+			ContentNodeI node = null;
+			if (rs.next()) {
+				node = processNode(conn, rs);
+			}
+			rs.close();
+			ps.close();
+			return node;
+		} catch (SQLException e) {
+			throw new CmsRuntimeException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e1) {
+				throw new CmsRuntimeException(e1);
+			}
+		}
+	}
 }

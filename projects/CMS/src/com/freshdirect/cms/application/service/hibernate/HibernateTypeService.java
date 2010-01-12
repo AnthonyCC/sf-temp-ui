@@ -8,9 +8,11 @@ package com.freshdirect.cms.application.service.hibernate;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.hibernate.EntityMode;
 import org.hibernate.MappingException;
@@ -40,7 +42,8 @@ import com.freshdirect.cms.util.CollectionUtil;
  */
 public class HibernateTypeService implements ContentTypeServiceI {
 
-	private final Map defsByType = new HashMap();
+	private final Map<ContentType,ContentTypeDefI> defsByType = new HashMap<ContentType,ContentTypeDefI>();
+	@SuppressWarnings("unchecked")
 	private final Map inheritance = new HashMap();
 
 	/**
@@ -174,12 +177,12 @@ public class HibernateTypeService implements ContentTypeServiceI {
 		return contDef;
 	}
 
-	public Set getContentTypes() {
+	public Set<ContentType> getContentTypes() {
 		return Collections.unmodifiableSet(defsByType.keySet());
 	}
 
-	public Set getContentTypeDefinitions() {
-		return Collections.unmodifiableSet(defsByType.entrySet());
+	public Set<ContentTypeDefI> getContentTypeDefinitions() {
+		return new HashSet<ContentTypeDefI>(defsByType.values());
 	}
 
 	public ContentTypeDefI getContentTypeDefinition(ContentType type) {

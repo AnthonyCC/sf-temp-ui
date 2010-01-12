@@ -165,11 +165,6 @@ public class BaseXlsReport {
         return result;
     }
     
-    //  add to set Cell encoding
-    protected void setCellEncoding(HSSFCell cell) {
-    	cell.setEncoding(HSSFCell.ENCODING_UTF_16);
-    }
-    
     protected String getFormattedDate(Date date) {
     	try {
 			return TransStringUtil.getServerDate(date);

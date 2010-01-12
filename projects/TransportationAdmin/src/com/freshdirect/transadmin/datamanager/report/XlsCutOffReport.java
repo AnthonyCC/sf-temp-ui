@@ -68,8 +68,6 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 			    HSSFRow row = sheet.createRow(rownum++);
 			    HSSFCell hssfCell = row.createCell(cellnum);
 
-		        setCellEncoding(hssfCell);
-
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		        hssfCell.setCellValue(new HSSFRichTextString(CUTOFFREPORT_TITLE));
@@ -247,8 +245,6 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		    HSSFRow row = sheet.createRow(rownum++);
 		    HSSFCell hssfCell = row.createCell(cellnum);
 
-	        setCellEncoding(hssfCell);
-
 	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
 	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 	        hssfCell.setCellValue(new HSSFRichTextString("Trip Summary Info"));
@@ -362,8 +358,6 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		    
 		    HSSFRow row = sheet.createRow(rownum++);
 		    HSSFCell hssfCell = row.createCell(cellnum);
-
-	        setCellEncoding(hssfCell);
 
 	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
 	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
@@ -804,8 +798,6 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 	       		    
 		    HSSFRow row = sheet.createRow(rownum++);
 		    HSSFCell hssfCell = row.createCell(cellnum);
-
-	        setCellEncoding(hssfCell);
 
 	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
 	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);

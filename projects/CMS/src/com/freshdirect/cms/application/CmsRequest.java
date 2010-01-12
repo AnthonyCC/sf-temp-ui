@@ -1,8 +1,10 @@
 package com.freshdirect.cms.application;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 
 /**
@@ -13,7 +15,7 @@ import com.freshdirect.cms.ContentNodeI;
 public class CmsRequest implements CmsRequestI {
 
 	private UserI user;
-	private List nodes = new ArrayList();
+	private Map<ContentKey, ContentNodeI> nodes = new HashMap<ContentKey, ContentNodeI>();
 
 	public CmsRequest(UserI user) {
 		this.user = user;
@@ -30,14 +32,14 @@ public class CmsRequest implements CmsRequestI {
 	 * @see com.freshdirect.cms.application.CmsRequestI#addNode(com.freshdirect.cms.ContentNodeI)
 	 */
 	public void addNode(ContentNodeI node) {
-		nodes.add(node);
+		nodes.put(node.getKey(), node);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.freshdirect.cms.application.CmsRequestI#getNodes()
 	 */
-	public List getNodes() {
-		return nodes;
+	public Collection<ContentNodeI> getNodes() {
+		return nodes.values();
 	}
 
 	public String toString() {

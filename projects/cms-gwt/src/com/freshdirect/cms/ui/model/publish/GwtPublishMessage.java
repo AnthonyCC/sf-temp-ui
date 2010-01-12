@@ -2,11 +2,12 @@ package com.freshdirect.cms.ui.model.publish;
 
 import java.util.Date;
 
-import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
+import com.freshdirect.cms.ui.model.ContentNodeModel;
 
 public class GwtPublishMessage extends ContentNodeModel {
+	private static final long serialVersionUID = 8040793784936726437L;
 
-    // the ordinals are important, check the constants in PublishMessage. 
+	// the ordinals are important, check the constants in PublishMessage. 
     public enum Level {
         FAILURE, ERROR, WARNING, INFO, DEBUG
     }

@@ -1590,17 +1590,17 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     public boolean isInPrimaryHome() {
         return true;
     }
-	/*
-	 * iPhone related
-	 */
-	@Override
-	public Image getAlternateProductImage() {
-		return null;
-	}
 
-	@Override
-	public boolean hideIphone() {
-		return false;
-	}
+    /*
+     * iPhone related
+     */
+    @Override
+    public Image getAlternateProductImage() {
+        return null;
+    }
 
+    @Override
+    public boolean hideIphone() {
+        return false;
+    }
 }

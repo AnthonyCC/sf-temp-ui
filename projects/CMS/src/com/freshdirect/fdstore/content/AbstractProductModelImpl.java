@@ -243,7 +243,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	
 	public int getTieredDealPercentage(String skuCode) {
 		SkuModel defaultSku = getDefaultSku();
-                if (skuCode == null) {
+		if (skuCode == null) {
 			skuCode = defaultSku != null ? defaultSku.getSkuCode() : null;
 		} else {
 			if (getSkuCodes().indexOf(skuCode) < 0) {
@@ -298,15 +298,13 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
 		if (skuCode != null) {
 			try {
-				FDProductInfo productInfo = FDCachedFactory
-						.getProductInfo(skuCode.getSkuCode());
+				FDProductInfo productInfo = FDCachedFactory.getProductInfo(skuCode.getSkuCode());
 				FDProduct product = FDCachedFactory.getProduct(productInfo);
 				if (product != null) {
 					String[] tieredPricing = null;
 
 					if (savingsPercentage > 0)
-						tieredPricing = product.getPricing().getScaleDisplay(
-								savingsPercentage);
+						tieredPricing = product.getPricing().getScaleDisplay(savingsPercentage);
 					else
 						tieredPricing = product.getPricing().getScaleDisplay();
 
@@ -332,8 +330,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 				if (productInfo != null) {
 					double price;
 					if (savingsPercentage > 0) {
-						price = productInfo.getDefaultPrice()
-								* (1 - savingsPercentage);
+						price = productInfo.getDefaultPrice() * (1 - savingsPercentage);
 					} else if (productInfo.hasWasPrice()) {
 						price = productInfo.getDefaultPrice();
 					} else {

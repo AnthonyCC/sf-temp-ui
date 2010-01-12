@@ -7,7 +7,7 @@ import java.util.List;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
+import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.EnumModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 

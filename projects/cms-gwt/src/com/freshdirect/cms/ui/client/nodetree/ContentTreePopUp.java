@@ -9,9 +9,11 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.widget.NodeTree;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.freshdirect.cms.ui.model.ContentNodeModel;
 
 
 /**
@@ -24,7 +26,7 @@ public class ContentTreePopUp extends Window {
 
     private Set<String> allowedTypes;
     private NodeTree treepanel = null;
-    private Button ok;
+	private Button ok;
     private Button cancel;
 
     private List<TreeContentNodeModel> selected;
@@ -48,6 +50,8 @@ public class ContentTreePopUp extends Window {
 
         setAllowedTypes(aTypes);
         initialize( multiSelect );
+        
+		treepanel.setCollapsible(false);
     }
     
     public static ContentTreePopUp getInstance(Set<String> aTypes, boolean multiSelect) {
@@ -109,16 +113,14 @@ public class ContentTreePopUp extends Window {
     }
     
     private void initialize( boolean multiSelect ) {
-
-		if ( treepanel == null ) {
-			treepanel = new NodeTree( allowedTypes, multiSelect );
-			treepanel.setHeaderVisible( false );
+		final boolean newPanel = treepanel == null;
+		if ( newPanel ) {
+			treepanel = new NodeTree( allowedTypes, multiSelect, false );
 		} else {
 			treepanel.setAllowedTypes( allowedTypes );
 			treepanel.setMultiSelect( multiSelect );
 		}
 
-        final Window w = this;
 
         ok.removeAllListeners();
         ok.addListener(Events.OnClick, new Listener<BaseEvent>() {
@@ -126,7 +128,7 @@ public class ContentTreePopUp extends Window {
                 if (treepanel.getSelectedItem() != null) {
                     BaseEvent e = new BaseEvent(Events.Select);
                     setSelected(treepanel.getSelectedItems());
-                    e.setSource(w);
+                    e.setSource(ContentTreePopUp.this);
                     fireEvent(e.getType(), e);
                 }
                 hide();
@@ -139,24 +141,36 @@ public class ContentTreePopUp extends Window {
                 hide();
             }
         });
+        
+		treepanel.addNodeSelectListener( new NodeTree.NodeSelectListener() {
 
-        if ( treepanel != null ) {
-        	
-            treepanel.removeSelectionChangedListener();
-            treepanel.addSelectionChangedListener(new SelectionChangedListener<TreeContentNodeModel>() {
-                @Override
-                public void selectionChanged(SelectionChangedEvent<TreeContentNodeModel> se) {
-                    TreeContentNodeModel selectedItem = se.getSelectedItem();
-                    if (selectedItem != null && (allowedTypes == null || allowedTypes.contains(selectedItem.getType()))) {
-                        ok.enable();
-                    } else {
-                        ok.disable();
-                    }
+			@Override
+			public void nodeSelected( final TreeContentNodeModel node ) {
+				if ( node != null && ( allowedTypes == null || allowedTypes.contains( node.getType() ) ) ) {
+                    BaseEvent e = new BaseEvent(Events.Select);
+                    setSelected(treepanel.getSelectedItems());
+                    e.setSource(ContentTreePopUp.this);
+                    fireEvent(e.getType(), e);
+                    hide();
                 }
-            });
-            
-            add( treepanel );            
-        }
+			}
+		} );
+
+        treepanel.removeSelectionChangedListener();
+        treepanel.addSelectionChangedListener(new SelectionChangedListener<TreeContentNodeModel>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<TreeContentNodeModel> se) {
+                TreeContentNodeModel selectedItem = se.getSelectedItem();
+                if (selectedItem != null && (allowedTypes == null || allowedTypes.contains(selectedItem.getType()))) {
+                    ok.enable();
+                } else {
+                    ok.disable();
+                }
+            }
+        });
+        
+        if (newPanel)
+        	add( treepanel );            
     }
     
     @Override
@@ -165,14 +179,21 @@ public class ContentTreePopUp extends Window {
     	if (forceReload) {
     		treepanel.refresh(treepanel.getExpandedPaths(), true);
     		forceReload = false;
-    	}
-    	else {    		
+    	} else {
     		treepanel.refresh(treepanel.getExpandedPaths(), false);
         	treepanel.scrollHack();
-    	}    	
+    	}
+
+    	/** Expand accidentally collapsed tree panel */
+    	treepanel.expand();
     }
 
-	public static void setForceReload(boolean b) {
-		forceReload = true;
+	public static void setForceReload(boolean force) {
+		forceReload = force;
 	}
+
+	public NodeTree getTreepanel() {
+		return treepanel;
+	}
+
 }

@@ -42,7 +42,8 @@ public class ContentCacheMethodInterceptor implements MethodInterceptor {
 
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		String method = invocation.getMethod().getName();
-		if ("getContentNode".equals(method)) {
+		if ("getContentNode".equals(method)
+				&& invocation.getMethod().getParameterTypes()[0] == ContentKey.class) {
 			return getContentNode(invocation);
 		}
 		if ("getContentNodes".equals(method)) {

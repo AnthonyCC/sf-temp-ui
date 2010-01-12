@@ -1,30 +1,31 @@
 package com.freshdirect.cms.ui.model.changeset;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 
 public class ChangeSetQuery implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
-
+    protected String contentKey;
+    protected String publishId;
     
-    String byId;
+    protected String	user;
+    protected Date		startDate;
+    protected Date		endDate;
     
-    String byKey;
-
-    String publishId;
-    
-    int start = 0;
-    
+    int start = 0;    
     int limit = 0;
     
     boolean publishInfoQuery = false;
+    boolean changeSetQuery = false;
     
     int publishMessageStart = 0;
-
     int publishMessageEnd = 100;
 
+    int messageSeverity = -1;
     
     String sortType;
     
@@ -33,12 +34,15 @@ public class ChangeSetQuery implements Serializable {
     String publishSortType;
     SortDir publishDirection = SortDir.NONE;
     
-    public ChangeSetQuery() {
+    String contentType = null;
+    String contributor = null;
+    
+    
+	public ChangeSetQuery() {
     }
     
     public ChangeSetQuery(ChangeSetQuery copy) {
-        this.byId = copy.byId;
-        this.byKey = copy.byKey;
+        this.contentKey = copy.contentKey;
         this.publishId = copy.publishId;
         this.start = copy.start;
         this.limit = copy.limit;
@@ -47,32 +51,35 @@ public class ChangeSetQuery implements Serializable {
         this.publishMessageEnd = copy.publishMessageEnd;
         this.sortType = copy.sortType;
         this.direction = copy.direction;
+        this.contentType = copy.contentType;
+        this.contributor = copy.contributor;        
         
         this.publishDirection = copy.publishDirection;
         this.publishSortType = copy.publishSortType;
+        this.messageSeverity = copy.messageSeverity;
+        
+        this.user = copy.user;
+        this.startDate = copy.startDate;
+        this.endDate = copy.endDate;
+//        this.nodeKeys = copy.nodeKeys;
     }
     
     
-    public String getById() {
-        return byId;
+    public String getContentKey() {
+        return contentKey;
     }
 
-    public ChangeSetQuery setById(String byId) {
-        this.byId = byId;
-        return this;
-    }
-
-    public String getByKey() {
-        return byKey;
-    }
-
-    public ChangeSetQuery setByKey(String key) {
-        this.byKey = key;
+    public ChangeSetQuery setContentKey(String key) {
+        this.contentKey = key;
         return this;
     }
 
     public String getPublishId() {
         return publishId;
+    }
+    
+    public int getMessageSeverity() {
+    	return messageSeverity;
     }
 
     public ChangeSetQuery setPublishId(String publishId) {
@@ -101,6 +108,22 @@ public class ChangeSetQuery implements Serializable {
         return sortType;
     }
     
+    public void setContributor(String contributor) {
+        this.contributor = contributor;    
+    }
+    
+    public String getContributor() {
+        return contributor;
+    }
+    
+    public void setContentType(String type) {
+        contentType= type;    
+    }
+    
+    public String getContentType() {
+        return contentType;
+    }
+    
     public int getLimit() {
         return limit;
     }
@@ -119,11 +142,18 @@ public class ChangeSetQuery implements Serializable {
     
     public void setPublishInfoQuery(boolean publishInfoQuery) {
         this.publishInfoQuery = publishInfoQuery;
-    }
-    
+    }    
     public boolean isPublishInfoQuery() {
         return publishInfoQuery;
     }
+    
+	public boolean isChangeSetQuery() {
+		return changeSetQuery;
+	}	
+	public void setChangeSetQuery( boolean changeSetQuery ) {
+		this.changeSetQuery = changeSetQuery;
+	}
+
     
     public SortDir getDirection() {
         return direction;
@@ -149,10 +179,34 @@ public class ChangeSetQuery implements Serializable {
         return publishSortType;
     }
     
+    public void setMessageSeverity(int severity) {
+    	messageSeverity = severity;
+    }
+        
+	public String getUser() {
+		return user;
+	}	
+	public void setUser( String user ) {
+		this.user = user;
+	}
+	
+	public Date getStartDate() {
+		return startDate;
+	}	
+	public void setStartDate( Date startDate ) {
+		this.startDate = startDate;
+	}
+	
+	public Date getEndDate() {
+		return endDate;
+	}	
+	public void setEndDate( Date endDate ) {
+		this.endDate = endDate;
+	}
+	
     @Override
     public String toString() {
-        return "ChangeSetQuery[" + start + ',' + limit + (byId != null ? " byId:" + byId : "") + (byKey != null ? " byKey:" + byKey : "")
-                + (publishId != null ? " publishId:" + publishId : "") + "]";
+        return "ChangeSetQuery[" + start + ',' + limit + (publishId != null ? " publishId:" + publishId : "") + (contentKey != null ? " contentKey:" + contentKey : "") + "]";
     }
 
 }

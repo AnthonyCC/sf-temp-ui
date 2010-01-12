@@ -118,11 +118,10 @@ public class DepartmentModel extends ProductContainer {
 	public Html getDeptStorageGuideMedia() {
 	    return FDAttributeFactory.constructHtml(this, "DEPT_STORAGE_GUIDE_MEDIA");
 	}
-	
-	public static Comparator DepartmentNameComparator = new Comparator() {
-		public int compare(Object o1, Object o2) {
-			DepartmentModel dept1 = (DepartmentModel) o1;
-			DepartmentModel dept2 = (DepartmentModel) o2;
+
+
+	public static Comparator<DepartmentModel> DepartmentNameComparator = new Comparator<DepartmentModel>() {
+		public int compare( DepartmentModel dept1, DepartmentModel dept2 ) {
 			String name1 = dept1.getFullName().toLowerCase();
 			String name2 = dept2.getFullName().toLowerCase();
 			return (name1.compareTo(name2));

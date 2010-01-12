@@ -16,7 +16,7 @@ public interface ContentTypeServiceI {
 	 * 
 	 * @return Set of {@link ContentType}
 	 */
-	public Set getContentTypes();
+	public Set<ContentType> getContentTypes();
 
 	/**
 	 * Generate a unique id for a content type, that can be used to
@@ -48,7 +48,7 @@ public interface ContentTypeServiceI {
 	 * 
 	 * @return Set of {@link ContentTypeDefI}
 	 */
-	public Set getContentTypeDefinitions();
+	public Set<? extends ContentTypeDefI> getContentTypeDefinitions();
 
 	/**
 	 * Get definition for a given type.

@@ -3,7 +3,7 @@ package com.freshdirect.cms.ui.model.attributes;
 import java.io.Serializable;
 import java.util.Set;
 
-import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
+import com.freshdirect.cms.ui.model.ContentNodeModel;
 
 public class OneToOneAttribute extends BaseAttribute implements ModifiableAttributeI, Serializable {
 

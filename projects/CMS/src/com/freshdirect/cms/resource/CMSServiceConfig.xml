@@ -215,7 +215,7 @@ because otherwise the external modifications of the slide database won't get pic
 		MEDIA CONTENT SERVICE
 	-->
 
-	<service-point id="MediaService" interface="com.freshdirect.cms.application.ContentServiceI">
+	<service-point id="MediaService" interface="com.freshdirect.cms.application.MediaServiceI">
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.application.service.media.MediaService" service-id-property="name">
 				<service>cmsdatasource</service>

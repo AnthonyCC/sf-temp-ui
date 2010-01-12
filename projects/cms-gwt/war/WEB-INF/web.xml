@@ -25,9 +25,21 @@
   </servlet>
 
   <servlet>
+    <servlet-name>bulkUpload</servlet-name>
+    <servlet-class>com.freshdirect.cms.ui.serviceimpl.BulkLoaderXlsUploadServlet</servlet-class>
+    <load-on-startup>3</load-on-startup>
+  </servlet>
+
+  <servlet>
     <servlet-name>adminService</servlet-name>
     <servlet-class>com.freshdirect.cms.ui.serviceimpl.AdminServiceImpl</servlet-class>
     <load-on-startup>4</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>bulkLoaderService</servlet-name>
+    <servlet-class>com.freshdirect.cms.ui.serviceimpl.BulkLoaderServiceImpl</servlet-class>
+    <load-on-startup>1</load-on-startup>
   </servlet>
 
   <servlet>
@@ -50,6 +62,12 @@
   </servlet-mapping>
 
   <servlet-mapping>
+    <servlet-name>bulkLoaderService</servlet-name>
+    <url-pattern>/bulkLoaderService</url-pattern>
+    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/bulkLoaderService</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
     <servlet-name>recipeUpload</servlet-name>
     <url-pattern>/com.freshdirect.cms.ui.cmsgwt/RecipeUpload</url-pattern>
     <url-pattern>/RecipeUpload</url-pattern>
@@ -59,6 +77,12 @@
     <servlet-name>xlsUpload</servlet-name>
     <url-pattern>/XlsUpload</url-pattern>
     <url-pattern>/com.freshdirect.cms.ui.cmsgwt/XlsUpload</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>bulkUpload</servlet-name>
+    <url-pattern>/bulkUpload</url-pattern>
+    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/bulkUpload</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

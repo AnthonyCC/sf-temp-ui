@@ -28,6 +28,7 @@
         <include name="thirdparty/commons-fileupload-1.2.jar"/>
         <include name="thirdparty/gwt/gwt-user.jar"/>
         <include name="thirdparty/gwt/gwt-dev-oophm.jar"/>
+        <include name="thirdparty/poi-3.5-FINAL-20090928.jar"/>
     </fileset>
     <pathelement location="${CMS.classes.dir}"/>
     <pathelement location="${FDStore.classes.dir}"/>

@@ -1428,7 +1428,7 @@
 			<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
 
 			<pathelement location="${thirdparty.home}/slide/jakarta-slide-webdavlib-2.1.jar"/>
-                        <pathelement location="${thirdparty.home}/poi.jar"/>
+                        <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 		</path>
 
 		<makeProject
@@ -1472,7 +1472,7 @@
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
-            		<pathelement location="${thirdparty.home}/poi-3.0-rc4-20070503.jar"/>
+            		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
             		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
 			<pathelement location="${thirdparty.home}/sapjco.jar"/>
 			<pathelement location="${thirdparty.home}/microba-0.4.4.2.jar"/>
@@ -1493,7 +1493,7 @@
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
-            <pathelement location="${thirdparty.home}/poi-3.0-rc4-20070503.jar"/>
+            <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 		</path>
 
 		<makeProject
@@ -1650,6 +1650,7 @@
                         <pathelement location="${work.dir}/ERPServices.jar"/>
 			<pathelement location="${thirdparty.home}/gxt.jar"/>
 			<pathelement location="${thirdparty.home}/gwt/gwt-user.jar"/>
+            		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
 		</path>
                 <property name="cms-gwt.path" value="projects/cms-gwt" />
                 <makeProject
@@ -1883,7 +1884,7 @@
 			<pathelement location="${thirdparty.home}/spring.jar"/>
 			<pathelement location="${thirdparty.home}/jstl.jar"/>
 			<pathelement location="${thirdparty.home}/standard.jar"/>
-            		<pathelement location="${thirdparty.home}/poi-3.0-rc4-20070503.jar"/> 
+            		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
             		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
             		<pathelement location="${thirdparty.home}/extremecomponents-1.0.1.jar"/>
 		</path>
@@ -1965,7 +1966,7 @@
 			<pathelement location="${thirdparty.home}/jstl.jar"/>
 			<pathelement location="${thirdparty.home}/standard.jar"/>
 			<pathelement location="${thirdparty.home}/extremecomponents-1.0.1.jar"/>  
-			<pathelement location="${thirdparty.home}/poi-3.0-rc4-20070503.jar"/>
+			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 			<pathelement location="${thirdparty.home}/fop-0.20.5.jar"/>
 		</path>
 		<trycatch>
@@ -2233,7 +2234,7 @@
                 <include name="givexclient.jar"/>                
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
-				<include name="poi-3.0-rc4-20070503.jar"/>
+				<include name="poi-3.5-FINAL-20090928.jar"/>
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
@@ -2265,10 +2266,12 @@
 				<include name="spring.jar"/>
 				<include name="standard.jar"/>
 				<include name="jstl.jar"/>				
-				<include name="poi-3.0-rc4-20070503.jar"/>
+				<include name="poi-3.5-FINAL-20090928.jar"/>
+
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+
 				<include name="opencsv-1.8.jar"/>
 				
 				<include name="commons-discovery-0.2.jar"/>
@@ -2333,7 +2336,7 @@
 			<lib>
 				<!-- <include name="oscache-2.4.jar"/> -->
 				<include name="struts.jar"/>
-				<include name="poi-3.0-rc4-20070503.jar"/>
+				<include name="poi-3.5-FINAL-20090928.jar"/>
 				<include name="tapestry-4.0.2.jar"/>
 				<include name="tapestry-contrib-4.0.2.jar"/>
 				<include name="tacos-core-4.0.2-20070420.095420-14.jar"/>
@@ -2367,7 +2370,7 @@
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
                 <include name="givexclient.jar"/>                
-				<include name="poi-3.0-rc4-20070503.jar"/>
+				<include name="poi-3.5-FINAL-20090928.jar"/>
 
 				<include name="tapestry-4.0.2.jar"/>
 				<include name="tapestry-contrib-4.0.2.jar"/>

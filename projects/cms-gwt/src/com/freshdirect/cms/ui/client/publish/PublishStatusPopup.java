@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
+import com.freshdirect.cms.ui.model.publish.GwtPublishData;
 import com.freshdirect.cms.ui.service.BaseCallback;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Timer;
@@ -97,7 +98,7 @@ public class PublishStatusPopup extends Window {
         elapsedTimeField.setValue("" + (resp.getElapsedTime() / 1000) + " seconds");
         lastInfoField.setValue(resp.getLastInfo());
         
-        if (!"PROGRESS".equals(resp.getPublishStatus())) {
+        if (!GwtPublishData.PROGRESS.equals(resp.getPublishStatus())) {
             timer.cancel();
         }
     }

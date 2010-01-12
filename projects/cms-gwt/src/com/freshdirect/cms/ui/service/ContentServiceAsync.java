@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
-import com.freshdirect.cms.ui.model.BulkEditModel;
+import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.GwtSaveResponse;
@@ -23,10 +23,8 @@ public interface ContentServiceAsync {
 
 	void search( String searchTerm, AsyncCallback<List<TreeContentNodeModel>> callback );
 
-	void getNodeData( String key, AsyncCallback<GwtNodeData> callback );
+	void getNodeData( String key, String context, AsyncCallback<GwtNodeData> callback );
 	
-	void getEditChildren( BulkEditModel loadConfig, AsyncCallback<List<BulkEditModel>> callback );
-
 	void save( Collection<GwtContentNode> models, AsyncCallback<GwtSaveResponse> callback );
 
 	void getUser( AsyncCallback<GwtUser> user );
@@ -39,7 +37,7 @@ public interface ContentServiceAsync {
     
     void getDomainValues(List<ContentNodeModel> domains, AsyncCallback<Map<String, List<ContentNodeModel>>> callback);
 
-    void getPublishHistory(AsyncCallback<List<GwtPublishData>> callback);
+    void getPublishHistory(PagingLoadConfig config, AsyncCallback<List<GwtPublishData>> callback);
     
     void startPublish(String comment, AsyncCallback<String> callback);
     
@@ -47,4 +45,5 @@ public interface ContentServiceAsync {
     
     void getProductConfigParams( String skuKey, AsyncCallback<ProductConfigParams> callback ); 
 
+	void getPublishData(ChangeSetQuery publishId, AsyncCallback<GwtPublishData> callback);
 }

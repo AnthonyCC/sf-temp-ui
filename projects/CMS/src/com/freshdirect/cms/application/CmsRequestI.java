@@ -4,7 +4,7 @@
  */
 package com.freshdirect.cms.application;
 
-import java.util.List;
+import java.util.Collection;
 
 import com.freshdirect.cms.ContentNodeI;
 
@@ -36,6 +36,6 @@ public interface CmsRequestI {
      * 
      * @return List of {@link ContentNodeI} instances (never null).
      */
-    public List getNodes();
+    public Collection<ContentNodeI> getNodes();
 
 }

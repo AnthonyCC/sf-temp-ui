@@ -2,310 +2,179 @@ package com.freshdirect.cms.ui.client.contenteditor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
-import com.freshdirect.cms.ui.client.fields.CustomGridField;
-import com.freshdirect.cms.ui.client.fields.InheritanceField;
-import com.freshdirect.cms.ui.client.fields.OneToManyRelationField;
-import com.freshdirect.cms.ui.client.fields.OneToOneRelationField;
-import com.freshdirect.cms.ui.client.fields.PrimaryHomeSelectorField;
-import com.freshdirect.cms.ui.client.fields.ProductConfigEditor;
-import com.freshdirect.cms.ui.client.fields.TableField;
-import com.freshdirect.cms.ui.client.fields.VariationMatrixField;
-import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
-import com.freshdirect.cms.ui.model.CustomFieldDefinition;
-import com.freshdirect.cms.ui.model.EnumModel;
-import com.freshdirect.cms.ui.model.GwtContentNode;
+import com.freshdirect.cms.ui.client.FieldFactory;
+import com.freshdirect.cms.ui.model.GwtContextualizedNodeI;
 import com.freshdirect.cms.ui.model.GwtNodeData;
-import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.freshdirect.cms.ui.model.TabDefinition;
-import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
-import com.freshdirect.cms.ui.model.attributes.EnumAttribute;
-import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
-import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
-import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
-import com.freshdirect.cms.ui.model.attributes.TableAttribute;
-import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
+import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.user.client.Element;
 
 public class ContentForm extends FormPanel {
+	GwtContextualizedNodeI cn;
 	
-	public static final int FORM_WIDTH = 700;
+	public static final int FORM_WIDTH = 740;
+
+	final Set<String> keys; // attribute keys used in form
 	
-	protected void initialize() {
+	final Map<String,FieldSet> sections;
+	final Map<String,List<String>> sectionKeys = new HashMap<String,List<String>>();		
+		
+	protected void initForm(GwtContextualizedNodeI cn) {
+		this.cn = cn;
+
+		/*
+		 * Initialize visual appearance
+		 */
 		setLabelAlign(LabelAlign.RIGHT);
 		setHeaderVisible(false);
-        setBorders(false);
-        setBodyBorder(false);
+		setFrame(false);
+		setBorders(false);
+		setBodyBorder(false);	
+		addStyleName("content-form");		
 	}
-	
+		
 	/**
-	 * Render the full node, without considering the tab definitions.
-	 * @param node
+	 * Tabless page constructor
+	 * 
+	 * @param source
+	 * @param contextPath
 	 */
-	public ContentForm( GwtNodeData node, String contextPath ) {
+	public ContentForm( GwtContextualizedNodeI cn ) {
 		super();
-		initialize();
+		this.keys = cn.getNodeData().getNode().getAttributeKeys();
+		this.sections = new HashMap<String,FieldSet>();
+
+		initForm(cn);
+
 		setStyleName("notab-form");
-		
-		TemplateFormLayout layout = new TemplateFormLayout();		
+		FormItemLayout layout = new FormItemLayout();		
 		layout.setParameterFactory(new AlternateRenderer(layout));
+		layout.setDefaultWidth(FORM_WIDTH);
 		
-		FieldSet section = new FieldSet();
-		section.setLayout( layout );
-		section.setWidth( FORM_WIDTH );
-		section.setCollapsible( false );
-		section.setBorders( false );
-			
-		List<String> attrKeys = new ArrayList<String>( node.getNode().getAttributeKeys() );
+		List<String> attrKeys = new ArrayList<String>( cn.getNodeData().getNode().getAttributeKeys() );
 		Collections.sort( attrKeys );
+
 		
-		String ctxPath = contextPath == null ? node.getDefaultContextPath() : contextPath;
-		
-		for ( String attributeKey : attrKeys ) {	
-			Field<Serializable> field = createField( attributeKey, node, ctxPath );
-			if (field != null) {
-			    section.add(field);			
-			}
-		}	
+		FieldSet section = createSection(layout, null, attrKeys);
+		sectionKeys.put("<default>", attrKeys);
+		sections.put("<default>", section);
 		
 		add(section);
 	}
-	
+
+
 	/**
-	 * 	Renders a tab page, considering tab definitions.
-	 * @param tabId
-	 * @param nodeData
+	 * Renders form page with tabs header.
+	 *
+	 * @param source
+	 * @param contextPath
+	 * @param tabId ID of particular tab of node (optional). If not specified it creates a tab-less form
 	 */
-	public ContentForm( String tabId, GwtNodeData nodeData, String contextPath ) {
+	public ContentForm( GwtContextualizedNodeI cn, String tabId ) {
 		super();
-		initialize();
-		TabDefinition tabDefinition = nodeData.getTabDefinition();
-		GwtContentNode node = nodeData.getNode();
+		this.keys = new HashSet<String>();
+		this.sections = new HashMap<String,FieldSet>();
+		initForm(cn);
+
+		final GwtNodeData nodeData = cn.getNodeData();
+
+		final TabDefinition tabDefinition = nodeData.getTabDefinition();
+
+		setHeading(nodeData.getNode().getLabel());
 		
-		setHeading( node.getLabel() );
 		int containerIndex = 0;
-		
-		for ( String sectionId : tabDefinition.getSectionIds( tabId ) ) {
-			String sectionLabel = tabDefinition.getSectionLabel( sectionId );
+
+		for (String sectionId : tabDefinition.getSectionIds(tabId)) {
+			String sectionLabel = tabDefinition.getSectionLabel(sectionId);
+
+			FormItemLayout layout = new FormItemLayout();
+			layout.setParameterFactory(new SectionAlternateRenderer(layout,	containerIndex));
+			layout.setDefaultWidth(FORM_WIDTH);
+
+			final List<String> sectionKeys = tabDefinition.getAttributeKeys(sectionId);
+			FieldSet section = createSection(layout, sectionLabel, sectionKeys);
+			sections.put(sectionId, section);
+			this.sectionKeys.put(sectionId, sectionKeys);
+			this.keys.addAll(sectionKeys);
 			
-			TemplateFormLayout layout = new TemplateFormLayout();
-			layout.setParameterFactory( new SectionAlternateRenderer( layout, containerIndex ) );
-			
-			FieldSet section = new FieldSet();
-			section.setHeading( sectionLabel );
-			section.setLayout( layout );
-			section.setWidth( FORM_WIDTH );
-			section.setCollapsible( true );
-			
-			String ctxPath = contextPath == null ? nodeData.getDefaultContextPath() : contextPath;
-			
-			for ( String attributeKey : tabDefinition.getAttributeKeys( sectionId ) ) {
-				Field<Serializable> field = createField( attributeKey, nodeData, ctxPath );
-				if ( field != null ) {
-					section.add( field );
-					containerIndex++;
-				}
-			}
-			
-			add(section);			
+			containerIndex += section.getItemCount();
+
+			add(section);
+
 		}
 	}	
-	
+
+
 	/**
-	 * 	Creates a content editor field. This will be an InheritanceField for inheritable attributes.
+	 * Create attribute section
 	 * 
-	 * @param attributeKey
-	 * @param node
+	 * @param layout
+	 * @param sectionLabel Label of field section (optional)
+	 * @param collapsible Can it be collapsed?
+	 * @param showBorders Show field set border?
+	 * @param attrKeys Attribute keys to add
 	 * @return
 	 */
-    @SuppressWarnings("unchecked")
-    protected Field<Serializable> createField(String attributeKey, GwtNodeData nodeData, String contextPath) {
+	protected FieldSet createSection(FormItemLayout layout, String sectionLabel, List<String> attrKeys) {
+		FieldSet section = new FieldSet();
 
-    	GwtContentNode node = nodeData.getNode();
-        ContentNodeAttributeI attribute = node.getOriginalAttribute(attributeKey);
-        Serializable value = node.getAttributeValue(attributeKey);
-        if (value instanceof Collection && ((Collection) value).isEmpty()) {
-            value = null;
-        }
-        
-        boolean readonly = attribute.isReadonly() || nodeData.isReadonly() ;
-        
-		final Field<Serializable> innerField = createFieldInner( attributeKey, nodeData, value, attribute, readonly );
-		if ( innerField == null ) {
-			return null;
-		}
-		
-		innerField.setReadOnly( readonly );
-		
-        Field<Serializable> field;
-		if ( attribute.isInheritable() ) {
-			field = new InheritanceField<Serializable>( innerField, value == null, attributeKey, readonly );
-			ContentNodeAttributeI attr = nodeData.getContexts() == null ? null : nodeData.getContexts().getInheritedAttribute( contextPath, attributeKey );
-			Serializable inhvalue = attr == null ? null : attr.getValue();
-			( (InheritanceField<Serializable>)field ).setInheritedValue( inhvalue );
-			
+		if (sectionLabel != null) {
+			section.setHeading( sectionLabel );
+			section.setCollapsible( false );
+			section.setBorders( false );
 		} else {
-			field = innerField;
+			section.setCollapsible( false );
+			section.setBorders( false );
 		}
 
-		attribute.setFieldObject( field );
+		section.setLayout( layout );
+		section.setWidth( FORM_WIDTH );
 		
-		if ( readonly ) {
-            field.setFieldLabel( "<span class=\"readonly\">" + attribute.getLabel() + "</span>" );
-        } else {
-            field.setFieldLabel( attribute.getLabel() );
-        }
-
-        // TODO contentkey tooltip...
-        field.setToolTip(new ToolTipConfig(attributeKey));
-
-        return field;
-    }
-	
-	/**
-	 * 	Creates the inner field for content editors depending on the attribute type. This will be optionally wrapped with an InheritanceField.
-	 * 
-	 * @param attributeKey
-	 * @param node
-	 * @param value
-	 * @param attribute
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	protected Field createFieldInner( String attributeKey, GwtNodeData node, Serializable value, ContentNodeAttributeI attribute, boolean readonly ) {
-	    
-		CustomFieldDefinition customFieldDefinition = node.getTabDefinition() == null ? null : node.getTabDefinition().getCustomFieldDefinition( attributeKey );
-		String type = attribute.getType();
-
-		if ( customFieldDefinition != null ) {
-			if ( customFieldDefinition.getType() == CustomFieldDefinition.Type.PrimaryHomeSelection ) {
-				return new PrimaryHomeSelectorField( (ContentNodeModel)value, node.getContexts() );
-			}
-			if ( customFieldDefinition.getType() == CustomFieldDefinition.Type.ProductConfigEditor ) {
-				
-				OneToOneAttribute attr = (OneToOneAttribute) attribute;	//Sku
-				ContentNodeModel model = attr.getValue();
-				Double quantity = (Double)node.getNode().getAttributeValue( "QUANTITY" );
-				String salesUnit = (String)node.getNode().getAttributeValue( "SALES_UNIT" );
-				ProductConfigParams pcp = model.get( "PCE_CONFIG_PARAMS" );
-				String configOptions = (String)node.getNode().getAttributeValue( "OPTIONS" );
-				
-				ProductConfigAttribute pcAttr = new ProductConfigAttribute();
-				pcAttr.setLabel( attr.getLabel() );
-				pcAttr.setValue( model );
-				pcAttr.setReadonly( attr.isReadonly() );				
-            	pcAttr.setConfigParams( pcp );
-            	pcAttr.setQuantity( quantity );
-            	pcAttr.setSalesUnit( salesUnit );
-            	pcAttr.setConfigOptions( configOptions );		
-            	
-            	ProductConfigEditor editor = new ProductConfigEditor( readonly, pcAttr );
-            	pcAttr.setFieldObject( editor );
-            	
-            	node.getNode().setOriginalAttribute( attributeKey, new ProductConfigAttribute( pcAttr ) );
-				
-				return editor;
+		for ( String attributeKey : attrKeys ) {			
+			Field<Serializable> field = FieldFactory.createStandardField( cn, attributeKey );
+			if ( field != null ) {
+				section.add( field );			
 			}
 		}
-	    
-		if (type.equals("string")) {
-			TextField<String> field = new TextField<String>();
-			field.setValue((String) value);
-			return field;
-		}
 		
-		if (type.equals("double")) {
-			NumberField field = new NumberField();	
-			field.setPropertyEditorType(Double.class);			
-			field.setValue((Number) value);
-			return field;
-		}
-		
-		if (type.equals("integer")) {
-			NumberField field = new NumberField();			
-			field.setPropertyEditorType(Integer.class);
-			field.setValue((Number) value);
-			return field;
-		}
-		
-		if (type.equals("date")) {
-			DateField field = new DateField();			
-			field.setValue((Date) value);
-			return field;
-		}
-		
-		if (type.equals("boolean")) {
-			CheckBox field = new CheckBox();
-			field.setValue((Boolean) value);
-			return field;
-		}
-		
-		if (type.equals("enum")) {			
-			EnumAttribute attr = (EnumAttribute)attribute;
-			ListStore<EnumModel> store = new ListStore<EnumModel>();
-			store.add( attr.getValues() );
-			
-			ComboBox<EnumModel> combo = new ComboBox<EnumModel>();
-			combo.setStore( store );
-			combo.setValueField( "key" );
-			combo.setDisplayField( "label" );
-			combo.setEditable( false );
-			combo.setForceSelection( true );
-			
-			combo.setValue( (EnumModel) value );
-				 			
-			return combo;			
-		}
-		
-		if (type.equals("onetoone")) {
-			OneToOneAttribute attr = (OneToOneAttribute) attribute;
-			OneToOneRelationField field = new OneToOneRelationField( attr.getAllowedTypes(), readonly );
-			if (value != null) {
-				field.setValue((ContentNodeModel)value);					
-			}				
-			return field;
-		}
-		
-		if (type.equals("onetomany")) {
-			OneToManyAttribute attr = (OneToManyAttribute) attribute;
-			OneToManyRelationField field = null;
-			if (customFieldDefinition!=null) {
-			    if (customFieldDefinition.getType() == CustomFieldDefinition.Type.VariationMatrix) {
-			        field = new VariationMatrixField(attr.getAllowedTypes(), node.getNode());
-			    }
-			    if (customFieldDefinition.getGridColumns() != null) {
-			        field = new CustomGridField(attributeKey, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition, readonly);
-			    }
-			} 
-			if (field == null) {
-				field = new OneToManyRelationField( attributeKey, attr.getAllowedTypes(), attr.isNavigable(), readonly );
-			}
-			
-			if (value != null) {
-			    field.setValue((List<OneToManyModel>)value);
-			}
-			return field;
-		}
-		if (type.equals("table")) {
-		    TableAttribute tableAttr = (TableAttribute) attribute;
-		    TableField t = new TableField( tableAttr, node.getNode().getKey(), attributeKey );
-		    
-		    return t;
-		}
-		
-		return null;
+		return section;
 	}
+	
+	public FieldSet getSection(String sectionId) {
+		if (sectionId == null)
+			return sections.get("<default>");
+		else
+			return sections.get(sectionId);
+	}
+	
+	public Set<String> getKeys() {
+		return keys;
+	}
+	
+	public Map<String, FieldSet> getSections() {
+		return sections;
+	}
+	
+	public Map<String, List<String>> getSectionKeys() {
+		return sectionKeys;
+	}
+	
+	
+	@Override
+	protected void onRender(Element target, int index) {
+		// TODO Auto-generated method stub
+		super.onRender(target, index);
+		getElement().getStyle().setOverflow(Overflow.VISIBLE);
+	}
+	
 }

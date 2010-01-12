@@ -13,8 +13,11 @@ import com.freshdirect.cms.ui.model.EnumModel;
 
 
 public class ProductConfigAttribute extends OneToOneAttribute {
-	
+	private static final long serialVersionUID = 7413163233466764406L;
+
 	public static class ProductConfigParams implements Serializable {
+		private static final long serialVersionUID = 6168658199482881523L;
+
 		List<EnumModel>		salesUnits;
 		List<EnumAttribute>	configEnums;
 				

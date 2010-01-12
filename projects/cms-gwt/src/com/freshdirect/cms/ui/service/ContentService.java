@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
-import com.freshdirect.cms.ui.model.BulkEditModel;
+import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.GwtSaveResponse;
@@ -25,11 +25,9 @@ public interface ContentService extends RemoteService {
 
     List<TreeContentNodeModel> getChildren(TreeContentNodeModel loadConfig) throws ServerException;
 
-    GwtNodeData getNodeData(String key) throws ServerException;
+    GwtNodeData getNodeData(String key, String context) throws ServerException;
 
     GwtNodeData createNodeData(String type, String id) throws ServerException;
-
-    List<BulkEditModel> getEditChildren(BulkEditModel loadConfig) throws ServerException;
 
     String generateUniqueId(String type) throws ServerException;
 
@@ -52,7 +50,9 @@ public interface ContentService extends RemoteService {
      */
     Map<String, List<ContentNodeModel>> getDomainValues(List<ContentNodeModel> domains) throws ServerException;
 
-    List<GwtPublishData> getPublishHistory() throws ServerException;
+    GwtPublishData getPublishData(ChangeSetQuery publishId) throws ServerException;
+    
+    List<GwtPublishData> getPublishHistory(PagingLoadConfig config) throws ServerException;
 
     String startPublish(String comment) throws ServerException;
     

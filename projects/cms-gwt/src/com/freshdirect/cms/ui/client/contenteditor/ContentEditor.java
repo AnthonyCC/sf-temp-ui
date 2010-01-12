@@ -1,38 +1,44 @@
 package com.freshdirect.cms.ui.client.contenteditor;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.freshdirect.cms.ui.model.GwtNodeData;
+import com.freshdirect.cms.ui.client.views.ManageStoreView;
+import com.freshdirect.cms.ui.model.GwtContextualizedNodeData;
+import com.freshdirect.cms.ui.model.GwtContextualizedNodeI;
 import com.freshdirect.cms.ui.model.TabDefinition;
 
-public class ContentEditor extends TabPanel {
-
+public class ContentEditor extends TabPanel implements EditorDecoratorI {
+	private GwtContextualizedNodeI cn;
+	
+	/** Tab ID -> form */
 	private HashMap<String, ContentForm>	panels;
+	/** Tab ID -> tab */
 	private HashMap<String, TabItem>		tabs;
-	private GwtNodeData						nodeData;
+
 	private static String 					lastActiveTab = null;
 
-	public ContentEditor() {
-		super();
-		panels = new HashMap<String, ContentForm>();
-		tabs = new HashMap<String, TabItem>();
-		setBodyBorder( false );
-		setBorders( false );
-	}
 
-	public ContentEditor( GwtNodeData nodeData, String contextPath ) {
+	public ContentEditor( GwtContextualizedNodeI cn ) {
 		super();
-		this.nodeData = nodeData;
-		panels = new HashMap<String, ContentForm>();
-		tabs = new HashMap<String, TabItem>();
-		setBodyBorder( false );
+		this.cn = cn;
+		this.panels = new HashMap<String, ContentForm>();
+		this.tabs = new HashMap<String, TabItem>();
+
+		setBodyBorder( true );
 		setBorders( false );
-		addTabs( nodeData.getTabDefinition(), contextPath );
+
+		setPlain(true);
+		setStyleAttribute("background-color", "#EAF2FF");
+		setupTabs();
+				
 
 		if ( lastActiveTab != null && tabs.containsKey( lastActiveTab )) {
 			setAutoSelect( false );
@@ -40,7 +46,8 @@ public class ContentEditor extends TabPanel {
 		}
 	}
 
-	public void addTabs( TabDefinition tabDef, final String contextPath ) {
+	public void setupTabs() {
+		final TabDefinition tabDef = cn.getNodeData().getTabDefinition();
 		
 		for ( final String tabId : tabDef.getTabIds() ) {
 			final String tabLabel = tabDef.getTabLabel( tabId );
@@ -49,17 +56,43 @@ public class ContentEditor extends TabPanel {
 			tab.addListener( Events.Select, new Listener<BaseEvent>() {
 				public void handleEvent( BaseEvent be ) {
 					if ( panels.get( tabLabel ) == null ) {
-						ContentForm form = new ContentForm( tabId, nodeData, contextPath );
+						ContentForm form = new ContentForm( cn, tabId );
 						panels.put( tabLabel, form );
 						tab.add( form );
 						tab.layout();
+						
+						// decorate attribute fields if necessary
+						if (ManageStoreView.getInstance().getDetailPanel() instanceof ContentEditorPanel && ((ContentEditorPanel) ManageStoreView.getInstance().getDetailPanel()).getCompareUtil()!=null) {
+							((ContentEditorPanel) ManageStoreView.getInstance().getDetailPanel()).getCompareUtil().addFormDecoration(form);
+						}
 					}
 					lastActiveTab = tabLabel;
 				}
 			} );
 			
+			tab.setScrollMode(Scroll.AUTO);
+			tab.addStyleName("tab-item");
 			add( tab );
 			tabs.put( tabLabel, tab );
 		}		
+	}
+
+	public HashMap<String, ContentForm> getPanels() {
+		return panels;
+	}
+	
+	public HashMap<String, TabItem> getTabs() {
+		return tabs;
+	}
+	
+	public static String getLastActiveTab() {
+		return lastActiveTab;
+	}
+
+	@Override
+	public void compareDecorate(GwtContextualizedNodeData comparedNode,
+			Map<String, Serializable> result) {
+		// TODO Auto-generated method stub
+		
 	}
 }

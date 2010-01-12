@@ -31,7 +31,7 @@ import com.freshdirect.framework.conf.ResourceUtil;
 public class XmlTypeService implements ContentTypeServiceI {
 
 	/** Map of {@link ContentType} -> {@link ContentTypeDefI} */
-	private Map defsByType;
+	private Map<ContentType,ContentTypeDefI> defsByType;
 
 	/**
 	 * @param location resource location
@@ -70,12 +70,12 @@ public class XmlTypeService implements ContentTypeServiceI {
 		}
 	}
 
-	public Set getContentTypes() {
+	public Set<ContentType> getContentTypes() {
 		return Collections.unmodifiableSet(defsByType.keySet());
 	}
 
-	public Set getContentTypeDefinitions() {
-		return new HashSet(defsByType.values());
+	public Set<ContentTypeDefI> getContentTypeDefinitions() {
+		return new HashSet<ContentTypeDefI>(defsByType.values());
 	}
 
 	public ContentTypeDefI getContentTypeDefinition(ContentType type) {

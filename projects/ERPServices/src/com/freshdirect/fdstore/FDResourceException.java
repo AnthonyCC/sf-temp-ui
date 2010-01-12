@@ -53,4 +53,14 @@ public class FDResourceException extends FDException {
         super(ex, message);
     }
 
+    
+    /**
+     * Creates an exception with a custom message and a wrapped exception.
+     *
+     * @param ex the wrapped exception
+     * @param message a custom message
+     */    
+    public FDResourceException(String message, Exception ex) {
+        super(ex, message);
+    }
 }

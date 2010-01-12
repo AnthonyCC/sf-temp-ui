@@ -26,10 +26,10 @@ import com.freshdirect.cms.util.CollectionUtil;
 public class DbMappingTypeService implements ContentTypeServiceI {
 
 	/** Map of {@link ContentType} -> {@link DbContentTypeDef} */
-	private final Map typeDefinitions = new HashMap();
+	private final Map<ContentType,DbContentTypeDef> typeDefinitions = new HashMap<ContentType,DbContentTypeDef>();
 
 	/** Map of {@link ContentType} (destination) -> List of {@link DbRelationshipDef} */
-	private final Map parentRelationshipMappings = new HashMap();
+	private final Map<ContentType,DbRelationshipDef> parentRelationshipMappings = new HashMap<ContentType,DbRelationshipDef>();
 
 	/**
 	 * Create type service based on a data source and mappings.
@@ -37,6 +37,7 @@ public class DbMappingTypeService implements ContentTypeServiceI {
 	 * @param dataSource JDBC data source
 	 * @param mappings List of {@link TableMapping}, {@link RelationshipMapping}
 	 */
+	@SuppressWarnings("unchecked")
 	public DbMappingTypeService(DataSource dataSource, List mappings) {
 
 		Connection conn = null;
@@ -94,18 +95,17 @@ public class DbMappingTypeService implements ContentTypeServiceI {
 		DbRelationshipDef relDef = new DbRelationshipDef(mapping);
 		typeDef.addAttributeDef(relDef);
 
-		for (Iterator i = relDef.getContentTypes().iterator(); i.hasNext();) {
-			ContentType destType = (ContentType) i.next();
+		for (ContentType destType :  relDef.getContentTypes()) {
 			CollectionUtil.addToMapOfLists(parentRelationshipMappings, destType, mapping);
 		}
 	}
 
-	public Set getContentTypes() {
+	public Set<ContentType> getContentTypes() {
 		return typeDefinitions.keySet();
 	}
 
-	public Set getContentTypeDefinitions() {
-		return new HashSet(typeDefinitions.values());
+	public Set<DbContentTypeDef> getContentTypeDefinitions() {
+		return new HashSet<DbContentTypeDef>(typeDefinitions.values());
 	}
 
 	public ContentTypeDefI getContentTypeDefinition(ContentType type) {

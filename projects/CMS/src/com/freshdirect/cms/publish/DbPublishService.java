@@ -5,7 +5,6 @@
 package com.freshdirect.cms.publish;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Category;
@@ -28,7 +27,7 @@ public class DbPublishService extends DbService implements PublishServiceI {
 	 */
 	private PublishDao	publishDao;
 	
-	private List publishTasks;
+	private List<PublishTask> publishTasks;
 
 	private String basePath;
 
@@ -47,15 +46,15 @@ public class DbPublishService extends DbService implements PublishServiceI {
 		this.basePath = basePath;
 	}
 
-	public void setPublishTasks(List publishTasks) {
+	public void setPublishTasks(List<PublishTask> publishTasks) {
 		this.publishTasks = publishTasks;
 	}
 
-	public List getPublishTasks() {
+	public List<PublishTask> getPublishTasks() {
 		return publishTasks;
 	}
 
-	public List getPublishHistory() {
+	public List<Publish> getPublishHistory() {
 		// return publishDao.getAllPublishesOrdered("timestamp desc");
 		// use lightweight fetch instead of hibernate
 		return publishDao.fetchPublishes(null, "timestamp desc");
@@ -126,10 +125,7 @@ public class DbPublishService extends DbService implements PublishServiceI {
 				
 				publish.setPath(basePath + "/" + publish.getId());
 
-				for (Iterator i = publishTasks.iterator(); i.hasNext();) {
-					Object o = i.next();
-
-					PublishTask task = (PublishTask) o;
+				for ( PublishTask task : publishTasks ) {
 
 					publish.getMessages().add(new PublishMessage(PublishMessage.INFO, task.getComment()));
 					publish.setLastModified(new Date());

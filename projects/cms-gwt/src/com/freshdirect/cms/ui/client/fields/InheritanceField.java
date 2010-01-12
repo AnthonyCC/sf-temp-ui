@@ -6,30 +6,30 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
+import com.google.gwt.user.client.Element;
 
 /**
  *	Wraps a content editor field, adds a checkbox for switching the field's value to the inherited value. 
  * @param <TYPE> type of the inner Field
  */
 public class InheritanceField<TYPE> extends MultiField<TYPE> {
-
     Field<TYPE> innerField;
+    
+    /**
+     * Checkbox that controls which type of value to be returned
+     * If it's checked the field returns inherited value
+     */
     CheckBox checkbox;
-    String attributeKey;
     
     TYPE inheritedValue = null;
     TYPE explicitValue = null;
-    
-    protected boolean readonly;
-    
-    public InheritanceField( Field<TYPE> field, boolean override, String attrKey, boolean readonly ) {
-    	
+
+
+    public InheritanceField( Field<TYPE> field, boolean inherit, boolean readonly ) {
         super();
+
         addStyleName("inheritable");
-        
-        this.attributeKey = attrKey;
-        this.readonly = readonly;
-        
+
         this.innerField = field;
         this.innerField.addStyleName("inheritable-value");
         
@@ -39,41 +39,61 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
         this.add( innerField );
 		this.add( checkbox );
         
-        if ( override ) {
-            checkbox.setValue(false);            
-            disable();
-        } else {
-            checkbox.setValue(true);
-        	enable();
-        }
+
+		// adjust for overridden / inherited state
+        checkbox.setValue(!inherit);
+        innerField.setEnabled(!inherit);
+
+        setReadOnly(readonly);
         
-        if ( readonly ) {
-        	disable();
-        	checkbox.setReadOnly( true );
-    		innerField.setReadOnly( true );			
-        } else {        
-	        checkbox.addListener( Events.OnClick, checkBoxListener );
-	        checkbox.addListener( Events.OnKeyPress, checkBoxListener );
-        }
+        innerField.setFireChangeEventOnSetValue(true);
+        innerField.addListener(Events.Change, new Listener<BaseEvent>(){
+			@Override
+			public void handleEvent(BaseEvent be) {
+				fireEvent(Events.Change);				
+			}
+        	
+        });
+        
+        checkbox.setFireChangeEventOnSetValue(true);
+        checkbox.addListener( Events.Change, checkBoxListener );
     }
-    
+
+    /**
+     * Handle checkbox events
+     */
     public Listener<BaseEvent> checkBoxListener = new Listener<BaseEvent>() {
         public void handleEvent( BaseEvent event ) {
-            if ( checkbox.getValue() ) {
-            	enable();
+        	final boolean override = checkbox.getValue();
+        	
+        	innerField.setEnabled(override);
+        	
+        	if ( override ) {
+            	// checkbox = true ==> value is explicitly set / overridden
+
+            	// enable();
             	inheritedValue = innerField.getValue();
                 innerField.setValue( explicitValue );
             } else {
-            	disable();
+            	// checkbox = false ==> value is inherited
+            	
+            	// disable();
             	explicitValue = innerField.getValue();
                 innerField.setValue( inheritedValue );
             }
+			fireEvent(Events.Change);				
         }
     };
 
+
+    
     @Override
     public void disable() {
 		super.disable();
+
+		// checkbox value = true =>
+    	//   override state =>
+    	//   enable inner field
 		if ( checkbox.getValue() )
 			innerField.enable();    	
     	checkbox.enable();
@@ -82,6 +102,10 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     @Override
     public void enable() {
     	super.enable();
+    	
+    	// checkbox value = false =>
+    	//   inherited state =>
+    	//   disable inner field
     	if ( !checkbox.getValue() )
 			innerField.disable();
     	checkbox.enable();
@@ -90,7 +114,15 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     @Override
     public void setReadOnly( boolean readOnly ) {
     	super.setReadOnly( readOnly );
-    	innerField.setReadOnly( readOnly );
+
+//     	if (readOnly) {
+//	        checkbox.removeListener( Events.OnClick, checkBoxListener );
+//	        checkbox.removeListener( Events.OnKeyPress, checkBoxListener );
+//    	} else {
+//	        checkbox.addListener( Events.OnClick, checkBoxListener );
+//	        checkbox.addListener( Events.OnKeyPress, checkBoxListener );
+//    	}
+
     }
 
     
@@ -106,8 +138,40 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
         return null;
     }
     
+    public TYPE getEffectiveValue() {
+    	TYPE result = getValue();
+    	if(result == null) {
+    		result = inheritedValue;
+    	}
+    		
+    	return result;
+    }
+    
     public boolean isOverrideValue() {
         return !checkbox.getValue();
+    }
+    
+
+    /**
+     * Sets value of the field and adjusts its internal state.
+     * Non null value means explicit / overridden state.
+     */
+    public void setValue(TYPE value) {
+    	if (value != null) {
+        	explicitValue = value;
+    		checkbox.setValue(true);
+    		innerField.setValue(value);
+    	} else {
+    		checkbox.setValue(false);
+    		innerField.setValue(inheritedValue);
+    	}
+    }
+
+    public void setExplicitValue(TYPE value) {
+    	this.explicitValue = value;
+    	if ( checkbox.getValue() ) {
+    		innerField.setValue( value );
+    	}    	
     }
     
     public void setInheritedValue(TYPE value) {
@@ -116,4 +180,20 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     		innerField.setValue( value );
     	}
     }
+    
+    @Override
+    protected void onRender(Element target, int index) {
+    	originalValue = getValue();
+    	super.onRender(target, index);
+    }
+    
+    @Override
+    public void setWidth(int width) {
+    	innerField.setWidth(width);
+    }
+
+
+    public Field<TYPE> getInnerField() {
+		return innerField;
+	}
 }

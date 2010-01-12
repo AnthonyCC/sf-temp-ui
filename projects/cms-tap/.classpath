@@ -7,7 +7,7 @@
 	<classpathentry kind="src" path="/Framework"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/tacos-core-4.0.2-20070420.095420-14.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/poi.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
