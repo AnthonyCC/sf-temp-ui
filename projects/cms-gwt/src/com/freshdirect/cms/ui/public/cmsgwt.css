@@ -246,6 +246,10 @@ a.commandLink-active:hover {
 	background-color: white;
 }
 
+.grid-cell-wrap .x-grid3-cell-inner {
+	white-space: normal ! important;
+}
+
 /* ====== publish status and publish message severity colors ====== */
 .publish-complete {
 	color: green;

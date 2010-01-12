@@ -84,20 +84,6 @@ public class TranslatorToGwt {
 		return toContentNodeModel( node.getKey() );
 	}
 
-//	public static BulkEditModel getBulkModel( ContentNodeI node ) {
-//		BulkEditModel model = new BulkEditModel( node.getDefinition().getType().getName(), node.getLabel(), node.getKey().getEncoded() );
-//                if (node.getAttributeValue("FULL_NAME") != null) {
-//                    model.setFullName(String.valueOf(node.getAttributeValue("FULL_NAME")));
-//                }
-//                if (node.getAttributeValue("GLANCE_NAME") != null) {
-//                    model.setGlanceName(String.valueOf(node.getAttributeValue("GLANCE_NAME")));
-//                }
-//                if (node.getAttributeValue("NAV_NAME") != null) {
-//                    model.setNavName(String.valueOf(node.getAttributeValue("NAV_NAME")));
-//                }
-//		return model;
-//	}
-
 	public static GwtContentNode getGwtNode( ContentNodeI node, TabDefinition tabDefs ) {
 		ContentKey contentKey = node.getKey();
 		GwtContentNode gwtNode = new GwtContentNode( contentKey.getType().getName(), contentKey.getId() );

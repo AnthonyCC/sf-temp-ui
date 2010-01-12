@@ -116,6 +116,7 @@ public class ChangeHistory extends LayoutContainer {
 		Grid<BaseModelData> grid = new Grid<BaseModelData>( store, new ColumnModel( columns ) );
 		grid.setStripeRows( true );
 		grid.setAutoExpandColumn( "new" );
+		grid.addStyleName( "grid-cell-wrap" );
 		grid.getView().setEmptyText( "No data to display." );
 		
 		grid.addListener(Events.Attach, new Listener<GridEvent<GwtPublishMessage>>() {
