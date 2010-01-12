@@ -27,6 +27,25 @@ public class ErpCreditCardModel extends ErpPaymentMethodModel {
 	private Date expirationDate;
 	private EnumCardType cardType;
 
+	private boolean avsCkeckFailed;
+	public boolean isAvsCkeckFailed() {
+		return avsCkeckFailed;
+	}
+
+	public void setAvsCkeckFailed(boolean avsCkeckFailed) {
+		this.avsCkeckFailed = avsCkeckFailed;
+	}
+
+	public boolean isBypassAVSCheck() {
+		return bypassAVSCheck;
+	}
+
+	public void setBypassAVSCheck(boolean bypassAVSCheck) {
+		this.bypassAVSCheck = bypassAVSCheck;
+	}
+
+	private boolean bypassAVSCheck;
+	
 	public ErpCreditCardModel() {
 		super();
 	}
@@ -86,6 +105,7 @@ public class ErpCreditCardModel extends ErpPaymentMethodModel {
 	
 	public boolean isRedeemable(){ return false; }
 	//Only applicable to Gift card - End
+
 
 }
 

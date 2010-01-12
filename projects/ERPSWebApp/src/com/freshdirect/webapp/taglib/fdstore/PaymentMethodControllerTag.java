@@ -77,10 +77,11 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 	                    }
 	                }
 	            } else if(actionName.equalsIgnoreCase("editPaymentMethod")) {
-	            	ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, actionResult, user.getIdentity());
+	            	ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, actionResult, user.getIdentity());	            	
 	                if(actionResult.isSuccess()){
 	                    PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user);
 	                    if(actionResult.isSuccess()){
+	                    	paymentMethod.setAvsCkeckFailed(false);
 	                        PaymentMethodUtil.editPaymentMethod(request, actionResult, paymentMethod);
 	                    }
 	                }

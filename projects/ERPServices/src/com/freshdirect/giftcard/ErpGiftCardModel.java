@@ -104,5 +104,30 @@ public class ErpGiftCardModel extends ErpPaymentMethodModel {
 		}
 		return false;
 	}
+
+
+   // only for credit card
+	public boolean isAvsCkeckFailed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	   // only for credit card
+	public boolean isBypassAVSCheck() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	   // only for credit card
+	public void setAvsCkeckFailed(boolean avsCkeckFailed) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	   // only for credit card
+	public void setBypassAVSCheck(boolean bypassAVSCheck) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

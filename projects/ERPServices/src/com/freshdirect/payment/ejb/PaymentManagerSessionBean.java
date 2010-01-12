@@ -16,6 +16,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
@@ -34,6 +35,8 @@ import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpVoidCaptureModel;
 import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
+import com.freshdirect.customer.ejb.ErpCustomerEB;
+import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
@@ -60,13 +63,17 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		return "com.freshdirect.payment.ejb.PaymentManagerHome";
 	}
 
-	public List authorizeSaleRealtime(String saleId) throws ErpAuthorizationException {
+	public List authorizeSaleRealtime(String saleId) throws ErpAuthorizationException, ErpAddressVerificationException {
 		try {
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpSaleModel sale = (ErpSaleModel) saleEB.getModel();
 			ErpAbstractOrderModel order = sale.getCurrentOrder();
 			AuthorizationStrategy strategy = new AuthorizationStrategy(sale);
-
+			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();			
+			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");				
+			}
+			
 			AuthorizationCommand cmd = new AuthorizationCommand(strategy.getOutstandingAuthorizations(), order
 				.getDeliveryInfo()
 				.getDeliveryStartTime(), saleEB.getAuthorizations().size());
@@ -77,17 +84,57 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 
 			for (Iterator i = auths.iterator(); i.hasNext();) {
 				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
-				if (auth.isApproved()) {
+				auth.setAvs("N"); // temp remove it later
+				if (auth.isApproved() && auth.hasAvsMatched()) {
 					saleEB.addAuthorization(auth);
-				} else {
-					logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
-					SessionContext ctx = getSessionContext();
-					ctx.setRollbackOnly();
-					throw new ErpAuthorizationException("There was a problem with the given payment method");
-				}
+				} else if(!auth.isApproved()){				
+				    logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth, false);
+				    SessionContext ctx = getSessionContext();
+				    ctx.setRollbackOnly();
+				    throw new ErpAuthorizationException("There was a problem with the given payment method");
+				  
+			    }else{			    	
+					if(auth.isApproved() && !auth.hasAvsMatched()){						
+						if(!payment.isBypassAVSCheck()){							
+							int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
+							if(count<ErpServicesProperties.getAvsErrorOrderCountLimit()){	                           
+								PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
+								ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
+								List paymentList=customerEB.getPaymentMethods();
+								  if(paymentList!=null && paymentList.size()>0){
+									
+									a:for(int j=0;j<paymentList.size();j++){
+										ErpPaymentMethodI custPayment=(ErpPaymentMethodI)paymentList.get(j);
+										if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
+											payment=custPayment;
+											break a;
+										}
+									}
+								  
+									payment.setAvsCkeckFailed(true);
+									customerEB.updatePaymentMethodNewTx(payment);
+								  }	
+									logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth, true);							
+									CrmSystemCaseInfo info =new CrmSystemCaseInfo(
+											sale.getCustomerPk(),
+										CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),									
+										"AVS Exception : Found Regular order for new customer with AVS Exception for saleId "+sale.getId()+ " and customer userId ="+customerEB.getUserId());
+									ErpCreateCaseCommand caseCmd=new ErpCreateCaseCommand(LOCATOR, info);
+									caseCmd.setRequiresNewTx(true);
+									caseCmd.execute(); 
+									SessionContext ctx = getSessionContext();
+									ctx.setRollbackOnly();
+									throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
+									
+							}
+						}	
+				     }
+			      }					
 			}
 
 			return auths;
+		}catch (SQLException e) {
+			throw new EJBException(e);		
 		} catch (RemoteException e) {
 			throw new EJBException(e);
 		} catch (ErpTransactionException e) {
@@ -97,6 +144,8 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	
+	
 	public EnumPaymentResponse authorizeSale(String saleId) {
 
 		try {
@@ -104,8 +153,13 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			ErpSaleModel sale = (ErpSaleModel) saleEB.getModel();
 			ErpAbstractOrderModel order = sale.getCurrentOrder();
 			String customerId = sale.getCustomerPk().getId();
+						
+			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();
+			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+				//throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
+				return EnumPaymentResponse.ERROR;
+			}
 			AuthorizationStrategy strategy = new AuthorizationStrategy(sale);
-
 			AuthorizationCommand cmd = new AuthorizationCommand(strategy.getOutstandingAuthorizations(), order
 				.getDeliveryInfo()
 				.getDeliveryStartTime(), saleEB.getAuthorizations().size());
@@ -123,14 +177,54 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 
 			for (Iterator i = auths.iterator(); i.hasNext();) {
 				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
+				auth.setAvs("N");
+				boolean isAVSFailureCase=false;
+				
+				if(auth.isApproved() && !auth.hasAvsMatched()){					
+					if(!payment.isBypassAVSCheck()){
+						int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
+						if(count<ErpServicesProperties.getAvsErrorOrderCountLimit()){
+							isAVSFailureCase=true;
+							PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
+							ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
+							List paymentList=customerEB.getPaymentMethods();
+							if(paymentList!=null && paymentList.size()>0){
+								
+								a:for(int j=0;j<paymentList.size();j++){
+									ErpPaymentMethodI custPayment=(ErpPaymentMethodI)paymentList.get(j);
+									if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
+										payment=custPayment;
+										break a;
+									}
+								}
+							}
+							payment.setAvsCkeckFailed(true);
+							customerEB.updatePaymentMethodNewTx(payment);
+							//logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
+							auth.setResponseCode(EnumPaymentResponse.DECLINED);							
+							CrmSystemCaseInfo info =new CrmSystemCaseInfo(
+									sale.getCustomerPk(),
+								CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),									
+								"AVS Exception : Found Regular order for new customer with AVS Exception for saleId "+sale.getId()+ " and customer userId ="+customerEB.getUserId());
+							ErpCreateCaseCommand caseCmd=new ErpCreateCaseCommand(LOCATOR, info);
+							caseCmd.setRequiresNewTx(true);
+							caseCmd.execute(); 							
+							//SessionContext ctx = getSessionContext();
+							//ctx.setRollbackOnly();
+							//throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");							
+						}
+					}	
+			     }
+				
+				
 				saleEB.addAuthorization(auth);
 				if (!auth.isApproved()) {
 					response = auth.getResponseCode();
-					logAuthorizationActivity(customerId, auth);
+					logAuthorizationActivity(customerId, auth,isAVSFailureCase);
 				}
 
 				CrmSystemCaseInfo caseInfo = this.buildAuthorizationCase(customerId, saleId, auth);
-				if (caseInfo != null) {
+				if (caseInfo != null && !isAVSFailureCase) {
 					// create a case in seperate tx so even if case creation fails we
 					// still have record of failed authorization
 					this.createCase(caseInfo, true);
@@ -144,19 +238,26 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		} catch (FinderException e) {
 			throw new EJBException(e);
 		}
+		catch (SQLException e) {
+			throw new EJBException(e);		
+		}
 	}
 
 	/**
 	 * Adds auth failures to cusotmer activity log.
 	 */
-	private void logAuthorizationActivity(String customerPK, ErpAuthorizationModel auth) {
+	private void logAuthorizationActivity(String customerPK, ErpAuthorizationModel auth, boolean isAVSFailure) {
 		if (!auth.isApproved()) {
 			ErpActivityRecord rec = new ErpActivityRecord();
 			rec.setActivityType(EnumAccountActivityType.AUTHORIZATION_FAILED);
 			rec.setSource(EnumTransactionSource.SYSTEM);
 			rec.setInitiator("SYSTEM");
 			rec.setCustomerId(customerPK);
-			rec.setNote("Authorization failure - authorization result: " + auth.getProcResponseCode() + " AVS: " + auth.getAvs());
+			if(isAVSFailure){
+			  rec.setNote("Authorization failure due to AVS failure - authorization result: " + auth.getProcResponseCode() + " AVS: " + auth.getAvs());
+			}else{
+			  rec.setNote("Authorization failure - authorization result: " + auth.getProcResponseCode() + " AVS: " + auth.getAvs());
+			}
 			new ErpLogActivityCommand(LOCATOR, rec, true).execute();
 		}
 	}
@@ -277,6 +378,14 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	private ErpCustomerHome getErpCustomerHome() {
+		try {
+			return (ErpCustomerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpCustomer", ErpCustomerHome.class);
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
+	}
+	
 	
 	public List authorizeSaleRealtime(String saleId, EnumSaleType saleType) throws ErpAuthorizationException, ErpAddressVerificationException {
 
@@ -288,6 +397,12 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpSaleModel sale = (ErpSaleModel) saleEB.getModel();
 			ErpAbstractOrderModel order = sale.getCurrentOrder();
+			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();
+			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");				
+			}
+
+			
 			AuthorizationStrategy strategy = new AuthorizationStrategy(sale);
 			AuthorizationCommand cmd = null;
 			cmd=new AuthorizationCommand(strategy.getOutstandingAuthorizations(), order.getRequestedDate(), saleEB.getAuthorizations().size());
@@ -297,11 +412,11 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			if(EnumSaleType.SUBSCRIPTION==saleType)
 			{
 				for (Iterator i = auths.iterator(); i.hasNext();) {
-					ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
+					ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();					
 					if (auth.isApproved()) {
 						saleEB.addAuthorization(auth);
 					} else {
-						logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
+						logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth, false);
 						SessionContext ctx = getSessionContext();
 						ctx.setRollbackOnly();
 						throw new ErpAuthorizationException("There was a problem with the given payment method");
@@ -313,16 +428,32 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 					if (auth.isApproved() && auth.hasAvsMatched()) {
 						saleEB.addAuthorization(auth);
 					} else {
-						if(auth.isApproved() && !auth.hasAvsMatched()){
-							
-							int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
-							if(count<=1 && EnumSaleType.GIFTCARD==saleType){ 
-								logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
+						if(auth.isApproved() && !auth.hasAvsMatched()){																				
+							int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());														
+							if(count<ErpServicesProperties.getAvsErrorOrderCountLimit() && EnumSaleType.GIFTCARD==saleType && !payment.isBypassAVSCheck()){
 								
+								PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
+								ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
+								List paymentList=customerEB.getPaymentMethods();
+								if(paymentList!=null && paymentList.size()>0){
+									
+									b:for(int j=0;j<paymentList.size();j++){
+										ErpPaymentMethodI custPayment=(ErpPaymentMethodI)paymentList.get(j);
+										if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
+											payment=custPayment;
+											break b;
+										}
+									}
+								
+									payment.setAvsCkeckFailed(true);
+									customerEB.updatePaymentMethodNewTx(payment);
+								}	
+								logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth,true);																	
+										
 								CrmSystemCaseInfo info =new CrmSystemCaseInfo(
 										sale.getCustomerPk(),
 									CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),									
-									"AVS Exception : Found Gift Card order for new customer with AVS Exception for saleId "+sale.getId());
+									"AVS Exception : Found order for new customer with AVS Exception for saleId "+sale.getId()+ " and customer userId ="+customerEB.getUserId());
 								ErpCreateCaseCommand caseCmd=new ErpCreateCaseCommand(LOCATOR, info);
 								caseCmd.setRequiresNewTx(true);
 								caseCmd.execute(); 
@@ -340,13 +471,13 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 								CrmSystemCaseInfo info =new CrmSystemCaseInfo(
 												sale.getCustomerPk(),
 											CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),
-											"Found "+saleTypeStr+" order with AVS Exception for saleId "+sale.getId());								
+											"Found "+saleTypeStr+" order with AVS Exception(old customer) for saleId "+sale.getId());								
 									new ErpCreateCaseCommand(LOCATOR, info).execute();
 								
                                 continue a;
 							}
 						}
-						logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
+						logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth, false);
 						SessionContext ctx = getSessionContext();
 						ctx.setRollbackOnly();
 						throw new ErpAuthorizationException("There was a problem with the given payment method");

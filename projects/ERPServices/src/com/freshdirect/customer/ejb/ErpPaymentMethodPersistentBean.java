@@ -101,7 +101,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 	public PrimaryKey create(Connection conn) throws SQLException {
 		System.out.println("Inside calling create ******************* ");
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY, AVS_FAILED,BYPASS_AVS_CHECK) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		int index = 1;
 		/*
 		if(this.model.getPaymentMethodType().equals(EnumPaymentMethodType.GIFTCARD)) {
@@ -216,7 +216,21 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				ps.setString(index++, model.getZipCode());
 				ps.setString(index++, model.getCountry());
 				
+			}			
+			if(this.model.isAvsCkeckFailed())
+			{
+				ps.setString(index++, "X" );	
+			}else{
+				ps.setNull(index++, Types.VARCHAR);
 			}
+			if(this.model.isBypassAVSCheck())
+			{
+				ps.setString(index++, "X" );	
+			}else{
+				ps.setNull(index++, Types.VARCHAR);
+			}
+
+			
 		//}
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -235,7 +249,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID FROM CUST.PAYMENTMETHOD WHERE ID = ?");
+		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID, AVS_FAILED,BYPASS_AVS_CHECK FROM CUST.PAYMENTMETHOD WHERE ID = ?");
 		ResultSet rs = null;
 		try {
 			ps.setString(1, this.getPK().getId());
@@ -257,6 +271,8 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				model.setState(rs.getString("STATE"));
 				model.setZipCode(rs.getString("ZIP_CODE"));
 				model.setCountry(rs.getString("COUNTRY"));
+				model.setAvsCkeckFailed("X".equalsIgnoreCase(rs.getString("AVS_FAILED")));
+				model.setBypassAVSCheck("X".equalsIgnoreCase(rs.getString("BYPASS_AVS_CHECK")));								
 				model.setCustomerId(rs.getString("CUSTOMER_ID"));
 				setParentPK(new PrimaryKey(model.getCustomerId()));
 				model.setPK(getPK());
@@ -283,7 +299,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			return;
 		}
 		
-		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PAYMENTMETHOD SET CUSTOMER_ID = ?, NAME = ?, ACCOUNT_NUMBER = ?, EXPIRATION_DATE = ?, CARD_TYPE = ?, PAYMENT_METHOD_TYPE=?, ABA_ROUTE_NUMBER=?, BANK_NAME=?, BANK_ACCOUNT_TYPE=?, ADDRESS1 = ?, ADDRESS2 = ?, APARTMENT = ?, CITY = ?, STATE = ?, ZIP_CODE = ?, COUNTRY = ? WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PAYMENTMETHOD SET CUSTOMER_ID = ?, NAME = ?, ACCOUNT_NUMBER = ?, EXPIRATION_DATE = ?, CARD_TYPE = ?, PAYMENT_METHOD_TYPE=?, ABA_ROUTE_NUMBER=?, BANK_NAME=?, BANK_ACCOUNT_TYPE=?, ADDRESS1 = ?, ADDRESS2 = ?, APARTMENT = ?, CITY = ?, STATE = ?, ZIP_CODE = ?, COUNTRY = ?,  AVS_FAILED=?, BYPASS_AVS_CHECK=? WHERE ID=?");
 		
 		try {
 			int index = 1;
@@ -335,6 +351,21 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			ps.setString(index++, model.getState());
 			ps.setString(index++, model.getZipCode());
 			ps.setString(index++, model.getCountry());
+			
+			
+			if(this.model.isAvsCkeckFailed())
+			{
+				ps.setString(index++, "X" );	
+			}else{
+				ps.setNull(index++, Types.VARCHAR);
+			}
+			if(this.model.isBypassAVSCheck())
+			{
+				ps.setString(index++, "X" );	
+			}else{
+				ps.setNull(index++, Types.VARCHAR);
+			}
+			
 			ps.setString(index++, this.getPK().getId());
 			
 			if (ps.executeUpdate() != 1) {

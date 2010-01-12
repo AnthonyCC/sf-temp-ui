@@ -163,6 +163,9 @@ public class ErpServicesProperties {
 	private final static String PROP_REGISTER_CRON_QUEUE = "register.cron.queue";
 	private final static String PROP_PRE_AUTHORIZE	= "payment.giftcard.preauthorize";
 	
+	private final static String PROP_AVS_ERROR_ORDER_COUNT="payment.avs_error.order.count";
+	
+	
 	static {
 		Properties defaults = new Properties();
 
@@ -284,6 +287,8 @@ public class ErpServicesProperties {
 		defaults.put(PROP_GIFT_CARD_ORDER_COUNT, "3");
 		defaults.put(PROP_REGISTER_CRON_QUEUE, "false");
 		defaults.put(PROP_PRE_AUTHORIZE, "true");
+		defaults.put(PROP_AVS_ERROR_ORDER_COUNT, "5");
+		
 
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -684,6 +689,9 @@ public class ErpServicesProperties {
 	public static String getPreAuthorize() {
 		return config.getProperty(PROP_PRE_AUTHORIZE);
 	}
-	
+		
+	public static int getAvsErrorOrderCountLimit() {
+		return Integer.parseInt(config.getProperty(PROP_AVS_ERROR_ORDER_COUNT));
+	}
 
 }

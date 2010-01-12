@@ -659,7 +659,24 @@ public class SubmitOrderAction extends WebActionSupport {
 				throw new FDResourceException(ie.getMessage());
 			}
 				
-		} catch (ErpFraudException ex) {
+		}
+		catch (ErpAddressVerificationException ae) {
+			//user.incrementFailedAuthorizations();			
+			try{
+				HttpServletResponse response = this.getWebActionContext().getResponse();				
+					//response.sendRedirect(this.ccdProblemPage);				
+				user.setAddressVerificationError(true);				
+				String message =ae.getMessage();
+				message=message.replace("9999",user.getCustomerServiceContact());
+				System.out.println("ae.getMessage() :"+message);
+				this.addError("address_verification_failed", message);
+				user.setAddressVerficationMsg(message);
+				response.sendRedirect(this.ccdProblemPage);
+			} catch(IOException ie) {
+			   throw new FDResourceException(ie.getMessage());
+		    }			
+		}
+		catch (ErpFraudException ex) {
 			
 			LOGGER.info("Potential fraud detected, saving shopping cart");
 			try {

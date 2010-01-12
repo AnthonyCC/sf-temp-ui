@@ -324,6 +324,12 @@
                 <home>com.freshdirect.customer.ejb.ErpSaleHome</home>
                 <remote>com.freshdirect.customer.ejb.ErpSaleEB</remote>
             </ejb-ref>
+             <ejb-ref>
+                <ejb-ref-name>ejb/ErpCustomer</ejb-ref-name>
+                <ejb-ref-type>Entity</ejb-ref-type>
+                <home>com.freshdirect.customer.ejb.ErpCustomerHome</home>
+                <remote>com.freshdirect.customer.ejb.ErpCustomerEB</remote>
+            </ejb-ref>
             <resource-ref>
                 <res-ref-name>jdbc/dbpool</res-ref-name>
                 <res-type>javax.sql.DataSource</res-type>
@@ -930,6 +936,15 @@
                 <method-name>*</method-name>
             </method>
             <trans-attribute>Supports</trans-attribute>
+        </container-transaction>
+
+        <container-transaction>
+            <method>
+                <ejb-name>ErpCustomer</ejb-name>
+                <method-intf>Remote</method-intf>
+                <method-name>updatePaymentMethodNewTx</method-name>
+            </method>
+            <trans-attribute>RequiresNew</trans-attribute>
         </container-transaction>
 
         <!--

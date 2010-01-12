@@ -708,7 +708,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 		return extendedInfos;
 	}
 	
-	private static final String QUERY_ORDER_HISTORY_FOR_CUST="select count(*) from cust.sale s  where s.customer_id =? and s.status<>'CAN'";
+	private static final String QUERY_ORDER_HISTORY_FOR_CUST="select count(*) from cust.sale s  where s.customer_id =? and s.status in ('STL')";
 	
 	public static int getPreviousOrderHistory(Connection conn, String erpCustomerId) throws SQLException{
 		int orderCount =0;

@@ -540,7 +540,12 @@
             <ejb-reference-description>
                 <ejb-ref-name>ejb/ErpSale</ejb-ref-name>
                 <jndi-name>freshdirect.erp.Sale</jndi-name>
-            </ejb-reference-description>        
+            </ejb-reference-description>
+            <ejb-reference-description>
+                <ejb-ref-name>ejb/ErpCustomer</ejb-ref-name>
+                <jndi-name>freshdirect.erp.Customer</jndi-name>
+            </ejb-reference-description>
+            
         </reference-descriptor>
         <jndi-name>freshdirect.payment.PaymentManager</jndi-name>
     </weblogic-enterprise-bean>

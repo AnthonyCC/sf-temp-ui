@@ -763,4 +763,26 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		}
 	}
 
+	public void updatePaymentMethodNewTx(ErpPaymentMethodI payment) throws RemoteException {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try{
+			con = this.getConnection();
+			updatePaymentMethod(payment);
+			this.paymentMethodList.store(con);
+		}catch(SQLException se){
+			throw new RemoteException(se.getMessage());
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(ps != null) ps.close();
+				if(con != null) con.close();
+			} catch(SQLException ex) {
+				//eat it for the time being
+			}
+		}	
+	}
+	
 }

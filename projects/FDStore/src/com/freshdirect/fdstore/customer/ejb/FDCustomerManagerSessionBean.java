@@ -1300,7 +1300,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
 		EnumDlvPassStatus status,
-		boolean pr1) throws FDResourceException, ErpFraudException, ErpAuthorizationException, 
+		boolean pr1) throws FDResourceException, ErpFraudException, ErpAuthorizationException, ErpAddressVerificationException,
 		ReservationException, DeliveryPassException, FDPaymentInadequateException, ErpTransactionException,InvalidCardException {
 
 		PrimaryKey pk = null;
@@ -1456,6 +1456,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.warn("Cannot Create ErpCustomerManagerSessionBean", ce);
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
+			
+			Exception ex=(Exception)re.getCause();
+			if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;
+			
 			throw new FDResourceException(re);
 		}
 	}

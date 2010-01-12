@@ -110,6 +110,14 @@ public interface ErpPaymentMethodI extends AddressI {
 	public boolean isRedeemable();
 	
 	public boolean isGiftCard();
+				
+	public boolean isAvsCkeckFailed();
+
+	public void setAvsCkeckFailed(boolean avsCkeckFailed);
 	
+	public boolean isBypassAVSCheck();
+	
+	public void setBypassAVSCheck(boolean bypassAVSCheck);
+
 }
 

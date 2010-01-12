@@ -58,4 +58,28 @@ public class ErpECheckModel extends ErpPaymentMethodModel {
 	
 	public boolean isRedeemable(){ return false; }
 	//Only applicable to Gift card - End
+
+	
+ 
+	// for credit card only
+	public boolean isAvsCkeckFailed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	// for credit card only
+	public boolean isBypassAVSCheck() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	// for credit card only
+	public void setAvsCkeckFailed(boolean avsCkeckFailed) {
+		// TODO Auto-generated method stub		
+	}
+
+	// for credit card only
+	public void setBypassAVSCheck(boolean bypassAVSCheck) {
+		// TODO Auto-generated method stub		
+	}
 }

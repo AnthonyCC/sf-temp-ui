@@ -124,6 +124,9 @@ Collection addresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
                     expYear = request.getParameter(PaymentMethodName.CARD_EXP_YEAR) != null ? request.getParameter(PaymentMethodName.CARD_EXP_YEAR) : "";
                     expMonth = request.getParameter(PaymentMethodName.CARD_EXP_MONTH) != null ? request.getParameter(PaymentMethodName.CARD_EXP_MONTH) : "";
                 }
+                
+                boolean avsStatusFailed=paymentMethod.isAvsCkeckFailed();
+                boolean bypassAVSCheck=paymentMethod.isBypassAVSCheck();
                 %>
 				<td>
 					<select class="pulldown" name="<%=PaymentMethodName.CARD_EXP_MONTH%>">
@@ -191,6 +194,16 @@ Collection addresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
 				<td align="right">* Zip:</td>
 				<td><input type="text" maxlength="5" class="input_text" style="width: 80px;" name="<%=AddressName.BIL_ZIPCODE%>" value="<%=address != null ? address.getZipCode() : ""%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.BIL_ZIPCODE%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
 			</tr>
+            <tr>
+				<td align="right">AVS Status:</td>
+				<td><font color="red"><%=avsStatusFailed?"AVS FAILED":""%></font></td>
+			</tr>
+            <tr>
+				<td align="right">Bypass AVS Check:</td>
+				<td><font color="red"><input type="checkbox" name="bypass_avs" <%=bypassAVSCheck?"checked":""%></font></td>
+			</tr>
+            
+            
 		</table><br>
 	</div>
     <input type="hidden" name="paymentId" value="<%=((ErpPaymentMethodModel)paymentMethod).isAnonymous() ? "" : ((ErpPaymentMethodModel)paymentMethod).getPK().getId()%>">

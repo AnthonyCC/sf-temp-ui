@@ -355,6 +355,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 		throws FDResourceException,
 		ErpFraudException,
 		ErpAuthorizationException,
+		ErpAddressVerificationException,
 		ReservationException,
 		DeliveryPassException,
 		FDPaymentInadequateException,

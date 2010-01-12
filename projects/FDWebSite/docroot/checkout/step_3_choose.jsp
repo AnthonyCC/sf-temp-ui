@@ -25,6 +25,8 @@
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Payment Information</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%
+
+    FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 	String actionName = request.getParameter("actionName");
 	if (actionName==null)
 		actionName = "noAction";
@@ -76,16 +78,18 @@
 	}
 
 	Date currentDlvStart = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
-	
-	for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-		FDOrderInfoI oi = (FDOrderInfoI) hIter.next();
-		if (!(oi.getErpSalesId().equals(ignoreSaleId))
-			&& oi.isPending()
-			&& currentDlvStart.equals(DateUtil.truncate(oi.getDeliveryStartTime()))) {
-			response.sendRedirect(response.encodeRedirectURL("/checkout/step_2_duplicate.jsp?successPage=/checkout/step_3_choose.jsp"));
-			return;
-		}
-	}
+	if(!user.isAddressVerificationError()) {
+    
+        for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+            FDOrderInfoI oi = (FDOrderInfoI) hIter.next();
+            if (!(oi.getErpSalesId().equals(ignoreSaleId))
+                && oi.isPending()
+                && currentDlvStart.equals(DateUtil.truncate(oi.getDeliveryStartTime()))) {
+                response.sendRedirect(response.encodeRedirectURL("/checkout/step_2_duplicate.jsp?successPage=/checkout/step_3_choose.jsp"));
+                return;
+            }
+        }
+    }
 }
 %>
 </fd:OrderHistoryInfo>
@@ -98,7 +102,6 @@
         * If Gift card is used on the order Also calculate the 25% perishable buffer amount to decide if         * 
         * another mode of payment is needed.
     */    
-    FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
     FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
     
     double gcSelectedBalance = user.getGiftcardBalance()- cart.getTotalAppliedGCAmount();
@@ -326,6 +329,53 @@ if(isPaymentRequired) {
 			<%@ include file="/includes/i_error_messages.jspf" %>
 	<% } %>
 		<BR>
+
+
+<%
+if(user.isAddressVerificationError()) {
+       
+%>    
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr>
+    <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
+    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
+    <td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+</tr>
+<tr>
+    <td rowspan="3" bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
+    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+</tr>
+<tr>
+    <td width="18" bgcolor="#CC3300"><img src="/media_stat/images/template/system_msgs/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"></td>
+    <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
+				<%= SystemMessageList.MSG_GC_SIGNUP_SUCCESS %><br><br>
+                <%= user.getAddressVerficationMsg() %>
+                
+                
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
+	</td>
+    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+    <td bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+</tr>
+<tr>
+    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
+    <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/CC3300_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
+</tr>
+<tr>
+    <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+</tr>
+</table>
+<br>
+<% 
+//clear info from session.
+user.setAddressVerificationError(false);
+}
+%>	
+
 
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
 		<TR VALIGN="TOP">

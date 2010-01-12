@@ -63,5 +63,7 @@ public interface ErpCustomerEB extends EntityBeanRemoteI, ErpCustomerI {
 	
 	public List getGiftCards() throws RemoteException;
 	
+	public void updatePaymentMethodNewTx(ErpPaymentMethodI payment) throws RemoteException;
+	
 }
 

@@ -1408,7 +1408,7 @@ public class FDCustomerManager {
 		Set appliedPromos,
 		boolean sendEmail,
 		CustomerRatingI cra,
-		EnumDlvPassStatus status) throws FDResourceException, ErpFraudException, ErpAuthorizationException, ReservationException,
+		EnumDlvPassStatus status) throws FDResourceException, ErpFraudException, ErpAuthorizationException,ErpAddressVerificationException, ReservationException,
 		FDPaymentInadequateException,
 		ErpTransactionException,
 		DeliveryPassException {
@@ -1446,6 +1446,10 @@ public class FDCustomerManager {
 			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
 			invalidateManagerHome();
+			
+			Exception ex=(Exception)re.getCause();
+			if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;
+
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
