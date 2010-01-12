@@ -83,16 +83,20 @@ if(contextName != null && contextName.length() > 0) {
 
 List wineSortList=catModel.getWineSortCriteria();		
 		if(wineSortList!=null && wineSortList.size()>0){
-			String sortDomainName=null;
-            
+	        String sortDomainName=null;
             for(int i=0;i<wineSortList.size();i++){
-				
 			   DomainValue dValue=(DomainValue)wineSortList.get(i);
-				if(i==0){
-					sortDomainName=dValue.getDomain().getName();
-				}
+				
+			boolean _sortDescending = EnumWineSortType.getWineSortType(dValue.getContentName()).getSortDesc();	
+			
+			if(prevSortCol != null && sortCol != null && sortCol.equals(dValue.getContentName())) {
+				_sortDescending =!sortDescending;//!_sortDescending;
+			}
+			if(i==0){
+				sortDomainName=dValue.getDomain().getName();
+			}
 %>
-		<span class="cat_sum_top_li"><%= (i!=0)?"&bull; ":" " %><a href="javascript:sortFormSubmit('<%=dValue.getContentName()%>');" title=""><%= dValue.getContentName().equals(sortCol) ? "<b>"+dValue.getLabel()+"</b>" : dValue.getLabel() %></a></span>
+		<span class="cat_sum_top_li"><%= (i!=0)?"&bull; ":" " %><a href="javascript:sortFormSubmit('<%=dValue.getContentName()%>','<%=_sortDescending%>');" title=""><%= dValue.getContentName().equals(sortCol) ? "<b>"+dValue.getLabel()+"</b>" : dValue.getLabel() %></a></span>
 <%
              }
           }             
@@ -102,7 +106,6 @@ List wineSortList=catModel.getWineSortCriteria();
 <% WineSortStrategy sortStrategy = new WineSortStrategy(sortNameAttrib, sortDescending); %>
 
 <fd:ItemSorter nodes='<%=displayList%>' strategy='<%=sortStrategy.getSortStrategyElements(sortCol)%>'/>
-
 <script language='Javascript'>
 function filterFormSubmit(idx){
 <% if (wineFilterList.size() > 1) { %>
@@ -119,8 +122,8 @@ function filterFormSubmit(idx){
     document.location.href="/category.jsp?catId=<%=currentFolder%>&trk=cpage<%= domainParams.toString() %>"+"&filterBy="+tokens[0]+"&filterByValue="+tokens[1]+"<%= sortParams.toString() %><%= viewParams.toString() %><%= moreOptionParams.toString() %>";
 }
 
-function sortFormSubmit(sortval){
-    document.location.href="/category.jsp?catId=<%=currentFolder%>&trk=cpage<%= domainParams.toString() %><%= filterParams.toString() %><%= viewParams.toString() %><%= moreOptionParams.toString() %>"+"&wine_sort="+sortval+"&sort_desc="+<%= !sortDescending %>;
+function sortFormSubmit(sortval, sortDesc){
+    document.location.href="/category.jsp?catId=<%=currentFolder%>&trk=cpage<%= domainParams.toString() %><%= filterParams.toString() %><%= viewParams.toString() %><%= moreOptionParams.toString() %>"+"&wine_sort="+sortval+"&sort_desc="+sortDesc;
 }
 </script>
 </form>
