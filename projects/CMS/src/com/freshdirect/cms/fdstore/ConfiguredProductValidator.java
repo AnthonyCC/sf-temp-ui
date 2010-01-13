@@ -5,13 +5,11 @@ package com.freshdirect.cms.fdstore;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
@@ -107,15 +105,15 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 			}
 			
 			boolean validCharValue = false;
-			Set<String> charValueSet = charValues.getValues().keySet();			
-			for ( String cv : charValueSet ) {
+			Set<Object> charValueSet = charValues.getValues().keySet();			
+			for ( Object cv : charValueSet ) {
 				if (cv.equals(charValue)) {
 					validCharValue = true;
 					break;
 				}
 			}
 			if (!validCharValue) {
-				SortedSet<String> charValueSortedSet = new TreeSet<String>(charValueSet);
+				SortedSet<Object> charValueSortedSet = new TreeSet<Object>(charValueSet);
 				
 				delegate.record(node.getKey(), "OPTIONS", "Invalid characteristic value "
 					+ charValue
@@ -191,7 +189,7 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 		for ( ContentKey charKey : charKeys ) {
 			ContentNodeI charNode = charKey.getContentNode();
 			String charName = (String) charNode.getAttribute("name").getValue();
-			Map<String,String> values = new HashMap<String,String>();
+			Map<Object,String> values = new HashMap<Object,String>();
 			Set<ContentKey> cvKeys = charNode.getChildKeys();
 			for ( ContentKey cvKey : cvKeys ) {
 				ContentNodeI cvNode = cvKey.getContentNode();

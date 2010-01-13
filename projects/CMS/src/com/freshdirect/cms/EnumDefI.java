@@ -14,7 +14,7 @@ public interface EnumDefI extends AttributeDefI {
 	 * 
 	 * @return Map of Object (value) -> String (label)
 	 */
-	public Map getValues();
+	public Map<Object,String> getValues();
 
 	/**
 	 * Get the type of the enumerated value.
