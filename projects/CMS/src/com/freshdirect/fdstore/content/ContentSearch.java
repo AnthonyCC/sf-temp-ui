@@ -412,8 +412,11 @@ public class ContentSearch {
     public void refreshRelevencyScores() {
         synchronized(this) {
             this.searchRelevancyMap = SearchRelevancyList.createFromCms();
-            autocompletion.clearBadSingular();
-            autocompletion.addAllBadSingular(SearchRelevancyList.getBadPluralFormsFromCms());
+            initAutocompleter();
+            if (autocompletion != null) {
+                autocompletion.clearBadSingular();
+                autocompletion.addAllBadSingular(SearchRelevancyList.getBadPluralFormsFromCms());
+            }
         }
     }
 

@@ -15,6 +15,7 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
@@ -41,7 +42,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class LuceneSpellingSuggestionService {
 	
-	final static Category LOGGER = LoggerFactory.getInstance(LuceneSpellingSuggestionService.class);
+	final static Logger LOGGER = LoggerFactory.getInstance(LuceneSpellingSuggestionService.class);
 	
 	// Do not try to search for these
 	private final static Set<String> stopWords = new HashSet(Arrays.asList(new String[] {"with","and","of","or"}));
@@ -156,7 +157,7 @@ public class LuceneSpellingSuggestionService {
 		
 		// get suggestions
 		String[] words = checker.suggestSimilar(query,maxHits);
-		
+		LOGGER.info("collect raw spelling hits:"+query + " :: " + Arrays.asList(words));
 		// if multi-term append the original query as a candidate
 		// only if it exists in the index.
 		// E.g. query = "dite coke", dite will be rejected, but coke is ok
@@ -184,6 +185,7 @@ public class LuceneSpellingSuggestionService {
                                 return df.accept(query,s,distance);
                             }
                         });
+                        LOGGER.info("words from the autocompletions :" + prefix + " -> " + autocompletions);
 		        if (autocompletions != null && autocompletions.size() > 0) {
 		            for (String word : autocompletions) {
 		                String normedWord = word.toLowerCase();
