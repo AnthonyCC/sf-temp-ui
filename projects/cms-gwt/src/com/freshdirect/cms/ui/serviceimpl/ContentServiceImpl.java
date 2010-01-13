@@ -259,7 +259,6 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 			return new GwtSaveResponse(id, gsc);
 
 		} catch (ContentValidationException v) {
-			@SuppressWarnings("unchecked")
 			List<ContentValidationMessage> messages = (List<ContentValidationMessage>) v.getDelegate().getValidationMessages();
 			List<GwtValidationError> errors = new ArrayList<GwtValidationError>();
 			for (ContentValidationMessage msg : messages) {

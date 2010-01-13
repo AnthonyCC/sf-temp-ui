@@ -116,7 +116,7 @@ public class PublishList extends LayoutContainer {
 
 		public ProgressPublishWidget(GwtPublishData data) {
 			this();
-			setPublish(publish);
+			setPublish(data);
 		}
 
 		@Override

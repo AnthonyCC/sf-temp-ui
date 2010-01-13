@@ -21,6 +21,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.EnumAttributeType;
+import com.freshdirect.cms.EnumDefI;
 import com.freshdirect.cms.ITable;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
@@ -368,15 +369,18 @@ public class TranslatorToGwt {
         return attr;
     }
     
-    @SuppressWarnings( "unchecked" )
-	private static EnumAttribute translateEnumDefToEnumAttribute( EnumDef enumD, String name, Serializable currValue ) {    	
+    private static EnumAttribute translateEnumDefToEnumAttribute( EnumDef enumD, String name, Serializable currValue ) {    	
         EnumAttribute enumA = new EnumAttribute();
         enumA.setLabel(name);
-        for (Map.Entry<Serializable, String> e : ((Map<Serializable, String>) enumD.getValues()).entrySet()) {
-            enumA.addValue(e.getKey(), e.getValue());
-            if (e.getKey().equals(currValue)) {
-                enumA.setValue(e.getKey(), e.getValue());
-            }
+        for ( Map.Entry<Object, String> e : enumD.getValues().entrySet() ) {
+        	if ( e.getKey() instanceof Serializable ) {
+	        	Serializable key = (Serializable)e.getKey();
+	        	String value = e.getValue();
+	            enumA.addValue(key, value);
+	            if (key.equals(currValue)) {
+	                enumA.setValue(key, value);
+	            }
+        	}
         }
         return enumA;    	
     }
@@ -620,7 +624,38 @@ public class TranslatorToGwt {
 			);		
 		
 		for ( ChangeDetail cd : (List<ChangeDetail>)cnc.getChangeDetails() ) {
-			gcnc.addDetail( new GwtChangeDetail( cd.getAttributeName(), cd.getOldValue(), cd.getNewValue() ) );
+			String oldValue = cd.getOldValue();
+			String newValue = cd.getNewValue();
+			if ( node != null ) {
+				AttributeDefI attrDef = node.getAttribute( cd.getAttributeName() ).getDefinition();
+				// try to get the human-readable string representation of the enum attribute value if available
+				// complicated tricks to do it in a fail-safe way 
+				if ( attrDef instanceof EnumDefI ) {
+					EnumDefI enumD = (EnumDefI)attrDef;
+					Map<Object, String> valMap = enumD.getValues();
+					
+					String oldS = (String)valMap.get( oldValue );
+					String newS = (String)valMap.get( newValue );
+					
+					if ( oldS != null || newS != null ) {
+						oldValue = oldS;
+						newValue = newS;
+					} else {
+						String oldI = null;
+						String newI = null;
+						try { 
+							oldI = oldValue == null ? null : (String)valMap.get( new Integer(oldValue) );
+							newI = newValue == null ? null : (String)valMap.get( new Integer(newValue) );
+						} catch ( NumberFormatException ex ) {}
+						
+						if ( oldI != null || newI != null ) {
+							oldValue = oldI;
+							newValue = newI;
+						}
+					}
+				}				
+			}
+			gcnc.addDetail( new GwtChangeDetail( cd.getAttributeName(), oldValue, newValue ) );
 		}
 		return gcnc;
 	}	
