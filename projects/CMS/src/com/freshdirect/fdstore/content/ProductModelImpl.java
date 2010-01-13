@@ -1576,6 +1576,56 @@ inner:
     	else
     		return rating.getStatusCodeInDisplayFormat();
     }
+    
+    public String getFreshnessGuaranteed() throws FDResourceException {
+    	
+    	String freshness = null;
+    	List skus = getSkus();
+        SkuModel sku = null;
+        // remove the unavailable sku's
+        for (ListIterator li = skus.listIterator(); li.hasNext();) {
+            sku = (SkuModel) li.next();
+            if (sku.isUnavailable()) {
+                li.remove();
+            }
+        }
+
+        FDProductInfo productInfo = null;
+        if (skus.size() == 0)
+            return freshness; // skip this item..it has no skus. Hmmm?
+        if (skus.size() == 1) {
+            sku = (SkuModel) skus.get(0); // we only need one sku
+        } else {
+            sku = (SkuModel) Collections.max(skus, RATING_COMPARATOR);
+        }
+        if (sku != null && sku.getSkuCode() != null) {
+            
+            try {
+                // Freshness Guaranteed list of qualifying sku prefixees
+                String skuPrefixes = FDStoreProperties.getFreshnessGuaranteedSkuPrefixes();
+                
+                // if we have prefixes then check them
+                if (skuPrefixes != null && !"".equals(skuPrefixes)) {
+                    StringTokenizer st = new StringTokenizer(skuPrefixes, ","); // split comma-delimited list
+                    String curPrefix = ""; // holds prefix to check against
+                    
+                    while (st.hasMoreElements()) {
+                        curPrefix = st.nextToken();
+                        // if prefix matches get product info
+                        if (sku.getSkuCode().startsWith(curPrefix)) {
+                            productInfo = FDCachedFactory.getProductInfo(sku.getSkuCode());
+                            freshness = productInfo.getFreshness();
+                            if ((freshness != null && freshness.trim().length() > 0) 
+                            	&& !"X".equalsIgnoreCase(freshness.trim()) && !"0".equalsIgnoreCase(freshness.trim()) ) {
+                            	    	return freshness;
+                            }   
+                        }
+                    }
+                }
+            } catch (FDSkuNotFoundException ignore) {}
+        }
+        return null;
+    }
 
 	public List getGiftcardType() {
 		ContentNodeModelUtil.refreshModels(this, "GIFTCARD_TYPE", giftcardTypes, false);

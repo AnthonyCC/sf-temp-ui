@@ -239,7 +239,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
+						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 
 			} else if ("MEA0004562".equals(sku)) {
 				// return this item as available
@@ -256,7 +256,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
+						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			} else if ("MEA0004563".equals(sku)) {
 				// return this item as available by tomorrow, but not today
 				Date tomorrow  = DateUtil.addDays(now, 1);
@@ -272,7 +272,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
+						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			} else if ("MEA0004564".equals(sku)) {
 				// return this item as available the day after tomorrow
 				Date afterTomorrow = DateUtil.addDays(now, 2);
@@ -288,7 +288,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
+						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			} else if ("MEA0004565".equals(sku)) {
 				// return this item as available the day after tomorrow
 				Date inThreeDays   = DateUtil.addDays(now, 3);
@@ -304,7 +304,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
+						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			} else if ("MEA0004566".equals(sku)) {
 				// return a discontinued item
 				// a 10000 units available starting now
@@ -319,7 +319,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.DISCONTINUED,
 						                           now,
-						                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
+						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			} else if ("MEA0004567".equals(sku)) {
 				// return a temporarily unavailable item
 				// a 10000 units available starting now
@@ -334,7 +334,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.TEMP_UNAV,
 						                           now,
-						                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
+						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			} else {
 				// fallback: return any unknown item as unavailable
 				// a 0 units available starting now
@@ -348,7 +348,7 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.DISCONTINUED,
 						                           now,
-						                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
+						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			}
 
 			return productInfo;

@@ -2,6 +2,7 @@
 <%@ page import='java.io.*'%>
 <%@ page import='java.text.SimpleDateFormat'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.webapp.util.JspMethods'%>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.content.view.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
@@ -18,9 +19,16 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
 <%@ include file="/shared/includes/product/i_product_methods.jspf" %>
 
 <%
+
+List freshList = new ArrayList();
+String leastShelfDays = null; // least number of shelf life days for multiple skus
+
+
 	//*** get needed vars from request attributes, they must exist or else we throw jsp error ***/
 
 	FDUserI user = (FDUserI)request.getAttribute( "user" );
@@ -44,17 +52,112 @@
 
 	String app = (String)session.getAttribute( SessionName.APPLICATION );
 	boolean isWebApp = app == null || "WEB".equalsIgnoreCase( app );
+	
+	ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode);
+    	String actionUrl = FDURLUtil.getProductURI( productNode, pl.getTrackingCode() );
 %>
 
 
 
-<table border="0" cellspacing="0" cellpadding="0" width="407">
-	<tr valign="top">
+	<table border="0" cellspacing="0" cellpadding="0" width="0">
+		<tr valign="top">
 	
-		<td width="187" align="right" class="text11">	
+		<td width="0" align="right" class="text11">	
 			<!-- Product include start -->
 			<%@ include file="/shared/includes/product/i_product.jspf" %>
-	    </td>
+			<%
+			String shelfLife = JspMethods.getFreshnessGuaranteed(productNode);
+			if(shelfLife != null && shelfLife.trim().length() > 0) { %>		
+			
+				<table width="0" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+					    <td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
+					    <td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="140" height="1"></td>
+					    <td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6"></td>
+					</tr>
+
+
+					<tr> 
+					    <td colspan="3" align="center" valign="top">
+
+						<table width="0" border="0" cellspacing="0" cellpadding="0">
+							<tr><td colspan="3" align="center" style="border-left: solid 1px #999966; border-right: solid 1px #999966;">
+								<table border="0" cellspacing="0" cellpadding="0" width="0">
+								<%if(freshList.isEmpty() && skuSize == 1) { %>
+
+									<tr valign="top">
+									    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
+									    <td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
+									    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
+									    <td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
+									    <span class="text12">at least </span><span class="title12"><%=shelfLife%> days</span><span class="text12"><br> from delivery</span></td>
+									    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>								    
+									</tr>
+
+								<% } else {
+
+									int sizeOfList = freshList.size();
+									for(int i = 1; i < sizeOfList; i++) {
+										String val = (String)freshList.get(i);
+										if(!StringUtils.isNumeric(leastShelfDays) && StringUtil.isNumeric(val)) {
+											leastShelfDays = val;
+										} 
+										
+										if(Integer.parseInt(val) < Integer.parseInt(leastShelfDays)) {
+											leastShelfDays = val;
+										}
+										i++;
+									}
+
+		
+									ListIterator freshItr = freshList.listIterator();
+									boolean printHeader = true;
+									while(freshItr.hasNext()) {
+									
+										String label = (String)freshItr.next();
+										if(freshItr.hasNext()) {
+											String daysFresh = (String)freshItr.next();
+									%>
+											<tr valign="top">
+											<% if(printHeader) { %>
+											    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
+											    <td width="27"><img src="/media/images/site_pages/shelflife/freshness/days_<%=leastShelfDays%>.gif" width="27" height="27" border="0"></td>
+											    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
+											    <td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10">   
+											<% 
+											     printHeader = false;
+											} else { %>
+										 		<td colspan="3">&nbsp;</td>
+										        	
+										    		<td>   
+											<% } %>
+											     <br /><br /><span class="title12"><i><%=label%>:</i></span><br /><span class="text12">at least</span><span class="title12"> <%=daysFresh%> days</span><span class="text12"><br> from delivery</span></td><br />								
+											    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
+											</tr>
+											
+									<%
+										}
+									}%>
+									<tr>
+										<td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="20"></td>
+									</tr>
+								<%} %>
+								</table>
+							</td></tr>
+						</table>
+					    </td>
+					</tr>
+					<tr>
+					    <td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6"></td>
+					    <td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+					    <td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
+					</tr>
+				</table>
+				<br>
+					<A HREF="javascript:pop('/nutrition_info.jsp?catId=<%=request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId")%>',335,375)">Learn more about our Freshness Guarantee - CLICK HERE</A>
+
+			<%}%>
+		</td>	
 
 		<td width="20">
 			<img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" hspace="0" vspace="0">

@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.ejb.EJBException;
 import javax.ejb.ObjectNotFoundException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.erp.EnumATPRule;
@@ -214,7 +215,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	private final static String QUERY_PRODUCTS_BY_SKU =
 		"select p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date,"
-			+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit"
+			+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit, "
+			+ " p.days_fresh, p.days_in_house "
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and p.sku_code = ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = ?)";
@@ -250,6 +252,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			String descr = rs.getString(8);
 			EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(9));
 			String rating=rs.getString(10);
+			
+			String days_fresh = rs.getString(15);
+			String days_in_house = rs.getString(16);
+			String freshness = getFreshnessValue(days_fresh, days_in_house);
+			
 			double basePrice = rs.getDouble(11);
 			String basePriceUnit = rs.getString(12);
 			
@@ -273,6 +280,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				unavReason,
 				descr,
 				rating,
+				freshness,
 				basePrice,
 				basePriceUnit);
 
@@ -295,8 +303,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	private static final String skuVersionQuery =
 		"select p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date,"
-			+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit"
-			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
+			+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit, "
+			+ " p.days_fresh, p.days_in_house "
+			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp "
 			+ " where p.id=mpx.product_id and mpx.mat_id=m.id and mp.mat_id = m.id and p.sku_code = ? and p.version = ?";
 
 	public ErpProductInfoModel findProductBySku(String skuCode, int version) throws ObjectNotFoundException {
@@ -327,7 +336,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(8));
 				String rating=rs.getString(9);
 				double basePrice = rs.getDouble(10);
-				String basePriceUnit = rs.getString(11);				
+				String basePriceUnit = rs.getString(11);
+				
+				String days_fresh = rs.getString(14);
+				String days_in_house = rs.getString(15);
+				String freshness = getFreshnessValue(days_fresh, days_in_house);
+				
 				matNos.add(rs.getString(3));
 				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(12), rs.getString(13)));
 				while (rs.next()) {
@@ -348,6 +362,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					unavReason,
 					descr,
 					rating,
+					freshness,
 					basePrice,
 					basePriceUnit);
 			}
@@ -398,7 +413,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(9));
 					String rating =rs.getString(10);
 					double basePrice = rs.getDouble(11);
-					String basePriceUnit = rs.getString(12);					
+					String basePriceUnit = rs.getString(12);	
+					
+					String days_fresh = rs.getString(15);
+					String days_in_house = rs.getString(16);
+					String freshness = getFreshnessValue(days_fresh, days_in_house);
+					
 					matNos.add(rs.getString(4));
 					matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(13), rs.getString(14)));
 					while (rs.next()) {
@@ -420,6 +440,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 							unavReason,
 							descr,
 							rating,
+							freshness,
 							basePrice,
 							basePriceUnit));
 				}
@@ -535,7 +556,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	private final static String QUERY_PRODUCTS_BY_SAP_ID =
 		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status,"
-			+ " p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit "
+			+ " p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit, "
+			+ " p.days_fresh, p.days_in_house "
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id"
 			+ " and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code)"
@@ -569,6 +591,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String rating=rs.getString(11);
 				double basePrice = rs.getDouble(12);
 				String basePriceUnit = rs.getString(13);
+				
+				String days_fresh = rs.getString(16);
+				String days_in_house = rs.getString(17);
+				String freshness = getFreshnessValue(days_fresh, days_in_house);
+				
 				matNos.add(rs.getString(5));
 				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(14), rs.getString(15)));
 
@@ -586,6 +613,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						unavReason,
 						descr,
 						rating,
+						freshness,
 						basePrice,
 						basePriceUnit));
 			}
@@ -609,7 +637,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	private final static String QUERY_PRODUCTS_BY_DESCRIPTION =
 		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status,"
-			+ " p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit"
+			+ " p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit, "
+			+ " p.days_fresh, p.days_in_house "
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id"
 			+ " and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code)"
@@ -644,9 +673,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String rating=rs.getString(11);
 				double basePrice = rs.getDouble(12);
 				String basePriceUnit = rs.getString(13);
+				
+				String days_fresh = rs.getString(16);
+				String days_in_house = rs.getString(17);
+				String freshness = getFreshnessValue(days_fresh, days_in_house);
+				
 				matNos.add(rs.getString(5));
 				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(14), rs.getString(15)));
-
+				
 				products.add(
 					new ErpProductInfoModel(
 						skuCode,
@@ -661,6 +695,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						unavReason,
 						descr,
 						rating,
+						freshness,
 						basePrice,
 						basePriceUnit));
 			}
@@ -684,7 +719,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	private final static String QUERY_PRODUCTS_LIKE_SKU =
 		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date,"
-			+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit"
+			+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit, "
+			+ " p.days_fresh, p.days_in_house "
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and p.sku_code like ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
@@ -716,6 +752,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String rating=rs.getString(11);
 				double basePrice = rs.getDouble(12);
 				String basePriceUnit = rs.getString(13);
+				
+				String days_fresh = rs.getString(16);
+				String days_in_house = rs.getString(17);
+				String freshness = getFreshnessValue(days_fresh, days_in_house);
+				
 				matNos.add(rs.getString(5));
 				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(14), rs.getString(15)));
 
@@ -733,6 +774,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						unavReason,
 						descr,
 						rating,
+						freshness,
 						basePrice,
 						basePriceUnit));
 			}
@@ -757,7 +799,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	private final static String QUERY_PRODUCTS_BY_UPC =
 		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason,"
-			+ " m.description, m.atp_rule,p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit"
+			+ " m.description, m.atp_rule,p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit, "
+			+ " p.days_fresh, p.days_in_house "
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and m.upc = ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
@@ -789,6 +832,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String rating=rs.getString(11);
 				double basePrice = rs.getDouble(12);
 				String basePriceUnit = rs.getString(13);
+				
+				String days_fresh = rs.getString(16);
+				String days_in_house = rs.getString(17);
+				String freshness = getFreshnessValue(days_fresh, days_in_house);
+				
 				matNos.add(rs.getString(5));
 				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(14), rs.getString(15)));
 
@@ -806,6 +854,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						unavReason,
 						descr,
 						rating,
+						freshness,
 						basePrice,
 						basePriceUnit));
 			}
@@ -830,7 +879,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	private final static String QUERY_PRODUCTS_LIKE_UPC =
 		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason,"
-			+ " m.description, m.atp_rule,p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit"
+			+ " m.description, m.atp_rule,p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit, "
+			+ " p.days_fresh, p.days_in_house "
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
 			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and m.upc like ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
@@ -862,6 +912,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String rating=rs.getString(11);
 				double basePrice = rs.getDouble(12);
 				String basePriceUnit = rs.getString(13);
+				
+				String days_fresh = rs.getString(16);
+				String days_in_house = rs.getString(17);
+				String freshness = getFreshnessValue(days_fresh, days_in_house);
+				
 				matNos.add(rs.getString(5));
 				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(14), rs.getString(15)));
 
@@ -879,6 +934,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						unavReason,
 						descr,
 						rating,
+						freshness,
 						basePrice,
 						basePriceUnit));
 			}
@@ -1258,5 +1314,24 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	private String getFreshnessValue(String days_fresh, String days_in_house) {
+		if(null != days_fresh && days_fresh.trim().length() > 0 && StringUtils.isNumeric(days_fresh)) {
+			int df = Integer.parseInt(days_fresh);
+			if(null != days_in_house && days_in_house.trim().length() > 0 && StringUtils.isNumeric(days_in_house)) {
+				int dih = Integer.parseInt(days_in_house);
+				int difference = df - dih;
+				// make sure we don't pass a negative number for days fresh in case of data error.
+				if(difference < 0) {
+					difference = 0;
+				}
+				return String.valueOf(difference);
+			} else {
+				// in the case where the value was set for days_fresh but no value
+				// or an invalid value was set for days_in_house, return null
+				return null;
+			}
+		}
+		return null;
+	}
 
 }

@@ -179,7 +179,7 @@ class FDProductHelper {
 			erpProductInfo.getUnavailabilityDate(),
 			displayablePricingUnit, null,
 			erpProductInfo.getRating(),
-			erpProductInfo.getBasePrice(),
+			erpProductInfo.getFreshness(), erpProductInfo.getBasePrice(),
 			erpProductInfo.getBasePriceUnit(),
 			hasWasPrice,
 			dealsPercentage,

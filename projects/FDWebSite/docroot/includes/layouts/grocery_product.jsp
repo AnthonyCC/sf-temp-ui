@@ -7,6 +7,7 @@
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.webapp.util.JspMethods'%>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
@@ -702,7 +703,57 @@ if ((Image)productNode.getZoomImage()!=null) {
 <A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"><img SRC="<%=bigProductImage.getPath()%>" width="<%=bigProductImage.getWidth()%>" height="<%=bigProductImage.getHeight()%>" border="0" alt="<%=productNode.getFullName()%>"></A>
 <%
 	}
+	
+// ******** START -- Freshness Guarantee graphic ******************	
+String shelfLife = JspMethods.getFreshnessGuaranteed(productNode);
+if(shelfLife != null && shelfLife.trim().length() > 0) { %>		
+
+	<table width="0" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+		    <td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
+		    <td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="140" height="1"></td>
+		    <td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6"></td>
+		</tr>
+
+
+		<tr> 
+		    <td colspan="3" align="center" valign="top">
+
+			<table width="0" border="0" cellspacing="0" cellpadding="0">
+				<tr><td colspan="3" align="center" style="border-left: solid 1px #999966; border-right: solid 1px #999966;">
+					<table border="0" cellspacing="0" cellpadding="0" width="0">
+
+
+						<tr valign="top">
+						    <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+						    <td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
+						    <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+						    <td  valign="top"><img src="//media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
+						    <span class="text12">at least </span><span class="title12"><%=shelfLife%> days</span><span class="text12"><br> from delivery</span></td>
+						    <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>								    
+						</tr>
+
+
+					</table>
+				</td></tr>
+			</table>
+		    </td>
+		</tr>
+		<tr>
+		    <td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6"></td>
+		    <td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+		    <td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
+		</tr>
+		
+	</table>
+	<br>
+	<A HREF="javascript:pop('/nutrition_info.jsp?catId=<%=request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId")%>',335,375)">Learn more about our Freshness Guarantee</A>
+
+<%}
+// ******** END -- Freshness Guarantee graphic ******************	
 %>
+
+
 </td>
 </tr>
 </table>

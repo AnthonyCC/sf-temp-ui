@@ -303,6 +303,11 @@ public class FDStoreProperties {
 	//additional ratings 2009.06
 	private static final String PRODUCE_RATING_PREFIXES="fdstore.produceRatingPrefixes";
 	
+	// Freshness Guaranteed On/Off switch
+	private static final String FRESHNESS_GUARANTEED_ENABLED="fdstore.isFreshnessGuaranteedEnabled";
+	// freshness guaranteed on/off sku prefix based
+	private static final String FRESHNESS_GUARANTEED_PREFIXES="fdstore.freshnessGuaranteedPrefixes";
+	
 	private static final String HPLETTER_MEDIA_ENABLED="fdstore.isHomePageMediaEnabled";
 
 	//Deals changes.
@@ -597,6 +602,11 @@ public class FDStoreProperties {
 		defaults.put(PRODUCE_RATING_ENABLED, "true");
 		//produce rating sku prefixes
 		defaults.put(PRODUCE_RATING_PREFIXES, "FRU,VEG,YEL");
+		
+		// freshness guaranteed on/off switch
+		defaults.put(FRESHNESS_GUARANTEED_ENABLED, "true");
+		// freshness guaranteed on/off sku prefix specific
+		defaults.put(FRESHNESS_GUARANTEED_PREFIXES, "FRU,VEG,MEA,SEA,DEL,CHE,DAI,HMR,VAR,CAT,BAK,PAS,YEL");
 		
 		defaults.put(HP_LETTER_MEDIA_PATH1, "/media/editorial/home/letter/hp_letter_new.html");
 		defaults.put(HP_LETTER_MEDIA_PATH2, "/media/editorial/home/letter/hp_letter_customer.html");
@@ -1204,8 +1214,16 @@ public class FDStoreProperties {
 	public static String getRatingsSkuPrefixes(){
 		return get(PRODUCE_RATING_PREFIXES);
 	}
+	
+	// freshness guaranteed	
+	public static boolean IsFreshnessGuaranteedEnabled() {
+		return Boolean.valueOf(get(FRESHNESS_GUARANTEED_ENABLED)).booleanValue();
+	}
+	public static String getFreshnessGuaranteedSkuPrefixes(){
+		return get(FRESHNESS_GUARANTEED_PREFIXES);
+	}
 
-//  marketing admin changes
+	//  marketing admin changes
 	public static String getHPLetterMediaPathForNewUser() {
 		return get(HP_LETTER_MEDIA_PATH1);
 	}

@@ -46,6 +46,10 @@ public class FDProductInfo extends FDSku  {
     private final FDInventoryCacheI inventory;
 	
     private final String rating;
+    
+    /*  days guaranteed fresh upon delivery */
+    private final String freshness;
+    
 	/** Default price in USD */
 	private final double basePrice;
 	
@@ -61,7 +65,7 @@ public class FDProductInfo extends FDSku  {
     
     public FDProductInfo(String skuCode, int version, double defaultPrice, String defaultPriceUnit,
     		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
-    		String displayableDefaultPriceUnit, FDInventoryCacheI inventory, String rating,
+    		String displayableDefaultPriceUnit, FDInventoryCacheI inventory, String rating, String freshness,
     		double basePrice, String basePriceUnit, boolean hasWasPrice, int dealPercentage, int tieredDealPercentage) {
 		super(skuCode, version);
 		this.defaultPrice = defaultPrice;
@@ -73,6 +77,7 @@ public class FDProductInfo extends FDSku  {
         this.displayableDefaultPriceUnit = displayableDefaultPriceUnit;
         this.inventory = inventory;
         this.rating=rating;
+        this.freshness=freshness;
         this.basePrice=basePrice;
         this.basePriceUnit=basePriceUnit;
         this.hasWasPrice=hasWasPrice;
@@ -162,12 +167,17 @@ public class FDProductInfo extends FDSku  {
     	return this.rating;
     }
     
+    public String getFreshness() {
+    	return this.freshness;
+    }
+    
 	public String toString() {
 		StringBuffer buf=new StringBuffer("FDProductInfo[");
 		buf.append(this.getSkuCode()).append(" v").append(this.getVersion());
 		buf.append("\n\t").append(this.materialNumbers);
         buf.append("\n\t").append(this.availStatus.getShortDescription());
         buf.append("\n\t").append(this.availDate);
+        buf.append("\n\t").append(this.rating);
         buf.append("\n\t").append(this.rating);
         buf.append("\n]");
 		return buf.toString();

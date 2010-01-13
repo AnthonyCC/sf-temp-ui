@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.fdstore.EnumFreshnessGuaranteed;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -171,7 +172,6 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 		}
 
 	}
-	
 
 	/** Don't use allTheSame/reset, that's not thread-safe */
 	public final static Comparator PRICE_COMPARATOR = new ProductModel.PriceComparator();
@@ -643,6 +643,10 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public String getProductRating() throws FDResourceException; 
 
 	public EnumOrderLineRating getProductRatingEnum() throws FDResourceException; 
+	
+	public String getFreshnessGuaranteed() throws FDResourceException; 
+
+	//public EnumFreshnessGuaranteed getFreshnessGuaranteedEnum() throws FDResourceException; 
 	
 	public boolean isNew();
 	

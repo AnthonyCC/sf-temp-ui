@@ -235,6 +235,17 @@ public class JspMethods {
 					"JspMethods.getPrice method caught an FDResourceException");
 		}
 	}
+	
+	public static String getFreshnessGuaranteed(ProductModel theProduct)
+	throws JspException {
+		try {
+			return theProduct.getFreshnessGuaranteed();
+			} catch (FDResourceException fdre) {
+				LOGGER.warn("FDResourceException occured", fdre);
+				throw new JspException(
+				"JspMethods.getFreshnessGuaranteed method caught an FDResourceException");
+			}
+	}
 
         public static String getAttributeValue(ProductModel theProduct, String domainName) {
             List<DomainValue> ratings = theProduct.getRating();

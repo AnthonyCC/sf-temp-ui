@@ -429,7 +429,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public List getRating() {
 		return getProduct().getRating();
 	}
-
+	
 	public List getUsageList() {
 		return getProduct().getUsageList();
 	}
@@ -622,6 +622,10 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 
 	public EnumOrderLineRating getProductRatingEnum() throws FDResourceException {
 		return getProduct().getProductRatingEnum();
+	}
+	
+	public String getFreshnessGuaranteed() throws FDResourceException {
+		return getProduct().getFreshnessGuaranteed();
 	}
 	
 	public List getCountryOfOrigin() throws FDResourceException {

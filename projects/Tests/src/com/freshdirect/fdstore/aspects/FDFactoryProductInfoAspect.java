@@ -96,7 +96,7 @@ public class FDFactoryProductInfoAspect extends BaseAspect {
             erpEntries.add(new ErpInventoryEntryModel(now, 10000));
             inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
             productInfo = new FDProductInfo(sku, 1, price, "ea", materials, EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now, "",
-                    inventoryCache, "", 0.0, "", false, -1, -1);
+                    inventoryCache, "", null, 0.0, "", false, -1, -1);
         } else if (tomorrowAvailable.contains(sku)) {
             // return this item as available by tomorrow, but not today
             Date tomorrow = DateUtil.addDays(now, 1);
@@ -104,14 +104,14 @@ public class FDFactoryProductInfoAspect extends BaseAspect {
             erpEntries.add(new ErpInventoryEntryModel(tomorrow, 10000));
             inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
             productInfo = new FDProductInfo(sku, 1, price, "ea", materials, EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now, "",
-                    inventoryCache, "", 0.0, "", false, -1, -1);
+                    inventoryCache, "", null, 0.0, "", false, -1, -1);
         } else {
             // fallback: return any unknown item as unavailable
             // a 0 units available starting now
             erpEntries.add(new ErpInventoryEntryModel(now, 0));
             inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
             productInfo = new FDProductInfo(sku, 1, 1.0, "ea", materials, EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now, "",
-                    inventoryCache, "", 0.0, "", false, -1, -1);
+                    inventoryCache, "", null, 0.0, "", false, -1, -1);
         }
 
         return productInfo;

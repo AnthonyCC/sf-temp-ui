@@ -79,6 +79,9 @@ public class ErpProductInfoModel extends ModelSupport {
 	/** sap product rating */
 	private final String rating;
 	
+	/** sap product shelf life **/
+	private final String freshness;
+	
 	private double basePrice;
 	
 	private String basePriceUnit;	
@@ -95,7 +98,8 @@ public class ErpProductInfoModel extends ModelSupport {
 	 * @param unavailabilityDate
 	 * @param unavailabilityReason
 	 * @param description
-	 * @param rating	  
+	 * @param rating
+	 * @param freshness 
 	 */
 	public ErpProductInfoModel(
 		String skuCode,
@@ -110,6 +114,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		String unavailabilityReason,
 		String description,
 		String rating,
+		String freshness,
 		double basePrice,
 		String basePriceUnit) {
 		super();
@@ -125,6 +130,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		this.unavailabilityReason = unavailabilityReason;
 		this.description = description;
 		this.rating=rating;
+		this.freshness=freshness;
 		this.basePrice=basePrice;
 		this.basePriceUnit=basePriceUnit;
 	}
@@ -222,6 +228,13 @@ public class ErpProductInfoModel extends ModelSupport {
 		return rating;
 	}
 
+	/** Getter for property freshness.
+	 * @return Value for property freshness.
+	 */
+	public String getFreshness() {
+		return freshness;
+	}
+	
 	public double getBasePrice() {
 		return basePrice;
 	}

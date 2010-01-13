@@ -1603,4 +1603,10 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     public boolean hideIphone() {
         return false;
     }
+
+	@Override
+	public String getFreshnessGuaranteed() throws FDResourceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

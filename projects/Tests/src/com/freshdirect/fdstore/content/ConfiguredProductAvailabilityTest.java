@@ -177,7 +177,7 @@ public class ConfiguredProductAvailabilityTest extends FDCustomerManagerTestSupp
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
+						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			} else {
 				// return this item as unavailable
 				// this SKU is included in the ConfiguredProduct "ok"
@@ -191,7 +191,7 @@ public class ConfiguredProductAvailabilityTest extends FDCustomerManagerTestSupp
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
+						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			}
 
 			return productInfo;
