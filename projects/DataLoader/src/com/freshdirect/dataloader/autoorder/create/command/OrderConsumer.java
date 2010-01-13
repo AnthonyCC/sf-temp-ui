@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -101,6 +102,7 @@ public class OrderConsumer implements IConsumer {
 		try {
 			FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.SYSTEM, identity, "AutoOrder", "",IConstants.AGENT);			
 			FDCustomerManager.placeOrder(actionInfo, cart,(Set)new HashSet(), false, rating, EnumDlvPassStatus.NONE);
+			// Huhh... this is a bit strange ...
 		} catch (FDResourceException fdre) {
 			fdre.printStackTrace();
 		} catch (ErpTransactionException te) {
@@ -115,7 +117,9 @@ public class OrderConsumer implements IConsumer {
 			re.printStackTrace();
 		} catch (DeliveryPassException de) {
 			de.printStackTrace();
-		}
+		} catch (ErpAddressVerificationException e) {
+		    e.printStackTrace();
+                }
 
 	}
 
