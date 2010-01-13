@@ -213,10 +213,11 @@ public class ContentNodeModelUtil {
                     } else if (key.getType() == FDContentTypes.CONFIGURED_PRODUCT) {
                         LOGGER.warn("Configured product "+key+" already exists at "+parentNode.getContentKey()+", instead of the expected "+refModel.getContentKey());
                         cache = false;
+                    } else if (key.getType() == FDContentTypes.RECIPE_VARIANT && parentNode.getContentKey().getType() == FDContentTypes.RECIPE) {
+                        LOGGER.warn(buildErrorMessage(refModel, key, cachedContentNodeByKey, parentNode));
+                        cache = false;
                     } else {
-                        throw new RuntimeException("Content node already exists for key:" + key + ", node:" + cachedContentNodeByKey + ", hash:"
-                                + System.identityHashCode(cachedContentNodeByKey) + " but with different parent : " + parentNode.getContentKey() + '('
-                                + System.identityHashCode(parentNode) + ") instead of the expected " + refModel.getContentKey() + "(" + System.identityHashCode(refModel) + ')');
+                        throw new RuntimeException(buildErrorMessage(refModel, key, cachedContentNodeByKey, parentNode));
                     }
                 } else {
                     return cachedContentNodeByKey;
@@ -234,6 +235,20 @@ public class ContentNodeModelUtil {
         	m = (ContentNodeModelImpl) ContentFactory.getInstance().getContentNodeByKey(key);
         }
         return m;
+    }
+
+    /**
+     * @param refModel
+     * @param key
+     * @param cachedContentNodeByKey
+     * @param parentNode
+     * @return
+     */
+    private static String buildErrorMessage(ContentNodeModelImpl refModel, ContentKey key, ContentNodeModelImpl cachedContentNodeByKey,
+            ContentNodeModel parentNode) {
+        return "Content node already exists for key:" + key + ", node:" + cachedContentNodeByKey + ", hash:"
+                + System.identityHashCode(cachedContentNodeByKey) + " but with different parent : " + parentNode.getContentKey() + '('
+                + System.identityHashCode(parentNode) + ") instead of the expected " + refModel.getContentKey() + "(" + System.identityHashCode(refModel) + ')';
     }
 
 	static boolean compareKeys(List keys, List models) {

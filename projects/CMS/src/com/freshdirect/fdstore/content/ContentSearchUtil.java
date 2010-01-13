@@ -215,8 +215,7 @@ public class ContentSearchUtil {
 		List l = new ArrayList(searchHits.size());
 		for (Iterator i = searchHits.iterator(); i.hasNext();) {
 			SearchHit hit = (SearchHit) i.next();
-			String id = hit.getContentKey().getId();
-			ContentNodeModel node = ContentFactory.getInstance().getContentNode(id);
+			ContentNodeModel node = ContentFactory.getInstance().getContentNodeByKey(hit.getContentKey());
 			if (node == null || node.isOrphan()) {
 				//LOGGER.debug("ContentFactory.resolveHits() discarding orphan: " + hit.getContentKey());
 				continue;
