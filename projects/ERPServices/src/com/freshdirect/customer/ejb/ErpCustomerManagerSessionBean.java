@@ -2656,54 +2656,44 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 		
 		public void sendCreateOrderToSAP(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws ErpSaleNotFoundException {
-			
-			try {
-				
-				PrimaryKey erpCustomerPk=new PrimaryKey(erpCustomerID);
-				PrimaryKey salePK=new PrimaryKey(saleID);
-				ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(salePK);
-				ErpAbstractOrderModel orderModel=saleEB.getCurrentOrder();
-				SapOrderAdapter sapOrder = this.adaptDonationOrder(erpCustomerPk, orderModel, rating);
-				SapGatewaySB sapSB = this.getSapGatewayHome().create();
-				sapOrder.setWebOrderNumber(salePK.getId());
-				sapSB.sendCreateSalesOrder(sapOrder,saleType);
-				
-			} catch (RemoteException re) {
-				LOGGER.warn(re);
-				throw new EJBException(re);
-			} catch (FinderException fe) {
-				LOGGER.warn(fe);
-				throw new ErpSaleNotFoundException(fe);
-			} catch (CreateException ce) {
-				LOGGER.warn(ce);
-				throw new EJBException(ce);
-			}
+		    sendCreateOrderToSAPImpl(erpCustomerID, saleID, saleType, rating);
 		}
 
+
+
 		public void sendCreateDonationOrderToSAP(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws ErpSaleNotFoundException, ErpTransactionException {
-			
-			try {
-				
-				PrimaryKey erpCustomerPk=new PrimaryKey(erpCustomerID);
-				PrimaryKey salePK=new PrimaryKey(saleID);
-				ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(salePK);
-				ErpAbstractOrderModel orderModel=saleEB.getCurrentOrder();
-				SapOrderAdapter sapOrder = this.adaptDonationOrder(erpCustomerPk, orderModel, rating);
-				SapGatewaySB sapSB = this.getSapGatewayHome().create();
-				sapOrder.setWebOrderNumber(salePK.getId());
-				sapSB.sendCreateSalesOrder(sapOrder,saleType);
-				
-			} catch (RemoteException re) {
-				LOGGER.warn(re);
-				throw new EJBException(re);
-			} catch (FinderException fe) {
-				LOGGER.warn(fe);
-				throw new ErpSaleNotFoundException(fe);
-			} catch (CreateException ce) {
-				LOGGER.warn(ce);
-				throw new EJBException(ce);
-			}
+		    sendCreateOrderToSAPImpl(erpCustomerID, saleID, saleType, rating);
 		}
+
+            /**
+             * @param erpCustomerID
+             * @param saleID
+             * @param saleType
+             * @param rating
+             * @throws ErpSaleNotFoundException 
+             */
+            private void sendCreateOrderToSAPImpl(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws ErpSaleNotFoundException {
+                try {
+                    PrimaryKey erpCustomerPk = new PrimaryKey(erpCustomerID);
+                    PrimaryKey salePK = new PrimaryKey(saleID);
+                    ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(salePK);
+                    ErpAbstractOrderModel orderModel = saleEB.getCurrentOrder();
+                    SapOrderAdapter sapOrder = this.adaptDonationOrder(erpCustomerPk, orderModel, rating);
+                    SapGatewaySB sapSB = this.getSapGatewayHome().create();
+                    sapOrder.setWebOrderNumber(salePK.getId());
+                    sapSB.sendCreateSalesOrder(sapOrder, saleType);
+                } catch (RemoteException re) {
+                    LOGGER.warn(re);
+                    throw new EJBException(re);
+                } catch (FinderException fe) {
+                    LOGGER.warn(fe);
+                    throw new ErpSaleNotFoundException(fe);
+                } catch (CreateException ce) {
+                    LOGGER.warn(ce);
+                    throw new EJBException(ce);
+                }
+        
+            }
 		
 	public void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) {
 		Connection conn = null;
