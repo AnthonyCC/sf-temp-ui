@@ -119,7 +119,7 @@
 	}
 %>
 
-
+<!-- include template <%= jspTemplate %> layout : <%= EnumLayoutType.getLayoutType(layouttype)%> -->
 <tmpl:insert template='<%=jspTemplate%>'>
 	
 	<% if (!noLeftNav) { %>

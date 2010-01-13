@@ -1600,4 +1600,19 @@ inner:
 	    return getPrimaryProductModel().getSkus();
 	}
 	
+	public String getReverseParentPath(boolean fullname) {
+	    StringBuilder sb = new StringBuilder();
+	    ContentNodeModel model = this;
+	    while (model != null && !"Store".equals(model.getContentKey().getType().getName())) {
+	        if (fullname) {
+	            sb.append(model.getFullName());
+	        }
+	        if (model instanceof CategoryModel) {
+	            sb.append("["+((CategoryModel)model).getPriority()+']');
+	        }
+	        sb.append('(').append(model.getContentKey()).append(") :: ");
+	        model = model.getParentNode();
+	    }
+	    return sb.toString();
+	}
 }

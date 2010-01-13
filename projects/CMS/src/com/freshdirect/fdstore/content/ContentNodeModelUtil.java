@@ -205,7 +205,7 @@ public class ContentNodeModelUtil {
                         // if the parent is a product, it is possible that we have to construct child objects for not the primary product node.
                         // in that chase construct an object, but do not cache it
                         if (refModel instanceof ProductModelImpl && !((ProductModelImpl)refModel).isInPrimaryHome()) {
-                            LOGGER.warn("trying to construct child object of a product " + refModel.getContentKey() + ", which is in "
+                            LOGGER.debug("trying to construct child object of a product " + refModel.getContentKey() + ", which is in "
                                     + refModel.getParentNode().getContentKey() + " instead of the primary home:"
                                     + ((ProductModelImpl) refModel).getPrimaryHome().getContentKey());
                         }
