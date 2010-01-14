@@ -121,7 +121,7 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 											<tr valign="top">
 											<% if(printHeader) { %>
 											    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
-											    <td width="27"><img src="/media/images/site_pages/shelflife/freshness/days_<%=leastShelfDays%>.gif" width="27" height="27" border="0"></td>
+											    <td width="27"><img src="/media/images/site_pages/shelflife/days_<%=leastShelfDays%>.gif" width="27" height="27" border="0"></td>
 											    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
 											    <td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10">   
 											<% 
