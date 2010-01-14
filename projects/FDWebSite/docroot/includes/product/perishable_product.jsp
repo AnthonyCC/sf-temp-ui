@@ -99,7 +99,7 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 									int sizeOfList = freshList.size();
 									for(int i = 1; i < sizeOfList; i++) {
 										String val = (String)freshList.get(i);
-										if(!StringUtils.isNumeric(leastShelfDays) && StringUtil.isNumeric(val)) {
+										if(!StringUtil.isNumeric(leastShelfDays) && StringUtil.isNumeric(val)) {
 											leastShelfDays = val;
 										} 
 										
