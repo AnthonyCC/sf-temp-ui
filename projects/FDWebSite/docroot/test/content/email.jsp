@@ -29,6 +29,7 @@ if we're on the email.jsp, set the product base urls to PROD
 set true in email.jsp, false in newsletter.jsp
 */
 boolean emailpage = true;
+params.put("emailpage", emailpage);
 %>
 <body>
 	<fd:IncludeMedia name="/media/editorial/picks/pres_picks/pres_picks.ftl" parameters="<%=params%>"/>
