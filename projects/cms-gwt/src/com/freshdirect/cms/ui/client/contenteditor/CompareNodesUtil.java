@@ -112,7 +112,8 @@ public class CompareNodesUtil {
 			// show number of differences if any found in tab
 			TabItem tab = tabs.get(tabLabel);
 			if (k > 0) {
-				tab.setText(tabLabel + " (" + k + ")");
+//				tab.setText(tabLabel + " (" + k + ")");
+				tab.setText(tabLabel);
 			}
 		}		
 		
