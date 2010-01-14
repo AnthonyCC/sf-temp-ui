@@ -24,11 +24,7 @@
 <%@ include file="/shared/includes/product/i_product_methods.jspf" %>
 
 <%
-
-List shelfLifeList = (List)session.getAttribute("freshList");
-if(shelfLifeList == null) {
-	shelfLifeList = new ArrayList();
-}
+List shelfLifeList = null;
 String leastShelfDays = null; // least number of shelf life days for multiple skus
 
 
@@ -69,6 +65,19 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 			<!-- Product include start -->
 			<%@ include file="/shared/includes/product/i_product.jspf" %>
 			<%
+			shelfLifeList = (List)session.getAttribute("freshList");
+			System.out.println("******** shelfLifelist = " + shelfLifeList);
+			if(shelfLifeList == null) {
+				shelfLifeList = new ArrayList();
+			}
+			ListIterator freshItr2 = shelfLifeList.listIterator();
+				
+				while(freshItr2.hasNext()) {
+
+					String label = (String)freshItr2.next();
+					System.out.println("item = " + label);
+				}
+			
 			String shelfLife = JspMethods.getFreshnessGuaranteed(productNode);
 			if(shelfLife != null && shelfLife.trim().length() > 0) { %>		
 			
@@ -98,15 +107,20 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 									</tr>
 
 								<% } else {
-
+									// calculate lowest shelf life in stack sku group
+									// sku with lowest shelf life value will display per domain label
 									int sizeOfList = shelfLifeList.size();
 									for(int i = 1; i < sizeOfList; i++) {
+									
 										String val = (String)shelfLifeList.get(i);
+									
 										if(!StringUtil.isNumeric(leastShelfDays) && StringUtil.isNumeric(val)) {
+										
 											leastShelfDays = val;
 										} 
 										
 										if(Integer.parseInt(val) < Integer.parseInt(leastShelfDays)) {
+										
 											leastShelfDays = val;
 										}
 										i++;
