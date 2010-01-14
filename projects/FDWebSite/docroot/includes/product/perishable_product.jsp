@@ -25,7 +25,10 @@
 
 <%
 
-List freshList = new ArrayList();
+List shelfLifeList = (List)session.getAttribute("freshList");
+if(shelfLifeList == null) {
+	shelfLifeList = new ArrayList();
+}
 String leastShelfDays = null; // least number of shelf life days for multiple skus
 
 
@@ -83,7 +86,7 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 						<table width="0" border="0" cellspacing="0" cellpadding="0">
 							<tr><td colspan="3" align="center" style="border-left: solid 1px #999966; border-right: solid 1px #999966;">
 								<table border="0" cellspacing="0" cellpadding="0" width="0">
-								<%if(freshList.isEmpty() && skuSize == 1) { %>
+								<%if(shelfLifeList.isEmpty() && skuSize == 1) { %>
 
 									<tr valign="top">
 									    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
@@ -96,9 +99,9 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 
 								<% } else {
 
-									int sizeOfList = freshList.size();
+									int sizeOfList = shelfLifeList.size();
 									for(int i = 1; i < sizeOfList; i++) {
-										String val = (String)freshList.get(i);
+										String val = (String)shelfLifeList.get(i);
 										if(!StringUtil.isNumeric(leastShelfDays) && StringUtil.isNumeric(val)) {
 											leastShelfDays = val;
 										} 
@@ -110,7 +113,7 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 									}
 
 		
-									ListIterator freshItr = freshList.listIterator();
+									ListIterator freshItr = shelfLifeList.listIterator();
 									boolean printHeader = true;
 									while(freshItr.hasNext()) {
 									
