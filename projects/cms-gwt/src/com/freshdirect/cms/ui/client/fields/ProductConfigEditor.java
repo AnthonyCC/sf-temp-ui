@@ -249,4 +249,19 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 		attribute.setConfigOptions( confOpts );		
 	}
 
+    @Override
+    public void setReadOnly( boolean readOnly ) {
+    	super.setReadOnly( readOnly );
+    	if ( skuField != null )
+    		skuField.setReadOnly( readOnly );
+    	if ( quantityField != null )
+    		quantityField.setReadOnly( readOnly );
+    	if ( salesUnitField != null )
+    		salesUnitField.setReadOnly( readOnly );
+    	if ( optionFields != null ) {
+	    	for ( ComboBox<EnumModel> combo : optionFields.values() ) {
+	    		combo.setReadOnly( readOnly );
+	    	}
+    	}
+    }
 }
