@@ -9,6 +9,7 @@ import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
 public abstract class ProxyProduct extends AbstractProductModelImpl {
@@ -625,7 +626,10 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	}
 	
 	public String getFreshnessGuaranteed() throws FDResourceException {
-		return getProduct().getFreshnessGuaranteed();
+		if(FDStoreProperties.IsFreshnessGuaranteedEnabled()) {
+			return getProduct().getFreshnessGuaranteed();
+		}
+		return null;
 	}
 	
 	public List getCountryOfOrigin() throws FDResourceException {

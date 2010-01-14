@@ -168,7 +168,10 @@ public class FDProductInfo extends FDSku  {
     }
     
     public String getFreshness() {
-    	return this.freshness;
+    	if(FDStoreProperties.IsFreshnessGuaranteedEnabled()) {
+    		return this.freshness;
+    	}
+    	return null;
     }
     
 	public String toString() {

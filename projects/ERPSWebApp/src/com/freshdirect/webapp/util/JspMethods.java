@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -239,12 +240,15 @@ public class JspMethods {
 	public static String getFreshnessGuaranteed(ProductModel theProduct)
 	throws JspException {
 		try {
-			return theProduct.getFreshnessGuaranteed();
-			} catch (FDResourceException fdre) {
-				LOGGER.warn("FDResourceException occured", fdre);
-				throw new JspException(
-				"JspMethods.getFreshnessGuaranteed method caught an FDResourceException");
+			if(FDStoreProperties.IsFreshnessGuaranteedEnabled()) {
+				return theProduct.getFreshnessGuaranteed();
 			}
+		} catch (FDResourceException fdre) {
+			LOGGER.warn("FDResourceException occured", fdre);
+			throw new JspException(
+			"JspMethods.getFreshnessGuaranteed method caught an FDResourceException");
+		}
+		return null;
 	}
 
         public static String getAttributeValue(ProductModel theProduct, String domainName) {

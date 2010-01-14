@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.freshdirect.erp.EnumATPRule;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ModelSupport;
 
 /**
@@ -232,7 +233,10 @@ public class ErpProductInfoModel extends ModelSupport {
 	 * @return Value for property freshness.
 	 */
 	public String getFreshness() {
-		return freshness;
+		if(FDStoreProperties.IsFreshnessGuaranteedEnabled()){
+			return freshness;
+		}
+		return null;
 	}
 	
 	public double getBasePrice() {

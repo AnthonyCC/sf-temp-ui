@@ -1580,6 +1580,9 @@ inner:
     public String getFreshnessGuaranteed() throws FDResourceException {
     	
     	String freshness = null;
+    	if(!FDStoreProperties.IsFreshnessGuaranteedEnabled()) {
+    		return null;
+    	}
     	List skus = getSkus();
         SkuModel sku = null;
         // remove the unavailable sku's
