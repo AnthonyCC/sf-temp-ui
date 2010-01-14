@@ -23,6 +23,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class ContentNodeModelUtil {
 
 	private final static Logger LOGGER = LoggerFactory.getInstance(ContentNodeModelUtil.class);
+	
+	private final static boolean STRICT_MODE = false;
 
 	static HashMap CONTENT_TO_TYPE_MAP = new HashMap();
 
@@ -217,7 +219,12 @@ public class ContentNodeModelUtil {
                         LOGGER.warn(buildErrorMessage(refModel, key, cachedContentNodeByKey, parentNode));
                         cache = false;
                     } else {
-                        throw new RuntimeException(buildErrorMessage(refModel, key, cachedContentNodeByKey, parentNode));
+                        // in strict mode we cannot accept tolerate this type of errors, temporaly we have to relax this statement.
+                        if (STRICT_MODE) {
+                            throw new RuntimeException(buildErrorMessage(refModel, key, cachedContentNodeByKey, parentNode));
+                        } else {
+                            LOGGER.warn(buildErrorMessage(refModel, key, cachedContentNodeByKey, parentNode));
+                        }
                     }
                 } else {
                     return cachedContentNodeByKey;

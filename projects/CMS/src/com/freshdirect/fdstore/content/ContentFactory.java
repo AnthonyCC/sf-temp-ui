@@ -61,7 +61,7 @@ public class ContentFactory {
 	private final Object sync = new Object();
 
 	/** Map of sku codes / product nodes */
-	private LruCache<String,ProductModel> skuProduct;
+	private LruCache<String,ContentKey> skuProduct;
 
 	public static ContentFactory getInstance() {
 		return instance;
@@ -79,7 +79,7 @@ public class ContentFactory {
 		// ISTVAN, chagned HashMap to ConcurrentHashMap
 		this.contentNodes = new ConcurrentHashMap<String, ContentNodeModel>();
 		this.nodesByKey = new ConcurrentHashMap<ContentKey, ContentNodeModel>();
-		this.skuProduct = new LruCache<String,ProductModel>(5000);
+		this.skuProduct = new LruCache<String,ContentKey>(40000);
 	}
 
 	private StoreModel loadStore() {
@@ -176,9 +176,9 @@ public class ContentFactory {
 	 */
 	public ProductModel getProduct(String skuCode) throws FDSkuNotFoundException {
 		// look at cache
-		ProductModel prod = (ProductModel) this.skuProduct.get(skuCode);
-		if (prod != null)
-			return prod;
+		ContentKey prodKey = this.skuProduct.get(skuCode);
+		if (prodKey != null)
+			return (ProductModel) getContentNodeByKey(prodKey);
 
 		// get ProductModelss for sku
 		List<ProductModel> refs = getProdRefsForSku(skuCode);
@@ -188,6 +188,7 @@ public class ContentFactory {
 		}
 
 		// find the one in the PRIMARY_HOME (if there's one)
+		ProductModel prod = null;
 		CategoryModel primaryHome = null;
 		for (Iterator<ProductModel> i = refs.iterator(); i.hasNext();) {
 		        prod = i.next();
@@ -206,7 +207,7 @@ public class ContentFactory {
 
 			if (primaryHome != null && primaryHome.getContentKey().getId().equals(prod.getParentId())) {
 				// whew, this is in the primary home, cache the result
-				this.skuProduct.put(skuCode, prod);
+				this.skuProduct.put(skuCode, prod.getContentKey());
 				return prod;
 			}
 
@@ -219,7 +220,7 @@ public class ContentFactory {
 		}
 
 		// cache the result
-		this.skuProduct.put(skuCode, prod);
+		this.skuProduct.put(skuCode, prod.getContentKey());
 
 		return prod;
 	}
