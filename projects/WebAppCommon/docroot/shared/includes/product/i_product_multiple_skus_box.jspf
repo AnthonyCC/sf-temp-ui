@@ -30,6 +30,7 @@
 
     // === really big loop ===
     Iterator keyIter = matrix.keySet().iterator();
+    
     while ( keyIter.hasNext() ) {
         DomainValue priDomainValue = (DomainValue) keyIter.next();
         List group = (List)matrix.get(priDomainValue);
@@ -82,14 +83,19 @@
                           EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                           String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
                           
-                          %><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase() %></b></a><%
+                          %><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase()%></b></a><%
+                          String domainLabel = priDomainValue.getLabel().toUpperCase();     
+                          // freshList defined in perishable_product.jsp (list to store freshness guarantee labels)
+                          if(domainLabel != null) {
+                          	freshList.add(domainLabel);
+                          }
                           
                       } else if (_fdDefGrade!=null) {
                           TitledMedia tm = (TitledMedia)_fdDefGrade;
                           EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                           String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
                           
-                          %><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase() %></b></a><%
+                          %><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase()%></b></a><%
                           
                       } else {
                           %><b><%= priDomainValue.getLabel().toUpperCase() %></b>    <%
