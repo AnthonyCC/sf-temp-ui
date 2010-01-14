@@ -747,7 +747,7 @@ if(shelfLife != null && shelfLife.trim().length() > 0) { %>
 		
 	</table>
 	<br>
-	<A HREF="javascript:pop('/nutrition_info.jsp?catId=<%=request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId")%>',335,375)">Learn more about our Freshness Guarantee</A>
+	<A HREF="javascript:pop('/help/freshness.jsp',335,375)">Learn more about our Freshness Guarantee</A>
 
 <%}
 // ******** END -- Freshness Guarantee graphic ******************	
