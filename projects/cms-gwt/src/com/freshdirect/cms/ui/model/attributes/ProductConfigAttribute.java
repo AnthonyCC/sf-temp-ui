@@ -162,7 +162,8 @@ public class ProductConfigAttribute extends OneToOneAttribute {
 	public boolean equals( Object obj ) {
 		if ( obj instanceof ProductConfigAttribute ) {
 			ProductConfigAttribute pcAttr = (ProductConfigAttribute)obj;
-			if ( quantity == pcAttr.quantity && 
+			if ( ( getValue() == null ? pcAttr.getValue() == null : getValue().equals( pcAttr.getValue() ) ) && 
+				quantity == pcAttr.quantity && 
 				( salesUnit == null ? pcAttr.salesUnit == null : salesUnit.equals( pcAttr.salesUnit ) ) && 
 				( configOptions == null ? pcAttr.configOptions == null : configOptions.equals( pcAttr.configOptions ) )	) {
 				return true;

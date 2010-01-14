@@ -53,6 +53,7 @@ import com.freshdirect.cms.ui.model.attributes.EnumAttribute;
 import com.freshdirect.cms.ui.model.attributes.ModifiableAttributeI;
 import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
+import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
 import com.freshdirect.cms.ui.model.attributes.SimpleAttribute;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
@@ -224,7 +225,7 @@ public class TranslatorToGwt {
 			ContextualContentNodeI cxNode = ContextService.getInstance().getContextualizedContentNode( cx );
 			if ( cxNode == null )
 				break;
-			Map<String,AttributeI> inheritedAttributes = (Map<String,AttributeI>)cxNode.getInheritedAttributes();			
+			Map<String,AttributeI> inheritedAttributes = (Map<String,AttributeI>)cxNode.getParentInheritedAttributes();			
 			nodeContext.addContext( cx.getPath(TreeContentNodeModel.pathSeparator.charAt(0)), cx.getLabel(), translateAttributeMap( inheritedAttributes, tabs, key ) );
 		}		
 		return nodeContext;
@@ -263,7 +264,7 @@ public class TranslatorToGwt {
 	 * @return
 	 */
     public static ModifiableAttributeI translateAttribute(AttributeDefI definition, Object value, CustomFieldDefinition customFieldDefinition,ContentKey key) {
-        ModifiableAttributeI attr = translateAttribute(definition, customFieldDefinition, value);
+        ModifiableAttributeI attr = translateAttribute(definition, customFieldDefinition, value, key.getContentNode() );
         if (attr == null) {
             throw new RuntimeException("Unknown attribute type "+ definition + ", in node :"+key);
         }
@@ -271,7 +272,7 @@ public class TranslatorToGwt {
     }
 
     @SuppressWarnings( "unchecked" )
-	private static ModifiableAttributeI translateAttribute(AttributeDefI definition, CustomFieldDefinition customFieldDefinition, Object value) {
+	private static ModifiableAttributeI translateAttribute(AttributeDefI definition, CustomFieldDefinition customFieldDefinition, Object value, ContentNodeI node) {
         String name = definition.getLabel();
         EnumAttributeType type = definition.getAttributeType();
         ModifiableAttributeI attr = null;
@@ -310,19 +311,27 @@ public class TranslatorToGwt {
 			if ( relD.isCardinalityOne() ) {
 
 				ContentKey valueKey = (ContentKey)value;
-				OneToOneAttribute ooAttr = new OneToOneAttribute();
-				ooAttr.setLabel( name );
-				if ( valueKey != null ) {
-					ContentNodeModel model = toContentNodeModel( valueKey );
-					ooAttr.setValue( model );
-	                if ( customFieldDefinition != null && customFieldDefinition.getType() == CustomFieldDefinition.Type.ProductConfigEditor ) {
-	                	// extra info for ProductConfigEditor	                	
-	                	model.set( "PCE_CONFIG_PARAMS", getProductConfigParams( valueKey ) );	                		                	
-	                }        
+				
+				if ( valueKey != null && customFieldDefinition != null && customFieldDefinition.getType() == CustomFieldDefinition.Type.ProductConfigEditor ) {
+					ProductConfigAttribute pcAttr = new ProductConfigAttribute();
+					pcAttr.setLabel( name );
+					pcAttr.setValue( toContentNodeModel( valueKey ) );
+					pcAttr.setConfigParams( getProductConfigParams( valueKey ) );
+					pcAttr.setQuantity( (Double)node.getAttributeValue( "QUANTITY" ) );
+					pcAttr.setSalesUnit( (String)node.getAttributeValue( "SALES_UNIT" ) );
+					pcAttr.setConfigOptions( (String)node.getAttributeValue( "OPTIONS" ) );
+					attr = pcAttr;
+				} else {
+					OneToOneAttribute ooAttr = new OneToOneAttribute();
+					ooAttr.setLabel( name );
+					if ( valueKey != null ) {
+						ContentNodeModel model = toContentNodeModel( valueKey );
+						ooAttr.setValue( model );
+					}
+					ooAttr.setAllowedTypes( cTypes );				
+					attr = ooAttr;					
 				}
-				ooAttr.setAllowedTypes( cTypes );				
-				attr = ooAttr;
-
+				
 			} else {
                 Collection<ContentKey> values = (Collection<ContentKey>) value;
                 OneToManyAttribute ooAttr = new OneToManyAttribute(cTypes);
@@ -397,7 +406,7 @@ public class TranslatorToGwt {
         TableAttribute.ColumnType[] columnTypes = new TableAttribute.ColumnType[columns.length];
         
         for (int i=0;i<columnDefinitions.length;i++) {
-            columns[i] = translateAttribute(columnDefinitions[i], null, null);
+            columns[i] = translateAttribute(columnDefinitions[i], null, null, (ContentNodeI)null );
             String name = columnDefinitions[i].getName();
             if (name.toUpperCase().endsWith(SUFFIX_ATTR)) {
                 columnTypes[i] = TableAttribute.ColumnType.ATTRIB;

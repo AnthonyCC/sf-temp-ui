@@ -59,7 +59,7 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 		
 		skuField.addListener( Events.Change, new Listener<BaseEvent>() {
 			public void handleEvent(BaseEvent be) {
-				rebuildFields();
+				rebuildFields(null);
 			}
 		});
 		
@@ -178,7 +178,7 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 		mainPanel.add( optionPanel );
 	}
 	
-	private void rebuildFields() {
+	private void rebuildFields( ProductConfigAttribute pcAttr ) {
 		
 		if ( skuField.getValue() == null ) {
 			attribute.setSalesUnits( null );	
@@ -193,22 +193,28 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 		} else {		
 			String skuKey = skuField.getValue().getKey();
 			
-			CmsGwt.getContentService().getProductConfigParams( skuKey, new AsyncCallback<ProductConfigParams>() {				
-				@Override
-				public void onSuccess( ProductConfigParams pcp ) {
-					attribute.setConfigParams( pcp );
-					attribute.setSalesUnit( null );
-					attribute.setConfigOptions( (Map<String, String>)null );
-					
-					mainPanel.removeAll();
-					initFields();		
-					mainPanel.layout();
-				}				
-				@Override
-				public void onFailure( Throwable caught ) {
-					MessageBox.alert( "Error", "Error while loading product config parameters for the selected sku.", null );
-				}
-			} );			
+			if ( pcAttr == null ) {			
+				CmsGwt.getContentService().getProductConfigParams( skuKey, new AsyncCallback<ProductConfigParams>() {				
+					@Override
+					public void onSuccess( ProductConfigParams pcp ) {
+						attribute.setConfigParams( pcp );
+						attribute.setSalesUnit( null );
+						attribute.setConfigOptions( (Map<String, String>)null );
+						
+						mainPanel.removeAll();
+						initFields();		
+						mainPanel.layout();
+					}				
+					@Override
+					public void onFailure( Throwable caught ) {
+						MessageBox.alert( "Error", "Error while loading product config parameters for the selected sku.", null );
+					}
+				} );
+			} else {				
+				mainPanel.removeAll();
+				initFields();		
+				mainPanel.layout();				
+			}
 		}				
 	}
 	
@@ -216,6 +222,18 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 	public ProductConfigAttribute getValue() {
 		updateAttributeValues();
 		return attribute;		
+	}
+	
+	@Override
+	public void setValue( Serializable value ) {
+		if ( value instanceof ProductConfigAttribute ) 
+			setValue( (ProductConfigAttribute)value );
+	}
+	
+	public void setValue( ProductConfigAttribute attr ) {
+		this.attribute = attr;
+		skuField.setValue( attribute.getValue() );
+		rebuildFields( attr );
 	}
 	
 	protected void updateAttributeValues() {		

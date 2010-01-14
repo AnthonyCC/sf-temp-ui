@@ -33,7 +33,6 @@ import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
-import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
 
 /**
  * 	Creates the inner field for content editors depending on the attribute type. This will be optionally wrapped with an InheritanceField.
@@ -45,8 +44,6 @@ import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductCon
  * @return
  */
 public final class FieldFactory {
-	
-	
 	
 	/**
 	 * Creates a field for CMS attribute
@@ -79,21 +76,7 @@ public final class FieldFactory {
 				aField = new PrimaryHomeSelectorField( (ContentNodeModel)value, nodeData.getContexts() );
 				break;
 			case ProductConfigEditor:
-				OneToOneAttribute attr = (OneToOneAttribute) attribute;	//Sku
-				ContentNodeModel model = attr.getValue();
-				Double quantity = (Double)aNode.getAttributeValue( "QUANTITY" );
-				String salesUnit = (String)aNode.getAttributeValue( "SALES_UNIT" );
-				ProductConfigParams pcp = model.get( "PCE_CONFIG_PARAMS" );
-				String configOptions = (String)aNode.getAttributeValue( "OPTIONS" );
-				
-				ProductConfigAttribute pcAttr = new ProductConfigAttribute();
-				pcAttr.setLabel( attr.getLabel() );
-				pcAttr.setValue( model );
-				pcAttr.setReadonly( attr.isReadonly() );				
-            	pcAttr.setConfigParams( pcp );
-            	pcAttr.setQuantity( quantity );
-            	pcAttr.setSalesUnit( salesUnit );
-            	pcAttr.setConfigOptions( configOptions );		
+				ProductConfigAttribute pcAttr = (ProductConfigAttribute)attribute;
             	
             	ProductConfigEditor editor = new ProductConfigEditor( readonly, pcAttr );
             	pcAttr.setFieldObject( editor );
@@ -104,9 +87,6 @@ public final class FieldFactory {
 				break;
 			}
 		}
-
-
-
 
 
 		if (aField == null) {
@@ -257,6 +237,7 @@ public final class FieldFactory {
 	private static Field<Serializable> decorateInheritedValue(
 			GwtContextualizedNodeI cn, String key,
 			final boolean readonly, final Field<Serializable> innerField) {
+		
     	final GwtNodeData nodeData = cn.getNodeData();
 		final boolean isInherited = nodeData.getFormValue(key) == null;
 		Field<Serializable> field = new InheritanceField<Serializable>( innerField, isInherited, readonly );

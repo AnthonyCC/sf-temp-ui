@@ -115,6 +115,9 @@ public class GwtContentNode implements Serializable {
             return changedValues.get( attributeKey );
         } else {
         	ContentNodeAttributeI attr = originalAttributes.get( attributeKey ); 
+        	if ( attr != null && attr instanceof ProductConfigAttribute ) {
+        		return attr;
+        	}
             return attr == null ? null : attr.getValue();
         }
 	}
