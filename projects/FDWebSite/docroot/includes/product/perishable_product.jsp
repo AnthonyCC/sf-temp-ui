@@ -144,7 +144,10 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 									<tr>
 										<td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="20"></td>
 									</tr>
-								<%} %>
+								<%
+								//reset list
+								session.setAttribute("freshList", null);
+								} %>
 								</table>
 							</td></tr>
 						</table>
