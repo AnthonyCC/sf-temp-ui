@@ -62,6 +62,7 @@
 </fd:ProduceRatingCheck>
 <%---- Mulitple skus for Freshness Guaranteed ---%>
 <%
+List freshList = new ArrayList();
 String freshDays = productInfo.getFreshness();
 System.out.println("freshDays...."+freshDays);
 if(freshDays != null && freshDays.length() > 0) {
@@ -81,6 +82,7 @@ if(freshDays != null && freshDays.length() > 0) {
 			freshList.add(freshDays);
 		}
 	} 
+	session.setAttribute("freshList", freshList);
 }
 
 %>

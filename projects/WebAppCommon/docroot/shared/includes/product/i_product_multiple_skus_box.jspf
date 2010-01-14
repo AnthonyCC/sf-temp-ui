@@ -86,9 +86,14 @@
                           %><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase()%></b></a><%
                           String domainLabel = priDomainValue.getLabel().toUpperCase();     
                           // freshList defined in perishable_product.jsp (list to store freshness guarantee labels)
+                          List freshnessList = (List)session.getAttribute("freshList");
+			  if(freshnessList == null) {
+			  	freshnessList = new ArrayList();
+			  }
                           if(domainLabel != null) {
-                          	freshList.add(domainLabel);
+                          	freshnessList.add(domainLabel);
                           }
+                          session.setAttribute("freshList", freshnessList);
                           
                       } else if (_fdDefGrade!=null) {
                           TitledMedia tm = (TitledMedia)_fdDefGrade;
