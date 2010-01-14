@@ -92,6 +92,10 @@ class ContextualContentNode implements ContextualContentNodeI {
 	public ContentTypeDefI getDefinition() {
 		return node.getDefinition();
 	}
+	
+	public Map getParentInheritedAttributes() {
+		return parent != null ? parent.getInheritedAttributes() : new HashMap();
+	}
 
 	public Map getInheritedAttributes() {
 		Map inherited = parent != null ? parent.getInheritedAttributes() : new HashMap();
