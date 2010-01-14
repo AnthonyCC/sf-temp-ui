@@ -8,7 +8,6 @@ import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
-import com.freshdirect.fdstore.EnumFreshnessGuaranteed;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -646,8 +645,6 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public String getFreshnessGuaranteed() throws FDResourceException; 
 
-	//public EnumFreshnessGuaranteed getFreshnessGuaranteedEnum() throws FDResourceException; 
-	
 	public boolean isNew();
 	
 	public int getDealPercentage();
