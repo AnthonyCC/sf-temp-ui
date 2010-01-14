@@ -25,7 +25,6 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
     
     private LabelField valueField;
 
-    private ContentNodeModel value;
     private Set<String> allowedTypes;
     
     private AdapterField af;
@@ -49,18 +48,14 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
     }
 	
     @Override
-    public void setValue(ContentNodeModel model) {
-    	ContentNodeModel oldValue = this.value;
-        this.value = model;
-
-        if (value != null) {
+    public void setValue(ContentNodeModel model) {    	
+        if (model != null) {
             valueField.setValue(model.renderLink(true));
             valueField.setToolTip(model.getPreviewToolTip());
         } else {
             valueField.setValue("");
         }
-        
-        fireChangeEvent( oldValue, model );
+        super.setValue(model);
     }
 	
     private void initialize() {
@@ -99,7 +94,8 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
 	        deleteButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
 	            @Override
 	            public void handleEvent(BaseEvent be) {
-	                OneToOneRelationField.this.setValue(null);
+	                setValue(null);
+                    fireEvent(Events.Change, new FieldEvent(OneToOneRelationField.this));
 	            }
 	        });
 			cp.add( deleteButton, new ColumnData( 20.0 ) );

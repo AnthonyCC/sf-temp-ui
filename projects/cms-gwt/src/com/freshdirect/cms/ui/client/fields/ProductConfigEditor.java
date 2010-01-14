@@ -8,6 +8,7 @@ import java.util.Map;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -38,6 +39,8 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 	protected boolean					readonly;
 	
 	private ContentPanel mainPanel;
+	
+	PCEChangeListener changeListener = new PCEChangeListener();
 	
 	public ProductConfigEditor( boolean readonly, ProductConfigAttribute pcAttr ) {
 		super();
@@ -91,6 +94,7 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 		quantityField.setValue( attribute.getQuantity() );
 		quantityField.setFieldLabel( "Quantity" );
 		quantityField.setHideLabel( false );
+		quantityField.addListener( Events.Change, changeListener );
 		
 		
 		// === SALES UNIT ===
@@ -108,6 +112,7 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 			salesUnitField.setAllowBlank( false );
 			salesUnitField.setFieldLabel( "Sales unit" );
 			salesUnitField.setTriggerAction(TriggerAction.ALL);
+			salesUnitField.addListener( Events.Change, changeListener );
 
 			
 			String su = attribute.getSalesUnit();
@@ -151,7 +156,8 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 				configField.setForceSelection( true );
 				configField.setAllowBlank( false );
 				configField.setFieldLabel( id );
-				configField.setTriggerAction(TriggerAction.ALL);
+				configField.setTriggerAction(TriggerAction.ALL);				
+				configField.addListener( Events.Change, changeListener );
 
 				
 				String optionValue = attribute.getConfigOption( id );	
@@ -215,7 +221,7 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 				initFields();		
 				mainPanel.layout();				
 			}
-		}				
+		}	
 	}
 	
 	@Override
@@ -234,6 +240,9 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 		this.attribute = attr;
 		skuField.setValue( attribute.getValue() );
 		rebuildFields( attr );
+		
+		if ( isFireChangeEventOnSetValue() )
+			fireEvent(Events.Change, new FieldEvent(ProductConfigEditor.this));
 	}
 	
 	protected void updateAttributeValues() {		
@@ -263,5 +272,12 @@ public class ProductConfigEditor extends MultiField<Serializable> {
 	    		combo.setReadOnly( readOnly );
 	    	}
     	}
+    }
+    
+    private class PCEChangeListener implements Listener<BaseEvent> {
+    	@Override
+	    public void handleEvent( BaseEvent be ) {
+			fireEvent(Events.Change, new FieldEvent(ProductConfigEditor.this));	    	
+	    }    	
     }
 }
