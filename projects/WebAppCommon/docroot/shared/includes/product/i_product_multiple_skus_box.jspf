@@ -85,15 +85,7 @@
                           
                           %><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase()%></b></a><%
                           String domainLabel = priDomainValue.getLabel().toUpperCase();     
-                          // freshList defined in perishable_product.jsp (list to store freshness guarantee labels)
-                          List freshnessList = (List)session.getAttribute("freshList");
-			  if(freshnessList == null) {
-			  	freshnessList = new ArrayList();
-			  }
-                          if(domainLabel != null) {
-                          	freshnessList.add(domainLabel);
-                          }
-                          session.setAttribute("freshList", freshnessList);
+                          
                           
                       } else if (_fdDefGrade!=null) {
                           TitledMedia tm = (TitledMedia)_fdDefGrade;
@@ -275,10 +267,23 @@
 		<% } // for !hasSecondaryDomain %>
 
 
-					<% // if !hasSecondaryDomains don't break into new row
-					if ( hasSecondaryDomain ) { %>
-						<tr><td colspan="2" style="padding-bottom:8px;" align="center">
-					<% } %>		
+		<% // if !hasSecondaryDomains don't break into new row
+		if ( hasSecondaryDomain ) { %>
+			<tr><td colspan="2" style="padding-bottom:8px;" align="center">
+		<% }
+	
+		// freshList defined in perishable_product.jsp (list to store freshness guarantee labels)
+		  List freshnessList = (List)session.getAttribute("freshList");
+		  String label = priDomainValue.getLabel().toUpperCase();
+		  if(freshnessList == null) {
+			freshnessList = new ArrayList();
+		  }
+		  if(label != null && !freshnessList.contains(label)) {
+			freshnessList.add(label);
+			System.out.println("adding domainLabel = " + label);
+		  }
+                  session.setAttribute("freshList", freshnessList);
+                %>
 
 <%-- ========================================================= Scaled pricing ============================================================================ --%>
 		<%@ include file="/shared/includes/product/i_scaled_prices_fixed.jspf" %>
