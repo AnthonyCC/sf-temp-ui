@@ -34,7 +34,7 @@ public void debugObject(Set visitedObjects, JspWriter out, String title, Object 
 	Method[] methods = obj.getClass().getMethods();
 	for (int i=0; i<methods.length; i++) {
 		Method method = methods[i];
-		if (method.getName().startsWith("get") && method.getParameterTypes().length==0) {
+		if (method.getName().startsWith("get") && method.getParameterTypes().length==0 && !Modifier.isStatic(method.getModifiers())) {
 			out.println("<tr><td bgcolor=#dddddd valign=top>");
 			out.println(method.getName());
 			out.println("</td><td bgcolor=#f0f0f0>");

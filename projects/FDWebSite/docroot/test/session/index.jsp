@@ -61,7 +61,7 @@
 			int count = counter.getCount();
 %>
 	<tr>
-		<td><%= name %></td>
+		<td><a href="serialize.jsp?object=<%= name %>"><%= name %></a></td>
 		<td><%= type %></td>
 		<td><%= count %></td>
 		<td><%= valueAsString %></td>
