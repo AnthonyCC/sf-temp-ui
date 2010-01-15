@@ -176,9 +176,9 @@ public class ProductMoreInfo {
         com.freshdirect.fdstore.content.Image zoom = product.getImage(ImageType.ZOOM);
 
         if (zoom != null && zoom.getPath().indexOf("clear.gif") == -1) {
-            productImage = new Image(zoom.getPath(), zoom.getHeight(), zoom.getHeight());
+            productImage = new Image(zoom.getPath(), zoom.getHeight(), zoom.getWidth());
         } else {
-            productImage = new Image(detail.getPath(), detail.getHeight(), detail.getHeight());
+            productImage = new Image(detail.getPath(), detail.getHeight(), detail.getWidth());
         }
 
         partiallyFrozen = StringUtils.replace(product.getPartiallyFrozen(), "\"/media", "\"http://www.freshdirect.com/media");
