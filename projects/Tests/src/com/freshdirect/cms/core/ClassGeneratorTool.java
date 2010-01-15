@@ -92,6 +92,7 @@ public class ClassGeneratorTool {
         return rate;
     }
 
+    @SuppressWarnings("deprecation")
     private static void baseTest() {
         ContentTypeServiceI contentService = ContentFilterTool.createTypeService();
         LOG.info("content service inited.");
@@ -183,6 +184,7 @@ public class ClassGeneratorTool {
         LOG.info("end.");
     }
 
+    @SuppressWarnings("deprecation")
     public static long benchmark(ContentServiceI service, int count, ContentKey contentKey) {
         ContentNodeI node = service.getContentNode(contentKey);
         Set names = node.getDefinition().getAttributeNames();

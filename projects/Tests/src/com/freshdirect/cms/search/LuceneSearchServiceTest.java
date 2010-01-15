@@ -53,7 +53,7 @@ public class LuceneSearchServiceTest extends TestCase {
 		// update
 		ContentKey k = new ContentKey(ContentType.get("Foo"), "foo1");
 		ContentNodeI foo1 = content.getContentNode(k);
-		foo1.getAttribute("name").setValue("mutatis mutandis");
+		foo1.setAttributeValue("name", "mutatis mutandis");
 		List nodes = new ArrayList();
 		nodes.add(foo1);
 		search.index(nodes);

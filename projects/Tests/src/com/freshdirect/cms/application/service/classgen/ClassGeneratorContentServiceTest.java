@@ -46,6 +46,7 @@ public class ClassGeneratorContentServiceTest extends CompositeContentServiceTes
     }
     
     
+    @SuppressWarnings("deprecation")
     public void testAttribEquals() {
         ContentNodeI barNode = service.getContentNode(BAR_KEY);
         assertEquals(2, barNode.getDefinition().getAttributeNames().size());

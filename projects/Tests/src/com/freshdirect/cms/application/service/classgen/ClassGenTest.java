@@ -36,6 +36,7 @@ public class ClassGenTest extends TestCase {
         return service;
     }
 
+    @SuppressWarnings("deprecation")
     public void testFullName() {
         ContentNodeI node = getService("fullName").getContentNode(key);
 

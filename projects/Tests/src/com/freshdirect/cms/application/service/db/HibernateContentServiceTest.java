@@ -101,7 +101,7 @@ public class HibernateContentServiceTest extends TestCase {
 		assertEquals("hello", testNode.getAttributeValue("theString"));
 		
 		String newString = "A different message";
-		testNode.getAttribute("theString").setValue(newString);
+		testNode.setAttributeValue("theString", newString);
 		
 		assertEquals(newString, testNode.getAttributeValue("theString"));
 		
@@ -114,6 +114,7 @@ public class HibernateContentServiceTest extends TestCase {
 	}
 	
 	
+	@SuppressWarnings("deprecation")
 	public void testCreatePrototype() {
 		HibernateContentService service = new HibernateContentService(sessionFactory);
 		ContentNodeI node = service.createPrototypeContentNode(TEST_KEY);
@@ -135,8 +136,8 @@ public class HibernateContentServiceTest extends TestCase {
 		ContentNodeI node = service.createPrototypeContentNode(TEST_NEW_KEY);
 		String testString = "I am an attribute";
 		
-		node.getAttribute("theString").setValue(testString);
-		node.getAttribute("theInt").setValue(new Integer(88));
+		node.setAttributeValue("theString", testString);
+		node.setAttributeValue("theInt", new Integer(88));
 		
 		CmsRequest req = new CmsRequest(null);
 		req.addNode(node);
@@ -193,7 +194,7 @@ public class HibernateContentServiceTest extends TestCase {
 		String testString = "Yet another message";
 		
 		
-		testNode.getAttribute("theString").setValue(testString);
+		testNode.setAttributeValue("theString", testString);
 		
 		CmsRequest req = new CmsRequest(null);
 		req.addNode(testNode);
