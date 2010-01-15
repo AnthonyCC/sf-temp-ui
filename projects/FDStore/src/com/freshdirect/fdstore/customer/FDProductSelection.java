@@ -29,6 +29,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.ProxyProduct;
 import com.freshdirect.framework.util.MathUtil;
 
@@ -37,7 +38,7 @@ public class FDProductSelection implements FDProductSelectionI {
 	protected final static NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance(Locale.US);
 	protected final static DecimalFormat QUANTITY_FORMATTER = new DecimalFormat("0.##");
 
-	private final ProductModel productRef;
+	private final ProductReference productRef;
 	protected final ErpOrderLineModel orderLine;
 
 	protected FDConfiguredPrice price;
@@ -56,7 +57,7 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.orderLine = new ErpOrderLineModel();
 
 		this.orderLine.setSku(sku);
-		this.productRef = (productRef instanceof ProxyProduct) ? ((ProxyProduct) productRef).getProduct() : productRef;
+		this.productRef = new ProductReference((productRef instanceof ProxyProduct) ? ((ProxyProduct) productRef).getProduct() : productRef);
 		this.orderLine.setConfiguration( new FDConfiguration(configuration) );
 		
 		this.orderLine.setVariantId(variantId);
@@ -72,7 +73,7 @@ public class FDProductSelection implements FDProductSelectionI {
 			pm = null;
 		}
 
-		this.productRef = pm;
+		this.productRef = new ProductReference(pm);
 	}
 
 	//
@@ -88,7 +89,7 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.fireConfigurationChange();
 	}
 
-	public ProductModel getProductRef() {
+	public ProductReference getProductRef() {
 		return this.productRef;
 	}
 
@@ -114,11 +115,11 @@ public class FDProductSelection implements FDProductSelectionI {
 	}
 
 	public String getCategoryName() {
-		return this.getProductRef().getParentId();
+		return this.getProductRef().getCategoryId();
 	}
 
 	public String getProductName() {
-		return this.getProductRef().getContentName();
+		return this.getProductRef().getProductId();
 	}
 
 	public double getQuantity() {
@@ -217,7 +218,7 @@ public class FDProductSelection implements FDProductSelectionI {
 	//
 
 	public ProductModel lookupProduct() {
-		return this.productRef;
+		return this.productRef.lookupProductModel();
 	}
 
 	public FDProduct lookupFDProduct() {

@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
@@ -269,7 +270,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 				eligible = OrderPromotionHelper.isRecipeEligible(recipeSourceId, contentKeys);
 			}
 			if(!eligible){
-				ProductModel model = cartLine.getProductRef();
+				ProductModel model = cartLine.getProductRef().lookupProductModel();
 				String productId = model.getContentKey().getId();
 				DCPDPromoProductCache dcpdCache = this.user.getDCPDPromoProductCache();
 				//Check if the line item product is already evaluated.

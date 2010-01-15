@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 
 
 /**
@@ -34,7 +35,7 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	public FDSku getSku();
 	public void setSku(FDSku sku);
 	
-	public ProductModel getProductRef();
+	public ProductReference getProductRef();
 		
 	public String getSkuCode();
 

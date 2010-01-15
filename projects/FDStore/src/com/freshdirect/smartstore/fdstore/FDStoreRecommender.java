@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -80,7 +81,7 @@ public class FDStoreRecommender {
             List<FDCartLineI> orderlines = cart.getOrderLines();
             Set<ContentNodeModel> products = new HashSet<ContentNodeModel>();
             for (FDCartLineI cartLine : orderlines) {
-                products.add(cartLine.getProductRef());
+                products.add(cartLine.getProductRef().lookupProductModel());
             }
             return products;
         }
@@ -89,7 +90,7 @@ public class FDStoreRecommender {
             List<FDCartLineI> orderlines = cart.getOrderLines();
             Set<ContentKey> products = new HashSet<ContentKey>();
             for (FDCartLineI cartLine : orderlines) {
-                ProductModel productRef = cartLine.getProductRef();
+                ProductReference productRef = cartLine.getProductRef();
                 products.add(productRef.getContentKey());
             }
             return products;

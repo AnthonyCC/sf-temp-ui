@@ -87,7 +87,7 @@ Recipe recipe = null;
 	if (orderLine.getRecipeSourceId() != null) {
 		context = ContentFactory.getInstance().getContentNode( orderLine.getRecipeSourceId() );
 	} else {
-		context = orderLine.getProductRef();
+		context = orderLine.getProductRef().lookupProductModel();
 	}
 	request.setAttribute("sitePage", context.getPath());
 	%>

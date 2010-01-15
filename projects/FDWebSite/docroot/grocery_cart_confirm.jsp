@@ -23,7 +23,7 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 	   // [APPREQ-425] jump to single item cart confirm page if only one item is added
 	   FDCartLineI l = cart.getRecentOrderLines().get(0);
 	   
-	   String redir = "/cart_confirm.jsp?catId="+ request.getParameter("catId") + "&productId=" + l.getProductRef().getContentName();
+	   String redir = "/cart_confirm.jsp?catId="+ request.getParameter("catId") + "&productId=" + l.getProductRef().getProductId();
 %><jsp:forward page="<%= redir %>" /><%
    }
 %></fd:FDShoppingCart><%
@@ -86,7 +86,7 @@ Recipe recipe = null;
 	if (orderLine.getRecipeSourceId() != null) {
 		context = ContentFactory.getInstance().getContentNode( orderLine.getRecipeSourceId() );
 	} else {
-		context = orderLine.getProductRef();
+		context = orderLine.getProductRef().lookupProductModel();
 	}
 	request.setAttribute("sitePage", context.getPath());
 	%>

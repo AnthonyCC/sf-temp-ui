@@ -265,7 +265,7 @@ public class SessionUser {
 
             ProductConfiguration productConfiguration = new ProductConfiguration();
             try {
-                Product productData = Product.wrap(product.getProductRef(), this.sessionUser.getUser());
+                Product productData = Product.wrap(product.getProductRef().lookupProductModel(), this.sessionUser.getUser());
                 Sku sku = productData.getSkyByCode(product.getSkuCode());
                 if(sku != null) {
                     productConfiguration.populateProductWithModel(productData, com.freshdirect.mobileapi.controller.data.Sku.wrap(sku));

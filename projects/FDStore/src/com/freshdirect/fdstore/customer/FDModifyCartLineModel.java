@@ -21,7 +21,7 @@ class FDModifyCartLineModel extends FDCartLineModel implements FDModifyCartLineI
 	private final FDCartLineI originalOrderLine;
 
 	public FDModifyCartLineModel(FDCartLineI origLine) {
-		super(origLine.getSku(), origLine.getProductRef(), origLine
+		super(origLine.getSku(), origLine.getProductRef().lookupProductModel(), origLine
 				.getConfiguration(), origLine.getCartlineId(), origLine
 				.getRecipeSourceId(), origLine.isRequestNotification(),
 				origLine.getVariantId());

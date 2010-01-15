@@ -109,8 +109,7 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 		
 		for (Iterator i = cartMerged.getOrderLines().iterator(); i.hasNext();) {
 			FDCartLineI line     = (FDCartLineI) i.next();
-			ProductModel model = line.getProductRef();
-			String productId = model.getContentKey().getId();
+			String productId = line.getProductRef().getContentKey().getId();
 			if((savedProdKeys.contains(productId) && !currProdKeys.contains(productId)) && 
 					savedSavingIds.contains(line.getSavingsId()) && currSavingIds.contains(line.getSavingsId())){
 				//Product is only in the saved cart and savings id is in both carts then reset savings id for saved cart line.

@@ -106,7 +106,7 @@ public class FDCartLineModel extends AbstractCartLine {
 
 	public FDCartLineI createCopy() {
 		FDCartLineModel newLine = new FDCartLineModel(this.getSku(), this
-				.getProductRef(), this.getConfiguration(), this.getVariantId());
+				.getProductRef().lookupProductModel(), this.getConfiguration(), this.getVariantId());
 		newLine.setRecipeSourceId(this.getRecipeSourceId());
 		newLine.setRequestNotification(this.isRequestNotification());
 		newLine.setSource(this.source);

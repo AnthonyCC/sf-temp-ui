@@ -73,7 +73,7 @@ FDIdentity identity = user.getIdentity();
 			if (view.isDisplayDepartment()) {
 			
 				//This gets the first item's department, does not apply to Recipe
-				String lastDeptImgName = cartLine.getProductRef().getDepartment().getContentName() + "_cart.gif";
+				String lastDeptImgName = cartLine.getProductRef().lookupProductModel().getContentName() + "_cart.gif";
 				
 				if (lastDept.startsWith("Recipe: ")) {
 					if (firstRecipe) {

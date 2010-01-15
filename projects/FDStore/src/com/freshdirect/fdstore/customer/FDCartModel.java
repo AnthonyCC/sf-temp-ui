@@ -1169,8 +1169,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		Set prodKeysInCart = new HashSet();
 		for (Iterator i = this.getOrderLines().iterator(); i.hasNext();) {
 			FDCartLineI cartLine = (FDCartLineI) i.next();
-			ProductModel model = cartLine.getProductRef();
-			String productId = model.getContentKey().getId();
+			String productId = cartLine.getProductRef().getContentKey().getId();
 			prodKeysInCart.add(productId);
 		}
 		return prodKeysInCart;

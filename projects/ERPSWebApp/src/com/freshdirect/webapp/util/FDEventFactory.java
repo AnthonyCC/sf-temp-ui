@@ -154,7 +154,7 @@ public class FDEventFactory {
 	}
 
 	private static void setParamsToEvent(FDCartLineI cartline, FDCartLineEvent event, String cclId) {
-		DepartmentModel department = cartline.getProductRef().getDepartment();
+		DepartmentModel department = cartline.getProductRef().lookupProductModel().getDepartment();
 		event.setCategoryId(add(cartline.getCategoryName()));//Param 3
 		event.setCartlineId(add(cartline.getCartlineId())); //Param 5
 		event.setDepartment(add(department.getFullName())); //Param 4
