@@ -61,7 +61,7 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 	<table border="0" cellspacing="0" cellpadding="0" width="0">
 		<tr valign="top">
 	
-		<td width="0" align="right" class="text11">	
+		<td width="140" align="right" class="text11">	
 			<!-- Product include start -->
 			<%@ include file="/shared/includes/product/i_product.jspf" %>
 			<%
@@ -109,21 +109,15 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 								<% } else {
 									// calculate lowest shelf life in stack sku group
 									// sku with lowest shelf life value will display per domain label
-									int sizeOfList = shelfLifeList.size();
-									for(int i = 1; i < sizeOfList; i++) {
-									
-										String val = (String)shelfLifeList.get(i);
-									
-										if(!StringUtil.isNumeric(leastShelfDays) && StringUtil.isNumeric(val)) {
-										
+									ListIterator lowLifeItr = shelfLifeList.listIterator();
+									while(lowLifeItr.hasNext()) {
+										String val = (String)lowLifeItr.next();
+										if(leastShelfDays != null && "".equals(leastShelfDays) && StringUtil.isNumeric(val)) {
 											leastShelfDays = val;
-										} 
-										
-										if(Integer.parseInt(val) < Integer.parseInt(leastShelfDays)) {
-										
-											leastShelfDays = val;
+											if(Integer.parseInt(val) < Integer.parseInt(leastShelfDays)) {
+												leastShelfDays = val;
+											}
 										}
-										i++;
 									}
 
 		
@@ -173,9 +167,13 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 					    <td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
 					</tr>
 				</table>
-				<br>
-					<A HREF="javascript:pop('/help/freshness.jsp',335,375)">Learn more about our Freshness Guarantee - CLICK HERE</A>
-
+				<table width="140">
+					<tr>
+					<td>
+					<br>
+					<a href="javascript:pop('/help/freshness.jsp',335,375)">Learn more about our Freshness Guarantee - CLICK HERE</a>
+					</td>
+					</tr></table>
 			<%}%>
 		</td>	
 
