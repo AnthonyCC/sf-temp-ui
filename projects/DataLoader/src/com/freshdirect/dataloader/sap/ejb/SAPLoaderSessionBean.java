@@ -478,6 +478,8 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                 java.util.Date unavailDate = (java.util.Date) extraInfo.get("UNAVAILABILITY_DATE");
                 String unavailReason = (String) extraInfo.get("UNAVAILABILITY_REASON");
                 String rating = (String) extraInfo.get("RATING");
+                String days_fresh = (String) extraInfo.get("DAYS_FRESH");
+                String days_in_house = (String) extraInfo.get("DAYS_IN_HOUSE");
                 //
                 // now get the real material model that we created previously to we can create the
                 // material proxy and product objects that relate to a material
@@ -654,6 +656,8 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 					erpProductModel.setUnavailabilityDate(unavailDate);
 					erpProductModel.setUnavailabilityReason(unavailReason);
 					erpProductModel.setRating(rating);
+					erpProductModel.setDaysFresh(days_fresh);
+					erpProductModel.setDaysInHouse(days_in_house);
 					erpProductModel.setBasePrice(anonMatlModel.getBasePrice());
 					erpProductModel.setBasePriceUnit(anonMatlModel.getBasePricingUnit());
 

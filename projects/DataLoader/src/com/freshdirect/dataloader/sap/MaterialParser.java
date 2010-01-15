@@ -72,7 +72,9 @@ public class MaterialParser extends SAPParser {
 		fields.add(new Field(KOSHER_PRODUCTION,              1, true));
 		fields.add(new Field(PLATTER,                        1, false));
 		fields.add(new Field(DAY_INDICATOR,                  6, false));
-		fields.add(new Field(RATING,                  3, false));
+		fields.add(new Field(RATING,                         3, false));
+		fields.add(new Field(DAYS_FRESH,                     3, false));
+		fields.add(new Field(DAYS_IN_HOUSE,                  3, false));
     }
     
     /** gets the collection of materials that need to be created or updated in an export
@@ -179,6 +181,9 @@ public class MaterialParser extends SAPParser {
         HashMap extraInfo = new HashMap();
         String sku = getString(tokens, SKU);
         String rating=getString(tokens,RATING);
+        String days_fresh = getString(tokens,DAYS_FRESH);
+        String days_in_house = getString(tokens, DAYS_IN_HOUSE);
+        
         if ((sku == null) || (sku.trim().equals(""))) {
             //
             // materials must have a sku assigned to be used in creating a default product
@@ -188,7 +193,8 @@ public class MaterialParser extends SAPParser {
         }
         extraInfo.put(SKU, sku);
         extraInfo.put("RATING", rating);
-        
+        extraInfo.put("DAYS_FRESH", days_fresh);
+        extraInfo.put("DAYS_IN_HOUSE", days_in_house);
         if ((!"".equals(getString(tokens, DELETION_FLAG).trim())) ||
             "33".equals(getString(tokens, CROSS_CHAIN_SALES_STATUS)) || "33".equals(getString(tokens, DIST_CHAIN_SPEC_STATUS)) ||
             "30".equals(getString(tokens, CROSS_CHAIN_SALES_STATUS)) || "30".equals(getString(tokens, DIST_CHAIN_SPEC_STATUS))

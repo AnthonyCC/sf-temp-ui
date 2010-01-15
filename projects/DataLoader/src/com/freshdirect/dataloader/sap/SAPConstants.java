@@ -77,6 +77,8 @@ public interface SAPConstants {
 	public static final String PLATTER = "Platter";
 	public static final String DAY_INDICATOR = "Day-specific Indicator";
 	public static final String RATING="Produce Rating";
+	public static final String DAYS_FRESH = "Days Fresh";
+	public static final String DAYS_IN_HOUSE = "Days In House";
 
 	//
 	// some constants for properties of materials that aren't well defined in SAP
