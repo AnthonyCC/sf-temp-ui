@@ -64,6 +64,12 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	/** product rating */
 	private String rating;
 	
+	/** product total shelf life */
+	private String days_fresh;
+	
+	/** product days in house */
+	private String days_in_house;
+	
 	private double basePrice;
 	
 	private String basePriceUnit;
@@ -83,7 +89,7 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	 * @param defaultPriceUnit pricing unit for default price
 	 * @param materialProxies collection of material proxy model objects
 	 */
-	public ErpProductModel(String skuCode, double defaultPrice, String defaultPriceUnit, String unavailabilityStatus, Date unavailabilityDate, String unavailabilityReason, Date pricingDate, ErpMaterialModel material, VersionedPrimaryKey[] suPKs, VersionedPrimaryKey[] cvPKs, String _rating,double basePrice, String basePriceUnit ) {
+	public ErpProductModel(String skuCode, double defaultPrice, String defaultPriceUnit, String unavailabilityStatus, Date unavailabilityDate, String unavailabilityReason, Date pricingDate, ErpMaterialModel material, VersionedPrimaryKey[] suPKs, VersionedPrimaryKey[] cvPKs, String _rating, String days_fresh, String days_in_house, double basePrice, String basePriceUnit ) {
 		super();
 		if (skuCode==null) {
 			throw new IllegalArgumentException("SKU code cannot be null");
@@ -100,6 +106,8 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 		this.setHiddenSalesUnitPKs( suPKs );
 		this.setHiddenCharacteristicValuePKs( cvPKs );
 		this.setRating(_rating);
+		this.setDaysFresh(days_fresh);
+		this.setDaysInHouse(days_in_house);
 		this.setBasePrice(basePrice);
 		this.setBasePriceUnit(basePriceUnit);
 	}
@@ -169,6 +177,30 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
     public String getRating() {
         return rating;
     }	
+    /** Setter for property days_fresh.
+     * @param  days_fresh
+      */
+     public void setDaysFresh(String days_fresh) {
+          this.days_fresh=days_fresh;
+     }
+ 	/** Getter for property days_fresh.
+      * @return Value of property days_fresh.
+      */
+     public String getDaysFresh() {
+         return days_fresh;
+     }	
+     /** Setter for property days_in_house.
+      * @param  days_in_house
+       */
+      public void setDaysInHouse(String days_in_house) {
+           this.days_in_house = days_in_house;
+      }
+  	/** Getter for property days_in_house.
+       * @return Value of property days_in_house.
+       */
+      public String getDaysInHouse() {
+          return days_in_house;
+      }	
 	/**
 	 * Set pricing unit for default price
 	 *
