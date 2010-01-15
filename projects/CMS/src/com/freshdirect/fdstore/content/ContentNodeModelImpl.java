@@ -12,7 +12,7 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
-public abstract class ContentNodeModelImpl implements ContentNodeModel,Serializable, Cloneable, PrioritizedI {
+public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable, PrioritizedI {
 
     public interface ContentNodeModelAttributeFinder {
         /**
