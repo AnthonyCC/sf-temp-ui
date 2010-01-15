@@ -547,7 +547,7 @@ if ( skuSize == 0 ) {
 
 			    <%-- start render quantity --%>
 				<% if ( !isWineLayout ) { // top black line after description %>  
-			    	<br/><img src="/media_stat/images/layout/333333.gif" width="185" height="1" border="0" vspace="10">
+			    	<br/><img src="/media_stat/images/layout/333333.gif" width="185" height="1" border="0" vspace="10"><br>
 				<% } %>
 	    
 			    <fd:ErrorHandler result='<%=result%>' name='quantity' id='errorMsg'>
@@ -807,12 +807,13 @@ if ( skuSize == 0 ) {
 							// bottom black line after add to cart
 							%><img src="/media_stat/images/layout/333333.gif" width="185" height="1" border="0" vspace="10"><%  }  %>
 							
-    						<%-- START INLCUDES AT BOTTOM OF i_product --%>
+    						<%-- START INLCUDES AT BOTTOM OF i_product --%><br>
 						    <%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
     
 							<% if (CartName.MODIFY_LIST.equals(cartMode)) { %>
 								To copy to another list, <a href="/unsupported.jsp" onclick="return CCL.copy_items('product_form',this,'action=CCL:copyToList','action=CCL:copyToList')">click here</a>
 							<% } else if (CartName.ADD_TO_CART.equals(cartMode)) { %>
+							
 								<fd:CCLCheck>
 									<% if ( !isWineLayout ) { %>
 										<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')">
