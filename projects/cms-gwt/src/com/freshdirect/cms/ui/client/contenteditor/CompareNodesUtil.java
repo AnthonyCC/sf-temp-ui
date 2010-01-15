@@ -142,14 +142,17 @@ public class CompareNodesUtil {
 				continue;
 			
 			Serializable otherValue = null;
+			ContentNodeAttributeI comparedNodeAttribute = comparedNode.getNode().getOriginalAttribute(key);
+			
 			if( editedNode.getNode().getOriginalAttribute(key).isInheritable() ) {
-				InheritanceField<Serializable> otherField= (InheritanceField<Serializable>) comparedNode.getNode().getOriginalAttribute(key).getFieldObject();
-				if(otherField != null ) {
-					otherValue = otherField.getEffectiveValue();
+				otherValue = comparedNodeAttribute.getValue();
+				if(otherValue == null) {
+					ContentNodeAttributeI iAttr = comparedNode.getContexts() == null ? null : comparedNode.getContexts().getInheritedAttribute(comparedNode.getCurrentContext() , key);
+					otherValue = iAttr == null ? null : iAttr.getValue();
 				}
 			}
 			else {
-				otherValue=comparedNode.getFieldValue(key);
+				otherValue=comparedNodeAttribute.getValue();		
 			}
 			
 			FieldHotSpot w = new FieldHotSpot( attr, key, otherValue );
@@ -238,11 +241,11 @@ public class CompareNodesUtil {
 		}
 		
 		HashSet<String> diff = new HashSet<String>();
-		
-		GwtContextualizedNodeI n = new GwtContextualizedNodeData(comparedNode, comparedNode.getCurrentContext()); 
-		for (String attributeKey : comparedNode.getNode().getAttributeKeys()) {
-				FieldFactory.createStandardField(n, attributeKey);
-		}
+
+//		GwtContextualizedNodeI n = new GwtContextualizedNodeData(comparedNode, comparedNode.getCurrentContext()); 
+//		for (String attributeKey : comparedNode.getNode().getAttributeKeys()) {
+//				FieldFactory.createStandardField(n, attributeKey);
+//		}
 
 		for (String attributeKey : editedNode.getNode().getAttributeKeys()) {
 			if ( CompareNodesUtil.compareAttribute(attributeKey, editedNode, comparedNode) ) {
@@ -275,20 +278,15 @@ public class CompareNodesUtil {
 					editedFieldValue = attr == null ? null : attr.getValue();
 				}
 			}
-			if( comparedNodeAttribute.getFieldObject() != null) {
-				comparedFieldValue = ( (InheritanceField<Serializable>) comparedNodeAttribute.getFieldObject()).getEffectiveValue();
-			}
-			else {
-				comparedFieldValue = comparedNodeAttribute.getValue();
-				if(comparedFieldValue == null) {
-					ContentNodeAttributeI attr = comparedNode.getContexts() == null ? null : comparedNode.getContexts().getInheritedAttribute(comparedNode.getCurrentContext() , attributeKey);
-					comparedFieldValue = attr == null ? null : attr.getValue();
-				}
+			comparedFieldValue = comparedNodeAttribute.getValue();
+			if(comparedFieldValue == null) {
+				ContentNodeAttributeI attr = comparedNode.getContexts() == null ? null : comparedNode.getContexts().getInheritedAttribute(comparedNode.getCurrentContext() , attributeKey);
+				comparedFieldValue = attr == null ? null : attr.getValue();
 			}
 		}
 		else {		
 			editedFieldValue = editedNode.getFieldValue(attributeKey);
-			comparedFieldValue = comparedNode.getFieldValue(attributeKey);			
+			comparedFieldValue = comparedNodeAttribute.getValue();			
 		}
 
 		System.out.println("compare attribute: " + attributeKey + " " + editedFieldValue + " <> "+comparedFieldValue);
