@@ -1,5 +1,7 @@
 package com.freshdirect.cms.ui.client.changehistory;
 
+import java.util.Date;
+
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -77,7 +79,15 @@ public class ChangeSetQueryForm extends ContentPanel {
 		query.setContentKey( nodeField.getValue() == null ? null : nodeField.getValue().getKey() );
 		query.setUser( userField.getValue() );
 		query.setStartDate( startDateField.getValue() );
-		query.setEndDate( endDateField.getValue() );
+
+		if ( endDateField.getValue() != null ) {
+			Date endDate = (Date)endDateField.getValue().clone();
+			endDate.setDate( endDate.getDate() + 1 );
+			query.setEndDate( endDate );
+		} else {
+			query.setEndDate( null );
+		}
+		
 		query.setChangeSetQuery( true );
 		
 		return query;
