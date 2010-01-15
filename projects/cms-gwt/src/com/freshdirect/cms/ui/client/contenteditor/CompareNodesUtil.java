@@ -15,11 +15,14 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.freshdirect.cms.ui.client.Anchor;
 import com.freshdirect.cms.ui.client.CmsGwt;
+import com.freshdirect.cms.ui.client.FieldFactory;
 import com.freshdirect.cms.ui.client.MergePreviewPanel;
 import com.freshdirect.cms.ui.client.action.BasicAction;
 import com.freshdirect.cms.ui.client.fields.FieldHotSpot;
 import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.views.ManageStoreView;
+import com.freshdirect.cms.ui.model.GwtContextualizedNodeData;
+import com.freshdirect.cms.ui.model.GwtContextualizedNodeI;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.TabDefinition;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
@@ -33,6 +36,7 @@ public class CompareNodesUtil {
 	private Container<?> editorComponent;
 	private MergePreviewPanel comparePopup;
 	private HashSet<FieldHotSpot> hotspots;
+	private HashSet<ContentForm> decoratedForms; 
 	private Listener<BaseEvent> exitListener;
 	
 	private class CompareNodesAction extends BasicAction<GwtNodeData> {
@@ -60,6 +64,7 @@ public class CompareNodesUtil {
 		editedNode = editorPanel.getContentNode();
 		editorComponent = editorPanel.getEditorComponent();
 		hotspots = new HashSet<FieldHotSpot>();
+		decoratedForms = new HashSet<ContentForm>();
 		
 		exitListener = new Listener<BaseEvent>() {
 			@Override
@@ -112,8 +117,8 @@ public class CompareNodesUtil {
 			// show number of differences if any found in tab
 			TabItem tab = tabs.get(tabLabel);
 			if (k > 0) {
-//				tab.setText(tabLabel + " (" + k + ")");
-				tab.setText(tabLabel);
+				tab.setText(tabLabel + " (" + k + ")");
+//				tab.setText(tabLabel);
 			}
 		}		
 		
@@ -122,6 +127,10 @@ public class CompareNodesUtil {
 		
 	public void addFormDecoration( ContentForm cf) {
 
+		if( decoratedForms.contains(cf) ) {
+			return;
+		}
+		
 		final Map<String, ContentNodeAttributeI> nodeAttributes = editedNode.getNode().getOriginalAttributes();
 		final Set<String> keys = cf.getKeys();
 		
@@ -132,13 +141,15 @@ public class CompareNodesUtil {
 			if (attr.getFieldObject()== null)
 				continue;
 			
-			Serializable otherValue;
+			Serializable otherValue = null;
 			if( editedNode.getNode().getOriginalAttribute(key).isInheritable() ) {
-				ContentNodeAttributeI comparedAttr = comparedNode.getContexts() == null ? null : comparedNode.getContexts().getInheritedAttribute( comparedNode.getCurrentContext(), key );
-				otherValue = comparedAttr == null ? null : comparedAttr.getValue();			
+				InheritanceField<Serializable> otherField= (InheritanceField<Serializable>) comparedNode.getNode().getOriginalAttribute(key).getFieldObject();
+				if(otherField != null ) {
+					otherValue = otherField.getEffectiveValue();
+				}
 			}
 			else {
-				otherValue=comparedNode.getNode().getAttributeValue(key);
+				otherValue=comparedNode.getFieldValue(key);
 			}
 			
 			FieldHotSpot w = new FieldHotSpot( attr, key, otherValue );
@@ -147,7 +158,9 @@ public class CompareNodesUtil {
 			}
 			w.render();
 			hotspots.add(w);
-		}		
+		}
+		
+		decoratedForms.add(cf);
 	}
 	
 	public GwtNodeData getComparedNode() {
@@ -207,6 +220,10 @@ public class CompareNodesUtil {
 		if(hotspots != null) {
 			removeHotspots();
 		}
+
+		if(hotspots != null) {
+			decoratedForms=null;
+		}
 		
 		editorPanel.getCompareEndButton().removeListener(Events.OnClick, exitListener);
 		editorPanel.getCompareEndButton().hide();
@@ -222,13 +239,17 @@ public class CompareNodesUtil {
 		
 		HashSet<String> diff = new HashSet<String>();
 		
-		
+		GwtContextualizedNodeI n = new GwtContextualizedNodeData(comparedNode, comparedNode.getCurrentContext()); 
+		for (String attributeKey : comparedNode.getNode().getAttributeKeys()) {
+				FieldFactory.createStandardField(n, attributeKey);
+		}
+
 		for (String attributeKey : editedNode.getNode().getAttributeKeys()) {
-			
 			if ( CompareNodesUtil.compareAttribute(attributeKey, editedNode, comparedNode) ) {
 				diff.add(attributeKey);
 			}
 		}
+
 		
 		return diff;
 	}
@@ -239,24 +260,38 @@ public class CompareNodesUtil {
 		}
 		Serializable editedFieldValue = null;
 		Serializable comparedFieldValue = null;
-
-		if( editedNode.getNode().getOriginalAttribute(attributeKey).isInheritable() ) {
-			InheritanceField<Serializable> fieldObject = (InheritanceField<Serializable>) editedNode.getNode().getOriginalAttribute(attributeKey).getFieldObject();
-			if(fieldObject != null) {
-				editedFieldValue = (Serializable) fieldObject.getEffectiveValue();				
-				ContentNodeAttributeI attr = comparedNode.getContexts() == null ? null : comparedNode.getContexts().getInheritedAttribute( comparedNode.getCurrentContext(), attributeKey );
-				comparedFieldValue = attr == null ? null : attr.getValue();			
+		
+		ContentNodeAttributeI editedNodeAttribute = editedNode.getNode().getOriginalAttribute(attributeKey);
+		ContentNodeAttributeI comparedNodeAttribute = comparedNode.getNode().getOriginalAttribute(attributeKey);
+		
+		if( editedNodeAttribute.isInheritable() ) {
+			if( editedNodeAttribute.getFieldObject() != null) {
+				editedFieldValue = ( (InheritanceField<Serializable>) editedNodeAttribute.getFieldObject()).getEffectiveValue();
 			}
 			else {
-				System.out.println("edited fieldobject is null: " + attributeKey);
-			}			
+				editedFieldValue = editedNodeAttribute.getValue();
+				if(editedFieldValue == null) {
+					ContentNodeAttributeI attr = editedNode.getContexts() == null ? null : editedNode.getContexts().getInheritedAttribute(editedNode.getCurrentContext() , attributeKey);
+					editedFieldValue = attr == null ? null : attr.getValue();
+				}
+			}
+			if( comparedNodeAttribute.getFieldObject() != null) {
+				comparedFieldValue = ( (InheritanceField<Serializable>) comparedNodeAttribute.getFieldObject()).getEffectiveValue();
+			}
+			else {
+				comparedFieldValue = comparedNodeAttribute.getValue();
+				if(comparedFieldValue == null) {
+					ContentNodeAttributeI attr = comparedNode.getContexts() == null ? null : comparedNode.getContexts().getInheritedAttribute(comparedNode.getCurrentContext() , attributeKey);
+					comparedFieldValue = attr == null ? null : attr.getValue();
+				}
+			}
 		}
 		else {		
 			editedFieldValue = editedNode.getFieldValue(attributeKey);
-			comparedFieldValue = comparedNode.getNode().getAttributeValue(attributeKey);
+			comparedFieldValue = comparedNode.getFieldValue(attributeKey);			
 		}
+
 		System.out.println("compare attribute: " + attributeKey + " " + editedFieldValue + " <> "+comparedFieldValue);
-		
 		boolean result = ( (editedFieldValue  == null && comparedFieldValue != null) ||	(editedFieldValue != null && !editedFieldValue.equals(comparedFieldValue) ) );
 		
 		return result;

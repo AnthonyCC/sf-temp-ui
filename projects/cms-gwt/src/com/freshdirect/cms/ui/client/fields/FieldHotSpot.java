@@ -23,6 +23,7 @@ public class FieldHotSpot extends Html {
 	final Listener<BaseEvent> openPopup;
 	private boolean active;
 	private CompareNodesUtil compareUtil;
+	private Listener<BaseEvent> fieldListener;
 	
 	
 	public FieldHotSpot( ContentNodeAttributeI attribute, final String key, Serializable otherValue ) {
@@ -43,11 +44,7 @@ public class FieldHotSpot extends Html {
 			}			
 		};
 		
-		this.attribute.getFieldObject().setFireChangeEventOnSetValue(true);
-		
-		this.attribute.getFieldObject().addListener(Events.Change, new Listener<BaseEvent>(){
-		
-			
+		this.fieldListener = new Listener<BaseEvent>(){
 			@Override
 			public void handleEvent(BaseEvent e) {
 				if(CompareNodesUtil.compareAttribute(key, compareUtil.getEditedNode(), compareUtil.getComparedNode())) {
@@ -62,7 +59,11 @@ public class FieldHotSpot extends Html {
 				updateColors();
 			}
 			
-		});
+		}; 
+		
+		this.attribute.getFieldObject().setFireChangeEventOnSetValue(true);
+		
+		this.attribute.getFieldObject().addListener(Events.Change, fieldListener ); 
 		
 		active = false;
 	}
@@ -112,6 +113,7 @@ public class FieldHotSpot extends Html {
 	@Override
 	public void removeFromParent() {
 		Field<?> field = attribute.getFieldObject();
+		field.removeListener(Events.Change, fieldListener );
 		Element formItem = (Element) field.el().findParentElement("div.x-form-item", 8);
 		formItem.removeClassName("merge-border");
 		formItem.removeChild( getElement() );
@@ -128,8 +130,10 @@ public class FieldHotSpot extends Html {
 			addListener(Events.OnClick, openPopup );
 		}
 		else {
-			if(compareUtil.getComparePopup().getHotspot().equals(this)) {
-				compareUtil.getComparePopup().hide();
+			if(compareUtil.getComparePopup() != null) {
+				if(compareUtil.getComparePopup().getHotspot()!=null && compareUtil.getComparePopup().getHotspot().equals(this)) {
+					compareUtil.getComparePopup().hide();
+				}
 			}
 			removeListener(Events.OnClick, openPopup );
 		}

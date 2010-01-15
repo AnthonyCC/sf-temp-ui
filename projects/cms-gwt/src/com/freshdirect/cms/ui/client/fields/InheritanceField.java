@@ -72,7 +72,6 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
             	// checkbox = true ==> value is explicitly set / overridden
 
             	// enable();
-            	inheritedValue = innerField.getValue();
                 innerField.setValue( explicitValue );
             } else {
             	// checkbox = false ==> value is inherited
@@ -163,7 +162,12 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     		innerField.setValue(value);
     	} else {
     		checkbox.setValue(false);
-    		innerField.setValue(inheritedValue);
+    		try {
+    			innerField.setValue(inheritedValue);
+    		}
+    		catch(ClassCastException e) {
+    			System.out.println(e);
+    		}
     	}
     }
 
@@ -177,7 +181,12 @@ public class InheritanceField<TYPE> extends MultiField<TYPE> {
     public void setInheritedValue(TYPE value) {
     	this.inheritedValue = value;
     	if ( !checkbox.getValue() ) {
-    		innerField.setValue( value );
+    		try {
+    			innerField.setValue( value );
+    		}
+    		catch(ClassCastException e) {
+    			System.out.println(e);
+    		}
     	}
     }
     

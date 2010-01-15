@@ -245,7 +245,7 @@ public final class FieldFactory {
 		Serializable inhvalue = attr == null ? null : attr.getValue();
 		
 		( (InheritanceField<Serializable>)field ).setInheritedValue( inhvalue );
-		( (InheritanceField<Serializable>)field ).setExplicitValue( nodeData.getFieldValue(key) );
+		( (InheritanceField<Serializable>)field ).setValue( nodeData.getNode().getOriginalAttributeValue(key) );
 		
 		return field;
 	}

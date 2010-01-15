@@ -55,18 +55,20 @@ public class ContentEditor extends TabPanel implements EditorDecoratorI {
 			
 			tab.addListener( Events.Select, new Listener<BaseEvent>() {
 				public void handleEvent( BaseEvent be ) {
-					if ( panels.get( tabLabel ) == null ) {
-						ContentForm form = new ContentForm( cn, tabId );
+					ContentForm form;
+					form = panels.get( tabLabel);
+					if ( form == null ) {
+						form = new ContentForm( cn, tabId );
 						panels.put( tabLabel, form );
 						tab.add( form );
 						tab.layout();
 						
-						// decorate attribute fields if necessary
-						if (ManageStoreView.getInstance().getDetailPanel() instanceof ContentEditorPanel && ((ContentEditorPanel) ManageStoreView.getInstance().getDetailPanel()).getCompareUtil()!=null) {
-							((ContentEditorPanel) ManageStoreView.getInstance().getDetailPanel()).getCompareUtil().addFormDecoration(form);
-						}
 					}
 					lastActiveTab = tabLabel;
+					// decorate attribute fields if necessary
+					if (ManageStoreView.getInstance().getDetailPanel() instanceof ContentEditorPanel && ((ContentEditorPanel) ManageStoreView.getInstance().getDetailPanel()).getCompareUtil()!=null) {
+						((ContentEditorPanel) ManageStoreView.getInstance().getDetailPanel()).getCompareUtil().addFormDecoration(form);
+					}					
 				}
 			} );
 			
