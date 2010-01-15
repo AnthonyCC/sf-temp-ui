@@ -8,7 +8,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.webapp.taglib.fdstore.layout.ItemSorterTag;
 
-public class ItemSorterTagWrapper extends TagWrapper {
+public class ItemSorterTagWrapper extends TagWrapper implements RequestParamName {
     public ItemSorterTagWrapper(SessionUser user) {
         super(new ItemSorterTag(), user.getFDSessionUser());
     }
@@ -21,7 +21,7 @@ public class ItemSorterTagWrapper extends TagWrapper {
     }
 
     public void sort(List nodes, List strategy) throws FDException {
-        addExpectedRequestValues(new String[] { id }, new String[] { id });
+        addExpectedRequestValues(new String[] { id, REQ_PARAM_DEBUG }, new String[] { id });
         ((ItemSorterTag) this.wrapTarget).setNodes(nodes);
         ((ItemSorterTag) this.wrapTarget).setStrategy(strategy);
 

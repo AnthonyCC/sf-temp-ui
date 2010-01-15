@@ -192,5 +192,7 @@ public interface RequestParamName {
     public static final String REQ_PARAM_RESERVATION_TYPE = "reservationType";
 
     public static final String REQ_PARAM_ADDRESS_ID = "addressId";
+    
+    public static final String REQ_PARAM_DEBUG = "debug";
 
 }
