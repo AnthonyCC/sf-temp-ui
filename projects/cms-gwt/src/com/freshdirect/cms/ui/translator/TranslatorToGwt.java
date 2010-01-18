@@ -93,8 +93,10 @@ public class TranslatorToGwt {
 		
 		for ( String key : (Set<String>)node.getDefinition().getAttributeNames() ) {
 			AttributeI attribute = node.getAttribute( key );
-			ModifiableAttributeI attr = attribute == null ? null : translateAttribute(attribute.getDefinition(), attribute.getValue(), tabDefs != null ? tabDefs.getCustomFieldDefinition(key) : null, contentKey);
-			gwtNode.setOriginalAttribute( key, attr );
+			if ( attribute != null ) {
+				ModifiableAttributeI attr = translateAttribute(attribute.getDefinition(), attribute.getValue(), tabDefs != null ? tabDefs.getCustomFieldDefinition(key) : null, contentKey);
+				gwtNode.setOriginalAttribute( key, attr );
+			}
 		}
 
 		return gwtNode;
