@@ -15,14 +15,11 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.freshdirect.cms.ui.client.Anchor;
 import com.freshdirect.cms.ui.client.CmsGwt;
-import com.freshdirect.cms.ui.client.FieldFactory;
 import com.freshdirect.cms.ui.client.MergePreviewPanel;
 import com.freshdirect.cms.ui.client.action.BasicAction;
 import com.freshdirect.cms.ui.client.fields.FieldHotSpot;
 import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.views.ManageStoreView;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeData;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeI;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.TabDefinition;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
@@ -86,8 +83,8 @@ public class CompareNodesUtil {
 	
 	private void addDecoration() {
 		editorPanel.getActionBar().addStyleName("compare-mode-color");
-		editorComponent.addStyleName("compare-mode-color");
 		if(editorComponent instanceof ContentEditor) {
+			editorComponent.addStyleName("compare-mode-color");
 			addTabDecoration();
 		}
 		else {
