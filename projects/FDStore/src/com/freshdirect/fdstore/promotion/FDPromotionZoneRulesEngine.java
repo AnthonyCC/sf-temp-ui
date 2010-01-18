@@ -11,10 +11,12 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -37,12 +39,30 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 		//deny windows steering to iPhone users
 		boolean result=true;
 		FDUserI user=ctx.getUser();
-		System.out.println("user.getApplication()"+user.getApplication());
-		if(EnumTransactionSource.IPHONE_WEBSITE.equals(user.getApplication()))
-		{
+		if(EnumTransactionSource.IPHONE_WEBSITE.equals(user) && !isSameDiscountedSlot(ctx))	{
 			result=false;
 		}
 		return result;
+	}
+	
+	private static boolean isSameDiscountedSlot(PromotionContextI ctx) {
+		
+		FDModifyCartModel cart = null;
+		if(ctx.getUser() != null && ctx.getUser().getShoppingCart() instanceof FDModifyCartModel) {
+			cart = (FDModifyCartModel)ctx.getUser().getShoppingCart();
+			for (Iterator i = cart.getOriginalOrder().getDiscounts().iterator(); i.hasNext();) {
+				Discount d =  (Discount)i.next();				
+				PromotionI _promo = PromotionFactory.getInstance().getAutomaticPromotion(d.getPromotionCode());
+				if(_promo != null && EnumPromotionType.WINDOW_STEERING.equals(_promo.getPromotionType())
+						&& cart.getOriginalOrder().getDeliveryReservation() != null
+							&& cart.getOriginalOrder().getDeliveryReservation().getTimeslotId() != null
+								&& cart.getOriginalOrder().getDeliveryReservation().getTimeslotId()
+											.equalsIgnoreCase(ctx.getUser().getReservation().getTimeslotId())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public static List getEligiblePromotions(PromotionContextI ctx) {

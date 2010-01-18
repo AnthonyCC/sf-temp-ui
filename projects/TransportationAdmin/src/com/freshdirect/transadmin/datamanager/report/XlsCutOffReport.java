@@ -461,12 +461,14 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		        hssfCell = row.createCell(cellnum++);		        
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
-		        hssfCell.setCellValue(new HSSFRichTextString("Cartons/Cases"));
+		        //hssfCell.setCellValue(new HSSFRichTextString("Cartons/Cases"));
+		        hssfCell.setCellValue(new HSSFRichTextString(""));
 		        
 		        hssfCell = row.createCell(cellnum++);		        
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
-		        hssfCell.setCellValue(new HSSFRichTextString(""+(int)_summaryData.getNoOfCartons()));
+		        //hssfCell.setCellValue(new HSSFRichTextString(""+(int)_summaryData.getNoOfCartons()));
+		        hssfCell.setCellValue(new HSSFRichTextString(""));
 		        		                
 		        cellnum = (short)(cellnum+3);
 		        
