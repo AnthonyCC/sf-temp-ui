@@ -63,6 +63,7 @@ public class RoutingUtil {
 		try {
 			this.routingProvider = FDStoreProperties.getRoutingInitialContext();
 		} catch (NamingException e) {
+			setUseAltProvider(true);
 			LOGGER.error("Unable to get RoutingInitialContext", e);
 			//throw new RuntimeException("Unable to get InitialContext "+e.getMessage());
 		}
