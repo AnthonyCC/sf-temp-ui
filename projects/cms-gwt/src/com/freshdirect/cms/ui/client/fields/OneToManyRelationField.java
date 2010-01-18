@@ -314,11 +314,13 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 		}
 
 		public void observe() {
+			dropTarget.enable();
 			dropTarget.addDNDListener(this);
 		}
 
 		public void forget() {
 			dropTarget.removeDNDListener(this);
+			dropTarget.disable();
 		}
 	}
 
