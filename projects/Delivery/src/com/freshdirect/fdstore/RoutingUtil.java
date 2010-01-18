@@ -43,7 +43,7 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class RoutingUtil {
 	
-	private static RoutingUtil _instance = null;
+	private static RoutingUtil _instance = new RoutingUtil();
 	private RoutingGatewayHome home=null;
 	private Context routingProvider=null;
 	private Context altProvider=null;
@@ -62,14 +62,18 @@ public class RoutingUtil {
 	private RoutingUtil() {
 		try {
 			this.routingProvider = FDStoreProperties.getRoutingInitialContext();
+		} catch (NamingException e) {
+			LOGGER.error("Unable to get RoutingInitialContext", e);
+			//throw new RuntimeException("Unable to get InitialContext "+e.getMessage());
+		}
+		try {
 			this.altProvider=FDStoreProperties.getInitialContext();
-			
 		} catch (NamingException e) {
 			LOGGER.error("Unable to get InitialContext", e);
-			throw new RuntimeException("Unable to get InitialContext "+e.getMessage());
 		}
-		
 	}
+	
+	
 	
 	protected  void lookupRoutingGatewayHome() throws FDResourceException {
 		
@@ -82,13 +86,11 @@ public class RoutingUtil {
 			}
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
-		} 
+		}
 	}
 	
 	public static RoutingUtil getInstance() {
-		if (_instance == null) {
-			_instance = new RoutingUtil();
-		}
+		
 		return _instance;
 	}
 	
