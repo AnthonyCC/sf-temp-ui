@@ -7,6 +7,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.axis2.AxisFault;
+
+import com.freshdirect.routing.constants.IRoutingConstants;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
@@ -256,7 +259,34 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			
 
 		} catch (RemoteException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_CANCEL_UNSUCCESSFUL);
+			try {
+				schedulerRetrieveOrder(orderModel);
+			} catch(RoutingServiceException rxp) {
+				if(!IIssue.PROCESS_RETRIEVEORDER_NOTFOUND.equalsIgnoreCase(rxp.getIssue())) {
+					throw new RoutingServiceException(exp, IIssue.PROCESS_CANCEL_UNSUCCESSFUL);
+				}
+			}			
+		}
+	}
+	
+	public void schedulerRetrieveOrder(IOrderModel orderModel) throws RoutingServiceException {
+
+		try {
+			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
+			TransportationWebService port = getTransportationSuiteService(schedulerId);			
+						
+			port.schedulerRetrieveOrderByIdentity(RoutingDataEncoder.encodeDeliveryAreaOrderIdentity(schedulerId.getRegionId(),schedulerId.getArea().getAreaCode()
+					,schedulerId.getDeliveryDate(), orderModel.getOrderNumber()), RoutingDataEncoder.encodeDeliveryAreaOrderRetrieveOptions());
+			
+
+		} catch (RemoteException exp) {	
+			if(exp instanceof AxisFault) {
+				AxisFault fault=(AxisFault)exp;
+				if(fault.getMessage().equalsIgnoreCase(IRoutingConstants.ORDER_NOT_FOUND)) {
+					throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVEORDER_NOTFOUND);
+				}
+			}
+			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVEORDER_FAILED);
 		}
 	}
 	

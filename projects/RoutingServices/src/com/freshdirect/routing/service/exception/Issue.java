@@ -46,6 +46,10 @@ public class Issue implements IIssue {
 		messages.put(PROCESS_RETRIEVEMETRICS_UNSUCCESSFUL,"Retrieve Delivery Window metrics Failed");
 		
 		messages.put(PROCESS_UNASSIGNED_UNSUCCESSFUL,"Retrieve Unassigned Failed");
+		
+		messages.put(PROCESS_RETRIEVEORDER_NOTFOUND,"Unable to find routing order");
+		
+		messages.put(PROCESS_RETRIEVEORDER_FAILED,"Unable to retrieve routing order");
 	}
 	
 	public static String getMessage(String id) {

@@ -40,4 +40,8 @@ public interface IIssue {
 	public final static String PROCESS_CANCEL_UNSUCCESSFUL = "ISSUE030";
 	
 	public final static String PROCESS_UNASSIGNED_UNSUCCESSFUL = "ISSUE031";
+	
+	public final static String PROCESS_RETRIEVEORDER_NOTFOUND = "ISSUE032";
+	
+	public final static String PROCESS_RETRIEVEORDER_FAILED = "ISSUE033";
 }

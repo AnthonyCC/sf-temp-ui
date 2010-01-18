@@ -22,6 +22,7 @@ import com.freshdirect.routing.proxy.stub.transportation.Address;
 import com.freshdirect.routing.proxy.stub.transportation.CategoryQuantities;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
 import com.freshdirect.routing.proxy.stub.transportation.LocationIdentity;
@@ -333,6 +334,15 @@ public class RoutingDataEncoder {
 		return options;
 	}
 	
+	public static DeliveryAreaOrderRetrieveOptions encodeDeliveryAreaOrderRetrieveOptions() {
+		//param1 regionId;
+		//param2 area;
+		//param3 deliveryDate;
+		DeliveryAreaOrderRetrieveOptions options = new DeliveryAreaOrderRetrieveOptions();
+		options.setTimeZoneOptions(encodeTimeZoneOptions());
+				
+		return options;
+	}
 	
 	
 	
