@@ -16,21 +16,23 @@ public class PrimaryHomeSelectorField extends ComboBox<ContentNodeModel> {
         ListStore<ContentNodeModel> store = new ListStore<ContentNodeModel>();
         String key = value != null ? value.getKey() : null;
         ContentNodeModel selected = null;
-        for (String path : ctx.getPaths()) {
-            String label =  ctx.getLabel(path);
-            StringTokenizer tokenizer = new StringTokenizer( path, TreeContentNodeModel.pathSeparator );
-            List<String> pathFragments = new ArrayList<String>();
-            while ( tokenizer.hasMoreTokens() ) {
-            	pathFragments.add( tokenizer.nextToken() );
-            }
-            if ( pathFragments.size() > 1 ) {
-                String parentKey = pathFragments.get( pathFragments.size() - 2 );
-                ContentNodeModel bm = new ContentNodeModel(null, label, parentKey); 
-                store.add(bm);
-                if (key != null && key.equals(parentKey)) {
-                    selected = bm;
-                }
-            }
+        if ( ctx != null ) {
+	        for (String path : ctx.getPaths()) {
+	            String label =  ctx.getLabel(path);
+	            StringTokenizer tokenizer = new StringTokenizer( path, TreeContentNodeModel.pathSeparator );
+	            List<String> pathFragments = new ArrayList<String>();
+	            while ( tokenizer.hasMoreTokens() ) {
+	            	pathFragments.add( tokenizer.nextToken() );
+	            }
+	            if ( pathFragments.size() > 1 ) {
+	                String parentKey = pathFragments.get( pathFragments.size() - 2 );
+	                ContentNodeModel bm = new ContentNodeModel(null, label, parentKey); 
+	                store.add(bm);
+	                if (key != null && key.equals(parentKey)) {
+	                    selected = bm;
+	                }
+	            }
+	        }
         }
 
         setStore(store);
