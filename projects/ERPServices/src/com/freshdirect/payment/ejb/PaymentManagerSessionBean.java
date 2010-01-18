@@ -83,8 +83,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			List auths = cmd.getAuthorizations();
 
 			for (Iterator i = auths.iterator(); i.hasNext();) {
-				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
-				auth.setAvs("N"); // temp remove it later
+				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();				
 				if (auth.isApproved() && auth.hasAvsMatched()) {
 					saleEB.addAuthorization(auth);
 				} else if(!auth.isApproved()){				
@@ -176,8 +175,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			}
 
 			for (Iterator i = auths.iterator(); i.hasNext();) {
-				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
-				auth.setAvs("N");
+				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();				
 				boolean isAVSFailureCase=false;
 				
 				if(auth.isApproved() && !auth.hasAvsMatched()){					
