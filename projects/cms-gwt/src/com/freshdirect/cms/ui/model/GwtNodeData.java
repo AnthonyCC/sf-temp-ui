@@ -269,6 +269,10 @@ public class GwtNodeData implements Serializable {
 	}
 	
 	public void setCurrentContext(String context) {
-		currentContext = context;
+		if ( context != null ) {
+			currentContext = context;
+		} else {
+			currentContext = getDefaultContextPath();
+		}
 	}
 }

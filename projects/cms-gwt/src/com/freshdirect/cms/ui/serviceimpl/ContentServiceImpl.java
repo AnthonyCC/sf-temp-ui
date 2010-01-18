@@ -195,7 +195,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     // ====================== Node data ====================== 
 	
 	
-    public GwtNodeData getNodeData(String nodeKey, String context) throws ServerException {
+    public GwtNodeData loadNodeData(String nodeKey, String context) throws ServerException {
         try {
             ContentNodeI node;
             node = ContentKey.decode(nodeKey).getContentNode();

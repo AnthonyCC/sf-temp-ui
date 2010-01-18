@@ -29,9 +29,7 @@ public class ContentForm extends FormPanel {
 	final Map<String,FieldSet> sections;
 	final Map<String,List<String>> sectionKeys = new HashMap<String,List<String>>();		
 		
-	protected void initForm(GwtContextualizedNodeI cn) {
-		this.cn = cn;
-
+	protected void initForm() {
 		/*
 		 * Initialize visual appearance
 		 */
@@ -53,8 +51,9 @@ public class ContentForm extends FormPanel {
 		super();
 		this.keys = cn.getNodeData().getNode().getAttributeKeys();
 		this.sections = new HashMap<String,FieldSet>();
+		this.cn = cn;
 
-		initForm(cn);
+		initForm();
 
 		setStyleName("notab-form");
 		FormItemLayout layout = new FormItemLayout();		
@@ -84,7 +83,9 @@ public class ContentForm extends FormPanel {
 		super();
 		this.keys = new HashSet<String>();
 		this.sections = new HashMap<String,FieldSet>();
-		initForm(cn);
+		this.cn = cn;
+		
+		initForm();
 
 		final GwtNodeData nodeData = cn.getNodeData();
 

@@ -111,7 +111,7 @@ public class ManageStoreView extends LayoutContainer {
      * @param nodeKey
      */
     public void loadNode(final String nodeKey, String path) {
-        CmsGwt.getContentService().getNodeData( nodeKey, path, new GetNodeAction(nodeKey));
+        CmsGwt.getContentService().loadNodeData( nodeKey, path, new GetNodeAction(nodeKey));
     }
 
     public void scrollHack() {
@@ -172,6 +172,7 @@ public class ManageStoreView extends LayoutContainer {
 	}
 
 	public void setCurrentNode(GwtNodeData currentNode) {
+		this.currentNode = null;
 		this.currentNode = currentNode;
 	}
 	
@@ -191,8 +192,8 @@ public class ManageStoreView extends LayoutContainer {
 	}
 
 	protected void cleanup() {
-		if(detailPanel !=null) {
-			remove(detailPanel);			
+		if( detailPanel != null ) {
+			remove(detailPanel);		
 		}
 	}
 

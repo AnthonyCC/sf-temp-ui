@@ -78,7 +78,7 @@ public class CompareNodesUtil {
 		Anchor compareButton = editorPanel.getCompareButton();
 		compareButton.hide();
 		
-		CmsGwt.getContentService().getNodeData( key, path , new CompareNodesAction( editedNode ) );				            
+		CmsGwt.getContentService().loadNodeData( key, path , new CompareNodesAction( editedNode ) );				            
 	}
 	
 	private void addDecoration() {

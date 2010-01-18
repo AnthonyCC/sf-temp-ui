@@ -80,13 +80,10 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 	 * empty constructor for descendants.
 	 */
 	protected OneToManyRelationField() {
-
 	}
 
-	public OneToManyRelationField(String attrKey, Set<String> allowedTypes,
-			boolean navigable, boolean readonly) {
-		this(attrKey, allowedTypes, navigable,
-				new ArrayList<GridCellRenderer<OneToManyModel>>(0), readonly);
+	public OneToManyRelationField( String attrKey, Set<String> allowedTypes, boolean navigable, boolean readonly ) {
+		this( attrKey, allowedTypes, navigable, new ArrayList<GridCellRenderer<OneToManyModel>>( 0 ), readonly );
 	}
 
 	public OneToManyRelationField(String attrKey, Set<String> allowedTypes,
@@ -107,21 +104,19 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 	protected Listener<BaseEvent> createButtonListener = new Listener<BaseEvent>() {
 		@Override
 		public void handleEvent(BaseEvent be) {
-			if (OneToManyRelationField.this.allowedTypes.size() == 1) {
-				generateUniqueIdForType(OneToManyRelationField.this.allowedTypes
-						.iterator().next());
+			if ( OneToManyRelationField.this.allowedTypes.size() == 1 ) {
+				generateUniqueIdForType( OneToManyRelationField.this.allowedTypes.iterator().next() );
 				return;
 			}
+			final ContentTypeSelectorPopup typeSelector = new ContentTypeSelectorPopup( OneToManyRelationField.this.allowedTypes );
+			typeSelector.addListener( Events.Select, new Listener<BaseEvent>() {
 
-			final ContentTypeSelectorPopup typeSelector = new ContentTypeSelectorPopup(
-					OneToManyRelationField.this.allowedTypes);
-			typeSelector.addListener(Events.Select, new Listener<BaseEvent>() {
 				@Override
-				public void handleEvent(BaseEvent be) {
+				public void handleEvent( BaseEvent be ) {
 					String type = typeSelector.getSelectedType();
-					generateUniqueIdForType(type);
+					generateUniqueIdForType( type );
 				}
-			});
+			} );
 			typeSelector.show();
 		}
 	};
@@ -329,7 +324,6 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 	protected void initialize() {
 
 		ContentPanel cp = new ContentPanel();
-		// cp.setWidth(MAIN_LABEL_WIDTH + 50);
 		cp.addStyleName("one-to-many");
 		cp.setHeaderVisible(false);
 
@@ -337,62 +331,48 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 		cp.setTopComponent(theToolBar);
 
 		{
-			// ==================================== CREATE
-			// ====================================
-			if (navigable && allowedTypes.size() > 0) {
-				createButton = new ToolButton("create-relation");
-				createButton.setToolTip(new ToolTipConfig("CREATE",
-						"Create new node..."));
+			// ==================================== CREATE ====================================
+			if ( navigable && allowedTypes.size() > 0 ) {
+				createButton = new ToolButton( "create-relation" );
+				createButton.setToolTip( new ToolTipConfig( "CREATE", "Create new node..." ) );
 
-				theToolBar.add(createButton);
+				theToolBar.add( createButton );
 			}
 
-			// ==================================== ADD
-			// ====================================
-			if (!(this instanceof CustomGridField)) {
-				addButton = new ToolButton("add-relation");
-				addButton.setToolTip(new ToolTipConfig("ADD",
-						"Add a relation..."));
-				theToolBar.add(addButton);
+			// ==================================== ADD ====================================
+			if ( !( this instanceof CustomGridField ) ) {
+				addButton = new ToolButton( "add-relation" );
+				addButton.setToolTip( new ToolTipConfig( "ADD", "Add a relation..." ) );
+				theToolBar.add( addButton );
 			}
 
-			// ==================================== SORT
-			// ====================================
-			sortButton = new ToolButton("sort-button");
-			sortButton.setToolTip(new ToolTipConfig("SORT",
-					"Sort the relations alphabetically."));
-			theToolBar.add(sortButton);
+			// ==================================== SORT ====================================
+			sortButton = new ToolButton( "sort-button" );
+			sortButton.setToolTip( new ToolTipConfig( "SORT", "Sort the relations alphabetically." ) );
+			theToolBar.add( sortButton );
 
 			theToolBar.add(new FillToolItem());
 
-			// ==================================== DELETE
-			// ====================================
-			deleteButton = new ToolButton("delete-button");
-			deleteButton.setToolTip(new ToolTipConfig("DELETE",
-					"Delete selected relations."));
-			theToolBar.add(deleteButton);
+			// ==================================== DELETE ====================================
+			deleteButton = new ToolButton( "delete-button" );
+			deleteButton.setToolTip( new ToolTipConfig( "DELETE", "Delete selected relations." ) );
+			theToolBar.add( deleteButton );
 
-			// ==================================== COPY
-			// ====================================
-			copyButton = new ToolButton("copy-button");
-			copyButton.setToolTip(new ToolTipConfig("COPY",
-					"Copy selected relations to another node."));
-			theToolBar.add(copyButton);
+			// ==================================== COPY ====================================
+			copyButton = new ToolButton( "copy-button" );
+			copyButton.setToolTip( new ToolTipConfig( "COPY", "Copy selected relations to another node." ) );
+			theToolBar.add( copyButton );
 
-			// ==================================== MOVE
-			// ====================================
-			moveButton = new ToolButton("move-button");
-			moveButton.setToolTip(new ToolTipConfig("MOVE",
-					"Move selected relations to another node."));
-			theToolBar.add(moveButton);
+			// ==================================== MOVE ====================================
+			moveButton = new ToolButton( "move-button" );
+			moveButton.setToolTip( new ToolTipConfig( "MOVE", "Move selected relations to another node." ) );
+			theToolBar.add( moveButton );
 
-			// ==================================== SELECT CHECKBOX
-			// ====================================
-			if (!(this instanceof VariationMatrixField || this instanceof CustomGridField)) {
+			// ==================================== SELECT CHECKBOX ====================================
+			if ( !( this instanceof VariationMatrixField || this instanceof CustomGridField ) ) {
 				selectCheckbox = new CheckBox();
-				selectCheckbox.setToolTip(new ToolTipConfig("Select all/none",
-						"Select all/none relations."));
-				theToolBar.add(selectCheckbox);
+				selectCheckbox.setToolTip( new ToolTipConfig( "Select all/none", "Select all/none relations." ) );
+				theToolBar.add( selectCheckbox );
 			}
 		}
 
@@ -405,7 +385,6 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 		grid.setSelectionModel(selection);
 		grid.addPlugin(selection);
 
-		// grid.setWidth(MAIN_LABEL_WIDTH + 50);
 		grid.setAutoHeight(true);
 		grid.setHideHeaders(true);
 		grid.setStripeRows(true);
@@ -547,7 +526,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 			addRelationshipsToNodeHelper(node, targetAttributeKey,
 					relationships);
 		} else {
-			CmsGwt.getContentService().getNodeData(targetNodeKey, null,
+			CmsGwt.getContentService().loadNodeData(targetNodeKey, null,
 					new AsyncCallback<GwtNodeData>() {
 						public void onFailure(Throwable caught) {
 							MessageBox
@@ -606,26 +585,24 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 
 	}
 
-	void generateUniqueIdForType(final String type) {
-		final ContentServiceAsync contentService = (ContentServiceAsync) GWT
-				.create(ContentService.class);
-		contentService.generateUniqueId(type, new BaseCallback<String>() {
+	void generateUniqueIdForType( final String type ) {
+		final ContentServiceAsync contentService = (ContentServiceAsync)GWT.create( ContentService.class );
+		contentService.generateUniqueId( type, new BaseCallback<String>() {
+
 			@Override
-			public void onSuccess(String result) {
-				final ContentIdWindow w = new ContentIdWindow(result, "ID of '"
-						+ type + "'");
-				w.addListener(Events.Select, new Listener<BaseEvent>() {
+			public void onSuccess( String result ) {
+				final ContentIdWindow w = new ContentIdWindow( result, "ID of '" + type + "'" );
+				w.addListener( Events.Select, new Listener<BaseEvent>() {
+
 					@Override
-					public void handleEvent(BaseEvent be) {
+					public void handleEvent( BaseEvent be ) {
 						String id = w.getContentId();
-						contentService.createNodeData(type, id,
-								new NewGwtNodeCallback(
-										OneToManyRelationField.this));
+						contentService.createNodeData( type, id, new NewGwtNodeCallback( OneToManyRelationField.this ) );
 					}
-				});
+				} );
 				w.show();
 			}
-		});
+		} );
 	}
 
 	public void addOneToManyModel(String type, String key, String label,
@@ -722,11 +699,10 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 		if (createButton != null) {
 			createButton.setEnabled(!readOnly);
 
-			if (readOnly) {
-				createButton.removeListener(Events.OnClick,
-						createButtonListener);
+			if ( readOnly ) {
+				createButton.removeListener( Events.OnClick, createButtonListener );
 			} else {
-				createButton.addListener(Events.OnClick, createButtonListener);
+				createButton.addListener( Events.OnClick, createButtonListener );
 			}
 		}
 
