@@ -250,12 +250,16 @@ public class GwtNodeData implements Serializable {
             ContentNodeAttributeI attribute = attributes.get(key);
             Field<Serializable> fieldObject = (Field<Serializable>) attribute.getFieldObject();
 
-            if (fieldObject != null && fieldObject instanceof InheritanceField && attribute.isInheritable() && inheritedAttrs.containsKey(key)) {
+            if (fieldObject != null && fieldObject instanceof InheritanceField && attribute.isInheritable() ) {
+
                 InheritanceField<Serializable> inheritanceField = (InheritanceField<Serializable>) fieldObject;
 
                 ContentNodeAttributeI inhAttr = inheritedAttrs.get(key);
-                if (inhAttr != null && inheritanceField.isOverrideValue()) {
+                if (inhAttr != null ) {
                     inheritanceField.setInheritedValue(inhAttr.getValue());
+                }
+                else {
+                	inheritanceField.setInheritedValue(null);
                 }
             }
         }
