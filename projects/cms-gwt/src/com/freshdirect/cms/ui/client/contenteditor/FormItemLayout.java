@@ -41,7 +41,7 @@ public class FormItemLayout extends FormLayout {
 		StringBuffer sb = new StringBuffer();
 		sb.append("<div class='x-form-item {5}' tabIndex='-1' style=\"overflow:hidden\">\n");
 		sb.append("  <label for='{0}' style='{2};{7}' class='x-form-item-label'>{1}{4}");
-		sb.append("<br><span style='color: #777777; font-size: 70%; font-style:italic;'>{0}</span>");
+		sb.append("<br><span style='color: #777777; font-size: 70%; font-style:italic;'>{8}</span>");
 		sb.append("</label>");
 		sb.append("  <div class='x-form-element' id='x-form-el-{0}' style='{3};float:left'>");
 		sb.append("  </div>");
@@ -124,13 +124,13 @@ public class FormItemLayout extends FormLayout {
 				p.add(ls);
 				p.add(field.isHideLabel() ? "x-hide-label" : "");
 				p.add("x-form-clear-left");
-				p.add(field.getLabelStyle());				
+				p.add(field.getLabelStyle());
+				p.add(field.getTitle() == null ? "" : field.getTitle());
 			}
 			else {
 				p = parameterFactory.getParams((Field<Serializable>)field, index, target);
 			}
-			
-			p.add(field.getId());
+						
 			
 			fieldTemplate.insert(target.dom, index, p);
 

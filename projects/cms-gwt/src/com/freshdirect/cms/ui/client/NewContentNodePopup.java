@@ -44,15 +44,6 @@ public class NewContentNodePopup extends Window {
         setModal(true);
         setMaximizable(true);
         setClosable(false);
-
-//        ContentPanel panel = new ContentPanel();
-//        panel.setHeaderVisible(false);
-//        panel.setScrollMode(Scroll.AUTO);
-//        panel.setBorders(false);
-//        panel.setBodyBorder(false);
-//        panel.setLayout(new FitLayout());
-//        panel.add();
-
         
         add(ContentEditorFactory.getEditor(new GwtContextualizedNodeData(nodeData, null)));
         setButtonAlign(HorizontalAlignment.CENTER);

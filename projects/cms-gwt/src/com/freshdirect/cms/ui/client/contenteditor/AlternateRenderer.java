@@ -42,6 +42,7 @@ public class AlternateRenderer implements ContainerParamFactoryI {
 		p.add(field.isHideLabel() ? "x-hide-label" : "" + (index % 2  == 0 ? "" : " gray"));
 		p.add("x-form-clear-left");
 		p.add(field.getLabelStyle());
+		p.add(field.getTitle() == null ? "" : field.getTitle());
 		return p;
 	}
 }
