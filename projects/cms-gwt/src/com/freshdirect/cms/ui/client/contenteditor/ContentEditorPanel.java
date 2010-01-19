@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -26,6 +27,7 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.AnchorData;
 import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
@@ -38,6 +40,7 @@ import com.freshdirect.cms.ui.client.WorkingSet;
 import com.freshdirect.cms.ui.client.action.SaveNodeAction;
 import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
 import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
+import com.freshdirect.cms.ui.client.views.ManageStoreView;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtContextualizedNodeData;
 import com.freshdirect.cms.ui.model.GwtNodeContext;
@@ -214,9 +217,7 @@ public class ContentEditorPanel extends DetailPanel {
         
         body.add(editorComponent);
 
-		if (treePanel.isCollapsed())
-        	treePanel.expand();
-
+		((BorderLayout) ManageStoreView.getInstance().getLayout()).expand(LayoutRegion.WEST);
 		setHeader(head);
 		setBody(body);		
 		layout();
@@ -242,6 +243,7 @@ public class ContentEditorPanel extends DetailPanel {
             Button saveButton = new Button("Save", new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
+                	((BorderLayout) ManageStoreView.getInstance().getLayout()).expand(LayoutRegion.WEST);              	
                     saveAction();
                 }
             });
