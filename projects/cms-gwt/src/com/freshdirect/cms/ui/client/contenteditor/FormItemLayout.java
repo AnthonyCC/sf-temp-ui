@@ -125,12 +125,11 @@ public class FormItemLayout extends FormLayout {
 				p.add(field.isHideLabel() ? "x-hide-label" : "");
 				p.add("x-form-clear-left");
 				p.add(field.getLabelStyle());
-				p.add(field.getTitle() == null ? "" : field.getTitle());
+				p.add(field.getData("contentKey") == null ? "" : field.getData("contentKey"));				
 			}
 			else {
 				p = parameterFactory.getParams((Field<Serializable>)field, index, target);
-			}
-						
+			}				
 			
 			fieldTemplate.insert(target.dom, index, p);
 

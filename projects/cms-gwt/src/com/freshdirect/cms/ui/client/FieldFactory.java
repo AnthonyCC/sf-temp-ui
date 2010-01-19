@@ -211,7 +211,7 @@ public final class FieldFactory {
 		// wrap field in inherited value editor if attribute is inheritable
 		field = (wrapInheritedField && attribute.isInheritable() ) ? decorateInheritedValue(cn, key, readonly, field) : field;
 		
-		field.setTitle(key);
+		field.setData("contentKey", key);
 		
 		/**
 		 * Set label 
