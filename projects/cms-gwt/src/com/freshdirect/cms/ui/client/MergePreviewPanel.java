@@ -152,7 +152,6 @@ public class MergePreviewPanel extends LayoutContainer {
 
 		final GwtContextualizedNodeI n = new GwtContextualizedNodeData(compareUtil.getComparedNode(), compareUtil.getComparedNode().getCurrentContext()); 
 		final Field<Serializable> otherField = FieldFactory.createStandardField(n, hs.getKey());
-		otherField.setId("other-" + otherField.getId());		
 		otherField.setReadOnly(true);
 
 		// original field
