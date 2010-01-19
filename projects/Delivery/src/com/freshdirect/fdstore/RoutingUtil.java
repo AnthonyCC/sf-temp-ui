@@ -288,7 +288,7 @@ public class RoutingUtil {
         boolean isUpdated = true;
         if(orderModel.getOrderNumber() != null && !orderModel.getOrderNumber().equalsIgnoreCase(previousOrderId)) {
              isUpdated=routingService.schedulerUpdateOrder(orderModel, previousOrderId);
-             LOGGER.debug("routingService.schedulerUpdateOrder() :"+isUpdated);
+             //LOGGER.debug("routingService.schedulerUpdateOrder() :"+isUpdated);
         }  
         return isUpdated;
         
@@ -304,7 +304,7 @@ public class RoutingUtil {
 	private static IDeliveryReservation schedulerReserveOrder(IOrderModel orderModel, IDeliverySlot slot) throws RoutingServiceException {
 		
 		IDeliveryReservation reservation=new RoutingEngineServiceProxy().schedulerReserveOrder(orderModel, slot, RoutingServicesProperties.getDefaultLocationType(), RoutingServicesProperties.getDefaultOrderType());
-		LOGGER.info("schedulerReserveOrder():: DeliveryReservation:"+reservation.isReserved());
+		//LOGGER.info("schedulerReserveOrder():: DeliveryReservation:"+reservation.isReserved());
 		return reservation;
 	}
 
