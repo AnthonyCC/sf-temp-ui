@@ -48,7 +48,7 @@ public class RoutingUtil {
 	private Context routingProvider=null;
 	private Context altProvider=null;
 	private boolean useAltProvider=false;
-	private static final Category LOGGER = LoggerFactory.getInstance(RoutingUtil.class);
+	
 	
 
 	private synchronized void setUseAltProvider(boolean useAltProvider) {
@@ -64,13 +64,13 @@ public class RoutingUtil {
 			this.routingProvider = FDStoreProperties.getRoutingInitialContext();
 		} catch (NamingException e) {
 			setUseAltProvider(true);
-			LOGGER.error("Unable to get RoutingInitialContext", e);
+			e.printStackTrace();
 			//throw new RuntimeException("Unable to get InitialContext "+e.getMessage());
 		}
 		try {
 			this.altProvider=FDStoreProperties.getInitialContext();
 		} catch (NamingException e) {
-			LOGGER.error("Unable to get InitialContext", e);
+			e.printStackTrace();
 		}
 	}
 	
