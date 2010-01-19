@@ -262,7 +262,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
      */
     public VersionedPrimaryKey create(Connection conn, int version) throws SQLException {
     	String id = this.getNextId(conn, "ERPS");
-        PreparedStatement ps = conn.prepareStatement("insert into erps.product (id, version, sku_code, default_price, default_unit, unavailability_status, unavailability_date, unavailability_reason, rating, days_fresh, days_in_house, base_price, base_pricing_unit ) values (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)");
+        PreparedStatement ps = conn.prepareStatement("insert into erps.product (id, version, sku_code, default_price, default_unit, unavailability_status, unavailability_date, unavailability_reason, rating, days_fresh, days_in_house, base_price, base_pricing_unit ) values (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?)");
         ps.setString(1, id);
         ps.setInt(2, version);
         ps.setString(3, this.skuCode);
@@ -362,8 +362,8 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		p.rating=rs.getString(8);
 		p.days_fresh=rs.getString(9);
 		p.days_in_house=rs.getString(10);
-		p.basePrice=rs.getDouble(10);
-		p.basePriceUnit=rs.getString(11);
+		p.basePrice=rs.getDouble(11);
+		p.basePriceUnit=rs.getString(12);
         
         rs.close();
         ps.close();
