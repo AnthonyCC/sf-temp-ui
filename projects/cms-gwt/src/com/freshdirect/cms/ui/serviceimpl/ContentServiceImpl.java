@@ -205,7 +205,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             
         } catch (IllegalArgumentException e) {
             LOG.error("IllegalArgumentException for "+nodeKey, e);
-            throw new RuntimeException("Invalid content key : " + e.getMessage());
+            throw new ServerException("Invalid content key : " + e.getMessage());
         } catch (Throwable e) {
             LOG.error("Runtime Exception : " + e.getMessage(), e);
             throw TranslatorToGwt.wrap(e);
@@ -214,7 +214,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 
     public GwtNodeData createNodeData(String type, String id) throws ServerException {
         if (!getUser().isAllowedToWrite()) {
-            throw new RuntimeException("Error : Creating new node as read-only.");
+            throw new ServerException("Error : Creating new node as read-only.");
         }
 
         return TranslatorToGwt.gwtNodeDataSkeleton(type, id);

@@ -25,7 +25,7 @@ public abstract class BaseCallback<X> implements AsyncCallback<X> {
         }
     }
 
-    public void errorOccured(Throwable error) {
+    public void errorOccured(@SuppressWarnings( "unused" ) Throwable error) {
 
     }
 
@@ -36,7 +36,7 @@ public abstract class BaseCallback<X> implements AsyncCallback<X> {
         box.setButtons(MessageBox.OK);
         box.setIcon(MessageBox.WARNING);
         box.setMaxWidth(800);
-        box.setMinWidth(700);
+        box.setMinWidth(200);
         box.show();
     }
 }

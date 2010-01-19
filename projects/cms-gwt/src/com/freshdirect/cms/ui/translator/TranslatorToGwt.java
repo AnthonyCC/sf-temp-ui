@@ -86,7 +86,7 @@ public class TranslatorToGwt {
 		return toContentNodeModel( node.getKey() );
 	}
 
-	public static GwtContentNode getGwtNode( ContentNodeI node, TabDefinition tabDefs ) {
+	public static GwtContentNode getGwtNode( ContentNodeI node, TabDefinition tabDefs ) throws ServerException {
 		ContentKey contentKey = node.getKey();
 		GwtContentNode gwtNode = new GwtContentNode( contentKey.getType().getName(), contentKey.getId() );
 		gwtNode.setLabel( node.getLabel() );
@@ -110,8 +110,9 @@ public class TranslatorToGwt {
 	 * 	Creates a GwtNodeData object from a ContentNodeI. 
 	 * 	Fills in the node attributes, tab definitions, contexts (including inherited attributes)
 	 * 	Read-only parameter sets a read-only flag in the node.
+	 * @throws ServerException 
 	 */
-	public static GwtNodeData gwtNodeData( ContentNodeI node, boolean readOnly ) {
+	public static GwtNodeData gwtNodeData( ContentNodeI node, boolean readOnly ) throws ServerException {
 		TabDefinition tabDef = TranslatorToGwt.gwtTabDefinition( node );
 		GwtContentNode gwtNode = TranslatorToGwt.getGwtNode( node, tabDef );
 		GwtNodeContext ctx = TranslatorToGwt.gwtNodeContext( node, tabDef );
@@ -123,13 +124,13 @@ public class TranslatorToGwt {
 	 *	Creates a new GwtNodeData object, with the supplied type and id.
 	 *	Fills in tab definitions, but no context data. 	
 	 */
-	public static GwtNodeData gwtNodeDataSkeleton ( String type, String id ) {
+	public static GwtNodeData gwtNodeDataSkeleton ( String type, String id ) throws ServerException {
 		ContentNodeI node;
 		try {
 			node = CmsManager.getInstance().createPrototypeContentNode(ContentKey.create(ContentType.get(type), id));
 	    } catch (InvalidContentKeyException e) {
 	        e.printStackTrace();
-	        throw new RuntimeException("Invalid content key : " + e.getMessage());
+	        throw new ServerException( "Invalid content key : " + type + ":" + id );
 	    }
 
 	    TabDefinition tabDef = TranslatorToGwt.gwtTabDefinition(node);
@@ -140,13 +141,13 @@ public class TranslatorToGwt {
 	
 	// =========================== TAB DEFINITIONS ===========================
 	
-	public static TabDefinition gwtTabDefinition( ContentNodeI n ) {
+	public static TabDefinition gwtTabDefinition( ContentNodeI n ) throws ServerException {
 		TabDefinition def = gwtTabDefinition( n.getDefinition() );
 		return def;
 	}
 
 	@SuppressWarnings( "unchecked" )
-	public static TabDefinition gwtTabDefinition( ContentTypeDefI typeDef ) {
+	public static TabDefinition gwtTabDefinition( ContentTypeDefI typeDef ) throws ServerException {
 		
 		TabDefinition tabDef = new TabDefinition();
 		
@@ -181,7 +182,7 @@ public class TranslatorToGwt {
 
 						if ( "CmsGridField".equals( attrType ) ) {
 							if ( attributeDef.getContentTypes().size() != 1 ) {
-								throw new RuntimeException( "Relation from " + typeDef.getName() + "::" + attributeKey
+								throw new ServerException( "Relation from " + typeDef.getName() + "::" + attributeKey
 										+ " contains more than 1 type: " + attributeDef.getContentTypes() );
 							}
 							CustomFieldDefinition cfd = new CustomFieldDefinition( CustomFieldDefinition.Type.Grid );
@@ -208,16 +209,18 @@ public class TranslatorToGwt {
 	
 	/**
 	 * 	Creates a GwtNodeContext for a CMS content node.
+	 * @throws ServerException 
 	 */
-	public static GwtNodeContext gwtNodeContext( ContentNodeI node, TabDefinition tabs) {
+	public static GwtNodeContext gwtNodeContext( ContentNodeI node, TabDefinition tabs) throws ServerException {
 		return gwtNodeContext(node.getKey(), tabs);
 	}
 	
 	/**
 	 *	Creates a GwtNodeContext for the supplied content key. 
+	 * @throws ServerException 
 	 */
 	@SuppressWarnings("unchecked")
-	public static GwtNodeContext gwtNodeContext( ContentKey key, TabDefinition tabs ) {
+	public static GwtNodeContext gwtNodeContext( ContentKey key, TabDefinition tabs ) throws ServerException {
 		
 		GwtNodeContext nodeContext = new GwtNodeContext();
 		
@@ -242,8 +245,9 @@ public class TranslatorToGwt {
 	 * 
 	 * @param attributeMap
 	 * @return
+	 * @throws ServerException 
 	 */
-	public static Map<String, ContentNodeAttributeI> translateAttributeMap( Map<String, AttributeI> attributeMap, TabDefinition tabs,ContentKey contentKey ) {
+	public static Map<String, ContentNodeAttributeI> translateAttributeMap( Map<String, AttributeI> attributeMap, TabDefinition tabs,ContentKey contentKey ) throws ServerException {
 		if ( attributeMap == null )
 			return null;
 		
@@ -264,11 +268,12 @@ public class TranslatorToGwt {
 	 * @param attribute
 	 * @param customFieldDefinition 
 	 * @return
+	 * @throws ServerException 
 	 */
-    public static ModifiableAttributeI translateAttribute(AttributeDefI definition, Object value, CustomFieldDefinition customFieldDefinition,ContentKey key) {
+    public static ModifiableAttributeI translateAttribute(AttributeDefI definition, Object value, CustomFieldDefinition customFieldDefinition,ContentKey key) throws ServerException {
         ModifiableAttributeI attr = translateAttribute(definition, customFieldDefinition, value, key.getContentNode() );
         if (attr == null) {
-            throw new RuntimeException("Unknown attribute type "+ definition + ", in node :"+key);
+            throw new ServerException("Unknown attribute type "+ definition + ", in node :"+key);
         }
         return attr;
     }
