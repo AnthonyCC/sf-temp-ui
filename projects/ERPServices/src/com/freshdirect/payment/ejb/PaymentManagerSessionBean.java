@@ -53,6 +53,19 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(PaymentManagerSessionBean.class);
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
+	
+	private final static int AUTH_HOURS;
+	
+	static {
+		int hours = 48;
+		try {
+			hours = Integer.parseInt(ErpServicesProperties.getAuthHours());
+		} catch (NumberFormatException ne) {
+			LOGGER.warn("authHours is not in correct format", ne);
+		}
+		AUTH_HOURS = hours;
+	}
+	
 
 	/**
 	 * Template method that returns the cache key to use for caching resources.
@@ -63,6 +76,24 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		return "com.freshdirect.payment.ejb.PaymentManagerHome";
 	}
 
+	
+	private boolean isAuthorizationRequired(Date deliveryTime){
+		
+		if (!"true".equalsIgnoreCase(ErpServicesProperties.getAuthorize())) {
+			return false;
+		}
+		
+		long currentTime = System.currentTimeMillis();
+		long difference = deliveryTime.getTime() - currentTime;
+		difference = difference / (1000 * 60 * 60);
+
+		if (difference > AUTH_HOURS) {
+			return false;
+		}
+
+		return true;
+	}
+	
 	public List authorizeSaleRealtime(String saleId) throws ErpAuthorizationException, ErpAddressVerificationException {
 		try {
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
@@ -71,21 +102,23 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			AuthorizationStrategy strategy = new AuthorizationStrategy(sale);
 			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();			
 			
-			AuthorizationCommand cmd = new AuthorizationCommand(strategy.getOutstandingAuthorizations(), order
-				.getDeliveryInfo()
-				.getDeliveryStartTime(), saleEB.getAuthorizations().size());
-
-			cmd.execute();
-
 			
-			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+			
+			if(isAuthorizationRequired(order
+					.getDeliveryInfo()
+					.getDeliveryStartTime())  && payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
 				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");				
 			}
 
 			
-			List auths = cmd.getAuthorizations();
-
-			for (Iterator i = auths.iterator(); i.hasNext();) {
+			AuthorizationCommand cmd = new AuthorizationCommand(strategy.getOutstandingAuthorizations(), saleEB.getAuthorizations().size());
+									
+			cmd.execute();
+						
+			List auths = cmd.getAuthorizations();						
+			
+			
+			for (Iterator i = auths.iterator(); i.hasNext();) {							
 				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();				
 				if (auth.isApproved() && auth.hasAvsMatched()) {
 					saleEB.addAuthorization(auth);
@@ -157,14 +190,17 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			String customerId = sale.getCustomerPk().getId();
 						
 			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();
-			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+			
+			if(isAuthorizationRequired(order
+					.getDeliveryInfo()
+					.getDeliveryStartTime())  && payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
 				//throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
 				return EnumPaymentResponse.ERROR;
 			}
+
+			
 			AuthorizationStrategy strategy = new AuthorizationStrategy(sale);
-			AuthorizationCommand cmd = new AuthorizationCommand(strategy.getOutstandingAuthorizations(), order
-				.getDeliveryInfo()
-				.getDeliveryStartTime(), saleEB.getAuthorizations().size());
+			AuthorizationCommand cmd = new AuthorizationCommand(strategy.getOutstandingAuthorizations(), saleEB.getAuthorizations().size());
 			cmd.execute();
 
 			List auths = cmd.getAuthorizations();
@@ -399,14 +435,16 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			ErpSaleModel sale = (ErpSaleModel) saleEB.getModel();
 			ErpAbstractOrderModel order = sale.getCurrentOrder();
 			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();
-			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
-				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");				
+			
+			if(isAuthorizationRequired( order.getRequestedDate())  && payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
+				
 			}
 
-			
+						
 			AuthorizationStrategy strategy = new AuthorizationStrategy(sale);
 			AuthorizationCommand cmd = null;
-			cmd=new AuthorizationCommand(strategy.getOutstandingAuthorizations(), order.getRequestedDate(), saleEB.getAuthorizations().size());
+			cmd=new AuthorizationCommand(strategy.getOutstandingAuthorizations(), saleEB.getAuthorizations().size());
 			cmd.execute();
 			List auths = cmd.getAuthorizations();
 			
