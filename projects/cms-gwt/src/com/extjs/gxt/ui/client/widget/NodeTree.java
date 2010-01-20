@@ -127,7 +127,6 @@ public class NodeTree extends ContentPanel {
 
 		  protected void onRender(Element target, int index) {
 			setElement(DOM.createDiv(), target, index);
-
 			addStyleName("x-small-editor");
 			addStyleName("nodetree-header");
 			toolBar.setParent(this);
@@ -654,6 +653,12 @@ public class NodeTree extends ContentPanel {
 	    cs.search( searchTerm, new SearchCallback() ); 
 	}
 	
+	@Override
+	public void show() {
+		super.show();
+		scrollHack();
+	}
+		
 
 	
 	// ==================================== action methods ====================================
@@ -728,5 +733,12 @@ public class NodeTree extends ContentPanel {
 		El elek = new El( tree.getElement() );
 		int scroll = elek.getScrollTop();				
 		elek.scrollTo( "top", 0 ).scrollTo( "top", 1 ).scrollTo( "top", scroll );
+    }
+    
+    @Override
+    protected void onRender(Element parent, int pos) {
+    	// TODO Auto-generated method stub
+    	super.onRender(parent, pos);
+    	head.disableTextSelection(false);
     }
 } 
