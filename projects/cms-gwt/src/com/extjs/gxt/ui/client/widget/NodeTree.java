@@ -34,7 +34,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.NodeTreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
-import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.MainLayout;
 import com.freshdirect.cms.ui.client.nodetree.NodeTreeSelectionModel;
 import com.freshdirect.cms.ui.client.nodetree.StringTokenizer;

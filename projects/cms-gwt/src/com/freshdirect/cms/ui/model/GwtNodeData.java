@@ -239,8 +239,9 @@ public class GwtNodeData implements Serializable {
 	 */
 	@SuppressWarnings( "unchecked" )
 	public void changeContext(String contextPath) {
+		setCurrentContext( contextPath );
         Map<String, ContentNodeAttributeI> attributes = getNode().getOriginalAttributes();
-        Map<String, ContentNodeAttributeI> inheritedAttrs = getContexts().getInheritedAttributes(contextPath);
+        Map<String, ContentNodeAttributeI> inheritedAttrs = getContexts().getInheritedAttributes(getCurrentContext());
 
         if (inheritedAttrs == null || attributes == null) {
             return;
