@@ -99,9 +99,9 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 
 									<tr valign="top">
 									    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
-									    <td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
+									    <td width="27"><img src="/media_stat/images/freshness/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
 									    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
-									    <td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
+									    <td  valign="top"><img src="/media_stat/images/freshness/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
 									    <span class="text12">at least </span><span class="title12"><%=shelfLife%> days</span><span class="text12"><br> from delivery</span></td>
 									    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>								    
 									</tr>
@@ -111,11 +111,13 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 									// sku with lowest shelf life value will display per domain label
 									ListIterator lowLifeItr = shelfLifeList.listIterator();
 									while(lowLifeItr.hasNext()) {
-										String val = (String)lowLifeItr.next();
-										if(leastShelfDays != null && "".equals(leastShelfDays) && StringUtil.isNumeric(val)) {
-											leastShelfDays = val;
+										String val = (String)lowLifeItr.next();										System.out.println("***** leastShelfDays = " + leastShelfDays);
+										if(StringUtil.isNumeric(val)) {
+											if(leastShelfDays == null) {
+												leastShelfDays = val;												System.out.println("***** leastShelfDays = " + leastShelfDays);
+											}
 											if(Integer.parseInt(val) < Integer.parseInt(leastShelfDays)) {
-												leastShelfDays = val;
+												leastShelfDays = val;												System.out.println("***** leastShelfDays = " + leastShelfDays);
 											}
 										}
 									}
@@ -132,9 +134,9 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 											<tr valign="top">
 											<% if(printHeader) { %>
 											    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
-											    <td width="27"><img src="/media/images/site_pages/shelflife/days_<%=leastShelfDays%>.gif" width="27" height="27" border="0"></td>
+											    <td width="27"><img src="/media_stat/images/freshness/days_<%=leastShelfDays%>.gif" width="27" height="27" border="0"></td>
 											    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
-											    <td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10">   
+											    <td  valign="top"><img src="/media_stat/images/freshness/guarant_fresh_hdr_lg.gif" width="129" height="10">   
 											<% 
 											     printHeader = false;
 											} else { %>
@@ -167,13 +169,14 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 					    <td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
 					</tr>
 				</table>
-				<table width="140">
+				<table width="188">
 					<tr>
-					<td>
-					<br>
-					<a href="javascript:pop('/help/freshness.jsp',335,375)">Learn more about our Freshness Guarantee - CLICK HERE</a>
-					</td>
-					</tr></table>
+						<td align="right">
+						<br>
+						<a href="javascript:pop('/help/freshness.jsp',335,375)">Learn more about our Freshness Guarantee - CLICK HERE</a>
+						</td>
+					</tr>
+				</table>
 			<%}%>
 		</td>	
 
