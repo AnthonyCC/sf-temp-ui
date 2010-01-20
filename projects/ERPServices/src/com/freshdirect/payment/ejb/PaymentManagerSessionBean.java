@@ -70,9 +70,6 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			ErpAbstractOrderModel order = sale.getCurrentOrder();
 			AuthorizationStrategy strategy = new AuthorizationStrategy(sale);
 			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();			
-			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
-				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");				
-			}
 			
 			AuthorizationCommand cmd = new AuthorizationCommand(strategy.getOutstandingAuthorizations(), order
 				.getDeliveryInfo()
@@ -80,6 +77,12 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 
 			cmd.execute();
 
+			
+			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");				
+			}
+
+			
 			List auths = cmd.getAuthorizations();
 
 			for (Iterator i = auths.iterator(); i.hasNext();) {
