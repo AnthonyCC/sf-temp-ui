@@ -583,6 +583,22 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                                         <br><%=payment.getAddress2()%><%}%><br><%=payment.getCity()%>,&nbsp;<%=payment.getState()%>&nbsp;<%=payment.getZipCode()%>
                                 </td>
                             </tr>
+                            
+                            				
+							<%
+				            boolean avsStatusFailed=payment.isAvsCkeckFailed();
+				            boolean bypassAVSCheck=payment.isBypassAVSCheck();
+				
+							%>	
+							 <tr>
+								<td align="right">AVS Status:</td>
+								<td><font color="red"><%=avsStatusFailed?"AVS FAILED":""%></font></td>
+							</tr>
+				            <tr>
+								<td align="right">Bypass AVS Check:</td>
+								<td><font color="red"><%=bypassAVSCheck?"AVS Bypass":""%></font></td>				
+							</tr>
+                                                        
                             <%if (!forPrint){%>
                                 <tr><td colspan="3" height="8"></td></tr>
                                 <tr>
