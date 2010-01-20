@@ -46,6 +46,23 @@
                                     <%if(payment.getAddress2() != null && !"".equalsIgnoreCase(payment.getAddress2())){%>
                                         <br><%=payment.getAddress2()%><%}%><br><%=payment.getCity()%>,&nbsp;<%=payment.getState()%>&nbsp;<%=payment.getZipCode()%></td>
 				</tr>
+				
+			<%
+            boolean avsStatusFailed=payment.isAvsCkeckFailed();
+            boolean bypassAVSCheck=payment.isBypassAVSCheck();
+
+			%>	
+			 <tr>
+				<td align="right">AVS Status:</td>
+				<td><font color="red"><%=avsStatusFailed?"AVS FAILED":""%></font></td>
+			</tr>
+            <tr>
+				<td align="right">Bypass AVS Check:</td>
+				<td><font color="red"><%=bypassAVSCheck?"AVS Bypass":""%></font></td>				
+			</tr>
+				
+				
+				
 			</TABLE><BR>
 <% 	if (showCCButtons) { 
 String currPage = request.getRequestURI();
