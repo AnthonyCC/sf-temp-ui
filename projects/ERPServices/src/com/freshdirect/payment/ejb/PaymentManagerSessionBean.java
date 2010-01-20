@@ -122,7 +122,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();				
 				if (auth.isApproved() && auth.hasAvsMatched()) {
 					if(payment.isBypassAVSCheck()){
-						{
+						
 							PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
 							ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
 							List paymentList=customerEB.getPaymentMethods();
@@ -139,7 +139,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 								payment.setBypassAVSCheck(false);
 								customerEB.updatePaymentMethodNewTx(payment);
 							  }	
-						}
+					}
 					saleEB.addAuthorization(auth);
 				} else if(!auth.isApproved()){				
 				    logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth, false);
