@@ -1063,7 +1063,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// !!! override tx source
 				this.logActivity(info.createActivity(EnumAccountActivityType.UPDATE_ERP_CUSTOMERINFO, EnumFraudReason.DUP_PHONE
 					.getDescription()));
-				this.setSignupPromotionEligibility(info, false);
+//				this.setSignupPromotionEligibility(info, false);
 			}
 
 			this.logActivity(info.createActivity(EnumAccountActivityType.UPDATE_ERP_CUSTOMERINFO));
@@ -4043,8 +4043,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						//Only when it has a valid auth.
 						ErpCustomerManagerSB erpCMsb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 						String sapCustomerId = erpCMsb.getSapCustomerId(customerPk);
+						LOGGER.debug("Customer ID:"+customerPk+"-Sap Customer ID:"+sapCustomerId+"-");
 						//Only if the customer id is available in SAP.
-						if(null != sapCustomerId && sapCustomerId.length() > 0){
+						if(null != sapCustomerId && sapCustomerId.trim().length() > 0){
 							erpCMsb.sendCreateOrderToSAP(customerPk,  pk.getId(), EnumSaleType.GIFTCARD, cra);
 						}
 					}
@@ -4867,7 +4868,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						String saleId = erpSaleInfo.getSaleId();
 						String customerId = erpSaleInfo.getErpCustomerId();
 						String sapCustomerId = sb.getSapCustomerId(customerId);
-						if(null != sapCustomerId && sapCustomerId.length() > 0){
+						LOGGER.debug("Customer ID:"+customerId+"-Sap Customer ID:"+sapCustomerId+"-");
+						if(null != sapCustomerId && sapCustomerId.trim().length() > 0){
 							FDOrderI order = this.getOrder(saleId);
 							FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(customerId);
 							int orderCount =sb.getValidOrderCount(new PrimaryKey(customerId));

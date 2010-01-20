@@ -102,9 +102,9 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 			if (dao.isDuplicateShipToAddress(conn, dlvAddress, null)) {
 				fraudReasons.add(EnumFraudReason.DUP_SHIPTO_ADDRESS);
 			}
-			if (dao.isDuplicatePhone(conn, erpCustomer.getCustomerInfo().getHomePhone())) {
+			/*if (dao.isDuplicatePhone(conn, erpCustomer.getCustomerInfo().getHomePhone())) {
 				fraudReasons.add(EnumFraudReason.DUP_PHONE);
-			}
+			}*/
 
 		} catch (SQLException ex) {
 			LOGGER.error("SQLException occurred", ex);
@@ -137,9 +137,9 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 			conn = getConnection();
 
 			retval = dao.isDuplicateShipToAddress(conn, address, erpCustomerId);
-			if (!retval) {
+			/*if (!retval) {
 				dao.isDuplicatePhone(conn, address.getPhone(), erpCustomerId);
-			}
+			}*/
 
 		} catch (SQLException ex) {
 			LOGGER.error("SQLException occurred", ex);

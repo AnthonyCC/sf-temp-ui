@@ -207,9 +207,9 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		String shipToAddressId = request.getParameter("updateShipToAddressId");
 		boolean foundFraud = AddressUtil.updateShipToAddress(request, actionResult, user, shipToAddressId, erpAddress);
 		if(foundFraud){
-			session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
+			/*session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
 				SystemMessageList.MSG_NOT_UNIQUE_INFO,
-				new Object[] {user.getCustomerServiceContact()}));
+				new Object[] {user.getCustomerServiceContact()}));*/
 			this.applyFraudChange(user);
 		}
 		
@@ -239,9 +239,9 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			boolean foundFraud =
 				FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), erpAddress);
 			if (foundFraud) {
-				session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
-					SystemMessageList.MSG_NOT_UNIQUE_INFO,
-					new Object[] {user.getCustomerServiceContact()}));
+//				session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
+//					SystemMessageList.MSG_NOT_UNIQUE_INFO,
+//					new Object[] {user.getCustomerServiceContact()}));
 				this.applyFraudChange(user);
 			}
 
@@ -402,12 +402,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		LOGGER.debug("Updating customer info");
 		boolean foundFraud = FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), cim);
 		LOGGER.debug("Customer info updated");
-		if(foundFraud){
+		/*if(foundFraud){
 			pageContext.getSession().setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
 				SystemMessageList.MSG_NOT_UNIQUE_INFO,
 				new Object[] {user.getCustomerServiceContact()}));
 			this.applyFraudChange(user);
-		}
+		}*/
 	}
 	
 	private void applyFraudChange(FDUserI user) throws FDResourceException{

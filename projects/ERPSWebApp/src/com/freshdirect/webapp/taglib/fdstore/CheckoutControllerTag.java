@@ -1146,7 +1146,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		FDCustomerManager.setDefaultPaymentMethod(info,
 				((ErpPaymentMethodModel) paymentMethod).getPK());
 
-		if (user.isDepotUser()) {
+		/*if (user.isDepotUser()) {
 			if (user.isEligibleForSignupPromotion()) {
 				if (FDCustomerManager.checkBillToAddressFraud(info,
 						paymentMethod)) {
@@ -1159,7 +1159,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 				}
 			}
-		}
+		}*/
 
 		FDSessionUser currentUser = (FDSessionUser) pageContext.getSession()
 				.getAttribute(SessionName.USER);

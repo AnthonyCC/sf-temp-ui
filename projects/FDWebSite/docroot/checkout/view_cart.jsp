@@ -59,12 +59,19 @@ boolean showMinError = true;
 		}
 	}
 %>
+<fd:ErrorHandler result="<%=redemptionResult%>" name="signup_warning" id="errorMsg">
+    <%@ include file="/includes/i_error_messages.jspf" %>   
+</fd:ErrorHandler>
 <fd:ErrorHandler result='<%=result%>' name='order_minimum' id='errorMsg'>
     <% if (showMinError) { %><%@ include file="/includes/i_error_messages.jspf" %><% } %>   
 </fd:ErrorHandler>
+<% ActionError sw_err = redemptionResult.getError("signup_warning");
+	if(sw_err != null && !"signup_warning".equals(sw_err.getType())){
+%>
 <fd:ErrorHandler result="<%=redemptionResult%>" name="redemption_error" id="errorMsg">
     <%@ include file="/includes/i_error_messages.jspf" %>   
 </fd:ErrorHandler>
+<% } %>
 
 <%-- FOR DELIVERY PASS --%>
 <fd:ErrorHandler result='<%=result%>' name='error_dlv_pass_only' id='errorMsg'>

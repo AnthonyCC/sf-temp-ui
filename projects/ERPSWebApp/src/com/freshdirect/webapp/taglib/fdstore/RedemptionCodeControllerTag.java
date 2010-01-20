@@ -138,6 +138,13 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 				boolean isApplied = user.getPromotionEligibility().isApplied(promotion.getPromotionCode());
 				if (!eligible) {
 					user.setRedeemedPromotion(null);
+					if(user.isFraudulent()&& promotion.isFraudCheckRequired()){						
+						actionResult.addError(true,"signup_warning",MessageFormat.format(
+								SystemMessageList.MSG_PROMO_NOT_UNIQUE_INFO,
+								new Object[] { user
+										.getCustomerServiceContact() }));
+						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NOT_ELIGIBLE);
+					}else
 					if (promotion.getExpirationDate() != null && new Date().after(promotion.getExpirationDate())) {
 						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_HAS_EXPIRED);
 					} else if (!isApplied) {
@@ -148,8 +155,14 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 					}
 	
 				} else if (!isApplied) {
-	
-					if (user.getShoppingCart().getSubTotal() < promotion.getMinSubtotal()) {
+					if(user.isFraudulent()&& promotion.isFraudCheckRequired()){
+						user.setRedeemedPromotion(null);
+						actionResult.addError(true,"signup_warning",MessageFormat.format(
+								SystemMessageList.MSG_PROMO_NOT_UNIQUE_INFO,
+								new Object[] { user
+										.getCustomerServiceContact() }));
+						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NOT_ELIGIBLE);
+					}else if (user.getShoppingCart().getSubTotal() < promotion.getMinSubtotal()) {
 						Object[] params = new Object[] { new Double(promotion.getMinSubtotal())};
 						actionResult.addError(
 							true,
@@ -160,8 +173,8 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_CARTLINES);
 					} else if (promotion.isSampleItem()) {
 						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE);
-
-					}
+					} 
+					
 					
 				} else {
 					/*

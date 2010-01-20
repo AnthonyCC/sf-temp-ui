@@ -66,11 +66,11 @@ public class AddressUtil {
 			
 			
 			if (foundFraud) {
-				HttpSession session = request.getSession();
+//				HttpSession session = request.getSession();
 				user.updateUserState();
-				session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
+				/*session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
 					SystemMessageList.MSG_NOT_UNIQUE_INFO,
-					new Object[] {user.getCustomerServiceContact()}));
+					new Object[] {user.getCustomerServiceContact()}));*/
 			}
 			
 	        
