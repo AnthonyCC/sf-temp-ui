@@ -1681,7 +1681,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		CrmAgentRole agentRole,
 		EnumDlvPassStatus status,
 		boolean pr1) throws FDResourceException, ErpTransactionException, ErpFraudException, 
-		ErpAuthorizationException, DeliveryPassException, FDPaymentInadequateException, InvalidCardException {
+		ErpAuthorizationException, DeliveryPassException, FDPaymentInadequateException, InvalidCardException, ErpAddressVerificationException {
 
 		try {
 			// !!! verify that the sale belongs to the customer
@@ -1860,12 +1860,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
+			Exception ex=(Exception)re.getCause();
+			if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;
+			
 			throw new FDResourceException(re);
 		} catch (ReservationException re) {
 			throw new FDResourceException(re);
 		} /*catch (FinderException e) {
 			throw new FDResourceException(e);
 		}*/
+		
 
 	}
 
