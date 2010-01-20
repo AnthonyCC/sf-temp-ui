@@ -166,6 +166,7 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 		this.paymentMethod.setZipCode(NVL.apply(request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode()), "").trim());
 		this.paymentMethod.setCountry("US");		
 		this.paymentMethod.setBypassAVSCheck(request.getParameter("bypass_avs")!=null);
+		this.paymentMethod.setAvsCkeckFailed(false);
 	}
 
 	public static class TagEI extends AbstractControllerTag.TagEI {
