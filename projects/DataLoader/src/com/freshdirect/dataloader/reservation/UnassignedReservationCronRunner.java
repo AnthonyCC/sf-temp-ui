@@ -10,11 +10,14 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.delivery.depot.DlvDepotModel;
+import com.freshdirect.delivery.depot.DlvLocationModel;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
-import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -121,7 +124,20 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
     	try {
     		
 			 FDIdentity identity=getIdentity(reservation.getCustomerId());
+			 
 			 ContactAddressModel address= sb.getAddress(identity, reservation.getAddressId());
+			 if(address==null) {//Depot
+				 String locationId=reservation.getAddressId();
+				 DlvDepotModel depot =FDDepotManager.getInstance().getDepotByLocationId(locationId);
+				 DlvLocationModel location=depot.getLocation(locationId);
+				 address=new ErpDepotAddressModel(location.getAddress());
+					/*ErpDepotAddressModel depotAddress = new ErpDepotAddressModel(location.getAddress());
+					depotAddress.setRegionId(depot.getRegionId());
+					depotAddress.setZoneCode(location.getZoneCode());
+					depotAddress.setLocationId(location.getPK().getId());
+					depotAddress.setFacility(location.getFacility());
+					depotAddress.setInstructions(location.getInstructions());*/
+			 }
 			 RoutingActivityType unassignedAction=reservation.getUnassignedActivityType();
 			 FDTimeslot _timeslot = new FDTimeslot(dlvManager.getTimeslotById(reservation.getTimeslotId()));
 			if(RoutingActivityType.RESERVE_TIMESLOT.equals(unassignedAction)) {
