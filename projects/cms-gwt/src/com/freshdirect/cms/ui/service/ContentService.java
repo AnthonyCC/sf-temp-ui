@@ -25,7 +25,7 @@ public interface ContentService extends RemoteService {
 
     List<TreeContentNodeModel> getChildren(TreeContentNodeModel loadConfig) throws ServerException;
 
-    GwtNodeData loadNodeData(String key, String context) throws ServerException;
+    GwtNodeData loadNodeData(String key) throws ServerException;
 
     GwtNodeData createNodeData(String type, String id) throws ServerException;
 

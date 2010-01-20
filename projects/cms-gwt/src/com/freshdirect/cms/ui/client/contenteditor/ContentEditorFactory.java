@@ -2,7 +2,7 @@ package com.freshdirect.cms.ui.client.contenteditor;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Container;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeI;
+import com.freshdirect.cms.ui.model.GwtNodeData;
 
 /**
  * 
@@ -13,14 +13,13 @@ public class ContentEditorFactory {
 	/**
 	 * Returns content editor
 	 * 
-	 * @param nodeData
-	 * @param contextPath (optional)
+	 * @param contextualizedNode
 	 * 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static Container getEditor(GwtContextualizedNodeI cn ) {
-        if ( !cn.getNodeData().hasTabs() ) {
+	public static Container getEditor(GwtNodeData cn ) {
+        if ( !cn.hasTabs() ) {
         	ContentForm fp = new ContentForm(cn);
         	fp.setScrollMode(Scroll.AUTO);
             return fp;

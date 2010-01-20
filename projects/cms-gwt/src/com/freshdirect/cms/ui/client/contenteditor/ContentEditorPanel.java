@@ -42,7 +42,6 @@ import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
 import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.client.views.ManageStoreView;
 import com.freshdirect.cms.ui.model.GwtContentNode;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeData;
 import com.freshdirect.cms.ui.model.GwtNodeContext;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.google.gwt.user.client.Window;
@@ -213,7 +212,8 @@ public class ContentEditorPanel extends DetailPanel {
 
         head.add(htmlTitle,new AnchorData("100%"));
         head.add(actionBar,new AnchorData("100%"));
-        editorComponent = ContentEditorFactory.getEditor(new GwtContextualizedNodeData(contentNode, treePanel.getSelectedPath()));
+        
+        editorComponent = ContentEditorFactory.getEditor( contentNode );
         
         body.add(editorComponent);
 
@@ -291,7 +291,7 @@ public class ContentEditorPanel extends DetailPanel {
 							MessageBox.alert("Compare failed", "Comparing to itself does not make much sense ..." , null);
 							return;
 						}
-						compareUtil = new CompareNodesUtil( selectedNode.getKey(), popup.getTreepanel().getSelectedPath());						
+						compareUtil = new CompareNodesUtil( selectedNode.getKey(), popup.getTreepanel().getSelectedPath() );						
 					}
 				});
 

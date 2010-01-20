@@ -22,8 +22,6 @@ import com.freshdirect.cms.ui.client.contenteditor.ContentEditorPanel;
 import com.freshdirect.cms.ui.client.contenteditor.FormItemLayout;
 import com.freshdirect.cms.ui.client.fields.FieldHotSpot;
 import com.freshdirect.cms.ui.client.views.ManageStoreView;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeData;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeI;
 import com.google.gwt.user.client.Element;
 
 public class MergePreviewPanel extends LayoutContainer {
@@ -150,8 +148,7 @@ public class MergePreviewPanel extends LayoutContainer {
 		otherValue = hotspot.getValue();
 		
 
-		final GwtContextualizedNodeI n = new GwtContextualizedNodeData(compareUtil.getComparedNode(), compareUtil.getComparedNode().getCurrentContext()); 
-		final Field<Serializable> otherField = FieldFactory.createStandardField(n, hs.getKey());
+		final Field<Serializable> otherField = FieldFactory.createStandardField(compareUtil.getComparedNode(), hs.getKey());
 		otherField.setReadOnly(true);
 
 		// original field
@@ -200,7 +197,7 @@ public class MergePreviewPanel extends LayoutContainer {
 		el().setTop(value-formElement.getAbsoluteTop()+formElement.getScrollTop()-20);
 	}
 
-	public void setLeft(int value) {
+	public void setLeft(@SuppressWarnings( "unused" ) int value) {
 		el().setLeft(740);
 	}	
 	

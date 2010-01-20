@@ -1,21 +1,15 @@
 package com.freshdirect.cms.ui.client;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.freshdirect.cms.ui.client.contenteditor.ContentEditorFactory;
 import com.freshdirect.cms.ui.client.fields.OneToManyRelationField;
 import com.freshdirect.cms.ui.model.GwtContentNode;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeData;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 
 /**
@@ -45,7 +39,7 @@ public class NewContentNodePopup extends Window {
         setMaximizable(true);
         setClosable(false);
         
-        add(ContentEditorFactory.getEditor(new GwtContextualizedNodeData(nodeData, null)));
+        add(ContentEditorFactory.getEditor(nodeData));
         setButtonAlign(HorizontalAlignment.CENTER);
 
         Button cancelButton = new Button("Cancel");

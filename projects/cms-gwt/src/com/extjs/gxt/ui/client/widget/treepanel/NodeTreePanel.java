@@ -56,9 +56,8 @@ public class NodeTreePanel extends TreePanel<TreeContentNodeModel> {
 	}
 	
 	@Override
-	protected void onCollapse(TreeContentNodeModel model, TreeNode node,
-			boolean deep) {
-		super.onCollapse(model, node, true);
+	protected void onCollapse( TreeContentNodeModel model, TreeNode node, boolean deep ) {
+		super.onCollapse( model, node, true );
 	}
 
 }

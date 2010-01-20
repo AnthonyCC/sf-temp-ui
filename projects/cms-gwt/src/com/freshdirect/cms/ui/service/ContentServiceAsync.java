@@ -23,7 +23,7 @@ public interface ContentServiceAsync {
 
 	void search( String searchTerm, AsyncCallback<List<TreeContentNodeModel>> callback );
 
-	void loadNodeData( String key, String context, AsyncCallback<GwtNodeData> callback );
+	void loadNodeData( String key, AsyncCallback<GwtNodeData> callback );
 	
 	void save( Collection<GwtContentNode> models, AsyncCallback<GwtSaveResponse> callback );
 

@@ -76,7 +76,7 @@ public class TableField extends MultiField<Serializable> implements ChangeTracki
         public int compareOne(Serializable o1, Serializable o2) {
             ContentNodeModel m1 = (ContentNodeModel) o1;
             ContentNodeModel m2 = (ContentNodeModel) o2;
-            return m1.getId().compareTo(m2.getId());
+            return m1.getContentId().compareTo(m2.getContentId());
         }
     }
 

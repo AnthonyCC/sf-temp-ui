@@ -185,14 +185,12 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
             return;
         }
         
-        // TODO no path is passed ever to loadNode() ...
         int sep = historyToken.indexOf('$');
         if (sep != -1) {
-            String currentKey = historyToken.substring(sep + 1);
-            ManageStoreView.getInstance().loadNode(currentKey, null);
-        } else {
-        	ManageStoreView.getInstance().loadNode(historyToken, null);
-        }        
+            historyToken = historyToken.substring(sep + 1);
+        }
+        	
+       	ManageStoreView.getInstance().loadNode(historyToken);
         
     }
         

@@ -39,20 +39,24 @@ public class CompareNodesUtil {
 	private class CompareNodesAction extends BasicAction<GwtNodeData> {
 		
 		private GwtNodeData currentNode;
+		private String path;
 		
-		public CompareNodesAction(GwtNodeData currentNode) {
+		public CompareNodesAction(GwtNodeData currentNode, String path) {
 			final String message = "Loading ";
 			this.currentNode = currentNode;
+			this.path = path;
 			startLoadProgress(message, message + " ... " );
 		}
 
 		@Override
 		public void onSuccess(final GwtNodeData result) {
+	        CmsGwt.log( "setting context path to : " + path );
+			result.setCurrentContext( path );
 			comparedNode = result;
 	        differentAttributeKeys = CompareNodesUtil.compare( currentNode, comparedNode);
 	        addDecoration();
 			comparePopup = new MergePreviewPanel();
-	        stopProgress( "Loaded successfully" );
+	        stopProgress();
 	    }
 	}
 	
@@ -78,7 +82,9 @@ public class CompareNodesUtil {
 		Anchor compareButton = editorPanel.getCompareButton();
 		compareButton.hide();
 		
-		CmsGwt.getContentService().loadNodeData( key, path , new CompareNodesAction( editedNode ) );				            
+        CmsGwt.log( "compare selected path= " + path );
+
+		CmsGwt.getContentService().loadNodeData( key, new CompareNodesAction( editedNode, path ) );				            
 	}
 	
 	private void addDecoration() {

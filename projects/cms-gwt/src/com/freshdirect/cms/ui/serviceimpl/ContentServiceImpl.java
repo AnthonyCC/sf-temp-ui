@@ -141,7 +141,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 			if ( node == null )
 				continue;
 			ContentNodeModel n = TranslatorToGwt.getContentNodeModel( node );
-			result.add( new TreeContentNodeModel(n) );
+			result.add( new TreeContentNodeModel(n,null) );
 		}
 
 		return result;
@@ -195,12 +195,11 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     // ====================== Node data ====================== 
 	
 	
-    public GwtNodeData loadNodeData(String nodeKey, String context) throws ServerException {
+    public GwtNodeData loadNodeData( String nodeKey ) throws ServerException {
         try {
             ContentNodeI node;
             node = ContentKey.decode(nodeKey).getContentNode();
             GwtNodeData gwtNode = TranslatorToGwt.gwtNodeData( node, !getUser().isAllowedToWrite() );
-            gwtNode.setCurrentContext(context);
             return gwtNode;
             
         } catch (IllegalArgumentException e) {

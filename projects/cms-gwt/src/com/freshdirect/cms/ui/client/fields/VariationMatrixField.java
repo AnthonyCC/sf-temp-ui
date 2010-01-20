@@ -200,7 +200,7 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
         // TODO Variation Matrix is only used for Sku-s, may need to customize this in the future
         this.extraColumns.add(new Renderers.LabelRenderer("label", "Sku"));
         for (ContentNodeModel domain : domains) {
-			extraColumns.add( new DropDownRenderer( domain.getKey(), domain.getId() ) );
+			extraColumns.add( new DropDownRenderer( domain.getKey(), domain.getContentId() ) );
         }
         
     }

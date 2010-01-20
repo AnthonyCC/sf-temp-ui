@@ -22,8 +22,6 @@ import com.freshdirect.cms.ui.client.changehistory.ChangesetView;
 import com.freshdirect.cms.ui.client.contenteditor.ContentEditorPanel;
 import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeData;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeI;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
 import com.google.gwt.user.client.History;
@@ -49,7 +47,10 @@ public class ManageStoreView extends LayoutContainer {
 	private NodeTree treePanel;
 	private NodeEditorMode editorMode;
 	private GwtNodeData currentNode = null;	
-	private GwtContextualizedNodeData comparedNode = null;
+	private GwtNodeData comparedNode = null;
+	
+	// temporary solution for storing actual context path  
+	private String contextPath = null; 
 	
 	protected ManageStoreView() {
 		super();	
@@ -63,9 +64,14 @@ public class ManageStoreView extends LayoutContainer {
         treePanel.addNodeSelectListener(new NodeTree.NodeSelectListener() {
             @Override
             public void nodeSelected(final TreeContentNodeModel node) {
-                final ContentNodeModel parent = treePanel.getSelectedParent();
+            	
+                String path = treePanel.getSelectedPath();
+                CmsGwt.log( "selected path : " + path );
+                // remember last ctx path
+                contextPath = path;
+                
                 if (node != null) {
-                    ManageStoreView.getInstance().nodeSelected(node.getKey(), parent, true);
+                    ManageStoreView.getInstance().nodeSelected(node.getKey(), treePanel.getSelectedParent(), true);
                 }
             }
         });				
@@ -110,9 +116,14 @@ public class ManageStoreView extends LayoutContainer {
      * 	
      * @param nodeKey
      */
-    public void loadNode(final String nodeKey, String path) {
-        CmsGwt.getContentService().loadNodeData( nodeKey, path, new GetNodeAction(nodeKey));
-    }
+	public void loadNode( final String nodeKey ) {
+		
+		// clear last ctx path
+		String path = contextPath;
+		contextPath = null;
+		
+		CmsGwt.getContentService().loadNodeData( nodeKey, new GetNodeAction( nodeKey, path ) );
+	}
 
     public void scrollHack() {
     	treePanel.scrollHack();
@@ -180,17 +191,6 @@ public class ManageStoreView extends LayoutContainer {
 		return treePanel;
 	}
 
-	public GwtContextualizedNodeI getCurrentContextualizedNode() {
-		if( currentNode != null) {
-			String path = null;
-			if( treePanel != null ) {
-				path = treePanel.getSelectedPath();
-			}
-			return new GwtContextualizedNodeData(currentNode, path);
-		}
-		return null;
-	}
-
 	protected void cleanup() {
 		if( detailPanel != null ) {
 			remove(detailPanel);		
@@ -230,12 +230,12 @@ public class ManageStoreView extends LayoutContainer {
         ((ChangesetView) detailPanel).setupLayout();        
 	}
 
-	public GwtContextualizedNodeData getComparedNode() {
+	public GwtNodeData getComparedNode() {
 		return comparedNode;
 	}
 
 
-	public void setComparedNode(GwtContextualizedNodeData comparedNode) {
+	public void setComparedNode(GwtNodeData comparedNode) {
 		this.comparedNode = comparedNode;
 	}
 

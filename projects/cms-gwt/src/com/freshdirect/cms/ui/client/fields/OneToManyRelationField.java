@@ -522,25 +522,19 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 		}
 
 		GwtContentNode node = WorkingSet.get(targetNodeKey);
-		if (node != null) {
-			addRelationshipsToNodeHelper(node, targetAttributeKey,
-					relationships);
+		if ( node != null ) {
+			addRelationshipsToNodeHelper( node, targetAttributeKey, relationships );
 		} else {
-			CmsGwt.getContentService().loadNodeData(targetNodeKey, null,
-					new AsyncCallback<GwtNodeData>() {
-						public void onFailure(Throwable caught) {
-							MessageBox
-									.alert(
-											"Error",
-											"Cannot add relations to node because node loading failed.",
-											null);
-						}
+			CmsGwt.getContentService().loadNodeData( targetNodeKey,	new AsyncCallback<GwtNodeData>() {
+		
+				public void onFailure( Throwable caught ) {
+					MessageBox.alert( "Error", "Cannot add relations to node because node loading failed.", null );
+				}
 
-						public void onSuccess(GwtNodeData nodeData) {
-							addRelationshipsToNodeHelper(nodeData.getNode(),
-									targetAttributeKey, relationships);
-						}
-					});
+				public void onSuccess( GwtNodeData nodeData ) {
+					addRelationshipsToNodeHelper( nodeData.getNode(), targetAttributeKey, relationships );
+				}
+			});
 		}
 	}
 

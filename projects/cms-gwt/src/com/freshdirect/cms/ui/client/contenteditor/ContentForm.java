@@ -13,14 +13,14 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.freshdirect.cms.ui.client.FieldFactory;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeI;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.TabDefinition;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.user.client.Element;
 
 public class ContentForm extends FormPanel {
-	GwtContextualizedNodeI cn;
+	
+	GwtNodeData nodeData;
 	
 	public static final int FORM_WIDTH = 740;
 
@@ -47,11 +47,11 @@ public class ContentForm extends FormPanel {
 	 * @param source
 	 * @param contextPath
 	 */
-	public ContentForm( GwtContextualizedNodeI cn ) {
+	public ContentForm( GwtNodeData cn ) {
 		super();
-		this.keys = cn.getNodeData().getNode().getAttributeKeys();
+		this.keys = cn.getNode().getAttributeKeys();
 		this.sections = new HashMap<String,FieldSet>();
-		this.cn = cn;
+		this.nodeData = cn;
 
 		initForm();
 
@@ -60,7 +60,7 @@ public class ContentForm extends FormPanel {
 		layout.setParameterFactory(new AlternateRenderer(layout));
 		layout.setDefaultWidth(FORM_WIDTH);
 		
-		List<String> attrKeys = new ArrayList<String>( cn.getNodeData().getNode().getAttributeKeys() );
+		List<String> attrKeys = new ArrayList<String>( cn.getNode().getAttributeKeys() );
 		Collections.sort( attrKeys );
 
 		
@@ -79,15 +79,15 @@ public class ContentForm extends FormPanel {
 	 * @param contextPath
 	 * @param tabId ID of particular tab of node (optional). If not specified it creates a tab-less form
 	 */
-	public ContentForm( GwtContextualizedNodeI cn, String tabId ) {
+	public ContentForm( GwtNodeData cn, String tabId ) {
 		super();
 		this.keys = new HashSet<String>();
 		this.sections = new HashMap<String,FieldSet>();
-		this.cn = cn;
+		this.nodeData = cn;
 		
 		initForm();
 
-		final GwtNodeData nodeData = cn.getNodeData();
+		final GwtNodeData nodeData = cn;
 
 		final TabDefinition tabDefinition = nodeData.getTabDefinition();
 
@@ -142,7 +142,7 @@ public class ContentForm extends FormPanel {
 		section.setWidth( FORM_WIDTH );
 		
 		for ( String attributeKey : attrKeys ) {			
-			Field<Serializable> field = FieldFactory.createStandardField( cn, attributeKey );
+			Field<Serializable> field = FieldFactory.createStandardField( nodeData, attributeKey );
 			if ( field != null ) {
 				section.add( field );			
 			}

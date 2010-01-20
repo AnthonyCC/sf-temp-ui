@@ -24,7 +24,6 @@ import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
 import com.freshdirect.cms.ui.model.EnumModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeI;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
@@ -179,19 +178,19 @@ public final class FieldFactory {
 	 * 
 	 * @return
 	 */
-    public static Field<Serializable> createStandardField(GwtContextualizedNodeI cn, String key) {
-    	final Serializable value = cn.getNodeData().getFormValue(key);
+    public static Field<Serializable> createStandardField(GwtNodeData cn, String key) {
+    	final Serializable value = cn.getFormValue(key);
 		Field<Serializable> field = createOtherField(cn, key, value, true);
     	if (field != null)
-    		cn.getNodeData().getNode().getOriginalAttribute(key).setFieldObject(field);
+    		cn.getNode().getOriginalAttribute(key).setFieldObject(field);
     	
     	return field;
     }
 
 
     @SuppressWarnings("unchecked")
-	public static Field<Serializable> createOtherField(GwtContextualizedNodeI cn, String key, Serializable value, boolean wrapInheritedField) {
-    	final GwtNodeData nodeData = cn.getNodeData();
+	public static Field<Serializable> createOtherField(GwtNodeData cn, String key, Serializable value, boolean wrapInheritedField) {
+    	final GwtNodeData nodeData = cn;
     	
     	ContentNodeAttributeI attribute = nodeData.getNode().getOriginalAttribute(key);
         
@@ -233,14 +232,11 @@ public final class FieldFactory {
     /**
      * Wrap field into an inheritable field
      */
-	private static Field<Serializable> decorateInheritedValue(
-			GwtContextualizedNodeI cn, String key,
-			final boolean readonly, final Field<Serializable> innerField) {
+	private static Field<Serializable> decorateInheritedValue( GwtNodeData nodeData, String key, final boolean readonly, final Field<Serializable> innerField ) {
 		
-    	final GwtNodeData nodeData = cn.getNodeData();
 		final boolean isInherited = nodeData.getFormValue(key) == null;
 		Field<Serializable> field = new InheritanceField<Serializable>( innerField, isInherited, readonly );
-		ContentNodeAttributeI attr = nodeData.getContexts() == null ? null : nodeData.getContexts().getInheritedAttribute( cn.getContextPath(), key );
+		ContentNodeAttributeI attr = nodeData.getContexts() == null ? null : nodeData.getContexts().getInheritedAttribute( nodeData.getCurrentContext(), key );
 		Serializable inhvalue = attr == null ? null : attr.getValue();
 		
 		( (InheritanceField<Serializable>)field ).setInheritedValue( inhvalue );

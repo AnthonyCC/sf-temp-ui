@@ -34,6 +34,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.NodeTreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.MainLayout;
 import com.freshdirect.cms.ui.client.nodetree.NodeTreeSelectionModel;
 import com.freshdirect.cms.ui.client.nodetree.StringTokenizer;
@@ -45,10 +46,10 @@ import com.freshdirect.cms.ui.service.ContentServiceAsync;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.Element;
 
 
 public class NodeTree extends ContentPanel {
@@ -148,7 +149,6 @@ public class NodeTree extends ContentPanel {
 	private TreeLoader<TreeContentNodeModel> loader;
 	
 	private TreeStore<TreeContentNodeModel> mainStore;
-//	private static TreeStore<ContentNodeModel> searchStore;
 	
 	private NodeTreePanel tree;
 	
@@ -232,7 +232,7 @@ public class NodeTree extends ContentPanel {
 			if ( allowedTypes == null || allowedTypes.contains( model.getType() ) ) {
 				sb.append( model.getLabel() );
 				sb.append( " <span class=\"dimmed\">[" );
-				sb.append( model.getId() );
+				sb.append( model.getContentId() );
 				sb.append( "]</span>" );
 			} else {
 				sb.append( "<span class=\"disabled\">" );
@@ -399,13 +399,13 @@ public class NodeTree extends ContentPanel {
 		// tree loader
 		if ( loader == null ) {
 			loader = new NodeTreeLoader( proxy );
-		}
+		} 
 
 		// tree store
 		if ( mainStore == null )
 			mainStore = new TreeStore<TreeContentNodeModel>( loader );
-
-
+		
+		
 		// TODO sorting? needed? here or server side?
 		// store.setStoreSorter( new StoreSorter<ContentNodeModel>() {
 		// @Override public int compare( Store<ContentNodeModel> store,
@@ -497,7 +497,7 @@ public class NodeTree extends ContentPanel {
 		return tree;
 	}	
 	
-	private void createToolBar( boolean collapse ) {
+	private void createToolBar( @SuppressWarnings( "unused" ) boolean collapse ) {
 		
 		// search field
 		searchField = new TextField<String>();
@@ -625,6 +625,9 @@ public class NodeTree extends ContentPanel {
 	}
 	
 	public String getSelectedPath() {
+		if ( isSearchView ) {
+			return null;
+		}
 		TreeContentNodeModel node = tree.getSelectionModel().getSelectedItem();
 		if ( node == null )
 			return null;
@@ -646,6 +649,7 @@ public class NodeTree extends ContentPanel {
 	
     public void loadRootNodes() {    	
     	ManageStoreView.getInstance().mask("Loading...");    	
+    	tree.getStore().removeAll();
 	    loader.load( null );
 	}
 	
@@ -695,7 +699,7 @@ public class NodeTree extends ContentPanel {
         
     public void synchronize( final String path ) {
     	if( isSearchView ) {
-    		System.out.println("serachview is true so invalidate the tree");
+    		System.out.println("searchview is true so invalidate the tree");
     		loader.addLoadListener(new LoadListener() {
     			@Override
     			public void loaderLoad(LoadEvent le) {

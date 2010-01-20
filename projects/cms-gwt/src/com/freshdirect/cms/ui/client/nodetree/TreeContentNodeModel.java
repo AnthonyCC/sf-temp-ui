@@ -8,33 +8,66 @@ public class TreeContentNodeModel extends ContentNodeModel {
 	
 	public static final String pathSeparator = "|";
 
-	private String path;
+//	private String path;
     protected boolean hasChildren = true;
     
-	
+
+    /**
+     * Invalid constructor to be Serializable, don't use this.
+     */
 	protected TreeContentNodeModel() {
 		super();
-		path = pathSeparator + getKey();	//FIXME doesn't make sense, has no key, path will be invalid for sure 
+//		path = pathSeparator + getKey();	//FIXME doesn't make sense, has no key, path will be invalid for sure
+		setPath( null );
 	}
 	
+    /**
+     * Creates a TreeContentNodeModel with no path.
+     * @param type
+     * @param label
+     * @param key
+     */
     public TreeContentNodeModel( String type, String label, String key ) {
     	super( type, label, key );    	
+		setPath( null );
     }
     
+    /**
+     * Creates a TreeContentNodeModel for root nodes (no parent)
+     * @param node
+     */
 	public TreeContentNodeModel( ContentNodeModel node ) {
 		super( node );
-		path = pathSeparator + getKey();
+		setPath( pathSeparator + getKey() );
     }
 	
+	/**
+	 * Creates a TreeContentNodeModel for any node, you have to specify the parent node.
+	 * @param node
+	 * @param parent
+	 */
 	public TreeContentNodeModel( ContentNodeModel node, TreeContentNodeModel parent ) {	
 		super( node );
-		path = parent.path + pathSeparator + getKey();
+		if ( parent != null ) {
+			setPath( parent.getPath() + pathSeparator + getKey() );			
+		} else {
+			setPath( null );
+		}
     }
 	
-    public String getPath() {
-    	return path;
-    }
-    
+	public void setPath(String path) {
+		set("path", path);
+	}	
+
+	public String getPath() {
+		return get("path");
+	}
+	
+	public String getId() { 
+		return getPath();
+	}
+
+	
 	public boolean hasChildren() {
 		return hasChildren;
 	}
@@ -42,4 +75,12 @@ public class TreeContentNodeModel extends ContentNodeModel {
 	public void setHasChildren( boolean hasChildren ) {
 		this.hasChildren = hasChildren;
 	}	
+	
+	@Override
+	public boolean equals( Object obj ) {
+		if ( obj instanceof TreeContentNodeModel )
+			return getPath().equals( ((TreeContentNodeModel)obj).getPath() );
+		else 
+			return false;
+	}
 }

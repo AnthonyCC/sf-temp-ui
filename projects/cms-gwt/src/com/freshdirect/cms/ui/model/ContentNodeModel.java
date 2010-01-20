@@ -61,8 +61,8 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 		return get("type");
 	}
 	
-	public String getId() {
-		return getKey().substring( getKey().indexOf( ':' ) + 1 , getKey().length() );
+	public String getContentId() {
+		return getKey().substring( getKey().indexOf( ':' ) + 1 , getKey().length() );		
 	}
 	
 	public String getPreviewUrl() {

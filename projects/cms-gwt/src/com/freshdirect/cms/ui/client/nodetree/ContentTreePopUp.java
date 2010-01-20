@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.widget.NodeTree;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 
 
@@ -146,6 +147,9 @@ public class ContentTreePopUp extends Window {
 
 			@Override
 			public void nodeSelected( final TreeContentNodeModel node ) {
+                String path = treepanel.getSelectedPath();
+                CmsGwt.log( "popup selected path : " + path );
+
 				if ( node != null && ( allowedTypes == null || allowedTypes.contains( node.getType() ) ) ) {
                     BaseEvent e = new BaseEvent(Events.Select);
                     setSelected(treepanel.getSelectedItems());

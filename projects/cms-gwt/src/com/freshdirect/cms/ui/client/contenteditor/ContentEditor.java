@@ -11,12 +11,12 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.freshdirect.cms.ui.client.views.ManageStoreView;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeData;
-import com.freshdirect.cms.ui.model.GwtContextualizedNodeI;
+import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.TabDefinition;
 
 public class ContentEditor extends TabPanel implements EditorDecoratorI {
-	private GwtContextualizedNodeI cn;
+	
+	private GwtNodeData nodeData;
 	
 	/** Tab ID -> form */
 	private HashMap<String, ContentForm>	panels;
@@ -26,9 +26,9 @@ public class ContentEditor extends TabPanel implements EditorDecoratorI {
 	private static String 					lastActiveTab = null;
 
 
-	public ContentEditor( GwtContextualizedNodeI cn ) {
+	public ContentEditor( GwtNodeData cn ) {
 		super();
-		this.cn = cn;
+		this.nodeData = cn;
 		this.panels = new HashMap<String, ContentForm>();
 		this.tabs = new HashMap<String, TabItem>();
 
@@ -47,7 +47,7 @@ public class ContentEditor extends TabPanel implements EditorDecoratorI {
 	}
 
 	public void setupTabs() {
-		final TabDefinition tabDef = cn.getNodeData().getTabDefinition();
+		final TabDefinition tabDef = nodeData.getTabDefinition();
 		
 		for ( final String tabId : tabDef.getTabIds() ) {
 			final String tabLabel = tabDef.getTabLabel( tabId );
@@ -58,7 +58,7 @@ public class ContentEditor extends TabPanel implements EditorDecoratorI {
 					ContentForm form;
 					form = panels.get( tabLabel);
 					if ( form == null ) {
-						form = new ContentForm( cn, tabId );
+						form = new ContentForm( nodeData, tabId );
 						panels.put( tabLabel, form );
 						tab.add( form );
 						tab.layout();
@@ -92,8 +92,7 @@ public class ContentEditor extends TabPanel implements EditorDecoratorI {
 	}
 
 	@Override
-	public void compareDecorate(GwtContextualizedNodeData comparedNode,
-			Map<String, Serializable> result) {
+	public void compareDecorate(GwtNodeData comparedNode,Map<String, Serializable> result) {
 		// TODO Auto-generated method stub
 		
 	}

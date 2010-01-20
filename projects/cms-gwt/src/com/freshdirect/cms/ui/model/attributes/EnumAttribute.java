@@ -59,6 +59,6 @@ public class EnumAttribute extends BaseAttribute implements ModifiableAttributeI
 
     @Override
     public String toString() {
-        return "EnumAttribute[" + label + ',' + value + ',' + values + ']';
+        return "EnumAttribute[" + label + '=' + value + ", values => " + values + ']';
     }
 }
