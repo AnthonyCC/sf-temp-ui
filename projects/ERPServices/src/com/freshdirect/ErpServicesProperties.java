@@ -164,6 +164,7 @@ public class ErpServicesProperties {
 	private final static String PROP_PRE_AUTHORIZE	= "payment.giftcard.preauthorize";
 	
 	private final static String PROP_AVS_ERROR_ORDER_COUNT="payment.avs_error.order.count";
+	private final static String PROP_SIGNUP_PROMO_DUPLICATE_ADDR_DELV_DAYS = "signup.promo.duplicate.addr.delivery.days";
 	
 	
 	static {
@@ -288,6 +289,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_REGISTER_CRON_QUEUE, "false");
 		defaults.put(PROP_PRE_AUTHORIZE, "true");
 		defaults.put(PROP_AVS_ERROR_ORDER_COUNT, "5");
+		defaults.put(PROP_SIGNUP_PROMO_DUPLICATE_ADDR_DELV_DAYS, "180");
 		
 
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
@@ -692,6 +694,11 @@ public class ErpServicesProperties {
 		
 	public static int getAvsErrorOrderCountLimit() {
 		return Integer.parseInt(config.getProperty(PROP_AVS_ERROR_ORDER_COUNT));
+	}
+	
+	public static int getSignupPromoDeliveryDaysLimit(){
+		return Integer.parseInt(config.getProperty(PROP_SIGNUP_PROMO_DUPLICATE_ADDR_DELV_DAYS));		
+		
 	}
 
 }
