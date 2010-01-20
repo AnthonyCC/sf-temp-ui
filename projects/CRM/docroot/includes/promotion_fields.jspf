@@ -161,7 +161,7 @@
 			
 			<td colspan="1" align="right" nowrap>Do Not Apply Fraud Rules:</td>
 			<td colspan="3">&nbsp;<input type="checkbox" name="dontApplyFraud" <%=promotion.isApplyFraud() ? "" : "CHECKED"%>>&nbsp;
-				<span class="field_note">Rule checks for duplicate address</span></td>
+				<span class="field_note">Rule checks for duplicate address.</span></td>
 			
 		</tr>	
 		
