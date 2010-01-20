@@ -21,43 +21,21 @@ public class AuthorizationCommand {
 	
 	private static final Category LOGGER = LoggerFactory.getInstance(AuthorizationCommand.class);
 	
-	private final static int AUTH_HOURS;
-	
-	static {
-		int hours = 48;
-		try {
-			hours = Integer.parseInt(ErpServicesProperties.getAuthHours());
-		} catch (NumberFormatException ne) {
-			LOGGER.warn("authHours is not in correct format", ne);
-		}
-		AUTH_HOURS = hours;
-	}
 
 	private final List authInfos;		
-	private final Date deliveryTime;
 	private int authCount;
 	private final List auths;
 	
-	public AuthorizationCommand(List authInfo, Date deliveryTime, int authCount) {
+	public AuthorizationCommand(List authInfo,  int authCount) {
 		this.authInfos = authInfo;
-		this.deliveryTime = deliveryTime;
+
 		this.authCount = authCount;
 		this.auths = new ArrayList();
 	}
 
 	public void execute() {
 		
-		if (!"true".equalsIgnoreCase(ErpServicesProperties.getAuthorize())) {
-			return;
-		}
-		
-		long currentTime = System.currentTimeMillis();
-		long difference = this.deliveryTime.getTime() - currentTime;
-		difference = difference / (1000 * 60 * 60);
 
-		if (difference > AUTH_HOURS) {
-			return;
-		}
 		//TODO might have to rethink this try/for block
 		//declaring it over here for the logger message in catch block
 		AuthorizationInfo info = null;
