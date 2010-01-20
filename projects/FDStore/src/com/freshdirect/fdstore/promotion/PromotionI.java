@@ -52,4 +52,6 @@ public interface PromotionI extends Serializable {
 	public boolean isAllowHeaderDiscount();
 	
 	public double getLineItemDiscountPercentOff();
+	
+	public boolean isFraudCheckRequired();
 }

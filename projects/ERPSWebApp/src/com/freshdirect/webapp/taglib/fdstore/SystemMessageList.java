@@ -154,5 +154,6 @@ public interface SystemMessageList {
 	public final static String MSG_RH_OPTIN_REQUIRED = "Please scroll down and select a tax deduction option below";
 	public final static String MSG_RH_OPTIN_BELOW_REQUIRED = "Please select a tax deduction option ";
 	public final static String MSG_GC_SERVICE_UNAVAILABLE	= "This service is unavailable at this time. Please try again later.";
-	
+	public final static String MSG_PROMO_NOT_UNIQUE_INFO	= "Some of the information you provided matches an existing account, so you are not eligible for this promotion(one per household/company). If you believe that you should be eligible, please contact our Customer Service Team at {0}.";
+	public final static String MSG_REDEMPTION_NOT_ELIGIBLE = "Sorry, you are not eligible for this promotion.";
 }

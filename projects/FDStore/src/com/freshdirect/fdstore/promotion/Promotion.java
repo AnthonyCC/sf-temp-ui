@@ -373,5 +373,18 @@ public class Promotion extends ModelSupport implements PromotionI {
 		 return percentOff;
 	 }
 	 
+	 public boolean isFraudCheckRequired(){
+		 boolean value = false;
+			for (Iterator i = getStrategies().iterator(); i.hasNext();) {
+				Object obj = i.next();
+				if (obj instanceof FraudStrategy) {
+					//Fruad Check is required for this promo.
+					value = true;
+					break;
+				}
+			}
+			return value;		 
+	 }
+	 
 
 }

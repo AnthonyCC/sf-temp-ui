@@ -3,6 +3,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SystemMessageList" %>
 <%@ page import="java.text.MessageFormat" %>
 
+<%--  commented for [APPDEV-498]
 <%	if ( user.isFraudulent() ) { %>
 		<table border="0" cellspacing="0" cellpadding="0" width="500">
 			<tr>
@@ -12,3 +13,4 @@
 			</tr>
 		</table><br><br>
 <%	} %>
+--%>
