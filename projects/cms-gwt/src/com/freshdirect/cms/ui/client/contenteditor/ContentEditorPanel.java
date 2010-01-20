@@ -284,9 +284,7 @@ public class ContentEditorPanel extends DetailPanel {
 				popup.setHeading("Select a node for comparison");
 				popup.addListener(Events.Select, new Listener<BaseEvent>() {
 					public void handleEvent(BaseEvent be) {
-						List<TreeContentNodeModel> sel = popup.getSelectedItems();
-						
-						TreeContentNodeModel selectedNode = sel.get(0);
+						TreeContentNodeModel selectedNode = popup.getSelectedItem();
 						if (contentNode.getNode().getKey().equals( selectedNode.getKey() ) ) {
 							MessageBox.alert("Compare failed", "Comparing to itself does not make much sense ..." , null);
 							return;

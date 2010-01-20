@@ -14,7 +14,6 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.freshdirect.cms.ui.client.CmsGwt;
-import com.freshdirect.cms.ui.model.ContentNodeModel;
 
 
 /**
@@ -84,7 +83,7 @@ public class ContentTreePopUp extends Window {
         selected = s;
     }
 
-    public ContentNodeModel getSelectedItem() {
+    public TreeContentNodeModel getSelectedItem() {
     	if ( selected.size() > 0 )
     		return selected.get( 0 );
     	else
