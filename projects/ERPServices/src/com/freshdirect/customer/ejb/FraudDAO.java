@@ -10,14 +10,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
+import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -104,7 +110,7 @@ public class FraudDAO implements java.io.Serializable {
 
 		dlvQ.append("SELECT SUM(cnt) as COUNT FROM ( ");
 		dlvQ.append("SELECT count(d.salesaction_id) AS cnt FROM CUST.DELIVERYINFO D ");
-		if (erpCustomerId != null)
+//		if (erpCustomerId != null)
 			dlvQ.append(", CUST.SALESACTION SA, CUST.SALE S ");
 		dlvQ.append("WHERE D.SCRUBBED_ADDRESS = ? ");
 		if (hasApartment) {
@@ -113,12 +119,16 @@ public class FraudDAO implements java.io.Serializable {
 			dlvQ.append("AND D.APARTMENT IS NULL ");
 		}
 		dlvQ.append("AND D.ZIP = ? ");
+		dlvQ.append("AND D.SALESACTION_ID = SA.ID ");
+		dlvQ.append("AND SA.SALE_ID = S.ID ");
+		dlvQ.append("AND S.STATUS= ? ");
+		dlvQ.append("AND S.TYPE = ? ");
+		//Orders settled 6 months before.
 		if (erpCustomerId != null) {
-			dlvQ.append("AND D.SALESACTION_ID = SA.ID ");
-			dlvQ.append("AND SA.SALE_ID = S.ID ");
 			dlvQ.append("AND S.CUSTOMER_ID <> ? ");
 		}
-		dlvQ.append("UNION ALL ");
+		dlvQ.append("AND SA.ACTION_DATE < ? ");
+		/*dlvQ.append("UNION ALL ");
 		dlvQ.append("SELECT count(ID) AS CNT FROM CUST.ADDRESS A ");
 		dlvQ.append("WHERE A.SCRUBBED_ADDRESS = ? ");
 		if (hasApartment) {
@@ -128,25 +138,32 @@ public class FraudDAO implements java.io.Serializable {
 		}
 		dlvQ.append("AND A.ZIP = ? ");
 		if (erpCustomerId != null)
-			dlvQ.append("AND A.CUSTOMER_ID <> ? ");
+			dlvQ.append("AND A.CUSTOMER_ID <> ? ");*/
 		dlvQ.append(") ");
 		//
 		// Populate the query list
 		//
 		List sqlParams = new ArrayList();
-		for (int i = 0; i < 2; i++) {
+//		for (int i = 0; i < 2; i++) {
 			sqlParams.add(address.getScrubbedStreet());
 			if (hasApartment) {
 				sqlParams.add(address.getApartment());
 			}
-			sqlParams.add(address.getZipCode());
+			sqlParams.add(address.getZipCode());			
+			sqlParams.add(EnumSaleStatus.SETTLED.getStatusCode());
+			sqlParams.add(EnumSaleType.REGULAR.getSaleType());
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(new Date());
+			calendar.add(Calendar.DAY_OF_MONTH, -(ErpServicesProperties.getSignupPromoDeliveryDaysLimit()));
+			Timestamp time = new Timestamp(calendar.getTime().getTime());
+//			sqlParams.add(time);
 			if (erpCustomerId != null)
 				sqlParams.add(erpCustomerId);
-		}
+//		}
 		//
 		// Execute query
 		//
-		int count = runQuery(conn, dlvQ.toString(), sqlParams);
+		int count = runQuery(conn, dlvQ.toString(), sqlParams, time);
 		if (count > 0) {
 			LOGGER.debug("FRAUD RULE TRIPPED: Duplicate Delivery Address");
 			return true;
@@ -291,6 +308,45 @@ public class FraudDAO implements java.io.Serializable {
 			String next = (String) it.next();
 			ps.setString(j, next);
 		}
+		//
+		// Execute the query
+		//
+		rs = ps.executeQuery();
+		if (rs.next()) {
+			count = rs.getInt(1);
+		}
+		try {
+			if (rs != null) {
+				rs.close();
+				rs = null;
+			}
+			if (ps != null) {
+				ps.close();
+				ps = null;
+			}
+		} catch (SQLException sef) {
+			//eat it for the time being
+		}
+		return (count);
+	}
+	
+	private int runQuery(Connection conn, String sql, List sqlParams, Timestamp time) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		int count = 0;
+		//
+		// Populate PreparedStatement
+		//
+		ps = conn.prepareStatement(sql);
+		int j = 0;
+		Iterator it = sqlParams.iterator();
+		while (it.hasNext()) {
+			j++;
+			String next = (String) it.next();
+			ps.setString(j, next);
+		}
+		j++;
+		ps.setTimestamp(j, time);
 		//
 		// Execute the query
 		//
