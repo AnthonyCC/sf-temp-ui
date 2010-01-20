@@ -1,5 +1,7 @@
 package com.freshdirect.cms.ui.client;
 
+import java.io.PrintStream;
+
 import com.freshdirect.cms.ui.model.GwtUser;
 import com.freshdirect.cms.ui.service.BaseCallback;
 import com.freshdirect.cms.ui.service.BulkLoaderService;
@@ -47,9 +49,7 @@ public class CmsGwt implements EntryPoint {
             }
         });
         RootPanel.get().add(mainLayout);
-
         
-
     }
 
     public static GwtUser getCurrentUser() {
@@ -67,4 +67,22 @@ public class CmsGwt implements EntryPoint {
 	public static MainLayout getMainLayout() {
 		return mainLayout;
 	}
+	
+	public static void log(String message) {
+		log(message, false);
+	}
+	
+	public static void log(String message, boolean isErr) {
+		PrintStream s = isErr ? System.err : System.out;
+		s.println(message);
+		consoleLog(message);
+	}
+	
+	public static native void consoleLog(String message) /*-{
+	    if (!$wnd.console) {
+	    	return;
+	    }
+	    console.log(message);
+	}-*/;
+ 
 }
