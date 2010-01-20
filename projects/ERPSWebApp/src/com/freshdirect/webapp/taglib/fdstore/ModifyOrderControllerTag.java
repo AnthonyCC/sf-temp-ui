@@ -34,6 +34,7 @@ import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpCustomerModel;
@@ -570,7 +571,13 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				LOGGER.error("Error performing a Delivery pass operation. ", ex);
 				//There was delivery pass validation failure.
 				results.addError(new ActionError(ex.getMessage()));
-			} 
+			}
+			catch(ErpAddressVerificationException e){
+				LOGGER.error("Error performing a modify order operation. ", e);
+				//There was delivery pass validation failure.
+				results.addError(new ActionError(e.getMessage()));				
+			}
+			
 		} else {
 			LOGGER.warn("No payment id selected by user");
 			results.addError(new ActionError("no_payment_selected", "Please select a payment option below."));
@@ -667,6 +674,11 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			} catch (FDInvalidConfigurationException ex) {
 				LOGGER.warn("invalid config", ex);
 				results.addError(new ActionError("order_status", "Invalid configuration."));
+			}
+			catch(ErpAddressVerificationException e){
+				LOGGER.error("Error performing a modify order operation. ", e);
+				//There was delivery pass validation failure.
+				results.addError(new ActionError(e.getMessage()));				
 			}
 		} else {
 			LOGGER.warn("No payment id selected by user");
