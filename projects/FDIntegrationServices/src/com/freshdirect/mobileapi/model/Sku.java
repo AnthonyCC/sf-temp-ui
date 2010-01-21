@@ -192,11 +192,11 @@ public class Sku {
     }
 
     public boolean hasVariationMatrix() {
-        return variationMatrix != null;
+        return (variationMatrix != null) && (variationMatrix.size() > 0);
     }
 
     public boolean hasVariationOptions() {
-        return variationOptions != null;
+        return (variationOptions != null) && (variationOptions.size() > 0);
     }
 
     public boolean hasPrimaryDomain() {
@@ -225,7 +225,10 @@ public class Sku {
     }
 
     public String getDomainValueId() {
-        String dvId = variationOptions.get(0).getContentName();
+        String dvId = null;
+        if((variationOptions != null) && (variationOptions.size() > 0)) {
+            variationOptions.get(0).getContentName();        	
+        }
         return dvId;
     }
 

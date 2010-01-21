@@ -1018,15 +1018,33 @@ public class Product {
     }
 
     public boolean hasHalfPint() {
-        return product.getProductModel().getContainerWeightHalfPint() > 0.0;
+    	boolean value = true;
+    	try {
+    		product.getProductModel().getContainerWeightHalfPint();
+    	} catch (NullPointerException e) {
+    		value = false;
+    	}
+        return value;
     }
 
     public boolean hasPint() {
-        return product.getProductModel().getContainerWeightPint() > 0.0;
+    	boolean value = true;
+    	try {
+    		product.getProductModel().getContainerWeightPint();
+    	} catch (NullPointerException e) {
+    		value = false;
+    	}
+        return value;
     }
 
     public boolean hasQuart() {
-        return product.getProductModel().getContainerWeightQuart() > 0.0;
+    	boolean value = true;
+    	try {
+    		product.getProductModel().getContainerWeightQuart();
+    	} catch (NullPointerException e) {
+    		value = false;
+    	}
+        return value;
     }
 
     public List<ProductRating> getProductRatings() {
