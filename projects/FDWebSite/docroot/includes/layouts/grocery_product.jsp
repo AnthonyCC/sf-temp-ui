@@ -710,6 +710,9 @@ if(shelfLife != null && shelfLife.trim().length() > 0) { %>
 
 	<table width="0" border="0" cellspacing="0" cellpadding="0">
 		<tr>
+		    <td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="140" height="9"></td>
+		</tr>
+		<tr>
 		    <td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
 		    <td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="140" height="1"></td>
 		    <td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6"></td>
