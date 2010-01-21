@@ -124,7 +124,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 
 	public boolean checkShipToAddressFraud(String erpCustomerId, ErpAddressModel address) {
 
-		if ("true".equals(ErpServicesProperties.getCheckForFraud())) {
+		if (!"true".equals(ErpServicesProperties.getCheckForFraud())) {
 			// no check, no problem :)
 			return false;
 		}
