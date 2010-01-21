@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -87,6 +88,8 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		long difference = deliveryTime.getTime() - currentTime;
 		difference = difference / (1000 * 60 * 60);
 
+		LOGGER.debug("difference :"+difference);
+		
 		if (difference > AUTH_HOURS) {
 			return false;
 		}
@@ -103,10 +106,13 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();			
 			
 			
-			
-			if(isAuthorizationRequired(order
+			if(!isAuthorizationRequired(order
 					.getDeliveryInfo()
-					.getDeliveryStartTime())  && payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+					.getDeliveryStartTime())){
+				return Collections.EMPTY_LIST;
+			}
+			
+			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
 				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");				
 			}
 
@@ -210,9 +216,14 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 						
 			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();
 			
-			if(isAuthorizationRequired(order
+			if(!isAuthorizationRequired(order
 					.getDeliveryInfo()
-					.getDeliveryStartTime())  && payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+					.getDeliveryStartTime())){
+				return EnumPaymentResponse.ERROR;
+			}
+
+			
+			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
 				//throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
 				return EnumPaymentResponse.ERROR;
 			}
@@ -455,7 +466,11 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			ErpAbstractOrderModel order = sale.getCurrentOrder();
 			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();
 			
-			if(isAuthorizationRequired( order.getRequestedDate())  && payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+			if(!isAuthorizationRequired( order.getRequestedDate())){
+			    return Collections.EMPTY_LIST;	
+			}
+			
+			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
 				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
 				
 			}
