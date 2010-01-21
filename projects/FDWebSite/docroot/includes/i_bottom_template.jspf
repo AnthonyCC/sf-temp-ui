@@ -40,9 +40,10 @@ if (!isGroceryProdPage) {
 	if (catMidMedias.size()>0) {  %>
             <BR>
             <%-- remove gray line APPDEV-222 --%>
+            <!-- appdev 222 -->
             <!-- img src="/media_stat/images/layout/cccccc.gif" width="<%=bottTblWidth%>" HEIGHT="1" BORDER="0" -->
             <BR> 
-            
+     
             <FONT CLASS="space4pix"><br><br></FONT>
             <table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=bottTblWidth%>">
                <tr valign="top">
@@ -85,7 +86,8 @@ if (!isGroceryProdPage) {
 					%>
 					
 						<BR>
-						<img src="/media_stat/images/layout/cccccc.gif" width="<%=bottTblWidth%>" HEIGHT="1" BORDER="0"><BR>
+						<!-- img src="/media_stat/images/layout/cccccc.gif" width="<%=bottTblWidth%>" HEIGHT="1" BORDER="0" -->
+            					<BR>
 						<FONT CLASS="space4pix"><br><br></FONT>
 						<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=bottTblWidth%>">
 							<tr valign="top">
