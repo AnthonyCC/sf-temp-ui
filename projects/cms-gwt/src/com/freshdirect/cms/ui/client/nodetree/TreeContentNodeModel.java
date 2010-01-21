@@ -78,8 +78,8 @@ public class TreeContentNodeModel extends ContentNodeModel {
 	
 	@Override
 	public boolean equals( Object obj ) {
-		if ( obj instanceof TreeContentNodeModel )
-			return getPath().equals( ((TreeContentNodeModel)obj).getPath() );
+		if ( obj instanceof TreeContentNodeModel && getPath() != null  )
+			return getPath().equals( ((TreeContentNodeModel)obj).getPath() );			
 		else 
 			return false;
 	}

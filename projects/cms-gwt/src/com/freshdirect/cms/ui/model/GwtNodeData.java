@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.freshdirect.cms.ui.client.fields.ChangeTrackingField;
 import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.fields.SaveListenerField;
+import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -223,6 +224,9 @@ public class GwtNodeData implements Serializable {
 				DateTimeFormat dateFormat = DateTimeFormat.getMediumDateFormat();
 				value = dateFormat.format( (Date)value );
 				oldValue = dateFormat.format( (Date)oldValue );
+			}
+			if ( value instanceof TreeContentNodeModel ) {
+				return ( (TreeContentNodeModel)value ).getKey().equals( ((TreeContentNodeModel)oldValue).getKey() );
 			}
 			return value.equals( oldValue );
 		} else {
