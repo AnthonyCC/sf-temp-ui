@@ -2,6 +2,7 @@ package com.freshdirect.payment.ejb;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -98,6 +99,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 	}
 	
 	public List authorizeSaleRealtime(String saleId) throws ErpAuthorizationException, ErpAddressVerificationException {
+						
 		try {
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpSaleModel sale = (ErpSaleModel) saleEB.getModel();
@@ -105,46 +107,45 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			AuthorizationStrategy strategy = new AuthorizationStrategy(sale);
 			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();			
 			
-			
-			if(!isAuthorizationRequired(order
-					.getDeliveryInfo()
-					.getDeliveryStartTime())){
-				return Collections.EMPTY_LIST;
-			}
+
+			PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
+			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
+			List paymentList=customerEB.getPaymentMethods();
+			  if(paymentList!=null && paymentList.size()>0){
+				
+				a:for(int j=0;j<paymentList.size();j++){
+					ErpPaymentMethodI custPayment=(ErpPaymentMethodI)paymentList.get(j);
+					if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
+						payment=custPayment;
+						break a;
+					}
+				}
+			  }									
 			
 			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
 				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");				
 			}
 
 			
-			AuthorizationCommand cmd = new AuthorizationCommand(strategy.getOutstandingAuthorizations(), saleEB.getAuthorizations().size());
-									
-			cmd.execute();
+			if(!isAuthorizationRequired(order
+					.getDeliveryInfo()
+					.getDeliveryStartTime())){
+				return Collections.EMPTY_LIST;
+			}
+
 						
+			AuthorizationCommand cmd = new AuthorizationCommand(strategy.getOutstandingAuthorizations(), saleEB.getAuthorizations().size());									
+			cmd.execute();						
 			List auths = cmd.getAuthorizations();						
 			
 			
 			for (Iterator i = auths.iterator(); i.hasNext();) {							
 				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();				
 				if (auth.isApproved() && auth.hasAvsMatched()) {
-					if(payment.isBypassAVSCheck()){
-						
-							PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
-							ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
-							List paymentList=customerEB.getPaymentMethods();
-							  if(paymentList!=null && paymentList.size()>0){
-								
-								a:for(int j=0;j<paymentList.size();j++){
-									ErpPaymentMethodI custPayment=(ErpPaymentMethodI)paymentList.get(j);
-									if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
-										payment=custPayment;
-										break a;
-									}
-								}
+					if(payment.isBypassAVSCheck()){						
 							    payment.setAvsCkeckFailed(false);
 								payment.setBypassAVSCheck(false);
-								customerEB.updatePaymentMethodNewTx(payment);
-							  }	
+								customerEB.updatePaymentMethodNewTx(payment);							  
 					}
 					saleEB.addAuthorization(auth);
 				} else if(!auth.isApproved()){				
@@ -157,23 +158,9 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 					if(auth.isApproved() && !auth.hasAvsMatched()){						
 						if(!payment.isBypassAVSCheck()){							
 							int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
-							if(count<ErpServicesProperties.getAvsErrorOrderCountLimit()){	                           
-								PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
-								ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
-								List paymentList=customerEB.getPaymentMethods();
-								  if(paymentList!=null && paymentList.size()>0){
-									
-									a:for(int j=0;j<paymentList.size();j++){
-										ErpPaymentMethodI custPayment=(ErpPaymentMethodI)paymentList.get(j);
-										if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
-											payment=custPayment;
-											break a;
-										}
-									}
-								  
+							if(count<ErpServicesProperties.getAvsErrorOrderCountLimit()){	                           								  
 									payment.setAvsCkeckFailed(true);
-									customerEB.updatePaymentMethodNewTx(payment);
-								  }	
+									customerEB.updatePaymentMethodNewTx(payment);								  	
 									logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth, true);							
 									CrmSystemCaseInfo info =new CrmSystemCaseInfo(
 											sale.getCustomerPk(),
@@ -187,7 +174,9 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 									throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
 									
 							}
-						}	
+						}
+							saleEB.addAuthorization(auth);
+						
 				     }
 			      }					
 			}
@@ -205,9 +194,31 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 	}
 
 	
+	private ErpAuthorizationModel createAVSFailedAuthModel(ErpPaymentMethodI pm, double amount, double tax){
+						
+			ErpAuthorizationModel auth = new ErpAuthorizationModel();
+			auth.setTransactionSource(EnumTransactionSource.SYSTEM);
+			auth.setReturnCode(0);
+			auth.setAuthCode("FD1000");
+			auth.setResponseCode(EnumPaymentResponse.DECLINED);	
+			auth.setDescription("AVS FAILED RESPONSE");
+			auth.setSequenceNumber("FD AUTH");
+			auth.setAvs("X");
+			auth.setAmount(amount);
+			auth.setTax(tax);
+			auth.setCardType(pm.getCardType());
+			String accountNumber = pm.getAccountNumber();
+			if(accountNumber != null && accountNumber.length() >= 4){
+				auth.setCcNumLast4(accountNumber.substring(accountNumber.length()-4));
+			}
+			return auth;				
+	}
+	
+	
 	
 	public EnumPaymentResponse authorizeSale(String saleId) {
 
+				
 		try {
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			ErpSaleModel sale = (ErpSaleModel) saleEB.getModel();
@@ -215,25 +226,46 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			String customerId = sale.getCustomerPk().getId();
 						
 			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();
+
 			
+			PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
+			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
+			List paymentList=customerEB.getPaymentMethods();
+			  if(paymentList!=null && paymentList.size()>0){
+				
+				a:for(int j=0;j<paymentList.size();j++){
+					ErpPaymentMethodI custPayment=(ErpPaymentMethodI)paymentList.get(j);
+					if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
+						payment=custPayment;
+						break a;
+					}
+				}
+			  }									
+
+									
 			if(!isAuthorizationRequired(order
 					.getDeliveryInfo()
 					.getDeliveryStartTime())){
 				return EnumPaymentResponse.ERROR;
 			}
 
+			List auths=null;
+			boolean isAVSFailureCase=false;
 			
 			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
 				//throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
-				return EnumPaymentResponse.ERROR;
+				ErpAuthorizationModel model=createAVSFailedAuthModel(payment, order.getAmount(), 0);
+				auths=new ArrayList();
+				auths.add(model);
+				isAVSFailureCase=true;
+			}else{
+             			
+				AuthorizationStrategy strategy = new AuthorizationStrategy(sale);
+				AuthorizationCommand cmd = new AuthorizationCommand(strategy.getOutstandingAuthorizations(), saleEB.getAuthorizations().size());
+				cmd.execute();	
+				auths = cmd.getAuthorizations();
 			}
-
 			
-			AuthorizationStrategy strategy = new AuthorizationStrategy(sale);
-			AuthorizationCommand cmd = new AuthorizationCommand(strategy.getOutstandingAuthorizations(), saleEB.getAuthorizations().size());
-			cmd.execute();
-
-			List auths = cmd.getAuthorizations();
 			EnumPaymentResponse response = EnumPaymentResponse.APPROVED;
 			EnumSaleType saleType=sale.getType();
 			if(EnumSaleType.SUBSCRIPTION.equals(saleType) && auths.size()==0) {
@@ -243,28 +275,24 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				return EnumPaymentResponse.ERROR;
 			}
 
+			
 			for (Iterator i = auths.iterator(); i.hasNext();) {
-				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();				
-				boolean isAVSFailureCase=false;
+				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();	
+				
+				if (auth.isApproved() && auth.hasAvsMatched()) {
+					if(payment.isBypassAVSCheck()){						
+							    payment.setAvsCkeckFailed(false);
+								payment.setBypassAVSCheck(false);
+								customerEB.updatePaymentMethodNewTx(payment);							  
+					}
+					//saleEB.addAuthorization(auth);
+				}
 				
 				if(auth.isApproved() && !auth.hasAvsMatched()){					
 					if(!payment.isBypassAVSCheck()){
 						int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
 						if(count<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 							isAVSFailureCase=true;
-							PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
-							ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
-							List paymentList=customerEB.getPaymentMethods();
-							if(paymentList!=null && paymentList.size()>0){
-								
-								a:for(int j=0;j<paymentList.size();j++){
-									ErpPaymentMethodI custPayment=(ErpPaymentMethodI)paymentList.get(j);
-									if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
-										payment=custPayment;
-										break a;
-									}
-								}
-							}
 							payment.setAvsCkeckFailed(true);
 							customerEB.updatePaymentMethodNewTx(payment);
 							//logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
@@ -281,8 +309,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 							//throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");							
 						}
 					}	
-			     }
-				
+			    }				
 				
 				saleEB.addAuthorization(auth);
 				if (!auth.isApproved()) {
@@ -296,6 +323,8 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 					// still have record of failed authorization
 					this.createCase(caseInfo, true);
 				}
+				isAVSFailureCase=false;
+				
 			}
 			return response;
 		} catch (RemoteException e) {
@@ -466,13 +495,29 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			ErpAbstractOrderModel order = sale.getCurrentOrder();
 			ErpPaymentMethodI payment=saleEB.getCurrentOrder().getPaymentMethod();
 			
-			if(!isAuthorizationRequired( order.getRequestedDate())){
-			    return Collections.EMPTY_LIST;	
-			}
+
+			PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
+			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
+			List paymentList=customerEB.getPaymentMethods();
+			  if(paymentList!=null && paymentList.size()>0){
+				
+				a:for(int j=0;j<paymentList.size();j++){
+					ErpPaymentMethodI custPayment=(ErpPaymentMethodI)paymentList.get(j);
+					if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
+						payment=custPayment;
+						break a;
+					}
+				}
+			  }							
+			
 			
 			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
 				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
 				
+			}
+
+			if(!isAuthorizationRequired( order.getRequestedDate())){
+			    return Collections.EMPTY_LIST;	
 			}
 
 						
@@ -498,31 +543,27 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			}else if(EnumSaleType.GIFTCARD==saleType || EnumSaleType.DONATION==saleType){
 				a:for (Iterator i = auths.iterator(); i.hasNext();) {					
 					ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();					
-					if (auth.isApproved() && auth.hasAvsMatched()) {
+					if (auth.isApproved() && auth.hasAvsMatched()) {						
+						if(payment.isBypassAVSCheck()){						
+						    payment.setAvsCkeckFailed(false);
+							payment.setBypassAVSCheck(false);
+							customerEB.updatePaymentMethodNewTx(payment);							  
+						}						
 						saleEB.addAuthorization(auth);
 					} else {
 						if(auth.isApproved() && !auth.hasAvsMatched()){																				
-							int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());														
-							if(count<ErpServicesProperties.getAvsErrorOrderCountLimit() && EnumSaleType.GIFTCARD==saleType && !payment.isBypassAVSCheck()){
+							int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
+							
+							if(count<ErpServicesProperties.getAvsErrorOrderCountLimit() && EnumSaleType.GIFTCARD==saleType && payment.isBypassAVSCheck()){
+								saleEB.addAuthorization(auth);
+								continue a;
+							}
+							else if(count<ErpServicesProperties.getAvsErrorOrderCountLimit() && EnumSaleType.GIFTCARD==saleType && !payment.isBypassAVSCheck()){
 								
-								PrimaryKey erpCustomerPk=saleEB.getCustomerPk();
-								ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
-								List paymentList=customerEB.getPaymentMethods();
-								if(paymentList!=null && paymentList.size()>0){
-									
-									b:for(int j=0;j<paymentList.size();j++){
-										ErpPaymentMethodI custPayment=(ErpPaymentMethodI)paymentList.get(j);
-										if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
-											payment=custPayment;
-											break b;
-										}
-									}
+								payment.setAvsCkeckFailed(true);
+								customerEB.updatePaymentMethodNewTx(payment);									
+								logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth,true);
 								
-									payment.setAvsCkeckFailed(true);
-									customerEB.updatePaymentMethodNewTx(payment);
-								}	
-								logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth,true);																	
-										
 								CrmSystemCaseInfo info =new CrmSystemCaseInfo(
 										sale.getCustomerPk(),
 									CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),									
@@ -549,7 +590,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 								
                                 continue a;
 							}
-						}
+						}	
 						logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth, false);
 						SessionContext ctx = getSessionContext();
 						ctx.setRollbackOnly();
