@@ -13,6 +13,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -51,17 +52,17 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 		if(ctx.getUser() != null && ctx.getUser().getShoppingCart() instanceof FDModifyCartModel) {
 			cart = (FDModifyCartModel)ctx.getUser().getShoppingCart();
 			for (Iterator i = cart.getOriginalOrder().getDiscounts().iterator(); i.hasNext();) {
-				Discount d =  (Discount)i.next();				
+				Discount d =  ((ErpDiscountLineModel)i.next()).getDiscount();				
 				PromotionI _promo = PromotionFactory.getInstance().getAutomaticPromotion(d.getPromotionCode());
 				if(_promo != null && EnumPromotionType.WINDOW_STEERING.equals(_promo.getPromotionType())
 						&& cart.getOriginalOrder().getDeliveryReservation() != null
 							&& cart.getOriginalOrder().getDeliveryReservation().getTimeslotId() != null
 								&& cart.getOriginalOrder().getDeliveryReservation().getTimeslotId()
-											.equalsIgnoreCase(ctx.getUser().getReservation().getTimeslotId())) {
+											.equalsIgnoreCase(cart.getDeliveryReservation().getTimeslotId())) {
 					return true;
 				}
 			}
-		}
+		} 
 		return false;
 	}
 	
