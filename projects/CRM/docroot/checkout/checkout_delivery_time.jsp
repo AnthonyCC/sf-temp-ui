@@ -10,6 +10,9 @@
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import='com.freshdirect.fdstore.util.TimeslotLogic'%>
 <%@ page import="com.freshdirect.framework.util.*"%>
+<%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
+<%@ page import='com.freshdirect.delivery.DlvZoneInfoModel' %>
+<%@ page import='com.freshdirect.fdstore.FDDeliveryManager' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %> 
@@ -23,6 +26,10 @@
     ErpAddressModel address = cart.getDeliveryAddress(); 
     boolean isStaticSlot = false;
     boolean showAdvanceOrderBand = false;
+    boolean forceOrders=false;
+    if("true".equals(request.getParameter("force_order"))) {
+	    forceOrders = true;
+    }
 
     DateRange advOrdRange = FDStoreProperties.getAdvanceOrderRange();
     Calendar tomorrow = Calendar.getInstance();
@@ -83,6 +90,26 @@
     	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
     }
 %>
+<%
+//get amount for zone promotion
+	DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date());    
+	double zonePromoAmount=FDPromotionZoneRulesEngine.getDiscount(user,zInfo.getZoneCode());
+	String zonePromoString=null;
+	if(zonePromoAmount>0)
+	{
+		zonePromoString=FDPromotionZoneRulesEngine.getDiscountFormatted(zonePromoAmount);
+		request.setAttribute("SHOW_WINDOWS_STEERING","true");
+	
+	}
+%>
+<script>
+var zonePromoString=""; 
+var zonePromoEnabled=false;
+<%if(zonePromoAmount>0){ %>
+zonePromoString="<%=zonePromoString %>"; 
+zonePromoEnabled=true;
+<%} %>
+</script>
 <tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>Checkout > Select Delivery Time</tmpl:put>
@@ -178,6 +205,20 @@ List messages = DeliveryTimeSlotResult.getMessages();
 	<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 	<!-- LOYALTY -->
 
+<table width="695">
+	<tr><td align="center">	
+	
+	<%if(timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE){ %>
+		<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
+	<%}%>
+	</td>	
+	<td align="right">
+	<%if(zonePromoAmount>0){ %>
+	<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%=zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a><br>
+	<%}%>
+	</td></tr>
+	</table>	
+ 
 <%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && thxgivingRestriction){%>
 	<table width="100%">
 		<tr>

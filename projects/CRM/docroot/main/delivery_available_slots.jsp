@@ -9,12 +9,16 @@
 <%@ page import='java.text.DateFormat' %>
 <%@ page import='java.text.SimpleDateFormat' %>
 <%@ page import='com.freshdirect.fdstore.util.TimeslotLogic'%>
+<%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
+<%@ page import='com.freshdirect.delivery.DlvZoneInfoModel' %>
+<%@ page import='com.freshdirect.fdstore.FDDeliveryManager' %>
 
 <%@ page import='com.freshdirect.fdstore.*' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
 
 <%
 int timeslot_page_type = TimeslotLogic.PAGE_NORMAL;
@@ -126,6 +130,26 @@ boolean isCheckAddress = "1address".equalsIgnoreCase(request.getParameter("show"
 	boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
 	List messages = DeliveryTimeSlotResult.getMessages();
 	%>
+    <%
+//get amount for zone promotion
+	DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date());    
+	double zonePromoAmount=FDPromotionZoneRulesEngine.getDiscount(user,zInfo.getZoneCode());
+	String zonePromoString=null;
+	if(zonePromoAmount>0)
+	{
+		zonePromoString=FDPromotionZoneRulesEngine.getDiscountFormatted(zonePromoAmount);
+		request.setAttribute("SHOW_WINDOWS_STEERING","true");
+	
+	}
+%>
+<script>
+var zonePromoString=""; 
+var zonePromoEnabled=false;
+<%if(zonePromoAmount>0){ %>
+zonePromoString="<%=zonePromoString %>"; 
+zonePromoEnabled=true;
+<%} %>
+</script>
 <div class="sub_nav">
 <span class="sub_nav_title">Available Delivery Time Slots</span> | <a href="/main/delivery_check_slots.jsp">Check available Slots for a new address</a>
 </div>
@@ -186,6 +210,7 @@ if(user.isHomeUser())
 <tr>
 <td colspan="3">
 <br>
+
 <%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 </td>
 </tr>
@@ -211,6 +236,22 @@ if(user.isHomeUser())
 </TR>
 </table></td></tr>
 <%  }   %>
+<tr><td colspan="3">
+<table width="695">
+	<tr><td>	
+	
+	<%if(timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE){ %>
+		<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
+	<%}%>
+	</td>	
+	<td align="right">
+	<%if(zonePromoAmount>0){ %>
+	<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%=zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a><br>
+	<%}%>
+	</td></tr>
+	</table>	
+ </td></tr>   
+	
 <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="693" height="15"></td></tr>
 <% String preReserveSlotId = ""; %>
 <tr><td colspan="3"><%String timeSlotId = ""; %>
