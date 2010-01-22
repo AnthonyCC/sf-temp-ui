@@ -1691,9 +1691,9 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			} else if(reservation.getStatusCode() == 15 || reservation.getStatusCode() == 20) {
 				doReleaseReservationEx(reservation, address);
 				//clearUnassignedInfo(reservation.getId());
-			} else if(reservation.getStatusCode() == 5) {
+			} /*else if(reservation.getStatusCode() == 5) {
 				updateReservationEx(reservation, address);
-			}
+			}*/
 		} else if (reservation.getUnassignedActivityType()==null){
 			doConfirmEx(reservation, address);
 		}	else if (RoutingActivityType.CANCEL_TIMESLOT.equals(reservation.getUnassignedActivityType())) {
@@ -1994,6 +1994,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			}
 			
 		} catch (Exception e) {
+			
 			logTimeslots(reservation,order,RoutingActivityType.CANCEL_TIMESLOT,null,0,address);
 			e.printStackTrace();
 			LOGGER.debug("Exception in releaseReservationEx():"+e.toString());
