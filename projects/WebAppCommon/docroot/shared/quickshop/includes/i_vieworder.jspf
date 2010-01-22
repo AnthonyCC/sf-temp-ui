@@ -605,7 +605,23 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
     </td>
     
     <td align="right">
-    	<NOBR><display:ProductPrice impression="<%= new ProductImpression(productNode) %>" quickShop="true" showDescription="false" showScalePricing="false"/></NOBR>
+    	<NOBR>
+	
+	<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" 
+		quickShop="true" showDescription="false" showScalePricing="false"/>
+	
+	</NOBR>
+	    
+	    <input type="hidden" style="width: 60px" name="estPrice_<%=idx%>" value="" size="6" class="<%=boxStyle%>" onChange="" onFocus="blur()">
+	                <script language="JavaScript">
+	                function updatePriceField<%=idx%>() {
+	                    document.qs_cart.estPrice_<%=idx%>.value = pricing<%=idx%>.getPrice();
+	                    updateTotal();
+	                }
+	                pricing<%=idx%>.setCallbackFunction( updatePriceField<%=idx%> );
+	                document.qs_cart.estPrice_<%=idx%>.value = pricing<%=idx%>.getPrice();
+            </script>
+    	
     	<%@include file="/includes/product/i_price_taxdeposit.jspf"%></td>
             
         <input type="hidden" name="skuCode_<%=idx%>" value="<%= orderLine.getSkuCode() %>">
