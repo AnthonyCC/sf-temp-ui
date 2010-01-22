@@ -84,7 +84,7 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 				<table width="0" border="0" cellspacing="0" cellpadding="0">
 					<tr>
 					    <td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
-					    <td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="140" height="1"></td>
+					    <td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="173" height="1"></td>
 					    <td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6"></td>
 					</tr>
 
@@ -111,13 +111,13 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 									// sku with lowest shelf life value will display per domain label
 									ListIterator lowLifeItr = shelfLifeList.listIterator();
 									while(lowLifeItr.hasNext()) {
-										String val = (String)lowLifeItr.next();										System.out.println("***** leastShelfDays = " + leastShelfDays);
+										String val = (String)lowLifeItr.next();										
 										if(StringUtil.isNumeric(val)) {
 											if(leastShelfDays == null) {
-												leastShelfDays = val;												System.out.println("***** leastShelfDays = " + leastShelfDays);
+												leastShelfDays = val;												
 											}
 											if(Integer.parseInt(val) < Integer.parseInt(leastShelfDays)) {
-												leastShelfDays = val;												System.out.println("***** leastShelfDays = " + leastShelfDays);
+												leastShelfDays = val;												
 											}
 										}
 									}
