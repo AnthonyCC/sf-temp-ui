@@ -586,8 +586,22 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
     %> 
    
     <br><br>
+    <%
     
-    <display:RatingPlusScalePrice product="<%= productNode %>" action="<%= actionUrl %>" noBr="true" leftAlign="true"/>
+    String scaledPrice = productNode.getTieredPrice(0);
+	int tieredPercentage = productNode.getTieredDealPercentage();
+	String productRating = "";
+	try {
+		productRating = productNode.getProductRating();
+	} catch (Exception e) {
+	}
+	String quickShopStyleScale = "line-height:16px; font-size: 11px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;";
+	    
+     %>
+    <display:ProductRating product="<%= productNode %>" action="<%= actionUrl %>" noBr="true" leftAlign="true"/><% if (scaledPrice != null) { %>
+    	<% if (productRating.length() != 0) { %>&nbsp;&nbsp;<% } %>
+    	<span style="<%=quickShopStyleScale%>"><%="SAVE" + (tieredPercentage > 0 ? " " + tieredPercentage + "%" : "!") + "&nbsp;&nbsp;" + scaledPrice%></span>
+    <% } %>
     </td>
     
     <td align="right">
