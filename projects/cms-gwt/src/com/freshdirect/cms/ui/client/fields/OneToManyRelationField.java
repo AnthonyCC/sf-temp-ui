@@ -47,6 +47,7 @@ import com.freshdirect.cms.ui.service.BaseCallback;
 import com.freshdirect.cms.ui.service.ContentService;
 import com.freshdirect.cms.ui.service.ContentServiceAsync;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -469,35 +470,36 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 	@Override
 	public void setValue(final List<OneToManyModel> values) {
 		// TODO FIXME bad solution, needs some checking
-		if (rendered) {
-			if (values instanceof List) {
-				if (store.getCount() > 0) {
-					store.removeAll();
-				}
-				store.add(values);
-				if (store.getCount() == 0) {
-					grid.hide();
-				} else {
-					grid.show();
-				}
-				super.setValue(store.getModels());
-				fireEvent(Events.Change, new FieldEvent(OneToManyRelationField.this));
-
-			} else {
-				super.setValue(values);
-				fireEvent(Events.Change, new FieldEvent(OneToManyRelationField.this));
+		
+		if (values instanceof List) {
+			if (store.getCount() > 0) {
+				store.removeAll();
 			}
+			store.add(values);
+		}
+		super.setValue(values);
+		
+		
+		if (rendered) {
+			if (store.getCount() == 0) {
+				grid.hide();
+			} else {
+				grid.show();
+			}
+
 		} else {
-			final OneToManyRelationField tmp = this;
 			addListener(Events.Render, new Listener<BaseEvent>() {
 				@Override
 				public void handleEvent(BaseEvent be) {
-					tmp.setValue(values);
-					tmp.originalValue = tmp.getValue();
-					tmp.removeListener(Events.Render, this);
+					if (store.getCount() == 0) {
+						grid.hide();
+					} else {
+						grid.show();
+					}
 				}
 			});
 		}
+		fireEvent(Events.Change, new FieldEvent(OneToManyRelationField.this));
 	}
 
 	@Override
@@ -782,5 +784,11 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 	public void reset() {
 		setValue(originalValue);
 	}
-
+ 
+	@Override
+	protected void onRender(Element target, int index) {
+		// TODO Auto-generated method stub
+		super.onRender(target, index);
+		originalValue = getValue();
+	}
 }
