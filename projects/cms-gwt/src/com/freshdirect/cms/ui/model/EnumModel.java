@@ -15,7 +15,7 @@ public class EnumModel extends BaseModel implements Comparable<EnumModel> {
 	public EnumModel(Serializable key, String value) {
 		super();
 		set("key", key);
-		set("label", value);
+		set("label", value + " [" + key + "]");
 	}
 	
 	public Serializable getKey() {
@@ -28,10 +28,11 @@ public class EnumModel extends BaseModel implements Comparable<EnumModel> {
 	
 	public void setKey(Serializable key) {
 		set("key", key);
+		set("label", get("label") + " [" + key + "]");
 	}
 	
 	public void setLabel(String label) {
-		set("label", label);
+		set("label", label + " [" + get("key")+ "]");
 	}
 	
 	@Override
