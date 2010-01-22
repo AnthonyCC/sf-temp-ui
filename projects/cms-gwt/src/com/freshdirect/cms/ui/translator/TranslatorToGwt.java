@@ -493,9 +493,9 @@ public class TranslatorToGwt {
         return null;
     }
     
-    private static TreeContentNodeModel toContentNodeModel( ContentKey key ) {
+    private static ContentNodeModel toContentNodeModel( ContentKey key ) {
         ContentNodeI node = key.getContentNode();
-        TreeContentNodeModel result = new TreeContentNodeModel (
+        ContentNodeModel result = new ContentNodeModel (
         		key.getType().getName(), 
         		node != null ? node.getLabel() : key.getId(), 
         		key.getEncoded()

@@ -47,17 +47,18 @@ public class OneToOneRelationField extends MultiField<ContentNodeModel> {
         return value;
     }
 	
-    @Override
-    public void setValue(ContentNodeModel model) {    	
-        if (model != null) {
-            valueField.setValue(model.renderLink(true));
-            valueField.setToolTip(model.getPreviewToolTip());
-        } else {
-            valueField.setValue("");
-        }
-        super.setValue(model);
-    }
-	
+	@Override
+	public void setValue(ContentNodeModel model) {
+		if (model != null) {
+			model = new ContentNodeModel(model);
+			valueField.setValue(model.renderLink(true));
+			valueField.setToolTip(model.getPreviewToolTip());
+		} else {
+			valueField.setValue("");
+		}
+		super.setValue(model);
+	}
+
     private void initialize() {
     	
     	LayoutContainer cp = new LayoutContainer();		
