@@ -77,7 +77,9 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			LOGGER.error("JMSException occured while reading command, throwing RuntimeException", ex);
 			throw new RuntimeException("JMSException occured while reading command: " + ex.getMessage());
 		}
-
+		LOGGER.debug( "Recipient: " + mailTo
+				+ "\nSender: " + mailFrom
+				+ "\nTitle: " + mailTitle);
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug( "Recipient: " + mailTo
 				+ "\nSender: " + mailFrom
