@@ -225,11 +225,16 @@ public class JspMethods {
 		}
 		return prodPrice;
 	}
-
+	
 	public static String getProductRating(ProductModel theProduct)
+		throws JspException {
+		return getProductRating(theProduct, null);	
+	}
+
+	public static String getProductRating(ProductModel theProduct, String skuCode)
 			throws JspException {
 		try {
-			return theProduct.getProductRating();
+			return theProduct.getProductRating(skuCode);
 		} catch (FDResourceException fdre) {
 			LOGGER.warn("FDResourceException occured", fdre);
 			throw new JspException(

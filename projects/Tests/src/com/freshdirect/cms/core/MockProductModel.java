@@ -512,10 +512,10 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     }
 
     /* (non-Javadoc)
-     * @see com.freshdirect.fdstore.content.ProductModel#getPriceFormatted(double)
+     * @see com.freshdirect.fdstore.content.ProductModel#getPriceFormatted(double, String)
      */
     @Override
-    public String getPriceFormatted(double savingsPercentage) {
+    public String getPriceFormatted(double savingsPercentage, String skuCode) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -1606,6 +1606,16 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
 
 	@Override
 	public String getFreshnessGuaranteed() throws FDResourceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getPriceFormatted(double savingsPercentage) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getProductRating(String skuCode) throws FDResourceException {
 		// TODO Auto-generated method stub
 		return null;
 	}

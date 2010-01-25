@@ -32,7 +32,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 			if (ret == 0) {
 				ret = p1.getFullName().compareTo(p2.getFullName());
 			}
-
+			
 			return ret;
 		}
 	};
@@ -640,6 +640,8 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public List getWineClassifications();
 
 	public String getProductRating() throws FDResourceException; 
+	
+	public String getProductRating(String skuCode) throws FDResourceException; 
 
 	public EnumOrderLineRating getProductRatingEnum() throws FDResourceException; 
 	
@@ -662,6 +664,8 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public String getTieredPrice(double savingsPercentage);
 	
 	public String getPriceFormatted(double savingsPercentage);
+	
+	public String getPriceFormatted(double savingsPercentage, String skuCode);
 	
 	public String getWasPriceFormatted(double savingsPercentage);
 	

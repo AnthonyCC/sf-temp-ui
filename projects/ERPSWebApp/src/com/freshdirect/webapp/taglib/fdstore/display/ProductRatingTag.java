@@ -28,6 +28,7 @@ public class ProductRatingTag extends BodyTagSupport {
 	String			action; // URL (optional)
 	boolean         noBr;
 	boolean         leftAlign;
+	String			skuCode;
 
 	public void setProduct(ProductModel prd) {
 		this.product = prd;
@@ -45,6 +46,10 @@ public class ProductRatingTag extends BodyTagSupport {
 		this.leftAlign = leftAlign;
 	}
 
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}
+	
 	public int doStartTag() {
 		try {
 			HttpSession session = pageContext.getSession();
@@ -54,7 +59,7 @@ public class ProductRatingTag extends BodyTagSupport {
 				return SKIP_BODY;
 			}
 			
-			String rating = JspMethods.getProductRating(product);
+			String rating = JspMethods.getProductRating(product, skuCode);
 			
 			JspWriter out = pageContext.getOut();
 			

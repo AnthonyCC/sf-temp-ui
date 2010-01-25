@@ -1471,29 +1471,37 @@ inner:
 		classifications.addAll(getWineVarietal());
 		return classifications;
 	}
+	
+	public EnumOrderLineRating getProductRatingEnum() throws FDResourceException {
+		return getProductRatingEnum(null);
+	}
 
-    public EnumOrderLineRating getProductRatingEnum() throws FDResourceException {
+    public EnumOrderLineRating getProductRatingEnum(String skuCode) throws FDResourceException {
         EnumOrderLineRating rating = EnumOrderLineRating.NO_RATING;
 
-        List skus = getPrimarySkus();
-        SkuModel sku = null;
-        // remove the unavailable sku's
-        for (ListIterator li = skus.listIterator(); li.hasNext();) {
-            sku = (SkuModel) li.next();
-            if (sku.isUnavailable()) {
-                li.remove();
-            }
-        }
-
         FDProductInfo productInfo = null;
-        if (skus.size() == 0)
-            return rating; // skip this item..it has no skus. Hmmm?
-        if (skus.size() == 1) {
-            sku = (SkuModel) skus.get(0); // we only need one sku
-        } else {
-            sku = (SkuModel) Collections.max(skus, RATING_COMPARATOR);
+        if(skuCode == null || skuCode.trim().equals("")) {
+        	List skus = getPrimarySkus();
+            SkuModel sku = null;
+            // remove the unavailable sku's
+            for (ListIterator li = skus.listIterator(); li.hasNext();) {
+                sku = (SkuModel) li.next();
+                if (sku.isUnavailable()) {
+                    li.remove();
+                }
+            }
+	        if (skus.size() == 0)
+	            return rating; // skip this item..it has no skus. Hmmm?
+	        if (skus.size() == 1) {
+	            sku = (SkuModel) skus.get(0); // we only need one sku
+	        } else {
+	            sku = (SkuModel) Collections.max(skus, RATING_COMPARATOR);
+	        }
+	        if (sku != null && sku.getSkuCode() != null) {
+	        	skuCode = sku.getSkuCode();
+	        }
         }
-        if (sku != null && sku.getSkuCode() != null) {
+        if (skuCode != null) {
             //
             // get the FDProductInfo from the FDCachedFactory
             //
@@ -1535,8 +1543,8 @@ inner:
                         // LOG.debug(spacer+"Rating _skuPrefixes checking :"+curPrefix);
 
                         // if prefix matches get product info
-                        if (sku.getSkuCode().startsWith(curPrefix)) {
-                            productInfo = FDCachedFactory.getProductInfo(sku.getSkuCode());
+                        if (skuCode.startsWith(curPrefix)) {
+                            productInfo = FDCachedFactory.getProductInfo(skuCode);
                             // LOG.debug(" Rating productInfo :"+productInfo);
                             String tmpRating = productInfo.getRating();
 
@@ -1570,7 +1578,11 @@ inner:
     }
     
     public String getProductRating() throws FDResourceException {
-    	EnumOrderLineRating rating = getProductRatingEnum();
+    	return getProductRating(null);
+    }
+    
+    public String getProductRating(String skuCode) throws FDResourceException {
+    	EnumOrderLineRating rating = getProductRatingEnum(skuCode);
     	if (rating == EnumOrderLineRating.NO_RATING)
     		return "";
     	else

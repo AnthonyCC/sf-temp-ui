@@ -321,12 +321,22 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	}
 	
 	public String getPriceFormatted(double savingsPercentage) {
-		SkuModel skuCode = getDefaultSku();
+		return getPriceFormatted(savingsPercentage, null);
+	}
+	
+	public String getPriceFormatted(double savingsPercentage, String skuCode) {
+		
+		if(skuCode == null) {
+			SkuModel sku = getDefaultSku();
+			if(sku != null) {
+				skuCode = sku.getSkuCode();
+			}
+		}
 
 		if (skuCode != null) {
 			try {
 				FDProductInfo productInfo = FDCachedFactory
-						.getProductInfo(skuCode.getSkuCode());
+						.getProductInfo(skuCode);
 				if (productInfo != null) {
 					double price;
 					if (savingsPercentage > 0) {

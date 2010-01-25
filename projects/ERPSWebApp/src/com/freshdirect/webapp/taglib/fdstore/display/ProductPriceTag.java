@@ -12,6 +12,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.util.ConfigurationUtil;
@@ -60,6 +61,7 @@ public class ProductPriceTag extends BodyTagSupport {
 	boolean showScalePricing = true; //show scale pricing
 	boolean quickShop = false; // special font for quick shop
 	boolean grcyProd = false; // special font for grocery product
+	String skuCode = null;
 	
 	public void setGrcyProd(boolean grcyProd) {
 		this.grcyProd = grcyProd;
@@ -96,7 +98,11 @@ public class ProductPriceTag extends BodyTagSupport {
 	public void setQuickShop(boolean quickShop) {
 		this.quickShop = quickShop;
 	}
-	
+
+	public void setSkuCode(String skuCode) {
+		this.skuCode = skuCode;
+	}
+
 	public int doStartTag() {
 		JspWriter out = pageContext.getOut();
 
@@ -127,7 +133,7 @@ public class ProductPriceTag extends BodyTagSupport {
 		//LOGGER.debug("productInfo: "+productInfo);		
 		
 		if ( productInfo != null ) {	
-			String priceString = impression.getProductModel().getPriceFormatted(savingsPercentage);
+			String priceString = impression.getProductModel().getPriceFormatted(savingsPercentage, skuCode);
 			//LOGGER.debug("priceString: "+priceString);
 			
 			String scaleString = impression.getProductModel().getTieredPrice(savingsPercentage);

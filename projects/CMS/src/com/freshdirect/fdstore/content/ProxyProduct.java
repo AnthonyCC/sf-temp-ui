@@ -620,6 +620,10 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public String getProductRating() throws FDResourceException {
 		return getProduct().getProductRating();
 	}
+	
+	public String getProductRating(String skuCode) throws FDResourceException {
+		return getProduct().getProductRating(skuCode);
+	}
 
 	public EnumOrderLineRating getProductRatingEnum() throws FDResourceException {
 		return getProduct().getProductRatingEnum();
