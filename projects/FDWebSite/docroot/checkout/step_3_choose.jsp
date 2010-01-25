@@ -350,8 +350,7 @@ if(user.isAddressVerificationError()) {
 <tr>
     <td width="18" bgcolor="#CC3300"><img src="/media_stat/images/template/system_msgs/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"></td>
     <td class="text11rbold" width="100%" bgcolor="#FFFFFF">
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
-				<%= SystemMessageList.MSG_GC_SIGNUP_SUCCESS %><br><br>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>				
                 <%= user.getAddressVerficationMsg() %>
                 
                 
