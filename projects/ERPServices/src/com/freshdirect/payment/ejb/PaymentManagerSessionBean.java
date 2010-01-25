@@ -280,10 +280,9 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				return EnumPaymentResponse.ERROR;
 			}
 
-			
+			boolean isAVSCaseCreated=false;
 			for (Iterator i = auths.iterator(); i.hasNext();) {
-				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();	
-				
+				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();					
 				if (auth.isApproved() && auth.hasAvsMatched()) {
 					if(payment.isBypassAVSCheck()){						
 							    payment.setAvsCkeckFailed(false);
@@ -299,16 +298,18 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 						if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 							isAVSFailureCase=true;
 							payment.setAvsCkeckFailed(true);
-							customerEB.updatePaymentMethodNewTx(payment);
-							//logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
-							auth.setResponseCode(EnumPaymentResponse.DECLINED);							
-							CrmSystemCaseInfo info =new CrmSystemCaseInfo(
-									sale.getCustomerPk(),
-								CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),									
-								"AVS Exception : Found Regular order for new customer with AVS Exception for saleId "+sale.getId()+ " and customer userId ="+customerEB.getUserId());
-							ErpCreateCaseCommand caseCmd=new ErpCreateCaseCommand(LOCATOR, info);
-							caseCmd.setRequiresNewTx(true);
-							caseCmd.execute(); 							
+							customerEB.updatePaymentMethodNewTx(payment);							
+							auth.setResponseCode(EnumPaymentResponse.DECLINED);
+							if(!isAVSCaseCreated){ 
+								isAVSCaseCreated=true;
+								CrmSystemCaseInfo info =new CrmSystemCaseInfo(
+										sale.getCustomerPk(),
+									CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),									
+									"AVS Exception : Found Regular order for new customer with AVS Exception for saleId "+sale.getId()+ " and customer userId ="+customerEB.getUserId());
+								ErpCreateCaseCommand caseCmd=new ErpCreateCaseCommand(LOCATOR, info);
+								caseCmd.setRequiresNewTx(true);
+								caseCmd.execute(); 
+							}
 							//SessionContext ctx = getSessionContext();
 							//ctx.setRollbackOnly();
 							//throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");							
