@@ -122,7 +122,9 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				}
 			  }									
 			
-			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+			  int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId()); 
+			  
+			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck() && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");				
 			}
 
@@ -156,9 +158,8 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				  
 			    }else{			    	
 					if(auth.isApproved() && !auth.hasAvsMatched()){						
-						if(!payment.isBypassAVSCheck()){							
-							int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
-							if(count<ErpServicesProperties.getAvsErrorOrderCountLimit()){	                           								  
+						if(!payment.isBypassAVSCheck()){														
+							if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){	                           								  
 									payment.setAvsCkeckFailed(true);
 									customerEB.updatePaymentMethodNewTx(payment);								  	
 									logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth, true);							
@@ -252,7 +253,11 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			List auths=null;
 			boolean isAVSFailureCase=false;
 			
-			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+			
+			  int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId()); 
+			  			
+			
+			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()  && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 				//throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
 				ErpAuthorizationModel model=createAVSFailedAuthModel(payment, order.getAmount(), 0);
 				auths=new ArrayList();
@@ -291,7 +296,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				if(auth.isApproved() && !auth.hasAvsMatched()){					
 					if(!payment.isBypassAVSCheck()){
 						int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
-						if(count<ErpServicesProperties.getAvsErrorOrderCountLimit()){
+						if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 							isAVSFailureCase=true;
 							payment.setAvsCkeckFailed(true);
 							customerEB.updatePaymentMethodNewTx(payment);
@@ -509,9 +514,11 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 					}
 				}
 			  }							
+						  			  			 
+  
+			int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());  
 			
-			
-			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()){
+			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck() && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
 				
 			}
@@ -552,13 +559,13 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 						saleEB.addAuthorization(auth);
 					} else {
 						if(auth.isApproved() && !auth.hasAvsMatched()){																				
-							int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
 							
-							if(count<ErpServicesProperties.getAvsErrorOrderCountLimit() && EnumSaleType.GIFTCARD==saleType && payment.isBypassAVSCheck()){
+							
+							if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit() && EnumSaleType.GIFTCARD==saleType && payment.isBypassAVSCheck()){
 								saleEB.addAuthorization(auth);
 								continue a;
 							}
-							else if(count<ErpServicesProperties.getAvsErrorOrderCountLimit() && EnumSaleType.GIFTCARD==saleType && !payment.isBypassAVSCheck()){
+							else if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit() && EnumSaleType.GIFTCARD==saleType && !payment.isBypassAVSCheck()){
 								
 								payment.setAvsCkeckFailed(true);
 								customerEB.updatePaymentMethodNewTx(payment);									
