@@ -911,6 +911,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
 			results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
 		}
+		 catch (ErpAddressVerificationException ex) {
+				LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
+				results.addError(new ActionError("technical_difficulty", ex.getMessage()));
+			}
 		
 	}
 	private static FDReservation getFDReservation(String customerID, String addressID) {
