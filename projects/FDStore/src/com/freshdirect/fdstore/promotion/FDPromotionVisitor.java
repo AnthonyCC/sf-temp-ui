@@ -56,11 +56,21 @@ public class FDPromotionVisitor {
 		LOGGER.info("Apply Promotions - TOTAL EXECUTION TIME "+(endTime - startTime)+" milliseconds");
 		
 		applyZonePromotion(context, eligibilities);
+		//removeDuplicates(context,eligibilities);
 		return eligibilities;
 	}
 
-    private static void applyZonePromotion(PromotionContextI context, FDPromotionEligibility eligibilities) 
+	
+    private static void removeDuplicates(PromotionContextI context,
+			FDPromotionEligibility eligibilities) {
+            
+		
+	}
+
+
+	private static void applyZonePromotion(PromotionContextI context, FDPromotionEligibility eligibilities) 
     {    
+    	
     	if(FDPromotionZoneRulesEngine.isEligible(context))//iPhone check
     	{
 			String promoCode=FDPromotionZoneRulesEngine.getPromoCode(context);
@@ -68,9 +78,10 @@ public class FDPromotionVisitor {
 			if(promoCode !=null && eligibilities.isEligible(promoCode))
 			{
 				PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+				
 		    	Discount discount = new ZonePromoDiscount(promoCode, EnumDiscountType.DOLLAR_OFF, promo.getHeaderDiscountTotal());
 		    	context.addDiscount(discount);  
-			}
+			} 
     	}
     }
 	private static void resolveLineItemConflicts(PromotionContextI context, FDPromotionEligibility eligibilities) {
@@ -242,22 +253,24 @@ public class FDPromotionVisitor {
 		for (Iterator i = eligibilities.getEligiblePromotionCodes().iterator(); i.hasNext();) {
 			String promoCode = (String) i.next();
 			PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-			boolean applied = promo.apply(context);
-			if (applied) {
-				if(promo.isHeaderDiscount()){
-					//This logic has been added to filter the max discount promocode
-					//when there are more than one. Currently this happens only in the
-					//case of automatic header discounts.
-					headerPromoCode = promoCode;
-				} else {
-					//Add any non-header promos to the applied list. 
-					eligibilities.setApplied(promoCode);	
+			if(!EnumPromotionType.WINDOW_STEERING.equals(promo.getPromotionType())) {
+				boolean applied = promo.apply(context);
+				if (applied) {
+					if(promo.isHeaderDiscount()){
+						//This logic has been added to filter the max discount promocode
+						//when there are more than one. Currently this happens only in the
+						//case of automatic header discounts.
+						headerPromoCode = promoCode;
+					} else {
+						//Add any non-header promos to the applied list. 
+						eligibilities.setApplied(promoCode);	
+					}
 				}
 			}
-		}
-		//Add the final header promo code to the applied list. 
-		if(headerPromoCode.length() > 0 && eligibilities.isEligible(headerPromoCode)){
-			eligibilities.setApplied(headerPromoCode);
+			//Add the final header promo code to the applied list. 
+			if(headerPromoCode.length() > 0 && eligibilities.isEligible(headerPromoCode)){
+				eligibilities.setApplied(headerPromoCode);
+			}
 		}
 	}
 

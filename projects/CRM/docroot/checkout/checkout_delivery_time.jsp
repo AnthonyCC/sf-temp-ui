@@ -13,6 +13,7 @@
 <%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
 <%@ page import='com.freshdirect.delivery.DlvZoneInfoModel' %>
 <%@ page import='com.freshdirect.fdstore.FDDeliveryManager' %>
+<%@ page import='com.freshdirect.delivery.EnumReservationType' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %> 
@@ -212,6 +213,14 @@ List messages = DeliveryTimeSlotResult.getMessages();
 		<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
 	<%}%>
 	</td>	
+    <td>
+	<% if(user.isEligibleForPreReservation()){
+	 		FDReservation userRsv = user.getReservation();
+			if(userRsv != null && address.getPK()!=null && userRsv.getAddressId().equals(address.getPK().getId())){%>		
+				<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12">  Your <%= EnumReservationType.RECURRING_RESERVATION.equals(userRsv.getReservationType()) ? "Weekly" : "" %> Reserved Delivery Slot
+		<% } 
+	}%>
+	</td>
 	<td align="right">
 	<%if(zonePromoAmount>0){ %>
 	<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%=zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a><br>
