@@ -575,7 +575,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			catch(ErpAddressVerificationException e){
 				LOGGER.error("Error performing a modify order operation. ", e);
 				//There was delivery pass validation failure.
-				results.addError(new ActionError(e.getMessage()));				
+				results.addError(new ActionError("technical_difficulty", e.getMessage()));							
 			}
 			
 		} else {
