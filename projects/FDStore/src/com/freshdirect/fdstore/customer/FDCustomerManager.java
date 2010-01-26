@@ -2290,7 +2290,7 @@ public class FDCustomerManager {
 			boolean sendEmail,
 			CustomerRatingI cra,
 			double additionalCharge)
-			throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException,		
+			throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException,ErpAddressVerificationException,		
 			FDPaymentInadequateException
 			{
 			
@@ -2314,9 +2314,12 @@ public class FDCustomerManager {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");
 			} catch (RemoteException re) {
-				invalidateManagerHome();
+				invalidateManagerHome();				
+				Exception ex=(Exception)re.getCause();
+				if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;				
 				throw new FDResourceException(re, "Error talking to session bean");
-			}
+			} 
+			 
 		}
 
 	public static boolean isECheckRestricted(FDIdentity identity) throws FDResourceException {
