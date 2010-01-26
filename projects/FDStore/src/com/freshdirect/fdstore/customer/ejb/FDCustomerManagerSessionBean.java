@@ -4043,11 +4043,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					//AUTH sale in CYBER SOURCE
 					PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
 					List auths = paymentManager.authorizeSaleRealtime(pk.getId(),EnumSaleType.GIFTCARD);
+					LOGGER.info("After completing authorizeSaleRealtime for GC, Auths:"+(null!=auths?auths.size():auths));
 					if(auths != null && auths.size() > 0){
 						//Only when it has a valid auth.
 						ErpCustomerManagerSB erpCMsb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 						String sapCustomerId = erpCMsb.getSapCustomerId(customerPk);
-						LOGGER.debug("Customer ID:"+customerPk+"-Sap Customer ID:"+sapCustomerId+"-");
+						LOGGER.info("Customer ID:"+customerPk+"-Sap Customer ID:"+sapCustomerId+"-");
 						//Only if the customer id is available in SAP.
 						if(null != sapCustomerId && sapCustomerId.trim().length() > 0){
 							erpCMsb.sendCreateOrderToSAP(customerPk,  pk.getId(), EnumSaleType.GIFTCARD, cra);
@@ -4872,7 +4873,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 						String saleId = erpSaleInfo.getSaleId();
 						String customerId = erpSaleInfo.getErpCustomerId();
 						String sapCustomerId = sb.getSapCustomerId(customerId);
-						LOGGER.debug("Customer ID:"+customerId+"-Sap Customer ID:"+sapCustomerId+"-");
+						LOGGER.info("Customer ID:"+customerId+"-Sap Customer ID:"+sapCustomerId+"-");
 						if(null != sapCustomerId && sapCustomerId.trim().length() > 0){
 							FDOrderI order = this.getOrder(saleId);
 							FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(customerId);
