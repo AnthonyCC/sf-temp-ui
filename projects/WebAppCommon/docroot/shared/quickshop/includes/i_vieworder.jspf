@@ -598,7 +598,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 	String quickShopStyleScale = "line-height:16px; font-size: 11px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;";
 	    
      %>
-    <display:ProductRating product="<%= productNode %>" action="<%= actionUrl %>" noBr="true" leftAlign="true"/><% if (scaledPrice != null) { %>
+    <display:ProductRating product="<%= productNode %>" skuCode="<%= orderLine.getSkuCode() %>"  action="<%= actionUrl %>" noBr="true" leftAlign="true"/><% if (scaledPrice != null) { %>
     	<% if (productRating.length() != 0) { %>&nbsp;&nbsp;<% } %>
     	<span style="<%=quickShopStyleScale%>"><%="SAVE" + (tieredPercentage > 0 ? " " + tieredPercentage + "%" : "!") + "&nbsp;&nbsp;" + scaledPrice%></span>
     <% } %>
@@ -608,7 +608,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
     	<NOBR>
 	
 	<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" 
-		quickShop="true" showDescription="false" showScalePricing="false"/>
+		skuCode="<%= orderLine.getSkuCode() %>" quickShop="true" showDescription="false" showScalePricing="false"/>
 	
 	</NOBR>
 	    
