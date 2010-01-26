@@ -575,7 +575,11 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			catch(ErpAddressVerificationException e){
 				LOGGER.error("Error performing a modify order operation. ", e);
 				//There was delivery pass validation failure.
-				results.addError(new ActionError("technical_difficulty", e.getMessage()));							
+				String message =e.getMessage();
+				if(message!=null)
+				    message=message.replace("9999",currentUser.getCustomerServiceContact());
+				LOGGER.debug("ex.getMessage() :"+message);
+				results.addError(new ActionError("technical_difficulty", message));							
 			}
 			
 		} else {
@@ -678,7 +682,12 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			catch(ErpAddressVerificationException e){
 				LOGGER.error("Error performing a modify order operation. ", e);
 				//There was delivery pass validation failure.
-				results.addError(new ActionError(e.getMessage()));				
+				String message =e.getMessage();
+				if(message!=null)
+				    message=message.replace("9999",currentUser.getCustomerServiceContact());
+				LOGGER.debug("ex.getMessage() :"+message);
+				
+				results.addError(new ActionError(message));				
 			}
 		} else {
 			LOGGER.warn("No payment id selected by user");
@@ -913,7 +922,12 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		}
 		 catch (ErpAddressVerificationException ex) {
 				LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
-				results.addError(new ActionError("technical_difficulty", ex.getMessage()));
+				
+				String message =ex.getMessage();
+				if(message!=null)
+				    message=message.replace("9999",user.getCustomerServiceContact());
+				LOGGER.debug("ex.getMessage() :"+message);
+				results.addError(new ActionError("technical_difficulty", message));
 			}
 		
 	}
