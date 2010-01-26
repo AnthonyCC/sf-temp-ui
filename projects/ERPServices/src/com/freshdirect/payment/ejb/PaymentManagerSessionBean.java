@@ -294,7 +294,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				
 				if(auth.isApproved() && !auth.hasAvsMatched()){					
 					if(!payment.isBypassAVSCheck()){
-						int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
+						//int count=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());
 						if(orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 							isAVSFailureCase=true;
 							payment.setAvsCkeckFailed(true);
