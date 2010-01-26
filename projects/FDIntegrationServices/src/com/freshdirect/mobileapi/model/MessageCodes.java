@@ -94,6 +94,11 @@ public interface MessageCodes {
 
     public static final String ERR_GENERIC_CHECKOUT_EXCEPTION = "ERR_GENERIC_CHECKOUT_EXCEPTION";
 
+    public static final String ERR_GIFTCARD_AVS_EXCEPTION = "ERR_GIFTCARD_AVS_EXCEPTION";
+
+    public static final String ERR_GIFTCARD_AVS_EXCEPTION_MSG = "There was a problem with the given payment method";
+    
+    
     public static final String ERR_GENERIC_CHECKOUT_EXCEPTION_MSG = "There was a problem processing your order submission.";
 
     public final static String MSG_RESTRICTED_ADDRESS                                       = "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address <a href=\"/checkout/step_1_enter.jsp\">here</a> or choose the Pickup option below. To see where we deliver, <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">click here</a>.";

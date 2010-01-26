@@ -96,6 +96,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
                 actionResult.addError(new ActionError(ERR_CREDIT_CARD_PROBLEM, ERR_CREDIT_CARD_PROBLEM_MSG));
             } else if (redirectUrl.equals(wrappedTag.getAuthCutoffPage())) {
                 actionResult.addError(new ActionError(ERR_PAYMENT_ACCOUNT_PROBLEM, ERR_PAYMENT_ACCOUNT_PROBLEM_MSG));
+            } else if (redirectUrl.equals(wrappedTag.getGcAVSExceptionPage())) {
+                actionResult.addError(new ActionError(ERR_GIFTCARD_AVS_EXCEPTION, ERR_GIFTCARD_AVS_EXCEPTION_MSG));
             } else {
                 actionResult.addError(new ActionError(ERR_GENERIC_CHECKOUT_EXCEPTION, ERR_GENERIC_CHECKOUT_EXCEPTION_MSG));
             }
