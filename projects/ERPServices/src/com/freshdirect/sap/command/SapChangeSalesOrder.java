@@ -12,10 +12,15 @@ import java.io.ObjectInputStream.GetField;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.common.customer.PaymentMethodI;
+import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.ZonePromoDiscount;
+import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.sap.PosexUtil;
@@ -79,14 +84,15 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 
 		int fakePosition = SalesOrderHelper.getFakePositionBase(); //SalesOrderHelper.FAKEPOS_BASE;
 		// add the "X" for the fake lines
-		if (order.getDiscount() != null || (order.getDiscounts() != null && order.getDiscounts().size() > 0)) {
+		/*if (order.getDiscount() != null || (order.getDiscounts() != null && order.getDiscounts().size() > 0)) {
 			// for promo
 			bapi.addOrderItemInX(PosexUtil.getPosex(fakePosition));
 			bapi.addOrderScheduleInX(PosexUtil.getPosexInt(fakePosition));
 			// 10 spaces + 6 chars + 75 spaces + 20 Chars
 			bapi.addExtension("BAPE_VBAPX", StringUtils.repeat(" ", 26)	+ "X");
 			fakePosition++;
-		}
+		}*/
+		
 
 		// for chargelines
 		int numCharges = order.getChargeLines().length;
@@ -99,7 +105,7 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 		this.invoke(bapi);
 
 	}
-
+	
 	protected void buildOrderHeader(BapiSalesOrderChange bapi) {
 		final PaymentMethodI cc = order.getCustomer().getPaymentMethod();
 

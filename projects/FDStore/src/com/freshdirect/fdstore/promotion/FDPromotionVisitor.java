@@ -75,12 +75,10 @@ public class FDPromotionVisitor {
     	{
 			String promoCode=FDPromotionZoneRulesEngine.getPromoCode(context);
 			//if(promoCode!=null&&eligibilities.isEligible(promoCode))
-			if(promoCode !=null && eligibilities.isEligible(promoCode))
+			if(promoCode !=null && eligibilities.isEligible(promoCode) )
 			{
 				PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-				
-		    	Discount discount = new ZonePromoDiscount(promoCode, EnumDiscountType.DOLLAR_OFF, promo.getHeaderDiscountTotal());
-		    	context.addDiscount(discount);  
+				promo.apply(context);
 			} 
     	}
     }

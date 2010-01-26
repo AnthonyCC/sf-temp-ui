@@ -14,6 +14,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.ZonePromoDiscount;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
@@ -86,6 +87,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 
 	public String getModifiedSaleId() {
 		FDCartModel cart = user.getShoppingCart();
+		
 
 		if (cart instanceof FDModifyCartModel) {
 			return ((FDModifyCartModel) cart).getOriginalOrder().getErpSalesId();
@@ -292,12 +294,20 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 	
 	public boolean applyHeaderDiscount(String promoCode, double promotionAmt, EnumPromotionType type){
+		
 		//Poll the promotion context to know if this is the max discount amount.
 		if(this.isMaxDiscountAmount(promotionAmt, type)){
 			//Clear any existing discount.
 			this.clearHeaderDiscounts();
 			//Add this discount.
-			Discount discount = new Discount(promoCode, EnumDiscountType.DOLLAR_OFF, promotionAmt);
+			Discount discount =null;
+			if(EnumPromotionType.WINDOW_STEERING.equals(type)) {
+				discount = new ZonePromoDiscount(promoCode, EnumDiscountType.DOLLAR_OFF, promotionAmt);
+				
+			} else {
+				discount = new Discount(promoCode, EnumDiscountType.DOLLAR_OFF, promotionAmt);
+				
+			}
 			this.addDiscount(discount);
 			return true;
 		}
