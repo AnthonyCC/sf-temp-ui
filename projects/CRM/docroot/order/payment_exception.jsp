@@ -63,9 +63,15 @@
 <tmpl:put name='content' direct='true'>
 <%@ include file="/includes/order_nav.jspf"%>
 <%@ include file="/includes/order_summary.jspf"%>
-<% if (result != null) { %>
+<% 
+
+System.out.println("result :"+result);
+if (result != null) { %>
 <fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='order_status' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='no_customer' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 <fd:ErrorHandler result='<%=result%>' name='expiration' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+<fd:ErrorHandler result='<%=result%>' name='genericError' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+
+
 <% } %>
 <div class="content_scroll" style="height: 72%; padding: 0px;">
 <%		int cellCounter = 0; %>
