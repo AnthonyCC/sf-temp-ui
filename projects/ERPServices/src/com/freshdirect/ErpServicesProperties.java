@@ -51,6 +51,7 @@ public class ErpServicesProperties {
 	private final static String PROP_AVS_CHECK			= "payment.paylinx.avsCheck";
 	private final static String PROP_AUTH_HOURS			= "payment.paylinx.authHours";
 	private final static String PROP_CHASE_MERCHANT_ID  = "payment.paylinx.chase.merchantId";
+	private final static String PROP_AVS_ADDRESS_CHECK  = "payment.paylinx.avs.address_check";
 	
 	private final static String PROP_FRAUD_CHECK		= "fraud.check";
 	private final static String PROP_FRAUD_CHECK_PM		= "fraud.check.paymentMethod";
@@ -290,6 +291,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_PRE_AUTHORIZE, "true");
 		defaults.put(PROP_AVS_ERROR_ORDER_COUNT, "5");
 		defaults.put(PROP_SIGNUP_PROMO_DUPLICATE_ADDR_DELV_DAYS, "180");
+		defaults.put(PROP_AVS_ADDRESS_CHECK, "false");
 		
 
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
@@ -382,6 +384,10 @@ public class ErpServicesProperties {
 	public static String getAvsCheck(){
 		return config.getProperty(PROP_AVS_CHECK);
 	}
+
+	public static boolean isAvsAddressMatchReqd(){		
+		return Boolean.valueOf(config.getProperty(PROP_AVS_ADDRESS_CHECK)).booleanValue();
+	}	
 
 	public static String getAuthHours(){
 		return config.getProperty(PROP_AUTH_HOURS);
