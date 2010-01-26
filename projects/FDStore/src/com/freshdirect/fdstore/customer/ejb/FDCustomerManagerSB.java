@@ -439,6 +439,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 		ErpAuthorizationException,
 		ErpTransactionException,
 		FDPaymentInadequateException,
+		ErpAddressVerificationException,
 		RemoteException;
 
     /**

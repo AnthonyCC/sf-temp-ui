@@ -2062,7 +2062,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		boolean sendEmail,
 		CustomerRatingI cra,
 		CrmAgentModel agent,
-		double additionalCharge) throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException {
+		double additionalCharge) throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException,ErpAddressVerificationException {
 
 		try {
 			FDOrderAdapter fdOrder = (FDOrderAdapter)getOrder(identity, saleId);
@@ -2124,6 +2124,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
+			Exception ex=(Exception)re.getCause();
+			if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;
+			
 			throw new FDResourceException(re);
 		}
 	}
