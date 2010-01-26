@@ -156,8 +156,11 @@ public class CPMServerGateway {
 			model.setDescription(trans.GetValue(LCC.ID_AUTH_RESPONSE_MESSAGE));
 			model.setSequenceNumber(trans.GetValue(LCC.ID_SEQUENCE_NUMBER));
 			model.setMerchantId(trans.GetValue(LCC.ID_MERCHANT_ID));
-			model.setAvs(trans.GetValue(LCC.ID_ADDRESS_MATCH));
-			//model.setAvs(trans.GetValue(LCC.ID_ZIP_MATCH));
+			
+			if(ErpServicesProperties.isAvsAddressMatchReqd())
+			    model.setAvs(trans.GetValue(LCC.ID_ADDRESS_MATCH));
+			else
+			    model.setAvs(trans.GetValue(LCC.ID_ZIP_MATCH));
 		}
 		
 		return model;
