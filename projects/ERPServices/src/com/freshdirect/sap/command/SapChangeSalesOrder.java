@@ -84,14 +84,16 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 
 		int fakePosition = SalesOrderHelper.getFakePositionBase(); //SalesOrderHelper.FAKEPOS_BASE;
 		// add the "X" for the fake lines
-		/*if (order.getDiscount() != null || (order.getDiscounts() != null && order.getDiscounts().size() > 0)) {
+		if (/*order.getDiscount() != null ||*/ (order.getDiscounts() != null && order.getDiscounts().size() > 0)) {
 			// for promo
-			bapi.addOrderItemInX(PosexUtil.getPosex(fakePosition));
-			bapi.addOrderScheduleInX(PosexUtil.getPosexInt(fakePosition));
-			// 10 spaces + 6 chars + 75 spaces + 20 Chars
-			bapi.addExtension("BAPE_VBAPX", StringUtils.repeat(" ", 26)	+ "X");
-			fakePosition++;
-		}*/
+			//for (Iterator iter = order.getDiscounts().iterator(); iter.hasNext();) {
+				bapi.addOrderItemInX(PosexUtil.getPosex(fakePosition));
+				bapi.addOrderScheduleInX(PosexUtil.getPosexInt(fakePosition));
+				// 10 spaces + 6 chars + 75 spaces + 20 Chars
+				bapi.addExtension("BAPE_VBAPX", StringUtils.repeat(" ", 26)	+ "X");
+				fakePosition++;
+			//}
+		}
 		
 
 		// for chargelines
