@@ -78,7 +78,10 @@ public class FDPromotionVisitor {
 			if(promoCode !=null && eligibilities.isEligible(promoCode) )
 			{
 				PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-				promo.apply(context);
+				if(promo.apply(context)) {
+					Discount discount = new ZonePromoDiscount(promoCode, EnumDiscountType.DOLLAR_OFF,promo.getHeaderDiscountTotal() );
+					context.addDiscount(discount);
+				}
 			} 
     	}
     }

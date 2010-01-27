@@ -297,17 +297,10 @@ public class PromotionContextAdapter implements PromotionContextI {
 		
 		//Poll the promotion context to know if this is the max discount amount.
 		if(this.isMaxDiscountAmount(promotionAmt, type)){
-			//Clear any existing discount.
-			this.clearHeaderDiscounts();
+			
 			//Add this discount.
-			Discount discount =null;
-			if(EnumPromotionType.WINDOW_STEERING.equals(type)) {
-				discount = new ZonePromoDiscount(promoCode, EnumDiscountType.DOLLAR_OFF, promotionAmt);
-				
-			} else {
-				discount = new Discount(promoCode, EnumDiscountType.DOLLAR_OFF, promotionAmt);
-				
-			}
+			this.clearHeaderDiscounts();
+			Discount discount = new Discount(promoCode, EnumDiscountType.DOLLAR_OFF, promotionAmt);
 			this.addDiscount(discount);
 			return true;
 		}

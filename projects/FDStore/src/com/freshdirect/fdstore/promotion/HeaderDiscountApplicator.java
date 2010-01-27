@@ -16,9 +16,15 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 		if (context.getPreDeductionTotal() < this.discountRule.getMinSubtotal()) {
 			return false;
 		}
-
+       
 		double amount = Math.min(context.getPreDeductionTotal(), this.discountRule.getMaxAmount());
-		return context.applyHeaderDiscount(promoCode, amount, EnumPromotionType.REDEMPTION);
+		PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+		if(!EnumPromotionType.WINDOW_STEERING.equals(promo.getPromotionType())) {
+			return context.applyHeaderDiscount(promoCode, amount, EnumPromotionType.REDEMPTION);
+		} else {
+			//return context.applyHeaderDiscount(promoCode, amount, EnumPromotionType.WINDOW_STEERING);
+			return true; 
+		}
 	}
 
 	public HeaderDiscountRule getDiscountRule() {
