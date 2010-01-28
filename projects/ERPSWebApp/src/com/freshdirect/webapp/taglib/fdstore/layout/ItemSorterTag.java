@@ -11,6 +11,7 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.PrioritizedI;
 import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.fdstore.content.util.ContentNodeComparator;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -38,22 +39,30 @@ public class ItemSorterTag extends TagSupport {
 		Collections.sort(nodes, new ContentNodeComparator(strategy));
 
 		LOGGER.info(">>>Sort complete");
-		if ("dumpSortResult".equals(pageContext.getRequest().getParameter("debug"))) {
+		String debug = pageContext.getRequest().getParameter("debug");
+		if ("dumpSortResult".equals(debug)) {
 		    JspWriter out = pageContext.getOut();
+		    boolean html = false;
 		    try {
-                        out.println("<!-- ItemSorterTag ");
+		        if (!html) {
+                            out.println("<!-- ItemSorterTag ");
+		        }
                         out.println(" strategy : "+strategy);
                         out.println(" result : ");
                         if (nodes != null) {
                             for (ContentNodeModel m : nodes) {
+                                if (html) { out.println("<br/>"); }
+                                String prio = (m instanceof PrioritizedI) ? " priority:"+((PrioritizedI)m).getPriority() : "";  
                                 if (m instanceof ProductModelImpl) {
-                                    out.println("    "+((ProductModelImpl)m).getReverseParentPath(true));
+                                    out.println("    "+((ProductModelImpl)m).getReverseParentPath(true) + prio);
                                 } else {
-                                    out.println("    "+m.getFullName()+'('+m.getContentKey()+')');
+                                    out.println("    "+m.getFullName()+'('+m.getContentKey()+')'+ prio);
                                 }
                             }
                         }
-                        out.println("-->");
+                        if (!html) {
+                            out.println("-->");
+                        }
 		    } catch (IOException e) {
 	                LOGGER.info("error during dumping debug information:"+e.getMessage(), e);
 	            }

@@ -228,6 +228,9 @@ public class ContentNodeModelUtil {
                         }
                     }
                 } else {
+                    if (setParent) {
+                        cachedContentNodeByKey.setPriority(i);
+                    }
                     return cachedContentNodeByKey;
                 }
             }
