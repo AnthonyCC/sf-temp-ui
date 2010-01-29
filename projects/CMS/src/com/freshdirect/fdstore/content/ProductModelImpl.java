@@ -1238,11 +1238,7 @@ inner:
 	}
 
 	public Image getFeatureImage() {
-		ContentKey key = (ContentKey) getCmsAttributeValue("PROD_IMAGE_FEATURE");
-		
-		return key == null
-  	         ? null
-             : (Image) ContentFactory.getInstance().getContentNodeByKey(key);
+            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_FEATURE");
 	}
 
 	public Image getRatingRelatedImage() {
@@ -1270,11 +1266,7 @@ inner:
 	}
 
 	public Html getProductQualityNote() {
-		ContentKey key = (ContentKey) getCmsAttributeValue("PRODUCT_QUALITY_NOTE");
-		
-		return key == null
-  	         ? null
-             : (Html) ContentFactory.getInstance().getContentNodeByKey(key);
+            return FDAttributeFactory.constructHtml(this, "PRODUCT_QUALITY_NOTE");
 	}
 
 	public Html getProductDescriptionNote() {		
@@ -1282,11 +1274,7 @@ inner:
 	}
 
 	public Html getFreshTips() {
-		ContentKey key = (ContentKey) getCmsAttributeValue("FRESH_TIPS");
-		
-		return key == null
-  	         ? null
-             : (Html) ContentFactory.getInstance().getContentNodeByKey(key);
+            return FDAttributeFactory.constructHtml(this, "FRESH_TIPS");
 	}
 
         public List<Html> getDonenessGuide() {
@@ -1316,11 +1304,7 @@ inner:
 	}
 
 	public Html getSalesUnitDescription() {
-		ContentKey key = (ContentKey) getCmsAttributeValue("SALES_UNIT_DESCRIPTION");
-		
-		return key == null
-  	         ? null
-             : (Html) ContentFactory.getInstance().getContentNodeByKey(key);
+            return FDAttributeFactory.constructHtml(this, "SALES_UNIT_DESCRIPTION");
 	}
 
 	public boolean isHasPartiallyFrozen() {
@@ -1328,11 +1312,7 @@ inner:
 	}
 	
 	public Html getPartallyFrozen() {
-		ContentKey key = (ContentKey) getCmsAttributeValue("PARTIALLY_FROZEN");
-		
-		return key == null
-  	         ? null
-             : (Html) ContentFactory.getInstance().getContentNodeByKey(key);
+            return FDAttributeFactory.constructHtml(this, "PARTIALLY_FROZEN");
 	}
 
 	public List<ComponentGroupModel> getComponentGroups() {
@@ -1342,11 +1322,7 @@ inner:
 	}
 
 	public Html getProductTermsMedia() {
-		ContentKey key = (ContentKey) getCmsAttributeValue("PRODUCT_TERMS_MEDIA");
-		
-		return key == null
-  	         ? null
-             : (Html) ContentFactory.getInstance().getContentNodeByKey(key);
+            return FDAttributeFactory.constructHtml(this, "PRODUCT_TERMS_MEDIA");
 	}
 
 	// new Wine store changes
