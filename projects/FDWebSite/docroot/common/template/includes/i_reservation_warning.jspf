@@ -2,8 +2,7 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.framework.util.DateUtil" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
-<% System.out.println("user.isEligibleForPreReservation()"+user.isEligibleForPreReservation());
-if(user.isEligibleForPreReservation()){%>
+<%if(user.isEligibleForPreReservation()){%>
 	<%String uri = request.getRequestURI().toLowerCase();
 	  FDReservation rsv = user.getReservation();
 	  %>

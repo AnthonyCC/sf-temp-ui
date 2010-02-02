@@ -9,9 +9,7 @@
 
 if (user.isChefsTable() && zoneCtActive ) { 
 	%>
-    
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-    
 		<table cellspacing="0" cellpadding="0" border="0" width="695">
 		<tr>
 			<td colspan="3" align="center"><br />
@@ -49,8 +47,7 @@ if (user.isChefsTable() && zoneCtActive ) {
 	       if(ClickToCallUtil.isBusinessHour())
 			{
 			%>
-				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre_click2call.html" />
-                                
+				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre_click2call.html" />            
 			<%        
 
 			}else

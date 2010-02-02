@@ -4,9 +4,6 @@
 <%@ page import='java.util.*' %>
 <%@ page import='java.text.DateFormat' %>
 <%@ page import='java.text.SimpleDateFormat' %>
-<%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
-<%@ page import='com.freshdirect.delivery.DlvZoneInfoModel' %>
-<%@ page import='com.freshdirect.fdstore.FDDeliveryManager' %>
 
 <%@ page import='com.freshdirect.fdstore.*' %>
 
@@ -78,26 +75,6 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 <td colspan="2" class="text12">&nbsp;=&nbsp;Time Slot Full</td></tr>
 <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 </table>
-<%
-//get amount for zone promotion
-	DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date());    
-	double zonePromoAmount=FDPromotionZoneRulesEngine.getDiscount(user,zInfo.getZoneCode());
-	String zonePromoString=null;
-	if(zonePromoAmount>0)
-	{
-		zonePromoString=FDPromotionZoneRulesEngine.getDiscountFormatted(zonePromoAmount);
-		request.setAttribute("SHOW_WINDOWS_STEERING","true");
-	
-	}
-%>
-<script>
-var zonePromoString=""; 
-var zonePromoEnabled=false;
-<%if(zonePromoAmount>0){ %>
-zonePromoString="<%=zonePromoString %>"; 
-zonePromoEnabled=true;
-<%} %>
-</script>
 <% String preReserveSlotId = ""; %>
 <%String timeSlotId = ""; %>
 
