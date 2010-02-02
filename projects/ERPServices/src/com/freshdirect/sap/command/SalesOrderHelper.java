@@ -150,7 +150,6 @@ class SalesOrderHelper {
 		if (sapOrder.getDiscounts() != null && sapOrder.getDiscounts().size() > 0) {
 			for (Iterator iter = sapOrder.getDiscounts().iterator(); iter.hasNext();) {
 				ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
-				System.out.println("discountLine :"+discountLine.getClass().getName()+" : "+discountLine);
 				
 				
 				//if(discountLine.getDiscount() instanceof ZonePromoDiscount)

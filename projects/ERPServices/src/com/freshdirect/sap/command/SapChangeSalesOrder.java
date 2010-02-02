@@ -8,7 +8,6 @@
  */
 package com.freshdirect.sap.command;
 
-import java.io.ObjectInputStream.GetField;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,8 +17,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.common.customer.PaymentMethodI;
 import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.common.pricing.EnumDiscountType;
-import com.freshdirect.common.pricing.ZonePromoDiscount;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.QuickDateFormat;
@@ -92,7 +89,6 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 			int pos = fakePosition;
 			bapi.addOrderItemInX(PosexUtil.getPosex(pos));
 			bapi.addOrderScheduleInX(PosexUtil.getPosexInt(pos));
-			System.out.println("FakePosition is :"+fakePosition+" and PosexUtil.getPosex(pos) is "+PosexUtil.getPosex(pos));
 			fakePosition++;
 		}
 		// add the "X" for the fake lines
@@ -101,9 +97,7 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 			int count=1;
 			for (Iterator iter = order.getDiscounts().iterator(); iter.hasNext();) {
 				Discount d=((ErpDiscountLineModel)iter.next()).getDiscount();
-				System.out.println("SAP Discount :"+count+" is "+d.toString());
 				count++;
-				System.out.println("FakePosition is :"+fakePosition+" and PosexUtil.getPosex(pos) is "+PosexUtil.getPosex(fakePosition));
 				bapi.addOrderItemInX(PosexUtil.getPosex(fakePosition));
 				bapi.addOrderScheduleInX(PosexUtil.getPosexInt(fakePosition));
 				fakePosition++;
