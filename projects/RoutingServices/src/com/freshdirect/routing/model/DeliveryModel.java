@@ -13,10 +13,19 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	
 	private IPackagingModel packagingInfo;
 	private double serviceTime;
+	private double orderSize;
+	
 	private ILocationModel deliveryLocation;
 	
 	private String reservationId;
-		
+	
+	public double getOrderSize() {
+		return orderSize;
+	}
+	public void setOrderSize(double orderSize) {
+		this.orderSize = orderSize;
+	}
+	
 	public String getReservationId() {
 		return reservationId;
 	}
@@ -52,6 +61,7 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	}
 	public void setPackagingInfo(IPackagingModel packagingInfo) {
 		this.packagingInfo = packagingInfo;
+		this.setOrderSize(packagingInfo.getTotalSize1());		
 	}
 	public double getServiceTime() {
 		return serviceTime;
@@ -62,17 +72,19 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	public void setDeliveryDate(Date deliveryDate) {
 		this.deliveryDate = deliveryDate;
 	}
-	public Date getDeliveryEndTime() {
-		return deliveryEndTime;
-	}
-	public void setDeliveryEndTime(Date deliveryEndTime) {
-		this.deliveryEndTime = deliveryEndTime;
-	}
+	
+	
 	public Date getDeliveryStartTime() {
 		return deliveryStartTime;
 	}
 	public void setDeliveryStartTime(Date deliveryStartTime) {
 		this.deliveryStartTime = deliveryStartTime;
+	}
+	public Date getDeliveryEndTime() {
+		return deliveryEndTime;
+	}
+	public void setDeliveryEndTime(Date deliveryEndTime) {
+		this.deliveryEndTime = deliveryEndTime;
 	}
 	public IZoneModel getDeliveryZone() {
 		return deliveryZone;
@@ -80,6 +92,7 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	public void setDeliveryZone(IZoneModel deliveryZone) {
 		this.deliveryZone = deliveryZone;
 	}
+		
 			
 	public String toString() {
 		return deliveryDate+"|"+deliveryZone+"|"+deliveryStartTime+"|"+deliveryEndTime;

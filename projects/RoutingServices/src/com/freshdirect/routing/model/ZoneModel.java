@@ -61,4 +61,8 @@ public class ZoneModel extends BaseModel implements IZoneModel {
 	public void setZoneType(String zoneType) {
 		this.zoneType = zoneType;
 	}
+	
+	public String toString() {
+		return zoneId+"|"+zoneNumber+"|"+area;
+	}
 }

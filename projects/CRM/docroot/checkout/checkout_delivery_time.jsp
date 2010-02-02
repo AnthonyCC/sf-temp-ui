@@ -133,7 +133,8 @@ zonePromoEnabled=true;
             &nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is 
             <a href="<%= response.encodeURL("/customer_account/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a>
         <% } %>
-    </TD>
+    </TD>	
+	<td align="right"><a href="/checkout/checkout_delivery_time.jsp?forceorder=true" class="checkout">FORCE ORDER >></a></td>
 	<td align="right"><a href="javascript:select_delivery_slot.submit()" class="checkout">CONTINUE CHECKOUT >></a></td>
 	</TR>
 </TABLE>

@@ -9,14 +9,13 @@ import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public interface IPlantService {
-	
-	IPackagingModel getPackagingInfo(IOrderModel model, String orderSizeExpression, int defaultCartonCount
-			, int defaultFreezerCount, int defaultCaseCount) throws RoutingServiceException;
-	
+			
 	Map getPackagingInfoList(List orderIdLst) throws RoutingServiceException;
 	
 	IPackagingModel getPackageModel(Map rowMap, String orderSizeExpression, int defaultCartonCount
 			, int defaultFreezerCount, int defaultCaseCount) throws RoutingServiceException;
+	
+	IPackagingModel estimateOrderSize(String orderNo, IServiceTimeScenarioModel scenario) throws RoutingServiceException;
 	
 	IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario, IPackagingModel historyInfo) throws RoutingServiceException;
 	

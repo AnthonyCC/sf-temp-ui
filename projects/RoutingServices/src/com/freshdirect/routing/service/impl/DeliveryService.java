@@ -13,12 +13,12 @@ import com.freshdirect.routing.model.IDrivingDirection;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IServiceTimeModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
 import com.freshdirect.routing.service.IDeliveryService;
-import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.util.RoutingDataDecoder;
@@ -177,7 +177,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		return serviceTime;		
 	}
 	
-	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException {
+	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException {
 		
 		try {
 			return deliveryDAOImpl.getTimeslotsByDate(deliveryDate, cutOffTime, zoneCode);
@@ -187,7 +187,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		}
 	}
 	
-	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException {
+	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException {
 		
 		try {
 			return deliveryDAOImpl.getTimeslotsByDateEx(deliveryDate, cutOffTime, zoneCode);
@@ -197,10 +197,61 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		}
 	}
 	
-	public List<IOrderModel> getUnassigned(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException {
+	public List<IUnassignedModel> getUnassigned(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException {
 		
 		try {
 			return deliveryDAOImpl.getUnassigned(deliveryDate, cutOffTime, zoneCode);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_UNASSIGNED_UNSUCCESSFUL);
+		}
+	}
+	
+	public IOrderModel getRoutingOrderByReservation(String reservationId) throws RoutingServiceException {
+		
+		try {
+			return deliveryDAOImpl.getRoutingOrderByReservation(reservationId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_UNASSIGNED_UNSUCCESSFUL);
+		}
+	}
+	
+	public int updateRoutingOrderByReservation(String reservationId, double orderSize, double serviceTime) throws RoutingServiceException  {
+		try {
+			return deliveryDAOImpl.updateRoutingOrderByReservation(reservationId, orderSize, serviceTime);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_UNASSIGNED_UNSUCCESSFUL);
+		}
+	}
+	
+	public int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, Date baseDate) throws RoutingServiceException {
+		try {
+			if("2".equalsIgnoreCase(type)) {
+				return deliveryDAOImpl.updateTimeslotForStatusByRegion(baseDate, timeslotId, isClosed);
+			} else if("1".equalsIgnoreCase(type)) {
+				return deliveryDAOImpl.updateTimeslotForStatusByZone(baseDate, timeslotId, isClosed);
+			} else {
+				return deliveryDAOImpl.updateTimeslotForStatus(timeslotId, isClosed);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_UNASSIGNED_UNSUCCESSFUL);
+		}
+	}
+	
+	public int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, Date baseDate) throws RoutingServiceException {
+		try {
+			if("2".equalsIgnoreCase(type)) {
+				return deliveryDAOImpl.updateTimeslotForDynamicStatusByRegion(baseDate, timeslotId, isDynamic);
+			} else if("1".equalsIgnoreCase(type)) {
+				return deliveryDAOImpl.updateTimeslotForDynamicStatusByZone(baseDate, timeslotId, isDynamic);
+			} else {
+				return deliveryDAOImpl.updateTimeslotForDynamicStatus(timeslotId, isDynamic);
+			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_UNASSIGNED_UNSUCCESSFUL);

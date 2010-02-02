@@ -82,6 +82,10 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_BATCH_SERVICE_TIMEOUT="routingservices.batchServiceTimeOut";
 	
+	private final static String PROP_DEFAULT_NOTIFICATIONRECEIVER		= "routingservices.default.notificationreceiver";
+	
+	private final static String PROP_DYNAMICANALYZE_MULTITHREADENABLED		= "routingservices.dynamicanalyze.multithreadenabled";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -107,6 +111,8 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_ROUTINGPARAM_SINGLEROUTE, "false");
 		defaults.put(PROP_ROUTINGPARAM_MOVABLE, "true");
 		
+		defaults.put(PROP_DYNAMICANALYZE_MULTITHREADENABLED, "false");
+		
 		defaults.put(PROP_ROUTINGPARAM_RETRIEVEACTIVITIES, "true");
 		defaults.put(PROP_ROUTINGPARAM_RETRIEVEEQUIPMENT, "true");
 		defaults.put(PROP_ROUTINGPARAM_RETRIEVEACTIVE, "true");
@@ -119,6 +125,8 @@ public class RoutingServicesProperties {
 		
 		defaults.put(PROP_SERVICE_TIMEOUT, "120");// in seconds 
 		defaults.put(PROP_BATCH_SERVICE_TIMEOUT, "600");// in seconds
+		
+		defaults.put(PROP_DEFAULT_NOTIFICATIONRECEIVER, "STO");
 		refresh();		
 	}
 
@@ -222,6 +230,10 @@ public class RoutingServicesProperties {
         return (new Boolean(get(PROP_LOADBALANCE_ENABLED))).booleanValue();
     }
 	
+	public static boolean isAnalyzeMultiThread() {
+        return (new Boolean(get(PROP_DYNAMICANALYZE_MULTITHREADENABLED))).booleanValue();
+    }
+	
 	public static boolean isLDProcessingEnabled() {
         return (new Boolean(get(PROP_LDPROCESSING_ENABLED))).booleanValue();
     }
@@ -276,6 +288,10 @@ public class RoutingServicesProperties {
 	
 	public static int getDefaultOrderEstimationRange() {
 		return getIntVal(get(PROP_ORDER_ESTIMATIONRANGE));
+	}
+	
+	public static String getDefaultNotificationReceiver() {
+		return get(PROP_DEFAULT_NOTIFICATIONRECEIVER);
 	}
 	
 	private static int getIntVal(String strVal) {

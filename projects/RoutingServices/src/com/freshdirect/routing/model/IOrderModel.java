@@ -22,5 +22,14 @@ public interface IOrderModel {
 	void setUnassignedTime(Date unassignedTime);
 	
 	String getUnassignedAction();
-	void setUnassignedAction(String unassignedAction);
+	void setUnassignedAction(String unassignedAction);	
+	
+	String getUpdateStatus();
+	void setUpdateStatus(String updateStatus);
+	
+	double getUnassignedServiceTime();
+	void setUnassignedServiceTime(double unassignedServiceTime);
+	
+	double getUnassignedOrderSize();
+	void setUnassignedOrderSize(double unassignedOrderSize);
 }

@@ -20,6 +20,26 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/RouteNetWebService".equals(namespaceURI) &&
+                  "FindArcsMatchingClosestArcCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.roadnet.FindArcsMatchingClosestArcCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/RouteNetWebService".equals(namespaceURI) &&
+                  "FindMapArcPointCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.roadnet.FindMapArcPointCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/RouteNetWebService".equals(namespaceURI) &&
                   "PathDirections".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.roadnet.PathDirections.Factory.parse(reader);
@@ -220,6 +240,26 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/RouteNetWebService".equals(namespaceURI) &&
+                  "FindMapArcAddressCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.roadnet.FindMapArcAddressCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/RouteNetWebService".equals(namespaceURI) &&
+                  "OptionalDateTime".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.roadnet.OptionalDateTime.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/RouteNetWebService".equals(namespaceURI) &&
                   "MapExtents".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.roadnet.MapExtents.Factory.parse(reader);
@@ -233,6 +273,16 @@
                   "MapData".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.roadnet.MapData.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/RouteNetWebService".equals(namespaceURI) &&
+                  "Fault".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.roadnet.Fault.Factory.parse(reader);
                         
 
                   }
@@ -333,6 +383,16 @@
                   "MapDetailLevel".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.roadnet.MapDetailLevel.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/RouteNetWebService".equals(namespaceURI) &&
+                  "FindMapArcOverrideCriteria".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.roadnet.FindMapArcOverrideCriteria.Factory.parse(reader);
                         
 
                   }

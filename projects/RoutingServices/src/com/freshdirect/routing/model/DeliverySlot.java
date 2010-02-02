@@ -1,6 +1,5 @@
 package com.freshdirect.routing.model;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import com.freshdirect.routing.util.RoutingDateUtil;
@@ -8,13 +7,24 @@ import com.freshdirect.routing.util.RoutingDateUtil;
 public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 	
 	private IDeliverySlotCost deliveryCost;
+	private IDeliveryWindowMetrics deliveryMetrics;
 	private boolean manuallyClosed;
+	private boolean dynamicActive;
+	
 	private IRoutingSchedulerIdentity schedulerId;
 	private Date startTime;
 	private Date stopTime;
 	private String waveCode;
 	private String zoneCode;
 	
+	private String referenceId;
+	
+	public String getReferenceId() {
+		return referenceId;
+	}
+	public void setReferenceId(String referenceId) {
+		this.referenceId = referenceId;
+	}
 	public String getZoneCode() {
 		return zoneCode;
 	}
@@ -52,6 +62,20 @@ public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 		this.stopTime = stopTime;
 	}
 	
+	public boolean isDynamicActive() {
+		return dynamicActive;
+	}
+	public void setDynamicActive(boolean dynamicActive) {
+		this.dynamicActive = dynamicActive;
+	}
+	
+	public IDeliveryWindowMetrics getDeliveryMetrics() {
+		return deliveryMetrics;
+	}
+	public void setDeliveryMetrics(IDeliveryWindowMetrics deliveryMetrics) {
+		this.deliveryMetrics = deliveryMetrics;
+	}
+	
 	public String formatTime(Date date) {
 		try {
 			return RoutingDateUtil.formatDateTime(date);
@@ -61,7 +85,7 @@ public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 		}
 	}
 	public String toString() {
-		return schedulerId + "["+formatTime(startTime)+"->"+formatTime(stopTime) +"]";
+		return schedulerId + "["+formatTime(startTime)+"->"+formatTime(stopTime) +"->"+waveCode+"]";
 	}
 	public String getWaveCode() {
 		return waveCode;

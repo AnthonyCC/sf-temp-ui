@@ -47,9 +47,12 @@ public class Issue implements IIssue {
 		
 		messages.put(PROCESS_UNASSIGNED_UNSUCCESSFUL,"Retrieve Unassigned Failed");
 		
-		messages.put(PROCESS_RETRIEVEORDER_NOTFOUND,"Unable to find routing order");
+		messages.put(PROCESS_RETRIEVENOTIFICATION_UNSUCCESSFUL,"Retrieve Notification Failed");
 		
-		messages.put(PROCESS_RETRIEVEORDER_FAILED,"Unable to retrieve routing order");
+		messages.put(PROCESS_DELETENOTIFICATION_UNSUCCESSFUL,"Delete Notifications Failed");
+		
+		messages.put(PROCESS_RETRIEVEORDER_NOTFOUND,"Retrieve Order Failed");
+		messages.put(PROCESS_RETRIEVEORDER_UNSUCCESSFUL,"Retrieve Order Not Found");
 	}
 	
 	public static String getMessage(String id) {

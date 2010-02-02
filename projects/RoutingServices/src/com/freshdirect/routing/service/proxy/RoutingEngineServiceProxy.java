@@ -8,6 +8,7 @@ import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.service.IRoutingEngineService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
@@ -19,8 +20,12 @@ public class RoutingEngineServiceProxy extends BaseServiceProxy {
 		getService().saveLocations(locationList, region, locationType);
 	}
 	
-	public void purgeOrders(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException {
-		getService().purgeOrders(schedulerId);
+	public void purgeBatchOrders(IRoutingSchedulerIdentity schedulerId, boolean reloadXml) throws RoutingServiceException {
+		getService().purgeBatchOrders(schedulerId, reloadXml);
+	}
+	
+	public void purgeOrders(IRoutingSchedulerIdentity schedulerId, boolean reloadXml) throws RoutingServiceException {
+		getService().purgeOrders(schedulerId, reloadXml);
 	}
 	
 	public List schedulerBulkReserveOrder(IRoutingSchedulerIdentity schedulerId, Collection orderList
@@ -64,8 +69,12 @@ public class RoutingEngineServiceProxy extends BaseServiceProxy {
 		getService().schedulerConfirmOrder(orderModel);
 	}
 	
-	public boolean schedulerUpdateOrder(IOrderModel orderModel, String previousOrderNumber) throws RoutingServiceException {
-		return getService().schedulerUpdateOrder(orderModel, previousOrderNumber);
+	public boolean schedulerUpdateOrder(IOrderModel orderModel) throws RoutingServiceException {
+		return getService().schedulerUpdateOrder(orderModel);
+	}
+	
+	public boolean schedulerUpdateOrderNo(IOrderModel orderModel) throws RoutingServiceException {
+		return getService().schedulerUpdateOrderNo(orderModel);
 	}
 	
 	public void schedulerCancelOrder(IOrderModel orderModel) throws RoutingServiceException {
@@ -78,6 +87,14 @@ public class RoutingEngineServiceProxy extends BaseServiceProxy {
 	
 	public void schedulerSaveLocation(IOrderModel orderModel, String locationType) throws RoutingServiceException {
 		getService().schedulerSaveLocation(orderModel, locationType);
+	}
+	
+	public List<IRoutingNotificationModel> retrieveNotifications() throws RoutingServiceException {
+		return getService().retrieveNotifications();
+	}
+	
+	public void deleteNotifications(List<IRoutingNotificationModel> notifications)  throws RoutingServiceException {
+		getService().deleteNotifications(notifications);
 	}
 	
 	public IRoutingEngineService getService() {

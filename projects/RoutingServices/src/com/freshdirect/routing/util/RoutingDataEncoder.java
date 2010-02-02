@@ -15,6 +15,7 @@ import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IGeoPoint;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.roadnet.MapPoint;
@@ -26,6 +27,10 @@ import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrie
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
 import com.freshdirect.routing.proxy.stub.transportation.LocationIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.NotificationCriteria;
+import com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions;
+import com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.RouteIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingDetailLevel;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder;
@@ -191,7 +196,7 @@ public class RoutingDataEncoder {
 		order.setReservedTime(baseCalendar);
 		order.setConfirmed(true);
 		
-		order.setQuantity((int)orderModel.getDeliveryInfo().getPackagingInfo().getTotalSize1());
+		order.setQuantity((int)orderModel.getDeliveryInfo().getOrderSize());
 		
 		if(needTimeSlot) {
 			order.setDeliveryWindowStart(getTime(orderModel.getDeliveryInfo().getDeliveryStartTime()));
@@ -210,16 +215,16 @@ public class RoutingDataEncoder {
 	}
 	
 	public static DeliveryAreaOrder encodeAnalyzeOrder(IRoutingSchedulerIdentity schedulerId, IOrderModel orderModel
-			, String locationType
-			, String orderType) {
+															, String locationType
+															, String orderType) {
 
 		DeliveryAreaOrder order = new DeliveryAreaOrder();
 		order.setIdentity(encodeDeliveryAreaOrderIdentity(schedulerId.getRegionId(),schedulerId.getArea().getAreaCode()
 				,schedulerId.getDeliveryDate(), orderModel.getDeliveryInfo().getReservationId()));
 		order.setOrderType(orderType);
 		order.setReservedTime(baseCalendar);
-		
-		order.setQuantity((int)orderModel.getDeliveryInfo().getPackagingInfo().getTotalSize1());
+				
+		order.setQuantity((int)orderModel.getDeliveryInfo().getOrderSize());
 
 		order.setServiceTime((int)(orderModel.getDeliveryInfo().getServiceTime()*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
@@ -285,6 +290,7 @@ public class RoutingDataEncoder {
 		delOrderId.setDeliveryDate(deliveryDate);
 		delOrderId.setOrderNumber(orderNum != null ? orderNum.toUpperCase() : orderNum);
 		delOrderId.setRegionId(regionId);
+				
 		return delOrderId;
 	}
 	
@@ -311,7 +317,7 @@ public class RoutingDataEncoder {
 		return schId;
 	}
 	
-	public static DeliveryAreaOrderIdentity encodeDeliveryAreaOrderIdentity(IRoutingSchedulerIdentity schedulerId, String orderNo) {
+	public static DeliveryAreaOrderIdentity encodeDeliveryAreaOrderIdentity(IRoutingSchedulerIdentity schedulerId, IOrderModel orderModel) {
 		//param1 regionId;
 		//param2 area;
 		//param3 deliveryDate;
@@ -320,30 +326,31 @@ public class RoutingDataEncoder {
 		schId.setArea(schedulerId.getArea().getAreaCode());
 		schId.setDeliveryDate(schedulerId.getDeliveryDate());
 		
-		schId.setOrderNumber(orderNo != null ? orderNo.toUpperCase() : orderNo);
+		schId.setOrderNumber(orderModel.getDeliveryInfo() != null ? orderModel.getDeliveryInfo().getReservationId().toUpperCase() : null);
+		
 		return schId;
 	}
 	
-	public static SchedulerUpdateOrderOptions encodeSchedulerUpdateOrderOptions(String orderNo) {
+	public static SchedulerUpdateOrderOptions encodeSchedulerUpdateOrderOptions(IOrderModel orderModel) {
 		//param1 regionId;
 		//param2 area;
 		//param3 deliveryDate;
 		SchedulerUpdateOrderOptions options = new SchedulerUpdateOrderOptions();
-		options.setNewOrderNumber(orderNo);
-		
-		return options;
-	}
-	
-	public static DeliveryAreaOrderRetrieveOptions encodeDeliveryAreaOrderRetrieveOptions() {
-		//param1 regionId;
-		//param2 area;
-		//param3 deliveryDate;
-		DeliveryAreaOrderRetrieveOptions options = new DeliveryAreaOrderRetrieveOptions();
-		options.setTimeZoneOptions(encodeTimeZoneOptions());
+		options.setNewQuantity((int)orderModel.getDeliveryInfo().getOrderSize());
+		options.setNewServiceTime((int)(orderModel.getDeliveryInfo().getServiceTime()*60));
 				
 		return options;
 	}
 	
+	public static SchedulerUpdateOrderOptions encodeSchedulerUpdateOrderNoOptions(IOrderModel orderModel) {
+		//param1 regionId;
+		//param2 area;
+		//param3 deliveryDate;
+		SchedulerUpdateOrderOptions options = new SchedulerUpdateOrderOptions();
+		options.setNewOrderNumber(orderModel.getOrderNumber());		
+				
+		return options;
+	}
 	
 	
 	
@@ -360,6 +367,19 @@ public class RoutingDataEncoder {
 		schBuldRsvOrdersOptions.setMovable(RoutingServicesProperties.getRoutingParamMovable());
 		return schBuldRsvOrdersOptions;		
 	}
+	
+	public static DeliveryAreaOrderRetrieveOptions encodeDeliveryAreaOrderRetrieveOptions() {
+		
+		//param1 confirm;
+		//param2 sequenced;
+		//param3 singleRoute;
+		//param4 movable;
+		DeliveryAreaOrderRetrieveOptions options = new DeliveryAreaOrderRetrieveOptions();
+		options.setTimeZoneOptions(encodeTimeZoneOptions());
+		return options;		
+	}
+
+	
 	
 	public static RoutingSessionCriteria encodeRoutingSessionCriteria(IRoutingSchedulerIdentity schedulerId, String sessionDescription) {
 		//param1 regionIdentity;
@@ -532,6 +552,7 @@ public class RoutingDataEncoder {
 		window.setStart(getTime(slot.getStartTime()));
 		window.setEnd(getTime(slot.getStopTime()));
 		window.setWaveCode(slot.getWaveCode());
+		
 		return window;
 	}
 	
@@ -559,7 +580,7 @@ public class RoutingDataEncoder {
     	if(schedulerId == null) {
     		schedulerId = new RoutingSchedulerIdentity();
     	}
-    	schedulerId.setRegionId(RoutingUtil.getRegion(orderModel.getDeliveryInfo().getDeliveryZone()));
+    	schedulerId.setRegionId(RoutingUtil.getRegion(orderModel.getDeliveryInfo().getDeliveryZone().getArea()));
     	schedulerId.setArea(orderModel.getDeliveryInfo().getDeliveryZone().getArea());
     	schedulerId.setDeliveryDate(orderModel.getDeliveryInfo().getDeliveryDate());
     	schedulerId.setDepot(orderModel.getDeliveryInfo().getDeliveryZone().getArea().isDepot());
@@ -575,6 +596,47 @@ public class RoutingDataEncoder {
 		schMetricsOptions.setTimeZone(TimeZoneValue.tmzEasternTimeUSCanada);
 						
 		return schMetricsOptions;
+	}
+	
+	public static NotificationCriteria encodeNotificationCriteria() {
+		
+		NotificationCriteria criteria = new NotificationCriteria();
+		RecipientIdentity recipientId = new RecipientIdentity();
+		recipientId.setRecipientID(RoutingServicesProperties.getDefaultNotificationReceiver());
+		criteria.setRecipientIdentity(recipientId);
+		return criteria;
+	}
+	
+	public static NotificationRetrieveOptions encodeNotificationRetrieveOptions() {
+		
+		NotificationRetrieveOptions options = new NotificationRetrieveOptions();
+		options.setAutoDelete(false);
+		return options;
+	}
+	
+	public static NotificationIdentity[] encodeNotificationIdentityList(List<IRoutingNotificationModel> notifications) {
+		
+		NotificationIdentity[] result = null;
+		if(notifications != null) {
+			result = new NotificationIdentity[notifications.size()];
+			Iterator<IRoutingNotificationModel> tmpIterator = notifications.iterator();
+			IRoutingNotificationModel notification = null;			
+			int intCount = 0;
+			while(tmpIterator.hasNext()) {
+				notification = tmpIterator.next();
+				if(notification != null) {					
+					result[intCount++] = encodeNotificationIdentity(notification);
+				}
+			}
+		}
+		return result;
+	}
+
+	public static NotificationIdentity encodeNotificationIdentity(IRoutingNotificationModel notification) {
+		NotificationIdentity identity = new NotificationIdentity();
+		identity.setIdentity(notification.getNotificationId());	
+		
+		return identity;
 	}
 	
 	public static com.freshdirect.routing.proxy.stub.roadnet.Address encodeAddress(String street, String zipCode, String country) {
@@ -623,5 +685,5 @@ public class RoutingDataEncoder {
 		ArrayList tmp = new ArrayList();
 		Collections.min(tmp);
 	}
-
+	
 }

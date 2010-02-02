@@ -8,6 +8,7 @@ import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
@@ -15,7 +16,9 @@ public interface IRoutingEngineService {
 	
 	void saveLocations(Collection locationList, String region, String locationType) throws RoutingServiceException;
 	
-	void purgeOrders(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException;
+	void purgeOrders(IRoutingSchedulerIdentity schedulerId, boolean reloadXml) throws RoutingServiceException;
+	
+	void purgeBatchOrders(IRoutingSchedulerIdentity schedulerId, boolean reloadXml) throws RoutingServiceException;
 	
 	List schedulerBulkReserveOrder(IRoutingSchedulerIdentity schedulerId, Collection orderList, String region, String locationType
 										, String orderType) throws RoutingServiceException;
@@ -39,12 +42,18 @@ public interface IRoutingEngineService {
 
 	void schedulerConfirmOrder(IOrderModel orderModel) throws RoutingServiceException;
 	
-	boolean schedulerUpdateOrder(IOrderModel orderModel, String previousOrderNumber) throws RoutingServiceException;
+	boolean schedulerUpdateOrder(IOrderModel orderModel) throws RoutingServiceException;
+	
+	boolean schedulerUpdateOrderNo(IOrderModel orderModel) throws RoutingServiceException;
 	
 	void schedulerCancelOrder(IOrderModel orderModel) throws RoutingServiceException;
 	
 	List<IDeliveryWindowMetrics> retrieveCapacityMetrics(IRoutingSchedulerIdentity schedulerId, List<IDeliverySlot> slots) throws RoutingServiceException;
 	
 	void schedulerSaveLocation(IOrderModel orderModel, String locationType) throws RoutingServiceException;
+	
+	List<IRoutingNotificationModel> retrieveNotifications() throws RoutingServiceException;
+	
+	void deleteNotifications(List<IRoutingNotificationModel> notifications)  throws RoutingServiceException;
 	
 }

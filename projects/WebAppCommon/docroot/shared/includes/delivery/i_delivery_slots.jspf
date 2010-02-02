@@ -12,12 +12,14 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Calendar" %>
-<%@ page import="com.freshdirect.customer.*"%>
+<%@ page import="com.freshdirect.routing.model.*" %>
 <%!
 private final static String TIMESLOT_BG_EVEN = "e8e8e8";
 private final static String TIMESLOT_BG_ODD = "f7f7f7";
 %>
-<% if (timeslots.size() > 0) { 
+<%
+boolean isForce =  "true".equalsIgnoreCase(request.getParameter("forceorder")) ;
+if (timeslots.size() > 0) { 
 	DlvZoneModel zoneModel = null;
 	Calendar today=Calendar.getInstance();
 	today.add(Calendar.DATE,1);
@@ -25,7 +27,7 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 	
     request.setAttribute("AddressType",address.getServiceType().getName());
 	%>	
-    
+
 <table border="0" cellspacing="2" cellpadding="0" summary="timeslots">
 	<tr>
 	<logic:iterate id="day" collection="<%=timeslots.getDays()%>" type="java.util.Date">
@@ -119,26 +121,28 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 								isCTCapacity=true;
 							}
 							
-							int availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, timeslot_page_type_ct, zoneModel.getCtReleaseTime());
-							int normalAvailCapacity = availCapacity;
+							boolean availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, timeslot_page_type_ct, zoneModel.getCtReleaseTime());
+							boolean normalAvailCapacity = availCapacity;
 
 							if (TimeslotLogic.PAGE_CHEFSTABLE == timeslot_page_type_ct&&!isCTCapacity) {
 								normalAvailCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_NORMAL, zoneModel.getCtReleaseTime());
 							}
 
-							if (normalAvailCapacity < 1 && availCapacity > 0) {
+							if (!normalAvailCapacity && availCapacity ) {
 								request.setAttribute("shownCTSlot", "TRUE");
 							}
-                            
 							double zonePromoAmountSpec=0;							
 							if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null)
-							    zonePromoAmountSpec=FDPromotionZoneRulesEngine.getDiscount(user_ct,slot);
+								zonePromoAmountSpec=FDPromotionZoneRulesEngine.getDiscount(user_ct,slot);
 							
 							%>
-							<div class="slotRow" style="background:#<%= zonePromoAmountSpec>0?"8fb16c" :(highlightPreReserved ? "f93" : normalAvailCapacity < 1 && availCapacity > 0 ? "996699" : bgcolor) %>;padding:1px;padding-top:2px;padding-bottom:2px;">
+							<div class="slotRow" style="background:#<%= zonePromoAmountSpec>0?"8fb16c" :(highlightPreReserved ? "f93" : !normalAvailCapacity && availCapacity ? "996699" : bgcolor) %>;padding:1px;padding-top:2px;padding-bottom:2px;">
 								<span class="control">
 									<% 
-									if (availCapacity < 1 && !(selectedSlot || preReservedSlot)) {
+									if (!availCapacity && !(selectedSlot || preReservedSlot) 
+												&& (!isForce || (slot.getDlvTimeslot() != null && slot.getDlvTimeslot().getRoutingSlot() != null
+																	&& (slot.getDlvTimeslot().getRoutingSlot().isManuallyClosed()
+																	|| !slot.getDlvTimeslot().getRoutingSlot().isDynamicActive())))) {
 										if (isStaticSlot) {
 											%><img src="/media_stat/images/windowsteering/legend_view_full.png" width="10" height="10" alt="Orange = Full"><%
 										} else {
@@ -146,12 +150,17 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 										}
 									} else {
 										if (isStaticSlot){
-											%><img src="/media_stat/images/windowsteering/legend_view_avail.png" width="10" height="10" alt="Green = Available<%= normalAvailCapacity < 1 && availCapacity > 0 ? " - Chef's Table Only":"" %>"><%
+											%><img src="/media_stat/images/windowsteering/legend_view_avail.png" width="10" height="10" alt="Green = Available<%= !normalAvailCapacity && availCapacity ? " - Chef's Table Only":"" %>"><%
 										} else {
-											%><input type="radio"
+											if (!availCapacity && !(selectedSlot || preReservedSlot) && isForce) {
+											%>
+												<img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" hspace="4" alt="X = Full"> <%
+											}
+											%>
+											<input type="radio"
 												id="deliveryTimeslotId<%= slot.getTimeslotId() %>" name="deliveryTimeslotId"
 												<%= (selectedSlot || (preReservedSlot && "".equals(timeSlotId) && hasPreReserved)) ? "checked" : "" %>
-												value="<%= slot.getTimeslotId() %>"><%
+												value="<%= (isForce && !availCapacity ? ("f_"+ slot.getTimeslotId()) : slot.getTimeslotId()) %>"><%											
 										}
 									}
 									//int slotEndHour = DateUtil.toCalendar(slot.getBegDateTime()).get(Calendar.HOUR_OF_DAY);

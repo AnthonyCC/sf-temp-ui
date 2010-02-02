@@ -30,7 +30,7 @@ public class PlantService extends BaseService implements IPlantService {
 	public void setDeliveryDAOImpl(IDeliveryDetailsDAO deliveryDAOImpl) {
 		this.deliveryDAOImpl = deliveryDAOImpl;
 	}
-	
+
 	public IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario, IPackagingModel _historyInfo) throws RoutingServiceException {
 
 		int cartonCount = (int)scenario.getDefaultCartonCount(); 
@@ -47,7 +47,26 @@ public class PlantService extends BaseService implements IPlantService {
 		return getPackageModel(new HashMap(), scenario.getOrderSizeFormula(),
 				cartonCount, freezerCount, caseCount);
 	}
+
+	public IPackagingModel estimateOrderSize(String orderNo, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
+		
+		IPackagingModel _historyInfo = null;
+		int cartonCount = (int)scenario.getDefaultCartonCount(); 
+		int freezerCount = (int)scenario.getDefaultFreezerCount();
+		int caseCount = (int)scenario.getDefaultCaseCount();
+		
+		if(_historyInfo != null && !(_historyInfo.getNoOfCartons() == 0
+				&& _historyInfo.getNoOfCases() == 0
+				&& _historyInfo.getNoOfFreezers() == 0)) {
+			cartonCount = (int)_historyInfo.getNoOfCartons(); 
+			freezerCount = (int)_historyInfo.getNoOfFreezers();
+			caseCount = (int)_historyInfo.getNoOfCases();
+		}
+		return getPackagingInfo(orderNo, scenario.getOrderSizeFormula(),
+										cartonCount, freezerCount, caseCount);
+	}
 	
+		
 	public IPackagingModel getHistoricOrderSize(IOrderModel model) throws RoutingServiceException {
 		
 		IPackagingModel _historyInfo = null;		
@@ -81,17 +100,17 @@ public class PlantService extends BaseService implements IPlantService {
 		return resultMap;
 	}
 
-	public IPackagingModel getPackagingInfo(IOrderModel model, String orderSizeExpression, int defaultCartonCount
+	public IPackagingModel getPackagingInfo(String orderNo, String orderSizeExpression, int defaultCartonCount
 			, int defaultFreezerCount, int defaultCaseCount) throws RoutingServiceException {
 		
 		List orderIdLst = new ArrayList();
-		orderIdLst.add(model.getOrderNumber());
+		orderIdLst.add(orderNo);
 		Map rowMap = null;
 		try {
 			
 			Map resultMap = loadPackingInfo(orderIdLst);
 			if(resultMap != null) {
-				rowMap = (Map)resultMap.get(model.getOrderNumber());				
+				rowMap = (Map)resultMap.get(orderNo);				
 			}
 		} catch(Exception exp) {
 			exp.printStackTrace();
@@ -103,7 +122,7 @@ public class PlantService extends BaseService implements IPlantService {
 	}
 	
 	private Map loadPackingInfo(List dataList) throws SapException {
-				
+		System.out.println("loadPackingInfo ORDERNOS >>"+dataList);		
 		SapCartonInfo cartonInfos = new SapCartonInfo(dataList);
 		cartonInfos.execute();
 		return cartonInfos.getCartonInfos();

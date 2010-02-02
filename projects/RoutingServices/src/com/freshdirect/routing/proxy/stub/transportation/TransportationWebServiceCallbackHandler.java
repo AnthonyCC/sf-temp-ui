@@ -437,6 +437,21 @@
             }
                 
            /**
+            * auto generated Axis2 call back method for buildRoutingRouteNetMatrix method
+            * override this method for handling normal response from buildRoutingRouteNetMatrix operation
+            */
+           public void receiveResultbuildRoutingRouteNetMatrix(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from buildRoutingRouteNetMatrix operation
+           */
+            public void receiveErrorbuildRoutingRouteNetMatrix(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for returnFault method
             * override this method for handling normal response from returnFault operation
             */
@@ -1933,6 +1948,22 @@
            * override this method for handling error response from retrieveEquipmentTypeByCriteria operation
            */
             public void receiveErrorretrieveEquipmentTypeByCriteria(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrievePositionHistoryBlocksByCriteria method
+            * override this method for handling normal response from retrievePositionHistoryBlocksByCriteria operation
+            */
+           public void receiveResultretrievePositionHistoryBlocksByCriteria(
+                    com.freshdirect.routing.proxy.stub.transportation.PositionHistory[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrievePositionHistoryBlocksByCriteria operation
+           */
+            public void receiveErrorretrievePositionHistoryBlocksByCriteria(java.lang.Exception e) {
             }
                 
            /**

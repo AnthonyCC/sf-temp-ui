@@ -10,6 +10,7 @@ import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IDrivingDirection;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
@@ -43,5 +44,13 @@ public interface IDeliveryService {
 	
 	Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException;
 	
-	List<IOrderModel> getUnassigned(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException;
+	List<IUnassignedModel> getUnassigned(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException;
+	
+	IOrderModel getRoutingOrderByReservation(String reservationId) throws RoutingServiceException;
+	
+	int updateRoutingOrderByReservation(String reservationId, double orderSize, double serviceTime) throws RoutingServiceException;
+	
+	int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, Date baseDate) throws RoutingServiceException;
+	
+	int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, Date baseDate) throws RoutingServiceException;
 }

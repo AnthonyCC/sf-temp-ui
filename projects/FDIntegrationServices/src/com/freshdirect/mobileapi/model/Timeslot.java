@@ -63,13 +63,13 @@ public class Timeslot {
         if (newInstance.zoneModel != null) {
             if (chefTableUser) {
                 newInstance.availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_CHEFSTABLE,
-                        newInstance.zoneModel.getCtReleaseTime());
+                        newInstance.zoneModel.getCtReleaseTime()) ? 1 : 0;
             } else {
                 newInstance.availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_NORMAL,
-                        newInstance.zoneModel.getCtReleaseTime());
+                        newInstance.zoneModel.getCtReleaseTime()) ? 1 : 0;
             }
             newInstance.normalAvailCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_NORMAL,
-                    newInstance.zoneModel.getCtReleaseTime());
+                    newInstance.zoneModel.getCtReleaseTime()) ? 1 : 0;
             newInstance.chefsTable = (newInstance.normalAvailCapacity < 1 && newInstance.availCapacity > 0);
         }
         return newInstance;

@@ -170,4 +170,17 @@ public class DeliverySlotCost extends BaseModel implements IDeliverySlotCost  {
 	public void setTotalWaitTime(int totalWaitTime) {
 		this.totalWaitTime = totalWaitTime;
 	}
+	
+	public double getPercentageAvailable() {
+		/*System.out.println(getTotalRunTime()+"=="
+				+ getTotalServiceTime()+" > "
+				+ getTotalTravelTime()
+				+"-DYNACOST->" +getTotalServiceTime()+getTotalTravelTime());*/
+		double result = 0.0;
+		if(getTotalRunTime() > 0) {
+			return (getTotalServiceTime()+getTotalTravelTime())/(double)getTotalRunTime();
+		}
+		
+		return result;
+	}
 }

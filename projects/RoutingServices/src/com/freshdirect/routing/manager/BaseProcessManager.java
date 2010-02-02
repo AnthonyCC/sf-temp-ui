@@ -110,6 +110,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
 		//Save Locations
 		if(locLst != null && locLst.size() > 0) {
 			try {
+				System.out.println("locLst >>"+locLst);
 				service.insertLocations(locLst);
 
 			} catch (RoutingServiceException e) {
@@ -231,7 +232,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
 	    	IRoutingSchedulerIdentity schedulerId = null;
 			while(tmpIterator.hasNext()) {
 				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
-				proxy.purgeOrders(schedulerId);
+				proxy.purgeBatchOrders(schedulerId, false);
 			}
     	} catch (RoutingServiceException e) {
     		e.printStackTrace();
@@ -480,7 +481,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	if(schedulerId == null) {
     		schedulerId = new RoutingSchedulerIdentity();
     	}
-    	schedulerId.setRegionId(RoutingUtil.getRegion(orderModel.getDeliveryInfo().getDeliveryZone()));
+    	schedulerId.setRegionId(RoutingUtil.getRegion(orderModel.getDeliveryInfo().getDeliveryZone().getArea()));
     	schedulerId.setArea(orderModel.getDeliveryInfo().getDeliveryZone().getArea());
     	schedulerId.setDeliveryDate(orderModel.getDeliveryInfo().getDeliveryDate());
     	if(orderModel.getDeliveryInfo() != null 

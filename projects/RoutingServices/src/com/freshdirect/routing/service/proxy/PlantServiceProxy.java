@@ -12,11 +12,9 @@ import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public class PlantServiceProxy extends BaseServiceProxy  {
 	
-	public IPackagingModel getPackagingInfo(IOrderModel model, String orderSizeExpression, int defaultCartonCount
-			, int defaultFreezerCount, int defaultCaseCount) throws RoutingServiceException {
+	public IPackagingModel estimateOrderSize(String orderNo, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
 		
-		return getService().getPackagingInfo(model, orderSizeExpression, defaultCartonCount
-				, defaultFreezerCount, defaultCaseCount);
+		return getService().estimateOrderSize(orderNo, scenario);
 	}
 		
 	
@@ -32,6 +30,10 @@ public class PlantServiceProxy extends BaseServiceProxy  {
 		
 		return getService().getPackagingInfoList(orderIdLst);
 	}
+	
+	/*public IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
+		return getService().estimateOrderSize(model, scenario);
+	}*/
 	
 	public IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario, IPackagingModel historyInfo) throws RoutingServiceException {
 		return getService().estimateOrderSize(model, scenario, historyInfo);

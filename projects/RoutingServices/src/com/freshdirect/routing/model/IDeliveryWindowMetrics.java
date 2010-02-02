@@ -76,6 +76,9 @@ public interface IDeliveryWindowMetrics {
 	double getTotalCapacityTime();
 
 	void setTotalCapacityTime(double totalCapacityTime);
+	
+	int getOrderCtCapacity();
 
+	void setOrderCtCapacity(int ctCapacity);
 
 }

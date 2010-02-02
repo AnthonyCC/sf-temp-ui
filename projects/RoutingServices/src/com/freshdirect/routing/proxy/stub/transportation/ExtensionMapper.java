@@ -30,6 +30,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DestinationArriveNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DestinationArriveNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "User".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.User.Factory.parse(reader);
@@ -180,6 +190,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopDepartNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopDepartNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RoutingRouteDailyStatsCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsCriteria.Factory.parse(reader);
@@ -223,6 +243,16 @@
                   "RoutingPlanType".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingPlanType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "BooleanAnswer".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.BooleanAnswer.Factory.parse(reader);
                         
 
                   }
@@ -280,6 +310,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RPDExitPointExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RPDExitPointExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "BulkArriveDepartInfo".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo.Factory.parse(reader);
@@ -310,6 +350,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ChangedOrderFinancialDetailIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedOrderFinancialDetailIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RouteEventInfo".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RouteEventInfo.Factory.parse(reader);
@@ -333,6 +383,16 @@
                   "RouteInfoRetrieveOptions".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "NoGpsExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.NoGpsExceptionNotification.Factory.parse(reader);
                         
 
                   }
@@ -460,6 +520,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopDeliveryDetailItem".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopDeliveryDetailItem.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RoutingStop".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingStop.Factory.parse(reader);
@@ -493,6 +563,26 @@
                   "DutyPeriodEntryCode".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.DutyPeriodEntryCode.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopCancelNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopCancelNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "OSDMonitoringExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.OSDMonitoringExceptionNotification.Factory.parse(reader);
                         
 
                   }
@@ -560,6 +650,26 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "EarlyArrivalExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.EarlyArrivalExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DriverCancelExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DriverCancelExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "SchedulerReserveOrderOptions".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrderOptions.Factory.parse(reader);
@@ -573,6 +683,26 @@
                   "ReasonCodes".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.ReasonCodes.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteCompleteNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteCompleteNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "OrdersSentNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.OrdersSentNotification.Factory.parse(reader);
                         
 
                   }
@@ -650,6 +780,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerUpdateOrderFailedNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrderFailedNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "ImageType".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.ImageType.Factory.parse(reader);
@@ -663,6 +803,16 @@
                   "RoutingSessionCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "LateGpsExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.LateGpsExceptionNotification.Factory.parse(reader);
                         
 
                   }
@@ -740,9 +890,29 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "EventReceiptExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.EventReceiptExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "EquipmentTypeIdentity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DeliveryDetailNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DeliveryDetailNotification.Factory.parse(reader);
                         
 
                   }
@@ -830,6 +1000,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "NumericAnswer".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.NumericAnswer.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "SchedulerMovableOrdersCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrdersCriteria.Factory.parse(reader);
@@ -860,6 +1040,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteStartNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteStartNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RoutingOrderType".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingOrderType.Factory.parse(reader);
@@ -880,6 +1070,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "GpsGapExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.GpsGapExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RoutingRoute".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingRoute.Factory.parse(reader);
@@ -893,6 +1093,16 @@
                   "UnitSpeed".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.UnitSpeed.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UndeliverableStopExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopExceptionNotification.Factory.parse(reader);
                         
 
                   }
@@ -950,6 +1160,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RoutePathDeviationExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RoutePathDeviationExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "SchedulerUpdateOrderOptions".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrderOptions.Factory.parse(reader);
@@ -983,6 +1203,16 @@
                   "TimeZoneOptionsType".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptionsType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "MapDetailLevel".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.MapDetailLevel.Factory.parse(reader);
                         
 
                   }
@@ -1070,6 +1300,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UnplannedStopExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UnplannedStopExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "Survey".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.Survey.Factory.parse(reader);
@@ -1120,6 +1360,26 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StartCompleteExceptionType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StartCompleteExceptionType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ChangedOrderIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedOrderIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "DeliveryCost".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.DeliveryCost.Factory.parse(reader);
@@ -1150,6 +1410,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StartCompleteOutOfBoundsExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StartCompleteOutOfBoundsExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RoutePositionInfo".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutePositionInfo.Factory.parse(reader);
@@ -1170,6 +1440,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PositionHistory".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PositionHistory.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "SchedulerBalancingFactor".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SchedulerBalancingFactor.Factory.parse(reader);
@@ -1180,9 +1460,9 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "PositionHistory".equals(typeName)){
+                  "StopSequenceNotification".equals(typeName)){
                    
-                            return  com.freshdirect.routing.proxy.stub.transportation.PositionHistory.Factory.parse(reader);
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopSequenceNotification.Factory.parse(reader);
                         
 
                   }
@@ -1210,6 +1490,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "MarkerStyle".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.MarkerStyle.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "DeliveryDetailInfo".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.DeliveryDetailInfo.Factory.parse(reader);
@@ -1230,9 +1520,29 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerOrdersCanceledNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerOrdersCanceledNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "LocationRejectCode".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.LocationRejectCode.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "OutOfContactExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.OutOfContactExceptionNotification.Factory.parse(reader);
                         
 
                   }
@@ -1263,6 +1573,26 @@
                   "RoutingRouteIdentity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "Driver".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.Driver.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ChangedLineItemIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedLineItemIdentity.Factory.parse(reader);
                         
 
                   }
@@ -1340,6 +1670,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "DutyPeriodViolationException".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.DutyPeriodViolationException.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RoutingLineItemIdentity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingLineItemIdentity.Factory.parse(reader);
@@ -1360,9 +1700,39 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UpdateType".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UpdateType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "LineItemIdentity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.LineItemIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "UserExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.UserExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ChangedOrderContainerIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedOrderContainerIdentity.Factory.parse(reader);
                         
 
                   }
@@ -1383,6 +1753,16 @@
                   "SchedulerRetrieveFeederRoutesOptions".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveFeederRoutesOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "TimeOffPlannedExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.TimeOffPlannedExceptionNotification.Factory.parse(reader);
                         
 
                   }
@@ -1530,6 +1910,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "GPSNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.GPSNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "SchedulerOrderMetrics".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.SchedulerOrderMetrics.Factory.parse(reader);
@@ -1630,6 +2020,26 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerSuccessfulOptimizeNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerSuccessfulOptimizeNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopArriveNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopArriveNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RoutingOrderActivityIdentity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingOrderActivityIdentity.Factory.parse(reader);
@@ -1700,6 +2110,26 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ChangedDriverAlertIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedDriverAlertIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "OutOfSequenceExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.OutOfSequenceExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "MapPoint".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.MapPoint.Factory.parse(reader);
@@ -1760,6 +2190,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "LineItemDeliveryDetailItem".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.LineItemDeliveryDetailItem.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RoutingRouteCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingRouteCriteria.Factory.parse(reader);
@@ -1803,6 +2243,16 @@
                   "UpdatePositionReturnCode".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.UpdatePositionReturnCode.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "LateDepartureExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.LateDepartureExceptionNotification.Factory.parse(reader);
                         
 
                   }
@@ -1860,6 +2310,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "PickListAnswer".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.PickListAnswer.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "WirelessProvider".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.WirelessProvider.Factory.parse(reader);
@@ -1883,6 +2343,16 @@
                   "ItemQuantities".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.ItemQuantities.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ServiceTimeExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ServiceTimeExceptionNotification.Factory.parse(reader);
                         
 
                   }
@@ -1923,6 +2393,36 @@
                   "RoutingImportOrderActivity".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "TextMessageNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.TextMessageNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "OrderDeliveryDetailItem".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.OrderDeliveryDetailItem.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "TextAnswer".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.TextAnswer.Factory.parse(reader);
                         
 
                   }
@@ -2000,6 +2500,36 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SpeedViolationExceptionNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SpeedViolationExceptionNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "ChangedStopIdentity".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.ChangedStopIdentity.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "OriginDepartNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.OriginDepartNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "QuantityReference".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.QuantityReference.Factory.parse(reader);
@@ -2043,6 +2573,26 @@
                   "StopPlacementType".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.StopPlacementType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RouteChangeNotification".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RouteChangeNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "NotificationSource".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.NotificationSource.Factory.parse(reader);
                         
 
                   }

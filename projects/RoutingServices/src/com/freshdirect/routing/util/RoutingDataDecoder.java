@@ -5,7 +5,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.freshdirect.routing.constants.EnumRoutingNotification;
+import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.model.AreaModel;
+import com.freshdirect.routing.model.DeliveryModel;
 import com.freshdirect.routing.model.DeliveryReservation;
 import com.freshdirect.routing.model.DeliverySlot;
 import com.freshdirect.routing.model.DeliverySlotCost;
@@ -14,6 +17,7 @@ import com.freshdirect.routing.model.DrivingDirection;
 import com.freshdirect.routing.model.DrivingDirectionArc;
 import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.IAreaModel;
+import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliverySlotCost;
@@ -22,26 +26,38 @@ import com.freshdirect.routing.model.IDrivingDirection;
 import com.freshdirect.routing.model.IDrivingDirectionArc;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPathDirection;
 import com.freshdirect.routing.model.IRouteModel;
+import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IRoutingStopModel;
+import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
+import com.freshdirect.routing.model.OrderModel;
 import com.freshdirect.routing.model.PathDirection;
 import com.freshdirect.routing.model.RouteModel;
+import com.freshdirect.routing.model.RoutingNotificationModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.model.RoutingStopModel;
+import com.freshdirect.routing.model.ZoneModel;
 import com.freshdirect.routing.proxy.stub.roadnet.DirectionArc;
 import com.freshdirect.routing.proxy.stub.roadnet.DirectionData;
 import com.freshdirect.routing.proxy.stub.roadnet.PathDirections;
+import com.freshdirect.routing.proxy.stub.transportation.ChangedOrderIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryCost;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow;
+import com.freshdirect.routing.proxy.stub.transportation.Notification;
 import com.freshdirect.routing.proxy.stub.transportation.ReserveResult;
 import com.freshdirect.routing.proxy.stub.transportation.ReserveResultType;
+import com.freshdirect.routing.proxy.stub.transportation.RouteChangeNotification;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingStop;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetrics;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.SchedulerOrdersCanceledNotification;
 
 public class RoutingDataDecoder {
 	
@@ -171,7 +187,7 @@ public class RoutingDataDecoder {
 		IDeliveryWindowMetrics metrics = new DeliveryWindowMetrics();
 		metrics.setDeliveryStartTime(window.getWindow().getStart().getAsCalendar().getTime());
 		metrics.setDeliveryEndTime(window.getWindow().getEnd().getAsCalendar().getTime());
-		
+				
 		metrics.setTotalCapacityTime((RoutingDateUtil.getDiffInSeconds
 										(metrics.getDeliveryEndTime(), metrics.getDeliveryStartTime())
 											* window.getAllocatedVehicles())/60.0);
@@ -192,6 +208,7 @@ public class RoutingDataDecoder {
 		metrics.setReservedTravelTime(window.getReserved().getTravelTime()/60.0);
 		
 		
+		
 		return metrics;
 	}
 	
@@ -201,26 +218,27 @@ public class RoutingDataDecoder {
 		if(delWindows != null) {
 			result = new ArrayList<IDeliverySlot>(); 
 			for (DeliveryWindow window : delWindows) {
-				result.add(deocdeDeliverySlot(window));
+				result.add(decodeDeliverySlot(window));
 			}
 			
 		}
 		return result;
 	}
 	
-	public static IDeliverySlot deocdeDeliverySlot(DeliveryWindow window) {
+	public static IDeliverySlot decodeDeliverySlot(DeliveryWindow window) {
 		
 		IDeliverySlot slot = new DeliverySlot();
-		slot.setDeliveryCost(deocdeDeliverySlotCost(window.getDeliveryCost()));
+		slot.setDeliveryCost(decodeDeliverySlotCost(window.getDeliveryCost()));
 		slot.setManuallyClosed(window.getManuallyClosed());
 		slot.setSchedulerId(decodeSchedulerId(window.getSchedulerIdentity()));
 		slot.setStartTime(window.getStartTime().getAsCalendar().getTime());
 		slot.setStopTime(window.getStopTime().getAsCalendar().getTime());
 		slot.setWaveCode(window.getWaveCode());
+		
 		return slot;
 	}
 	
-	public static IDeliverySlotCost deocdeDeliverySlotCost(DeliveryCost deliveryCost) {
+	public static IDeliverySlotCost decodeDeliverySlotCost(DeliveryCost deliveryCost) {
 		IDeliverySlotCost deliverySlot = new DeliverySlotCost();
 		deliverySlot.setAdditionalDistance(deliveryCost.getAdditionalDistance());
 		deliverySlot.setAdditionalRunTime(deliveryCost.getAdditionalRunTime());
@@ -246,6 +264,7 @@ public class RoutingDataDecoder {
 		deliverySlot.setTotalServiceTime(deliveryCost.getTotalServiceTime());
 		deliverySlot.setTotalTravelTime(deliveryCost.getTotalTravelTime());
 		deliverySlot.setTotalWaitTime(deliveryCost.getTotalWaitTime());
+		
 		return deliverySlot;
 	}
 	
@@ -274,5 +293,83 @@ public class RoutingDataDecoder {
 		}
 		return reservation;
 	}
-
+	
+	public static List<IRoutingNotificationModel> decodeNotifications(Notification[] notifications) {
+		
+		List<IRoutingNotificationModel> result = null;
+		if(notifications != null) {
+			result = new ArrayList<IRoutingNotificationModel>(); 
+			for (Object notification : notifications) {
+				if(notification instanceof SchedulerOrdersCanceledNotification) {
+					SchedulerOrdersCanceledNotification _tmpNotification = (SchedulerOrdersCanceledNotification)notification;
+					
+					String[] orders = _tmpNotification.getOrderNumbers();
+					for(int intCount=0; intCount< orders.length; intCount++) {
+						IRoutingNotificationModel _tmpModel = new RoutingNotificationModel();
+						_tmpModel.setNotificationType(EnumRoutingNotification.SchedulerOrdersCanceledNotification);
+						_tmpModel.setOrderNumber(orders[intCount]);
+						_tmpModel.setNotificationId(_tmpNotification.getNotificationIdentity().getIdentity());
+						_tmpModel.setSchedulerId(decodeSchedulerId(_tmpNotification.getSchedulerIdentity()));
+						result.add(_tmpModel);
+					}					
+				} else if(notification instanceof RouteChangeNotification) {
+					RouteChangeNotification _tmpNotification = (RouteChangeNotification)notification;
+					ChangedOrderIdentity[] orders = _tmpNotification.getOrders();
+					
+					for(int intCount=0; intCount< orders.length; intCount++) {
+						IRoutingNotificationModel _tmpModel = new RoutingNotificationModel();
+						_tmpModel.setNotificationType(EnumRoutingNotification.RouteChangeNotification);
+						_tmpModel.setOrderNumber(orders[intCount].getOrderNumber());
+						_tmpModel.setNotificationId(_tmpNotification.getNotificationIdentity().getIdentity());
+						_tmpModel.setSchedulerId(new RoutingSchedulerIdentity());
+						result.add(_tmpModel);
+					}
+				}
+			}			
+		}
+		return result;
+	}
+	
+	public static IOrderModel decodeDeliveryAreaOrder(DeliveryAreaOrder model) {
+		
+		IOrderModel order = null;
+		if(model != null) {
+			order = new OrderModel();	
+    		order.setOrderNumber(model.getDescription());
+    					    						    						    		
+    		IDeliveryModel dModel = new DeliveryModel();
+    		dModel.setDeliveryDate(model.getIdentity().getDeliveryDate());
+    		dModel.setDeliveryStartTime(model.getDeliveryWindowStart().getAsCalendar().getTime());
+    		dModel.setDeliveryEndTime(model.getDeliveryWindowEnd().getAsCalendar().getTime());
+    		dModel.setReservationId(model.getIdentity().getOrderNumber());
+    		dModel.setOrderSize(model.getQuantity());
+			dModel.setServiceTime(model.getServiceTime());
+    		
+    		IZoneModel zModel = new ZoneModel();
+    		IAreaModel areaModel = new AreaModel();
+    		areaModel.setAreaCode(model.getIdentity().getArea());
+    		zModel.setArea(areaModel);
+    		
+    		dModel.setDeliveryZone(zModel);
+    		
+    		ILocationModel locModel = new LocationModel();    		    		
+    		locModel.setLocationId(model.getLocationId());
+    		dModel.setDeliveryLocation(locModel);
+    		    		
+    		order.setDeliveryInfo(dModel);
+		}
+				
+		return order;
+	}
+	
+	public static IRoutingSchedulerIdentity decodeSchedulerId(DeliveryAreaOrderIdentity schIdentity) {
+		IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
+		IAreaModel areaModel = new AreaModel();
+		areaModel.setAreaCode(schIdentity.getArea());
+		schedulerId.setArea(areaModel);
+		schedulerId.setDeliveryDate(schIdentity.getDeliveryDate());
+		schedulerId.setRegionId(schIdentity.getRegionId());
+		return schedulerId;
+	}
+	
 }

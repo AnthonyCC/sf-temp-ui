@@ -14,6 +14,7 @@ import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
@@ -43,11 +44,21 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		}
 	}
 	
-	public void purgeOrders(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException {
+	public void purgeBatchOrders(IRoutingSchedulerIdentity schedulerId, boolean reloadXml) throws RoutingServiceException {
 		
 		try {
 			TransportationWebService port = getTransportationSuiteBatchService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
-			port.schedulerPurge(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), false);
+			port.schedulerPurge(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), reloadXml);
+		} catch (RemoteException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_PURGEORDERS_UNSUCCESSFUL);
+		}
+	}
+	
+	public void purgeOrders(IRoutingSchedulerIdentity schedulerId, boolean reloadXml) throws RoutingServiceException {
+		
+		try {
+			TransportationWebService port = getTransportationSuiteService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			port.schedulerPurge(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), reloadXml);
 		} catch (RemoteException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_PURGEORDERS_UNSUCCESSFUL);
 		}
@@ -166,7 +177,8 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		
 	public List<IDeliverySlot> schedulerAnalyzeOrder(IOrderModel orderModel, String locationType
 			, String orderType, Date startDate, int noOfDays, List<IDeliverySlot> slots) throws RoutingServiceException {
-
+		//System.out.println("schedulerAnalyzeOrder Order >"+orderModel);
+		//System.out.println("schedulerAnalyzeOrder Slot >"+slots);
 		try {
 			IRoutingSchedulerIdentity schId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
 			TransportationWebService port = getTransportationSuiteService(schId);
@@ -180,6 +192,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 										, orderModel.getDeliveryInfo().getDeliveryZone().getArea().getAreaCode()
 										, startDate
 										, noOfDays, slots)));
+			
 
 		} catch (RemoteException exp) {			
 			throw new RoutingServiceException(exp, IIssue.PROCESS_ANALYZE_UNSUCCESSFUL);
@@ -231,7 +244,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		}
 	}
 	
-	public boolean schedulerUpdateOrder(IOrderModel orderModel, String previousOrderNumber) throws RoutingServiceException {
+	public boolean schedulerUpdateOrder(IOrderModel orderModel) throws RoutingServiceException {
 
 		try {
 			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
@@ -239,8 +252,24 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 					
 			
 			return port.schedulerUpdateOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId)
-											, RoutingDataEncoder.encodeDeliveryAreaOrderIdentity(schedulerId, encodeString(previousOrderNumber))
-											, RoutingDataEncoder.encodeSchedulerUpdateOrderOptions(encodeString(orderModel.getOrderNumber())));
+											, RoutingDataEncoder.encodeDeliveryAreaOrderIdentity(schedulerId, orderModel)
+											, RoutingDataEncoder.encodeSchedulerUpdateOrderOptions(orderModel));
+
+		} catch (RemoteException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_UPDATE_UNSUCCESSFUL);
+		}
+	}
+	
+	public boolean schedulerUpdateOrderNo(IOrderModel orderModel) throws RoutingServiceException {
+
+		try {
+			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
+			TransportationWebService port = getTransportationSuiteService(schedulerId);			
+					
+			
+			return port.schedulerUpdateOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId)
+											, RoutingDataEncoder.encodeDeliveryAreaOrderIdentity(schedulerId, orderModel)
+											, RoutingDataEncoder.encodeSchedulerUpdateOrderNoOptions(orderModel));
 
 		} catch (RemoteException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_UPDATE_UNSUCCESSFUL);
@@ -260,33 +289,35 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 
 		} catch (RemoteException exp) {
 			try {
-				schedulerRetrieveOrder(orderModel);
-			} catch(RoutingServiceException rxp) {
-				if(!IIssue.PROCESS_RETRIEVEORDER_NOTFOUND.equalsIgnoreCase(rxp.getIssue())) {
+				IOrderModel _tmpOrder = schedulerRetrieveOrder(orderModel);
+			} catch (RoutingServiceException rxp) {
+				if(rxp.getIssue() != null && !rxp.getIssue().equalsIgnoreCase(IIssue.PROCESS_RETRIEVEORDER_NOTFOUND)) {
 					throw new RoutingServiceException(exp, IIssue.PROCESS_CANCEL_UNSUCCESSFUL);
-				}
-			}			
+				} 
+			}
 		}
 	}
 	
-	public void schedulerRetrieveOrder(IOrderModel orderModel) throws RoutingServiceException {
+	public IOrderModel schedulerRetrieveOrder(IOrderModel orderModel) throws RoutingServiceException {
 
 		try {
 			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
-						
-			port.schedulerRetrieveOrderByIdentity(RoutingDataEncoder.encodeDeliveryAreaOrderIdentity(schedulerId.getRegionId(),schedulerId.getArea().getAreaCode()
-					,schedulerId.getDeliveryDate(), orderModel.getOrderNumber()), RoutingDataEncoder.encodeDeliveryAreaOrderRetrieveOptions());
-			
 
-		} catch (RemoteException exp) {	
+
+			return RoutingDataDecoder.decodeDeliveryAreaOrder(port.schedulerRetrieveOrderByIdentity(RoutingDataEncoder.encodeDeliveryAreaOrderIdentity(schedulerId.getRegionId(),schedulerId.getArea().getAreaCode()
+					,schedulerId.getDeliveryDate(), orderModel.getOrderNumber()), RoutingDataEncoder.encodeDeliveryAreaOrderRetrieveOptions()));
+
+
+		} catch (RemoteException exp) {  
 			if(exp instanceof AxisFault) {
 				AxisFault fault=(AxisFault)exp;
 				if(fault.getMessage().equalsIgnoreCase(IRoutingConstants.ORDER_NOT_FOUND)) {
 					throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVEORDER_NOTFOUND);
 				}
 			}
-			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVEORDER_FAILED);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVEORDER_UNSUCCESSFUL);
+
 		}
 	}
 	
@@ -315,6 +346,38 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		}
 
 		return result;
+	}
+	
+	public List<IRoutingNotificationModel> retrieveNotifications() throws RoutingServiceException {
+		
+		List<IRoutingNotificationModel> result = null;
+		
+		try {
+			TransportationWebService port = getTransportationSuiteService(null);
+						
+			result = RoutingDataDecoder.decodeNotifications(port.retrieveNotificationsByCriteria(RoutingDataEncoder.encodeNotificationCriteria()
+																			, RoutingDataEncoder.encodeTimeZoneOptions()
+																					, RoutingDataEncoder.encodeNotificationRetrieveOptions()));
+			
+			
+		} catch (RemoteException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVENOTIFICATION_UNSUCCESSFUL);
+		}
+		return result;
+	}
+		
+	public void deleteNotifications(List<IRoutingNotificationModel> notifications)  throws RoutingServiceException {
+		
+		try {
+			TransportationWebService port = getTransportationSuiteService(null);
+						
+			port.deleteNotifications(RoutingDataEncoder.encodeNotificationIdentityList(notifications));
+			
+			
+		} catch (RemoteException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_DELETENOTIFICATION_UNSUCCESSFUL);
+		}
+		
 	}
 	
 	private String encodeString(String strRoot) {

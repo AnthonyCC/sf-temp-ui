@@ -7,7 +7,14 @@ import java.util.List;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
-import com.freshdirect.routing.model.IZoneModel;
+import com.freshdirect.routing.model.IAreaModel;
+import com.freshdirect.routing.proxy.stub.transportation.Notification;
+import com.freshdirect.routing.proxy.stub.transportation.NotificationCriteria;
+import com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions;
+import com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.SchedulerOrdersCanceledNotification;
+import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
+import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public class RoutingUtil {
@@ -70,8 +77,8 @@ public class RoutingUtil {
     	
 	}
 	
-	public static String getRegion(IZoneModel model) {
-		if(model != null && model.getArea() != null && model.getArea().isDepot()) {
+	public static String getRegion(IAreaModel model) {
+		if(model != null && model.isDepot()) {
 			return RoutingServicesProperties.getDefaultDepotRegion();
 		} else {
 			return RoutingServicesProperties.getDefaultTruckRegion();
@@ -85,5 +92,6 @@ public class RoutingUtil {
 			return 0.0;
 		}
 	}
+	
 	
 }

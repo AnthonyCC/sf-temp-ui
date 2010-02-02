@@ -15,6 +15,36 @@ public class OrderModel extends BaseModel implements IOrderModel {
 	private IDeliveryModel deliveryInfo;
 	
 	private String unassignedAction;
+	
+	private String updateStatus;
+	
+	private double unassignedServiceTime;
+	private double unassignedOrderSize;
+	
+	
+	public double getUnassignedServiceTime() {
+		return unassignedServiceTime;
+	}
+
+	public void setUnassignedServiceTime(double unassignedServiceTime) {
+		this.unassignedServiceTime = unassignedServiceTime;
+	}
+
+	public double getUnassignedOrderSize() {
+		return unassignedOrderSize;
+	}
+
+	public void setUnassignedOrderSize(double unassignedOrderSize) {
+		this.unassignedOrderSize = unassignedOrderSize;
+	}
+
+	public String getUpdateStatus() {
+		return updateStatus;
+	}
+
+	public void setUpdateStatus(String updateStatus) {
+		this.updateStatus = updateStatus;
+	}
 
 	public String getUnassignedAction() {
 		return unassignedAction;

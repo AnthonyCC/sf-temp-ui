@@ -34,11 +34,22 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 	
 	private int orderCapacity;
 	
+	private int orderCtCapacity;
+	
 	private int totalConfirmedOrders;
 	
 	private int totalAllocatedOrders;
 	
 	private double totalCapacityTime;
+	
+	
+	public int getOrderCtCapacity() {
+		return orderCtCapacity;
+	}
+
+	public void setOrderCtCapacity(int ctCapacity) {
+		this.orderCtCapacity = ctCapacity;
+	}
 
 	public double getTotalCapacityTime() {
 		return totalCapacityTime;

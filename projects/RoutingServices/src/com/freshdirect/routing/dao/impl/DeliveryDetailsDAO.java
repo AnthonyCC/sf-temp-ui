@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
+import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
 import com.freshdirect.routing.model.AreaModel;
 import com.freshdirect.routing.model.DeliveryModel;
@@ -26,13 +27,18 @@ import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
+import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeModel;
+import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.OrderModel;
 import com.freshdirect.routing.model.PackagingModel;
+import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.model.ServiceTimeModel;
+import com.freshdirect.routing.model.UnassignedModel;
 import com.freshdirect.routing.model.ZoneModel;
+import com.freshdirect.routing.util.RoutingUtil;
 
 public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		
@@ -54,19 +60,44 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	
 	private static final String GET_DELIVERYZONETYPE_QRY = "select z.ZONE_TYPE SERVICE_TYPE from transp.trn_zone z where z.zone_number = ? ";
 	
-	private static final String GET_DELIVERYZONEDETAILS_QRY = "select z.ZONE_CODE ZONE_NUMBER, z.ZONE_TYPE ZONE_TYPE, a.CODE AREACODE," +
+	private static final String GET_DELIVERYZONEDETAILS_QRY = "select z.ZONE_CODE ZONE_NUMBER, z.ZONE_TYPE ZONE_TYPE, a.CODE AREACODE, a.ACTIVE ACTIVE, " +
 			"a.BALANCE_BY BALANCE_BY, a.LOADBALANCE_FACTOR LOADBALANCE_FACTOR, a.NEEDS_LOADBALANCE NEEDS_LOADBALANCE,a.IS_DEPOT IS_DEPOT  from transp.zone z, transp.trn_area a  " +
 			" where z.area = a.code and (z.OBSOLETE <> 'X' or z.OBSOLETE IS NULL)";
 	
-	private static final String GET_TIMESLOTSBYDATE_QRY = " select ta.AREA, z.ZONE_CODE, z.NAME, t.START_TIME , t.END_TIME, TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') wavecode  from dlv.timeslot t" +
-			", dlv.zone z, transp.zone ta where t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE" +
+	private static final String GET_TIMESLOTSBYDATE_QRY = "select t.ID REF_ID, ta.AREA, z.ZONE_CODE, z.NAME, t.START_TIME , t.END_TIME" +
+			", TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') wavecode, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT   " +
+			" from dlv.timeslot t , dlv.zone z, transp.zone ta, transp.trn_area a" +
+			" where t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE" +
 			" and t.base_date = ?";
 	
 	private static final String GET_UNASSIGNED_QRY = "select r.ID RID, r.STATUS_CODE STATUS, r.CUSTOMER_ID CID, r.TYPE RTYPE, r.ORDER_ID OID," +
 			" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, t.BASE_DATE BDATE, t.START_TIME STIME, " +
-			"t.END_TIME ETIME, s.CROMOD_DATE SCROMODDATE, z.ZONE_CODE ZCODE   " +
+			"t.END_TIME ETIME, s.CROMOD_DATE SCROMODDATE, z.ZONE_CODE ZCODE, " +
+			"r.ORDER_SIZE OSIZE, r.SERVICE_TIME SRTIME, R.RESERVED_ORDER_SIZE ROSIZE, R.RESERVED_SERVICE_TIME RSRTIME, r.UPDATE_STATUS UPDSTATUS, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED " +
 			"from dlv.reservation r, dlv.timeslot t, cust.sale s, dlv.zone z " +
-			"where t.BASE_DATE = ?  and UNASSIGNED_DATETIME is not null and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID";
+			"where t.BASE_DATE = ?  AND (unassigned_datetime IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS in ('FLD','OVD'))) and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID ORDER BY z.ZONE_CODE, t.START_TIME";
+	
+	private static final String GET_UNASSIGNEDRESERVATION_QRY = "select r.ID RID, r.STATUS_CODE STATUS, r.CUSTOMER_ID CID, r.TYPE RTYPE, r.ORDER_ID OID," +
+			" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, t.BASE_DATE BDATE, t.START_TIME STIME, " +
+			"t.END_TIME ETIME, s.CROMOD_DATE SCROMODDATE, z.ZONE_CODE ZCODE, " +
+			"r.ORDER_SIZE OSIZE, r.SERVICE_TIME SRTIME, R.RESERVED_ORDER_SIZE ROSIZE, R.RESERVED_SERVICE_TIME RSRTIME, r.UPDATE_STATUS UPDSTATUS " +
+			"from dlv.reservation r, dlv.timeslot t, cust.sale s, dlv.zone z " +
+			"where r.ID = ? and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID";
+	
+	private static final String UPDATE_UNASSIGNEDRESERVATION_QRY = "update dlv.reservation r set r.ORDER_SIZE = ?,  r.SERVICE_TIME = ? " +
+			", r.UPDATE_STATUS = ?	where r.ID = ?  and UNASSIGNED_DATETIME is not null ";
+	
+	private static final String UPDATE_TIMESLOTFORSTATUS_QRY = "update dlv.timeslot t set t.IS_CLOSED = ? where t.ID=? ";
+	
+	private static final String UPDATE_TIMESLOTFORSTATUSBYZONE_QRY = "update dlv.timeslot tx set tx.IS_CLOSED = ? where tx.ID in (select t.id from dlv.timeslot t, dlv.zone z  where t.base_date=? and z.zone_code = ? and t.zone_id = z.id)";	
+	
+	private static final String UPDATE_TIMESLOTFORSTATUSBYREGION_QRY = "update dlv.timeslot tx set tx.IS_CLOSED = ? where tx.ID in (select t.id from dlv.timeslot t, dlv.zone z, transp.zone zt where t.base_date=? and zt.region = ? and t.zone_id = z.id and z.zone_code=zt.zone_code)";
+	
+	private static final String UPDATE_TIMESLOTFORDYNAMICSTATUS_QRY = "update dlv.timeslot t set t.IS_DYNAMIC = ? where t.ID=? ";
+	
+	private static final String UPDATE_TIMESLOTFORDYNAMICSTATUSBYZONE_QRY = "update dlv.timeslot tx set tx.IS_DYNAMIC = ? where tx.ID in (select t.id from dlv.timeslot t, dlv.zone z  where t.base_date=? and z.zone_code = ? and t.zone_id = z.id)";	
+	
+	private static final String UPDATE_TIMESLOTFORDYNAMICSTATUSBYREGION_QRY = "update dlv.timeslot tx set tx.IS_DYNAMIC = ? where tx.ID in (select t.id from dlv.timeslot t, dlv.zone z, transp.zone zt where t.base_date=? and zt.region = ? and t.zone_id = z.id and z.zone_code=zt.zone_code)";
 	
 		
 	private static final String EARLY_WARNING_QUERY =
@@ -220,6 +251,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		tmpAreaModel.setNeedsLoadBalance("X".equalsIgnoreCase(rs.getString("NEEDS_LOADBALANCE")));
 				    		
 				    		tmpAreaModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")));
+				    		tmpAreaModel.setActive("X".equalsIgnoreCase(rs.getString("ACTIVE")));
 				    		
 				    		tmpModel.setArea(tmpAreaModel);
 				    		zoneDetailsMap.put(zoneCode, tmpModel);
@@ -278,12 +310,26 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		IDeliverySlot tmpModel = new DeliverySlot();
 				    		tmpModel.setStartTime(rs.getTimestamp("START_TIME"));
 				    		tmpModel.setStopTime(rs.getTimestamp("END_TIME"));
-				    		tmpModel.setWaveCode(rs.getString("wavecode"));	
+				    		tmpModel.setWaveCode(rs.getString("wavecode"));
+				    		tmpModel.setDynamicActive("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC")) ? true : false);
+				    		tmpModel.setManuallyClosed("X".equalsIgnoreCase(rs.getString("IS_CLOSED")) ? true : false);
+				    		tmpModel.setReferenceId(rs.getString("REF_ID"));
 				    		
 				    		if(!timeslotByArea.containsKey(zCode)) {
 				    			timeslotByArea.put(zCode, new ArrayList<IDeliverySlot>());
 				    		}
 				    		timeslotByArea.get(zCode).add(tmpModel);
+				    		
+				    		IRoutingSchedulerIdentity _schId = new RoutingSchedulerIdentity();
+							_schId.setDeliveryDate(deliveryDate);
+							
+							IAreaModel _aModel = new AreaModel();
+							_aModel.setAreaCode(rs.getString("AREA"));
+							_aModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
+							_schId.setRegionId(RoutingUtil.getRegion(_aModel));
+							_schId.setArea(_aModel);
+							
+							tmpModel.setSchedulerId(_schId);
 				    	 } while(rs.next());		        		    	
 				      }
 				  }
@@ -331,9 +377,10 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return timeslotByZone;
 	}
 	
-	public List<IOrderModel> getUnassigned(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws SQLException {
+	public List<IUnassignedModel> getUnassigned(final Date deliveryDate, final Date cutOffTime
+													, final String zoneCode) throws SQLException {
 		
-		final List<IOrderModel> orders = new ArrayList<IOrderModel>();
+		final List<IUnassignedModel> orders = new ArrayList<IUnassignedModel>();
 				
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
@@ -355,12 +402,21 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		order.setCreateModifyTime(rs.getTimestamp("SCROMODDATE"));
 				    		order.setUnassignedTime(rs.getTimestamp("UDATETIME"));
 				    		order.setUnassignedAction(rs.getString("UACTION"));
-				    						    		
+				    		order.setUnassignedOrderSize(rs.getDouble("OSIZE"));
+				    		order.setUnassignedServiceTime(rs.getDouble("SRTIME"));
+							
+				    		EnumRoutingUpdateStatus _status = EnumRoutingUpdateStatus.getEnum(rs.getString("UPDSTATUS"));
+				    		if(_status != null) {
+				    			order.setUpdateStatus(_status.value());
+				    		}
+				    						    						    						    		
 				    		IDeliveryModel dModel = new DeliveryModel();
 				    		dModel.setDeliveryDate(rs.getDate("BDATE"));
 				    		dModel.setDeliveryStartTime(rs.getTimestamp("STIME"));
 				    		dModel.setDeliveryEndTime(rs.getTimestamp("ETIME"));
 				    		dModel.setReservationId(rs.getString("RID"));
+				    		dModel.setOrderSize(rs.getDouble("ROSIZE"));
+							dModel.setServiceTime(rs.getDouble("RSRTIME"));
 				    		
 				    		IZoneModel zModel = new ZoneModel();
 				    		zModel.setZoneNumber(rs.getString("ZCODE"));
@@ -368,12 +424,182 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		dModel.setDeliveryZone(zModel);
 				    		
 				    		order.setDeliveryInfo(dModel);
-				    						    		
-				    		orders.add(order);
+				    		
+				    		IDeliverySlot slot = new DeliverySlot();
+				    		slot.setDynamicActive("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC")) ? true : false);
+				    		slot.setManuallyClosed("X".equalsIgnoreCase(rs.getString("IS_CLOSED")) ? true : false);
+				    		
+				    		IUnassignedModel root = new UnassignedModel();
+				    		root.setOrder(order);
+				    		root.setSlot(slot);
+				    		
+				    		orders.add(root);
 				    	 } while(rs.next());		        		    	
 				      }
 				  }
 			);
 		return orders;
 	}
+	
+	public IOrderModel getRoutingOrderByReservation(final String reservationId) throws SQLException {
+
+		final IOrderModel order = new OrderModel();
+
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps =
+					connection.prepareStatement(GET_UNASSIGNEDRESERVATION_QRY);
+				ps.setString(1, reservationId);
+
+				return ps;
+			}  
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+			public void processRow(ResultSet rs) throws SQLException {				    	
+				do { 
+						
+					order.setOrderNumber(rs.getString("OID"));
+					order.setCustomerNumber(rs.getString("CID"));
+					order.setCreateModifyTime(rs.getTimestamp("SCROMODDATE"));
+					order.setUnassignedTime(rs.getTimestamp("UDATETIME"));
+					order.setUnassignedAction(rs.getString("UACTION"));
+					order.setUnassignedOrderSize(rs.getDouble("OSIZE"));
+		    		order.setUnassignedServiceTime(rs.getDouble("SRTIME"));
+					EnumRoutingUpdateStatus _status = EnumRoutingUpdateStatus.getEnum(rs.getString("UPDSTATUS"));
+		    		if(_status != null) {
+		    			order.setUpdateStatus(_status.value());
+		    		}
+					
+					IDeliveryModel dModel = new DeliveryModel();
+					dModel.setDeliveryDate(rs.getDate("BDATE"));
+					dModel.setDeliveryStartTime(rs.getTimestamp("STIME"));
+					dModel.setDeliveryEndTime(rs.getTimestamp("ETIME"));
+					dModel.setReservationId(rs.getString("RID"));
+					dModel.setOrderSize(rs.getDouble("ROSIZE"));
+					dModel.setServiceTime(rs.getDouble("RSRTIME"));
+					
+					
+					IZoneModel zModel = new ZoneModel();
+					zModel.setZoneNumber(rs.getString("ZCODE"));
+
+					dModel.setDeliveryZone(zModel);
+
+					order.setDeliveryInfo(dModel);
+
+				} while(rs.next());		        		    	
+			}
+		}
+		);
+		return order;
+	}
+	
+	public int updateRoutingOrderByReservation(final String reservationId, final double orderSize, final double serviceTime) throws SQLException {
+
+		Connection connection=null;
+		int result = 0;
+		try{
+			result = this.jdbcTemplate.update(UPDATE_UNASSIGNEDRESERVATION_QRY, new Object[] {new Double(orderSize), new Double(serviceTime)
+												, EnumRoutingUpdateStatus.OVERRIDDEN.value(), reservationId});
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		return result;
+	}
+	
+	public int updateTimeslotForStatus(final String timeslotId, final boolean isClosed) throws SQLException {
+
+		Connection connection=null;
+		int result = 0;
+		try{
+			result = this.jdbcTemplate.update(UPDATE_TIMESLOTFORSTATUS_QRY, new Object[] {(isClosed ? "X" : null), timeslotId});
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		return result;
+	}
+	
+	public int updateTimeslotForStatusByZone(final Date baseDate, final String zoneCode, final boolean isClosed) throws SQLException {
+
+		Connection connection=null;
+		int result = 0;
+		try{
+			result = this.jdbcTemplate.update(UPDATE_TIMESLOTFORSTATUSBYZONE_QRY, new Object[] {(isClosed ? "X" : null), baseDate, zoneCode});
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		return result;
+	}
+	
+	public int updateTimeslotForStatusByRegion(final Date baseDate, final String regionCode, final boolean isClosed) throws SQLException {
+
+		Connection connection=null;
+		int result = 0;
+		try{
+			result = this.jdbcTemplate.update(UPDATE_TIMESLOTFORSTATUSBYREGION_QRY, new Object[] {(isClosed ? "X" : null), baseDate, regionCode});
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		return result;
+	}
+	
+	public int updateTimeslotForDynamicStatus(final String timeslotId, final boolean isDynamic) throws SQLException {
+
+		Connection connection=null;
+		int result = 0;
+		try{
+			result = this.jdbcTemplate.update(UPDATE_TIMESLOTFORDYNAMICSTATUS_QRY, new Object[] {(isDynamic ? "X" : null), timeslotId});
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		return result;
+	}
+	
+	public int updateTimeslotForDynamicStatusByZone(final Date baseDate, final String zoneCode, final boolean isDynamic) throws SQLException {
+
+		Connection connection=null;
+		int result = 0;
+		try{
+			result = this.jdbcTemplate.update(UPDATE_TIMESLOTFORDYNAMICSTATUSBYZONE_QRY, new Object[] {(isDynamic ? "X" : null), baseDate, zoneCode});
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		return result;
+	}
+	
+	public int updateTimeslotForDynamicStatusByRegion(final Date baseDate, final String regionCode, final boolean isDynamic) throws SQLException {
+
+		Connection connection=null;
+		int result = 0;
+		try{
+			result = this.jdbcTemplate.update(UPDATE_TIMESLOTFORDYNAMICSTATUSBYREGION_QRY, new Object[] {(isDynamic ? "X" : null), baseDate, regionCode});
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		return result;
+	}
+
+	
 }

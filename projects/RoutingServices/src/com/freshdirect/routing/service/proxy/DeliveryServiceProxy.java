@@ -10,11 +10,11 @@ import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IDrivingDirection;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.service.IDeliveryService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class DeliveryServiceProxy extends BaseServiceProxy {
 	
@@ -70,15 +70,31 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 		return getService().getDeliveryZone(zoneCode);
 	}
 	
-	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException {
+	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException {
 		return getService().getTimeslotsByDate(deliveryDate, cutOffTime, zoneCode);
 	}
 	
-	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException { 
+	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException { 
 		return getService().getTimeslotsByDateEx(deliveryDate, cutOffTime, zoneCode);
 	}
 	
-	public List<IOrderModel> getUnassigned(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException {
+	public List<IUnassignedModel> getUnassigned(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException {
 		return getService().getUnassigned(deliveryDate, cutOffTime, zoneCode);
+	}
+	
+	public IOrderModel getRoutingOrderByReservation(String reservationId) throws RoutingServiceException {
+		return getService().getRoutingOrderByReservation(reservationId);
+	}
+	
+	public int updateRoutingOrderByReservation(String reservationId, double orderSize, double serviceTime) throws RoutingServiceException {
+		return getService().updateRoutingOrderByReservation(reservationId, orderSize, serviceTime);
+	}
+	
+	public int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, Date baseDate) throws RoutingServiceException {
+		return getService().updateTimeslotForStatus(timeslotId, isClosed, type, baseDate);
+	}
+	
+	public int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, Date baseDate) throws RoutingServiceException {
+		return getService().updateTimeslotForDynamicStatus(timeslotId, isDynamic, type, baseDate);
 	}
 }

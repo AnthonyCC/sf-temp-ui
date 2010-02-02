@@ -50,4 +50,6 @@ public interface IDeliverySlotCost {
 	void setTotalTravelTime(int totalTravelTime);
 	int getTotalWaitTime();
 	void setTotalWaitTime(int totalWaitTime);
+	
+	double getPercentageAvailable();
 }

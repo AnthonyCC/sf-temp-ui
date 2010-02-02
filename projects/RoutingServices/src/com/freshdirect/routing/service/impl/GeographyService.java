@@ -465,7 +465,7 @@ public IBuildingModel getNewBuilding(ILocationModel baseModel) throws RoutingSer
 				}
 			}
 		}
-		return RoutingUtil.getRegion(zone);
+		return RoutingUtil.getRegion(zone.getArea());
 	}
 	
 	

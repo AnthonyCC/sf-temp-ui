@@ -71,6 +71,9 @@
                                     public static final java.lang.String _dqtGeoComputed =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dqtGeoComputed");
                                 
+                                    public static final java.lang.String _dqtGeoComputedSparse =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dqtGeoComputedSparse");
+                                
                                     public static final java.lang.String _dqtGeoComputedCluster =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dqtGeoComputedCluster");
                                 
@@ -91,6 +94,9 @@
                             
                                 public static final DataQualityType dqtGeoComputed =
                                     new DataQualityType(_dqtGeoComputed,true);
+                            
+                                public static final DataQualityType dqtGeoComputedSparse =
+                                    new DataQualityType(_dqtGeoComputedSparse,true);
                             
                                 public static final DataQualityType dqtGeoComputedCluster =
                                     new DataQualityType(_dqtGeoComputedCluster,true);

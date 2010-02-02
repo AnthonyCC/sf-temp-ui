@@ -10,6 +10,27 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 	private boolean needsLoadBalance;
 	
 	private boolean isDepot;
+	
+	private boolean isActive;
+
+	private double deliveryRate;
+	
+	
+	public double getDeliveryRate() {
+		return deliveryRate;
+	}
+
+	public void setDeliveryRate(double deliveryRate) {
+		this.deliveryRate = deliveryRate;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 
 	public String getAreaCode() {
 		return areaCode;
@@ -73,6 +94,9 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 	public void setDepot(boolean isDepot) {
 		this.isDepot = isDepot;
 	}
-
+	
+	public String toString() {
+		return areaCode+"|"+isActive+"|"+deliveryRate;
+	}
 	
 }
