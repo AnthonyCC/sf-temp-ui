@@ -116,7 +116,7 @@ public class TrnArea  implements java.io.Serializable, TrnBaseEntityI {
 	public void setIsDepot(String isDepot) {
 		this.isDepot = isDepot;
 	}
-
+	
 	public BigDecimal getDeliveryRate() {
 		return deliveryRate;
 	}

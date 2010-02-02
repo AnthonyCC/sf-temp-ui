@@ -83,7 +83,7 @@ public class AdminController extends AbstractMultiActionController {
 		}
 		return mav;
 	}
-
+	
 	/**
 	 * Custom handler for early warning
 	 * @param request current HTTP request
@@ -101,7 +101,7 @@ public class AdminController extends AbstractMultiActionController {
 		} catch (RoutingServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-}
+		}
 		return mav;
 	}
 

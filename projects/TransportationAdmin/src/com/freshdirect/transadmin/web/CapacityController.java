@@ -128,20 +128,20 @@ public class CapacityController extends AbstractMultiActionController {
 				Date deliveryDate = TransStringUtil.getDate(rDate);
 				
 				DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
-								
+				
 				Map<String, List<IDeliverySlot>> refSlotsByZone = deliveryProxy.getTimeslotsByDate
 																	(deliveryDate, getCutOffTime(cutOff), null);
 				
 				Map<String, List<IDeliveryWindowMetrics>> slotsByZone = deliveryProxy.getTimeslotsByDateEx
 																			(deliveryDate, getCutOffTime(cutOff), null);
-								
+									
 				Iterator<String> _itr = slotsByZone.keySet().iterator();
 								
 				String _zoneCode = null;
 								
 				List<IDeliveryWindowMetrics> metrics = null;
 				IDeliverySlot _refSlot = null;
-												
+				
 				while(_itr.hasNext()) {
 					_zoneCode = _itr.next();										
 					metrics = slotsByZone.get(_zoneCode);
@@ -165,17 +165,17 @@ public class CapacityController extends AbstractMultiActionController {
 							_capacity.setDeliveryEndTime(_metrics.getDeliveryEndTime());
 							_capacity.setTotalCapacity(_metrics.getOrderCapacity());
 							_capacity.setTotalAllocated(_metrics.getTotalAllocatedOrders());
-							_capacity.setTotalConfirmed(_metrics.getTotalConfirmedOrders());							
+							_capacity.setTotalConfirmed(_metrics.getTotalConfirmedOrders());
 							
 							_refSlot = matchSlotToMetrics(refSlotsByZone.get(_zoneCode), _metrics);
 							if(_refSlot != null) {
 								_capacity.setManuallyClosed(_refSlot.isManuallyClosed());
 								_capacity.setDynamicActive(_refSlot.isDynamicActive());
 								_capacity.setReferenceId(_refSlot.getReferenceId());
-						}						
+							}
 							
+						}						
 					}					
-				}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -200,32 +200,22 @@ public class CapacityController extends AbstractMultiActionController {
 																	(deliveryDate, getCutOffTime(cutOff), null);
 								
 				Iterator<String> _itr = slotsByZone.keySet().iterator();
-				
-				Map<String, Zone> areaMapping = getZoneMapping();
-				
+												
 				String _zoneCode = null;
-				IRoutingSchedulerIdentity _schId = new RoutingSchedulerIdentity();
-				_schId.setDeliveryDate(deliveryDate);
+				List<IDeliverySlot> _slots = null;
 				IDeliverySlot _refSlot = null;
-				
-				IZoneModel _zModel = new ZoneModel();
-				IAreaModel _aModel = new AreaModel();
-				_zModel.setArea(_aModel);
-				
-				_schId.setArea(_aModel);				
-				List<IDeliveryWindowMetrics> metrics = null;							
 				
 				while(_itr.hasNext()) {
 					
 					_zoneCode = _itr.next();
-					Zone _refZone = areaMapping.get(_zoneCode);
-					_aModel.setAreaCode(_refZone.getArea().getCode());
-					_aModel.setDepot("X".equalsIgnoreCase(_refZone.getArea().getIsDepot()) ? true : false);
-					_zModel.setZoneNumber(_refZone.getZoneCode());
-					_schId.setArea(_aModel);
+					_slots = slotsByZone.get(_zoneCode);
+					List<IDeliveryWindowMetrics> metrics = null;
+					IRoutingSchedulerIdentity _schId = null;
+					if(_slots.size() > 0) {
+						_schId = _slots.get(0).getSchedulerId();
+						metrics = proxy.retrieveCapacityMetrics(_schId, _slots);
+					}
 					
-					_schId.setRegionId(RoutingUtil.getRegion(_zModel));
-					metrics = proxy.retrieveCapacityMetrics(_schId, slotsByZone.get(_zoneCode));
 					if(!capacityMapping.containsKey(_zoneCode)) {
 						capacityMapping.put(_zoneCode, new ArrayList<Capacity>());
 					}	
@@ -250,16 +240,16 @@ public class CapacityController extends AbstractMultiActionController {
 															+ _metrics.getReservedServiceTime()
 															+ _metrics.getReservedTravelTime());
 							_capacity.setTotalConfirmed(_metrics.getConfirmedServiceTime() 
-															+ _metrics.getConfirmedTravelTime());							
+															+ _metrics.getConfirmedTravelTime());	
 							
 							_refSlot = matchSlotToMetrics(_slots, _metrics);
 							if(_refSlot != null) {
 								_capacity.setManuallyClosed(_refSlot.isManuallyClosed());
 								_capacity.setDynamicActive(_refSlot.isDynamicActive());
 								_capacity.setReferenceId(_refSlot.getReferenceId());
+							}
 						}						
 					}					
-				}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -358,7 +348,7 @@ public class CapacityController extends AbstractMultiActionController {
 				_tmpRegCapacity.setTotalConfirmed(_tmpRegCapacity.getTotalConfirmed()+totalConfirmed);
 				if(!_displayCommand.isManuallyClosed()) {
 					_tmpRegCapacity.setManuallyClosed(false);
-			}
+				}
 				if(_displayCommand.isDynamicActive()) {
 					_tmpRegCapacity.setDynamicActive(true);
 				}
@@ -380,7 +370,7 @@ public class CapacityController extends AbstractMultiActionController {
 				double _regPerConfirmed = 0;
 				double _regPerAllocated = 0;
 				_region = _regItr.next();
-				
+								
 				_regCap = regionCapacity.get(_region);
 				
 				totalCapacity = totalCapacity + _regCap.getTotalCapacity();

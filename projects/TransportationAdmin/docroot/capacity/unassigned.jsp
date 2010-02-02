@@ -71,7 +71,7 @@
               </table>        
               
             </td>
-          </tr>               
+          </tr>
           <tr><td>&nbsp;</td></tr>
           
           <tr><td>
@@ -96,7 +96,7 @@
 	          <tr><td>Unassigned Orders:</td><td><%= ucount %></td></tr>
 	          <tr><td># of Zones Affected:</td><td><%= zones.size() %></td></tr>
 	          <tr><td># of Zone and Time Windows Affected:</td><td><%= zonesByWindow.size() %></td></tr>      
-        </table>    
+	          </table> 
           </td></tr>               
         </table>    
        <script>
@@ -127,7 +127,7 @@
 			  <ec:column property="orderId" title="Order ID" width="5px"/>
 			  <ec:column property="customerId" title="Customer ID" width="5px"/>
 			  <ec:column property="zone" title="Zone" width="5px"/>
-			 			  
+			  
 			  <ec:column property="unassignedOrderSize" title="* SIZE" width="5px"/>
 			  <ec:column property="unassignedServiceTime" title="* SERVICE TIME" width="5px"/>
 			  <ec:column property="orderSize" title="SIZE" width="5px"/>
@@ -136,7 +136,7 @@
 			  			  
 			  <ec:column property="unassignedAction" title="Unassigned By"/>
 			 			  
-			  <ec:column property="timeWindow" title="Time Window"/>			                                   
+			  <ec:column property="timeWindow" title="Time Window"/>
 			  <ec:column property="isForced" title="FORCED" width="5px"/>
 			  <ec:column property="isChefsTable" title="CT" width="5px"/>			                                   
 			  <ec:column  property="formattedUnassignedTime" title="Unassigned Time" />
@@ -148,7 +148,7 @@
    
     <script>
     <% if("true".equalsIgnoreCase(request.getParameter("autorefresh"))) { %>
-  		doRefresh(<%= TransportationAdminProperties.getCapacityRefreshTime() %>);
+		doRefresh(<%= TransportationAdminProperties.getCapacityRefreshTime() %>);
 
 			
 	<% } else { %>

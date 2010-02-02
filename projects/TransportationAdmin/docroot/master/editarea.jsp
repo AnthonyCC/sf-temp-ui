@@ -141,7 +141,7 @@
                 <td>
                   &nbsp;<form:errors path="loadBalanceFactor" />
                 </td>
-               </tr>  
+               </tr> 
                
                <tr>
                   <td>Orders/Hour</td>

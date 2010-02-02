@@ -109,11 +109,11 @@ public class Region implements java.io.Serializable,Comparable, TrnBaseEntityI {
 	public void setZones(Set zones) {
 		this.zones = zones;
 	}
-	
+
 	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return this.hashCode() - (o).hashCode();
-}
+	}
 	
 }

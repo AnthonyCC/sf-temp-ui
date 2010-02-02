@@ -50,35 +50,35 @@ public class OrderModelAssembler implements IDataAssembler {
 		IOrderModel tmpOutputModel = (IOrderModel)objInput;
 		OrderInfoModel infoModel = new OrderInfoModel();
 		try {
-		infoModel.setLocationId(tmpOutputModel.getDeliveryInfo()
-					.getDeliveryLocation().getLocationId());
-		infoModel.setOrderNumber(tmpOutputModel.getOrderNumber());
-		infoModel.setCustomerNumber(tmpOutputModel.getCustomerNumber());
-		infoModel.setPackageSize1(""+tmpOutputModel.getDeliveryInfo().getPackagingInfo().getTotalSize1());
-		infoModel.setPackageSize2(""+tmpOutputModel.getDeliveryInfo().getPackagingInfo().getTotalSize2());
-		infoModel.setServiceTime(""+(long)tmpOutputModel.getDeliveryInfo().getServiceTime());
-		infoModel.setDeliveryStartTime(tmpOutputModel.getDeliveryInfo().getDeliveryStartTime());
-		infoModel.setDeliveryEndTime(tmpOutputModel.getDeliveryInfo().getDeliveryEndTime());
-		infoModel.setDeliveryDate(tmpOutputModel.getDeliveryInfo().getDeliveryDate());	
-		
-		infoModel.setLocationName(TransportationAdminProperties.getLocationNamePrefix()+infoModel.getLocationId());
-		infoModel.setStreetAddress1(tmpOutputModel.getDeliveryInfo()
-					.getDeliveryLocation().getStreetAddress1());
-		infoModel.setStreetAddress2(tmpOutputModel.getDeliveryInfo()
-				.getDeliveryLocation().getStreetAddress2());
-		infoModel.setCity(tmpOutputModel.getDeliveryInfo()
-				.getDeliveryLocation().getCity());
-		infoModel.setZipCode(tmpOutputModel.getDeliveryInfo()
-				.getDeliveryLocation().getZipCode());
-		infoModel.setCountry(tmpOutputModel.getDeliveryInfo()
-				.getDeliveryLocation().getCountry());
-		infoModel.setState(tmpOutputModel.getDeliveryInfo()
-				.getDeliveryLocation().getState());
-		infoModel.setEquipmentType(TransportationAdminProperties.getEquipmentTypePrefix()
-										+tmpOutputModel.getDeliveryInfo().getDeliveryZone().getZoneNumber());
-		infoModel.setDeliveryZone(tmpOutputModel.getDeliveryInfo().getDeliveryZone().getZoneNumber());
-		infoModel.setLatitude(tmpOutputModel.getDeliveryInfo().getDeliveryLocation().getGeographicLocation().getLatitude());
-		infoModel.setLongitude(tmpOutputModel.getDeliveryInfo().getDeliveryLocation().getGeographicLocation().getLongitude());
+			infoModel.setLocationId(tmpOutputModel.getDeliveryInfo()
+						.getDeliveryLocation().getLocationId());
+			infoModel.setOrderNumber(tmpOutputModel.getOrderNumber());
+			infoModel.setCustomerNumber(tmpOutputModel.getCustomerNumber());
+			infoModel.setPackageSize1(""+tmpOutputModel.getDeliveryInfo().getPackagingInfo().getTotalSize1());
+			infoModel.setPackageSize2(""+tmpOutputModel.getDeliveryInfo().getPackagingInfo().getTotalSize2());
+			infoModel.setServiceTime(""+(long)tmpOutputModel.getDeliveryInfo().getServiceTime());
+			infoModel.setDeliveryStartTime(tmpOutputModel.getDeliveryInfo().getDeliveryStartTime());
+			infoModel.setDeliveryEndTime(tmpOutputModel.getDeliveryInfo().getDeliveryEndTime());
+			infoModel.setDeliveryDate(tmpOutputModel.getDeliveryInfo().getDeliveryDate());	
+			
+			infoModel.setLocationName(TransportationAdminProperties.getLocationNamePrefix()+infoModel.getLocationId());
+			infoModel.setStreetAddress1(tmpOutputModel.getDeliveryInfo()
+						.getDeliveryLocation().getStreetAddress1());
+			infoModel.setStreetAddress2(tmpOutputModel.getDeliveryInfo()
+					.getDeliveryLocation().getStreetAddress2());
+			infoModel.setCity(tmpOutputModel.getDeliveryInfo()
+					.getDeliveryLocation().getCity());
+			infoModel.setZipCode(tmpOutputModel.getDeliveryInfo()
+					.getDeliveryLocation().getZipCode());
+			infoModel.setCountry(tmpOutputModel.getDeliveryInfo()
+					.getDeliveryLocation().getCountry());
+			infoModel.setState(tmpOutputModel.getDeliveryInfo()
+					.getDeliveryLocation().getState());
+			infoModel.setEquipmentType(TransportationAdminProperties.getEquipmentTypePrefix()
+											+tmpOutputModel.getDeliveryInfo().getDeliveryZone().getZoneNumber());
+			infoModel.setDeliveryZone(tmpOutputModel.getDeliveryInfo().getDeliveryZone().getZoneNumber());
+			infoModel.setLatitude(tmpOutputModel.getDeliveryInfo().getDeliveryLocation().getGeographicLocation().getLatitude());
+			infoModel.setLongitude(tmpOutputModel.getDeliveryInfo().getDeliveryLocation().getGeographicLocation().getLongitude());
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("objInput >>"+objInput);

@@ -22,9 +22,9 @@ public class EarlyWarningCommand extends BaseCommand {
 	private String percentageAllocated;
 	
 	private List<EarlyWarningCommand> timeslotDetails;
-
-	private boolean manuallyClosed;
 	
+	private boolean manuallyClosed;
+		
 	private String referenceId;
 	
 	private boolean isRegion;

@@ -796,6 +796,7 @@ public class DispatchController extends AbstractMultiActionController {
 						
 						if(routingRoutes != null && routingRoutes.size() > 0) {
 							_tmpRoute = (IRouteModel)routingRoutes.get(0);
+							System.out.println("_tmpRoute >>"+_tmpRoute.getRouteId());
 							if(_tmpRoute.getStops() != null && _tmpRoute.getStops().size() > 0) {
 								directionRoutes.put(routingRouteId, _tmpRoute);
 								hasRoutes = true;

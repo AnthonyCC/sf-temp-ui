@@ -21,7 +21,7 @@ public class UnassignedCommand extends BaseCommand {
 	private Date unassignedTime;
 	
 	private String unassignedAction;
-
+	
 	private String updateStatus;
 		
 	private double orderSize;

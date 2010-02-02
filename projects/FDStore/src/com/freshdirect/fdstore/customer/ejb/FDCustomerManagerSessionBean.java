@@ -3006,7 +3006,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 
 		ErpAddressModel address=getAddress(identity,addressId);
-		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslot, identity.getErpCustomerPK(), duration, rsvType, address, chefsTable,null);
+		FDReservation rsv=FDDeliveryManager.getInstance().reserveTimeslot(timeslot, identity.getErpCustomerPK(), duration, rsvType, address, chefsTable,null,false);
 			
 			/*DlvManagerSB sb = this.getDlvManagerHome().create();
 			DlvReservationModel rsv = sb.reserveTimeslot(

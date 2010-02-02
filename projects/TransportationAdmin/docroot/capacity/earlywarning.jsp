@@ -125,7 +125,7 @@
 																		, referenceId, (sourceObj.value == 'O'), type
 																		, document.getElementById('rDate').value);			                          
                  }  
-                          
+
                  function updateTimeslotCallback(result, exception) {
                	  
                      if(exception) {               
@@ -219,7 +219,7 @@
            
       </div>
     <table>
-    <tr>
+    <tr>    
 	  <td style="vertical-align: top;" width="68%">
 	      <ec:table items="earlywarnings"   action="${pageContext.request.contextPath}/earlywarning.do"
 	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
@@ -229,15 +229,15 @@
 	                      headerTitle="Early Warning" />
 	            <ec:exportXls fileName="earlywarnings.xls" tooltip="Export PDF" />
 	            <ec:exportCsv fileName="earlywarnings.csv" tooltip="Export CSV" delimiter="|"/>
-	            
+	                
 	            <ec:row interceptor="earlywarningmarker">                
-	              <ec:column property="name"  title="Name"/>                           
+	              <ec:column property="name"  title="Name"/> 
 	              <ec:column property="code" title="Zone" />             
 	              <ec:column property="totalCapacity" title="Planned" />
 	              <ec:column property="confirmedCapacity" title="Confirmed" />
 	              <ec:column property="percentageConfirmed" title="% Confirmed" />
 	              <ec:column property="allocatedCapacity" title="Allocated" />
-				  <ec:column property="percentageAllocated" title="% Allocated" />				  	                           
+				  <ec:column property="percentageAllocated" title="% Allocated" />
 				  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="capacityCloseButtonCell" property="referenceId" />
 				  <ec:column title=" " width="5px" 
@@ -253,14 +253,14 @@
 	            width="100%"  filterable="false"  showPagination="false" showExports="false" showStatusBar="false" sortable="false" 
 	            tableId="region_earlywarning" rowsDisplayed="1000" view="fd" >
 	            
-	                
+	            
 	            <ec:row interceptor="earlywarningmarker">                
-	              <ec:column property="name"  title="Name"/> 
+	              <ec:column property="name"  title="Name"/>                           
 	              <ec:column property="totalCapacity" title="Planned" />
 	              <ec:column property="confirmedCapacity" title="Confirmed" />
 	              <ec:column property="percentageConfirmed" title="% Confirmed" />
 	              <ec:column property="allocatedCapacity" title="Allocated" />
-				  <ec:column property="percentageAllocated" title="% Allocated" />				  	                           
+	              <ec:column property="percentageAllocated" title="% Allocated" />
 				  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="capacityCloseButtonCell"  property="referenceId" />
 				  <ec:column title=" " width="5px" 
@@ -268,7 +268,7 @@
 	            </ec:row>
 	          </ec:table>
 	    
-	    </td>
+	  	</td> 
 	    </tr> 
     </table>
 	    <div id="timeslot_container" style="display:none;">
