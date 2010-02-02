@@ -26,11 +26,16 @@
 
 request.setAttribute("CHECK_UNATTENDED_DELIVERY","true");
 
+System.out.println("request.getParameter(force_order)"+request.getParameter("force_order"));
 int timeslot_page_type = TimeslotLogic.PAGE_NORMAL;
 boolean showAdvanceOrderBand = false;
+boolean forceOrders=false;
 
 if("true".equals(request.getParameter("chefstable"))) {
 	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
+}
+if("true".equals(request.getParameter("force_order"))) {
+	forceOrders = true;
 }
 
 DateRange advOrdRange = FDStoreProperties.getAdvanceOrderRange();

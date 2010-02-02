@@ -83,25 +83,36 @@ public class SapChangeSalesOrder extends SapCommandSupport implements SapOrderCo
 		}
 
 		int fakePosition = SalesOrderHelper.getFakePositionBase(); //SalesOrderHelper.FAKEPOS_BASE;
-		// add the "X" for the fake lines
-		if (/*order.getDiscount() != null ||*/ (order.getDiscounts() != null && order.getDiscounts().size() > 0)) {
-			// for promo
-			//for (Iterator iter = order.getDiscounts().iterator(); iter.hasNext();) {
-				bapi.addOrderItemInX(PosexUtil.getPosex(fakePosition));
-				bapi.addOrderScheduleInX(PosexUtil.getPosexInt(fakePosition));
-				// 10 spaces + 6 chars + 75 spaces + 20 Chars
-				bapi.addExtension("BAPE_VBAPX", StringUtils.repeat(" ", 26)	+ "X");
-				fakePosition++;
-			//}
-		}
+		
 		
 
 		// for chargelines
 		int numCharges = order.getChargeLines().length;
 		for (int i = 0; i < numCharges; i++) {
-			int pos = fakePosition++;
+			int pos = fakePosition;
 			bapi.addOrderItemInX(PosexUtil.getPosex(pos));
 			bapi.addOrderScheduleInX(PosexUtil.getPosexInt(pos));
+			System.out.println("FakePosition is :"+fakePosition+" and PosexUtil.getPosex(pos) is "+PosexUtil.getPosex(pos));
+			fakePosition++;
+		}
+		// add the "X" for the fake lines
+		if (/*order.getDiscount() != null ||*/ (order.getDiscounts() != null && order.getDiscounts().size() > 0)) {
+			// for promo
+			int count=1;
+			for (Iterator iter = order.getDiscounts().iterator(); iter.hasNext();) {
+				Discount d=((ErpDiscountLineModel)iter.next()).getDiscount();
+				System.out.println("SAP Discount :"+count+" is "+d.toString());
+				count++;
+				System.out.println("FakePosition is :"+fakePosition+" and PosexUtil.getPosex(pos) is "+PosexUtil.getPosex(fakePosition));
+				bapi.addOrderItemInX(PosexUtil.getPosex(fakePosition));
+				bapi.addOrderScheduleInX(PosexUtil.getPosexInt(fakePosition));
+				fakePosition++;
+			}
+			
+			// 10 spaces + 6 chars + 75 spaces + 20 Chars
+			
+			
+			bapi.addExtension("BAPE_VBAPX", StringUtils.repeat(" ", 26)	+ "X");
 		}
 
 		this.invoke(bapi);

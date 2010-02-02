@@ -43,11 +43,12 @@ public class ResourceUtil {
 			String path = location.substring(PREFIX_CLASSPATH.length() + 1);
 			return new ClasspathResource(resolver, path);
 		}
-
+		System.out.println("ResourceUtil :"+location);
 		return new URLResource(location);
 	}
 
 	public static InputStream openResource(String location) throws IOException {
+		System.out.println("ResourceUtil.openResource() :"+location);
 		Resource res = getResource(location);
 
 		URL url = res.getResourceURL();

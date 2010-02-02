@@ -150,7 +150,11 @@ class SalesOrderHelper {
 		if (sapOrder.getDiscounts() != null && sapOrder.getDiscounts().size() > 0) {
 			for (Iterator iter = sapOrder.getDiscounts().iterator(); iter.hasNext();) {
 				ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
-				if(discountLine.getDiscount() instanceof ZonePromoDiscount)
+				System.out.println("discountLine :"+discountLine.getClass().getName()+" : "+discountLine);
+				
+				
+				//if(discountLine.getDiscount() instanceof ZonePromoDiscount)
+				if("WINDOW_STEERING".equals(discountLine.getDiscount().getPromotionCode()) && isCreateOrder)
 				{
 					if (EnumDiscountType.DOLLAR_OFF.equals(discountLine.getDiscount().getDiscountType())) {
 						//orderDiscountAmount += promo.getDiscount().getAmount();

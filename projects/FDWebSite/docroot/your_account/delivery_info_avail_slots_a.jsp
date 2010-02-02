@@ -9,6 +9,8 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 
 <%
+
+System.out.println("A");
 int timeslot_page_type = TimeslotLogic.PAGE_NORMAL;
 if("true".equals(request.getParameter("chefstable"))) {
 	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
