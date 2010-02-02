@@ -22,6 +22,98 @@ public class UnassignedCommand extends BaseCommand {
 	
 	private String unassignedAction;
 
+	private String updateStatus;
+		
+	private double orderSize;
+		
+	private double serviceTime;
+	
+	private double unassignedOrderSize;
+	
+	private double unassignedServiceTime;
+	
+	private boolean manuallyClosed;
+	private boolean dynamicActive;
+	
+	private String isForced;
+	
+	private String isChefsTable;
+	
+	
+	
+	public String getIsForced() {
+		return isForced;
+	}
+
+	public void setIsForced(String isForced) {
+		this.isForced = isForced;
+	}
+
+	public String getIsChefsTable() {
+		return isChefsTable;
+	}
+
+	public void setIsChefsTable(String isChefsTable) {
+		this.isChefsTable = isChefsTable;
+	}
+
+	public double getOrderSize() {
+		return orderSize;
+	}
+
+	public void setOrderSize(double orderSize) {
+		this.orderSize = orderSize;
+	}
+
+	public double getServiceTime() {
+		return serviceTime;
+	}
+
+	public void setServiceTime(double serviceTime) {
+		this.serviceTime = serviceTime;
+	}
+	
+	public double getUnassignedOrderSize() {
+		return unassignedOrderSize;
+	}
+
+	public void setUnassignedOrderSize(double unassignedOrderSize) {
+		this.unassignedOrderSize = unassignedOrderSize;
+	}
+
+	public double getUnassignedServiceTime() {
+		return unassignedServiceTime;
+	}
+
+	public void setUnassignedServiceTime(double unassignedServiceTime) {
+		this.unassignedServiceTime = unassignedServiceTime;
+	}
+
+	public boolean isManuallyClosed() {
+		return manuallyClosed;
+	}
+
+	public void setManuallyClosed(boolean manuallyClosed) {
+		this.manuallyClosed = manuallyClosed;
+	}
+
+	public boolean isDynamicActive() {
+		return dynamicActive;
+	}
+
+	public void setDynamicActive(boolean dynamicActive) {
+		this.dynamicActive = dynamicActive;
+	}
+
+	public String getUpdateStatus() {
+		return updateStatus;
+	}
+
+	public void setUpdateStatus(String updateStatus) {
+		this.updateStatus = updateStatus;
+	}
+
+	
 	public String getReservationId() {
 		return reservationId;
 	}
@@ -94,6 +186,10 @@ public class UnassignedCommand extends BaseCommand {
 		return formatDateTime(getCreateModTime());
 	}
 	
+	
+	
+	
+
 	private String formatDateTime(Date dateVal) {
 		try {
 			return TransStringUtil.getDatewithTime(dateVal);

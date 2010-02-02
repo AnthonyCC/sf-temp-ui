@@ -114,7 +114,7 @@
               <ec:exportCsv fileName="timeslotlog.csv" tooltip="Export CSV" delimiter="|"/>
                 
             <ec:row>               
-              <ec:column width="5px" property="id" title="ID"/>
+              <ec:column width="5px" property="reservationId" title="RSV ID"/>
 			  <ec:column property="orderId" title="Order ID"/>
 			  <ec:column property="customerId" title="Customer ID"/>
 			  <ec:column width="15px" property="eventtype" title="Event Type"/>

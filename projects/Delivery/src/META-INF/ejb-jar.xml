@@ -142,7 +142,7 @@
             <ejb-name>RoutingLoadListener</ejb-name>
             <ejb-class>com.freshdirect.delivery.routing.ejb.RoutingLoadListener</ejb-class>
             <transaction-type>Container</transaction-type>
-            <message-selector>(MessageType='ROUTINGADDRESS/process' OR MessageType='GET_TIMESLOT' OR MessageType='RESERVE_TIMESLOT' OR MessageType='CANCEL_TIMESLOT' OR MessageType='CONFIRM_TIMESLOT')</message-selector>
+            <message-selector>(MessageType='ROUTINGADDRESS/process' OR MessageType='GET_TIMESLOT' OR MessageType='RESERVE_TIMESLOT' OR MessageType='CANCEL_TIMESLOT' OR MessageType='CONFIRM_TIMESLOT' OR MessageType='SAP_UPDATE')</message-selector>
             <message-driven-destination>
                 <destination-type>javax.jms.Queue</destination-type>
             </message-driven-destination>

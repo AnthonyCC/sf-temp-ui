@@ -11,6 +11,9 @@
         <property name="orderId" type="string">
             <column name="ORDER_ID" length="16" not-null="true" />
         </property>
+         <property name="reservationId" type="string">
+            <column name="RESERVATION_ID" length="16" />
+        </property>
         <property name="customerId" type="string">
             <column name="CUSTOMER_ID" length="16" />
         </property>

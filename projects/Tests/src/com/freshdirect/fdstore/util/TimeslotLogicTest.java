@@ -64,7 +64,7 @@ public class TimeslotLogicTest extends TestCase {
 	}
 	
 	public void testTimingBug() {
-		assertEquals(89, TimeslotLogic
+		assertEquals(true, TimeslotLogic
 				.getAvailableCapacity(createTimeslot(FUTURE, 99, 99, 0, 10),
 						PAST, TimeslotLogic.PAGE_CHEFSTABLE, 30));
 	}	
@@ -73,7 +73,7 @@ public class TimeslotLogicTest extends TestCase {
 			int totalCapacity, int ctCapacity, int baseAllocation,
 			int ctAllocation, Date currentTime) {
 
-		assertEquals(expectedCapacity, TimeslotLogic.getAvailableCapacity(
+		assertEquals(expectedCapacity > 0, TimeslotLogic.getAvailableCapacity(
 				createTimeslot(BASE, totalCapacity, ctCapacity, baseAllocation,
 						ctAllocation), currentTime, page, 30));
 	}
@@ -105,7 +105,7 @@ public class TimeslotLogicTest extends TestCase {
 		return new DlvTimeslotModel(new PrimaryKey(""), "", base,
 				new TimeOfDay("09:00 am"), new TimeOfDay("11:00 am"),
 				new TimeOfDay("09:00 pm"), EnumTimeslotStatus.PREMIUM,
-				totalCapacity, ctCapacity, baseAllocation, ctAllocation, 30, true,"");
+				totalCapacity, ctCapacity, baseAllocation, ctAllocation, 30, false,"");
 	}
 
 }

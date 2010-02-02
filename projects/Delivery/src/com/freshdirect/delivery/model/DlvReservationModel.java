@@ -16,6 +16,8 @@ import java.util.Date;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.*;
+import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -35,19 +37,52 @@ public class DlvReservationModel extends ModelSupport {
 	private RoutingActivityType unassignedActivityType;
 	private String profileName;	
 	private boolean inUPS;
-	//private String routingOrderId;
-	/*private Date unassignedDateTime;
-	
+	private Double orderSize;
+	private Double serviceTime;
+	private Double reservedOrderSize;
+	private Double reservedServiceTime;
+	private EnumRoutingUpdateStatus updateStatus;
+		
 
-	public Date getUnassignedDateTime() {
-		return unassignedDateTime;
+	public Double getOrderSize() {
+		return orderSize;
 	}
 
-	public void setUnassignedDateTime(Date _date) {
-		this.unassignedDateTime = _date;
-	}*/
-	
-	
+	public void setOrderSize(Double orderSize) {
+		this.orderSize = orderSize;
+	}
+
+	public Double getServiceTime() {
+		return serviceTime;
+	}
+
+	public void setServiceTime(Double serviceTime) {
+		this.serviceTime = serviceTime;
+	}
+
+	public Double getReservedOrderSize() {
+		return reservedOrderSize;
+	}
+
+	public void setReservedOrderSize(Double reservedOrderSize) {
+		this.reservedOrderSize = reservedOrderSize;
+	}
+
+	public Double getReservedServiceTime() {
+		return reservedServiceTime;
+	}
+
+	public void setReservedServiceTime(Double reservedServiceTime) {
+		this.reservedServiceTime = reservedServiceTime;
+	}
+
+	public EnumRoutingUpdateStatus getUpdateStatus() {
+		return updateStatus;
+	}
+
+	public void setUpdateStatus(EnumRoutingUpdateStatus updateStatus) {
+		this.updateStatus = updateStatus;
+	}
 
 	public RoutingActivityType getUnassignedActivityType() {
 		return unassignedActivityType;
@@ -84,7 +119,8 @@ public class DlvReservationModel extends ModelSupport {
 		Date expirationDateTime,
 		String timeslotId,
 		String zoneId,
-		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS) {
+		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS,
+		Double orderSize, Double serviceTime, Double reservedOrderSize, Double reservedServiceTime, EnumRoutingUpdateStatus status) {
 			
 		this.orderId = orderId;
 		this.customerId = customerId;
@@ -100,6 +136,11 @@ public class DlvReservationModel extends ModelSupport {
 		this.unassignedActivityType=unassignedActivityType;
 		this.inUPS=inUPS;
 		//this.routingOrderId=routingOrderId;
+		this.orderSize = orderSize;
+		this.serviceTime = serviceTime;
+		this.reservedOrderSize = reservedOrderSize;
+		this.reservedServiceTime = reservedServiceTime;
+		this.updateStatus = status;
 	}
 
 	public DlvReservationModel(
@@ -110,9 +151,12 @@ public class DlvReservationModel extends ModelSupport {
 		Date expirationDateTime,
 		String timeslotId,
 		String zoneId,
-		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS) {
+		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS, 
+		Double orderSize, Double serviceTime, Double reservedOrderSize, Double reservedServiceTime, EnumRoutingUpdateStatus status) {
 			
-		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type, addressId,deliveryDate,zoneCode/*,unassignedDateTime*/,unassignedActivityType,inUPS);
+		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type, addressId,deliveryDate
+						,zoneCode/*,unassignedDateTime*/,unassignedActivityType,inUPS
+						, orderSize, serviceTime, reservedOrderSize, reservedServiceTime , status);
 		this.setPK(pk);
 
 	}

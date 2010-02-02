@@ -49,6 +49,7 @@ public class OrderModelAssembler implements IDataAssembler {
 		
 		IOrderModel tmpOutputModel = (IOrderModel)objInput;
 		OrderInfoModel infoModel = new OrderInfoModel();
+		try {
 		infoModel.setLocationId(tmpOutputModel.getDeliveryInfo()
 					.getDeliveryLocation().getLocationId());
 		infoModel.setOrderNumber(tmpOutputModel.getOrderNumber());
@@ -78,6 +79,10 @@ public class OrderModelAssembler implements IDataAssembler {
 		infoModel.setDeliveryZone(tmpOutputModel.getDeliveryInfo().getDeliveryZone().getZoneNumber());
 		infoModel.setLatitude(tmpOutputModel.getDeliveryInfo().getDeliveryLocation().getGeographicLocation().getLatitude());
 		infoModel.setLongitude(tmpOutputModel.getDeliveryInfo().getDeliveryLocation().getGeographicLocation().getLongitude());
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("objInput >>"+objInput);
+		}
 		return infoModel;
 	}
 }

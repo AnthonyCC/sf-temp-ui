@@ -51,12 +51,17 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		FDCartModel cart = user.getShoppingCart();
 
+		boolean isForced = false;
 		String deliveryTimeSlotId = request.getParameter("deliveryTimeslotId");
 		if (deliveryTimeSlotId == null) {
 			this.addError("deliveryTime", "Please select a delivery time.");
 			return ERROR;
 		}
 
+		if(deliveryTimeSlotId.startsWith("f_")) {
+			deliveryTimeSlotId = deliveryTimeSlotId.replaceAll("f_", "");
+			isForced = true;
+		}
 		boolean chefsTable = user.isChefsTable() || "true".equals(request.getParameter("chefstable"));
 
 		FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(deliveryTimeSlotId);
@@ -141,7 +146,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						EnumReservationType.STANDARD_RESERVATION,
 						erpAddress,
 						chefsTable,
-						ctDeliveryProfile);
+						ctDeliveryProfile, isForced);
 
 				// save reservation id in cart
 				cart.setDeliveryReservation(timeSlotResrv);

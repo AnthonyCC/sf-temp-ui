@@ -26,6 +26,9 @@
         <property name="loadBalanceFactor" type="big_decimal">
             <column name="LOADBALANCE_FACTOR" precision="10" />
         </property>
+        <property name="deliveryRate" type="big_decimal">
+            <column name="DELIVERY_RATE" precision="5" />
+        </property>
         <property name="balanceBy" type="string">
             <column name="BALANCE_BY" length="16" />
         </property>

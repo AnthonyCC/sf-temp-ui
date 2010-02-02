@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.web;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,19 +16,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.routing.model.AreaModel;
-import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
-import com.freshdirect.routing.model.IZoneModel;
-import com.freshdirect.routing.model.RoutingSchedulerIdentity;
-import com.freshdirect.routing.model.ZoneModel;
+import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
-import com.freshdirect.routing.util.RoutingUtil;
+import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
@@ -73,15 +70,53 @@ public class CapacityController extends AbstractMultiActionController {
 		
 		
 		if(TransStringUtil.isEmpty(rDate)) {
-			rDate = TransStringUtil.getCurrentDate();
+			rDate = TransStringUtil.getNextDate();
 		}
 		
 		mav.getModel().put("rDate", rDate);
 		mav.getModel().put("cutOff", cutOff);
 		mav.getModel().put("rType", rType);
+		mav.getModel().put("autorefresh", request.getParameter("autorefresh"));
 		mav.getModel().put("cutoffs", domainManagerService.getCutOffs());
 		
 		return mav;
+	}
+	
+	private IDeliverySlot matchSlotToMetrics(List<IDeliverySlot> slots, IDeliveryWindowMetrics metrics) {
+		
+		IDeliverySlot result = null;
+		Iterator<IDeliverySlot> _itr = slots.iterator();
+		IDeliverySlot _tmpSlot = null;
+		
+		if(slots != null) {
+			while(_itr.hasNext()) {
+				_tmpSlot = _itr.next();
+				
+				if(isMatchingTime(_tmpSlot.getStartTime(), metrics.getDeliveryStartTime())
+						&& isMatchingTime(_tmpSlot.getStopTime(), metrics.getDeliveryEndTime())) {
+					result = _tmpSlot;
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	
+	private boolean isMatchingTime(Date date1, Date date2) {
+		boolean result = false;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date1);
+		int hour1 = cal.get(Calendar.HOUR_OF_DAY);
+		int minute1 = cal.get(Calendar.MINUTE);
+		
+		cal.setTime(date2);
+		int hour2 = cal.get(Calendar.HOUR_OF_DAY);
+		int minute2 = cal.get(Calendar.MINUTE);
+		
+		if(hour1 == hour2 && minute1 == minute2) {
+			result = true; 
+		}
+		return result;
 	}
 	
 	private Map<String, List<Capacity>> executeEarlyWarningOrder(ModelAndView mav, String rDate, String cutOff, String rType) {
@@ -94,6 +129,9 @@ public class CapacityController extends AbstractMultiActionController {
 				
 				DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
 								
+				Map<String, List<IDeliverySlot>> refSlotsByZone = deliveryProxy.getTimeslotsByDate
+																	(deliveryDate, getCutOffTime(cutOff), null);
+				
 				Map<String, List<IDeliveryWindowMetrics>> slotsByZone = deliveryProxy.getTimeslotsByDateEx
 																			(deliveryDate, getCutOffTime(cutOff), null);
 								
@@ -102,6 +140,7 @@ public class CapacityController extends AbstractMultiActionController {
 				String _zoneCode = null;
 								
 				List<IDeliveryWindowMetrics> metrics = null;
+				IDeliverySlot _refSlot = null;
 												
 				while(_itr.hasNext()) {
 					_zoneCode = _itr.next();										
@@ -128,8 +167,15 @@ public class CapacityController extends AbstractMultiActionController {
 							_capacity.setTotalAllocated(_metrics.getTotalAllocatedOrders());
 							_capacity.setTotalConfirmed(_metrics.getTotalConfirmedOrders());							
 							
+							_refSlot = matchSlotToMetrics(refSlotsByZone.get(_zoneCode), _metrics);
+							if(_refSlot != null) {
+								_capacity.setManuallyClosed(_refSlot.isManuallyClosed());
+								_capacity.setDynamicActive(_refSlot.isDynamicActive());
+								_capacity.setReferenceId(_refSlot.getReferenceId());
 						}						
+							
 					}					
+				}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -160,6 +206,7 @@ public class CapacityController extends AbstractMultiActionController {
 				String _zoneCode = null;
 				IRoutingSchedulerIdentity _schId = new RoutingSchedulerIdentity();
 				_schId.setDeliveryDate(deliveryDate);
+				IDeliverySlot _refSlot = null;
 				
 				IZoneModel _zModel = new ZoneModel();
 				IAreaModel _aModel = new AreaModel();
@@ -204,8 +251,15 @@ public class CapacityController extends AbstractMultiActionController {
 															+ _metrics.getReservedTravelTime());
 							_capacity.setTotalConfirmed(_metrics.getConfirmedServiceTime() 
 															+ _metrics.getConfirmedTravelTime());							
+							
+							_refSlot = matchSlotToMetrics(_slots, _metrics);
+							if(_refSlot != null) {
+								_capacity.setManuallyClosed(_refSlot.isManuallyClosed());
+								_capacity.setDynamicActive(_refSlot.isDynamicActive());
+								_capacity.setReferenceId(_refSlot.getReferenceId());
 						}						
 					}					
+				}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -218,13 +272,14 @@ public class CapacityController extends AbstractMultiActionController {
 										, Map<String, List<Capacity>> capacityMapping)  {
 		
 		List<EarlyWarningCommand> capacity = new ArrayList<EarlyWarningCommand>();
-		Map<String, Capacity> regionCapacity = new TreeMap<String, Capacity>();
+		Map<Region, Capacity> regionCapacity = new HashMap<Region, Capacity>();
 		List<EarlyWarningCommand> regCapacity = new ArrayList<EarlyWarningCommand>();
 		
 		Map<String, Zone> zoneMapping = getZoneMapping();
 		Iterator<String> _capItr = capacityMapping.keySet().iterator();
 		String _zoneCode = null;
 		Capacity _capacity = null;
+		Capacity _tmpRegCapacity = null;
 		try {
 			while(_capItr.hasNext()) {
 				_zoneCode = _capItr.next();
@@ -247,6 +302,8 @@ public class CapacityController extends AbstractMultiActionController {
 				_displayCommand.setCode(_refZone.getArea().getCode());
 				_displayCommand.setName(_refZone.getArea().getName());
 				
+				boolean isOpen = false;
+				boolean isDynamicActive = false;
 				while(_childItr.hasNext()) {
 					_capacity = _childItr.next();
 					
@@ -255,6 +312,15 @@ public class CapacityController extends AbstractMultiActionController {
 					totalAllocated = totalAllocated + _capacity.getTotalAllocated();
 					
 					_timeslotCommand = new EarlyWarningCommand();
+					if(!_capacity.isManuallyClosed()) {
+						isOpen = true;
+					}
+					if(_capacity.isDynamicActive()) {
+						isDynamicActive = true;
+					}
+					_timeslotCommand.setManuallyClosed(_capacity.isManuallyClosed());
+					_timeslotCommand.setDynamicActive(_capacity.isDynamicActive());
+					_timeslotCommand.setReferenceId(_capacity.getReferenceId());
 					timeslotDetails.add(_timeslotCommand);
 					_timeslotCommand.setName(RoutingDateUtil.formatDateTime
 							(_capacity.getDeliveryStartTime(), _capacity.getDeliveryEndTime()));
@@ -272,6 +338,8 @@ public class CapacityController extends AbstractMultiActionController {
 					percentageConfirmed = (totalConfirmed/totalCapacity)*100.0;
 					percentageAllocated = (totalAllocated/totalCapacity)*100.0;
 				}
+				_displayCommand.setManuallyClosed(!isOpen);
+				_displayCommand.setDynamicActive(isDynamicActive);
 				_displayCommand.setTotalCapacity(formatter.formatCapacity(totalCapacity));
 				_displayCommand.setConfirmedCapacity(formatter.formatCapacity(totalConfirmed));
 				_displayCommand.setAllocatedCapacity(formatter.formatCapacity(totalAllocated));
@@ -279,17 +347,25 @@ public class CapacityController extends AbstractMultiActionController {
 				_displayCommand.setPercentageAllocated(""+Math.round(percentageAllocated)+"%");
 				capacity.add(_displayCommand);
 				
-				if(!regionCapacity.containsKey(_refZone.getRegion().getName())) {
-					regionCapacity.put(_refZone.getRegion().getName(), new Capacity());
+				if(!regionCapacity.containsKey(_refZone.getRegion())) {
+					_tmpRegCapacity = new Capacity();
+					_tmpRegCapacity.setManuallyClosed(true);
+					regionCapacity.put(_refZone.getRegion(), _tmpRegCapacity);
 				}
-				Capacity _tmpRegCapacity = regionCapacity.get(_refZone.getRegion().getName());
+				_tmpRegCapacity  = regionCapacity.get(_refZone.getRegion());
 				_tmpRegCapacity.setTotalCapacity(_tmpRegCapacity.getTotalCapacity()+totalCapacity);
 				_tmpRegCapacity.setTotalAllocated(_tmpRegCapacity.getTotalAllocated()+totalAllocated);
 				_tmpRegCapacity.setTotalConfirmed(_tmpRegCapacity.getTotalConfirmed()+totalConfirmed);
+				if(!_displayCommand.isManuallyClosed()) {
+					_tmpRegCapacity.setManuallyClosed(false);
+			}
+				if(_displayCommand.isDynamicActive()) {
+					_tmpRegCapacity.setDynamicActive(true);
+				}
 			}
 			
-			Iterator<String> _regItr = regionCapacity.keySet().iterator();
-			String _regName = null;
+			Iterator<Region> _regItr = regionCapacity.keySet().iterator();
+			Region _region = null;
 			Capacity _regCap = null;
 			EarlyWarningCommand _regDisplayCommand = null; 
 			
@@ -303,18 +379,23 @@ public class CapacityController extends AbstractMultiActionController {
 				
 				double _regPerConfirmed = 0;
 				double _regPerAllocated = 0;
-				_regName = _regItr.next();
-				_regCap = regionCapacity.get(_regName);
+				_region = _regItr.next();
+				
+				_regCap = regionCapacity.get(_region);
 				
 				totalCapacity = totalCapacity + _regCap.getTotalCapacity();
 				totalConfirmed = totalConfirmed + _regCap.getTotalConfirmed();							
 				totalAllocated = totalAllocated + _regCap.getTotalAllocated();
 				
 				_regDisplayCommand =  new EarlyWarningCommand();
-				_regDisplayCommand.setName(_regName);
+				_regDisplayCommand.setName(_region.getName());
+				_regDisplayCommand.setCode(_region.getCode());
 				_regDisplayCommand.setTotalCapacity(formatter.formatCapacity(_regCap.getTotalCapacity()));
 				_regDisplayCommand.setAllocatedCapacity(formatter.formatCapacity(_regCap.getTotalAllocated()));
 				_regDisplayCommand.setConfirmedCapacity(formatter.formatCapacity(_regCap.getTotalConfirmed()));
+				_regDisplayCommand.setRegion(true);
+				_regDisplayCommand.setManuallyClosed(_regCap.isManuallyClosed());
+				_regDisplayCommand.setDynamicActive(_regCap.isDynamicActive());
 				
 				if(_regCap.getTotalCapacity() > 0) {
 					_regPerConfirmed = (_regCap.getTotalConfirmed()/_regCap.getTotalCapacity())*100.0;
@@ -330,6 +411,9 @@ public class CapacityController extends AbstractMultiActionController {
 			_regDisplayCommand.setTotalCapacity(formatter.formatCapacity(totalCapacity));
 			_regDisplayCommand.setAllocatedCapacity(formatter.formatCapacity(totalAllocated));
 			_regDisplayCommand.setConfirmedCapacity(formatter.formatCapacity(totalConfirmed));
+			_regDisplayCommand.setRegion(true);
+			_regDisplayCommand.setManuallyClosed(false);
+			_regDisplayCommand.setDynamicActive(false);
 			if(totalCapacity > 0) {
 				percentageConfirmed = (totalConfirmed/totalCapacity)*100.0;
 				percentageAllocated = (totalAllocated/totalCapacity)*100.0;
@@ -354,12 +438,13 @@ public class CapacityController extends AbstractMultiActionController {
 	public ModelAndView unassignedHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
 		String rDate = request.getParameter("rDate");
+				
 		List<UnassignedCommand> unassigneds = new ArrayList<UnassignedCommand>();
 		
 		ModelAndView mav = new ModelAndView("unassignedView");
 		
 		if(TransStringUtil.isEmpty(rDate)) {
-			rDate = TransStringUtil.getCurrentDate();
+			rDate = TransStringUtil.getNextDate();
 		}
 		
 		if(!TransStringUtil.isEmpty(rDate)) {
@@ -368,26 +453,41 @@ public class CapacityController extends AbstractMultiActionController {
 				
 				DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
 						
-				List<IOrderModel> orders = deliveryProxy.getUnassigned(deliveryDate, null, null);
+				List<IUnassignedModel> orders = deliveryProxy.getUnassigned(deliveryDate, null, null);
 				
-				Iterator<IOrderModel> _itr = orders.iterator();
-				IOrderModel _order = null;
+				Iterator<IUnassignedModel> _itr = orders.iterator();
+				IUnassignedModel _order = null;
 				UnassignedCommand _unassigned = null;
 				
 				while(_itr.hasNext()) {
 					_order = _itr.next();
+					
 					_unassigned = new UnassignedCommand();
 					
-					_unassigned.setCreateModTime(_order.getCreateModifyTime());
-					_unassigned.setCustomerId(_order.getCustomerNumber());
-					_unassigned.setOrderId(_order.getOrderNumber());
-					_unassigned.setTimeWindow(RoutingDateUtil.formatDateTime(_order.getDeliveryInfo().getDeliveryStartTime()
-								, _order.getDeliveryInfo().getDeliveryEndTime()));
-					_unassigned.setUnassignedTime(_order.getUnassignedTime());
-					_unassigned.setUnassignedAction(_order.getUnassignedAction());
+					_unassigned.setCreateModTime(_order.getOrder().getCreateModifyTime());
+					_unassigned.setCustomerId(_order.getOrder().getCustomerNumber());
+					_unassigned.setOrderId(_order.getOrder().getOrderNumber());
+					_unassigned.setTimeWindow(RoutingDateUtil.formatDateTime(_order.getOrder().getDeliveryInfo().getDeliveryStartTime()
+								, _order.getOrder().getDeliveryInfo().getDeliveryEndTime()));
+					_unassigned.setUnassignedTime(_order.getOrder().getUnassignedTime());
+					_unassigned.setUnassignedAction(_order.getOrder().getUnassignedAction());
 					
-					_unassigned.setReservationId(_order.getDeliveryInfo().getReservationId());
-					_unassigned.setZone(_order.getDeliveryInfo().getDeliveryZone().getZoneNumber());
+					_unassigned.setReservationId(_order.getOrder().getDeliveryInfo().getReservationId());
+					_unassigned.setZone(_order.getOrder().getDeliveryInfo().getDeliveryZone().getZoneNumber());
+					
+					_unassigned.setOrderSize(_order.getOrder().getDeliveryInfo().getOrderSize());
+					_unassigned.setServiceTime(_order.getOrder().getDeliveryInfo().getServiceTime());
+					
+					_unassigned.setUnassignedOrderSize(_order.getOrder().getUnassignedOrderSize());
+					_unassigned.setUnassignedServiceTime(_order.getOrder().getUnassignedServiceTime());
+					
+					_unassigned.setUpdateStatus(_order.getOrder().getUpdateStatus());
+					
+					_unassigned.setManuallyClosed(_order.getSlot().isManuallyClosed());
+					_unassigned.setDynamicActive(_order.getSlot().isDynamicActive());
+					
+					_unassigned.setIsChefsTable(_order.getIsChefsTable());
+					_unassigned.setIsForced(_order.getIsForced());
 					unassigneds.add(_unassigned);
 				}
 				
@@ -397,6 +497,7 @@ public class CapacityController extends AbstractMultiActionController {
 		}
 		
 		mav.getModel().put("rDate", rDate);
+		mav.getModel().put("autorefresh", request.getParameter("autorefresh"));
 		mav.getModel().put("unassigneds", unassigneds );
 		return mav;
 	}
@@ -405,7 +506,34 @@ public class CapacityController extends AbstractMultiActionController {
 		
 		private Date deliveryStartTime;
 		private Date deliveryEndTime;
+		private boolean manuallyClosed;
+		private String referenceId;
+		private boolean dynamicActive;
 		
+		
+		@Override
+		public String toString() {
+			return "Capacity [deliveryEndTime=" + deliveryEndTime
+					+ ", deliveryStartTime=" + deliveryStartTime + "]";
+		}
+		public boolean isDynamicActive() {
+			return dynamicActive;
+		}
+		public void setDynamicActive(boolean dynamicActive) {
+			this.dynamicActive = dynamicActive;
+		}
+		public String getReferenceId() {
+			return referenceId;
+		}
+		public void setReferenceId(String referenceId) {
+			this.referenceId = referenceId;
+		}
+		public boolean isManuallyClosed() {
+			return manuallyClosed;
+		}
+		public void setManuallyClosed(boolean manuallyClosed) {
+			this.manuallyClosed = manuallyClosed;
+		}
 		public Date getDeliveryStartTime() {
 			return deliveryStartTime;
 		}

@@ -7,7 +7,7 @@ public class ConfirmTimeslotCommand implements java.io.Serializable {
 	
 	private DlvReservationModel reservation;
 	private ContactAddressModel address;
-	private String previousOrderId;
+	private String erpOrderId;
 	private boolean isUpdateOnly;
 	
 	
@@ -19,12 +19,13 @@ public class ConfirmTimeslotCommand implements java.io.Serializable {
 		this.isUpdateOnly = isUpdateOnly;
 	}
 
-	public String getPreviousOrderId() {
-		return previousOrderId;
+	
+	public String getErpOrderId() {
+		return erpOrderId;
 	}
 
-	public void setPreviousOrderId(String previousOrderId) {
-		this.previousOrderId = previousOrderId;
+	public void setErpOrderId(String erpOrderId) {
+		this.erpOrderId = erpOrderId;
 	}
 
 	public void setReservation(DlvReservationModel reservation) {

@@ -16,6 +16,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.routing.model.IDeliverySlot;
 
 /**
  *

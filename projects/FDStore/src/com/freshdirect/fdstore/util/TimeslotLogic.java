@@ -5,7 +5,10 @@ package com.freshdirect.fdstore.util;
 
 import java.util.Date;
 
+import com.freshdirect.delivery.TimeslotCapacityContext;
+import com.freshdirect.delivery.TimeslotCapacityWrapper;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
+import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 
 /**
  * Utility to calculate available capacity in given circumstances.
@@ -32,20 +35,36 @@ public class TimeslotLogic {
 	 *            cutoffTime
 	 * @return the number of available orders.
 	 */
-	public static int getAvailableCapacity(DlvTimeslotModel timeslotModel,
+	public static boolean getAvailableCapacity(DlvTimeslotModel timeslotModel,
 			Date currentTime, int page, int autoRelease) {
-		switch (page) {
-		case PAGE_NORMAL:
-			if (timeslotModel.isCTCapacityReleased(currentTime)) {
-				return timeslotModel.getTotalAvailable();
-			} else {
-				return timeslotModel.getBaseAvailable();
+		
+		TimeslotCapacityContext context = new TimeslotCapacityContext();
+		context.setChefsTable(PAGE_CHEFSTABLE == page);
+		context.setCurrentTime(currentTime);
+		
+		TimeslotCapacityWrapper capacityProvider = new TimeslotCapacityWrapper(timeslotModel, context);
+		return capacityProvider.isAvailable();	
+	}
+	
+		
+	public static IDeliveryWindowMetrics recalculateCapacity(DlvTimeslotModel timeslotModel) {
+		
+		IDeliveryWindowMetrics _metrics = null;
+		if(timeslotModel != null ) {
+			
+			if(timeslotModel.getRoutingSlot() != null 
+										&& timeslotModel.getRoutingSlot().getDeliveryMetrics() != null ) {
+				TimeslotCapacityContext context = new TimeslotCapacityContext();
+								
+				TimeslotCapacityWrapper capacityProvider = new TimeslotCapacityWrapper(timeslotModel, context);
+				
+				_metrics = timeslotModel.getRoutingSlot().getDeliveryMetrics();
+				
+				_metrics.setOrderCapacity(capacityProvider.getCalculatedDynamicCapacity());
+				_metrics.setOrderCtCapacity(capacityProvider.getCalculatedDynamicCTCapacity());
 			}
-		case PAGE_CHEFSTABLE:
-			return timeslotModel.getTotalAvailable();
-		default:
-			throw new IllegalArgumentException("No such page type: " + page);
 		}
+		return _metrics;
 	}
 
 }

@@ -1,6 +1,9 @@
 package com.freshdirect.transadmin.web.model;
 
+import java.util.Date;
 import java.util.List;
+
+import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 
 public class EarlyWarningCommand extends BaseCommand {
 	
@@ -20,7 +23,49 @@ public class EarlyWarningCommand extends BaseCommand {
 	
 	private List<EarlyWarningCommand> timeslotDetails;
 
+	private boolean manuallyClosed;
 	
+	private String referenceId;
+	
+	private boolean isRegion;
+
+	private boolean dynamicActive;
+	
+	
+	
+
+	public boolean isDynamicActive() {
+		return dynamicActive;
+	}
+
+	public void setDynamicActive(boolean dynamicActive) {
+		this.dynamicActive = dynamicActive;
+	}
+
+	public boolean isRegion() {
+		return isRegion;
+	}
+
+	public void setRegion(boolean isRegion) {
+		this.isRegion = isRegion;
+	}
+
+	public boolean isManuallyClosed() {
+		return manuallyClosed;
+	}
+
+	public void setManuallyClosed(boolean manuallyClosed) {
+		this.manuallyClosed = manuallyClosed;
+	}
+
+	public String getReferenceId() {
+		return referenceId;
+	}
+
+	public void setReferenceId(String referenceId) {
+		this.referenceId = referenceId;
+	}
+
 	public List<EarlyWarningCommand> getTimeslotDetails() {
 		return timeslotDetails;
 	}

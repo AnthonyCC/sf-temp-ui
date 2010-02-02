@@ -143,6 +143,16 @@
                 </td>
                </tr>  
                
+               <tr>
+                  <td>Orders/Hour</td>
+                  <td>                  
+                    <form:input maxlength="50" size="30" path="deliveryRate" />
+                </td>
+                <td>
+                  &nbsp;<form:errors path="deliveryRate" />
+                </td>
+               </tr>  
+               
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>
                   <td colspan="3" align="center">

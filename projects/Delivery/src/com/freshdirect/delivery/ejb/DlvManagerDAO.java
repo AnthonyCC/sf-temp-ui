@@ -44,10 +44,17 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
+import com.freshdirect.routing.model.AreaModel;
+import com.freshdirect.routing.model.DeliverySlot;
+import com.freshdirect.routing.model.IAreaModel;
+import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.RoutingSchedulerIdentity;
+import com.freshdirect.routing.util.RoutingUtil;
 
 /**
  * @author knadeem
@@ -105,18 +112,19 @@ public class DlvManagerDAO {
 	}
 
 	private static final String TIMESLOTS =
-		"select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity, " 
+		"select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity" +
+		", ta.AREA AREA_CODE, z.NAME ZONE_NAME, TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  " 
 		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, " 
 		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, " 
 		+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
 		+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active "
-		+ "from dlv.region r, dlv.region_data rd, dlv.zone z, dlv.timeslot t "
+		+ "from dlv.region r, dlv.region_data rd, dlv.timeslot t, dlv.zone z, transp.zone ta, transp.trn_area a "
 		+ "where r.service_type = ? and r.id = rd.region_id "
 		+ "and rd.id = z.region_data_id "
 		+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
 		+ "and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id) "
 		+ 	"or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)) "
-		+ "and z.id = t.zone_id and t.base_date >= rd.start_date "
+		+ "and t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and t.base_date >= rd.start_date "
 		+ "and t.base_date >= ? and t.base_date < ? "
 		+ "and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE "
 		+ "order by t.base_date, z.zone_code, t.start_time";
@@ -156,13 +164,14 @@ public class DlvManagerDAO {
 	
 
 	private static final String CF_TIMESLOTS =
-		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity, "
+		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity" +
+		", ta.AREA AREA_CODE, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
 			+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active "
-			+ "from dlv.region r, dlv.region_data rd, dlv.zone z, dlv.timeslot ts "
-			+ "where r.id=rd.region_id and rd.id=z.region_data_id and z.id=ts.zone_id "
+			+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a "
+			+ "where r.id=rd.region_id and rd.id=z.region_data_id and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE "
 			+ "and rd.start_date=( "
 			+ "select max(start_date) from dlv.region_data rd1 "
 			+ "where rd1.start_date<=ts.base_date and rd1.region_id = r.id) "
@@ -237,6 +246,14 @@ public class DlvManagerDAO {
 		}
 		return lst;
 	}
+	
+	private static List<DlvTimeslotModel> processTimeslotCompositeResultSet(ResultSet rs) throws SQLException {
+		List<DlvTimeslotModel> lst = new ArrayList<DlvTimeslotModel>();
+		while (rs.next()) {			
+			lst.add(getTimeslot(rs));
+		}
+		return lst;
+	}
 
 	private static DlvTimeslotModel getTimeslot(ResultSet rs) throws SQLException {
 
@@ -253,23 +270,51 @@ public class DlvManagerDAO {
 		int ctCapacity = rs.getInt("CT_CAPACITY");
 		int ctReleaseTime = rs.getInt("CT_RELEASE_TIME");
 		boolean ctActive = "X".equals(rs.getString("CT_ACTIVE"));
-		String zoneCode=rs.getString("ZONE_CODE");
-		return new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, ctCapacity, baseAllocation, ctAllocation, ctReleaseTime, ctActive,zoneCode);
+		String zoneCode = rs.getString("ZONE_CODE");
+		DlvTimeslotModel _tmpSlot = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, ctCapacity, baseAllocation
+									, ctAllocation, ctReleaseTime, ctActive,zoneCode);
+		
+		// Prepare routing slot configuration from result set
+		IDeliverySlot routingSlot = new DeliverySlot();
+		routingSlot.setStartTime(rs.getTimestamp("START_TIME"));
+		routingSlot.setStopTime(rs.getTimestamp("END_TIME"));
+		routingSlot.setWaveCode(rs.getString("WAVE_CODE"));
+		routingSlot.setDynamicActive("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC")) ? true : false);
+		routingSlot.setManuallyClosed("X".equalsIgnoreCase(rs.getString("IS_CLOSED")) ? true : false);
+		routingSlot.setZoneCode(zoneCode);
+				
+		IRoutingSchedulerIdentity _schId = new RoutingSchedulerIdentity();
+		_schId.setDeliveryDate(baseDate);
+		
+		IAreaModel _aModel = new AreaModel();
+		_aModel.setAreaCode(rs.getString("AREA_CODE"));
+		_aModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
+		_aModel.setDeliveryRate(rs.getDouble("AREA_DLV_RATE"));
+		
+		_schId.setRegionId(RoutingUtil.getRegion(_aModel));
+		_schId.setArea(_aModel);
+		_schId.setDepot(_aModel.isDepot());
+		
+		routingSlot.setSchedulerId(_schId);
+		_tmpSlot.setRoutingSlot(routingSlot);
+		
+		return _tmpSlot; 
 	}
 
 	private static final String DEPOT_TIMESLOTS =
-		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity, "
+		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity" +
+		", ta.AREA AREA_CODE, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
 			+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active "
-			+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z "
+			+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a "
 			+ "where r.id=rd.region_id "
 			+ "and rd.start_date=( "
 			+ "select max(start_date) from dlv.region_data rd1 "
 			+ "where rd1.start_date<=ts.base_date and rd1.region_id = r.id) "
 			+ "and ts.base_date >= ? and ts.base_date < ? "
-			+ "and r.id = ? and rd.id = z.region_data_id and z.zone_code = ? and ts.zone_id = z.id "
+			+ "and r.id = ? and rd.id = z.region_data_id and z.zone_code = ? and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE "
 			+ "and to_date(to_char(ts.base_date-1, 'MM/DD/YY ') || to_char(ts.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE "
 			+ "order by ts.base_date, z.zone_code, ts.start_time ";
 
@@ -300,16 +345,17 @@ public class DlvManagerDAO {
 	}
 
 	private static final String TIMESLOT_BY_ID =
-		"select distinct timeslot.id, base_date, start_time, end_time, cutoff_time, timeslot.status, timeslot.zone_id, capacity, ct_capacity, "
+		"select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.ct_capacity" +
+		", ta.AREA AREA_CODE, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
-			+ "where zone_id = timeslot.zone_id AND timeslot.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
+			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
-			+ "where zone_id = timeslot.zone_id AND timeslot.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
-			+ "(select z.ct_release_time from dlv.zone z where z.id = timeslot.zone_id) as ct_release_time, "
-			+ "(select z.ct_active from dlv.zone z where z.id = timeslot.zone_id) as ct_active, "
-			+ "(select z.zone_code from dlv.zone z where z.id=timeslot.zone_id ) as zone_code "
-			+ " from dlv.timeslot, dlv.reservation "
-			+ "where timeslot.id = ? AND timeslot.id=reservation.TIMESLOT_ID(+)";
+			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
+			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
+			+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active, "
+			+ "(select z.zone_code from dlv.zone z where z.id=ts.zone_id ) as zone_code "
+			+ " from dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a, dlv.reservation r "
+			+ "where ts.id = ? AND ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE AND ts.id=r.TIMESLOT_ID(+)";
 
 	public static DlvTimeslotModel getTimeslotById(Connection conn, String timeslotId) throws SQLException, FinderException {
 		PreparedStatement ps = conn.prepareStatement(TIMESLOT_BY_ID);
@@ -328,7 +374,7 @@ public class DlvManagerDAO {
 		}
 	}
 
-	private static final String RESERVATION_FOR_CUSTOMER="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION,R.IN_UPS, R.ROUTING_ORDER_ID FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z WHERE  R.CUSTOMER_ID = ? AND R.STATUS_CODE = ? AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
+	private static final String RESERVATION_FOR_CUSTOMER="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z WHERE  R.CUSTOMER_ID = ? AND R.STATUS_CODE = ? AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
 	public static List getReservationForCustomer(Connection conn, String customerId) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(RESERVATION_FOR_CUSTOMER);
@@ -347,7 +393,7 @@ public class DlvManagerDAO {
 		return reservations;
 	}
 
-	private static final String RESERVATION_BY_CUSTOMER_AND_TIMESLOT="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME,R.UNASSIGNED_ACTION,R.IN_UPS, R.ROUTING_ORDER_ID FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z WHERE R.CUSTOMER_ID = ? AND R.TIMESLOT_ID=? AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
+	private static final String RESERVATION_BY_CUSTOMER_AND_TIMESLOT="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME,R.UNASSIGNED_ACTION,R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z WHERE R.CUSTOMER_ID = ? AND R.TIMESLOT_ID=? AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
 	public static List getAllReservationsByCustomerAndTimeslot(Connection conn, String customerId, String timeslotId) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(RESERVATION_BY_CUSTOMER_AND_TIMESLOT);
@@ -383,9 +429,12 @@ public class DlvManagerDAO {
 			rs.getDate("BASE_DATE"),
 			rs.getString("ZONE_CODE"),
 			RoutingActivityType.getEnum( rs.getString("UNASSIGNED_ACTION")) ,
-			"X".equalsIgnoreCase(rs.getString("IN_UPS"))?true:false)
-			
-			;
+			"X".equalsIgnoreCase(rs.getString("IN_UPS"))?true:false
+			, rs.getBigDecimal("ORDER_SIZE") != null ? new Double(rs.getDouble("ORDER_SIZE")) : null
+			, rs.getBigDecimal("SERVICE_TIME") != null ? new Double(rs.getDouble("SERVICE_TIME")) : null
+			, rs.getBigDecimal("RESERVED_ORDER_SIZE") != null ? new Double(rs.getDouble("RESERVED_ORDER_SIZE")) : null
+			, rs.getBigDecimal("RESERVED_SERVICE_TIME") != null ? new Double(rs.getDouble("RESERVED_SERVICE_TIME")) : null
+			, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS")));
 	}
 
 	
@@ -498,13 +547,14 @@ public class DlvManagerDAO {
 	}
 	
 	private static final String ZONE_CAPACITY_QUERY = 
-		"select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, t.ct_capacity, " 
+		"select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, t.ct_capacity" +
+		", ta.AREA AREA_CODE, z.NAME ZONE_NAME, TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE," 
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
 			+ "(select z.ct_active from dlv.zone z where z.id = t.zone_id) as ct_active, p.zone_code "
-			+ "from dlv.planning_resource p, dlv.timeslot t " 
-			+ "where p.id = t.resource_id and p.zone_code = ? " 
+			+ "from dlv.planning_resource p, dlv.timeslot t, dlv.zone z, transp.zone ta, transp.trn_area a " 
+			+ "where p.id = t.resource_id and t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and p.zone_code = ? " 
 			+ "and p.day >= ? and p.day < ? "
 			+ "and to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE "
 			+ "order by t.base_date, p.zone_code, t.start_time ";
@@ -848,7 +898,52 @@ public class DlvManagerDAO {
 	    }
 	    ps.close();
 	}
-	private static final String SET_RESERVATION_SET_TO_UPS_FLAG_QUERY="UPDATE DLV.RESERVATION SET IN_UPS='X', ROUTING_ORDER_ID=? WHERE ID=?";
+	
+	private static final String UPDATE_RESERVATIONSTATUS_QUERY = "UPDATE DLV.RESERVATION SET ORDER_SIZE = ?, SERVICE_TIME = ?, UPDATE_STATUS = ? WHERE ID=?";
+	public static void setReservationUpdateStatusInfo(Connection conn, String reservationId, double orderSize, double serviceTime, String status)  throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONSTATUS_QUERY);
+		ps.setDouble(1, orderSize);
+		ps.setDouble(2, serviceTime);
+	    ps.setString(3, status);
+	    ps.setString(4, reservationId);
+	    if(ps.executeUpdate() != 1){
+	        ps.close();
+	        throw new SQLException("Cannot find reservation to METRICS UPDATE STATUS for id: " + reservationId);
+	    }
+	    ps.close();
+	}
+	
+	private static final String UPDATE_RESERVATIONMETRICSSTATUS_QUERY = "UPDATE DLV.RESERVATION SET RESERVED_ORDER_SIZE = ?, RESERVED_SERVICE_TIME = ?, UPDATE_STATUS = ? WHERE ID=?";
+	public static void setReservationMetricsStatusInfo(Connection conn, String reservationId, double orderSize, double serviceTime, String status)  throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONMETRICSSTATUS_QUERY);
+		ps.setDouble(1, orderSize);
+		ps.setDouble(2, serviceTime);
+	    ps.setString(3, status);
+	    ps.setString(4, reservationId);
+	    if(ps.executeUpdate() != 1){
+	        ps.close();
+	        throw new SQLException("Cannot find reservation to METRICS UPDATE STATUS for id: " + reservationId);
+	    }
+	    ps.close();
+	}
+	
+	private static final String UPDATE_RESERVATIONMETRICS_QUERY = "UPDATE DLV.RESERVATION SET RESERVED_ORDER_SIZE = ?, RESERVED_SERVICE_TIME = ? WHERE ID=?";
+	public static void setReservationOrderMetrics(Connection conn, String reservationId, double orderSize, double serviceTime)  throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONMETRICS_QUERY);
+		ps.setDouble(1, orderSize);
+		ps.setDouble(2, serviceTime);	    
+	    ps.setString(3, reservationId);
+	    if(ps.executeUpdate() != 1){
+	        ps.close();
+	        throw new SQLException("Cannot find reservation to RESERVED METRICS STATUS for id: " + reservationId);
+	    }
+	    ps.close();
+	}
+	
+	private static final String SET_RESERVATION_SET_TO_UPS_FLAG_QUERY = "UPDATE DLV.RESERVATION SET IN_UPS='X', ROUTING_ORDER_ID=? WHERE ID=?";
 	public static void setInUPS(Connection conn,String reservationId, String orderNum)  throws SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement(SET_RESERVATION_SET_TO_UPS_FLAG_QUERY);
@@ -875,8 +970,8 @@ public class DlvManagerDAO {
 	//List<DlvReservationModel> getUnassignedReservations()
 	
 	private static final String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
-	" T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION,R.IN_UPS, R.ROUTING_ORDER_ID FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z "+
-	" WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) AND unassigned_datetime IS NOT NULL  ORDER BY R.STATUS_CODE";
+	" T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z "+
+	" WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) AND (unassigned_action IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS <> 'SUS'))  ORDER BY R.STATUS_CODE";
 	public static List<DlvReservationModel> getUnassignedReservations(Connection conn, Date _date)  throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
@@ -898,7 +993,7 @@ public class DlvManagerDAO {
 	 
 	
 	private static final String LOCK_EXPIRED_RESERVATIONS="UPDATE DLV.RESERVATION SET STATUS_CODE=25 WHERE EXPIRATION_DATETIME<= SYSDATE AND STATUS_CODE=5";
-	private static final String GET_LOCKED_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION,R.IN_UPS, R.ROUTING_ORDER_ID FROM DLV.RESERVATION R, "+
+	private static final String GET_LOCKED_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS FROM DLV.RESERVATION R, "+
                                                    " DLV.TIMESLOT T, DLV.ZONE Z  where  r.expiration_datetime <= sysdate and r.status_code = 25 AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
 	public static List<DlvReservationModel> getExpiredReservations(Connection conn)  throws SQLException {
 		
@@ -926,5 +1021,61 @@ public class DlvManagerDAO {
 		PreparedStatement ps = conn.prepareStatement(MARK_LOCKED_RESERVATION_AS_EXPIRED_QUERY);
 	    ps.executeUpdate();
 	    ps.close();
+	}
+	
+	private static final String TIMESLOTS_BY_DATE =
+		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity" +
+		", z.zone_code, ts.ct_capacity, ta.AREA AREA_CODE, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE, "
+		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
+		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
+		+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
+		+ "(select z.ct_active from dlv.zone z where z.id = ts.zone_id) as ct_active "
+		+ "from dlv.region r, dlv.region_data rd, dlv.timeslot ts, dlv.zone z, transp.zone ta, transp.trn_area a "
+		+ "where r.id=rd.region_id and rd.id=z.region_data_id and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE " +
+		"and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)	" +
+		"or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= ? and region_id = r.id)) " +
+		"and ts.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and ts.base_date >= rd.start_date	and ts.base_date = ?	" +
+		"and ts.is_dynamic = 'X'	" +
+		"order by ts.base_date, z.zone_code, ts.start_time";
+
+	public static List getTimeslotsForDate(Connection conn, java.util.Date startDate) throws SQLException {
+				
+		PreparedStatement ps = conn.prepareStatement(TIMESLOTS_BY_DATE);
+		ps.setInt(1, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
+		ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
+		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
+		
+		ps.setDate(5, new java.sql.Date(startDate.getTime()));
+		ps.setDate(6, new java.sql.Date(startDate.getTime()));
+		ps.setDate(7, new java.sql.Date(startDate.getTime()));
+		
+		ResultSet rs = ps.executeQuery();
+		
+		List timeslots = processTimeslotCompositeResultSet(rs);
+		rs.close();
+		ps.close();
+		return timeslots;
+	}
+	
+	private static final String UPDATE_TIMESLOTS_BY_ID = "UPDATE DLV.TIMESLOT SET CAPACITY = ? , CT_CAPACITY = ? WHERE ID = ?";
+	
+	public static int updateTimeslotsCapacity(Connection conn, List<DlvTimeslotModel> dlvTimeSlots ) throws SQLException{
+		
+		PreparedStatement ps = conn.prepareStatement(UPDATE_TIMESLOTS_BY_ID);
+		
+	    
+	    for (DlvTimeslotModel _slot : dlvTimeSlots) {
+	    	if(_slot != null && _slot.getRoutingSlot() != null && 
+	    			_slot.getRoutingSlot().getDeliveryMetrics() != null) {
+				ps.setInt(1, _slot.getRoutingSlot().getDeliveryMetrics().getOrderCapacity());
+				ps.setInt(2, _slot.getRoutingSlot().getDeliveryMetrics().getOrderCtCapacity());
+			    ps.setString(3, _slot.getId());
+			    ps.addBatch();
+	    	}
+		}
+		int[] count = ps.executeBatch();
+		ps.close();
+		return count.length;
 	}
 }

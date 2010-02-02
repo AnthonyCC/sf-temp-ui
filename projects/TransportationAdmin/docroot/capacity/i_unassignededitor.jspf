@@ -1,0 +1,140 @@
+<script>
+            
+      var editPanel;
+      //var waitPanel;
+                 
+      var jsonrpcClient = new JSONRpcClient("capacityprovider.ax");
+      var errColor = "#FF0000";
+	  var msgColor = "#00FF00";
+            	    
+      function init() {
+        editPanel = new YAHOO.widget.Panel("panel-1", {       
+                          width: "400px", 
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+        editPanel.render();
+        
+        /*waitPanel = new YAHOO.widget.Panel("wait", { width: "240px", 
+                                                          fixedcenter: true, 
+                                                          close: true, 
+                                                          draggable: false, 
+                                                          zindex:4,
+                                                          modal: true,
+                                                          visible: false
+                                                        } 
+                                                    );
+        
+        waitPanel.setHeader("Loading, please wait...");
+        waitPanel.setBody("<img src=\"images/rel_interstitial_loading.gif\"/>");*/
+        
+	}
+       
+              
+      function populateOrder(reservationId) {          
+        
+          /*waitPanel.render(document.body);
+          waitPanel.show();*/
+          
+    	  var result = jsonrpcClient.AsyncCapacityProvider.getRoutingOrderByReservation(populateOrderCallback
+																							, reservationId); 
+      	  
+      }
+      
+      function populateOrderCallback(result, exception) {
+    	  //waitPanel.hide();	                    
+          editPanel.render(document.body);    
+          //editPanel.moveTo(450, 200);
+          
+          if(result != null && result.orderNumber != null) {
+        	  YAHOO.util.Dom.get("reservationId").value = result.deliveryInfo.reservationId;
+        	  YAHOO.util.Dom.get("orderSize").value = result.deliveryInfo.orderSize;
+        	  YAHOO.util.Dom.get("serviceTime").value = result.deliveryInfo.serviceTime;
+        	  
+          } else {
+        	  addSysMessage("Unable to load data", true);
+          }
+          editPanel.show();
+      }
+
+	function sendForm() {       	                           
+      	  
+      	  var p_rid = YAHOO.util.Dom.get("reservationId").value;
+       	  var p_osize = YAHOO.util.Dom.get("orderSize").value;
+		  var p_otime = YAHOO.util.Dom.get("serviceTime").value;		  
+  		   		  
+      	  if(p_rid.trim().length == 0 ||
+      			p_osize.trim().length == 0
+      	  			|| p_otime.trim().length == 0) {
+      	  	addSysMessage("Please enter the required values", true);		
+      	  } else {
+	    	  var result = jsonrpcClient.AsyncCapacityProvider.updateRoutingOrderByReservation(sendFormCallback
+						    	  															, p_rid ,p_osize, p_otime);  
+		  }
+      }
+
+	function sendFormCallback(result, exception) {
+    	  
+        if(exception) {               
+            alert('Unable to connect to host system. Please contact system administrator!');               
+            return;
+        }
+        if(result == 0) {
+        	addSysMessage("Unassigned update failed", true);
+        } else {
+        	addSysMessage("Unassigned updated successfully", false);
+         	window.location.reload();
+        }                           
+    }
+
+      function addSysMessage(msg, isError) {
+    		var errContObj = YAHOO.util.Dom.get("errContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+    		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+      }
+      
+      function hideForm() { 
+      	  YAHOO.util.Dom.get("errContainer").value = "";
+          editPanel.hide();
+      }
+      
+      YAHOO.util.Event.addListener(window, "load", init);
+      YAHOO.util.Event.addListener(window, "unload", hideForm);
+     
+    </script>
+   
+    <div id="wait"></div>
+    <div style='display:none;height:0px;width:0px;'>
+      <div id="panel-1">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />
+      				&nbsp;&nbsp;&nbsp;Edit Unassigned</div>
+      <div class="bd">
+      	<div id="errContainer"></div>
+      	<div style="background-color:#D7C8FF">
+	      	<table class="forms1">           		
+				<tr><td>Reservation ID </td>
+				<td><input id="reservationId" type="text" name="reservationId" readonly="readonly" /></td></tr>
+				
+				<tr><td>Order Size</td>
+				<td><input id="orderSize" type="text" name="orderSize" /></td></tr>
+				
+				<tr><td>Service Time</td>
+				<td><input id="serviceTime" type="text" name="serviceTime" /></td></tr>
+												
+				<tr>
+					<td colspan="2" align="center"><input type="button" value="Update" onclick="javascript:sendForm()" /> </td>
+				</tr> 
+		</table>
+        </div>
+    </div>
+    </form>

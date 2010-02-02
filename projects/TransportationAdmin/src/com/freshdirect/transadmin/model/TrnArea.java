@@ -17,6 +17,8 @@ public class TrnArea  implements java.io.Serializable, TrnBaseEntityI {
 	
 	private BigDecimal loadBalanceFactor;
 	
+	private BigDecimal deliveryRate;
+		
 	private String balanceBy;
 	
 	private String needsLoadBalance;
@@ -115,6 +117,15 @@ public class TrnArea  implements java.io.Serializable, TrnBaseEntityI {
 		this.isDepot = isDepot;
 	}
 
+	public BigDecimal getDeliveryRate() {
+		return deliveryRate;
+	}
+
+	public void setDeliveryRate(BigDecimal deliveryRate) {
+		this.deliveryRate = deliveryRate;
+	}
+
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

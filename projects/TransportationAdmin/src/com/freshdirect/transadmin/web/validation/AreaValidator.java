@@ -43,6 +43,11 @@ public class AreaValidator extends AbstractValidator {
 			}
 		}
 		
+		ValidationUtils.rejectIfEmpty(errors, "deliveryRate", "app.error.112", new Object[]{"Delivery Rate"},"required field");
+		if(!errors.hasFieldErrors("deliveryRate")) {
+			validateNumericLength("deliveryRate", model.getLoadBalanceFactor(), errors);
+		}
+		
 		/*if("X".equalsIgnoreCase(model.getIsDepot()) && !"X".equals(model.getActive())) {
 			errors.rejectValue("isDepot", "app.actionmessage.144", new Object[]{},"");
 		}*/

@@ -9,8 +9,9 @@
 <%  
    pageContext.setAttribute("HAS_ADDBUTTON", "false");
    pageContext.setAttribute("HAS_DELETEBUTTON", "false");
+   pageContext.setAttribute("IS_USERADMIN", ""+com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request));
    String dateRangeVal = request.getParameter("rDate") != null ? request.getParameter("rDate") : "";
-   if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
+   if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getNextDate();
  %>
   
   <link rel="stylesheet" href="css/transportation.css" type="text/css" />		
@@ -57,16 +58,20 @@
                       );
                       
                                    
+                     var jsonrpcClient = new JSONRpcClient("capacityprovider.ax");
 
-                    function doCompositeLink(compId1,compId2,compId3, url) {
+                     var currentUpdateSource;
+                      
+                    function doCompositeLink(compId1,compId2,compId3,compId4, url) {
 			          var param1 = document.getElementById(compId1).value;
 			          var param2 = document.getElementById(compId2).value;
 			          var param3 = document.getElementById(compId3).value;
+			          var param4 = document.getElementById(compId4).checked;
 			          			          
 			          if(param1.length == 0 || param2.length == 0) {
 			          		alert("Please select the required filter param (Date, Cut Off)");
 			          } else {
-			          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3;
+			          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3+"&"+compId4+"="+param4;
 			          }
         			} 
         			
@@ -79,7 +84,7 @@
 						    for (i = 0; i < rows.length; i++) {	    	
 						        var cells = rows[i].getElementsByTagName("td");
 						        
-						        for (j = 0; j < cells.length; j++) {
+						        for (j = 0; j < cells.length-2; j++) {
 						        	
 						            cells[j].onmouseover = function () {
 						            	previousClass = this.parentNode.className;
@@ -102,7 +107,7 @@
                     
                  function showTimeslot(rowDiv, rowX, rowY) {
                  	var tsPanel = new YAHOO.widget.Panel(rowDiv, {       
-					                          width: "500px",					                           
+					                          width: "530px",					                           
 					                          close: true, 
 					                          draggable: true, 
 					                          zindex:4,
@@ -114,6 +119,62 @@
           			tsPanel.show();					                          
                  }  
 
+                 function updateTimeslot(sourceObj, referenceId, type) {
+                	 currentUpdateSource = sourceObj;
+                 	 var result = jsonrpcClient.AsyncCapacityProvider.updateTimeslotForStatus(updateTimeslotCallback
+																		, referenceId, (sourceObj.value == 'O'), type
+																		, document.getElementById('rDate').value);			                          
+                 }  
+                          
+                 function updateTimeslotCallback(result, exception) {
+               	  
+                     if(exception) {               
+                         alert('Unable to connect to host system. Please contact system administrator!'+exception);               
+                         return;
+                     }
+                     if(result == 0) {
+                    	 alert('Update Failed');
+                     } else {                    	 
+                     	if(currentUpdateSource.value == 'C') {
+                     		currentUpdateSource.value = 'O';
+                     		currentUpdateSource.className = "dynamic_enabled";
+                     	} else {
+                     		currentUpdateSource.value = 'C';
+                     		currentUpdateSource.className = "dynamic_disabled";
+                     	}
+                     	window.location.reload();
+                     }                           
+                 }
+
+                 function updateDynamicTimeslot(sourceObj, referenceId, type) {
+                	 if (confirm("You are about to enable/disable dynamic routing. Do you want to continue?")) { 
+                			 
+	                	 currentUpdateSource = sourceObj;
+	                 	 var result = jsonrpcClient.AsyncCapacityProvider.updateTimeslotForDynamicStatus(updateDynamicTimeslotCallback
+																			, referenceId, (sourceObj.value == 'S'), type
+																			, document.getElementById('rDate').value);	
+                	 }		                          
+                 }  
+
+                 function updateDynamicTimeslotCallback(result, exception) {
+               	  
+                     if(exception) {               
+                         alert('Unable to connect to host system. Please contact system administrator!'+exception);               
+                         return;
+                     }
+                     if(result == 0) {
+                    	 alert('Update Failed');
+                     } else {                    	 
+                     	if(currentUpdateSource.value == 'D') {
+                     		currentUpdateSource.value = 'S';
+                     		currentUpdateSource.className = "dynamic_disabled";
+                     	} else {
+                     		currentUpdateSource.value = 'D';
+                     		currentUpdateSource.className = "dynamic_enabled";
+                     	}
+                     	window.location.reload();
+                     }                           
+                 }
                           
                   </script>
                 </td>
@@ -144,9 +205,9 @@
                    </select>
                 
                 </td>
-                
+                <td><span style="font-size: 12px">&nbsp;Auto Refresh :</span><input type="checkbox" name="autorefresh" id="autorefresh" <%= ("on".equalsIgnoreCase(request.getParameter("autorefresh")) ? "checked=\"true\"" : "false") %>  /></td>
                    <td>
-                     <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','cutOff','rType','earlywarning.do')" />
+                     <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','cutOff','rType','autorefresh','earlywarning.do')" />
                   </td>  
                   
               </tr>
@@ -159,52 +220,61 @@
       </div>
     <table>
     <tr>
-    <td style="vertical-align: top;" width="45%">
-	    
-	      <ec:table items="earlywarnings_region"   action="${pageContext.request.contextPath}/earlywarning.do"
-	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-	            width="98%"  filterable="false"  showPagination="false" showExports="false" showStatusBar="false" sortable="false" 
-	            tableId="region_earlywarning" rowsDisplayed="100" view="fd" >
-	            
-	            
-	            <ec:row interceptor="earlywarningmarker">                
-	              <ec:column property="name"  title="Name"/>                           
-	              <ec:column property="totalCapacity" title="Planned" />
-	              <ec:column property="confirmedCapacity" title="Confirmed" />
-	              <ec:column property="percentageConfirmed" title="% Confirmed" />
-	              <ec:column property="allocatedCapacity" title="Allocated" />
-				  <ec:column property="percentageAllocated" title="% Allocated" />				  	                           
-	            </ec:row>
-	          </ec:table>
-	    
-	  </td> 
-	  <td width="55%">
+	  <td style="vertical-align: top;" width="68%">
 	      <ec:table items="earlywarnings"   action="${pageContext.request.contextPath}/earlywarning.do"
 	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-	            width="98%" showPagination="false" rowsDisplayed="1000" view="fd" >
+	            width="100%" filterable="false" showPagination="false" rowsDisplayed="1000" view="fd" >
 	            
 	            <ec:exportPdf fileName="earlywarnings.pdf" tooltip="Export PDF" 
 	                      headerTitle="Early Warning" />
 	            <ec:exportXls fileName="earlywarnings.xls" tooltip="Export PDF" />
 	            <ec:exportCsv fileName="earlywarnings.csv" tooltip="Export CSV" delimiter="|"/>
-	                
+	            
 	            <ec:row interceptor="earlywarningmarker">                
-	              <ec:column property="name"  title="Name"/> 
+	              <ec:column property="name"  title="Name"/>                           
 	              <ec:column property="code" title="Zone" />             
 	              <ec:column property="totalCapacity" title="Planned" />
 	              <ec:column property="confirmedCapacity" title="Confirmed" />
 	              <ec:column property="percentageConfirmed" title="% Confirmed" />
 	              <ec:column property="allocatedCapacity" title="Allocated" />
 				  <ec:column property="percentageAllocated" title="% Allocated" />				  	                           
+				  <ec:column title=" " width="5px" 
+									filterable="false" sortable="false" cell="capacityCloseButtonCell" property="referenceId" />
+				  <ec:column title=" " width="5px" 
+									filterable="false" sortable="false" cell="capacityDynamicButtonCell" property="dynamicActive" />										  	                           
 	            </ec:row>
 	          </ec:table>
+	    </td>
+	    <td>&nbsp;&nbsp;&nbsp;</td>
+	    <td style="vertical-align: top;" >
+	    
+	      <ec:table items="earlywarnings_region"   action="${pageContext.request.contextPath}/earlywarning.do"
+	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
+	            width="100%"  filterable="false"  showPagination="false" showExports="false" showStatusBar="false" sortable="false" 
+	            tableId="region_earlywarning" rowsDisplayed="1000" view="fd" >
+	            
+	                
+	            <ec:row interceptor="earlywarningmarker">                
+	              <ec:column property="name"  title="Name"/> 
+	              <ec:column property="totalCapacity" title="Planned" />
+	              <ec:column property="confirmedCapacity" title="Confirmed" />
+	              <ec:column property="percentageConfirmed" title="% Confirmed" />
+	              <ec:column property="allocatedCapacity" title="Allocated" />
+				  <ec:column property="percentageAllocated" title="% Allocated" />				  	                           
+				  <ec:column title=" " width="5px" 
+									filterable="false" sortable="false" cell="capacityCloseButtonCell"  property="referenceId" />
+				  <ec:column title=" " width="5px" 
+									filterable="false" sortable="false" cell="capacityDynamicButtonCell"  property="dynamicActive" />									  	                           
+	            </ec:row>
+	          </ec:table>
+	    
 	    </td>
 	    </tr> 
     </table>
 	    <div id="timeslot_container" style="display:none;">
 	    <%
 	    	List gridData = (List)request.getAttribute("earlywarnings");
-	    	int _rowIndex = 3;	    	
+	    	int _rowIndex = 2;	    	
 	    	if(gridData != null) {
 	    		
 	    		Iterator<EarlyWarningCommand> _itr = gridData.iterator();
@@ -226,6 +296,8 @@
 					
 							<td class="tableHeader" >Allocated</td>
 							<td class="tableHeader" >% Allocated</td>
+							<td class="tableHeader" >&nbsp;</td>
+							<td class="tableHeader" >&nbsp;</td>
 						</tr>
 						</thead>
 						<tbody class="tableBody" >
@@ -236,12 +308,22 @@
 	    				while(_itrTimeslot.hasNext()) {
 	    					_commandTS = _itrTimeslot.next();%>
 	    					<tr>
-								<td><%=_commandTS.getName() %></td>						
+								<td><%=_commandTS.getName() %>&nbsp;</td>						
 								<td><%=_commandTS.getTotalCapacity() %></td>
 								<td><%=_commandTS.getConfirmedCapacity() %></td>
 								<td><%=_commandTS.getPercentageConfirmed() %></td>
 								<td><%=_commandTS.getAllocatedCapacity()%></td>
 								<td><%=_commandTS.getPercentageAllocated()%></td>
+								<td><input type="button" 
+										class="<%= _commandTS.isManuallyClosed() ? "timeslot_closed" : "timeslot_open" %>" 
+												value="<%= (_commandTS.isManuallyClosed() ? "C" : "O") %>" 
+														onclick="updateTimeslot(this, '<%= _commandTS.getReferenceId() %>', '0')"
+														<%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request) ?  " " : " disabled=\"disabled\"") %> /></td>
+								<td><input type="button" 
+										class="<%= _commandTS.isDynamicActive() ? "dynamic_enabled" : "dynamic_disabled" %>" 
+												value="<%= (_commandTS.isDynamicActive() ? "D" : "S") %>" 
+														onclick="updateDynamicTimeslot(this, '<%= _commandTS.getReferenceId() %>', '0')"
+														<%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request) ?  " " : " disabled=\"disabled\"") %> /></td>						
 							</tr>
 	    					
 	    			   <%}
@@ -257,7 +339,7 @@
 	        </div>
 	        <script>
 		      addTSRowHandlers('ec_table', 'rowMouseOver');
-		      <% if(request.getParameter("cutOff") != null && request.getParameter("rType") != null) { %>
+		      <% if(request.getParameter("cutOff") != null && request.getParameter("rType") != null && "true".equalsIgnoreCase(request.getParameter("autorefresh"))) { %>
 		      		doRefresh(<%= TransportationAdminProperties.getCapacityRefreshTime() %>);
 		      <% } %>
 		    </script>

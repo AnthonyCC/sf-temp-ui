@@ -2,9 +2,7 @@ package com.freshdirect.delivery.routing.ejb;
 
 
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.jms.JMSException;
@@ -18,21 +16,12 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
-import com.freshdirect.delivery.routing.ejb.TimeslotCommand;
-import com.freshdirect.routing.model.GeocodeResult;
-import com.freshdirect.routing.model.GeographicLocation;
+import com.freshdirect.routing.ejb.ReservationUpdateCommand;
 import com.freshdirect.routing.model.IBuildingModel;
-import com.freshdirect.routing.model.IGeocodeResult;
-import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.LocationModel;
-import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
-import com.freshdirect.routing.service.util.BaseGeocodeEngine;
-import com.freshdirect.routing.util.RoutingServicesProperties;
-import com.freshdirect.routing.util.RoutingUtil;
 
 /**
  *
@@ -106,6 +95,14 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 					return;
 				}
 				process((CancelTimeslotCommand)ox);
+			} else if ("SAP_UPDATE".equals(addressMsg.getStringProperty("MessageType"))) {
+				Object ox = addressMsg.getObject();
+				if ((ox == null) || (!(ox instanceof ReservationUpdateCommand))) {
+					LOGGER.error("Message is not an CancelTimeslotCommand: " + msg);
+					// discard msg, no point in throwing it back to the queue
+					return;
+			}
+				process((ReservationUpdateCommand)ox);
 			}
 			
 
@@ -185,10 +182,20 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 	
     private void process(ConfirmTimeslotCommand command) throws FDResourceException {
 		
-			FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(),command.getAddress(), command.getPreviousOrderId());
+    	if(command != null && command.isUpdateOnly()) {
+    		FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(), command.getAddress());
+    	} else {
+    		FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(), command.getAddress());
 		
 	}
     
+	}
+    
+    private void process(ReservationUpdateCommand command) throws FDResourceException {
+		
+		FDDeliveryManager.getInstance().updateReservationStatus(command.getReservationId(), command.getAddress(), command.getSapOrderNumber());
+	}
+
     private void process(CancelTimeslotCommand command) throws FDResourceException {
 		
 		FDDeliveryManager.getInstance().releaseReservationEx(command.getReservation(), command.getAddress());

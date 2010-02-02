@@ -105,6 +105,7 @@
 
 				<prop key="/geographyprovider.ax">asyncGeographyController</prop>
 				<prop key="/dispatchprovider.ax">asyncDispatchController</prop>
+				<prop key="/capacityprovider.ax">asyncCapacityController</prop>
 				
 				<prop key="/gmap.do">geographyController</prop>
 				<prop key="/gmapexport.do">geographyController</prop>
@@ -118,6 +119,7 @@
                 <prop key="/earlywarning.do">capacityController</prop>
                 <prop key="/unassigned.do">capacityController</prop>
                 <prop key="/timeslotlog.do">adminController</prop>
+                <prop key="/notification.do">adminController</prop>
 			</props>
 		</property>
 	</bean>
@@ -237,6 +239,7 @@
             <prop key="/earlywarning.do">earlyWarningHandler</prop>
             <prop key="/unassigned.do">unassignedHandler</prop>
             <prop key="/timeslotlog.do">timeslotLogHandler</prop>
+            <prop key="/notification.do">notificationHandler</prop>
 		</props>
 		</property>
 	</bean>
@@ -499,6 +502,15 @@
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncDispatchProvider" value="com.freshdirect.transadmin.web.json.IDispatchProvider" />				
+			</map>
+		</property>
+	</bean>
+	
+	<bean name="asyncCapacityController" class="com.freshdirect.transadmin.web.json.CapacityProviderController">
+		
+		<property name="ajaxServices">
+			<map>
+				<entry key="AsyncCapacityProvider" value="com.freshdirect.transadmin.web.json.ICapacityProvider" />				
 			</map>
 		</property>
 	</bean>

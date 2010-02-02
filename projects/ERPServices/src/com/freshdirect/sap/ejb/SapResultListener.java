@@ -24,6 +24,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.mail.MessagingException;
+import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
@@ -55,18 +56,19 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
-import com.freshdirect.giftcard.ejb.GCGatewayHome;
-import com.freshdirect.giftcard.ejb.GCGatewaySB;
-import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
-import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
-import com.freshdirect.giftcard.ejb.GiftCardPersistanceDAO;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ejb.GCGatewayHome;
+import com.freshdirect.giftcard.ejb.GCGatewaySB;
+import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.payment.PaymentManager;
+import com.freshdirect.routing.ejb.ErpRoutingGatewayHome;
+import com.freshdirect.routing.ejb.ErpRoutingGatewaySB;
 import com.freshdirect.sap.command.SapCancelSalesOrder;
 import com.freshdirect.sap.command.SapChangeSalesOrder;
 import com.freshdirect.sap.command.SapCommandI;
@@ -87,6 +89,19 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
+	private static ServiceLocator ROUTING_LOCATOR = new ServiceLocator();
+	
+	static {
+		try {
+			Context ctx = FDStoreProperties.getRoutingInitialContext();
+			if(ctx != null) {
+				ROUTING_LOCATOR = new ServiceLocator(ctx);
+			}
+		} catch(NamingException e) {
+			LOGGER.warn("Unable to load routing context using primary"+e);
+		}
+	}
+	
 	public void onMessage(Message message) {
 
 		if (!(message instanceof ObjectMessage)) {
@@ -206,13 +221,23 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						}
 					}
 
+					if(EnumSaleType.REGULAR.equals(saleType)) {
+						ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
+						erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
+																		, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
+																		, ((SapCreateSalesOrder) command).getSapOrderNumber());
+					}
 				} else if (command instanceof SapCancelSalesOrder) {
 					saleEB.cancelOrderComplete();
 
 				} else if (command instanceof SapChangeSalesOrder) {
 					saleEB.modifyOrderComplete();
-
+					ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
+					erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
+																	, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
+																	, saleEB.getSapOrderNumber());
 				}
+
 				/*else if (command instanceof SapCreateSubscriptionOrder) {
 					saleEB.createOrderComplete(((SapCreateSubscriptionOrder) command).getSapOrderNumber());
 					
@@ -296,6 +321,14 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 	private GCGatewayHome getGCGatewayHome() {
 		try {
 			return (GCGatewayHome) LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway", GCGatewayHome.class);
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
+	}
+
+	private  ErpRoutingGatewayHome getErpRoutingGatewayHome() {
+		try {
+			return (ErpRoutingGatewayHome) ROUTING_LOCATOR.getRemoteHome("freshdirect.routing.ErpRoutingGateway", ErpRoutingGatewayHome.class);
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.freshdirect.framework.util.DateUtil;
+
 public class TransStringUtil {
 	
 	//public static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -92,6 +94,12 @@ public class TransStringUtil {
 		
 	public static String getCurrentDate() {		
 		return dateFormat.format(new Date());
+	}
+	
+	public static String getNextDate() {
+		Calendar baseDate = DateUtil.truncate(Calendar.getInstance());					
+		baseDate.add(Calendar.DATE, 1);
+		return dateFormat.format(baseDate.getTime());
 	}
 	
 	public static String getCurrentServerDate() {		

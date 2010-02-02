@@ -154,5 +154,10 @@
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>     	     
          
+     	  <menu id="ADO003" title="Notification" orientation="RIGHT" link="notification.do">
+	     	<access-uris>notification.do</access-uris>
+	     	<access-roles>TrnAdmin</access-roles>
+</menu>
+         
 </menu>
 </menus>

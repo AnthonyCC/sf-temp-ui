@@ -1144,6 +1144,7 @@ a.remove:hover      { border: 1px #999999 solid; background-color: #000000; colo
 /* CHECKOUT */
 
 .checkout_header {
+clear: left;
 position: relative;
 width: 100%;
 height: auto;

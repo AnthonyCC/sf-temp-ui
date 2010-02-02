@@ -2,7 +2,6 @@ package com.freshdirect.transadmin.web;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -12,7 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.transadmin.service.DispatchManagerI;
+import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LogManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -81,6 +81,27 @@ public class AdminController extends AbstractMultiActionController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return mav;
+	}
+
+	/**
+	 * Custom handler for early warning
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView notificationHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
+		ModelAndView mav = new ModelAndView("notificationView");
+		
+		try {
+			RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
+			mav.getModel().put("notifications", proxy.retrieveNotifications());
+			
+		} catch (RoutingServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+}
 		return mav;
 	}
 

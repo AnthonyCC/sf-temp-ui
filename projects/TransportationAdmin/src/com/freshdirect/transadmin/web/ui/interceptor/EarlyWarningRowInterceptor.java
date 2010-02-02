@@ -17,6 +17,7 @@ public class EarlyWarningRowInterceptor extends FDRowInterceptor {
     	
     	if(getDouble(rowEntity.getPercentageAllocated()) > 90.0) {
     		row.setStyleClass("earlyWarningRow");
+    		
     	} else {
     		if(TransStringUtil.isEmpty(rowEntity.getName())) {
     			row.setStyleClass("earlyWarningTotalRow");
@@ -24,6 +25,11 @@ public class EarlyWarningRowInterceptor extends FDRowInterceptor {
     			super.modifyRowAttributes(model, row);
     		}
     	}
+    	/*if(rowEntity.isManuallyClosed()) {
+			row.setStyle("text-decoration:line-through;");
+		} else {
+			row.setStyle("text-decoration:none;");
+		}*/
     }
     
     private double getDouble(String strVal) {

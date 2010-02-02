@@ -17,9 +17,9 @@ import java.rmi.RemoteException;
  * @version $Revision: 1$
  * @author $Author: Sivachandar$
  */
-public interface RoutingGatewayHome extends EJBHome {
+public interface ErpRoutingGatewayHome extends EJBHome {
     
-    public RoutingGatewaySB create() throws CreateException, RemoteException;
+    public ErpRoutingGatewaySB create() throws CreateException, RemoteException;
 
 }
 

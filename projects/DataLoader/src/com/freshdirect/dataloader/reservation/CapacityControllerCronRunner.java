@@ -1,0 +1,321 @@
+package com.freshdirect.dataloader.reservation;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.mail.MessagingException;
+import javax.naming.Context;
+import javax.naming.NamingException;
+
+import org.apache.log4j.Category;
+
+import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.delivery.ejb.DlvManagerHome;
+import com.freshdirect.delivery.ejb.DlvManagerSB;
+import com.freshdirect.delivery.model.DlvTimeslotModel;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.util.TimeslotLogic;
+import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.routing.model.IDeliveryWindowMetrics;
+import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+
+public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
+
+	private final static Category LOGGER = LoggerFactory.getInstance(CapacityControllerCronRunner.class);
+
+	private static final int DEFAULT_DAYS = 7;
+
+	public static void main(String[] args) {
+
+		if (!FDStoreProperties.isDynamicRoutingEnabled()) {
+			return;
+		}
+
+		CapacityControllerCronRunner cron = new CapacityControllerCronRunner();
+		Context ctx = null;
+
+		boolean isTrialRun = false;
+		boolean isPurgeEnabled = false;
+		boolean isReverse = false;
+		boolean isSendEmail = false;
+		List<Date> jobDate = new ArrayList<Date>();
+
+		try {
+			ctx = cron.getInitialContext();
+			DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
+			DlvManagerSB dsb = dlh.create();
+
+
+			if (args.length >= 1) {
+				for (int i = 0; i < args.length; i++) {
+					try { 
+						if (args[i].startsWith("jobDate=")) {
+							jobDate.add(DateUtil.truncate(DateUtil.toCalendar
+																(DateUtil.parse(args[i].substring("jobDate=".length())))).getTime());
+						} else if (args[i].startsWith("trail=")) {
+							isTrialRun =  new Boolean(args[i].substring("trail=".length())).booleanValue(); 
+						} else if (args[i].startsWith("purge=")) {								
+							isPurgeEnabled = new Boolean(args[i].substring("purge=".length())).booleanValue(); 
+						}  else if (args[i].startsWith("reverse=")) {								
+							isReverse = new Boolean(args[i].substring("reverse=".length())).booleanValue(); 
+						}  else if (args[i].startsWith("sendEmail=")) {								
+							isSendEmail = new Boolean(args[i].substring("sendEmail=".length())).booleanValue(); 
+						}
+					} catch (Exception e) {
+						System.err.println("Usage: java com.freshdirect.dataloader.reservation.CapacityControllerCronRunner [jobDate={date value}] [trail={true | false}] [purge={true | false}] [reverse={true | false}] [sendEmail={true | false}]");
+						System.exit(-1);
+					}
+				}
+			}
+			
+			LOGGER.info("##### CapacityControllerCronRunner Start: isTrialRun="+isTrialRun+"->isPurgeEnabled"+isPurgeEnabled+"->isSendEmail"+isSendEmail+"->isReverse"+isReverse+" ########");
+			if(jobDate.size() == 0) {
+
+				int incrementBy = isReverse ? -1 : 1;
+				Calendar baseDate = DateUtil.truncate(Calendar.getInstance());					
+				baseDate.add(Calendar.DATE, isReverse ? 7 : 1);
+				for(int i=0; i < DEFAULT_DAYS; i++) {
+					jobDate.add(baseDate.getTime());
+					baseDate.add(Calendar.DATE, incrementBy);
+				}
+			}
+
+
+			Iterator<Date> _dateItr = jobDate.iterator();
+			Date processDate = null;
+			while(_dateItr.hasNext()) {
+				processDate = _dateItr.next();
+				try {
+					List<DlvTimeslotModel> slots = dsb.getTimeslotsForDate(processDate);
+					LOGGER.info("CapacityControllerCronRunner beginning to synchronize "+slots.size()
+							+" timeslots for date "+processDate+ (isTrialRun ? " and is a trail run" : ""));
+					Map<String, List<DlvTimeslotModel>> slotsByZone = groupDeliverySlotByZone(slots);
+					Iterator<String> _itr = slotsByZone.keySet().iterator();
+
+					String _zoneCode = null;
+					List<IDeliverySlot> _routingSlots = null;
+					List<DlvTimeslotModel> _dlvSlots = null;
+
+					while(_itr.hasNext()) {
+
+						_zoneCode = _itr.next();
+						_dlvSlots = slotsByZone.get(_zoneCode);
+						_routingSlots = collectRoutingSlots(_dlvSlots);
+
+						List<IDeliveryWindowMetrics> metrics = null;
+						IRoutingSchedulerIdentity _schId = null;
+
+						if(_routingSlots.size() > 0) {
+							_schId = _routingSlots.get(0).getSchedulerId();
+							metrics = dsb.retrieveCapacityMetrics(_schId, _routingSlots, (isPurgeEnabled && !_dateItr.hasNext()));
+							attachWindowMetrics(_dlvSlots, metrics);
+						}									
+					}
+					recalculateCapacity(slots);
+					if(!isTrialRun) {
+						dsb.updateTimeslotsCapacity(slots);
+					}
+					if(isSendEmail) { 
+						email(processDate, slots, null, isTrialRun);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					LOGGER
+					.info(new StringBuilder(
+							"CapacityControllerCronRunner failed with exception : ")
+					.append(e.toString()).toString());
+					if(isSendEmail) { 
+						email(processDate, null, e.toString(), isTrialRun);
+					}
+				}
+			}
+
+
+			LOGGER.info("########################## CapacityControllerCronRunner Stop ##############################");
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.info(new StringBuilder(
+			"CapacityControllerCronRunner failed with exception : ")
+			.append(e.toString()).toString());
+			LOGGER.error(e);
+			if(isSendEmail) { 
+				email(Calendar.getInstance().getTime(), null, e.toString(), isTrialRun);
+			}
+		} finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+					ctx = null;
+				}
+			} catch (NamingException e) {
+				LOGGER.warn("Could not close CTX due to following NamingException",	e);
+			}
+		}
+	}
+
+	private static Map<String, List<DlvTimeslotModel>> groupDeliverySlotByZone(List<DlvTimeslotModel> dlvTimeSlots ) {
+
+		Map<String, List<DlvTimeslotModel>> groupedSlots = new HashMap<String, List<DlvTimeslotModel>>();
+
+		for(int i=0;i<dlvTimeSlots.size();i++) {
+			DlvTimeslotModel dlvTimeSlot = dlvTimeSlots.get(i);
+
+			if(groupedSlots.containsKey(dlvTimeSlot.getZoneCode())) {
+				List<DlvTimeslotModel> _timeSlots = groupedSlots.get(dlvTimeSlot.getZoneCode());
+				_timeSlots.add(dlvTimeSlot);
+				groupedSlots.put(dlvTimeSlot.getZoneCode(), _timeSlots);
+			}
+			else {
+				List<DlvTimeslotModel> _timeSlots = new ArrayList<DlvTimeslotModel>();
+				_timeSlots.add(dlvTimeSlot);
+				groupedSlots.put(dlvTimeSlot.getZoneCode(), _timeSlots);
+			}
+		}		
+		return groupedSlots;
+	}
+
+	private static List<IDeliverySlot> collectRoutingSlots(List<DlvTimeslotModel> dlvTimeSlots) {
+
+		List<IDeliverySlot> _slots = null;		
+		if(dlvTimeSlots != null) {
+			_slots = new ArrayList<IDeliverySlot>();
+			Iterator<DlvTimeslotModel> _itr = dlvTimeSlots.iterator();
+			while(_itr.hasNext()) {
+				_slots.add(_itr.next().getRoutingSlot());
+			}
+		}
+
+		return _slots;
+	}
+
+	private static void attachWindowMetrics(List<DlvTimeslotModel> dlvTimeSlots
+			, List<IDeliveryWindowMetrics> metrics) {
+
+		if(dlvTimeSlots != null && metrics != null
+				&& dlvTimeSlots.size() == metrics.size()) {
+			DlvTimeslotModel _dlvTimeSlot = null;
+			IDeliveryWindowMetrics _metrics = null;
+
+			for (int intCount = 0; intCount < dlvTimeSlots.size(); intCount++) { 
+				_dlvTimeSlot = dlvTimeSlots.get(intCount);
+				_metrics = metrics.get(intCount);
+				//System.out.println("Match Try >"+_dlvTimeSlot.getRoutingSlot().getStartTime()+"-->"+_metrics.getDeliveryStartTime()
+				//+"###"+_dlvTimeSlot.getRoutingSlot().getStopTime()+"-->"+_metrics.getDeliveryEndTime());
+				_dlvTimeSlot.getRoutingSlot().setDeliveryMetrics(_metrics);
+			}
+
+			/*Iterator<DlvTimeslotModel> _itrSlots = dlvTimeSlots.iterator();
+			while(_itrSlots.hasNext()) {
+				_dlvTimeSlot = _itrSlots.next();
+				Iterator<IDeliveryWindowMetrics> _itrMetrics = metrics.iterator();
+
+				while(_itrMetrics.hasNext()) {
+					_metrics = _itrMetrics.next();
+
+					if(_dlvTimeSlot.getRoutingSlot() != null &&
+							_dlvTimeSlot.getRoutingSlot().getStartTime().equals(_metrics.getDeliveryStartTime()) &&
+							_dlvTimeSlot.getRoutingSlot().getStopTime().equals(_metrics.getDeliveryEndTime()) ) {
+						_dlvTimeSlot.getRoutingSlot().setDeliveryMetrics(_metrics);
+
+					}
+				}
+			}*/
+		}
+		//return dlvTimeSlots;
+	}
+
+	private static void recalculateCapacity(List<DlvTimeslotModel> dlvTimeSlots) {
+
+		DlvTimeslotModel _dlvTimeSlot = null;		
+		if(dlvTimeSlots != null) {
+
+			Iterator<DlvTimeslotModel> _itr = dlvTimeSlots.iterator();
+			while(_itr.hasNext()) {
+				_dlvTimeSlot = _itr.next();	
+				if(_dlvTimeSlot.getRoutingSlot() != null) {
+					_dlvTimeSlot.getRoutingSlot().setDeliveryMetrics(TimeslotLogic.recalculateCapacity(_dlvTimeSlot));
+				}
+				//System.out.println(_dlvTimeSlot.getCapacity()+"->"+_dlvTimeSlot.getChefsTableCapacity() +"->"+
+				//_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics().getOrderCapacity() +"->"+ 
+				//_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics().getOrderCtCapacity() );
+			}
+		}		
+		//return _slots;
+	}
+
+	private static void email(Date processDate, List<DlvTimeslotModel> dlvTimeSlots
+			, String exceptionMsg, boolean isTrialRun) {
+
+		try {
+			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
+			String subject="Routing Capacity Synchronizer Cron :	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+
+			StringBuffer buff = new StringBuffer();
+
+			buff.append("<html>").append("<body>");
+			buff.append("<h2>").append("CapacityControllerCronRunner synchronized "+(dlvTimeSlots != null ? dlvTimeSlots.size() : "0")
+					+" timeslots for date "+(processDate != null ? dateFormatter.format(processDate) : " date error")
+					+ (isTrialRun ? " and is a trail run" : "")).append("</h2>");
+			String currentZone = null;
+			if(dlvTimeSlots != null) {
+				DlvTimeslotModel _dlvTimeSlot = null;	
+				Iterator<DlvTimeslotModel> _itr = dlvTimeSlots.iterator();
+				buff.append("<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
+				buff.append("<tr>").append("<th>").append("ZONE").append("</th>")
+				.append("<th>").append("WINDOW START").append("</th>")
+				.append("<th>").append("WINDOW END").append("</th>")
+				.append("<th>").append("CAPACITY").append("</th>")
+				.append("<th>").append("CTCAPACITY").append("</th>")
+				.append("<th>").append("ROUTING_CAPACITY").append("</th>")
+				.append("<th>").append("ROUTING_CTCAPACITY").append("</th>").append("</tr>");
+				while(_itr.hasNext()) {
+					_dlvTimeSlot = _itr.next();	
+					buff.append("<tr>")
+					.append("<td>").append(_dlvTimeSlot.getZoneCode().equalsIgnoreCase(currentZone) ? "" : _dlvTimeSlot.getZoneCode()).append("</td>")
+					.append("<td>").append(DateFormat.getTimeInstance().format(_dlvTimeSlot.getStartTimeAsDate())).append("</td>")
+					.append("<td>").append(DateFormat.getTimeInstance().format(_dlvTimeSlot.getEndTimeAsDate())).append("</td>")
+					.append("<td>").append(_dlvTimeSlot.getCapacity()).append("</td>")
+					.append("<td>").append(_dlvTimeSlot.getChefsTableCapacity()).append("</td>");
+					if(_dlvTimeSlot.getRoutingSlot() != null && 
+							_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics() != null) {
+						buff.append("<td>").append(_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics().getOrderCapacity()).append("</td>")
+						.append("<td>").append(_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics().getOrderCtCapacity()).append("</td>");
+					} else {
+						buff.append("<td>").append("ERROR").append("</td>")
+						.append("<td>").append("ERROR").append("</td>");
+					}
+					buff.append("</tr>");
+					currentZone = _dlvTimeSlot.getZoneCode();
+				}
+				buff.append("</table>");
+			}
+			if(exceptionMsg != null) {
+				buff.append("b").append(exceptionMsg).append("/b");
+			}
+			buff.append("</body>").append("</html>");
+
+			ErpMailSender mailer = new ErpMailSender();
+			mailer.sendMail(ErpServicesProperties.getSubscriptionMailFrom(),
+					ErpServicesProperties.getSubscriptionMailTo(),
+					ErpServicesProperties.getSubscriptionMailCC(),
+					subject, buff.toString(), true, "");
+			/*mailer.sendMail("sbagavathiappan@freshdirect.com",
+					"sbagavathiappan@freshdirect.com",
+					"rmathey@freshdirect.com",
+					subject, buff.toString(), true, "");*/
+
+		} catch (MessagingException e) {
+			LOGGER.warn("Error Sending Capacity cron report email: ", e);
+		}
+	}
+}

@@ -1442,6 +1442,7 @@
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
+			<pathelement location="${work.dir}/RoutingServices.jar"/>
 		</path>
 
 		<makeEjbProject
@@ -1511,6 +1512,7 @@
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
+			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
             <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/castor-0.9.5.3-xml.jar"/>
@@ -1529,6 +1531,7 @@
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
+			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
             <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 		</path>
@@ -2257,6 +2260,7 @@
 				<include name="DeliveryEJB-WL.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="FDStore.jar"/>
+				
 			</libraries>
 			<lib>
 				<include name="lcc.jar"/>
@@ -2301,6 +2305,7 @@
 				<include name="DeliveryEJB-WL.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="OCF.jar"/>
+				<include name="RoutingServices.jar"/>
 			</libraries>
 			<lib>
 				<include name="struts.jar"/>

@@ -14,11 +14,12 @@ package com.freshdirect.delivery.model;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.freshdirect.framework.core.*;
-import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.delivery.EnumTimeslotStatus;
 import com.freshdirect.delivery.planning.DlvShiftTimeslotModel;
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.routing.model.IDeliverySlot;
 
 public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 
@@ -55,6 +56,30 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	
 	private String zoneCode;
 	
+	
+	private IDeliverySlot routingSlot;
+	
+	/* Dummy Property for Hibernate*/
+	private String isDynamic;
+	private String isClosed;
+	
+		
+	public String getIsDynamic() {
+		return isDynamic;
+	}
+
+	public void setIsDynamic(String isDynamic) {
+		this.isDynamic = isDynamic;
+	}
+
+	public String getIsClosed() {
+		return isClosed;
+	}
+
+	public void setIsClosed(String isClosed) {
+		this.isClosed = isClosed;
+	}
+
 	public DlvTimeslotModel() {
 		super();
 	}
@@ -85,7 +110,7 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		this.setChefsTableAllocation(ctAllocation);
 		this.setCtReleaseTime(ctReleaseTime);
 		this.setCtActive(ctActive);
-		this.setZoneCode(zoneCode);
+		this.setZoneCode(zoneCode);		
 	}
 	
 	
@@ -281,5 +306,26 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		}
 		return false;
 	}
+	
+	public IDeliverySlot getRoutingSlot() {
+		return routingSlot;
+	}
+
+	public void setRoutingSlot(IDeliverySlot routingSlot) {
+		this.routingSlot = routingSlot;
+	}
+	
+		
+	public double getChefsTablePercentage() {
+		//System.out.println(getCapacity()+"-COST->" +getChefsTableCapacity());
+		double result = 0.0;
+		if(getCapacity() > 0) {
+			return getChefsTableCapacity()/(double)getCapacity();
+		}
+		return result;
+	}
+	
+	
+		
 
 }

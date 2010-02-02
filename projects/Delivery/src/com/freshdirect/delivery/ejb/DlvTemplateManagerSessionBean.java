@@ -97,7 +97,7 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 	}
 	
     private final static String timeslotForDateRangeAndZoneQuery =
-        "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, z.zone_code, ts.capacity, ts.ct_capacity, " +
+        "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, z.zone_code, ts.capacity, ts.ct_capacity, ts.ct_capacity, ts.is_dynamic, " +
         "(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, " +
         "(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, " +
         "z.ct_release_time as ct_release_time, " +
@@ -161,7 +161,7 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 		return timeslots;
 		
 	}
-	private static final String TIMESLOT_REGION_QUERY = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, z.zone_code, ts.capacity, ts.traffic_factor, ts.ct_capacity, "+
+	private static final String TIMESLOT_REGION_QUERY = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, z.zone_code, ts.capacity, ts.traffic_factor, ts.ct_capacity, ts.is_dynamic, "+
 		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "+
 		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "+
 		"(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "+

@@ -42,6 +42,8 @@
         	<property name="normalDate" column="CUTOFF_TIME" type="timestamp" not-null="true"/>
         </component>       
 
+		<property name="isDynamic" column="IS_DYNAMIC" />
+		<property name="isClosed" column="IS_CLOSED" />
     </class>
 
 </hibernate-mapping>
