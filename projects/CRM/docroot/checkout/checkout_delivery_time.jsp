@@ -17,7 +17,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %> 
-
+<%@ taglib uri='crm' prefix='crm' %>
 <%
     String successPage = "checkout_select_payment.jsp";
     successPage = "checkout_ATP_check.jsp?successPage="+URLEncoder.encode(successPage);
@@ -111,6 +111,7 @@ zonePromoString="<%=zonePromoString %>";
 zonePromoEnabled=true;
 <%} %>
 </script>
+<crm:GetCurrentAgent id="currentAgent">
 <tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>Checkout > Select Delivery Time</tmpl:put>
@@ -127,14 +128,17 @@ zonePromoEnabled=true;
 <TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" ALIGN="CENTER" class="checkout_header<%= (user.isActive()) ? "" : "_warning" %>">
 <form name="select_delivery_slot" method="POST" action="">
 	<TR>
-	<TD WIDTH="80%">
+	<TD WIDTH="75%">
         &nbsp;Step 2 of 4: Select Delivery Time
         <% if (!user.isActive()) { %>
             &nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is 
             <a href="<%= response.encodeURL("/customer_account/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a>
         <% } %>
-    </TD>	
-	<td align="right"><a href="/checkout/checkout_delivery_time.jsp?forceorder=true" class="checkout">FORCE ORDER >></a></td>
+    </TD>
+    
+    <% if (currentAgent != null && (currentAgent.isSupervisor() || currentAgent.isAdmin())) { %>	
+		<td align="right"><a href="/checkout/checkout_delivery_time.jsp?forceorder=true" class="checkout">FORCE ORDER >></a></td>
+	<% } %>	
 	<td align="right"><a href="javascript:select_delivery_slot.submit()" class="checkout">CONTINUE CHECKOUT >></a></td>
 	</TR>
 </TABLE>
@@ -344,6 +348,7 @@ List messages = DeliveryTimeSlotResult.getMessages();
 </tmpl:put>
 	</fd:CheckoutController>
 </tmpl:insert>
+</crm:GetCurrentAgent>
 
 
 
