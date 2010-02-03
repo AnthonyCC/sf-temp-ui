@@ -71,21 +71,21 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			" and t.base_date = ?";
 	
 	private static final String GET_UNASSIGNED_QRY = "select r.ID RID, r.STATUS_CODE STATUS, r.CUSTOMER_ID CID, r.TYPE RTYPE, r.ORDER_ID OID," +
-			" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, t.BASE_DATE BDATE, t.START_TIME STIME, " +
+			" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, r.IS_FORCED FORCEFLAG, r.CHEFSTABLE CTFLAG, t.BASE_DATE BDATE, t.START_TIME STIME, " +
 			"t.END_TIME ETIME, s.CROMOD_DATE SCROMODDATE, z.ZONE_CODE ZCODE, " +
 			"r.ORDER_SIZE OSIZE, r.SERVICE_TIME SRTIME, R.RESERVED_ORDER_SIZE ROSIZE, R.RESERVED_SERVICE_TIME RSRTIME, r.UPDATE_STATUS UPDSTATUS, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED " +
 			"from dlv.reservation r, dlv.timeslot t, cust.sale s, dlv.zone z " +
 			"where t.BASE_DATE = ?  AND (unassigned_datetime IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS in ('FLD','OVD'))) and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID ORDER BY z.ZONE_CODE, t.START_TIME";
 	
 	private static final String GET_UNASSIGNEDRESERVATION_QRY = "select r.ID RID, r.STATUS_CODE STATUS, r.CUSTOMER_ID CID, r.TYPE RTYPE, r.ORDER_ID OID," +
-			" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, t.BASE_DATE BDATE, t.START_TIME STIME, " +
+			" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, r.IS_FORCED FORCEFLAG, r.CHEFSTABLE CTFLAG, t.BASE_DATE BDATE, t.START_TIME STIME, " +
 			"t.END_TIME ETIME, s.CROMOD_DATE SCROMODDATE, z.ZONE_CODE ZCODE, " +
 			"r.ORDER_SIZE OSIZE, r.SERVICE_TIME SRTIME, R.RESERVED_ORDER_SIZE ROSIZE, R.RESERVED_SERVICE_TIME RSRTIME, r.UPDATE_STATUS UPDSTATUS " +
 			"from dlv.reservation r, dlv.timeslot t, cust.sale s, dlv.zone z " +
 			"where r.ID = ? and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID";
 	
 	private static final String UPDATE_UNASSIGNEDRESERVATION_QRY = "update dlv.reservation r set r.ORDER_SIZE = ?,  r.SERVICE_TIME = ? " +
-			", r.UPDATE_STATUS = ?	where r.ID = ?  and UNASSIGNED_DATETIME is not null ";
+			", r.UPDATE_STATUS = ?	where r.ID = ?  ";
 	
 	private static final String UPDATE_TIMESLOTFORSTATUS_QRY = "update dlv.timeslot t set t.IS_CLOSED = ? where t.ID=? ";
 	
@@ -432,6 +432,10 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		IUnassignedModel root = new UnassignedModel();
 				    		root.setOrder(order);
 				    		root.setSlot(slot);
+				    		root.setIsChefsTable(rs.getString("CTFLAG"));
+				    		root.setIsForced(rs.getString("FORCEFLAG"));
+				    		
+				    		
 				    		
 				    		orders.add(root);
 				    	 } while(rs.next());		        		    	
@@ -477,8 +481,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 					dModel.setDeliveryStartTime(rs.getTimestamp("STIME"));
 					dModel.setDeliveryEndTime(rs.getTimestamp("ETIME"));
 					dModel.setReservationId(rs.getString("RID"));
-					dModel.setOrderSize(rs.getDouble("ROSIZE"));
-					dModel.setServiceTime(rs.getDouble("RSRTIME"));
+					dModel.setOrderSize(rs.getDouble("OSIZE"));
+					dModel.setServiceTime(rs.getDouble("SRTIME"));
 					
 					
 					IZoneModel zModel = new ZoneModel();
