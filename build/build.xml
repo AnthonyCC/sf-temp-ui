@@ -517,6 +517,7 @@
 		            <fileset dir="${work.dir}" includes="DataLoader.jar" />
 		            <fileset dir="${dest.dir}" includes="ERPSWebApp.jar" />
 		            <fileset dir="${work.dir}" includes="Resources.jar" />
+		            <fileset dir="${work.dir}" includes="RoutingServices.jar" />
 		        </copy>
 
 				<junit fork="yes">
@@ -550,6 +551,7 @@
 		                <pathelement location="${work.dir}/ERPSWebApp-emma.jar"/>
 		                <pathelement location="${work.dir}/listadmin-emma.jar"/>
 		                <pathelement location="${work.dir}/Resources.jar"/>
+		                <pathelement location="${work.dir}/RoutingServices.jar"/>
 		            </classpath>
 		            <!-- emma -->
 		            <jvmarg value="-Demma.coverage.out.file=${work.dir}/logs/coverage.emma" />
@@ -591,6 +593,7 @@
 		   				<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 		   				<pathelement location="${work.dir}/listadmin.jar"/>
 		   				<pathelement location="${work.dir}/Resources.jar"/>
+		   				<pathelement location="${work.dir}/RoutingServices.jar"/>
 		   			</classpath>
 				</junit>
 				

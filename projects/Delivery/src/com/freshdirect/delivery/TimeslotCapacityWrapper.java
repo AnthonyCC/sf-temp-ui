@@ -6,6 +6,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class TimeslotCapacityWrapper implements Serializable {
@@ -30,7 +31,7 @@ public class TimeslotCapacityWrapper implements Serializable {
 			return false;
 		} else {
 			if(context.isChefsTable()) {
-				if(timeslot.getRoutingSlot().isDynamicActive()) {
+				if(useDynamic()) {
 					LOGGER.debug(isDynamicCapacityAvailable()+"-CTDYNA->" +timeslot);
 					return isDynamicCapacityAvailable();
 				} else {
@@ -39,7 +40,7 @@ public class TimeslotCapacityWrapper implements Serializable {
 				}			
 			} else {
 				if (timeslot.isCTCapacityReleased(context.getCurrentTime())) {
-					if(timeslot.getRoutingSlot().isDynamicActive()) {
+					if(useDynamic()) {
 						LOGGER.debug(isDynamicCapacityAvailable()+"-DYNACTRELEASED->" +timeslot);
 						return isDynamicCapacityAvailable();
 					} else {
@@ -47,7 +48,7 @@ public class TimeslotCapacityWrapper implements Serializable {
 						return timeslot.getTotalAvailable() > 0;
 					}				
 				} else {
-					if(timeslot.getRoutingSlot().isDynamicActive()) {
+					if(useDynamic()) {
 						/*LOGGER.debug(isDynamicCapacityAvailable()+","+hasDynamicBaseAvailable()+"=="
 												+ timeslot.getRoutingSlot().getDeliveryCost().getPercentageAvailable()+" > "
 												+ timeslot.getChefsTablePercentage()
@@ -60,6 +61,11 @@ public class TimeslotCapacityWrapper implements Serializable {
 				}
 			}	
 		}
+	}
+	
+	public boolean useDynamic() {
+		return timeslot != null && timeslot.getRoutingSlot() != null 
+							&& timeslot.getRoutingSlot().isDynamicActive() && FDStoreProperties.isDynamicRoutingEnabled();
 	}
 	
 	/*public boolean isAvailable() {

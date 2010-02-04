@@ -1678,24 +1678,25 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 		long startTime = System.currentTimeMillis();
 		List<FDTimeslot> timeSlots = _timeSlots;
-		//String orderNum=RoutingUtil.getOrderNo(address);
-		try {
-			timeSlots = RoutingUtil.getTimeslotForDateRangeAndZone(_timeSlots, address);
-			long endTime = System.currentTimeMillis();
-			List<java.util.List<IDeliverySlot>> slots = new ArrayList<java.util.List<IDeliverySlot>>();
-			if(timeSlots != null) {
-				List<IDeliverySlot> slotGrp = new ArrayList<IDeliverySlot>();
-				slots.add(slotGrp);
-				for (FDTimeslot slot : timeSlots) {			    	
-					slotGrp.add(slot.getDlvTimeslot().getRoutingSlot());
+		if(RoutingUtil.hasAnyDynamicEnabled(_timeSlots)) {
+			try {
+				timeSlots = RoutingUtil.getTimeslotForDateRangeAndZone(_timeSlots, address);
+				long endTime = System.currentTimeMillis();
+				List<java.util.List<IDeliverySlot>> slots = new ArrayList<java.util.List<IDeliverySlot>>();
+				if(timeSlots != null) {
+					List<IDeliverySlot> slotGrp = new ArrayList<IDeliverySlot>();
+					slots.add(slotGrp);
+					for (FDTimeslot slot : timeSlots) {			    	
+						slotGrp.add(slot.getDlvTimeslot().getRoutingSlot());
+					}
 				}
+				//logTimeslots(null,orderNum,address.getCustomerId(),RoutingActivityType.GET_TIMESLOT,timeSlots,(int)(endTime-startTime),address);
+				logTimeslots(null , null, RoutingActivityType.GET_TIMESLOT, slots, (int)(endTime-startTime), address);
+			} catch (Exception e) {
+				logTimeslots(null,null,RoutingActivityType.GET_TIMESLOT,null,0,address);
+				e.printStackTrace();
+				LOGGER.debug("Exception in getTimeslotForDateRangeAndZoneEx():"+e.toString());
 			}
-			//logTimeslots(null,orderNum,address.getCustomerId(),RoutingActivityType.GET_TIMESLOT,timeSlots,(int)(endTime-startTime),address);
-			logTimeslots(null , null, RoutingActivityType.GET_TIMESLOT, slots, (int)(endTime-startTime), address);
-		} catch (Exception e) {
-			logTimeslots(null,null,RoutingActivityType.GET_TIMESLOT,null,0,address);
-			e.printStackTrace();
-			LOGGER.debug("Exception in getTimeslotForDateRangeAndZoneEx():"+e.toString());
 		}
 
 		return timeSlots;

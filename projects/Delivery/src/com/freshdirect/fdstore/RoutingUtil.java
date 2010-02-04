@@ -498,5 +498,18 @@ public class RoutingUtil {
 		}
 		return result;
 	}
+	
+	public static boolean hasAnyDynamicEnabled(List<FDTimeslot> timeSlots) {
+		
+		boolean result = false;
+		if(timeSlots != null) {
+			for (FDTimeslot slot : timeSlots) {
+				if(slot != null && slot.getDlvTimeslot() != null && slot.getDlvTimeslot().getRoutingSlot() != null) {		    	
+					result = result || slot.getDlvTimeslot().getRoutingSlot().isDynamicActive();
+				}
+			}
+		}
+		return result;
+	}
 
 }
