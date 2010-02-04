@@ -191,7 +191,7 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 			    	{
 			    		String promoCode=(String)r.getOutcome();
 			    		PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-			    		if(promo.evaluate(ctx)) {
+			    		if(promo!=null && promo.evaluate(ctx)) {
 			    			result=promo.getHeaderDiscountTotal();
 			    			break;
 			    		}

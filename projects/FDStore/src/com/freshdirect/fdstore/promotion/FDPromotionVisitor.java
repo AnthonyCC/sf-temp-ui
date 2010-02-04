@@ -77,6 +77,7 @@ public class FDPromotionVisitor {
 			//if(promoCode!=null&&eligibilities.isEligible(promoCode))
 			if(promoCode !=null && eligibilities.isEligible(promoCode) )
 			{
+				
 				PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
 				if(promo.apply(context)) {
 					Discount discount = new ZonePromoDiscount(promoCode, EnumDiscountType.DOLLAR_OFF,promo.getHeaderDiscountTotal() );
@@ -146,7 +147,7 @@ public class FDPromotionVisitor {
 						  ){
 				found = true;
 			}else{ 
-				if (found) {
+				if (found && !EnumPromotionType.WINDOW_STEERING.equals(p.getPromotionType())) {
 					//Any promotion after this point can be removed.
 					i.remove();
 				}
