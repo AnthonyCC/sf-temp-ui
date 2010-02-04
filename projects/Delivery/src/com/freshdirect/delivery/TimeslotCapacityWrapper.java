@@ -26,7 +26,7 @@ public class TimeslotCapacityWrapper implements Serializable {
 
 	public boolean isAvailable() {
 		
-		if(timeslot.getRoutingSlot().isManuallyClosed()) {
+		if(timeslot.getRoutingSlot() != null && timeslot.getRoutingSlot().isManuallyClosed()) {
 			LOGGER.debug("Manually CLosed" +timeslot);
 			return false;
 		} else {
