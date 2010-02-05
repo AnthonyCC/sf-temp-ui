@@ -2109,11 +2109,11 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			 _reservation = RoutingUtil.reserveTimeslot(reservation, order, timeslot);
 			long endTime=System.currentTimeMillis();
 			logTimeslots(reservation,order,RoutingActivityType.RESERVE_TIMESLOT,RoutingUtil.getDeliverySlots(getTimeslotById(reservation.getTimeslotId())),(int)(endTime-startTime),address);
+			this.setReservationOrderMetrics(reservation.getId(), order.getDeliveryInfo().getOrderSize(), order.getDeliveryInfo().getServiceTime());
 			if(_reservation==null || !_reservation.isReserved()) {
 					setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);					
 			} else {
-					clearUnassignedInfo(reservation.getId());
-					this.setReservationOrderMetrics(reservation.getId(), order.getDeliveryInfo().getOrderSize(), order.getDeliveryInfo().getServiceTime());
+					clearUnassignedInfo(reservation.getId());					
 					if(reservation.getUpdateStatus() != null) {
 	    				updateReservationEx(reservation, address, timeslot);
 	    			}

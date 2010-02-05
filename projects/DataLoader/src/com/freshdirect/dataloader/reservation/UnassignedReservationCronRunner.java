@@ -148,34 +148,39 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
     public void processReservation(DlvManagerSB dlvManager,FDCustomerManagerSB sb,DlvReservationModel reservation) {
     	try {
     		
-    		FDIdentity identity=getIdentity(reservation.getCustomerId());
-    		ContactAddressModel address= sb.getAddress(identity, reservation.getAddressId());
+    		FDIdentity identity = getIdentity(reservation.getCustomerId());
+    		ContactAddressModel address = sb.getAddress(identity, reservation.getAddressId());
     		
     		if(address == null) {//Depot
 
-    			String locationId=reservation.getAddressId();
-    			DlvDepotModel depot =FDDepotManager.getInstance().getDepotByLocationId(locationId);
-    			DlvLocationModel location=depot.getLocation(locationId);
-    			address=new ErpDepotAddressModel(location.getAddress());                  
+    			String locationId = reservation.getAddressId();
+    			DlvDepotModel depot = FDDepotManager.getInstance().getDepotByLocationId(locationId);
+    			if(depot != null) {
+	    			DlvLocationModel location = depot.getLocation(locationId);
+	    			address=new ErpDepotAddressModel(location.getAddress());  
+    			}
     		}
 
-
-    		RoutingActivityType unassignedAction = reservation.getUnassignedActivityType();
-    		FDTimeslot _timeslot = new FDTimeslot(dlvManager.getTimeslotById(reservation.getTimeslotId()));
-    		if(unassignedAction != null) {
-	    		if(RoutingActivityType.RESERVE_TIMESLOT.equals(unassignedAction)) {
-	    			if(_timeslot != null) {
-	    				dlvManager.reserveTimeslotEx(reservation, address, _timeslot);
-	    			}
-	    		} else {
-	
-	    			dlvManager.commitReservationEx(reservation, address);  
-	    			if(reservation.getUpdateStatus() != null) {
-	    				dlvManager.updateReservationEx(reservation, address, _timeslot);
-	    			}
-				}
-    		} else if(reservation.getUpdateStatus() != null) {
-    			dlvManager.updateReservationEx(reservation, address, _timeslot);
+    		if(address != null) {
+	    		RoutingActivityType unassignedAction = reservation.getUnassignedActivityType();
+	    		FDTimeslot _timeslot = new FDTimeslot(dlvManager.getTimeslotById(reservation.getTimeslotId()));
+	    		if(unassignedAction != null) {
+		    		if(RoutingActivityType.RESERVE_TIMESLOT.equals(unassignedAction)) {
+		    			if(_timeslot != null) {
+		    				dlvManager.reserveTimeslotEx(reservation, address, _timeslot);
+		    			}
+		    		} else {
+		
+		    			dlvManager.commitReservationEx(reservation, address);  
+		    			if(reservation.getUpdateStatus() != null) {
+		    				dlvManager.updateReservationEx(reservation, address, _timeslot);
+		    			}
+					}
+	    		} else if(reservation.getUpdateStatus() != null) {
+	    			dlvManager.updateReservationEx(reservation, address, _timeslot);
+	    		}
+    		} else {
+    			LOGGER.info(new StringBuilder("UnassignedReservationCronRunner: ").append(" failed to fetch address reservation for id ").append(reservation.getId()).toString());
     		}
     		
 			 

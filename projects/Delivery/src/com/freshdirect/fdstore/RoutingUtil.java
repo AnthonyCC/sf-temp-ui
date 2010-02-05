@@ -104,6 +104,13 @@ public class RoutingUtil {
 		order.getDeliveryInfo().setDeliveryLocation(getLocation(order));
 		order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(timeslot.getZoneCode()));
 		order.getDeliveryInfo().setDeliveryDate(timeslot.getBaseDate());
+		
+		if(reservation.getOrderSize() != null && reservation.getOrderSize() > 0) {
+			reservation.setReservedOrderSize(reservation.getOrderSize());
+		}
+		if(reservation.getServiceTime() != null && reservation.getServiceTime() > 0) {
+			reservation.setReservedServiceTime(reservation.getServiceTime());
+		}
 		if(reservation.getReservedOrderSize() == null || reservation.getReservedOrderSize() == 0) {
 			IPackagingModel historyPackageInfo = getHistoricOrderSize(order);
 			IServiceTimeScenarioModel srvScenario = getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
