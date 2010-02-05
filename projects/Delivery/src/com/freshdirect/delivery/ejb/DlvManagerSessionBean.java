@@ -76,7 +76,6 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.model.IDeliveryReservation;
@@ -87,6 +86,7 @@ import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class DlvManagerSessionBean extends SessionBeanSupport {
 
@@ -1802,7 +1802,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 						|| (reservation.getServiceTime() != null && reservation.getReservedServiceTime() != null
 								&& reservation.getServiceTime() < reservation.getReservedServiceTime()))
 								&& (timeslot != null && DateUtil.getDiffInMinutes(Calendar.getInstance().getTime(), DateUtil.addDays(timeslot.getDlvTimeslot().getCutoffTime().getAsDate(timeslot.getBaseDate()), -1))
-										> 60) 
+										> RoutingServicesProperties.getOMUseOriginalThreshold()) 
 								&& !EnumRoutingUpdateStatus.OVERRIDDEN.equals(reservation.getUpdateStatus())) {
 						return;
 					

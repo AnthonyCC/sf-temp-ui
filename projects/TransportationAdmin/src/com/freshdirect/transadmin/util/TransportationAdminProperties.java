@@ -128,6 +128,8 @@ public class TransportationAdminProperties {
 	
 	private final static String PROP_TRANSPORTATION_EARLYWARNING_PAGEREFRESHTIME = "transportation.earlywarning.pagerefreshtime";
 	
+	private final static String PROP_TRANSPORTATION_EDITDYNAMICROUTINGFEATURE_ACCESSKEY = "transportation.editdynamicroutingfeature.accesskey";
+	
 	static {
 				
 	
@@ -219,6 +221,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_AUTODISPATCH_VALIDATION, "false");
 		defaults.put(PROP_TRANSPORTATION_PLAN_VALIDATION, "false");
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_VALIDATION, "false");
+		
+		defaults.put(PROP_TRANSPORTATION_EDITDYNAMICROUTINGFEATURE_ACCESSKEY, "2746766f6bfb620d471e9a477fd63804");
 		
 		refresh();		
 	}
@@ -483,4 +487,9 @@ public class TransportationAdminProperties {
 	public static boolean isDispatchValidation() {
         return (new Boolean(get(PROP_TRANSPORTATION_DISPATCH_VALIDATION))).booleanValue();
     }
+	
+	public static String getDynamicRoutingFeatureAccessKey() {
+		return get(PROP_TRANSPORTATION_EDITDYNAMICROUTINGFEATURE_ACCESSKEY);
+	}
+	
 }

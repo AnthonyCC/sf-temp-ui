@@ -10,6 +10,6 @@ public interface ICapacityProvider {
 	
 	int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, String baseDate);
 	
-	int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, String baseDate);
+	int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, String baseDate, String accessCode);
 	
 }

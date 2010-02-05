@@ -117,7 +117,8 @@ public class ChooseTimeslotAction extends WebActionSupport {
 				return SUCCESS;
 			}
 
-			if (dlvRsv == null || !deliveryTimeSlotId.equals(dlvRsv.getTimeslotId())) {
+			if (dlvRsv == null || !deliveryTimeSlotId.equals(dlvRsv.getTimeslotId())
+										|| (addressId != null && !addressId.equals(dlvRsv.getAddressId()))) {
 				// new reservation or different timeslot selected
 
 				if (dlvRsv != null

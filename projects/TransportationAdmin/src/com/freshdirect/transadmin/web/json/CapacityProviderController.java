@@ -2,10 +2,12 @@ package com.freshdirect.transadmin.web.json;
 
 import java.text.ParseException;
 
+import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
 public class CapacityProviderController extends JsonRpcController implements
 		ICapacityProvider  {
@@ -54,16 +56,18 @@ public class CapacityProviderController extends JsonRpcController implements
 		return 0;
 	}
 	
-	public int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, String baseDate) {
-		
-		try {
-			return new DeliveryServiceProxy().updateTimeslotForDynamicStatus(timeslotId, isDynamic, type, TransStringUtil.getDate(baseDate));
-		} catch (RoutingServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, String baseDate, String accessCode) {
+		String hashedAccessCode = MD5Hasher.hash(accessCode);
+		if(hashedAccessCode != null && hashedAccessCode.equals(TransportationAdminProperties.getDynamicRoutingFeatureAccessKey())) {
+			try {
+				return new DeliveryServiceProxy().updateTimeslotForDynamicStatus(timeslotId, isDynamic, type, TransStringUtil.getDate(baseDate));
+			} catch (RoutingServiceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		return 0;

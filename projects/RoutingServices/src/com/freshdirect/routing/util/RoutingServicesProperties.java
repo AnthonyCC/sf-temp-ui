@@ -86,6 +86,8 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_DYNAMICANALYZE_MULTITHREADENABLED		= "routingservices.dynamicanalyze.multithreadenabled";
 	
+	private final static String PROP_ORDERMETRICSUSEACTUAL_THRESHOLD		= "routingservices.ordermetricsuseactual.threshold";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -127,6 +129,7 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_BATCH_SERVICE_TIMEOUT, "600");// in seconds
 		
 		defaults.put(PROP_DEFAULT_NOTIFICATIONRECEIVER, "STO");
+		defaults.put(PROP_ORDERMETRICSUSEACTUAL_THRESHOLD, "60");
 		refresh();		
 	}
 
@@ -310,5 +313,9 @@ public class RoutingServicesProperties {
 
 	public static int getBatchServiceTimeout() {
 		return getIntVal(get(PROP_BATCH_SERVICE_TIMEOUT));
+	}
+	
+	public static int getOMUseOriginalThreshold() {
+		return getIntVal(get(PROP_ORDERMETRICSUSEACTUAL_THRESHOLD));
 	}
 }

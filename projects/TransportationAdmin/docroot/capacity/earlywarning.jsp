@@ -147,13 +147,13 @@
                  }
 
                  function updateDynamicTimeslot(sourceObj, referenceId, type) {
-                	 if (confirm("You are about to enable/disable dynamic routing. Do you want to continue?")) { 
-                			 
-	                	 currentUpdateSource = sourceObj;
+                	 var accesscode = prompt("You are about to enable/disable dynamic routing. Do you want to continue?","<Please enter access code>");
+                	 if (accesscode != null && accesscode != "")  {
+                		 currentUpdateSource = sourceObj;
 	                 	 var result = jsonrpcClient.AsyncCapacityProvider.updateTimeslotForDynamicStatus(updateDynamicTimeslotCallback
 																			, referenceId, (sourceObj.value == 'S'), type
-																			, document.getElementById('rDate').value);	
-                	 }		                          
+																			, document.getElementById('rDate').value, accesscode);	
+                	 }	                          
                  }  
 
                  function updateDynamicTimeslotCallback(result, exception) {
@@ -163,7 +163,7 @@
                          return;
                      }
                      if(result == 0) {
-                    	 alert('Update Failed');
+                    	 alert('Update Failed. Please check your access code.');
                      } else {                    	 
                      	if(currentUpdateSource.value == 'D') {
                      		currentUpdateSource.value = 'S';
