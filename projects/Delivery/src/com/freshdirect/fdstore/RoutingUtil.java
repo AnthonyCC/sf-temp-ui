@@ -53,8 +53,30 @@ public class RoutingUtil {
 	private Context altProvider=null;
 	private boolean useAltProvider=false;
 	private static final Category LOGGER = LoggerFactory.getInstance(RoutingUtil.class);
+	private static long lastRefresh = 0;
+	private final static long REFRESH_PERIOD = 30 * 60 * 1000;
+	
+	private  void refresh() {
+		refresh(false);
+	}
 
-
+	private  synchronized  void refresh(boolean force) {
+		long t = System.currentTimeMillis();
+		if (force || (t - lastRefresh > REFRESH_PERIOD)) {
+			close(routingProvider);
+			close(altProvider);
+			lastRefresh = t;
+			LOGGER.info("Reloading contexts in RoutingUtil. ");
+			setUseAltProvider(false);
+			this.routingProvider =getRoutingContext();
+			this.altProvider=getAltContext();
+		}
+	}
+	
+	private Context getContext() {
+		refresh();
+		return useAltProvider? altProvider:routingProvider;
+	}
 	private synchronized void setUseAltProvider(boolean useAltProvider) {
 		this.useAltProvider = useAltProvider;
 	}
@@ -64,25 +86,36 @@ public class RoutingUtil {
 	}
 
 	private RoutingUtil() {
-		try {
-			this.routingProvider = FDStoreProperties.getRoutingInitialContext();
-			this.altProvider=FDStoreProperties.getInitialContext();
-
-		} catch (NamingException e) {
-			LOGGER.error("Unable to get InitialContext", e);
-			throw new RuntimeException("Unable to get InitialContext "+e.getMessage());
-		}
-
+		
+		this.routingProvider =getRoutingContext();
+		this.altProvider=getAltContext();
 	}
-
+	
+	private Context getRoutingContext() {
+		try {
+			return FDStoreProperties.getRoutingInitialContext();
+		} catch (NamingException e) {
+			setUseAltProvider(true);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private Context getAltContext() {
+		try {
+			return FDStoreProperties.getInitialContext();
+		} catch (NamingException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
 	protected  void lookupRoutingGatewayHome() throws FDResourceException {
 
 		try {
 			if(home==null) {
-				if(useAltProvider)
-					home = (RoutingGatewayHome) altProvider.lookup( FDStoreProperties.getRoutingGatewayHome());
-				else
-					home = (RoutingGatewayHome) routingProvider.lookup( FDStoreProperties.getRoutingGatewayHome());
+				home = (RoutingGatewayHome) getContext().lookup( FDStoreProperties.getRoutingGatewayHome());
 			}
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
@@ -517,6 +550,20 @@ public class RoutingUtil {
 			}
 		}
 		return result;
+	}
+	
+	public void finalize() {
+		close(routingProvider);
+		close(altProvider);
+	}
+		
+	private static void close(Context ctx) {
+		if(ctx!=null) {
+			try {
+				ctx.close();
+			}catch(Exception e) {
+			}
+		}
 	}
 
 }
