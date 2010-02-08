@@ -29,7 +29,7 @@
         <property name="comments" type="string">
             <column name="COMMENTS" />
         </property>
-        <set name="timeslotLogDtls" inverse="false" lazy="false" table="TIMESLOT_LOG_DTL" fetch="select">
+        <set name="timeslotLogDtls" inverse="false" lazy="false" table="TIMESLOT_LOG_DTL" fetch="join">
             <key>
                 <column name="TIMESLOT_LOG_ID" length="16" />
             </key>
