@@ -52,7 +52,7 @@ public class TimeslotCapacityWrapper implements Serializable {
 												+ timeslot.getRoutingSlot().getDeliveryCost().getPercentageAvailable()+" > "
 												+ timeslot.getChefsTablePercentage()
 												+"-DYNA->" +timeslot);*/
-						return isDynamicCapacityAvailable() && timeslot.getBaseAvailable() > 0;
+						return isDynamicCapacityAvailable() && (timeslot.getBaseAvailable() > 0 || timeslot.getChefsTableCapacity() == 0);
 					} else {
 						//LOGGER.debug((timeslot.getBaseAvailable() > 0)+"-CTNORMAL->" +timeslot);
 						return timeslot.getBaseAvailable() > 0;
