@@ -88,6 +88,12 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_ORDERMETRICSUSEACTUAL_THRESHOLD		= "routingservices.ordermetricsuseactual.threshold";
 	
+	private final static String PROP_ROUTINGSUBSCRIPTION_MAIL_TO="routingsubscription.mail.to";
+
+	private final static String PROP_ROUTINGSUBSCRIPTION_MAIL_CC="routingsubscription.mail.cc";
+
+	private final static String PROP_ROUTINGSUBSCRIPTION_MAIL_FROM = "routingsubscription.mail.from";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -130,6 +136,11 @@ public class RoutingServicesProperties {
 		
 		defaults.put(PROP_DEFAULT_NOTIFICATIONRECEIVER, "STO");
 		defaults.put(PROP_ORDERMETRICSUSEACTUAL_THRESHOLD, "60");
+		
+		defaults.put(PROP_ROUTINGSUBSCRIPTION_MAIL_TO, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_ROUTINGSUBSCRIPTION_MAIL_CC, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_ROUTINGSUBSCRIPTION_MAIL_FROM, "applicationdevelopment@freshdirect.com");
+		
 		refresh();		
 	}
 
@@ -219,6 +230,18 @@ public class RoutingServicesProperties {
 	
 	public static String getDefaultOrderType() {
 		return get(PROP_DEFAULT_ORDERTYPE);
+	}
+	
+	public static String getRoutingSubscriptionMailTo() {
+		return get(PROP_ROUTINGSUBSCRIPTION_MAIL_TO);
+	}
+	
+	public static String getRoutingSubscriptionMailCC() {
+		return get(PROP_ROUTINGSUBSCRIPTION_MAIL_CC);
+	}
+	
+	public static String getRoutingSubscriptionMailFrom() {
+		return get(PROP_ROUTINGSUBSCRIPTION_MAIL_FROM);
 	}
 	
 	public static boolean isIncrementWindowEndTime() {

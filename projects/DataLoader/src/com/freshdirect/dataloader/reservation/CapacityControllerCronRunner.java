@@ -16,7 +16,6 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
@@ -28,6 +27,7 @@ import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 
@@ -208,28 +208,10 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 
 			for (int intCount = 0; intCount < dlvTimeSlots.size(); intCount++) { 
 				_dlvTimeSlot = dlvTimeSlots.get(intCount);
-				_metrics = metrics.get(intCount);
-				//System.out.println("Match Try >"+_dlvTimeSlot.getRoutingSlot().getStartTime()+"-->"+_metrics.getDeliveryStartTime()
-				//+"###"+_dlvTimeSlot.getRoutingSlot().getStopTime()+"-->"+_metrics.getDeliveryEndTime());
+				_metrics = metrics.get(intCount);				
 				_dlvTimeSlot.getRoutingSlot().setDeliveryMetrics(_metrics);
 			}
-
-			/*Iterator<DlvTimeslotModel> _itrSlots = dlvTimeSlots.iterator();
-			while(_itrSlots.hasNext()) {
-				_dlvTimeSlot = _itrSlots.next();
-				Iterator<IDeliveryWindowMetrics> _itrMetrics = metrics.iterator();
-
-				while(_itrMetrics.hasNext()) {
-					_metrics = _itrMetrics.next();
-
-					if(_dlvTimeSlot.getRoutingSlot() != null &&
-							_dlvTimeSlot.getRoutingSlot().getStartTime().equals(_metrics.getDeliveryStartTime()) &&
-							_dlvTimeSlot.getRoutingSlot().getStopTime().equals(_metrics.getDeliveryEndTime()) ) {
-						_dlvTimeSlot.getRoutingSlot().setDeliveryMetrics(_metrics);
-
-					}
-				}
-			}*/
+			
 		}
 		//return dlvTimeSlots;
 	}
@@ -245,9 +227,6 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 				if(_dlvTimeSlot.getRoutingSlot() != null) {
 					_dlvTimeSlot.getRoutingSlot().setDeliveryMetrics(TimeslotLogic.recalculateCapacity(_dlvTimeSlot));
 				}
-				//System.out.println(_dlvTimeSlot.getCapacity()+"->"+_dlvTimeSlot.getChefsTableCapacity() +"->"+
-				//_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics().getOrderCapacity() +"->"+ 
-				//_dlvTimeSlot.getRoutingSlot().getDeliveryMetrics().getOrderCtCapacity() );
 			}
 		}		
 		//return _slots;
@@ -305,14 +284,11 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 			buff.append("</body>").append("</html>");
 
 			ErpMailSender mailer = new ErpMailSender();
-			mailer.sendMail(ErpServicesProperties.getSubscriptionMailFrom(),
-					ErpServicesProperties.getSubscriptionMailTo(),
-					ErpServicesProperties.getSubscriptionMailCC(),
+			mailer.sendMail(RoutingServicesProperties.getRoutingSubscriptionMailFrom(),
+					RoutingServicesProperties.getRoutingSubscriptionMailTo(),
+					RoutingServicesProperties.getRoutingSubscriptionMailCC(),
 					subject, buff.toString(), true, "");
-			/*mailer.sendMail("sbagavathiappan@freshdirect.com",
-					"sbagavathiappan@freshdirect.com",
-					"rmathey@freshdirect.com",
-					subject, buff.toString(), true, "");*/
+			
 
 		} catch (MessagingException e) {
 			LOGGER.warn("Error Sending Capacity cron report email: ", e);

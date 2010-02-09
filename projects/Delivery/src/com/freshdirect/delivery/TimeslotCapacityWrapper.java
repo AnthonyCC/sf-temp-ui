@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -35,7 +34,7 @@ public class TimeslotCapacityWrapper implements Serializable {
 					LOGGER.debug(isDynamicCapacityAvailable()+"-CTDYNA->" +timeslot);
 					return isDynamicCapacityAvailable();
 				} else {
-					LOGGER.debug((timeslot.getTotalAvailable() > 0)+"-CTNORMAL->" +timeslot);
+					//LOGGER.debug((timeslot.getTotalAvailable() > 0)+"-CTNORMAL->" +timeslot);
 					return timeslot.getTotalAvailable() > 0;
 				}			
 			} else {
@@ -44,7 +43,7 @@ public class TimeslotCapacityWrapper implements Serializable {
 						LOGGER.debug(isDynamicCapacityAvailable()+"-DYNACTRELEASED->" +timeslot);
 						return isDynamicCapacityAvailable();
 					} else {
-						LOGGER.debug((timeslot.getTotalAvailable() > 0)+"-NORMALCTRELEASED->" +timeslot);
+						//LOGGER.debug((timeslot.getTotalAvailable() > 0)+"-NORMALCTRELEASED->" +timeslot);
 						return timeslot.getTotalAvailable() > 0;
 					}				
 				} else {
@@ -55,7 +54,7 @@ public class TimeslotCapacityWrapper implements Serializable {
 												+"-DYNA->" +timeslot);*/
 						return isDynamicCapacityAvailable() && timeslot.getBaseAvailable() > 0;
 					} else {
-						LOGGER.debug((timeslot.getBaseAvailable() > 0)+"-CTNORMAL->" +timeslot);
+						//LOGGER.debug((timeslot.getBaseAvailable() > 0)+"-CTNORMAL->" +timeslot);
 						return timeslot.getBaseAvailable() > 0;
 					}				
 				}
@@ -129,10 +128,7 @@ public class TimeslotCapacityWrapper implements Serializable {
 											* timeslot.getRoutingSlot().getSchedulerId().getArea().getDeliveryRate())
 											+ timeslot.getTotalAllocation();
 			if(timeslot.getCapacity() != 0) {
-				return (int)(((double)timeslot.getChefsTableCapacity()/timeslot.getCapacity() )* (double)newCapacity);
-				//if(timeslotModel.getChefsTableCapacity() != 0)
-				//System.out.println("newCtCapacity "+timeslotModel.getChefsTableCapacity()+"->"+timeslotModel.getCapacity()
-				//+ "->"+ newCapacity + "->" + (int)(((double)timeslotModel.getChefsTableCapacity()/timeslotModel.getCapacity() )* (double)newCapacity));
+				return (int)(((double)timeslot.getChefsTableCapacity()/timeslot.getCapacity() )* (double)newCapacity);				
 			} 
 
 		}
