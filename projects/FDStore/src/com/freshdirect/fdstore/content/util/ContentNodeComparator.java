@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.content.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.PrioritizedI;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -82,7 +84,7 @@ public class ContentNodeComparator implements Comparator {
 				return compareByName(node1, node2, strategyElement.getSecondayAttrib());
 
 			case SortStrategyElement.PRODUCTS_BY_DOMAIN_RATING :
-			    return compareByMultiDomainValue((ProductModel) node1, (ProductModel) node2, strategyElement.getMultiAttribName(), descending);
+			    return compareByMultiDomainValue(node1, node2, strategyElement.getMultiAttribName(), descending);
 //				return compareByAttribute(
 //					node1,
 //					node2,
@@ -377,9 +379,17 @@ public class ContentNodeComparator implements Comparator {
 //	}
 	
 	
-	private int compareByMultiDomainValue(ProductModel node1, ProductModel node2, String multiAttribName, boolean descending) {
-            List<DomainValue> values1 = node1.getRating();
-            List<DomainValue> values2 = node2.getRating();
+	private int compareByMultiDomainValue(ContentNodeModel node1, ContentNodeModel node2, String multiAttribName, boolean descending) {
+            List<DomainValue> values1;
+			if (node1 instanceof ProductModel)
+				values1 = ((ProductModel) node1).getRating();
+			else
+				values1 = Collections.emptyList();
+            List<DomainValue> values2;
+			if (node2 instanceof ProductModel)
+				values2 = ((ProductModel) node2).getRating();
+			else
+				values2 = Collections.emptyList();
             
             String value1 = getDomainValue(values1, multiAttribName);
             String value2 = getDomainValue(values2, multiAttribName);
