@@ -32,6 +32,7 @@ public class FDPromotionVisitor {
 	public static FDPromotionEligibility applyPromotions(PromotionContextI context) {
 		long startTime = System.currentTimeMillis();
 		LOGGER.info("Apply Promotions - START TIME ");
+		
 		List ruleBasedPromotions = FDPromotionRulesEngine.getEligiblePromotions(context);
 		context.setRulePromoCode(ruleBasedPromotions);
 		FDPromotionEligibility eligibilities = evaluatePromotions(context);
@@ -41,32 +42,29 @@ public class FDPromotionVisitor {
 		LOGGER.info("Promotion eligibility:after resolve conflicts " + eligibilities);					
 		applyPromotions(context, eligibilities);
 		LOGGER.info("Promotion eligibility: after apply " + eligibilities);
-		
+		LOGGER.info("Promotion eligibility:context.isPostPromoConflictEnabled() " + context.isPostPromoConflictEnabled());
 		if(context.isPostPromoConflictEnabled()){
 			// post resolve conflict
 			boolean e = postResolveConflicts(context,eligibilities);
 			if(e)
 				context.getUser().setPromoConflictResolutionApplied(true);
-			LOGGER.info("Promotion eligibility: after Post resolveconflict apply " + eligibilities);
+			LOGGER.info("Promotion eligibility: after postResolveConflicts() " + eligibilities);
 			context.getUser().setPostPromoConflictEnabled(false);
 			
 		}		
+		
+		
+		applyZonePromotion(context, eligibilities);
 		LOGGER.info("Apply Promotions - END TIME ");
 		long endTime = System.currentTimeMillis();
 		LOGGER.info("Apply Promotions - TOTAL EXECUTION TIME "+(endTime - startTime)+" milliseconds");
+		LOGGER.info("Promotion eligibility: after applyZonePromotion() " + eligibilities);
 		
-		applyZonePromotion(context, eligibilities);
-		//removeDuplicates(context,eligibilities);
 		return eligibilities;
 	}
 
 	
-    private static void removeDuplicates(PromotionContextI context,
-			FDPromotionEligibility eligibilities) {
-            
-		
-	}
-
+    
 
 	private static void applyZonePromotion(PromotionContextI context, FDPromotionEligibility eligibilities) 
     {    
@@ -82,6 +80,7 @@ public class FDPromotionVisitor {
 				if(promo.apply(context)) {
 					Discount discount = new ZonePromoDiscount(promoCode, EnumDiscountType.DOLLAR_OFF,promo.getHeaderDiscountTotal() );
 					context.addDiscount(discount);
+					eligibilities.setApplied(promoCode);
 				}
 			} 
     	}
@@ -269,10 +268,10 @@ public class FDPromotionVisitor {
 					}
 				}
 			}
-			//Add the final header promo code to the applied list. 
-			if(headerPromoCode.length() > 0 && eligibilities.isEligible(headerPromoCode)){
-				eligibilities.setApplied(headerPromoCode);
-			}
+		}
+		//Add the final header promo code to the applied list. 
+		if(headerPromoCode.length() > 0 && eligibilities.isEligible(headerPromoCode)){
+			eligibilities.setApplied(headerPromoCode);
 		}
 	}
 
