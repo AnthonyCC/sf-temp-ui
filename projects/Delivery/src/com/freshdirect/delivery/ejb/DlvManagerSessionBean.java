@@ -268,7 +268,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		//
 		// put all reservations in base, as long as there's capacity there
 		//
-		if (chefsTable && timeslotModel.getBaseAvailable() > 0) {
+		if (chefsTable && (timeslotModel.getBaseAvailable() > 0 || timeslotModel.getChefsTableCapacity() == 0)) {
 			chefsTable = false;
 		}
 
