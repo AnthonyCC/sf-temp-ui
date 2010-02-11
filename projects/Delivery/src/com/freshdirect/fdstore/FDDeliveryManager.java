@@ -514,11 +514,12 @@ public class FDDeliveryManager {
 			newExpTime.add(Calendar.HOUR, 1);
 			DlvManagerSB sb = getDlvManagerHome().create();
 
-			Date timeslotCutoff = reservation.getTimeslot().getCutoffDateTime();
+			/* Moving to FebR210 Release[APPDEV-593]
+			 * Date timeslotCutoff = reservation.getTimeslot().getCutoffDateTime();
 
 			if (timeslotCutoff.before(newExpTime.getTime())) {
 				throw new FDResourceException("This timeslot cannot be reserved");
-			}
+			}*/
 			sb.extendReservation(reservation.getPK().getId(), newExpTime.getTime());
 
 			return new FDReservation(reservation.getPK(), reservation.getTimeslot(), newExpTime.getTime(), reservation
