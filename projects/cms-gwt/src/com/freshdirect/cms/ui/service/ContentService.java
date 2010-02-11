@@ -11,6 +11,7 @@ import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.GwtSaveResponse;
 import com.freshdirect.cms.ui.model.GwtUser;
+import com.freshdirect.cms.ui.model.NavigableRelationInfo;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
@@ -59,5 +60,8 @@ public interface ContentService extends RemoteService {
     String getPreviewUrl( String contentKey ) throws ServerException;
     
     ProductConfigParams getProductConfigParams( String skuKey ) throws ServerException;
+    
+    
+    NavigableRelationInfo getNavigableRelations(String contentType);
     
 }

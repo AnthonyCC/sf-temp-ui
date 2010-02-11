@@ -1,8 +1,11 @@
 package com.freshdirect.cms.ui.client;
 
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.freshdirect.cms.ui.model.GwtUser;
+import com.freshdirect.cms.ui.model.NavigableRelationInfo;
 import com.freshdirect.cms.ui.service.BaseCallback;
 import com.freshdirect.cms.ui.service.BulkLoaderService;
 import com.freshdirect.cms.ui.service.BulkLoaderServiceAsync;
@@ -11,6 +14,7 @@ import com.freshdirect.cms.ui.service.ContentServiceAsync;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -24,10 +28,13 @@ public class CmsGwt implements EntryPoint {
     private static GwtUser currentUser;
     private static ContentServiceAsync contentService;
     private static BulkLoaderServiceAsync bulkLoaderService;
+    
+    private static Map<String, NavigableRelationInfo> navigableInfo;
 
     public CmsGwt() {
     	contentService = (ContentServiceAsync) GWT.create(ContentService.class);
         bulkLoaderService = (BulkLoaderServiceAsync) GWT.create(BulkLoaderService.class);
+        navigableInfo = new HashMap<String, NavigableRelationInfo>();
 	}
     
     /**
@@ -66,6 +73,23 @@ public class CmsGwt implements EntryPoint {
 
 	public static MainLayout getMainLayout() {
 		return mainLayout;
+	}
+	
+	
+	public static void getNavigableRelations(String contentType, final AsyncCallback<NavigableRelationInfo> callback) {
+	    NavigableRelationInfo info = navigableInfo.get(contentType);
+	    if (info == null) {
+	        contentService.getNavigableRelations(contentType, new BaseCallback<NavigableRelationInfo>() {
+	            @Override
+	            public void onSuccess(NavigableRelationInfo result) {
+	                navigableInfo.put(result.getContentType(), result);
+	                callback.onSuccess(result);
+	            }
+	            
+                });
+	    } else {
+	        callback.onSuccess(info);
+	    }
 	}
 	
 	public static void log(String message) {

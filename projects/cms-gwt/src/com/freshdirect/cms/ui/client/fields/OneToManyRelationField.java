@@ -2,7 +2,7 @@ package com.freshdirect.cms.ui.client.fields;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +43,7 @@ import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
+import com.freshdirect.cms.ui.model.NavigableRelationInfo;
 import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.freshdirect.cms.ui.service.BaseCallback;
 import com.freshdirect.cms.ui.service.ContentService;
@@ -181,52 +182,10 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 		}
 	};
 
-	protected Listener<BaseEvent> copyButtonListener = new Listener<BaseEvent>() {
-		public void handleEvent(BaseEvent be) {
+	protected Listener<BaseEvent> copyButtonListener = new CopyMoveListener(true);
 
-			final List<OneToManyModel> selectedList = selection
-					.getSelectedItems();
-
-			final ContentTreePopUp popup = ContentTreePopUp.getInstance(Collections.singleton(parentType),
-					false);
-			popup.setHeading("Copy " + selectedList.size() + " item(s) to :");
-
-			popup.addListener(Events.Select, new Listener<BaseEvent>() {
-
-				public void handleEvent(BaseEvent be) {
-					ContentNodeModel targetNode = popup.getSelectedItem();
-					addRelationshipsToNode(targetNode.getKey(), attributeKey,
-							selectedList);
-				}
-			});
-			popup.show();
-
-		}
-	};
-
-	protected Listener<BaseEvent> moveButtonListener = new Listener<BaseEvent>() {
-		public void handleEvent(BaseEvent be) {
-
-			final List<OneToManyModel> selectedList = selection
-					.getSelectedItems();
-
-			final ContentTreePopUp popup = ContentTreePopUp.getInstance(Collections.singleton(parentType),
-					false);
-			popup.setHeading("Move " + selectedList.size() + " item(s) to :");
-
-			popup.addListener(Events.Select, new Listener<BaseEvent>() {
-
-				public void handleEvent(BaseEvent be) {
-					ContentNodeModel targetNode = popup.getSelectedItem();
-					addRelationshipsToNode(targetNode.getKey(), attributeKey,
-							selectedList);
-					removeRelationships(selectedList);
-				}
-			});
-			popup.show();
-
-		}
-	};
+	protected Listener<BaseEvent> moveButtonListener = new CopyMoveListener(false);
+	
 
 	protected Listener<BaseEvent> selectListener = new Listener<BaseEvent>() {
 		public void handleEvent(BaseEvent event) {
@@ -238,7 +197,56 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 		}
 	};
 
-	/**
+	private final class CopyMoveListener implements Listener<BaseEvent> {
+	    
+	    boolean copy;
+	    
+	    public CopyMoveListener(boolean copy) {
+	        this.copy = copy;
+            }
+	    
+	    public void handleEvent(BaseEvent be) {
+		final List<OneToManyModel> selectedList = selection
+		    .getSelectedItems();
+		if (selectedList.size() == 0) {
+		    return;
+		}
+		String moveType = selectedList.get(0).getType();
+		for (Iterator<OneToManyModel> iter = selectedList.iterator(); iter.hasNext(); ) {
+		    OneToManyModel current = iter.next();
+		    if (!moveType.equals(current.getType())) {
+		        iter.remove();
+		    }
+		}
+
+		CmsGwt.getNavigableRelations(moveType, new BaseCallback<NavigableRelationInfo>() {
+		    public void onSuccess(final NavigableRelationInfo result) {
+                        final ContentTreePopUp popup = ContentTreePopUp.getInstance(result.getNavigableTypes(), false);
+                        if (copy) {
+                            popup.setHeading("Copy " + selectedList.size() + " item(s) to :");
+                        } else {
+                            popup.setHeading("Move " + selectedList.size() + " item(s) to :");
+                        }
+
+                        popup.addListener(Events.Select, new Listener<BaseEvent>() {
+                            public void handleEvent(BaseEvent be) {
+                                ContentNodeModel targetNode = popup.getSelectedItem();
+                                String attrName = result.getNavigableAttributeName(targetNode.getType());
+                                if (addRelationshipsToNode(targetNode.getKey(), attrName, selectedList)) {
+                                    if (!copy) {
+                                        removeRelationships(selectedList);
+                                    }
+                                }
+                            }
+                        });
+                        popup.show();
+			        
+		    };
+		});
+	    }
+    }
+
+    /**
 	 * Drag and drop listener for the grid component.
 	 * 
 	 */
@@ -516,7 +524,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 		return new ArrayList<OneToManyModel>(0);
 	}
 
-	private void addRelationshipsToNode(String targetNodeKey,
+	private boolean addRelationshipsToNode(String targetNodeKey,
 			final String targetAttributeKey,
 			final List<OneToManyModel> relationships) {
 
@@ -524,7 +532,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 				|| relationships == null || relationships.size() == 0
 				|| targetAttributeKey == null
 				|| targetAttributeKey.trim().length() == 0) {
-			return;
+			return false;
 		}
 
 		GwtContentNode node = WorkingSet.get(targetNodeKey);
@@ -542,6 +550,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 				}
 			});
 		}
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")

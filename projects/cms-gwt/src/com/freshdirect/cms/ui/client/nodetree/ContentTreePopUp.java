@@ -1,6 +1,7 @@
 package com.freshdirect.cms.ui.client.nodetree;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ import com.freshdirect.cms.ui.client.CmsGwt;
  */
 public class ContentTreePopUp extends Window {
 
-    private Set<String> allowedTypes;
+    private Collection<String> allowedTypes;
     private NodeTree treepanel = null;
 	private Button ok;
     private Button cancel;
@@ -34,7 +35,7 @@ public class ContentTreePopUp extends Window {
     private static ContentTreePopUp popup = null;
 	private static boolean forceReload;
     
-    private ContentTreePopUp( Set<String> aTypes, boolean multiSelect ) {
+    private ContentTreePopUp( Collection<String> aTypes, boolean multiSelect ) {
         super();
         
         ok = new Button("Ok");
@@ -54,7 +55,7 @@ public class ContentTreePopUp extends Window {
 		treepanel.setCollapsible(false);
     }
     
-    public static ContentTreePopUp getInstance(Set<String> aTypes, boolean multiSelect) {
+    public static ContentTreePopUp getInstance(Collection<String> aTypes, boolean multiSelect) {
         if (popup == null) {
             popup = new ContentTreePopUp(aTypes, multiSelect);
         } else {
@@ -70,11 +71,11 @@ public class ContentTreePopUp extends Window {
         return popup;
     }
     
-    public void setAllowedTypes(Set<String> aTypes) {
+    public void setAllowedTypes(Collection<String> aTypes) {
         allowedTypes = aTypes;
     }
     
-    public Set<String> getAllowedTypes() {
+    public Collection<String> getAllowedTypes() {
         return allowedTypes;
     }
 

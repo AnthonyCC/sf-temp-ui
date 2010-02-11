@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import javax.servlet.ServletException;
@@ -20,6 +21,9 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeComparator;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.ContentTypeDefI;
+import com.freshdirect.cms.EnumCardinality;
+import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.CmsRequest;
 import com.freshdirect.cms.application.CmsRequestI;
@@ -28,6 +32,7 @@ import com.freshdirect.cms.application.CmsUser;
 import com.freshdirect.cms.changecontrol.ChangeLogServiceI;
 import com.freshdirect.cms.changecontrol.ChangeSet;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
+import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.publish.EnumPublishStatus;
 import com.freshdirect.cms.publish.Publish;
 import com.freshdirect.cms.publish.PublishMessage;
@@ -40,6 +45,7 @@ import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.GwtSaveResponse;
 import com.freshdirect.cms.ui.model.GwtUser;
+import com.freshdirect.cms.ui.model.NavigableRelationInfo;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQueryResponse;
@@ -581,5 +587,42 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     	}
     }
 
+    
+    @Override
+    public NavigableRelationInfo getNavigableRelations(String contentType) {
+        ContentType type = ContentType.get(contentType);
+
+        NavigableRelationInfo nr = new NavigableRelationInfo();
+        nr.setContentType(contentType);
+        Set<? extends ContentTypeDefI> typeDefinitions = CmsManager.getInstance().getTypeService().getContentTypeDefinitions();
+        for (ContentTypeDefI def : typeDefinitions) {
+            
+            String attrName = getNavigableAttributeName(type, def);
+            if (attrName != null) {
+                nr.addNavigableAttribute(def.getType().getName(), attrName);
+            }
+        }
+        return nr;
+    }
+
+    /**
+     * @param type
+     * @param nr
+     * @param def
+     * @param navRels
+     * @return 
+     */
+    private String getNavigableAttributeName(ContentType type, ContentTypeDefI def) {
+        Collection<RelationshipDefI> navRels = ContentTypeUtil.getNavigableRelationshipDefs(def);
+        for (RelationshipDefI relDef : navRels) {
+            if (relDef.getContentTypes().contains(type)) {
+                if (EnumCardinality.MANY.equals(relDef.getCardinality())) {
+                    return relDef.getName();
+                }
+            }
+        }
+        return null;
+    }
+    
 }
 

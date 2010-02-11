@@ -1,6 +1,7 @@
 package com.extjs.gxt.ui.client.widget;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -155,7 +156,7 @@ public class NodeTree extends ContentPanel {
 	
 	private Synchronizer synchronizer = new Synchronizer();	
 	
-	Set<String> allowedTypes = null;
+	Collection<String> allowedTypes = null;
 	
 	private NodeSelectListener selectListener; 
 	private ArrayList<String> expandedPaths;
@@ -381,7 +382,7 @@ public class NodeTree extends ContentPanel {
 		this( null, false, true );
 	}
 	
-	public NodeTree( final Set<String> aTypes, boolean multiSelect, boolean collapseButton ) {
+	public NodeTree( final Collection<String> aTypes, boolean multiSelect, boolean collapseButton ) {
 		expandedPaths = new ArrayList<String>();		
 		
 		this.allowedTypes = aTypes;
@@ -579,7 +580,7 @@ public class NodeTree extends ContentPanel {
 	
 	// ==================================== public methods ====================================
 
-	public void setAllowedTypes( Set<String> aTypes ) {
+	public void setAllowedTypes( Collection<String> aTypes ) {
 		this.allowedTypes = aTypes;
 	}
 	
