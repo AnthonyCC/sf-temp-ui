@@ -58,8 +58,8 @@ public class CustomGridField extends OneToManyRelationField implements SaveListe
     
     CustomFieldDefinition customFields;
     
-    public CustomGridField(String attributeKey, Set<String> allowedTypes, boolean navigable, CustomFieldDefinition customFields, boolean readonly ) {
-        super(attributeKey, allowedTypes, navigable, createExtraColumns(customFields), readonly);
+    public CustomGridField(String attributeKey, Set<String> allowedTypes, boolean navigable, CustomFieldDefinition customFields, boolean readonly, String parentType ) {
+        super(attributeKey, allowedTypes, navigable, createExtraColumns(customFields), readonly, parentType);
         this.customFields = customFields;
         grid.setHideHeaders( false );
     }

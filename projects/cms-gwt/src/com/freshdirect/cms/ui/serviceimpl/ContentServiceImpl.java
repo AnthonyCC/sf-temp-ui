@@ -233,6 +233,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 			ContentNodeI node = TranslatorFromGwt.getContentNodeI(gwtNode);
 
 			for (String attrName : gwtNode.getChangedValueKeys()) {
+			    // FIXME : we have to check for the return value 
 				node.setAttributeValue(attrName, TranslatorFromGwt.getServerValue(gwtNode.getAttributeValue(attrName)));
 			}
 

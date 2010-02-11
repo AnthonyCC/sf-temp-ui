@@ -130,14 +130,14 @@ public final class FieldFactory {
 				OneToManyRelationField field = null;
 				if (customFieldDefinition!=null) {
 				    if (customFieldDefinition.getType() == CustomFieldDefinition.Type.VariationMatrix) {
-				        field = new VariationMatrixField(attr.getAllowedTypes(), aNode);
+				        field = new VariationMatrixField(key, attr.getAllowedTypes(), readonly, aNode);
 				    }
 				    if (customFieldDefinition.getGridColumns() != null) {
-				        field = new CustomGridField(key, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition, readonly);
+				        field = new CustomGridField(key, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition, readonly, nodeData.getNode().getType());
 				    }
 				} 
 				if (field == null) {
-					field = new OneToManyRelationField( key, attr.getAllowedTypes(), attr.isNavigable(), readonly );
+					field = new OneToManyRelationField(key, attr.getAllowedTypes(), attr.isNavigable(), readonly, nodeData.getNode().getType());
 				}
 				
 				if (value != null) {

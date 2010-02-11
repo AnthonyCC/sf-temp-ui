@@ -2,6 +2,7 @@ package com.freshdirect.cms.ui.client.fields;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -75,27 +76,30 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 
 	private CheckBoxSelectionModel<OneToManyModel> selection;
 
-	private String attributeKey;
+	protected String attributeKey;
+	protected String parentType;
 
 	/**
-	 * empty constructor for descendants.
+	 * empty constructor for the descendants
 	 */
 	protected OneToManyRelationField() {
+	    super();
 	}
-
-	public OneToManyRelationField( String attrKey, Set<String> allowedTypes, boolean navigable, boolean readonly ) {
-		this( attrKey, allowedTypes, navigable, new ArrayList<GridCellRenderer<OneToManyModel>>( 0 ), readonly );
+	
+	public OneToManyRelationField( String attrKey, Set<String> allowedTypes, boolean navigable, boolean readonly, String parentType ) {
+		this( attrKey, allowedTypes, navigable, new ArrayList<GridCellRenderer<OneToManyModel>>( 0 ), readonly, parentType);
 	}
 
 	public OneToManyRelationField(String attrKey, Set<String> allowedTypes,
 			boolean navigable,
 			List<GridCellRenderer<OneToManyModel>> extraColumns,
-			boolean readonly) {
+			boolean readonly, String parentType) {
 		super();
 		this.attributeKey = attrKey;
 		this.allowedTypes = allowedTypes;
 		this.navigable = navigable;
 		this.extraColumns = extraColumns;
+		this.parentType = parentType;
 
 		initialize();
 
@@ -183,7 +187,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 			final List<OneToManyModel> selectedList = selection
 					.getSelectedItems();
 
-			final ContentTreePopUp popup = ContentTreePopUp.getInstance(null,
+			final ContentTreePopUp popup = ContentTreePopUp.getInstance(Collections.singleton(parentType),
 					false);
 			popup.setHeading("Copy " + selectedList.size() + " item(s) to :");
 
@@ -206,7 +210,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 			final List<OneToManyModel> selectedList = selection
 					.getSelectedItems();
 
-			final ContentTreePopUp popup = ContentTreePopUp.getInstance(null,
+			final ContentTreePopUp popup = ContentTreePopUp.getInstance(Collections.singleton(parentType),
 					false);
 			popup.setHeading("Move " + selectedList.size() + " item(s) to :");
 

@@ -146,10 +146,13 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
     
     
     @SuppressWarnings("unchecked")
-	public VariationMatrixField(Set<String> allowedTypes, GwtContentNode node) {
+	public VariationMatrixField(String attrKey, Set<String> allowedTypes, boolean readonly, GwtContentNode node) {
         super();
+        this.attributeKey = attrKey;
         this.allowedTypes = allowedTypes;
         this.navigable = true;
+        this.parentType = node.getKey();
+
         this.node = node;
         ContentNodeAttributeI attribute2 = this.node.getOriginalAttribute(ATTR_DOMAIN_LIST);
         if (attribute2 instanceof OneToManyAttribute) {
@@ -175,7 +178,8 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
         }
         
         initialize();
-        
+
+        setReadOnly(readonly);
         grid.setHideHeaders( false );
     }
 
