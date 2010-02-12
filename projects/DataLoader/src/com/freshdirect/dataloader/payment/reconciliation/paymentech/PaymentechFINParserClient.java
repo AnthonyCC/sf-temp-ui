@@ -146,7 +146,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		}else{
 			this.builder.addChargeDetail(info, refund, Math.abs(chargeAmount), ccType);
 		} 
-		if(!processedSaleIds.contains(saleId) && !refund){
+		if(!processedSaleIds.contains(saleId)){
 			//Process Gift card settlements only if that is sale is not processed and is not a refund.
 			List gcSettlementInfos = this.reconciliationSB.processGCSettlement(saleId);
 			appendGCSettlements(gcSettlementInfos);
