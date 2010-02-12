@@ -120,8 +120,8 @@ public abstract class FactorRangeConverter {
 	 * 
 	 * @return empty set
 	 */
-	public Set requiresPersonalizedDatabaseColumns() {
-		return Collections.EMPTY_SET;
+	public Set<String> requiresPersonalizedDatabaseColumns() {
+		return Collections.emptySet();
 	}
 	
 	/**
@@ -131,8 +131,8 @@ public abstract class FactorRangeConverter {
 	 * 
 	 * @return empty set
 	 */
-	public Set requiresGlobalDatabaseColumns() {
-		return Collections.EMPTY_SET;
+	public Set<String> requiresGlobalDatabaseColumns() {
+		return Collections.emptySet();
 	}
 	
 	/**
@@ -174,7 +174,7 @@ public abstract class FactorRangeConverter {
 				return provider.getRange(userId, factor);
 			}
 
-			public Set requiresPersonalizedDatabaseColumns() {
+			public Set<String> requiresPersonalizedDatabaseColumns() {
 				return Collections.singleton(factor);
 			}			
 			
@@ -197,7 +197,7 @@ public abstract class FactorRangeConverter {
 				return provider.getRange(userId, factor);
 			}
 
-			public Set requiresGlobalDatabaseColumns() {
+			public Set<String> requiresGlobalDatabaseColumns() {
 				return Collections.singleton(factor);
 			}
 			

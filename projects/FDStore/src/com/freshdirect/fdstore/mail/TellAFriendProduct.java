@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -102,9 +103,7 @@ public class TellAFriendProduct extends TellAFriend {
 		if (productNode == null) {
 			return "";
 		} else {
-			String defaultSku = productNode.getDefaultSkuCode();
-			FDProductInfo productInfo = FDCachedFactory.getProductInfo(defaultSku);
-			return CURRENCY_FORMATTER.format(productInfo.getDefaultPrice()) +"/"+productInfo.getDefaultPriceUnit().toLowerCase();
+			return productNode.getDefaultPrice();
 		}
 	}
 	

@@ -30,9 +30,21 @@ public class ErpProductInfoModel extends ModelSupport {
 		
 		private final String unit;
 		
-		public ErpMaterialPrice(double price, String unit) {
+		private final double promoPrice;
+		
+		private final String scaleUnit;
+		
+		private final double scaleQuantity;
+		
+		private final String sapZoneId;
+		
+		public ErpMaterialPrice(double price, String unit, double promoPrice, String scaleUnit, double scaleQuantity, String sapZoneId) {
 			this.price = price;
 			this.unit = unit;
+			this.promoPrice = promoPrice;
+			this.scaleUnit = scaleUnit;
+			this.scaleQuantity = scaleQuantity;
+			this.sapZoneId = sapZoneId;
 		}
 		
 		public double getPrice() {
@@ -42,6 +54,22 @@ public class ErpProductInfoModel extends ModelSupport {
 		public String getUnit() {
 			return unit;
 		}
+		
+		public double getPromoPrice() {
+			return promoPrice;
+		}
+		
+		public String getScaleUnit() {
+			return scaleUnit;
+		}
+		
+		public double getScaleQuantity() {
+			return scaleQuantity;
+		}
+		
+		public String getSapZoneId() {
+			return sapZoneId;
+		}
 	}
 	
 	/** version number */
@@ -50,11 +78,6 @@ public class ErpProductInfoModel extends ModelSupport {
 	/** SKU code */
 	private final String skuCode;
 
-	/** default price */
-	private final double defaultPrice;
-
-	/** pricing unit for default price */
-	private final String defaultPriceUnit;
 
 	/** SapIds for materials in this product */
 	private final String[] materialNumbers;
@@ -83,10 +106,6 @@ public class ErpProductInfoModel extends ModelSupport {
 	/** sap product shelf life **/
 	private final String freshness;
 	
-	private double basePrice;
-	
-	private String basePriceUnit;	
-	
 
 	/**
 	 * Constructor with all properties.
@@ -105,8 +124,6 @@ public class ErpProductInfoModel extends ModelSupport {
 	public ErpProductInfoModel(
 		String skuCode,
 		int version,
-		double defaultPrice,
-		String defaultPriceUnit,
 		String[] materialNumbers,
 		ErpMaterialPrice[] materialPrices,
 		EnumATPRule atpRule,
@@ -115,14 +132,11 @@ public class ErpProductInfoModel extends ModelSupport {
 		String unavailabilityReason,
 		String description,
 		String rating,
-		String freshness,
-		double basePrice,
-		String basePriceUnit) {
+		String freshness) {
+
 		super();
 		this.skuCode = skuCode;
 		this.version = version;
-		this.defaultPrice = defaultPrice;
-		this.defaultPriceUnit = defaultPriceUnit;
 		this.materialNumbers = materialNumbers;
 		this.materialPrices = materialPrices;
 		this.atpRule = atpRule;
@@ -132,8 +146,6 @@ public class ErpProductInfoModel extends ModelSupport {
 		this.description = description;
 		this.rating=rating;
 		this.freshness=freshness;
-		this.basePrice=basePrice;
-		this.basePriceUnit=basePriceUnit;
 	}
 
 	/**
@@ -154,23 +166,6 @@ public class ErpProductInfoModel extends ModelSupport {
 		return this.skuCode;
 	}
 
-	/**
-	 * Get default price.
-	 *
-	 * @return default price
-	 */
-	public double getDefaultPrice() {
-		return this.defaultPrice;
-	}
-
-	/**
-	 * Get pricing unit for default price.
-	 *
-	 * @return pricing unit for default price
-	 */
-	public String getDefaultPriceUnit() {
-		return this.defaultPriceUnit;
-	}
 
 	/**
 	 * Get Material Numbers.
@@ -237,14 +232,6 @@ public class ErpProductInfoModel extends ModelSupport {
 			return freshness;
 		}
 		return null;
-	}
-	
-	public double getBasePrice() {
-		return basePrice;
-	}
-
-	public String getBasePriceUnit() {
-		return basePriceUnit;
 	}
 
 }

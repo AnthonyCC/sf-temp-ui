@@ -59,6 +59,7 @@ class OrderLineHelper {
 				public int getPoItemNoS() { return orderline.getDeliveryGroup(); }
 				public int getMaxPartialDlv() { return 0; }
 				public String getCustMat35() { return orderline.getDepartmentDesc(); }
+				public String getSalesDist(){ return orderline.getPricingZoneId();}
 			};
 
 			// order item in

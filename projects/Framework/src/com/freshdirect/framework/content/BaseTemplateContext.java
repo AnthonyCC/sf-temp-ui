@@ -29,6 +29,8 @@ public class BaseTemplateContext {
 		this.parameters = Collections.unmodifiableMap(parameters);
 	}
 	
+
+	
 	/**
 	 * Get optional rendering parameters.
 	 * 

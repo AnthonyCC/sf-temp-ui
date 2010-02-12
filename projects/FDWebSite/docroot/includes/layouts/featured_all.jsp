@@ -27,7 +27,7 @@
 //**************************************************************
 //***         the Featured All Pattern                       ***
 //**************************************************************
-
+    FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 	boolean onlyOneProduct = false;
 	ProductModel theOnlyProduct = null;
 
@@ -104,7 +104,7 @@
 				<logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 				
 					ProductModel productNode = contentNode;
-					ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode, recommendations.getVariant().getHideBursts());
+					ProductLabeling pl = new ProductLabeling(user, productNode, recommendations.getVariant().getHideBursts());
 					
 					String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 					
@@ -322,7 +322,7 @@
                 int deal = (product == null) ? 0 : product.getHighestDealPercentage();
 		
 			if(product!=null){
-				ProductLabeling prodLabel = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), product);
+				ProductLabeling prodLabel = new ProductLabeling(user, product);
 				
 				col1.append("<div style=\"position: absolute; top: 0px; left: 0px\">\n");
                 
@@ -365,8 +365,8 @@
 				%>
 					<fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 						<%
-							lstUnitPrice = "<font class=\"price\"" + ( productInfo.hasWasPrice() ? " style=\"color:#C94747\"" : "" ) + ">" + 
-							                    	JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) + "/" + productInfo.getDisplayableDefaultPriceUnit().toLowerCase() + 
+							lstUnitPrice = "<font class=\"price\"" + ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ? " style=\"color:#C94747\"" : "" ) + ">" + 
+							                    	JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) + "/" + productInfo.getDisplayableDefaultPriceUnit().toLowerCase() + 
 							                    	"</font>";
 						%>
 					</fd:FDProductInfo>
@@ -431,7 +431,7 @@
 				int deal = (product == null) ? 0 : product.getHighestDealPercentage();	
 				if(product!=null){
 
-				ProductLabeling prdLbl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), product);
+				ProductLabeling prdLbl = new ProductLabeling(user, product);
 				
 				String burstUrl = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : prdLbl.isDisplayFave()? "/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif"):prdLbl.isDisplayNew() ? "/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif"): clearImage;
 

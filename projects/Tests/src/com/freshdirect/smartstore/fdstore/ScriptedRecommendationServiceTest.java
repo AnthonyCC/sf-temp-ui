@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.TestUtils;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.aspects.ScoreFactorGlobalNameAspect;
 import com.freshdirect.fdstore.aspects.ScoreFactorPersonalNameAspect;
@@ -41,7 +42,7 @@ public class ScriptedRecommendationServiceTest extends RecommendationServiceTest
         aspectSystem.add(new ScoreFactorPersonalNameAspect(Collections.EMPTY_SET));
         
         ScoreProvider.setInstance(new ScoreProvider() {
-           public double[] getVariables(String userId, ContentNodeModel contentNode, String[] variables) {
+           public double[] getVariables(String userId, PricingContext pricingCtx, ContentNodeModel contentNode, String[] variables) {
                double[] result = new double[variables.length];
                for (int i=0;i<variables.length;i++) {
                    if ("globalPopularity".equals(variables[i])) {

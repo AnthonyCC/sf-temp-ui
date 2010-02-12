@@ -10,11 +10,10 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
@@ -146,17 +145,33 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public boolean isShowTopTenImage() {
 		return getAttribute("SHOW_TOP_TEN_IMAGE", false);
 	}
-	
-	public String getDefaultPrice() {
-			try {
-				FDProductInfo productInfo = getDefaultProductInfo();
-				return productInfo != null ? productInfo.getDefaultPrice() + "/" +productInfo.getDefaultPriceUnit() : ""; 
-			} catch (FDResourceException e) {
-				throw new RuntimeException(e);
-			} catch (FDSkuNotFoundException e) {
-				throw new RuntimeException(e);
-			}
+
+	public PriceCalculator getPriceCalculator() {
+	    return new PriceCalculator(getPricingContext(), this, this.getDefaultSku(getPricingContext()));
 	}
+
+        public PriceCalculator getPriceCalculator(String skuCode) {
+            return new PriceCalculator(getPricingContext(), this, this.getValidSkuCode(getPricingContext(), skuCode));
+        }
+	
+        /**
+         * @param skuCode
+         * @return the default sku code, if sku code is not specified or the sku is
+         *         not in the products sku.
+         */
+        public SkuModel getValidSkuCode(PricingContext ctx, String skuCode) {
+            if (skuCode == null) {
+                return getDefaultSku(ctx);
+            } else {
+                for (SkuModel s : getSkus()) {
+                    if (skuCode.equals(s.getSkuCode())) {
+                        return s;
+                    }
+                }
+                return getDefaultSku(ctx);
+            }
+        }	
+	
 	
 	public boolean isDisplayable() {
 		return !(isHidden() || isDiscontinued() || isUnavailable() || isOrphan() || isInvisible());
@@ -164,38 +179,6 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	
     public boolean isDisplayableBasedOnCms() {        
         return !(isHidden() ||  isOrphan() || isInvisible());
-    }
-	
-	public String getDefaultPriceOnly() {
-		try {
-			FDProductInfo productInfo = getDefaultProductInfo();
-			return productInfo!= null ? productInfo.getDefaultPrice() + "" : "";
-		} catch (FDResourceException e) {
-			throw new RuntimeException(e);
-		} catch (FDSkuNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	public String getDefaultUnitOnly() {
-		try {
-			FDProductInfo productInfo = getDefaultProductInfo();
-			return productInfo != null ? productInfo.getDefaultPriceUnit() : "";
-		} catch (FDResourceException e) {
-			throw new RuntimeException(e);
-		} catch (FDSkuNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-    private FDProductInfo getDefaultProductInfo() throws FDResourceException, FDSkuNotFoundException {
-        SkuModel skuModel = getDefaultSku();
-        if (skuModel == null) {
-            return null;
-        } else {
-            FDProductInfo productInfo = skuModel.getProductInfo();
-            return productInfo;
-        }
     }
 	
 	public boolean isNew() {
@@ -208,232 +191,72 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		}
 	}
 
-	public int getDealPercentage() {
-		return getDealPercentage(null);
-	}
-	
+        public int getDealPercentage() {
+            return getDealPercentage(null);
+        }
+
+        public int getTieredDealPercentage() {
+            return getTieredDealPercentage(null);
+        }
+        
+        public int getHighestDealPercentage() {
+            return getHighestDealPercentage(null);
+        }
+        
+        /* price calculator calls */
+
+        public String getDefaultPrice() {
+            return getPriceCalculator().getDefaultPrice();
+        }
+        
+        public String getDefaultPriceOnly() {
+            return getPriceCalculator().getDefaultPriceOnly();
+        }
+
+        public String getDefaultUnitOnly() {
+            return getPriceCalculator().getDefaultUnitOnly();
+        }
+
 	public int getDealPercentage(String skuCode) {
-		String defaultSku = getDefaultSkuCode();
-                if (skuCode == null) {
-			skuCode = defaultSku;
-		} else {
-			if (getSkuCodes().indexOf(skuCode) < 0) {
-				// invalid sku code using default
-				skuCode = defaultSku;
-			}
-		}
-		FDProductInfo productInfo = null;
-		int deal = 0;
-		if (skuCode != null) {
-			try {
-				productInfo = FDCachedFactory.getProductInfo(skuCode);
-				if (productInfo.hasWasPrice()) {
-					deal = productInfo.getDealPercentage();
-				}
-			} catch (FDSkuNotFoundException ex) {
-			} catch (FDResourceException e) {
-			}
-		}
-		return deal;
+	    return getPriceCalculator(skuCode).getDealPercentage();
 	}
 
-	public int getTieredDealPercentage() {
-		return getTieredDealPercentage(null);
-	}
-	
+
 	public int getTieredDealPercentage(String skuCode) {
-		SkuModel defaultSku = getDefaultSku();
-		if (skuCode == null) {
-			skuCode = defaultSku != null ? defaultSku.getSkuCode() : null;
-		} else {
-			if (getSkuCodes().indexOf(skuCode) < 0) {
-				// invalid sku code using default
-				skuCode = defaultSku.getSkuCode();
-			}
-		}
-		FDProductInfo productInfo = null;
-		int deal = 0;
-		if (skuCode != null) {
-			try {
-				productInfo = FDCachedFactory.getProductInfo(skuCode);
-				if (productInfo.getTieredDealPercentage() > 0) {
-					deal = productInfo.getTieredDealPercentage();
-				}
-			} catch (FDSkuNotFoundException ex) {
-			} catch (FDResourceException e) {
-			}
-		}
-		return deal;
-	}
-	
-	public int getHighestDealPercentage() {
-		return getHighestDealPercentage(null);
+	    return getPriceCalculator(skuCode).getTieredDealPercentage();
 	}
 	
 	public int getHighestDealPercentage(String skuCode) {
-		String defaultSku = getDefaultSkuCode();
-		if (skuCode == null) {
-			skuCode = defaultSku;
-		} else {
-			if (getSkuCodes().indexOf(skuCode) < 0) {
-				// invalid sku code using default
-				skuCode = defaultSku;
-			}
-		}
-		FDProductInfo productInfo = null;
-		int deal = 0;
-		if (skuCode != null) {
-			try {
-				productInfo = FDCachedFactory.getProductInfo(skuCode);
-				deal = productInfo.getHighestDealPercentage();
-			} catch (FDSkuNotFoundException ex) {
-			} catch (FDResourceException e) {
-			}
-		}
-		return deal;
+	    return getPriceCalculator(skuCode).getHighestDealPercentage();
 	}
 
-	public String getTieredPrice(double savingsPercentage) {
-		SkuModel skuCode = getDefaultSku();
+        public String getTieredPrice(double savingsPercentage) {
+            return getPriceCalculator().getTieredPrice(savingsPercentage);
+        }
 
-		if (skuCode != null) {
-			try {
-				FDProductInfo productInfo = FDCachedFactory.getProductInfo(skuCode.getSkuCode());
-				FDProduct product = FDCachedFactory.getProduct(productInfo);
-				if (product != null) {
-					String[] tieredPricing = null;
-
-					if (savingsPercentage > 0)
-						tieredPricing = product.getPricing().getScaleDisplay(savingsPercentage);
-					else
-						tieredPricing = product.getPricing().getScaleDisplay();
-
-					if (tieredPricing.length > 0) {
-						return tieredPricing[tieredPricing.length - 1];
-					}
-				}
-				return null;
-			} catch (FDSkuNotFoundException ex) {
-			} catch (FDResourceException e) {
-			}
-		}
-		return null;
+	public double getPrice(double savingsPercentage) {
+	    return getPriceCalculator().getPrice(savingsPercentage);
 	}
+
+        public String getPriceFormatted(double savingsPercentage) {
+            return getPriceCalculator().getPriceFormatted(savingsPercentage);
+        }
 	
-	public String getPriceFormatted(double savingsPercentage) {
-		return getPriceFormatted(savingsPercentage, null);
-	}
-	
-	public String getPriceFormatted(double savingsPercentage, String skuCode) {
-		
-		if(skuCode == null) {
-			SkuModel sku = getDefaultSku();
-			if(sku != null) {
-				skuCode = sku.getSkuCode();
-			}
-		}
+        public String getPriceFormatted(double savingsPercentage, String skuCode) {
+            return getPriceCalculator(skuCode).getPriceFormatted(savingsPercentage);
+        }
+        
 
-		if (skuCode != null) {
-			try {
-				FDProductInfo productInfo = FDCachedFactory
-						.getProductInfo(skuCode);
-				if (productInfo != null) {
-					double price;
-					if (savingsPercentage > 0) {
-						price = productInfo.getDefaultPrice() * (1 - savingsPercentage);
-					} else if (productInfo.hasWasPrice()) {
-						price = productInfo.getDefaultPrice();
-					} else {
-						price = productInfo.getDefaultPrice();
-					}
-
-					return CURRENCY_FORMAT.format(price)
-							+ "/"
-							+ productInfo.getDisplayableDefaultPriceUnit()
-									.toLowerCase();
-				}
-				return null;
-			} catch (FDSkuNotFoundException ex) {
-			} catch (FDResourceException e) {
-			}
-		}
-		return null;
-	}
-
-	public String getWasPriceFormatted(double savingsPercentage) {
-		SkuModel skuCode = getDefaultSku();
-
-		if (skuCode != null) {
-			try {
-				FDProductInfo productInfo = FDCachedFactory
-						.getProductInfo(skuCode.getSkuCode());
-				if (productInfo != null) {
-					Double wasPrice = null;
-					
-					if ( savingsPercentage > 0. ) {
-						wasPrice = productInfo.getDefaultPrice();
-					} else if ( productInfo.hasWasPrice() ) {
-						wasPrice = productInfo.getBasePrice();
-					}
-
-					if (wasPrice != null)
-						return CURRENCY_FORMAT.format(wasPrice);								
-				}
-				return null;
-			} catch (FDSkuNotFoundException ex) {
-			} catch (FDResourceException e) {
-			}
-		}
-		return null;
-	}
-
-	public String getAboutPriceFormatted(double savingsPercentage) {
-		String skuCode = getDefaultSkuCode();
-
-		if (skuCode != null) {
-			try {
-				FDProductInfo productInfo = FDCachedFactory
-						.getProductInfo(skuCode);
-				if (productInfo != null) {
-					String displayPriceString = null;
-					FDProduct fdProduct = FDCachedFactory
-							.getProduct(productInfo);
-					if (fdProduct.getDisplaySalesUnits() != null
-							&& fdProduct.getDisplaySalesUnits().length > 0) {
-						FDSalesUnit fdSalesUnit = fdProduct
-								.getDisplaySalesUnits()[0];
-						double salesUnitRatio = (double) fdSalesUnit.getDenominator()
-								/ (double) fdSalesUnit.getNumerator();
-						String alternateUnit = fdSalesUnit.getName();
-
-						if (savingsPercentage < 0.)
-							savingsPercentage = 0.;
-						String[] scales = savingsPercentage > 0. ?
-								fdProduct.getPricing().getScaleDisplay() : 
-								fdProduct.getPricing().getScaleDisplay(savingsPercentage);
-						double displayPrice = 0.;
-						if (scales != null && scales.length > 0) {
-							displayPrice = fdProduct.getPricing().getMinPrice()
-									* (1. - savingsPercentage) / salesUnitRatio;
-						} else {
-							displayPrice = productInfo.getDefaultPrice()
-									* (1. - savingsPercentage) / salesUnitRatio;
-						}
-						if (displayPrice > 0.) {
-							displayPriceString = "about "
-									+ CURRENCY_FORMAT.format(displayPrice)
-									+ "/" + alternateUnit.toLowerCase();
-						}
-					}
-					return displayPriceString;
-				}
-				return null;
-			} catch (FDSkuNotFoundException ex) {
-			} catch (FDResourceException e) {
-			}
-		}
-		return null;
-	}
+        public String getWasPriceFormatted(double savingsPercentage) {
+            return getPriceCalculator().getWasPriceFormatted(savingsPercentage);
+        }
+        
+        public String getAboutPriceFormatted(double savingsPercentage) {
+            return getPriceCalculator().getAboutPriceFormatted(savingsPercentage);
+        }
+        
+        /* end of the price calculator calls */
+        
 	
 	public String getYmalHeader() {
 		final YmalSet activeYmalSet = getActiveYmalSet();
@@ -561,4 +384,5 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public boolean hideIphone() {
 	    return getAttribute("HIDE_IPHONE", false);
 	}
+	
 }

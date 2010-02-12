@@ -51,7 +51,8 @@ public class DonationBuyerControllerTag extends AbstractControllerTag implements
 				ra.setSuccessPage(this.getSuccessPage());
 
 				ra.execute();
-				this.setSuccessPage(ra.getSuccessPage()); //reset if changed.			
+				this.setSuccessPage(ra.getSuccessPage()); //reset if changed.
+
 			}
 		} catch (Exception ex) {
 				LOGGER.error("Error performing action " + actionName, ex);

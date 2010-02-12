@@ -23,6 +23,8 @@ public class SessionImpressionLogEntry implements Serializable {
 	int featureImpressions;
 	
 	int tabImpressions;
+	
+	private String zoneId;
 
 	public SessionImpressionLogEntry() {
 		super();
@@ -142,4 +144,12 @@ public class SessionImpressionLogEntry implements Serializable {
         this.endTime = endDate;
         
     }
+
+	public String getZoneId() {
+		return zoneId;
+	}
+
+	public void setZoneId(String zoneId) {
+		this.zoneId = zoneId;
+	}
 }

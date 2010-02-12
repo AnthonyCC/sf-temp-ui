@@ -15,6 +15,7 @@ import java.sql.*;
 import java.util.*;
 
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.framework.core.*;
 import com.freshdirect.dataloader.*;
 import com.freshdirect.dataloader.sap.*;
@@ -236,7 +237,7 @@ public class VirtualProductLoaderSessionBean extends SessionBeanSupport {
                 try {
 					FDConfiguration prConf = new FDConfiguration( 1.0, lowestRatio.getAlternativeUnit() );
                     
-                    MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice( pr, prConf ).getPricingCondition();
+                    MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice( pr, prConf, new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE)) .getPricingCondition();
                     
                     defaultPrice = pricingCondition.getPrice();
                     defaultPriceUnit = pricingCondition.getPricingUnit();
@@ -249,8 +250,11 @@ public class VirtualProductLoaderSessionBean extends SessionBeanSupport {
                 //
                 // add default price to virtual product
                 //
-                virtPrdModel.setDefaultPrice(defaultPrice);
-                virtPrdModel.setDefaultPriceUnit(defaultPriceUnit);
+                
+                //virtPrdModel.setDefaultPrice(defaultPrice);
+                //virtPrdModel.setDefaultPriceUnit(defaultPriceUnit);
+                
+                
                 //
                 // create the new product
                 //

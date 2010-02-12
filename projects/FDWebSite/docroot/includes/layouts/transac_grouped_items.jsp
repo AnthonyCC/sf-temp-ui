@@ -265,7 +265,7 @@ if (prodsAvailable>0) {
     <%  if (prodUnAvailable) {  %>
     <td colspan="2" width="85" align="center"><font color="#999999">Not&nbsp;Available</font>
     <%  } else {    %>
-    <td width="55" align="right">&nbsp;<font class="groceryProductLinePrice"><%= JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) %>/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></font>
+    <td width="55" align="right">&nbsp;<font class="groceryProductLinePrice"><%= JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></font>
     </td>
     <td width="30" align="center">
     <%  }   %>

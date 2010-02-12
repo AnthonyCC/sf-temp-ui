@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDConfigurableI;
+import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.ZonePriceModel;
 
 public class PricingEngineTestCase extends TestCase {
 
@@ -17,7 +19,7 @@ public class PricingEngineTestCase extends TestCase {
 
 	public void testSimpleEaches() throws PricingException {
 		// setup
-		this.matPrices = new MaterialPrice[] { new MaterialPrice(0.99, "EA")};
+		this.matPrices = new MaterialPrice[] { new MaterialPrice(0.99, "EA", 0.0)};
 
 		// verify
 		assertPrice(0.00, pc(0, "EA"));
@@ -27,7 +29,7 @@ public class PricingEngineTestCase extends TestCase {
 
 	public void testMultipleSalesUnits() throws PricingException {
 		// setup
-		this.matPrices = new MaterialPrice[] { new MaterialPrice(2.00, "A01"), new MaterialPrice(3.00, "A02")};
+		this.matPrices = new MaterialPrice[] { new MaterialPrice(2.00, "A01",0.0), new MaterialPrice(3.00, "A02", 0.0)};
 		//this.salesUnits = new SalesUnitRatio[] { new SalesUnitRatio("EA", "LB", 0.5)};
 
 		// verify
@@ -37,7 +39,7 @@ public class PricingEngineTestCase extends TestCase {
 
 	public void testEachesWithConversion() throws PricingException {
 		// setup
-		this.matPrices = new MaterialPrice[] { new MaterialPrice(1.50, "LB")};
+		this.matPrices = new MaterialPrice[] { new MaterialPrice(1.50, "LB",0.0)};
 		this.salesUnits = new SalesUnitRatio[] { new SalesUnitRatio("EA", "LB", 0.5)};
 
 		// verify
@@ -51,8 +53,8 @@ public class PricingEngineTestCase extends TestCase {
 		// setup
 		this.matPrices =
 			new MaterialPrice[] {
-				new MaterialPrice(1.50, "LB", 1, 10, "EA"),
-				new MaterialPrice(1.25, "LB", 10, Double.POSITIVE_INFINITY, "EA")};
+				new MaterialPrice(1.50, "LB", 1, 10, "EA", 1.50),
+				new MaterialPrice(1.25, "LB", 10, Double.POSITIVE_INFINITY, "EA", 1.50)};
 		this.salesUnits = new SalesUnitRatio[] { new SalesUnitRatio("EA", "LB", 0.5)};
 
 		// verify
@@ -88,8 +90,11 @@ public class PricingEngineTestCase extends TestCase {
 	}
 
 	private void assertPrice(double expectedBasePrice, double expectedSurcharge, FDConfigurableI conf) throws PricingException {
-		Pricing pricing = new Pricing(matPrices, cvPrices, salesUnits);
-		Price price = PricingEngine.getConfiguredPrice(pricing, conf).getPrice();
+		ZonePriceModel zpModel = new ZonePriceModel(ZonePriceListing.MASTER_DEFAULT_ZONE, matPrices);
+		ZonePriceListing listing = new ZonePriceListing();
+		listing.addZonePrice(zpModel);
+		Pricing pricing = new Pricing(listing, cvPrices, salesUnits);
+		Price price = PricingEngine.getConfiguredPrice(pricing, conf, new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE)).getPrice();
 
 		// verify
 		assertEquals(expectedBasePrice, price.getBasePrice(), 0.01);

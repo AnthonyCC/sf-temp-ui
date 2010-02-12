@@ -2,6 +2,8 @@
 <%@page import="com.freshdirect.fdstore.*"%>
 <%@page import="com.freshdirect.fdstore.content.*"%>
 <%@page import="com.freshdirect.fdstore.customer.*"%>
+<%@page import="com.freshdirect.fdstore.ZonePriceListing"%>
+
 <%
     if (request.getMethod().equalsIgnoreCase("POST")) {
         String orderSkus = request.getParameter("orderSkus");
@@ -134,7 +136,7 @@
             
 			FDConfiguration conf = new FDConfiguration(quantity, salesUnit.getName(), optionMap);
 
-			FDCartLineModel cartLine = new FDCartLineModel(new FDSku(productInfo), productmodel, conf, null);
+			FDCartLineModel cartLine = new FDCartLineModel(new FDSku(productInfo), productmodel, conf, null, ZonePriceListing.MASTER_DEFAULT_ZONE);
 
             lines.add(cartLine);
         }

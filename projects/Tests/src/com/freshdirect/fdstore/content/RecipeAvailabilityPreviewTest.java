@@ -37,6 +37,9 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.ZonePriceInfoListing;
+import com.freshdirect.fdstore.ZonePriceInfoModel;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ProductAutoconfigureTest.FDFactoryProductAspect;
 import com.freshdirect.fdstore.content.ProductAutoconfigureTest.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
@@ -229,17 +232,11 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 				// a 0 units available starting now
 				inventoryEntries.add(new ErpInventoryEntryModel(now, 0));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
+	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null, dummyList);
 
-				
-				productInfo    = new FDProductInfo(sku,
-						                           1,
-						                           1.0,
-						                           "ea",
-						                           materials,
-						                           EnumATPRule.MATERIAL,
-						                           EnumAvailabilityStatus.AVAILABLE,
-						                           now,
-						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 
 			} else if ("MEA0004562".equals(sku)) {
 				// return this item as available
@@ -247,32 +244,22 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 				// a 10000 units available starting now
 				inventoryEntries.add(new ErpInventoryEntryModel(now, 10000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
+	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null, dummyList);
 
-				productInfo    = new FDProductInfo(sku,
-						                           1,
-						                           1.0,
-						                           "ea",
-						                           materials,
-						                           EnumATPRule.MATERIAL,
-						                           EnumAvailabilityStatus.AVAILABLE,
-						                           now,
-						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			} else if ("MEA0004563".equals(sku)) {
 				// return this item as available by tomorrow, but not today
 				Date tomorrow  = DateUtil.addDays(now, 1);
 				// a 10000 units available starting tomorrow
 				inventoryEntries.add(new ErpInventoryEntryModel(tomorrow, 10000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
+	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
 
-				productInfo    = new FDProductInfo(sku,
-						                           1,
-						                           1.0,
-						                           "ea",
-						                           materials,
-						                           EnumATPRule.MATERIAL,
-						                           EnumAvailabilityStatus.AVAILABLE,
-						                           now,
-						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			} else if ("MEA0004564".equals(sku)) {
 				// return this item as available the day after tomorrow
 				Date afterTomorrow = DateUtil.addDays(now, 2);
@@ -280,75 +267,51 @@ public class RecipeAvailabilityPreviewTest extends FDCustomerManagerTestSupport 
 				inventoryEntries.add(new ErpInventoryEntryModel(afterTomorrow, 10000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
 
-				productInfo    = new FDProductInfo(sku,
-						                           1,
-						                           1.0,
-						                           "ea",
-						                           materials,
-						                           EnumATPRule.MATERIAL,
-						                           EnumAvailabilityStatus.AVAILABLE,
-						                           now,
-						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
+	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
+
 			} else if ("MEA0004565".equals(sku)) {
 				// return this item as available the day after tomorrow
 				Date inThreeDays   = DateUtil.addDays(now, 3);
 				// a 10000 units available starting the day after tomorrow
 				inventoryEntries.add(new ErpInventoryEntryModel(inThreeDays, 10000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
+	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, -1, -1, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
 
-				productInfo    = new FDProductInfo(sku,
-						                           1,
-						                           1.0,
-						                           "ea",
-						                           materials,
-						                           EnumATPRule.MATERIAL,
-						                           EnumAvailabilityStatus.AVAILABLE,
-						                           now,
-						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			} else if ("MEA0004566".equals(sku)) {
 				// return a discontinued item
 				// a 10000 units available starting now
 				inventoryEntries.add(new ErpInventoryEntryModel(DateUtil.truncate(now), 10000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
+	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"",null,dummyList);
 
-				productInfo    = new FDProductInfo(sku,
-						                           1,
-						                           1.0,
-						                           "ea",
-						                           materials,
-						                           EnumATPRule.MATERIAL,
-						                           EnumAvailabilityStatus.DISCONTINUED,
-						                           now,
-						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			} else if ("MEA0004567".equals(sku)) {
 				// return a temporarily unavailable item
 				// a 10000 units available starting now
 				inventoryEntries.add(new ErpInventoryEntryModel(DateUtil.truncate(now), 10000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
+	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.TEMP_UNAV, now,inventoryCache,"",null,dummyList);
 
-				productInfo    = new FDProductInfo(sku,
-						                           1,
-						                           1.0,
-						                           "ea",
-						                           materials,
-						                           EnumATPRule.MATERIAL,
-						                           EnumAvailabilityStatus.TEMP_UNAV,
-						                           now,
-						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
 			} else {
 				// fallback: return any unknown item as unavailable
 				// a 0 units available starting now
 				inventoryEntries.add(new ErpInventoryEntryModel(DateUtil.truncate(now), 0));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
-				productInfo    = new FDProductInfo(sku,
-						                           1,
-						                           1.0,
-						                           "ea",
-						                           materials,
-						                           EnumATPRule.MATERIAL,
-						                           EnumAvailabilityStatus.DISCONTINUED,
-						                           now,
-						                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
+	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"",null,dummyList);
 			}
 
 			return productInfo;

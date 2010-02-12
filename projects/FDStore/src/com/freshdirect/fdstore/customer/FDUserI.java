@@ -14,6 +14,8 @@ import java.util.Map;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.PricingContext;
+
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
@@ -405,4 +407,14 @@ public interface FDUserI extends java.io.Serializable {
 	public double getGiftcardsTotalBalance();
 	
 	public String getGCSenderName(String certNum, String custId);
+	
+    public String getPricingZoneId();
+
+	public PricingContext getPricingContext();
+
+	//public void setPricingContext(PricingContext pricingContext);
+	
+	public void resetPricingContext();
+
+
 }

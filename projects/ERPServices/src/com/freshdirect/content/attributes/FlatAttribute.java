@@ -23,7 +23,7 @@ public class FlatAttribute implements Serializable {
 
 	public FlatAttribute(String[] idPath, String name, Object value) {
 		this.idPath = idPath;
-		this.name = name;
+		this.name = name != null ? name.intern() : null;
 		this.value = value;
 	}
 

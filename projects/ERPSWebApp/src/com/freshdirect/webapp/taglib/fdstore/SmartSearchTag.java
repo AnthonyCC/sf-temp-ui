@@ -16,7 +16,9 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.AbstractProductFilter;
 import com.freshdirect.fdstore.content.BrandFilter;
 import com.freshdirect.fdstore.content.CategoryNodeTree;
@@ -30,6 +32,7 @@ import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElementFilter;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.SearchNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
@@ -173,15 +176,15 @@ public class SmartSearchTag extends BodyTagSupport {
 
 
         boolean reverseOrder = "desc".equalsIgnoreCase(request.getParameter("order"));
-
-        FilteredSearchResults fres = new FilteredSearchResults(res.getSearchTerm(), res, userId, searchTerm.toLowerCase());
+        FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+        FilteredSearchResults fres = new FilteredSearchResults(res.getSearchTerm(), res, userId, searchTerm.toLowerCase(),user.getPricingContext());
         CategoryNodeTree contentTree = putTree(categoryTreeName, fres.getProducts(), true);
         fres.setNodeTree(contentTree);
         fres.setScoreOracle(new FilteredSearchResults.HierarchicalScoreOracle(contentTree));
+
         fres.sortProductsBy(SearchSortType.findByLabel(request.getParameter("sort")), reverseOrder);
 
         fres.setStart(Math.max(getIntParameter("start", 0), 0));
-
         {
             // calculate page size.
             String view = pageContext.getRequest().getParameter("view");
@@ -200,6 +203,7 @@ public class SmartSearchTag extends BodyTagSupport {
         String categoryId = pageContext.getRequest().getParameter("catId");
 
         List filtered;
+        List convFiltered;
         {
             
             if (categoryId != null) {
@@ -211,12 +215,14 @@ public class SmartSearchTag extends BodyTagSupport {
             } else {
                 filtered = fres.getProducts();
             }
-
+            convFiltered = new ArrayList(filtered.size());
             // get brand names - all or just for the selected category
             if (brandSetName != null) {
                 TreeSet brandSet = new TreeSet(ContentNodeModel.FULL_NAME_COMPARATOR);
                 for (int i = 0; i < filtered.size(); i++) {
                     ProductModel prod = (ProductModel) filtered.get(i);
+                    //Convert them to ProductModelPricingAdapter for zone pricing.
+                    convFiltered.add(prod);
                 	brandSet.addAll(prod.getBrands());
                 }
                 pageContext.setAttribute(brandSetName, brandSet);
@@ -229,12 +235,12 @@ public class SmartSearchTag extends BodyTagSupport {
             if (brand != null && brand.length() > 0) {
                 BrandFilter bf = new BrandFilter(brand);
                 try {
-                    filtered = bf.apply(filtered);
+                	convFiltered = bf.apply(convFiltered);
                 } catch (FDResourceException e) {
                     e.printStackTrace();
                 }
             }
-            fres.setFilteredProducts(filtered);
+            fres.setFilteredProducts(convFiltered);
         }
 
         
@@ -265,7 +271,7 @@ public class SmartSearchTag extends BodyTagSupport {
         }
 
         if (filteredCategoryTreeName != null) {
-            putTree(filteredCategoryTreeName, filtered, false);
+            putTree(filteredCategoryTreeName, convFiltered, false);
         }
         
         if (selectedCategoriesName != null) {
@@ -289,6 +295,7 @@ public class SmartSearchTag extends BodyTagSupport {
 
         return EVAL_BODY_BUFFERED;
     }
+
 
     /**
      * Generates a content tree for the given products and assigns to attribute
@@ -335,5 +342,13 @@ public class SmartSearchTag extends BodyTagSupport {
             return null;
         }
         return identity.getErpCustomerPK();
+    }
+    
+    private PricingContext getPricingContext() {
+        FDUserI user = FDSessionUser.getFDSessionUser(pageContext.getSession());
+        if (user == null) {
+            throw new FDRuntimeException("User object is Null");
+        }
+        return user.getPricingContext();
     }
 }

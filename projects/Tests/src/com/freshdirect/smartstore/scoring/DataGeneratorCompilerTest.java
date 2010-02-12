@@ -30,13 +30,14 @@ import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Expression;
+import com.freshdirect.smartstore.fdstore.ScoreProvider;
 
 public class DataGeneratorCompilerTest extends TestCase {
     DataGeneratorCompiler comp;
 
     MockDataAccess            input;
 
-    SessionInput          s = new SessionInput("ses1", null);
+    SessionInput          s = new SessionInput("ses1", null, null);
 
     protected void setUp() throws Exception {
         {
@@ -70,7 +71,7 @@ public class DataGeneratorCompilerTest extends TestCase {
         	
         }
         
-        comp = new DataGeneratorCompiler();
+        comp = new DataGeneratorCompiler(ScoreProvider.ZONE_DEPENDENT_FACTORS_ARRAY);
         comp.addVariable("set", Expression.RET_SET);
         comp.addVariable("set2", Expression.RET_SET);
         comp.addVariable("content", Expression.RET_SET);

@@ -25,6 +25,8 @@
 %><%@ page import='com.freshdirect.framework.util.QueryStringBuilder'
 %><%@ page import='com.freshdirect.deliverypass.EnumDPAutoRenewalType'
 %><%@ page import='com.freshdirect.smartstore.fdstore.SmartStoreUtil'
+%><%@ page import='com.freshdirect.fdstore.zone.FDZoneInfoManager'
+%><%@ page import='com.freshdirect.fdstore.ZonePriceListing'
 %><%@ taglib prefix="fd" uri="freshdirect"
 %><%!
 
@@ -335,7 +337,25 @@
 		if (request.getParameter("searchParams") != null) {
 			queryString.addParam("searchParams", URLEncoder.encode(request.getParameter("searchParams"), "UTF-8"));
 		}
-
+		if(FDStoreProperties.isZonePricingEnabled()){
+			queryString.addParam("zonelevel","true");
+			if(null !=user){
+			String zoneId = FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null), user.getZipCode());
+			if(zoneId.equalsIgnoreCase(ZonePriceListing.MASTER_DEFAULT_ZONE)){
+				queryString.addParam("mzid",zoneId);
+				
+			}else if(zoneId.equalsIgnoreCase(ZonePriceListing.RESIDENTIAL_DEFAULT_ZONE)||zoneId.equalsIgnoreCase(ZonePriceListing.CORPORATE_DEFAULT_ZONE)){
+				queryString.addParam("szid",zoneId);
+				queryString.addParam("mzid",ZonePriceListing.MASTER_DEFAULT_ZONE);				
+			}else{
+				queryString.addParam("zid",zoneId);				
+				zoneId = FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null),null);
+				queryString.addParam("szid",zoneId);
+				queryString.addParam("mzid",ZonePriceListing.MASTER_DEFAULT_ZONE);				
+			}
+			}
+		}
+System.out.println("**************Query String:"+queryString.toString());
 		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"
 				: (String) request.getAttribute("sitePage");
 		String listPos = request.getAttribute("listPos") == null ? "SystemMessage"

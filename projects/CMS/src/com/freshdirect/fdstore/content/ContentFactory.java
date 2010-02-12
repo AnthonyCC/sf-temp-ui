@@ -11,6 +11,10 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Category;
 
@@ -20,20 +24,17 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.framework.util.BalkingExpiringReference;
+import com.freshdirect.framework.util.ExpiringReference;
 import com.freshdirect.framework.util.LruCache;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @version $Revision:18$
@@ -62,6 +63,8 @@ public class ContentFactory {
 
 	/** Map of sku codes / product nodes */
 	private LruCache<String,ContentKey> skuProduct;
+	
+	private ThreadLocal<PricingContext> currentPricingContext;
 
 	public static ContentFactory getInstance() {
 		return instance;
@@ -80,6 +83,18 @@ public class ContentFactory {
 		this.contentNodes = new ConcurrentHashMap<String, ContentNodeModel>();
 		this.nodesByKey = new ConcurrentHashMap<ContentKey, ContentNodeModel>();
 		this.skuProduct = new LruCache<String,ContentKey>(40000);
+		
+		currentPricingContext = new ThreadLocal<PricingContext>() {
+			@Override
+			protected PricingContext initialValue() {
+				try {
+					throw new FDException("initializing current pricing context with default value");
+				} catch (FDException e) {
+					LOGGER.warn(e.getMessage(), e);
+				}
+				return PricingContext.DEFAULT;
+			}
+		};
 	}
 
 	private StoreModel loadStore() {
@@ -350,7 +365,7 @@ public class ContentFactory {
 				}
 			});
 		}
-		Collection cached = (Collection) ((BalkingExpiringReference) reintroducedProductsCache.get(cacheKey)).get();
+		Collection cached = (Collection) ((ExpiringReference) reintroducedProductsCache.get(cacheKey)).get();
 		if (cached != null) {
 			List list = new ArrayList(cached);
 			filterProdsByDept(list, deptId);
@@ -627,4 +642,12 @@ public class ContentFactory {
 		return Collections.unmodifiableSet(s);
 	}
 	
+	public PricingContext getCurrentPricingContext() {
+		return currentPricingContext.get();
+	}
+	
+	public void setCurrentPricingContext(PricingContext pricingContext) {
+		LOGGER.debug("setting pricing context to " + pricingContext + " in thread " + Thread.currentThread().getId());
+		currentPricingContext.set(pricingContext);
+	}
 }

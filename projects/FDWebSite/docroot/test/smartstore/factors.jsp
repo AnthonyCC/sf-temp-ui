@@ -73,24 +73,27 @@ if (ServletFileUpload.isMultipartContent(request)) {
 		boolean html = true;
 
 		String formula = null;
-
+		
+		List customers = null;
+		String zoneId = null;
 
 		for(Iterator it = items.iterator(); it.hasNext(); ) {
 			FileItem fileItem = (FileItem)it.next();
 			if ("customer".equals(fileItem.getFieldName())) {
-				T = ScoreProvider.getInstance().getAllScores(Collections.singletonList(fileItem.getString()));	
+				customers = Collections.singletonList(fileItem.getString());	
+			} else if ("zone".equals(fileItem.getFieldName())) {
+				zoneId = fileItem.getString().trim();	
 			} else if ("customers".equals(fileItem.getFieldName())) {
-				List customers = new ArrayList();
+				customers = new ArrayList();
 				for(Iterator i = CSVUtils.rowIterator(fileItem.getInputStream(),false,false); i.hasNext();) {
 					List row = (List)i.next();
 					for(Iterator r= row.iterator(); r.hasNext();) {
 						customers.add(r.next().toString());
 					}
 				}
-				T = ScoreProvider.getInstance().getAllScores(customers);
 			} else if ("cust".equals(fileItem.getFieldName())) {
 				if ("cached".equals(fileItem.getString())) {
-					T = ScoreProvider.getInstance().getAllScores(new ArrayList(ScoreProvider.getInstance().getCachedCustomers()));
+					customers = new ArrayList(ScoreProvider.getInstance().getCachedCustomers());
 				}
 			} else if ("format".equals(fileItem.getFieldName())) {
 				html = "html".equals(fileItem.getString());
@@ -101,9 +104,7 @@ if (ServletFileUpload.isMultipartContent(request)) {
 			}
 		}
 
-		if (T == null) {
-			T = ScoreProvider.getInstance().getAllScores(null);
-		}
+		T = ScoreProvider.getInstance().getAllScores(customers, zoneId);
 
 	
 		if (html) {	
@@ -257,7 +258,7 @@ function toggle() {
 		inp.innerHTML = '';
 		avalon.innerHTML = ALL_FACTORS;
 	} else {
-		inp.innerHTML = '';
+		inp.innerHTML = 'Zone #ID: <input type="text" name="zone" value="0000100000"/>';	
 		avalon.innerHTML = GLOBAL_FACTORS;
 	} 
 }
@@ -340,7 +341,7 @@ function toggle_help() {
 		</td>
 	</tr>
 	<tr>
-		<td bgcolor="#ddeeff"><span id="input"> </span></td>
+		<td bgcolor="#ddeeff"><span id="input">Zone #ID: <input type="text" name="zone" value="0000100000"/></span></td>
 	</tr>
 	<tr>
 		<td bgcolor="#ddeeff">
@@ -352,6 +353,10 @@ function toggle_help() {
 		<td bgcolor="#ddeeff">
 			<input type="radio" name="format" value="html" onclick="enable()" /> <tt>HTML</tt><br/>
 			<input type="radio" name="format" value="excel" checked="" onclick="enable()" /> <tt>EXCEL</tt><br/><br/>
+		</td>
+	</tr>
+	<tr>
+		<td bgcolor="#ddeeff">
 			<input type="submit"/>
 		</td>
 	</tr>

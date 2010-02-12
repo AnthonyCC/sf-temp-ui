@@ -28,6 +28,7 @@ import com.freshdirect.cms.search.AttributeIndex;
 import com.freshdirect.cms.search.LuceneSearchService;
 import com.freshdirect.cms.search.LuceneSearchServiceTest;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
+import com.freshdirect.fdstore.aspects.FDFactoryZoneInfoAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticUserProviderAspect;
 import com.freshdirect.fdstore.aspects.ScoreFactorGlobalNameAspect;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
@@ -96,6 +97,7 @@ public class SmartSearchTest extends TestCase {
         aspectSystem.add(new FDFactoryProductInfoAspect().addAvailableSku("DAI0008813", 2.0).addAvailableSku("DAI0008812", 3.0).addAvailableSku("CAN0062899",
                 4.0).addAvailableSku("DAI0059088", 5.0));
 
+        aspectSystem.add(new FDFactoryZoneInfoAspect());
         /*aspectSystem.add(new ProductStatisticProviderAspect() {
             public Map getGlobalProductScores() {
                 try {

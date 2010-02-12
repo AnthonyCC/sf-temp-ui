@@ -2,11 +2,15 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='java.util.StringTokenizer' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
+<% FDUserI p_user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER); %>
 <fd:ProduceRatingCheck>
 <% 
 
@@ -80,14 +84,16 @@
 			<logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.fdstore.content.SkuModel">
 				<td>
 				<% 
+                  //Convert this to Product Pricing Adapter model for zone pricing.
+                  ProductModel pm = ProductPricingFactory.getInstance().getPricingAdapter(peakProduce.getProductModel(), p_user.getPricingContext());
 				  String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(),peakProduce.getProductModel(),prodNameAttribute,true);
+				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getParentNode().getContentName(),pm,prodNameAttribute,true);
 				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-				  String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), "dept" );
+				  String actionUrl = FDURLUtil.getProductURI( pm, "dept" );
 				 %>
 				 <td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
 					<!-- APPDEV-401 Update product display(deals & burst) -->
-					<display:ProductImage product="<%= peakProduce.getProductModel() %>" showRolloverImage="false" action="<%= actionUrl %>"/>
+					<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionUrl %>"/>
 					<!--<a href="<%=displayObj.getItemURL()%>&trk=dept"><img src="<%= displayObj.getImagePath()%>"  <%=displayObj.getImageDimensions() %> ALT="<%=displayObj.getAltText()%>" vspace="0" hspace="0" border="0"></a>-->
 				 </td>
 			</logic:iterate>
@@ -97,15 +103,16 @@
 				<td>
 				<% 
 				  String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
-				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(),peakProduce.getProductModel(),prodNameAttribute,true);
+                  ProductModel pm = ProductPricingFactory.getInstance().getPricingAdapter(peakProduce.getProductModel(), p_user.getPricingContext());
+				  DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getParentNode().getContentName(),pm,prodNameAttribute,true);
 				  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-				  String actionUrl = FDURLUtil.getProductURI( peakProduce.getProductModel(), "dept" );
+				  String actionUrl = FDURLUtil.getProductURI( pm, "dept" );
 				 %>
 				 <td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
 					<!-- APPDEV-401 Update product display(deals & burst) -->
-					<display:ProductRating product="<%= peakProduce.getProductModel() %>" action="<%= actionUrl %>"/>
-					<display:ProductName product="<%= peakProduce.getProductModel() %>" action="<%= actionUrl %>"/>								
-					<display:ProductPrice impression="<%= new ProductImpression( peakProduce.getProductModel() ) %>" showAboutPrice="false" showDescription="false"/>
+					<display:ProductRating product="<%= pm %>" action="<%= actionUrl %>"/>
+					<display:ProductName product="<%= pm %>" action="<%= actionUrl %>"/>								
+					<display:ProductPrice impression="<%= new ProductImpression( pm ) %>" showAboutPrice="false" showDescription="false"/>
 					<%  //if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>          
 						<!--<img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif" name="rating" width="59" height="11" border="0" vspace="3">-->
 					<% //} %>

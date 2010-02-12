@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -175,4 +176,8 @@ public class FakePromotionContext implements PromotionContextI {
 		// TODO Auto-generated method stub
 		
 	}
+	public PricingContext getPricingContext() {
+		return null;
+	}
+	
 }

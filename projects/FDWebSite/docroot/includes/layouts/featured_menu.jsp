@@ -21,7 +21,7 @@
 <%
 
 //********** Start of Stuff to let JSPF's become JSP's **************
-
+FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId"); 
 boolean isDepartment = false;
@@ -97,12 +97,12 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %>
 <logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 			ProductModel productNode = contentNode;
-			ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode, recommendations.getVariant().getHideBursts());
+			ProductLabeling pl = new ProductLabeling(user, productNode, recommendations.getVariant().getHideBursts());
 			String fiRating = "";
 			String fiProdPrice = null;
 			String fiSubtitle = productNode.getSubtitle();
 %><fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>"><%
-			fiProdPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+			fiProdPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %></fd:FDProductInfo><%
 			String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %>			<p style="border: 0px; padding: 0px; margin: 0px;">
@@ -164,7 +164,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <% 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+        prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %>                      
         </fd:FDProductInfo>
 <%

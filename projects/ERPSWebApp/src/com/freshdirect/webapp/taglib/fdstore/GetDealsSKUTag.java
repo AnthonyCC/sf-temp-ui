@@ -19,13 +19,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+
 import com.freshdirect.fdstore.DealsHelper;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 
@@ -53,7 +57,7 @@ public class GetDealsSKUTag extends AbstractGetterTag {
 				sku=i.next().toString();
 				try {
 					productInfo=FDCachedFactory.getProductInfo(sku);
-					if(productInfo.isAvailable() && productInfo.hasWasPrice()) {
+					if(productInfo.isAvailable() && productInfo.getZonePriceInfo(getPricingZoneId()).isItemOnSale()) {
 						
 						try {
 							   SkuModel sm=ContentFactory.getInstance().getProduct(sku).getSku(sku);
@@ -118,5 +122,12 @@ public class GetDealsSKUTag extends AbstractGetterTag {
     	}
     }
 
+    private String getPricingZoneId() {
+        FDUserI user = FDSessionUser.getFDSessionUser(pageContext.getSession());
+        if (user == null) {
+            throw new FDRuntimeException("User object is Null");
+        }
+        return user.getPricingZoneId();
+    }
 }
 

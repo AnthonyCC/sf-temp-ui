@@ -26,7 +26,7 @@ public class GlobalCompiler {
 
     public DataGeneratorCompiler getDataGeneratorCompiler() {
         if (compiler == null) {
-            compiler = new DataGeneratorCompiler();
+            compiler = new DataGeneratorCompiler(ScoreProvider.ZONE_DEPENDENT_FACTORS_ARRAY);
         }
         return compiler;
     }

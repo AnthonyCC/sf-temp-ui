@@ -11,11 +11,15 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.address.EnumAddressType;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
+import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumAddressVerificationResult;
+import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
@@ -163,6 +167,26 @@ public class AddressUtil {
         }
     }
     
+	public static EnumServiceType getDeliveryServiceType(AddressModel addressModel) throws FDResourceException {
+		try {
+			DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkAddress(addressModel);
+			
+			EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(addressModel.getServiceType());
+			
+			if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
+				return addressModel.getServiceType();
+			} else { 
+				return EnumServiceType.PICKUP;
+			}
+		}catch (FDInvalidAddressException  fdia) {
+	            LOGGER.info("Invalid address", fdia);
+	    }catch (FDResourceException  fde) {
+	            LOGGER.info("Unexpected exception happened while getting delivery service type", fde);
+	            throw fde;
+	    }
+	    return null;
+    }
+	
 	public static boolean validateState(String state) {
 		return stateAbbrevs.contains(state.toUpperCase());
 	}

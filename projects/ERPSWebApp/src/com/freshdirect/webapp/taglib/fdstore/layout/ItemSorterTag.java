@@ -14,8 +14,10 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.PrioritizedI;
 import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.fdstore.content.util.ContentNodeComparator;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.TagSupport;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**@author ekracoff*/
 public class ItemSorterTag extends TagSupport {
@@ -35,7 +37,7 @@ public class ItemSorterTag extends TagSupport {
 	public int doStartTag() throws JspException {
 
 		LOGGER.info(">>>Sorting " + nodes.size() + " items by " + strategy.size() + " attributes");
-
+		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 		Collections.sort(nodes, new ContentNodeComparator(strategy));
 
 		LOGGER.info(">>>Sort complete");

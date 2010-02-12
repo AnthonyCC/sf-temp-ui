@@ -15,10 +15,12 @@ import org.hibernate.SQLQuery;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
@@ -91,7 +93,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("SELECT ID, ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT, VARIANT_ID, SAVINGS_ID FROM CUST.ORDERLINE WHERE SALESACTION_ID=? ORDER BY ORDERLINE_NUMBER");
+		PreparedStatement ps = conn.prepareStatement("SELECT ID, ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT, VARIANT_ID, SAVINGS_ID,PRICING_ZONE_ID FROM CUST.ORDERLINE WHERE SALESACTION_ID=? ORDER BY ORDERLINE_NUMBER");
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
@@ -108,8 +110,8 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		"INSERT INTO CUST.ORDERLINE (ID, SALESACTION_ID, ORDERLINE_NUMBER, SKU_CODE, VERSION,"
 		+ " QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN,"
 		+ " DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE,"
-		+ " TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION,RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID)"
-		+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		+ " TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION,RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID)"
+		+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
@@ -174,6 +176,21 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		} else {
 			ps.setNull(30, Types.VARCHAR);
 		}
+		/*
+		if(this.model.getPricingContext().getZoneId()!=null) {
+			ps.setString(31,this.model.getPricingContext().getZoneId());
+		} else {
+			ps.setNull(31, Types.VARCHAR);
+		}
+		*/
+		//zone where the order line was originally priced from
+		if(this.model.getPricingZoneId()!=null) {
+			ps.setString(31,this.model.getPricingZoneId());
+		} else {
+			ps.setNull(31, Types.VARCHAR);
+		}
+		
+		
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -191,13 +208,13 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 
 	public void load(Connection conn) throws SQLException {
 				
-		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID FROM CUST.ORDERLINE WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID FROM CUST.ORDERLINE WHERE ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
 			this.loadFromResultSet(rs);
 		} else {
-			throw new SQLException("No such ErpOrderLine PK: " + this.getPK());
+			throw new SQLException("No such ErpOrderLine PK: " + this.getPK()); 
 		}
 		rs.close();
 		ps.close();
@@ -229,6 +246,9 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
         this.model.setDiscountAmount(rs.getDouble("DISCOUNT_AMT"));
         this.model.setVariantId(rs.getString("VARIANT_ID"));
         this.model.setSavingsId(rs.getString("SAVINGS_ID"));
+        String pricingZoneId=rs.getString("PRICING_ZONE_ID");
+        this.model.setPricingContext(new PricingContext(pricingZoneId==null?ZonePriceListing.MASTER_DEFAULT_ZONE:pricingZoneId)); 
+
         
 		// deal with no promotion (PROMOTION_TYPE is NULL)
 		int type = rs.getInt("PROMOTION_TYPE");

@@ -3,7 +3,8 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
-
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
 
 <%
 
@@ -73,6 +74,7 @@ if(windowSize.equalsIgnoreCase("large")){
 
 <%
 FDProductInfo prodInfo=FDCachedFactory.getProductInfo(request.getParameter("sku"));
+FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 %>
 <A NAME="top"></A>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="520">
@@ -86,7 +88,7 @@ FDProductInfo prodInfo=FDCachedFactory.getProductInfo(request.getParameter("sku"
 We've made it easy to renew your pass and never pay a delivery fee again. Your pass will be renewed when your current pass (or last refill) expires.<br><br>
 
 
-On the day your pass expires, a new pass will automatically be added to your account. We'll bill your last used payment option for the normal price of the pass and you'll be set for <%=request.getParameter("term")%> of hassle-free deliveries for just <%=CCFormatter.formatCurrency(prodInfo.getDefaultPrice())%>! You may opt out of automatic renewal at any time.<br><br>
+On the day your pass expires, a new pass will automatically be added to your account. We'll bill your last used payment option for the normal price of the pass and you'll be set for <%=request.getParameter("term")%> of hassle-free deliveries for just <%=CCFormatter.formatCurrency(prodInfo.getZonePriceInfo(sessionuser.getPricingContext().getZoneId()).getDefaultPrice())%>! You may opt out of automatic renewal at any time.<br><br>
 <SPAN CLASS="c"><b>DELIVERYPASS TERMS & CONDITIONS</b></SPAN><br>
 <SPAN CLASS="D">
 

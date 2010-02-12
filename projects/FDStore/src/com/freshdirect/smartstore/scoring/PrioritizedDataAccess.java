@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
@@ -27,9 +28,9 @@ public class PrioritizedDataAccess implements DataAccess {
 	}
 
 	@Override
-	public double[] getVariables(String userId, ContentNodeModel contentNode,
+	public double[] getVariables(String userId, PricingContext pricingContext, ContentNodeModel contentNode,
 			String[] variables) {
-		return ScoreProvider.getInstance().getVariables(userId, contentNode, variables);
+		return ScoreProvider.getInstance().getVariables(userId, pricingContext, contentNode, variables);
 	}
 
 	@Override

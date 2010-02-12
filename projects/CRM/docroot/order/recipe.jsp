@@ -4,7 +4,6 @@
 <%@ page import='com.freshdirect.framework.util.*' %>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>

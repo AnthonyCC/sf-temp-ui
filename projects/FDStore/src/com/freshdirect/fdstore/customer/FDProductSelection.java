@@ -10,8 +10,10 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Price;
 import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
+
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -27,8 +29,10 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.ProxyProduct;
 import com.freshdirect.framework.util.MathUtil;
@@ -49,11 +53,12 @@ public class FDProductSelection implements FDProductSelectionI {
 	private boolean invalidConfig = false;
 	private double fixedPrice;
 
-	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration) {
-		this(sku, productRef, configuration, null);
+	
+	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String pZoneId) {
+		this(sku, productRef, configuration, null, pZoneId);
 	}
 
-	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId) {
+	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, String pZoneId) {
 		this.orderLine = new ErpOrderLineModel();
 
 		this.orderLine.setSku(sku);
@@ -61,6 +66,9 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.orderLine.setConfiguration( new FDConfiguration(configuration) );
 		
 		this.orderLine.setVariantId(variantId);
+		//For now setting the default. Need to be parameterized
+		this.orderLine.setPricingContext(new PricingContext(pZoneId));
+		
 	}
 
 	protected FDProductSelection(ErpOrderLineModel orderLine) {
@@ -199,7 +207,6 @@ public class FDProductSelection implements FDProductSelectionI {
 				this.orderLine.setAffiliate(fdProduct.getAffiliate());
 				this.orderLine.setDeliveryPass(fdProduct.isDeliveryPass());
 			}
-
 			this.performPricing();
 
 			ProductModel pm = this.lookupProduct();
@@ -218,7 +225,8 @@ public class FDProductSelection implements FDProductSelectionI {
 	//
 
 	public ProductModel lookupProduct() {
-		return this.productRef.lookupProductModel();
+	    return ProductPricingFactory.getInstance().getPricingAdapter(this.productRef.lookupProductModel(),
+                getPricingContext() != null ? getPricingContext() : PricingContext.DEFAULT);
 	}
 
 	public FDProduct lookupFDProduct() {
@@ -348,7 +356,7 @@ public class FDProductSelection implements FDProductSelectionI {
 	public boolean hasScaledPricing() {
 		FDProduct fdProduct = this.lookupFDProduct();
 		Pricing price = fdProduct.getPricing();
-		MaterialPrice[] materialPrices = price.getMaterialPrices();
+		MaterialPrice[] materialPrices = price.getZonePrice(getPricingContext().getZoneId()).getMaterialPrices();
 		return !materialPrices[0].isWithinBounds(this.getQuantity());
 	}
 
@@ -419,12 +427,12 @@ public class FDProductSelection implements FDProductSelectionI {
 	protected void performPricing() {
 		try {
 			if(FDStoreProperties.getGiftcardSkucode().equalsIgnoreCase(this.getSkuCode()) || FDStoreProperties.getRobinHoodSkucode().equalsIgnoreCase(this.getSkuCode())){
-				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount());
+				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext());
 				this.orderLine.setPrice(this.getFixedPrice());
 				this.orderLine.setDiscountAmount(0);
 			}else
 			{
-				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount());
+				this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount(), this.orderLine.getPricingContext());
 				this.orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue());
 				this.orderLine.setDiscountAmount(price.getPromotionValue());
 				//this.orderLine.setTaxRate(price.getTaxRate());
@@ -534,4 +542,11 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.fixedPrice=price;
 	}
 	
+	public PricingContext getPricingContext() {
+		return orderLine.getPricingContext();
+	}
+	
+	public void setPricingContext(PricingContext pCtx) {
+		this.orderLine.setPricingContext(pCtx);
+	}
 }

@@ -14,6 +14,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZonePromoDiscount;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
@@ -361,4 +362,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 		return cart.getTotalLineItemsDiscountAmount();
 	}
 	
+	public PricingContext getPricingContext() {
+		return this.getUser().getPricingContext();
+	}
 }

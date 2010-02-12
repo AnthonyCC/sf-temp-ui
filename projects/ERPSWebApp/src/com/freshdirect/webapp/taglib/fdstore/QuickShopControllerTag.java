@@ -22,6 +22,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ProxyProduct;
@@ -44,6 +45,7 @@ import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.util.QuickCartCache;
@@ -108,6 +110,7 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 				|| ((this.orderId != null) && (quickCart != null) && !this.orderId.equalsIgnoreCase(quickCart.getOrderId()))) {
 
 				quickCart = new QuickCart();
+				quickCart.setUserZoneId(user.getPricingZoneId());
 				quickCart.setOrderId(this.orderId);
 				quickCart.setProductType(QuickCart.PRODUCT_TYPE_PRD);
 				
@@ -119,6 +122,15 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 				} else if (this.orderId != null && !"".equals(this.orderId)) {
 					FDOrderI order = FDCustomerManager.getOrder(user.getIdentity(), this.orderId);
 					List originalLines = order.getOrderLines();
+					/*
+					if(originalLines!=null && originalLines.size()>0){						
+						for(int i=0;i<originalLines.size();i++){
+							FDCartLineI cartLine=(FDCartLineI)originalLines.get(i);
+							cartLine.setPricingContext(user.getPricingContext());
+						    //originalLines=ProductPricingFactory.getInstance().getPricingAdapter(originalLines, new PricingContext(user.getPricingZoneId()));
+						}
+					}
+					*/
 					quickCart.setDeliveryDate(order.getDeliveryReservation().getStartTime());
 
 					//
@@ -151,6 +163,7 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 						quickCart.setOrderId(this.ccListId);
 						quickCart.setProductType(QuickCart.PRODUCT_TYPE_CCL);
 						quickCart.setDeliveryDate(new Date());
+						quickCart.setUserZoneId(user.getPricingZoneId());
 						quickCart.setName(FDListManager.getListName(user.getIdentity(), EnumCustomerListType.CC_LIST, ccListId));
 
 					
@@ -182,7 +195,7 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 				quickCart.setProductType(QuickCart.PRODUCT_TYPE_STARTER_LIST);
 				quickCart.clearProducts();
 				quickCart.setDeliveryDate(new Date());
-
+                quickCart.setUserZoneId(user.getPricingZoneId());
 				StarterList sList = (StarterList)ContentFactory.getInstance().getContentNode(this.starterListId);
 				for(Iterator i = sList.getListContents().iterator(); i.hasNext(); ) {
 					try {
@@ -197,7 +210,8 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 					    FDProductInfo prodInfo = FDCachedFactory.getProductInfo(product.getSkuCode());
 					
 					    FDProductSelection productSelection =
-					    	new FDProductSelection(prodInfo,product,product.getConfiguration());
+					    	new FDProductSelection(prodInfo,product,product.getConfiguration(), user.getPricingZoneId());
+
 					    OrderLineUtil.describe(productSelection);
 					    quickCart.addProduct(productSelection);
 					} catch (FDSkuNotFoundException e) {

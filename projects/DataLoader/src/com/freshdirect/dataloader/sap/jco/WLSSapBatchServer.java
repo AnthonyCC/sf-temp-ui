@@ -40,7 +40,7 @@ public class WLSSapBatchServer extends ApplicationLifecycleListener {
 			if (gwServ == null)
 				throw new IllegalArgumentException("gwServ not specified");
 
-			final String progId = "WEBLOADER01";
+			final String progId = "MATERIAL_EXPORT";
 
 			new BapiServer(gwHost, gwServ, progId) {
 

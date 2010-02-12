@@ -13,13 +13,17 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 
 /**
@@ -28,7 +32,10 @@ import com.freshdirect.fdstore.content.ProductModel;
  * @author istvan
  *
  */
-public class FactorUtil {	
+public class FactorUtil {
+    
+    final static Logger LOG = LoggerFactory.getInstance(FactorUtil.class);
+    
 	// GLOBAL FACTORS columns, when moved to JDK 1.5+ these should be enums
 	public static String GLOBAL_POPULARITY_COLUMN = "POPULARITY";
 	public static String GLOBAL_REORDER_BUYER_COUNT_COLUMN = "REORDERBUYERCOUNT";
@@ -42,45 +49,31 @@ public class FactorUtil {
 	public static String PERSONALIZED_QUANTITY_COLUMN = "QUANTITY";
 	public static String PERSONALIZED_AMOUNT_COLUMN = "AMOUNT";
 	
-	private static class DealsCache extends OnlineScoreCache {
-		public double calculateVariable(ContentNodeModel contentNode) {
-			return contentNode instanceof ProductModel ? 
-					((double) ((ProductModel) contentNode).getDealPercentage()) : 0.0;
-		}
-	}
-
-	private static class TieredDealsCache extends OnlineScoreCache {
-		public double calculateVariable(ContentNodeModel contentNode) {
-			return contentNode instanceof ProductModel ? 
-					((double) ((ProductModel) contentNode).getTieredDealPercentage()) : 0.0;
-		}
-	}
-
-	private static class HighestDealsCache extends OnlineScoreCache {
-		public double calculateVariable(ContentNodeModel contentNode) {
-			return contentNode instanceof ProductModel ? 
-					((double) ((ProductModel) contentNode).getHighestDealPercentage()) : 0.0;
-		}
-	}
-
-        private static class ProduceRatingCache extends OnlineScoreCache {
-            public double calculateVariable(ContentNodeModel contentNode) {
-                try {
-                    if (contentNode instanceof ProductModel) {
-                        EnumOrderLineRating e = ((ProductModel) contentNode).getProductRatingEnum();
-                        return e.getQualityRating();
-                    }
-                    return 0.0;
-                } catch (FDResourceException e) {
-                    return 0.0;
+		
+    private static class ProduceRatingCache implements StoreLookup {
+        
+        public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+            try {
+                if (contentNode instanceof ProductModel) {
+                    EnumOrderLineRating e;
+                    e = ((ProductModel) contentNode).getProductRatingEnum();
+                    return e.getQualityRating();
                 }
+                return 0;
+            } catch (FDResourceException e) {
+                LOG.info("Error looking up " + contentNode + " in " + pricingContext, e);
             }
+            return 0;
         }
+        
+        @Override
+        public void reloadCache() {
+            
+        }
+        
+    }
 	
-	private static OnlineScoreCache dealsCache = new DealsCache();
-	private static OnlineScoreCache tieredDealsCache = new TieredDealsCache();
-	private static OnlineScoreCache highestDealsCache = new HighestDealsCache();
-	private static OnlineScoreCache produceRatingCache = new ProduceRatingCache();
+	private static StoreLookup produceRatingCache = new ProduceRatingCache();
 	
 	/**
 	 * Get a CSM lookup which returns "Deals Percentage".
@@ -88,18 +81,28 @@ public class FactorUtil {
 	 * @return StoreLookup
 	 */
 	public static StoreLookup getDealsPercentageLookup() {
-		return new CachingStoreLookup(dealsCache) {
-			public double getVariable(ContentNodeModel contentNode) {
-				return super.getVariable(contentNode) / 100.0;
+		return new StoreLookup() {
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return AllDealsCache.getInstance().getRegularDeal(contentNode.getContentKey(), pricingContext) / 100.0;
+			}
+
+			@Override
+			public void reloadCache() {
+				AllDealsCache.getInstance().reload();
 			}	
 		};
 	}
 	
 	public static StoreLookup getDealsPercentageDiscretized() {
-		return new CachingStoreLookup(dealsCache) {
-			public double getVariable(ContentNodeModel contentNode) {
-				return Math.floor(super.getVariable(contentNode) / 5.0);
+		return new StoreLookup() {
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return Math.floor(AllDealsCache.getInstance().getRegularDeal(contentNode.getContentKey(), pricingContext) / 5.0);
 			}
+
+			@Override
+			public void reloadCache() {
+				AllDealsCache.getInstance().reload();
+			}	
 		};
 	}
 
@@ -109,18 +112,28 @@ public class FactorUtil {
 	 * @return StoreLookup
 	 */
 	public static StoreLookup getTieredDealsPercentageLookup() {
-		return new CachingStoreLookup(tieredDealsCache) {
-			public double getVariable(ContentNodeModel contentNode) {
-				return super.getVariable(contentNode) / 100.0;
+		return new StoreLookup() {
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return AllDealsCache.getInstance().getTieredDeal(contentNode.getContentKey(), pricingContext) / 100.0;
+			}	
+
+			@Override
+			public void reloadCache() {
+				AllDealsCache.getInstance().reload();
 			}	
 		};
 	}
 	
 	public static StoreLookup getTieredDealsPercentageDiscretized() {
-		return new CachingStoreLookup(tieredDealsCache) {
-			public double getVariable(ContentNodeModel contentNode) {
-				return Math.floor(super.getVariable(contentNode) / 5.0);
+		return new StoreLookup() {
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return Math.floor(AllDealsCache.getInstance().getTieredDeal(contentNode.getContentKey(), pricingContext) / 5.0);
 			}
+
+			@Override
+			public void reloadCache() {
+				AllDealsCache.getInstance().reload();
+			}	
 		};
 	}
 	
@@ -130,18 +143,28 @@ public class FactorUtil {
 	 * @return StoreLookup
 	 */
 	public static StoreLookup getHighestDealsPercentageLookup() {
-		return new CachingStoreLookup(highestDealsCache) {
-			public double getVariable(ContentNodeModel contentNode) {
-				return super.getVariable(contentNode) / 100.0;
+		return new StoreLookup() {
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return AllDealsCache.getInstance().getHighestDeal(contentNode.getContentKey(), pricingContext) / 100.0;
+			}	
+
+			@Override
+			public void reloadCache() {
+				AllDealsCache.getInstance().reload();
 			}	
 		};
 	}
 	
 	public static StoreLookup getHighestDealsPercentageDiscretized() {
-		return new CachingStoreLookup(highestDealsCache) {
-			public double getVariable(ContentNodeModel contentNode) {
-				return Math.floor(super.getVariable(contentNode) / 5.0);
+		return new StoreLookup() {
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return Math.floor(AllDealsCache.getInstance().getHighestDeal(contentNode.getContentKey(), pricingContext) / 5.0);
 			}
+
+			@Override
+			public void reloadCache() {
+				AllDealsCache.getInstance().reload();
+			}	
 		};
 	}
 	
@@ -152,12 +175,17 @@ public class FactorUtil {
 	public static StoreLookup getExpertWeightLookup() {
 		return new StoreLookup() {
 
-			public double getVariable(ContentNodeModel contentNode) {
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				return 
 					contentNode instanceof ProductModel ?
 							((ProductModel)contentNode).getExpertWeight() : 0;
 			}
 			
+			@Override
+			public void reloadCache() {
+			// TODO Auto-generated method stub
+			                
+			}
 		};
 	}
 	
@@ -167,7 +195,8 @@ public class FactorUtil {
 	 */
 	public static StoreLookup getNormalizedExpertWeightLookup() {
 		return new StoreLookup() {
-			public double getVariable(ContentNodeModel contentNode) {
+		        @Override
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				int ew = 
 					contentNode instanceof ProductModel ?
 						((ProductModel)contentNode).getExpertWeight() : 0;
@@ -187,13 +216,17 @@ public class FactorUtil {
 						return 0.5;
 				}
 			}
+			@Override
+			public void reloadCache() {
+			                
+			}
 		};
 	}
 		
 	public static StoreLookup getProduceRatingLookup() {
 		return new CachingStoreLookup(produceRatingCache) {
-			public double getVariable(ContentNodeModel contentNode) {
-				return super.getVariable(contentNode);
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return super.getVariable(contentNode, pricingContext);
 			}
 		};
 	}
@@ -204,8 +237,8 @@ public class FactorUtil {
 			private double[] scores = 
 				{0, -0.8, -0.6, -0.4, -0.2, 0.0,  0.0, 0.0, 0.2, 0.4, 0.6, 0.6, 0.8, 0.8, 1.0, 1.0};
 
-			public double getVariable(ContentNodeModel contentNode) {
-				return scores[(int) super.getVariable(contentNode)];
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return scores[(int) super.getVariable(contentNode, pricingContext)];
 			}
 			
 			
@@ -218,8 +251,8 @@ public class FactorUtil {
 			private double[] scores = 
 				{0,  1,  2,  3,  4,  0,  0,  5,  6,  7,  8,  8,  9,  9, 10, 10};
 
-			public double getVariable(ContentNodeModel contentNode) {
-				return scores[(int) super.getVariable(contentNode)];
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return scores[(int) super.getVariable(contentNode, pricingContext)];
 			}	
 		};		
 	}
@@ -230,15 +263,15 @@ public class FactorUtil {
 			private double[] scores = 
 				{0, -4, -3, -2, -1,  0,  0,  0,  1,  2,  3,  3,  4,  4,  5,  5};
 
-			public double getVariable(ContentNodeModel contentNode) {
-				return scores[(int) super.getVariable(contentNode)];
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return scores[(int) super.getVariable(contentNode, pricingContext)];
 			}	
 		};		
 	}
 	
 	public static StoreLookup getNewnessLookup() {
 		return new StoreLookup() {
-			public double getVariable(ContentNodeModel contentNode) {
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				Number n = null;
 				try {
 					n = (Number) ContentFactory.getInstance().getProductNewnesses().get(contentNode);
@@ -246,13 +279,18 @@ public class FactorUtil {
 				}
 				return n != null ? n.doubleValue() : Integer.MIN_VALUE;
 			}
+			
+			@Override
+			public void reloadCache() {
+			                
+			}
 		};
 	}
 	
 	protected static class ReorderRateConverter extends FactorRangeConverter {
 
-		private Set dbColumns =
-			new HashSet(Arrays.asList(new String[]{GLOBAL_REORDER_BUYER_COUNT_COLUMN, GLOBAL_TOTAL_BUYER_COUNT_COLUMN}));
+		private Set<String> dbColumns =
+			new HashSet<String>(Arrays.asList(new String[]{GLOBAL_REORDER_BUYER_COUNT_COLUMN, GLOBAL_TOTAL_BUYER_COUNT_COLUMN}));
 		
 		private int minPurchases;
 		
@@ -270,7 +308,7 @@ public class FactorUtil {
 			return reordersCounts;
 		}
 		
-		public Set requiresGlobalDatabaseColumns() {
+		public Set<String> requiresGlobalDatabaseColumns() {
 			return dbColumns;
 		}
 		
@@ -367,7 +405,7 @@ public class FactorUtil {
 				return values;
 			}
 			
-			public Set requiresPersonalizedDatabaseColumns() {
+			public Set<String> requiresPersonalizedDatabaseColumns() {
 				return Collections.singleton(PERSONALIZED_FREQUENCY_COLUMN);
 			}
 			
@@ -493,7 +531,7 @@ public class FactorUtil {
 				return true;
 			}
 			
-			public Set requiresPersonalizedDatabaseColumns() {
+			public Set<String> requiresPersonalizedDatabaseColumns() {
 				return Collections.singleton(column);
 			}
 		};
@@ -559,7 +597,7 @@ public class FactorUtil {
 				return true;
 			}
 			
-			public Set requiresPersonalizedDatabaseColumns() {
+			public Set<String> requiresPersonalizedDatabaseColumns() {
 				return Collections.singleton(column);
 			}
 			
@@ -634,7 +672,7 @@ public class FactorUtil {
 				return true;
 			}
 			
-			public Set requiresPersonalizedDatabaseColumns() {
+			public Set<String> requiresPersonalizedDatabaseColumns() {
 				return Collections.singleton(factor);
 			}
 		};
@@ -651,7 +689,7 @@ public class FactorUtil {
 				return false;
 			}
 			
-			public Set requiresGlobalDatabaseColumns() {
+			public Set<String> requiresGlobalDatabaseColumns() {
 				return Collections.singleton(factor);
 			}
 		};
@@ -661,8 +699,8 @@ public class FactorUtil {
 		
 		return new FactorRangeConverter() {
 
-			private Set dbColumns =
-				new HashSet(Arrays.asList(new String[]{GLOBAL_WEEKLY_FREQUENCY_COLUMN, GLOBAL_AVERAGE_FREQUENCY_COLUMN}));
+			private Set<String> dbColumns =
+				new HashSet<String>(Arrays.asList(new String[]{GLOBAL_WEEKLY_FREQUENCY_COLUMN, GLOBAL_AVERAGE_FREQUENCY_COLUMN}));
 			
 			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				double[] range = dup(provider.getRange(userId, GLOBAL_WEEKLY_FREQUENCY_COLUMN));
@@ -683,7 +721,7 @@ public class FactorUtil {
 				return false;
 			}
 			
-			public Set requiresGlobalDatabaseColumns() {
+			public Set<String> requiresGlobalDatabaseColumns() {
 				return dbColumns;
 			}
 			

@@ -1,0 +1,1 @@
+alter table cust.orderline add pricing_zone_id varchar2(16);

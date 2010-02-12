@@ -8,7 +8,6 @@ import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
-import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
@@ -115,15 +114,6 @@ public class MockContentNodeModel implements ContentNodeModel {
         return searchable;
     }
 
-    public Attribute getAttribute(String key) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public Object getAttribute(String key, Object defaultValue) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     public String getAttribute(String key, String defaultValue) {
         // TODO Auto-generated method stub

@@ -100,8 +100,11 @@ public class FDStoreProperties {
 
 	private final static String PROP_REFRESHSECS_PRODUCTINFO  = "fdstore.refreshSecs.productInfo";
 	private final static String PROP_REFRESHSECS_PRODUCT  = "fdstore.refreshSecs.product";
+	private final static String PROP_REFRESHSECS_ZONE  = "fdstore.refreshSecs.zone";
 	private final static String PROP_PRODUCT_CACHE_SIZE	= "fdstore.product.cache.size";
 	
+	private final static String PROP_ZONE_CACHE_SIZE	= "fdstore.zone.cache.size";
+		
 	private final static String PROP_CMS_MOSTLY_READONLY = "fdstore.cms.readonly.optimization";
 
 	private final static String PROP_PRELOAD_STORE = "fdstore.preLoad";
@@ -399,6 +402,11 @@ public class FDStoreProperties {
 	private final static String PROP_GC_NSM_AUTHSKIP_SECS  = "fdstore.gcnsm.authskip.secs";
 	private final static String PROP_GC_NSM_FREQ_SECS  = "fdstore.gcnsm.frequency.secs";
 	
+	private final static String PROP_ZONE_PRICING_ENABLED = "fdstore.zone.pricing.enabled";
+	
+	private final static String PROP_ZONE_PICKUP_ZIPCODE = "fdstore.zone.pricing.pickup.zipcode";
+	
+	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -470,8 +478,10 @@ public class FDStoreProperties {
 		defaults.put(PROP_RESTRICTED_PAYMENT_METHOD_HOME,	"freshdirect.payment.RestrictedPaymentMethod");
 
 		defaults.put(PROP_REFRESHSECS_PRODUCTINFO, "600");
+		defaults.put(PROP_REFRESHSECS_ZONE, "600");
 		defaults.put(PROP_REFRESHSECS_PRODUCT, "7200");
 		defaults.put(PROP_PRODUCT_CACHE_SIZE, "30000");
+		defaults.put(PROP_ZONE_CACHE_SIZE, "10000");
 
 		// mktadmin
 		defaults.put(MKT_ADMIN_FILE_UPLOAD_SIZE, "2000");
@@ -686,6 +696,10 @@ public class FDStoreProperties {
 		
 		defaults.put(PROP_GC_NSM_AUTHSKIP_SECS, "600");
 		defaults.put(PROP_GC_NSM_FREQ_SECS, "600");
+		defaults.put(PROP_ZONE_PRICING_ENABLED, "true");		
+		defaults.put(PROP_ZONE_PICKUP_ZIPCODE, "11101");
+		
+		
 		refresh();
 	}
 
@@ -898,10 +912,21 @@ public class FDStoreProperties {
 	public static int getRefreshSecsProduct(){
 		return Integer.parseInt(get(PROP_REFRESHSECS_PRODUCT));
 	}
+	
+	
+	public static int getRefreshSecsZone(){
+		return Integer.parseInt(get(PROP_REFRESHSECS_ZONE));
+	}
 
 	public static int getProductCacheSize() {
 		return Integer.parseInt(get(PROP_PRODUCT_CACHE_SIZE));
 	}
+	
+	
+	public static int getZoneCacheSize() {
+		return Integer.parseInt(get(PROP_ZONE_CACHE_SIZE));
+	}
+
 
 	public static String getProductEmail() {
 		return get(PROP_EMAIL_PRODUCT);
@@ -1558,11 +1583,20 @@ public class FDStoreProperties {
 		return get(MOBILE_IPHONE_LANDING_PAGE);
 	}
 	
+	
+	public static String getDefaultPickupZoneId() {
+		return get(PROP_ZONE_PICKUP_ZIPCODE);
+	}
+	
 	public static int getNSMAuthSkipSecsForGC(){
 		return Integer.parseInt(get(PROP_GC_NSM_AUTHSKIP_SECS));
 	}
 	
 	public static int getNSMFreqSecsForGC(){
 		return Integer.parseInt(get(PROP_GC_NSM_FREQ_SECS));
+	}
+	
+	public static boolean isZonePricingEnabled(){
+		return Boolean.valueOf(config.getProperty(PROP_ZONE_PRICING_ENABLED)).booleanValue();
 	}
 }

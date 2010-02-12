@@ -41,6 +41,9 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.ZonePriceInfoListing;
+import com.freshdirect.fdstore.ZonePriceInfoModel;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.TestFDInventoryCache;
@@ -279,7 +282,7 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 				new FDCartLineModel(
 					new FDSku(product),
 					prodNode,
-					new FDConfiguration(quantity, salesUnit.getName(), varMap), null);
+					new FDConfiguration(quantity, salesUnit.getName(), varMap), null, ZonePriceListing.MASTER_DEFAULT_ZONE);
 		} else {
 			/*
 			 * When an existing item in the cart is modified, reuse the same
@@ -291,7 +294,7 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 					new FDSku(product),
 					prodNode,
 					new FDConfiguration(quantity, salesUnit.getName(), varMap),
-					origCartLineId, null, false, null);
+					origCartLineId, null, false, null, ZonePriceListing.MASTER_DEFAULT_ZONE);
 		}
 
 		try {
@@ -404,15 +407,12 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 			// a 10000 units available starting now
 			erpEntries.add(new ErpInventoryEntryModel(now, 10000));
 			inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
-			productInfo    = new FDProductInfo(sku,
-					                           1,
-					                           1.0,
-					                           "ea",
-					                           materials,
-					                           EnumATPRule.MATERIAL,
-					                           EnumAvailabilityStatus.AVAILABLE,
-					                           now,
-					                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
+
+			ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
+			ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+			dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
+			productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
+
 
 			return productInfo;
 		}

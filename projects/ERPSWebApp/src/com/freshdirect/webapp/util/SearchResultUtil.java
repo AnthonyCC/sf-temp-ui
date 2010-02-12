@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
@@ -203,7 +204,7 @@ public class SearchResultUtil {
 		if (sku != null) {
 			try {
 				pi = FDCachedFactory.getProductInfo(sku.getSkuCode());
-				productPrice = currencyFormatter.format(pi.getDefaultPrice())
+				productPrice = currencyFormatter.format(pi.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDefaultPrice())
 					+ "/"
 					+ pi.getDisplayableDefaultPriceUnit().toLowerCase();
 			} catch (FDSkuNotFoundException ex) {
@@ -298,7 +299,7 @@ public class SearchResultUtil {
 		if (sku != null) {
 			try {
 				FDProductInfo pi = FDCachedFactory.getProductInfo(sku.getSkuCode());
-				String productPrice = currencyFormatter.format(pi.getDefaultPrice())
+				String productPrice = currencyFormatter.format(pi.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDefaultPrice())
 					+ "/"
 					+ pi.getDisplayableDefaultPriceUnit().toLowerCase();
 				

@@ -37,6 +37,9 @@ public class ErpMaterialPriceModel extends ErpModelSupport implements DurableMod
 	/** Scale unit of measure */
 	private String scaleUnit;
 
+	private String sapZoneId;
+	
+	private double promoPrice;
 	/**
 	 * Default constructor.
 	 */
@@ -53,12 +56,14 @@ public class ErpMaterialPriceModel extends ErpModelSupport implements DurableMod
 	 * @param scaleQuantity Scale quantity
 	 * @param scaleUnit Scale unit of measure
 	 */
-	public ErpMaterialPriceModel(String sapId, double price, String pricingUnit, double scaleQuantity, String scaleUnit) {
+	public ErpMaterialPriceModel(String sapId, double price, String pricingUnit, double scaleQuantity, String scaleUnit, String sapZoneId, double promoPrice) {
 		this.setSapId(sapId);
 		this.setPrice(price);
 		this.setPricingUnit(pricingUnit);
 		this.setScaleQuantity(scaleQuantity);
 		this.setScaleUnit(scaleUnit);		
+		this.setSapZoneId(sapZoneId);
+		this.setPromoPrice(promoPrice);
 	}
 	
 	/**
@@ -171,4 +176,21 @@ public class ErpMaterialPriceModel extends ErpModelSupport implements DurableMod
 		// no children
 	}
 
+	public String getSapZoneId() {
+		return this.sapZoneId;
+	}
+
+	public void setSapZoneId(String sapZoneId) {
+		this.sapZoneId = sapZoneId;
+	}
+
+	public double getPromoPrice() {
+		return promoPrice;
+	}
+
+	public void setPromoPrice(double promoPrice) {
+		this.promoPrice = promoPrice;
+	}
+
+	
 }

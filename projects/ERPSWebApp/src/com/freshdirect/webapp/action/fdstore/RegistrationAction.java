@@ -185,6 +185,8 @@ public class RegistrationAction extends WebActionSupport {
 					user.setIdentity(regIdent);
 					user.invalidateCache();
 					user.isLoggedIn(true);
+					user.setZipCode(erpAddress.getZipCode());
+					user.setSelectedServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
 					user.updateUserState();
 					//Set the Default Delivery pass status.
 					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0);

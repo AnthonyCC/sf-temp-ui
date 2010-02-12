@@ -4,11 +4,10 @@
 	//
     
     String[] scales=null;
-    
-	if ( product.isWine() ) {
-		scales = product.getPricing().getWineScaleDisplay(false);
+    if ( product.isWine() ) {
+		scales = product.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getWineScaleDisplay(false);
 	} else {
-		scales = product.getPricing().getScaleDisplay();
+		scales = product.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getScaleDisplay();
 	}
 	
 	if ( scales.length > 0 ) {

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.SessionInput;
 
@@ -18,7 +19,7 @@ public abstract class MockDataAccess implements DataAccess {
         return null;
     }
 
-    public double[] getVariables(String userId, ContentNodeModel contentNode, String[] variables) {
+    public double[] getVariables(String userId, PricingContext pricingContext, ContentNodeModel contentNode, String[] variables) {
         LOGGER.info("getVariables called with name: '"+variables+"'");
         Map varMap = getVariables(contentNode.getContentKey().getId());
         double[] result = new double[variables.length];

@@ -4,6 +4,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
@@ -17,6 +18,7 @@ import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class SampleLineApplicator implements PromotionApplicatorI {
@@ -44,7 +46,7 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 			return false;
 		}
 		try {
-			FDCartLineI cartLine = this.createSampleLine(promotionCode);
+			FDCartLineI cartLine = this.createSampleLine(promotionCode, context.getPricingContext());
 			if (cartLine != null) {
 				context.addSampleLine(cartLine);
 				return true;
@@ -56,10 +58,11 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 	}
 
 	/** @return null if product is not found */
-	private FDCartLineI createSampleLine(String promotionCode) throws FDResourceException {
+	private FDCartLineI createSampleLine(String promotionCode, PricingContext pricingCtx) throws FDResourceException {
 		ProductModel product = null;	
 		try{
-			product = this.sampleProduct.lookupProductModel();	
+			product = ProductPricingFactory.getInstance().getPricingAdapter(this.sampleProduct.lookupProductModel(),pricingCtx);	
+
 		}catch(Exception ex){
 			// This is to handle when a invalid category id or product id is set to the sampe promo. 
 			LOGGER.error("The category id or product id for the sample promo "+promotionCode+" is not invalid.");
@@ -90,7 +93,7 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 			new FDCartLineModel(
 				new FDSku(fdp),
 				product,
-				new FDConfiguration(product.getQuantityMinimum(), su.getName()), null);
+				new FDConfiguration(product.getQuantityMinimum(), su.getName()), null, pricingCtx.getZoneId());
 
 		cartLine.setDiscount(new Discount(promotionCode, EnumDiscountType.SAMPLE, 1.0));
 

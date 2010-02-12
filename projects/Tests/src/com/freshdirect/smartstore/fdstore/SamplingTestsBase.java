@@ -140,7 +140,7 @@ public class SamplingTestsBase extends TestCase {
 			return null;
 		}
 
-		SessionInput input = new SessionInput((String) null, null) {
+		SessionInput input = new SessionInput((String) null, null, null) {
 		    public boolean isNoShuffle() { return false; }
 		};
 

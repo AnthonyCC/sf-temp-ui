@@ -16,6 +16,7 @@ import java.sql.*;
 import java.util.*;
 
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.framework.core.*;
 import com.freshdirect.dataloader.*;
 import com.freshdirect.dataloader.sap.*;
@@ -187,7 +188,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
         // get the user transaction
         //
         UserTransaction utx = getSessionContext().getUserTransaction();
-        
+        Connection conn = null;
         try {
             utx.begin();
             //
@@ -197,7 +198,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
             //
             // get the next batch number from the batch sequence
             //
-            Connection conn = null;
+            
             try {
                 conn = getConnection();
                 //
@@ -246,15 +247,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
             } catch (SQLException sqle) {
                 LOGGER.error("Unable to begin new batch.", sqle);
                 utx.setRollbackOnly();
-                if (conn != null) {
-                    try {
-                        conn.close();
-                    } catch (SQLException sqle2) {
-                        sqle2.printStackTrace();
-                        LOGGER.error("Unable to begin new batch.", sqle2);
-                        throw new LoaderException("Unable to begin new batch.  " + sqle2);
-                    }
-                }
+                close(conn);
                 utx.rollback();
                 throw new LoaderException("Unable to begin a new batch.  " + sqle.getMessage());
             }
@@ -265,6 +258,17 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
         } catch (SystemException se) {
             LOGGER.error("\nUnable to complete a failed batch.  Unable to begin a UserTransaction.", se);
             throw new LoaderException(se, "Unable to start batch.  Unable to begin a UserTransaction.");
+        }
+        finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException sqle2) {
+                    sqle2.printStackTrace();
+                    LOGGER.error("Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.", sqle2);
+                    throw new LoaderException("Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.  " + sqle2);
+                }
+            }
         }
     }
     
@@ -620,20 +624,26 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                     // if we have valid sales units for the material, use the pricing engine
                     // otherwise, just use nil pricing (0 price, no price unit)
                     //
+                    
+                   
+                    
                     if (erpProductModel.getSalesUnits().size() > 0) {
                         //
                         // find the sales unit with the lowest ratio
                         //
+                    	
+                    /*	
                         List units = new ArrayList(erpProductModel.getSalesUnits());
                         Collections.sort(units, salesUnitComparator);
                         ErpSalesUnitModel lowestRatio = (ErpSalesUnitModel) units.get(0);
                         //
                         // perform the pricing using the pricing engine
                         //
+                        
                         try {
 							FDConfiguration prConf = new FDConfiguration( 1.0, lowestRatio.getAlternativeUnit() );
                             
-							MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice(pr, prConf).getPricingCondition();
+							MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice(pr, prConf, new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE)).getPricingCondition();
                             
                             defaultPrice = pricingCondition.getPrice();
                             defaultPriceUnit = pricingCondition.getPricingUnit();
@@ -643,34 +653,41 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                             LOGGER.error(message, pe);
                             throw new LoaderException(pe, message);
                         }
+                        */
                     } else {
                         throw new LoaderException("There are no sales units for material " + erpMatlModel.getSapId() + " in product " + skuCode + ".  Perhaps they have all been hidden?");
                     }
+                    
+                    
                     //
                     // creating product
                     //
 					erpProductModel.setSkuCode(skuCode);
-					erpProductModel.setDefaultPrice(defaultPrice);
-					erpProductModel.setDefaultPriceUnit(defaultPriceUnit);
+					//erpProductModel.setDefaultPrice(defaultPrice);
+					//erpProductModel.setDefaultPriceUnit(defaultPriceUnit);
 					erpProductModel.setUnavailabilityStatus(unavailStatus);
 					erpProductModel.setUnavailabilityDate(unavailDate);
 					erpProductModel.setUnavailabilityReason(unavailReason);
 					erpProductModel.setRating(rating);
+
 					erpProductModel.setDaysFresh(days_fresh);
 					erpProductModel.setDaysInHouse(days_in_house);
-					erpProductModel.setBasePrice(anonMatlModel.getBasePrice());
-					erpProductModel.setBasePriceUnit(anonMatlModel.getBasePricingUnit());
+					//erpProductModel.setBasePrice(anonMatlModel.getBasePrice());
+					//erpProductModel.setBasePriceUnit(anonMatlModel.getBasePricingUnit());
 
                     
                     //
                     // if the default price ends up being zero, this is carried over from an old-style discontinued product
                     //
+					
+				/*	
                     if (defaultPrice == 0.0) {
                         LOGGER.error("\nSomehow price ended up being 0.  What happened?");
                         erpProductModel.setUnavailabilityDate(new java.util.Date());
                         erpProductModel.setUnavailabilityStatus("DISC");
                         erpProductModel.setUnavailabilityReason("Discontinued by SAP");
                     }
+                 */   
                     //
                     // create the new product
                     //
@@ -728,13 +745,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
         } catch (SQLException sqle) {
             throw new LoaderException(sqle, "Unexpected SQL exception while trying to create an ErpProduct");
         } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException sqle2) {
-                    // eat it
-                }
-            }
+            close(conn);
         }
     }
     
@@ -797,15 +808,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
             LOGGER.error("Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.", sqle);
             throw new LoaderException("Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.  " + sqle);
         } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException sqle2) {
-                    sqle2.printStackTrace();
-                    LOGGER.error("Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.", sqle2);
-                    throw new LoaderException("Unable to complete a new batch.  Couldn't update loader history table to mark a batch as sucessfully loaded.  " + sqle2);
-                }
-            }
+            close(conn);
         }
         
     }
@@ -873,13 +876,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                 //
                 // rollback
                 //
-                if (conn != null) {
-                    try {
-                        conn.close();
-                    } catch (SQLException sqle2) {
-                        // problem closing connection, rollback anyway
-                    }
-                }
+                close(conn);
                 utx.rollback();
                 sqle.printStackTrace();
                 LOGGER.error("Unable to complete a failed batch.  Couldn't update loader history table to mark a failed batch as rejected.", sqle);
@@ -891,6 +888,8 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
         } catch (SystemException se) {
             LOGGER.error("\nUnable to complete a failed batch.  Unable to begin a UserTransaction.", se);
             throw new LoaderException(se, "Unable to complete a failed batch.  Unable to begin a UserTransaction.");
+        }finally {
+            close(conn);
         }
         
     }

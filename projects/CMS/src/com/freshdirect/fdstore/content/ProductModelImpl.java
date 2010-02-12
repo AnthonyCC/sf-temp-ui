@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -37,6 +38,7 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -248,6 +250,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *  
 	 *  @return the configuration describing the auto-configuration of the
 	 *          product, or null if the product can not be auto-configured.
+	 *   this.getProductPricingAdapter(PricingContext pricingContext).getDefaultSku()        
 	 */
 	public FDConfigurableI getAutoconfiguration() {
 		FDConfigurableI ret = null;
@@ -442,6 +445,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	/**
+	 * 
 	 *  Returns the preferred SKU for a product if defined.
 	 *  Otherwise returns the minimum price SKU among the available SKUs for
 	 *  the product. If the product only has one available SKU, that will be
@@ -451,23 +455,33 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *          SKU that is available. if no SKUs are available, returns null.
 	 */
 	public SkuModel getDefaultSku() {
-		List skus = this.getSkus();
-
-		ContentKey preferredSku = (ContentKey) getCmsAttributeValue("PREFERRED_SKU");
-
-		for (ListIterator li = skus.listIterator(); li.hasNext();) {
-			SkuModel sku = (SkuModel) li.next();
-			if (sku.isUnavailable()) {
-				li.remove();
-			} else if (sku.getContentKey().equals(preferredSku)) {
-				return sku;
-			}
-		}
-		if (skus.size() == 0)
-			return null;
-		return (SkuModel) Collections.min(skus, PRICE_COMPARATOR);
+	    return getDefaultSku(getPricingContext());
 	}
 
+	/**
+	 * Return a plain SkuModel, not just a wrapper around a SkuModel.
+	 */
+	public SkuModel getDefaultSku(PricingContext context) {
+	    if (context == null) {
+	        context = PricingContext.DEFAULT;
+	    }
+            List<SkuModel> skus = this.getSkus();
+
+            ContentKey preferredSku = (ContentKey) getCmsAttributeValue("PREFERRED_SKU");
+
+            for (ListIterator li = skus.listIterator(); li.hasNext();) {
+                    SkuModel sku = (SkuModel) li.next();
+                    if (sku.isUnavailable()) {
+                            li.remove();
+                    } else if (sku.getContentKey().equals(preferredSku)) {
+                            return sku;
+                    }
+            }
+            if (skus.size() == 0)
+                    return null;
+            return (SkuModel) Collections.min(skus, new ZonePriceComparator(context.getZoneId()));
+	}
+	
 	/**
 	 * @param type a multivalued ErpNutritionInfoType
 	 * @return common Set of nutrition information of all available SKUs 
@@ -587,104 +601,31 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return displayableBrands;
 	}
 	
+	/* price calculator calls */ 
 	
 	public String getSizeDescription() throws FDResourceException {
-		try {
-			SkuModel sku = getDefaultSku();
-			if ( sku == null )
-				return null;
-			
-			FDProduct pr = sku.getProduct();
-			FDSalesUnit[] sus = pr.getSalesUnits();
-			if (sus.length == 1) {
-				String salesUnitDescr = sus[0].getDescription();
-
-				// clean sales unit description
-				if (salesUnitDescr != null) {
-					if (salesUnitDescr.indexOf("(") > -1) {
-						salesUnitDescr = salesUnitDescr.substring(0, salesUnitDescr.indexOf("("));
-					}
-					salesUnitDescr = salesUnitDescr.trim();
-					// empty descriptions, "nm" and "ea" should be ignored
-					if ((!"".equals(salesUnitDescr))
-						&& (!"nm".equalsIgnoreCase(salesUnitDescr))
-						&& (!"ea".equalsIgnoreCase(salesUnitDescr))) {
-						if (!getSellBySalesunit().equals("SALES_UNIT")) {
-							return salesUnitDescr;
-						}
-					}
-				}
-
-			}
-		} catch (FDSkuNotFoundException ex) {
-		}
-		return null;
+	    return getPriceCalculator().getSizeDescription();
 	}
-
+	
 	public String getKosherSymbol() throws FDResourceException {
-		try {
-			SkuModel sku = getDefaultSku();
-			if ( sku == null )
-				return "";
-			
-			FDProduct pr = sku.getProduct();
-			FDKosherInfo ki = pr.getKosherInfo();
-			if (ki.hasKosherSymbol() && ki.getKosherSymbol().display()) {
-				return ki.getKosherSymbol().getCode();
-			} else {
-				return "";
-			}
-		} catch (FDSkuNotFoundException fdsnfe) {
-		}
-		return "";
+	    return getPriceCalculator().getKosherSymbol();
 	}
-
+	
 	public String getKosherType() throws FDResourceException {
-		try {
-			SkuModel sku = getDefaultSku();
-			if ( sku == null )
-				return "";
-			
-			FDProduct pr = sku.getProduct();
-			FDKosherInfo ki = pr.getKosherInfo();
-			if (ki.hasKosherType() && ki.getKosherType().display()) {
-				return ki.getKosherType().getName();
-			} else {
-				return "";
-			}
-		} catch (FDSkuNotFoundException fdsnfe) {
-		}
-		return "";
+            return getPriceCalculator().getKosherType();
 	}
 
+	
 	public boolean isKosherProductionItem() throws FDResourceException {
-		try {
-			SkuModel sku = getDefaultSku();
-			if ( sku == null )
-				return false;
-			
-			FDProduct pr = sku.getProduct();
-			FDKosherInfo ki = pr.getKosherInfo();
-			return ki.isKosherProduction();
-		} catch (FDSkuNotFoundException fdsnfe) {
-		}
-		return false;
+            return getPriceCalculator().isKosherProductionItem();
 	}
 
 	public int getKosherPriority() throws FDResourceException {
-		try {
-			SkuModel sku = getDefaultSku();
-			if ( sku == null )
-				return 999;
-			
-			FDProduct pr = sku.getProduct();
-			FDKosherInfo ki = pr.getKosherInfo();
-			return ki.getPriority();
-		} catch (FDSkuNotFoundException fdsnfe) {
-		}
-		return 999;
+	    return getPriceCalculator().getKosherPriority();
 	}
 
+        /* price calculator call end */ 
+	
 	public boolean hasComponentGroups() {
 		return !getComponentGroups().isEmpty();
 	}
@@ -1621,6 +1562,10 @@ inner:
 	public List getGiftcardType() {
 		ContentNodeModelUtil.refreshModels(this, "GIFTCARD_TYPE", giftcardTypes, false);
 		return new ArrayList(giftcardTypes);		
+	}
+
+	public PricingContext getPricingContext(){
+		return PricingContext.DEFAULT;
 	}
 
 	public boolean isInPrimaryHome() {

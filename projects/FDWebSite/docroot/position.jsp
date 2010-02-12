@@ -1,6 +1,5 @@
 
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>

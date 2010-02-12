@@ -11,6 +11,7 @@
     java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
 <%
+FDUserI s_user = (FDUserI)session.getAttribute(SessionName.USER);
 String deptId = request.getParameter("deptId");
 String catId = request.getParameter("catId");
 String prodId = request.getParameter("prodId");
@@ -183,7 +184,7 @@ String prodPrice = null;
                     %>
                                 <fd:FDProductInfo id="productInfo" skuCode="<%=  sku.getSkuCode() %>">
                     <%   
-                                prodPrice = currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+                                prodPrice = currencyFormatter.format(productInfo.getZonePriceInfo(s_user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
                     %>                      
                                 </fd:FDProductInfo>
                                 <%

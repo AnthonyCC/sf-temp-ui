@@ -592,6 +592,26 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		if (foundFraud) {
 			user.invalidateCache();
 		}
+		if (dav.isAddressDeliverable()) {
+			if (user.isPickupOnly()) {
+				//
+				// now eligible for home delivery
+				//
+				user.setSelectedServiceType(dlvAddress.getServiceType());
+				user.setZipCode(dlvAddress.getZipCode());
+				FDCustomerManager.storeUser(user.getUser());
+			}else {
+				//Already is a home or a corporate customer.
+				if(user.getOrderHistory().getValidOrderCount()==0 && !user.getZipCode().equals(dlvAddress.getZipCode())
+						&& !user.getSelectedServiceType().equals(dlvAddress.getServiceType())) {
+					//check if customer has no order history and if zipcode has changed. If yes then update the
+					//service type to most recent service type.					
+					user.setSelectedServiceType(dlvAddress.getServiceType());
+					user.setZipCode(dlvAddress.getZipCode());
+					FDCustomerManager.storeUser(user.getUser());
+				}
+			}
+		}		
 		user.updateUserState();
 		if (user.isFraudulent()) {
 			PromotionI promo = user.getRedeemedPromotion();
@@ -930,9 +950,13 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			cart.setZoneInfo(zoneInfo);
 			cart.setDeliveryAddress(address);
 			FDUserI user = this.getUser();
-			user
-					.setSelectedServiceType(address.isPickup() ? EnumServiceType.PICKUP
-							: EnumServiceType.DEPOT);
+			//This is commented out because we don't want to track last order type to be pick up using fduser.
+			//as this creates ambiguity. selected service type is set to pickup in cases a customer signed
+			//up with a pick up only address and cases when customer who have valid deliverable address places
+			//a last order as pick up. Now onwards selected service type  will only define customer's type
+			// from a delivery standpoint. PICKUP only or HOME or CORPORATE.
+			//USe delivery info table to track last order type.
+			//user.setSelectedServiceType(address.isPickup() ? EnumServiceType.PICKUP: EnumServiceType.DEPOT);
 			user.setShoppingCart(cart);
 			pageContext.getSession().setAttribute(SessionName.USER, user);
 

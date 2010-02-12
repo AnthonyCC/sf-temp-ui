@@ -1,7 +1,6 @@
 <%@ page import='com.freshdirect.framework.util.NVL'%>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>

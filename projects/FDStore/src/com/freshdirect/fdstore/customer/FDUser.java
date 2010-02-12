@@ -30,6 +30,8 @@ import java.util.StringTokenizer;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.PricingContext;
+
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
@@ -49,6 +51,7 @@ import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
@@ -69,6 +72,7 @@ import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.FeeCalculator;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.SiteFeatureHelper;
+import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
@@ -168,6 +172,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private Integer donationTotalQuantity = 0;
 	
 	private Map cachedRecipientInfo = null;
+	
+	private PricingContext pricingContext;
 	
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
@@ -1652,5 +1658,54 @@ public class FDUser extends ModelSupport implements FDUserI {
 	     }
 	     return servicesBasedOnAddress;
 	 }
+	 
+	 public String getPricingZoneId(){
+		 if(this.pricingContext == null) return null;
+		 return this.pricingContext.getZoneId();
+	 }
+
+	public PricingContext getPricingContext() {
+		try {
+			if(this.pricingContext == null){
+				//Pricing context is yet to be set. Load it from DB.
+				String zoneId=FDZoneInfoManager.findZoneId(getSelectedServiceType().getName(), getZipCode());
+				this.pricingContext = new PricingContext(zoneId);
+			}
+		}catch (FDResourceException e) {
+			throw new FDRuntimeException(e.getMessage());
+		}
+		return pricingContext;
+	}
+
+	protected void setPricingContext(PricingContext pricingContext) {
+		this.pricingContext = pricingContext;
+	}
+
+	public void resetPricingContext(){
+		this.setPricingContext(null);
+	} 
+	//Added for Junit testing.
+	public void createDummyPricingContext() {
+		this.setPricingContext(new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE));
+	}
+	
+	public String constructZoneIdForQueryString(){
+		String zoneIdParam = "";
+		try {
+			String zoneId = FDZoneInfoManager.findZoneId(getSelectedServiceType().getName(), getZipCode());
+			if(zoneId.equalsIgnoreCase(ZonePriceListing.MASTER_DEFAULT_ZONE)){
+				zoneIdParam = "zonelevel=true && mzid="+zoneId;
+			}else if(zoneId.equalsIgnoreCase(ZonePriceListing.RESIDENTIAL_DEFAULT_ZONE)||zoneId.equalsIgnoreCase(ZonePriceListing.CORPORATE_DEFAULT_ZONE)){
+				zoneIdParam = "zonelevel=true && szid="+zoneId+"mzid="+ZonePriceListing.MASTER_DEFAULT_ZONE;
+			}else{
+				zoneIdParam = "zonelevel=true && zid="+zoneId;
+				zoneId = FDZoneInfoManager.findZoneId(getSelectedServiceType().getName(),null);
+				zoneIdParam = zoneIdParam + "&& szid="+zoneId+"mzid="+ZonePriceListing.MASTER_DEFAULT_ZONE;
+			}
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException(e.getMessage());
+		}
+		return zoneIdParam;
+	}
 }
 

@@ -15,10 +15,12 @@ import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.dsl.CompileException;
+import com.freshdirect.smartstore.fdstore.ScoreProvider;
 
 public class CmsFunctionsTest extends TestCase {
     private final static Logger LOGGER = Logger.getLogger(CmsFunctionsTest.class);
@@ -46,9 +48,9 @@ public class CmsFunctionsTest extends TestCase {
             CmsManager.setInstance(new CmsManager(service, null));
         }
         
-        comp = new DataGeneratorCompiler();
+        comp = new DataGeneratorCompiler(ScoreProvider.ZONE_DEPENDENT_FACTORS_ARRAY);
         {   
-            s = new SessionInput("ses1", null);
+            s = new SessionInput("ses1", null, null);
             s.setCurrentNode(ContentFactory.getInstance().getContentNode("cfncndy_ash_mcrrd"));
             
             List explicitList = new ArrayList(2);
@@ -62,7 +64,7 @@ public class CmsFunctionsTest extends TestCase {
                 LOGGER.info("getDatasource called with name: '"+name+"'");
                 return Collections.EMPTY_LIST;
             }
-            public double[] getVariables(String userId, ContentNodeModel contentNode, String[] variables) {
+            public double[] getVariables(String userId, PricingContext pricingContext, ContentNodeModel contentNode, String[] variables) {
                 LOGGER.info("getVariables called with name: '"+variables+"'");
                 return new double[variables.length];
             }

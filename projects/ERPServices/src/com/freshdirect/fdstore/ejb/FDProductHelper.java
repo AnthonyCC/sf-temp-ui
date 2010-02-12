@@ -10,6 +10,7 @@ package com.freshdirect.fdstore.ejb;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,6 +25,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.util.DealsHelper;
 import com.freshdirect.content.attributes.AttributeCollection;
@@ -37,6 +39,7 @@ import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
+import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.erp.PricingFactory;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
@@ -44,9 +47,11 @@ import com.freshdirect.erp.model.ErpCharacteristicModel;
 import com.freshdirect.erp.model.ErpCharacteristicValueModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
+import com.freshdirect.erp.model.ErpMaterialPriceModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductModel;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDMaterial;
@@ -58,6 +63,9 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.ZonePriceInfoListing;
+import com.freshdirect.fdstore.ZonePriceInfoModel;
+import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -135,10 +143,6 @@ class FDProductHelper {
 	
 	public FDProductInfo getFDProductInfo(ErpProductInfoModel erpProductInfo) throws FDResourceException {
 
-		String[] ids = { erpProductInfo.getSkuCode() };
-		FlatAttributeCollection rawAttrs = FDAttributeCache.getInstance().getAttributes(ids);
-		// SKU attributes are flat, hence no need for visitor 
-		AttributeCollection attributeCollection = new AttributeCollection( rawAttrs.getAttributeMap(ids) );
 
 		String s = erpProductInfo.getUnavailabilityStatus();
 		EnumAvailabilityStatus status = null;
@@ -150,44 +154,99 @@ class FDProductHelper {
 		}
 		
 
-
-		String displayablePricingUnit = attributeCollection.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), "");
-		boolean hasWasPrice = DealsHelper.hasWasPrice(erpProductInfo.getSkuCode(), erpProductInfo.getBasePrice(),
-				erpProductInfo.getDefaultPrice(), erpProductInfo.getBasePriceUnit(), erpProductInfo.getDefaultPriceUnit());
-		int dealsPercentage=-1;
-		if(hasWasPrice) {
-			//LOGGER.debug("has was price for SKU " + erpProductInfo.getSkuCode());			
-			dealsPercentage=DealsHelper.getVariancePercentage(erpProductInfo.getBasePrice(), erpProductInfo.getDefaultPrice());
-		}
+		List<ErpMaterialPrice> matPrices =Arrays.asList(erpProductInfo.getMaterialPrices());
+		Collections.sort(matPrices, PricingFactory.erpMatpriceComparator);
 		
-		int tieredDeal = DealsHelper.determineTieredDeal(erpProductInfo.getBasePrice(), erpProductInfo.getBasePriceUnit(),
-				erpProductInfo.getDefaultPrice(), erpProductInfo.getDefaultPriceUnit(),
-				erpProductInfo.getMaterialPrices());
-		if (tieredDeal > 0 && DealsHelper.isDealOutOfBounds(tieredDeal)) {
-			//LOGGER.debug("tiered deal is out of bounds for SKU " + erpProductInfo.getSkuCode());
-			tieredDeal = 0;
-		}
-		
+		ZonePriceInfoListing zonePriceInfoList = new ZonePriceInfoListing();
+		if(erpProductInfo.getUnavailabilityStatus() == null || !erpProductInfo.getUnavailabilityStatus().equals(EnumAvailabilityStatus.DISCONTINUED)){
+			//Form zone price listing only if product is not discontinued.
+			String sapZoneId = "";
+			List subList = new ArrayList<ErpMaterialPrice>();
+			for(Iterator it = matPrices.iterator() ; it.hasNext();){
+				ErpMaterialPrice matPrice = (ErpMaterialPrice) it.next();
+				
+				if(sapZoneId.length() == 0 || sapZoneId.equals(matPrice.getSapZoneId())){
+					subList.add(matPrice);
+				}
+				else if(!sapZoneId.equals(matPrice.getSapZoneId())) {
+					ZonePriceInfoModel zpInfoModel = buildZonePriceInfo(erpProductInfo.getSkuCode(), subList, sapZoneId);
+					zonePriceInfoList.addZonePriceInfo(sapZoneId, zpInfoModel);
+					subList.clear();
+					subList.add(matPrice);
+				}
+				sapZoneId = matPrice.getSapZoneId();
+			}
+			//Do the same for the last zone in the list.
+			ZonePriceInfoModel zpInfoModel = buildZonePriceInfo(erpProductInfo.getSkuCode(), subList, sapZoneId);
+			zonePriceInfoList.addZonePriceInfo(sapZoneId, zpInfoModel);
+			subList.clear();
+		}		
 		return new FDProductInfo(
 			erpProductInfo.getSkuCode(),
 			erpProductInfo.getVersion(),
-			erpProductInfo.getDefaultPrice(),
-			erpProductInfo.getDefaultPriceUnit(),
 			erpProductInfo.getMaterialSapIds(),
 			erpProductInfo.getATPRule(),
 			status,
 			erpProductInfo.getUnavailabilityDate(),
-			displayablePricingUnit, null,
+			null,
 			erpProductInfo.getRating(),
-			erpProductInfo.getFreshness(), erpProductInfo.getBasePrice(),
-			erpProductInfo.getBasePriceUnit(),
-			hasWasPrice,
-			dealsPercentage,
-			tieredDeal
+			erpProductInfo.getFreshness(),
+			zonePriceInfoList
 		);
 	
 	}
 
+	private ZonePriceInfoModel buildZonePriceInfo(String skuCode, List matPriceList, String sapZoneId) {
+		double defaultPrice=0.0;
+		String defaultPriceUnit = "";
+		double promoPrice = 0.0;
+		if(matPriceList == null || matPriceList.size() == 0)
+			return null;
+		ErpMaterialPrice matPrice = (ErpMaterialPrice) matPriceList.get(0);
+		if(matPrice.getScaleUnit().length() == 0){
+			//no scales
+			defaultPrice = matPrice.getPrice();
+			defaultPriceUnit = matPrice.getUnit();
+			promoPrice = matPrice.getPromoPrice();
+		} else {
+			//has scales. sort by scale quantity and take lowest scale quantity 
+			Collections.sort(matPriceList, PricingFactory.scaleQuantityComparator);
+			//Get the lowet scale quantity element from the list which is the first element after sorting.
+			matPrice = (ErpProductInfoModel.ErpMaterialPrice) matPriceList.get(0);
+			defaultPrice = matPrice.getPrice();
+			defaultPriceUnit = matPrice.getUnit();
+			promoPrice = matPrice.getPromoPrice();
+		}
+		
+		boolean itemOnSale = DealsHelper.isItemOnSale(defaultPrice,promoPrice);;
+		int dealsPercentage=0;
+		if(itemOnSale) {
+			//LOGGER.debug("has was price for SKU " + erpProductInfo.getSkuCode());			
+			dealsPercentage=Math.max(DealsHelper.getVariancePercentage(defaultPrice, promoPrice), 0);
+		}
+		ErpMaterialPrice[] matPrices = (ErpMaterialPrice[]) matPriceList.toArray(new ErpMaterialPrice[0]);
+		int tieredDeal = DealsHelper.determineTieredDeal(defaultPrice, matPrices);
+		if (tieredDeal > 0 && DealsHelper.isDealOutOfBounds(tieredDeal)) {
+			//LOGGER.debug("tiered deal is out of bounds for SKU " + erpProductInfo.getSkuCode());
+			tieredDeal = 0;
+		}
+		String[] ids = { skuCode };
+		FlatAttributeCollection rawAttrs = FDAttributeCache.getInstance().getAttributes(ids);
+		// SKU attributes are flat, hence no need for visitor 
+		AttributeCollection attributeCollection = new AttributeCollection( rawAttrs.getAttributeMap(ids) );
+
+		String displayablePricingUnit = attributeCollection.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), "");
+		return new ZonePriceInfoModel(
+				defaultPrice, 
+				promoPrice, 
+				defaultPriceUnit, 
+				displayablePricingUnit, 
+				itemOnSale, 
+				dealsPercentage, 
+				tieredDeal, 
+				sapZoneId);
+	}
+	
 	protected void bindAttributes(ErpProductModel product) throws FDResourceException {
 		
 		GetRootNodesErpVisitor rootNodesVisitor = new GetRootNodesErpVisitor(product);
@@ -348,5 +407,6 @@ class FDProductHelper {
 			} catch (NamingException ne) {}
 		}
 	}
+
 
 }

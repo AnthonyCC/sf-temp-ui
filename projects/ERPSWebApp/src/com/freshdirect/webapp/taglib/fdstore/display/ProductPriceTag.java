@@ -12,9 +12,12 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.ConfigurationUtil;
 import com.freshdirect.webapp.util.JspMethods;
 import com.freshdirect.webapp.util.ProductImpression;
@@ -115,9 +118,11 @@ public class ProductPriceTag extends BodyTagSupport {
 			confDescription = ConfigurationUtil.getConfigurationDescription(tpi);
 		}
 
+		PriceCalculator priceCalculator = impression.getProductModel().getPriceCalculator();
+		
 		if (confDescription == null) {
 			try {
-				confDescription = impression.getProductModel().getSizeDescription();
+				confDescription = priceCalculator.getSizeDescription();
 			} catch (FDResourceException e1) {}
 		}
 		
@@ -133,13 +138,14 @@ public class ProductPriceTag extends BodyTagSupport {
 		//LOGGER.debug("productInfo: "+productInfo);		
 		
 		if ( productInfo != null ) {	
-			String priceString = impression.getProductModel().getPriceFormatted(savingsPercentage, skuCode);
+
+			String priceString = impression.getProductModel().getPriceCalculator(skuCode).getPriceFormatted(savingsPercentage);
 			//LOGGER.debug("priceString: "+priceString);
 			
-			String scaleString = impression.getProductModel().getTieredPrice(savingsPercentage);
+			String scaleString = priceCalculator.getTieredPrice(savingsPercentage);
 			//LOGGER.debug("scaleString: "+scaleString);
 			
-			String wasString = impression.getProductModel().getWasPriceFormatted(savingsPercentage);
+			String wasString = priceCalculator.getWasPriceFormatted(savingsPercentage);
 			//LOGGER.debug("wasString: "+wasString);
 			
 			if (wasString != null)
@@ -149,23 +155,19 @@ public class ProductPriceTag extends BodyTagSupport {
 			String aboutPriceString = "";
 			String styleAbout = "";
 			//LOGGER.debug("styleAbout before aboutPriceString: |"+styleAbout+"|");
-			
-			try {
-				aboutPriceString = JspMethods.getAboutPriceForDisplay(productInfo);
-				//LOGGER.debug("showWasPrice: |"+showWasPrice+"|");
-				//LOGGER.debug("aboutPriceString: |"+aboutPriceString+"|");
-				
-				if(null != aboutPriceString && !"".equals(aboutPriceString)){
-					showRegularPrice = false; 
-					showWasPrice = false; 
-					showScalePricing = false; 
-					styleAbout = (scaleString!=null) ?  styleAboutScaled : styleAboutOnly;
-				}else{
-					styleAbout = styleAboutOnly;
-				}
-			} catch (JspException e) {
-			
-			}
+
+			aboutPriceString = priceCalculator.getAboutPriceFormatted(0);
+                        // LOGGER.debug("showWasPrice: |"+showWasPrice+"|");
+                        // LOGGER.debug("aboutPriceString: |"+aboutPriceString+"|");
+            
+                        if (null != aboutPriceString && !"".equals(aboutPriceString)) {
+                            showRegularPrice = false;
+                            showWasPrice = false;
+                            showScalePricing = false;
+                            styleAbout = (scaleString != null) ? styleAboutScaled : styleAboutOnly;
+                        } else {
+                            styleAbout = styleAboutOnly;
+                        }
 			//LOGGER.debug("styleAbout after aboutPriceString: |"+styleAbout+"|");
 			
 			// style for the real price depends on what kind of deals we have

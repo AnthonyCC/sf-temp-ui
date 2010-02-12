@@ -263,11 +263,14 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(cookie);
+			//Set user Pricing context at this point before recalcualting the price during cleanup.
+			user.getShoppingCart().setPricingContextToOrderLines(user.getPricingContext());
+			
 			user.getShoppingCart().doCleanup();
 			classifyUser(user);
 			assumeDeliveryAddress(user);
 			user.updateUserState();
-			
+			//user.resetPricingContext();
 			updateZoneInfo(user);
 			restoreReservations(user);
 			
@@ -300,11 +303,13 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(identity);
 			user.setApplication(source);
+			//Set user Pricing context at this point before recalcualting the price during cleanup.
+			user.getShoppingCart().setPricingContextToOrderLines(user.getPricingContext());
 			user.getShoppingCart().doCleanup();
 			classifyUser(user);
 			assumeDeliveryAddress(user);
 			user.updateUserState();
-			
+			//user.resetPricingContext();
 			updateZoneInfo(user);
 			restoreReservations(user);
 			

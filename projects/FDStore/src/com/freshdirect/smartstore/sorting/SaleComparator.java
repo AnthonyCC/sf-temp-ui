@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.sorting;
 
 import java.util.List;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -16,12 +17,12 @@ import com.freshdirect.fdstore.content.ProductModel;
  * @author segabor
  */
 public class SaleComparator extends PopularityComparator {
-    SaleComparator(boolean inverse, boolean hideUnavailable, List<ContentNodeModel> products) {
-        super(inverse, hideUnavailable, products);
+    SaleComparator(boolean inverse, boolean hideUnavailable, List<ContentNodeModel> products, PricingContext pricingContext) {
+        super(inverse, hideUnavailable, products, pricingContext);
     }
 
-    public SaleComparator(boolean inverse, List<ContentNodeModel> products) {
-        super(inverse, products);
+    public SaleComparator(boolean inverse, List<ContentNodeModel> products, PricingContext pricingContext) {
+        super(inverse, products, pricingContext);
     }
 
     @Override
@@ -53,9 +54,11 @@ public class SaleComparator extends PopularityComparator {
 
             // Stage 1 -- Compare highest deal percentages
             //
-
-            int p1 = i1.getHighestDealPercentage();
-            int p2 = i2.getHighestDealPercentage();
+            String zoneId1 = c1.getPricingContext().getZoneId();
+            String zoneId2 = c2.getPricingContext().getZoneId();
+            
+            int p1 = i1.getZonePriceInfo(zoneId1).getHighestDealPercentage();
+            int p2 = i2.getZonePriceInfo(zoneId2).getHighestDealPercentage();
 
             // greater percentage is better
             int sc = p1 > p2 ? -1 : (p1 < p2 ? 1 : 0);
@@ -67,8 +70,8 @@ public class SaleComparator extends PopularityComparator {
             // Stage 2 -- base prices
             //
 
-            double defp1 = i1.getDefaultPrice();
-            double defp2 = i2.getDefaultPrice();
+            double defp1 = i1.getZonePriceInfo(zoneId1).getDefaultPrice();
+            double defp2 = i2.getZonePriceInfo(zoneId2).getDefaultPrice();
 
             if (defp1 != defp2) {
 

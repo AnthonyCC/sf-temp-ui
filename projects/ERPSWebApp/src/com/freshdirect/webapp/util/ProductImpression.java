@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.util;
 
 
+import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.util.DealsHelper;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
@@ -8,6 +10,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 
@@ -110,7 +113,7 @@ public class ProductImpression {
 	 */
 	public String[] getScaledPrices() {
         FDProduct fdProduct = getFDProduct();
-		return fdProduct != null ? fdProduct.getPricing().getScaleDisplay() : new String[0];
+		return fdProduct != null ? fdProduct.getPricing().getZonePrice(getPricingZoneId()).getScaleDisplay() : new String[0];
 	}
 
 
@@ -122,7 +125,7 @@ public class ProductImpression {
 	public int[] getScaledPercentages(double basePrice) {
         FDProduct fdProduct = getFDProduct();
         if (fdProduct != null) {
-        	int[] scalePercentage = fdProduct.getPricing().getScalePercentage(basePrice);
+        	int[] scalePercentage = fdProduct.getPricing().getZonePrice(getPricingZoneId()).getScalePercentage(basePrice);
         	for (int i = 0; i < scalePercentage.length; i++)
         		if (DealsHelper.isDealOutOfBounds(scalePercentage[i]))
         			scalePercentage[i] = 0;
@@ -189,5 +192,10 @@ public class ProductImpression {
 		
 		
 		return isValid;
+	}
+	
+	public String getPricingZoneId(){
+		PricingContext pCtx = this.productModel.getPricingContext();
+		return pCtx.getZoneId();
 	}
 }

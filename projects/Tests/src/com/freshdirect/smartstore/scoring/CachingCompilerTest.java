@@ -13,6 +13,7 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Expression;
+import com.freshdirect.smartstore.fdstore.ScoreProvider;
 
 public class CachingCompilerTest extends TestCase {
 
@@ -30,13 +31,13 @@ public class CachingCompilerTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        compiler = new DataGeneratorCompiler();
+        compiler = new DataGeneratorCompiler(ScoreProvider.ZONE_DEPENDENT_FACTORS_ARRAY);
         compiler.addVariable("afact", Expression.RET_FLOAT);
         compiler.addVariable("globalfact", Expression.RET_FLOAT);
         compiler.setCaching(true);
         compiler.setGlobalVariables(Collections.singleton("globalfact"));
 
-        input = new SessionInput("12345", null);
+        input = new SessionInput("12345", null, null);
         input.setNoShuffle(true);
         input.setCurrentNode(new MockContentNodeModel(FDContentTypes.PRODUCT, "prod1"));
         {
@@ -46,7 +47,7 @@ public class CachingCompilerTest extends TestCase {
             input.setExplicitList(explicitList);
         }
 
-        input2 = new SessionInput("12345", null);
+        input2 = new SessionInput("12345", null, null);
         input2.setNoShuffle(true);
         input2.setCurrentNode(new MockContentNodeModel(FDContentTypes.PRODUCT, "prod1"));
         {

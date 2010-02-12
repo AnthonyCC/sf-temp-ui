@@ -334,9 +334,9 @@ String prodDescPath = null;
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <%
-            skuPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+            skuPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
         blkFDProd = FDCachedFactory.getProduct(productInfo);
-            if ("LB".equalsIgnoreCase((blkFDProd.getPricing().getMaterialPrices()[0]).getPricingUnit())) {
+            if ("LB".equalsIgnoreCase((blkFDProd.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getMaterialPrices()[0]).getPricingUnit())) {
                 isOnePricedByLb = true;
             }
             skuSalesUnit = blkFDProd.getSalesUnits()[0].getName();

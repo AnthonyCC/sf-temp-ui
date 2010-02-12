@@ -190,12 +190,10 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 
          		<%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
          		
-        		<!-- Content start -->
-		        <oscache:cache time="300">
+        		<!-- Content start -->		  
 					<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
 					<%@ include file="/shared/includes/product/i_product_image.jspf" %>
-					<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-			    </oscache:cache>
+					<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>			
 
 			<% } else {
 				

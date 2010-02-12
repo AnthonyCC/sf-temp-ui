@@ -42,6 +42,7 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
@@ -228,9 +229,10 @@ public class DeliveryPassRenewalCron {
 		prodNode = ContentFactory.getInstance().getProduct(skuCode);
 		product=FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(skuCode));
 		salesUnit=product.getSalesUnits()[0];
+		//TODO Need to pre-select pricing zone based on last order delivery type and zipcode.
 		FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), prodNode
 				, new FDConfiguration(quantity, salesUnit
-				.getName(), varMap), null);
+				.getName(), varMap), null, ZonePriceListing.MASTER_DEFAULT_ZONE);
 
 		try {
 			cartLine.refreshConfiguration();

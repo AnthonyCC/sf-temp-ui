@@ -14,13 +14,7 @@ public abstract class BalkingExpiringReference<X> extends ExpiringReference<X> {
 
 	private Runnable loader = null;
 	
-	private Executor executor = new Executor() {
-		public void execute(Runnable r) {
-			Thread t = new Thread(r);
-			t.setDaemon(true);
-			t.start();
-		}
-	};
+	private final Executor executor;
 	
 	private class AsyncLoader implements Runnable {
 		public void run() {
@@ -41,7 +35,13 @@ public abstract class BalkingExpiringReference<X> extends ExpiringReference<X> {
 	 *            in milliseconds
 	 */
 	public BalkingExpiringReference(long refreshPeriod) {
-		super(refreshPeriod);
+		this(refreshPeriod, new Executor() {
+			public void execute(Runnable r) {
+				Thread t = new Thread(r);
+				t.setDaemon(true);
+				t.start();
+			}
+		});
 	}
 
 	/**
@@ -51,10 +51,25 @@ public abstract class BalkingExpiringReference<X> extends ExpiringReference<X> {
 	 *            executor, usually a thread pool. cannot be null
 	 */
 	public BalkingExpiringReference(long refreshPeriod, Executor executor) {
-		super(refreshPeriod);
-		this.executor = executor;
+		this(refreshPeriod, executor, false);
 	}
 
+	/**
+	 * @param refreshPeriod
+	 *            in milliseconds
+	 * @param executor
+	 *            executor, usually a thread pool. cannot be null
+	 * @param syncInit
+	 *            if true initialize its value synchronously
+	 */
+	public BalkingExpiringReference(long refreshPeriod, Executor executor, boolean syncInit) {
+		super(refreshPeriod);
+		this.executor = executor;
+		if (syncInit) {
+			set(load());
+		}
+	}
+	
 	/**
 	 * @param refreshPeriod
 	 *            in milliseconds
@@ -67,11 +82,7 @@ public abstract class BalkingExpiringReference<X> extends ExpiringReference<X> {
 		super(refreshPeriod);
 		this.referent = initializer;
 		this.executor = executor;
-		lastRefresh = System.currentTimeMillis();
-	}
-	
-	protected boolean isExpired() {
-		return System.currentTimeMillis() - lastRefresh > this.refreshPeriod;
+		set(initializer);
 	}
 	
 	public synchronized X get() {

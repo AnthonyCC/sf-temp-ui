@@ -39,9 +39,9 @@ public class FDNutrition implements java.io.Serializable {
 	 */
 	public FDNutrition(String name, double value, String uom) {
         this();
-		this.name = name;
+		this.name = name != null ? name.intern() : null;
 		this.value = value;
-        this.uom = uom;
+        this.uom = uom != null ? uom.intern() : null;
 	}
 
 	/**

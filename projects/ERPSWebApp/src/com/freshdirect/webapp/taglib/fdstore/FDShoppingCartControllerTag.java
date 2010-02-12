@@ -30,6 +30,7 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumComplaintLineMethod;
@@ -1215,7 +1216,7 @@ public class FDShoppingCartControllerTag extends
 				.getCartlineId();
 
 		FDCartLineI theCartLine = processSimple(suffix, prodNode, product,
-				quantity, salesUnit, origCartLineId, variantId);
+				quantity, salesUnit, origCartLineId, variantId, user.getPricingZoneId());
 
 		// recipe source tracking
 		String recipeId;
@@ -1278,7 +1279,7 @@ public class FDShoppingCartControllerTag extends
 
 	private FDCartLineI processSimple(String suffix, ProductModel prodNode,
 			FDProduct product, double quantity, FDSalesUnit salesUnit,
-			String origCartLineId, String variantId) {
+			String origCartLineId, String variantId, String pZoneId) {
 
 		//
 		// walk through the variations to see what's been set and try to build a
@@ -1353,7 +1354,7 @@ public class FDShoppingCartControllerTag extends
 			 */
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
 					new FDConfiguration(quantity, salesUnit
-					.getName(), varMap), variantId);
+					.getName(), varMap), variantId, pZoneId);
 		} else {
 			/*
 			 * When an existing item in the cart is modified, reuse the same
@@ -1362,7 +1363,7 @@ public class FDShoppingCartControllerTag extends
 			 */
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
 					new FDConfiguration(quantity, salesUnit
-					.getName(), varMap), origCartLineId, null, false, variantId);
+					.getName(), varMap), origCartLineId, null, false, variantId, pZoneId);
 		}
 
 		return cartLine;
@@ -1551,6 +1552,7 @@ public class FDShoppingCartControllerTag extends
 
 										FDCartLineI newLine = orderLine
 												.createCopy();
+										newLine.setPricingContext(new PricingContext(user.getPricingZoneId()));
 										try {
 											OrderLineUtil.cleanup(newLine);
 										} catch (FDInvalidConfigurationException e) {

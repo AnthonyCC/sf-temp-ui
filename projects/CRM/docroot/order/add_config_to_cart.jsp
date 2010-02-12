@@ -56,7 +56,8 @@
 		
 		
 		FDConfiguration configuration = new FDConfiguration(Double.parseDouble( request.getParameter("quantity") ), salesUnit.getName(), options);		
-		FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), productModel, configuration, null);
+
+		FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), productModel, configuration, null, user.getPricingContext().getZoneId());
 	
 		cart.addOrderLine(cartLine);
 		//Log that an item has been added.
@@ -98,5 +99,4 @@
             destinationBuf.append( request.getParameter("searchIndex") );
         }
 	response.sendRedirect( destinationBuf.toString() );
-return;
-%>
+return;%>

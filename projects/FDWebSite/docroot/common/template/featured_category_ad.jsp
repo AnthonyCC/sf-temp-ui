@@ -1,4 +1,6 @@
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='java.net.URLEncoder' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
@@ -6,15 +8,15 @@
 ContentFactory cf = ContentFactory.getInstance();
 ProductModel pm = cf.getProductByName(request.getParameter("catId"), request.getParameter("prodId"));
 Image prodImage = (Image)pm.getCategoryImage();
-System.out.println(request.getParameter("prodId"));
 SkuModel sku = pm.getDefaultSku();
 String prodPrice = null;
+FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.USER);
     if (sku!=null) { 
             
 %>
     <fd:FDProductInfo id="productInfo" skuCode="<%=  sku.getSkuCode() %>">
 <%   
-    prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+    prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(sessionuser.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %>  					
     </fd:FDProductInfo>
 <%        }%>

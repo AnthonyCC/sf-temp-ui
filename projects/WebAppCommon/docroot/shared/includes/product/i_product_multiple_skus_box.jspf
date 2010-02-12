@@ -102,14 +102,14 @@
                           %>
                           <fd:FDProductInfo id="productInfo" skuCode="<%= ((SkuModel)group.get(0)).getSkuCode() %>">
 							<fd:FDProduct id="product" productInfo="<%= productInfo %>">
-							<% if ( productInfo.hasWasPrice() ) { %>
-						      <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+							<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ) { %>
+						      <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
 						      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
 						      <br/>
-						      <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getBasePrice()) %>)</font>
+						      <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()) %>)</font>
 						      <br/>
 						    <% } else { %>
-						      <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+						      <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
 						      <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
 						    <% } %>
 						    </fd:FDProduct>
@@ -194,21 +194,21 @@
 			} 
 		
 			if (!allSamePrice) { // extra space below for Size desc and price %> 
-				<% if ( productInfo.hasWasPrice() ) { %>
-			      <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+				<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ) { %>
+			      <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
 			      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
 			      <br/>
-			      <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getBasePrice()) %>)</font>
+			      <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()) %>)</font>
 			      <br/>
 			    <% } else { %>
-			      <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+			      <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
 			      <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
 			    <% } 
 			}
 		
 			%>
 			
-			<input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br/>
+			<input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku.getSkuCode().equalsIgnoreCase(sku.getSkuCode())){ %> checked="true" <% } %> ><br/>
 			
 <%-- ============================================================================================================================================= --%>
 		<% } else { // for !hasSecondaryDomain 
@@ -232,14 +232,14 @@
                            }
 	
                            if (!allSamePrice) { // extra space below for Size desc and price %> 
-                           	<% if ( productInfo.hasWasPrice() ) { %>
-                                <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+                           	<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale()) { %>
+                                <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
                                 <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
                                 <br/>
-                                <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getBasePrice()) %>)</font>
+                                <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()) %>)</font>
                                 <br/>
                                <% } else { %>
-                                <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+                                <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
                                 <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
                                <% } 
                            }
@@ -258,9 +258,12 @@
                                %><font class="text11rbold">*</font><%
                            } %>
                            
+                           
+                          
+                           
 			</td>	                               
 			<td width="15">
-				<input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br/>
+				<input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku.getSkuCode().equalsIgnoreCase(sku.getSkuCode())){ %> checked="true" <% } %> ><br/>
 			</td>
        	</tr>
                            

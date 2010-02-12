@@ -54,14 +54,14 @@ int rank = nav.getPageOffset()+1;
 	int wasDeal = -1;
 	double basePrice = Double.NaN;
 	if (pi.getProductInfo() != null) {
-		defaultPrice = new Double(pi.getProductInfo().getDefaultPrice());
+		defaultPrice = new Double(pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getDefaultPrice());
 		priceUnit = pi.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase();
-		hasWas = pi.getProductInfo().hasWasPrice();
+		hasWas = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).isItemOnSale();
 		wasDeal = -1;
 		basePrice = Double.NaN;
 		if (hasWas) {
-			wasDeal = pi.getProductInfo().getDealPercentage();
-			basePrice = pi.getProductInfo().getBasePrice();
+			wasDeal = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getDealPercentage();
+			basePrice = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getSellingPrice();
 		}
 	}
 	

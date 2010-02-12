@@ -10,6 +10,8 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -21,7 +23,7 @@
 <%
 
 //********** Start of Stuff to let JSPF's become JSP's **************
-
+FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId"); 
 boolean isDepartment = false;
@@ -88,7 +90,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %>
     <logic:iterate id='contentRef' collection="<%=favorites%>" type="java.lang.Object">
 <% 
-        ProductModel product = JspMethods.getFeaturedProduct(contentRef); //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
+        ProductModel product = ProductPricingFactory.getInstance().getPricingAdapter(JspMethods.getFeaturedProduct(contentRef) ,user.getPricingContext()); //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
         if (product.isDiscontinued() || product.isUnavailable()) continue;
         prodParent = product.getParentNode(); 
         List skus = product.getSkus(); 
@@ -114,7 +116,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <% 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit();
+        prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit();
 %>						
         </fd:FDProductInfo>
 <%

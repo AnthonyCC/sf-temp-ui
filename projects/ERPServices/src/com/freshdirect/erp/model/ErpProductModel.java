@@ -35,10 +35,10 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	private String skuCode;
 	
 	/** default price */
-	private double defaultPrice;
+	//private double defaultPrice;
 	
 	/** pricing unit for default price */
-	private String defaultPriceUnit;
+	//private String defaultPriceUnit;
     
     /** unavailability status code */
     private String unavailabilityStatus;
@@ -70,10 +70,6 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	/** product days in house */
 	private String days_in_house;
 	
-	private double basePrice;
-	
-	private String basePriceUnit;
-
 	/**
 	 * Default constructor.
 	 */
@@ -95,8 +91,8 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 			throw new IllegalArgumentException("SKU code cannot be null");
 		}
 		this.setSkuCode(skuCode);
-		this.setDefaultPrice(defaultPrice);
-		this.setDefaultPriceUnit(defaultPriceUnit);
+		//this.setDefaultPrice(defaultPrice);
+		//this.setDefaultPriceUnit(defaultPriceUnit);
 	    this.setUnavailabilityStatus(unavailabilityStatus);
         this.setUnavailabilityDate(unavailabilityDate);
         this.setUnavailabilityReason(unavailabilityReason);
@@ -106,10 +102,10 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 		this.setHiddenSalesUnitPKs( suPKs );
 		this.setHiddenCharacteristicValuePKs( cvPKs );
 		this.setRating(_rating);
+		//this.setBasePrice(basePrice);
+		//this.setBasePriceUnit(basePriceUnit);
 		this.setDaysFresh(days_fresh);
 		this.setDaysInHouse(days_in_house);
-		this.setBasePrice(basePrice);
-		this.setBasePriceUnit(basePriceUnit);
 	}
 
 	/**
@@ -144,27 +140,31 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	 *
 	 * @return default price
 	 */
+	/*
 	public double getDefaultPrice() {
 		return this.defaultPrice;
 	}
-
+    */
 	/**
 	 * Set default price.
 	 *
 	 * @param default price
 	 */
+	/*
 	public void setDefaultPrice(double defaultPrice) {
 		this.defaultPrice = defaultPrice;
 	}
-	
+	*/
 	/**
 	 * Get pricing unit for default price.
 	 *
 	 * @return pricing unit for default price
 	 */
+	/*
 	public String getDefaultPriceUnit() {
 		return this.defaultPriceUnit;
 	}
+	*/
 	/** Setter for property rating.
     * @param  _rating
      */
@@ -206,10 +206,11 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	 *
 	 * @param defaultPriceUnit pricing unit for default price
 	 */
+    /*
 	public void setDefaultPriceUnit(String defaultPriceUnit) {
 		this.defaultPriceUnit = defaultPriceUnit;
 	}
-
+    */
     /** Getter for property unavailabilityDate.
      * @return Value of property unavailabilityDate.
      */
@@ -379,22 +380,6 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 		return list;
 	}
 
-	public double getBasePrice() {
-		return basePrice;
-	}
-
-	public void setBasePrice(double basePrice) {
-		this.basePrice = basePrice;
-	}
-
-	public String getBasePriceUnit() {
-		return basePriceUnit;
-	}
-
-	public void setBasePriceUnit(String basePriceUnit) {
-		this.basePriceUnit = basePriceUnit;
-	}
-	
 	/**
 	 * Get sales units for display only.
 	 *

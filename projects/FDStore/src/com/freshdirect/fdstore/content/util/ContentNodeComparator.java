@@ -249,7 +249,7 @@ public class ContentNodeComparator implements Comparator {
 				return Double.MAX_VALUE;
 			}
 
-			return skuModel.getProductInfo().getDefaultPrice();
+			return skuModel.getProductInfo().getZonePriceInfo(skuModel.getPricingContext().getZoneId()).getDefaultPrice();
 
 		} catch (FDResourceException ex) {
 			LOGGER.warn("Catching FDResourceException after calling getPrice method in ItemGrabber");

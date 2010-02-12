@@ -38,6 +38,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 
@@ -228,13 +229,11 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 			
 			productInfo    = new FDProductInfo(sku,
 					                           1,
-					                           1.0,
-					                           "ea",
 					                           materials,
 					                           EnumATPRule.MATERIAL,
 					                           EnumAvailabilityStatus.AVAILABLE,
 					                           now,
-					                           "", inventoryCache,"",null, 1.0,"ea",false,-1,-1);
+					                           inventoryCache,"",null,ZonePriceInfoListing.getDummy());
 
 			return productInfo;
 		}

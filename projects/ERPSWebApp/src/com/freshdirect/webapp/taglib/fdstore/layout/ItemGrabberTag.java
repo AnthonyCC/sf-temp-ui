@@ -15,10 +15,16 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.*;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
+import com.freshdirect.fdstore.pricing.SkuModelPricingAdapter;
 import com.freshdirect.fdstore.*;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+
 import org.apache.log4j.*;
 
 /**
@@ -90,7 +96,7 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 	public void setFilterDiscontinued(boolean filterDiscontinued) {
 		this.filterDiscontinued = filterDiscontinued;
 	}
-			
+	
 	public int doStartTag() throws JspException {
 		if (rootNode == null || id == null) {
 			throw new JspException("Attribute for ItemGrabberTag was null!");
@@ -134,14 +140,15 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 
 
 	private void getProdsAndFolders(ContentNodeModel currentNode, int desiredDepth) throws FDResourceException, FDSkuNotFoundException {
-		this.getProdsAndFolders(currentNode, desiredDepth, 0);
+		FDUserI user = FDSessionUser.getFDSessionUser(pageContext.getSession());
+		this.getProdsAndFolders(currentNode, desiredDepth, 0, user.getPricingContext());
 	}
 	
 	/**
 	 * @return true if at least one product/category added to work list
-	 * also if a duplecate product would have been added, it returns true.
+	 * also if a duplicate product would have been added, it returns true.
 	 */
-	private boolean getProdsAndFolders(ContentNodeModel currentNode, int desiredDepth, int currentDepth) throws FDResourceException, FDSkuNotFoundException {
+	private boolean getProdsAndFolders(ContentNodeModel currentNode, int desiredDepth, int currentDepth, PricingContext pricingCtx) throws FDResourceException, FDSkuNotFoundException {
    
 		if (currentNode instanceof ProductModel) {
 			return false;
@@ -173,11 +180,16 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 				if (this.returnSkus){
 					for (Iterator itr = product.getSkus().iterator(); itr.hasNext();) {
 						SkuModel sku = (SkuModel)itr.next();
+						
 						if (!sku.isDiscontinued()){
-							this.workSet.add(sku);
+							//Convert to SkuModelPricingAdapter for Zone Pricing
+							this.workSet.add(new SkuModelPricingAdapter(sku, pricingCtx));
 						}
 					}
-				} else 	this.workSet.add(product );
+				} else {
+					//Convert to ProductModelPricingAdapter for Zone Pricing
+					this.workSet.add(ProductPricingFactory.getInstance().getPricingAdapter(product ,pricingCtx) );
+				}
 				rtnValue=true;
 			}
 
@@ -221,7 +233,7 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 					
 				// recurse and process this folder
 				if (desiredDepth >= (currentDepth+1)) {
-					boolean keepLastCategory = this.getProdsAndFolders( subFolder, desiredDepth, currentDepth+1 );
+					boolean keepLastCategory = this.getProdsAndFolders( subFolder, desiredDepth, currentDepth+1,pricingCtx );
 					if (!keepLastCategory && this.workSet.size()==wrkSetSize1 && wrkSetSize1 !=0 && (subFolder.getShowSelf() || returnHiddenFolders)) {
 						this.workSet.remove(wrkSetSize1-1);
 				   }

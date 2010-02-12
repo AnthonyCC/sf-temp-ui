@@ -15,6 +15,7 @@ import java.util.Map;
 
 import javax.ejb.EJBObject;
 
+import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -91,6 +92,11 @@ public interface FDFactorySB extends EJBObject {
 	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes)throws FDResourceException, RemoteException;
 
 	public List findPeakProduceSKUsByDepartment(List skuPrefixes) throws FDResourceException, RemoteException;
+	
+	
+	public ErpZoneMasterInfo getZoneInfo(String zoneId) throws RemoteException, FDResourceException;
+	
+	public Collection getZoneInfos(String zoneIds[]) throws RemoteException, FDResourceException;
 	
 }
 

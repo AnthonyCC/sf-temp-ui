@@ -13,18 +13,15 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.EnumOrderLineRating;
-import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.QuickDateFormat;
-import com.freshdirect.webapp.util.JspMethods;
 
 public class Sku {
     private static final Logger LOG = Logger.getLogger(Sku.class);
@@ -33,6 +30,8 @@ public class Sku {
     private List domains = Collections.EMPTY_LIST;
 
     private final SkuModel skuModel;
+    
+    private final PriceCalculator priceCalc;
 
     private String domainLabel;
 
@@ -58,30 +57,19 @@ public class Sku {
 
     private String fdContentType;
 
-    private Sku(SkuModel skuModel) {
+    private Sku(PriceCalculator priceCalc, SkuModel skuModel) throws FDResourceException, FDSkuNotFoundException {
         this.skuModel = skuModel;
         this.variationMatrix = skuModel.getVariationMatrix();
         this.variationOptions = skuModel.getVariationOptions();
-    }
-    
-    public static Sku wrap(SkuModel skuModel) {
-        Sku sku = new Sku(skuModel);
-        try {
-            sku.productInfo = FDCachedFactory.getProductInfo(skuModel.getSkuCode());
-        } catch (FDResourceException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (FDSkuNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        this.priceCalc = priceCalc;
+        this.productInfo = priceCalc.getProductInfo();
 
 
         // BEGIN i_product_skus_rating
         boolean matchFound = false; //default to false
 
         //this is taking the place of a skuCode
-        String deptIdCheck = sku.productInfo.getSkuCode().toString().substring(0, 3);
+        String deptIdCheck = this.productInfo.getSkuCode().toString().substring(0, 3);
 
         if (deptIdCheck != null && !"".equals(deptIdCheck)) {
             deptIdCheck = deptIdCheck.toUpperCase();
@@ -113,18 +101,29 @@ public class Sku {
         }
 
         if (matchFound) {
-            if (sku.productInfo.getRating() != null && sku.productInfo.getRating().trim().length() > 0) {
-                EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode(sku.productInfo.getRating());
+            if (this.productInfo.getRating() != null && this.productInfo.getRating().trim().length() > 0) {
+                EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode(this.productInfo.getRating());
                 if (enumRating != null && enumRating.isEligibleToDisplay()) {
-                    sku.rating = enumRating.getStatusCodeInDisplayFormat();
-                    sku.ratingDescription = enumRating.getShortDescription();
+                    this.rating = enumRating.getStatusCodeInDisplayFormat();
+                    this.ratingDescription = enumRating.getShortDescription();
                 }
             }
         }
         // END i_product_skus_rating
 
-        return sku;
-
+    }
+    
+    public static Sku wrap(PriceCalculator priceCalc,SkuModel skuModel) {
+        try {
+            return new Sku(priceCalc, skuModel);
+        } catch (FDResourceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (FDSkuNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String getSkuCode() {
@@ -162,7 +161,7 @@ public class Sku {
     }
 
     public double getPrice() {
-        return productInfo.getDefaultPrice();
+        return priceCalc.getPrice(0);
     }
 
     public String getFormattedPrice() {
@@ -175,11 +174,23 @@ public class Sku {
     }
 
     public double getBasePrice() {
-        return productInfo.getBasePrice();
+        try {
+            return priceCalc.getZonePriceInfoModel().getDefaultPrice();
+        } catch (FDResourceException e) {
+            throw new RuntimeException(e);
+        } catch (FDSkuNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean hasWasPrice() {
-        return productInfo.hasWasPrice();
+        try {
+            return priceCalc.getZonePriceInfoModel().isItemOnSale();
+        } catch (FDResourceException e) {
+            throw new RuntimeException(e);
+        } catch (FDSkuNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getFormattedBasePrice() {
@@ -188,7 +199,7 @@ public class Sku {
     }
 
     public String getBasePriceUnit() {
-        return productInfo.getBasePriceUnit();
+        return priceCalc.getDefaultUnitOnly();
     }
 
     public boolean hasVariationMatrix() {
@@ -241,11 +252,10 @@ public class Sku {
         String[] scales = new String[] {};
 
         try {
-            FDProduct defaultProduct = FDCachedFactory.getProduct(productInfo);
             if (wineLayout) {
-                scales = defaultProduct.getPricing().getWineScaleDisplay(true);
+                scales = priceCalc.getZonePriceModel().getWineScaleDisplay(true);;
             } else {
-                scales = defaultProduct.getPricing().getScaleDisplay();
+                scales = priceCalc.getZonePriceModel().getScaleDisplay();
             }
         } catch (FDResourceException e) {
             // TODO Auto-generated catch block
@@ -348,36 +358,7 @@ public class Sku {
      * @return
      */
     public String getDisplayAboutPrice() {
-        String displayPriceString = null;
-
-        try {
-            FDProduct defaultProduct = FDCachedFactory.getProduct(productInfo);
-
-            if (null != defaultProduct.getDisplaySalesUnits() && defaultProduct.getDisplaySalesUnits().length > 0) {
-                FDSalesUnit fdSalesUnit = defaultProduct.getDisplaySalesUnits()[0];
-                double salesUnitRatio = (double) fdSalesUnit.getDenominator() / (double) fdSalesUnit.getNumerator();
-                String baseUnit = fdSalesUnit.getName();
-                String[] scalesPrice = defaultProduct.getPricing().getScaleDisplay();
-                double displayPrice = 0;
-                if (null != scalesPrice && scalesPrice.length > 0) {
-                    displayPrice = defaultProduct.getPricing().getMinPrice() / salesUnitRatio;
-                } else {
-                    displayPrice = productInfo.getDefaultPrice() / salesUnitRatio;
-                }
-
-                if (displayPrice > 0) {
-                    displayPriceString = "about " + JspMethods.formatDecimal(salesUnitRatio) + baseUnit.toLowerCase() + ", "
-                            + JspMethods.currencyFormatter.format(displayPrice) + "/" + baseUnit.toLowerCase();
-                }
-            }
-        } catch (FDResourceException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (FDSkuNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return displayPriceString;
+        return priceCalc.getAboutPriceFormatted(0); 
     }
 
     public List<DomainValue> getVariationMatrix() {

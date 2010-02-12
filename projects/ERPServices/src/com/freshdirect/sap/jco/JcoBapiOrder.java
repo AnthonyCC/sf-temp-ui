@@ -158,6 +158,7 @@ abstract class JcoBapiOrder extends JcoBapiFunction implements BapiOrder {
 		this.orderItemIn.setValue(item.getSalesUnit(),	"SALES_UNIT");
 		this.orderItemIn.setValue(item.getDeliveryGroup(), "DLV_GROUP");
 		this.orderItemIn.setValue(item.getCustMat35(),	"CUST_MAT35");
+		this.orderItemIn.setValue(item.getSalesDist(), "SALES_DIST");
 	}
 
 

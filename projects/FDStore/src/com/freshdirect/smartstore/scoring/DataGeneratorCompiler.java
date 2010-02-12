@@ -23,7 +23,6 @@ import com.freshdirect.smartstore.dsl.Expression;
 import com.freshdirect.smartstore.dsl.FunctionCall;
 import com.freshdirect.smartstore.dsl.Operation;
 import com.freshdirect.smartstore.dsl.Parser;
-import com.freshdirect.smartstore.dsl.StringExp;
 import com.freshdirect.smartstore.dsl.VariableAliasingVisitor;
 import com.freshdirect.smartstore.dsl.VariableCollector;
 import com.freshdirect.smartstore.dsl.VariableExpression;
@@ -57,6 +56,7 @@ public class DataGeneratorCompiler extends CompilerBase {
     boolean optimize = false;
     boolean caching = true;
     final static boolean CACHE_BY_CURRENT_NODE_ALSO = false;
+    private final String[] zoneDependentFactors;
     
     @SuppressWarnings("unchecked")
     Set<String> globalVariables = Collections.EMPTY_SET;
@@ -366,6 +366,10 @@ public class DataGeneratorCompiler extends CompilerBase {
         }
     }
     
+    public DataGeneratorCompiler(String[] zoneDependentFactors) {
+    	this.zoneDependentFactors = zoneDependentFactors;
+    }
+    
     protected  void setupParser(Parser parser) {
         super.setupParser(parser);
         parser.getContext().addFunctionDef(FN_RECURSIVE_NODES, new RecursiveNodesFunction());
@@ -550,6 +554,9 @@ public class DataGeneratorCompiler extends CompilerBase {
         Set<String> keys = this.getCachingKeys(vc.getVariables());
         StringBuffer b = new StringBuffer("public String getKey(SessionInput input) {\n");
         b.append("   return \""+toStringValue.replace('"', '\'')+"\"");
+        if (containsZoneDependentFactor(vc.getVariables())) {
+            b.append("+ \"%zone=\" + input.getPricingContext().getZoneId()");
+        }
         if (keys.contains(CURRENT_PRODUCT)) {
             b.append("+ '$' + HelperFunctions.getCurrentNodeCacheKey(input)");
         }
@@ -575,6 +582,7 @@ public class DataGeneratorCompiler extends CompilerBase {
             .append("(com.freshdirect.smartstore.SessionInput sessionInput, DataAccess input) {\n");
         
         buffer.append(" String userId = sessionInput.getCustomerId();\n");
+        buffer.append(" com.freshdirect.common.pricing.PricingContext pricingCtx = sessionInput.getPricingContext();\n");
         if (vc.getVariables().contains(CURRENT_PRODUCT)) {
             buffer.append(" "+NODE_TYPE+ " currentProduct = sessionInput.getCurrentNode();\n");
         }
@@ -751,7 +759,7 @@ public class DataGeneratorCompiler extends CompilerBase {
                 + NODE_TYPE + ' ' + ITERATION_VARIABLE + " = (" + NODE_TYPE + ") iter.next();\n");
         Context context = getParser().getContext();
         if (!constantExpression) {
-            buffer.append("     double[] vars = input.getVariables(userId, " + ITERATION_VARIABLE + "," + arrayName + ");\n");
+            buffer.append("     double[] vars = input.getVariables(userId, pricingCtx, " + ITERATION_VARIABLE + "," + arrayName + ");\n");
             int index = 0;
             for (Iterator<String> iter=vc.getVariables().iterator();iter.hasNext();) {
                 buffer.append("   ").append(declareVariable(context, (String) iter.next(), "vars["+index+']'));
@@ -898,7 +906,12 @@ public class DataGeneratorCompiler extends CompilerBase {
         }
         return result;
     }
-    
-    
-    
+
+    public boolean containsZoneDependentFactor(Set<String> variables) {
+    	for (String factor : zoneDependentFactors) {
+    		if (variables.contains(factor))
+    			return true;
+    	}
+    	return false;
+    }
 }

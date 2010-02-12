@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.fdstore.FDResourceException;
@@ -153,5 +154,9 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public void removeLineItemDiscount();
 	
 	public double getActualPrice();
-		
+	
+	//Returns the zone under which this product has been priced.
+	public PricingContext getPricingContext();
+	
+
 }

@@ -9,7 +9,6 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <html>

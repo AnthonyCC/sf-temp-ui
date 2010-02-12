@@ -11,6 +11,8 @@ package com.freshdirect.fdstore;
 import java.util.Date;
 import java.util.List;
 
+
+import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
 
@@ -23,14 +25,7 @@ import com.freshdirect.erp.model.ErpInventoryModel;
 
 public class FDProductInfo extends FDSku  {
 	
-	/** Default price in USD */
-	private final double defaultPrice;
-	
-	private final String displayableDefaultPriceUnit;
-	
-	/** Default price unit of measure */
-	private final String defaultPriceUnit;
-	
+
 	private final String[] materialNumbers;
     
 	/** Availability checking rule */
@@ -41,7 +36,7 @@ public class FDProductInfo extends FDSku  {
     
     /** SAP availability date */
     private final Date availDate;
-    
+     
     /** inventory info for the product but this should only be set in a TEST CASE */
     private final FDInventoryCacheI inventory;
 	
@@ -51,39 +46,27 @@ public class FDProductInfo extends FDSku  {
     private final String freshness;
     
 	/** Default price in USD */
-	private final double basePrice;
-	
-	private final String basePriceUnit;
-	
-	private final boolean hasWasPrice;
-	
-	private final int dealPercentage;
-	
-	private final int tieredDealPercentage;
-	
-	private final int highestDealPercentage;
+
+    //Zone Price Info Listing. 
+    private final ZonePriceInfoListing zonePriceInfoList;
     
-    public FDProductInfo(String skuCode, int version, double defaultPrice, String defaultPriceUnit,
+    public FDProductInfo(String skuCode, int version, 
     		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
-    		String displayableDefaultPriceUnit, FDInventoryCacheI inventory, String rating, String freshness,
-    		double basePrice, String basePriceUnit, boolean hasWasPrice, int dealPercentage, int tieredDealPercentage) {
+    		 FDInventoryCacheI inventory, String rating, String freshness,
+    		 ZonePriceInfoListing zonePriceInfoList) {
+
 		super(skuCode, version);
-		this.defaultPrice = defaultPrice;
-		this.defaultPriceUnit = defaultPriceUnit;
+
 		this.materialNumbers = materialNumbers;
 		this.atpRule = atpRule;
         this.availStatus = availStatus;
         this.availDate = availDate;
-        this.displayableDefaultPriceUnit = displayableDefaultPriceUnit;
+        
         this.inventory = inventory;
         this.rating=rating;
+        this.zonePriceInfoList = zonePriceInfoList;
+
         this.freshness=freshness;
-        this.basePrice=basePrice;
-        this.basePriceUnit=basePriceUnit;
-        this.hasWasPrice=hasWasPrice;
-        this.dealPercentage=dealPercentage;
-        this.tieredDealPercentage=tieredDealPercentage;
-        this.highestDealPercentage=Math.max(dealPercentage, tieredDealPercentage);
 	}
 
 	/**
@@ -96,33 +79,8 @@ public class FDProductInfo extends FDSku  {
 		return FDInventoryCache.getInstance().getInventory(materialNumbers[0]);
 	}
 
-	/**
-	 * Get the "default" price - this is usually the lowest price for the product.
-	 *
-	 * @return price in USD
-	 */
-	public double getDefaultPrice() {
-		return this.defaultPrice;
-	}
 
-	/**
-	 * Get the unit of measure for the "default" price.
-	 *
-	 * @return unit of measure
-	 */
-	public String getDefaultPriceUnit() {
-		return this.defaultPriceUnit;
-	}
-	
-	/**
-	 * Get the unit of measure for the "default" price.
-	 *
-	 * @return pricing unit attribute if one, else return the default Price unit
-	 */
-	public String getDisplayableDefaultPriceUnit() {
-		
-		return this.displayableDefaultPriceUnit == null || "".equals(this.displayableDefaultPriceUnit) ? this.defaultPriceUnit : this.displayableDefaultPriceUnit ;
-	}
+
 
 	public EnumATPRule getATPRule() {
 		return this.atpRule;
@@ -167,6 +125,25 @@ public class FDProductInfo extends FDSku  {
     	return this.rating;
     }
     
+	/**
+	 * Get the unit of measure for the "default" price.
+	 *
+	 * @return unit of measure
+	 */
+	public String getDefaultPriceUnit() {
+		return this.zonePriceInfoList.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDefaultPriceUnit();
+	}
+	
+	/**
+	 * Get the unit of measure for the "default" price.
+	 *
+	 * @return pricing unit attribute if one, else return the default Price unit
+	 */
+	public String getDisplayableDefaultPriceUnit() {
+		
+		return this.zonePriceInfoList.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDisplayableDefaultPriceUnit();
+	}
+
     public String getFreshness() {
     	if(FDStoreProperties.IsFreshnessGuaranteedEnabled()) {
     		return this.freshness;
@@ -186,32 +163,30 @@ public class FDProductInfo extends FDSku  {
 		return buf.toString();
 	}
 
-	public double getBasePrice() {
-		return basePrice;
-	}
-
-	public String getBasePriceUnit() {
-		return basePriceUnit;
-	}
-
-	public int getDealPercentage() {
-		return dealPercentage;
-	}
-	
-	public int getTieredDealPercentage() {
-		return tieredDealPercentage;
-	}
-
-	public int getHighestDealPercentage() {
-		return highestDealPercentage;
-	}
-
-	public boolean hasWasPrice() {
-		return hasWasPrice;
-	}
 	public List getCountryOfOrigin() {
 		if(materialNumbers==null) 
 			return null;
 		return FDCOOLInfoCache.getInstance().getCOOLInfo(materialNumbers[0]);
 	}
+	
+	public ZonePriceInfoModel getZonePriceInfo(String pZoneId) {
+		try {
+			ZonePriceInfoModel zpInfo = this.zonePriceInfoList.getZonePriceInfo(pZoneId);
+			if(zpInfo == null) {
+				//do a item cascading to its parent until we find a price info.
+				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pZoneId);
+				zpInfo = getZonePriceInfo(zoneInfo.getParentZone().getSapId());
+			} 
+			return zpInfo;
+		}
+		catch(FDResourceException fe){
+			throw new FDRuntimeException(fe, "Unexcepted error happened while fetching the Zone Price Info for SKU : "+this.getSkuCode());
+		}
+	}
+	
+
+	public ZonePriceInfoListing getZonePriceInfoList() {
+		return this.zonePriceInfoList;
+	}
+
 }

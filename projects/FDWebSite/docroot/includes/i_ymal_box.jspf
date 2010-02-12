@@ -8,7 +8,6 @@
 <%@ page import='com.freshdirect.fdstore.FDConfigurableI' %>
 <%@ page import='com.freshdirect.fdstore.FDSalesUnit' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute'%>
 <%@ page import="com.freshdirect.fdstore.content.YmalSource" %>
 <%@ page import="com.freshdirect.fdstore.content.YmalSet" %>
 <%@ page import='com.freshdirect.fdstore.content.ContentNodeModel' %>

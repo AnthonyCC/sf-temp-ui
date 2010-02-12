@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.CategoryNodeTree;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentSearch;
@@ -29,8 +30,9 @@ public class RelevancyComparator extends PopularityComparator {
     
 //    Map<ContentKey,Integer> categoryScores  = new HashMap();
     
-    public RelevancyComparator(boolean inverse, String searchTerm, CategoryScoreOracle oracle, CategoryNodeTree cnt, List<ContentNodeModel> products, String originalSearchTerm) {
-        super(inverse, true, products);
+    public RelevancyComparator(boolean inverse, String searchTerm, PricingContext pricingContext,
+    		CategoryScoreOracle oracle, CategoryNodeTree cnt, List<ContentNodeModel> products, String originalSearchTerm) {
+        super(inverse, true, products, pricingContext);
         this.terms = StringUtils.split(searchTerm);
         this.searchTerm = searchTerm.toLowerCase();
         predefinedScores = ContentSearch.getInstance().getSearchRelevancyScores(this.searchTerm);

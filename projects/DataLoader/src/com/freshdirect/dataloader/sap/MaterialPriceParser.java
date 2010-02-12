@@ -39,6 +39,7 @@ public class MaterialPriceParser extends SAPParser {
         /*
          * from ERP Services/Technical Specs/Batch Loads/Material_Price_CSD.doc in VSS repository
          */
+        fields.add(new Field(ZONE_ID,            10, true));
         fields.add(new Field(MATERIAL_NUMBER,            18, true));
         fields.add(new Field(MATERIAL_DESCRIPTION,       40, true));
         fields.add(new Field(SALES_ORGANIZATION,          4, true));
@@ -96,9 +97,27 @@ public class MaterialPriceParser extends SAPParser {
             //
             // which material does this price belong to?
             //
+        	  String zoneId=getString(tokens, ZONE_ID);
             String matlNumber = getString(tokens, MATERIAL_NUMBER);
             if (BASE_PRICE.equals(priceType)) {
-            	materialBasePrices.put(matlNumber, new BasePriceInfo(matlNumber,getDouble(tokens, PRICE),getString(tokens, CONDITION_UNIT)));
+            	  HashSet basePrices = null;
+            	  if (!materialBasePrices.containsKey(matlNumber)) {
+  	                //
+  	                // no prices yet for this material
+  	                // create a new set and add it to the collection
+  	                //
+            		  basePrices = new HashSet();
+            		  materialBasePrices.put(matlNumber, basePrices);
+  	            } else {
+  	                //
+  	                // find the price set for this material
+  	                //
+  	            	basePrices = (HashSet) materialBasePrices.get(matlNumber);
+  	            }
+            	
+            	basePrices.add(new BasePriceInfo(matlNumber,getDouble(tokens, PRICE),getString(tokens, CONDITION_UNIT),zoneId));
+            	
+            	//materialBasePrices.put(matlNumber, new BasePriceInfo(matlNumber,getDouble(tokens, PRICE),getString(tokens, CONDITION_UNIT),zoneId));
             } else {
             
 	            ErpMaterialPriceModel materialPrice = new ErpMaterialPriceModel();
@@ -107,6 +126,8 @@ public class MaterialPriceParser extends SAPParser {
 	            materialPrice.setScaleQuantity(getDouble(tokens, CONDITION_SCALE_QUANTITY));
 	            materialPrice.setScaleUnit(getString(tokens, CONDITION_SCALE_UOM));
 	            materialPrice.setSapId(getString(tokens, CONDITION_RECORD_NUMBER));
+	          
+	            materialPrice.setSapZoneId(zoneId);
 	            //
 	            // no zero price materials
 	            //

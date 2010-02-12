@@ -4,18 +4,20 @@ import com.freshdirect.common.pricing.ConfiguredPrice;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.Price;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
+
 
 public class FDPricingEngine {
 
 	private FDPricingEngine() {
 	}
 
-	public static FDConfiguredPrice doPricing(FDProduct fdProduct, FDConfigurableI prConf, Discount discount)
+	public static FDConfiguredPrice doPricing(FDProduct fdProduct, FDConfigurableI prConf, Discount discount, PricingContext pCtx)
 		throws PricingException {
 
-		ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(fdProduct.getPricing(), prConf);
+		ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(fdProduct.getPricing(), prConf, pCtx);
 
 		final double price;
 		final double discountValue;

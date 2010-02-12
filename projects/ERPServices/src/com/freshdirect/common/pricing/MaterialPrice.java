@@ -13,6 +13,8 @@ import java.text.NumberFormat;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
+import com.freshdirect.common.pricing.util.DealsHelper;
+
 /**
  * Material pricing condition.
  *
@@ -39,22 +41,31 @@ public class MaterialPrice implements Serializable {
 	/** Scale unit of measure. Empty string if no scales apply. */
 	private String scaleUnit;
 
-	public MaterialPrice(double price, String pricingUnit) {
-		this(price, pricingUnit, 0.0, Double.POSITIVE_INFINITY, "");
+	private double promoPrice;
+	
+	public MaterialPrice(double price, String pricingUnit,double promoPrice) {
+		this(price, pricingUnit, 0.0, Double.POSITIVE_INFINITY, "", promoPrice);
 	}
+	
+	
+	
 
-	public MaterialPrice(double price, String pricingUnit, double scaleLowerBound, double scaleUpperBound, String scaleUnit) {
+	public MaterialPrice(double price, String pricingUnit, double scaleLowerBound, double scaleUpperBound, String scaleUnit, double promoPrice) {
 		this.price=price;
-		this.pricingUnit=pricingUnit;
+		this.pricingUnit=pricingUnit != null ? pricingUnit.intern() : null;
 		this.scaleLowerBound=scaleLowerBound;
 		this.scaleUpperBound=scaleUpperBound;
-		this.scaleUnit=scaleUnit;
+		this.scaleUnit=scaleUnit != null? scaleUnit.intern() : null;
+		this.promoPrice = promoPrice;
 	}
 
 	public double getPrice() {
-		return this.price;
+		if(DealsHelper.isItemOnSale(this.price, this.promoPrice))
+			return this.promoPrice;
+		else
+			return this.price;
 	}
-
+	
 	public String getPricingUnit() {
 		return this.pricingUnit;
 	}
@@ -162,7 +173,7 @@ public class MaterialPrice implements Serializable {
 	
 
 	public String toString() {
-		return "MaterialPrice[$"+price+" per "+pricingUnit+" scale: "+scaleLowerBound+" - "+scaleUpperBound+" "+scaleUnit+"]";
+		return "MaterialPrice[$"+price+" per "+pricingUnit+" scale: "+scaleLowerBound+" - "+scaleUpperBound+" "+scaleUnit+"promo "+promoPrice+"]";
 	}
 	
 }

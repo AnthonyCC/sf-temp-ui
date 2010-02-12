@@ -5,12 +5,16 @@
 <%@ page import="com.lowagie.text.pdf.*" %>
 <%@ page import="org.xhtmlrenderer.pdf.ITextRenderer" %>
 <%@ page import="com.lowagie.text.*" %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.webapp.util.MediaUtils" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import="com.freshdirect.common.pricing.PricingContext" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@page import="com.freshdirect.fdstore.ZonePriceListing"%>
 <%@ page import='java.util.Random' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%
-
+    FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 /*****  SETUP INPUT  *****/
 	/* input: string (FTL) */
 	
@@ -92,7 +96,8 @@
 
 
 		//call ftl render
-		MediaUtils.render(ftlPath, sw, params, false);
+		MediaUtils.render(ftlPath, sw, params, false, user.getPricingContext() != null ? 
+                user.getPricingContext() : new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE));
 
 
 		/*****  SETUP OUTPUT  *****/

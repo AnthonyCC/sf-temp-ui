@@ -64,12 +64,12 @@ int rank = nav.getPageOffset()+1;
 				String priceUnit = null;
 				double basePrice = Double.NaN;
 				if (pi.getProductInfo() != null) {
-					defaultPrice = new Double(pi.getProductInfo().getDefaultPrice());
+					defaultPrice = new Double(pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getDefaultPrice());
 					priceUnit = pi.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase();
-					hasWas = pi.getProductInfo().hasWasPrice();
+					hasWas = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).isItemOnSale();
 					basePrice = Double.NaN;
 					if (hasWas) {
-						basePrice = pi.getProductInfo().getBasePrice();
+						basePrice = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getSellingPrice();
 					}
 				}
 				

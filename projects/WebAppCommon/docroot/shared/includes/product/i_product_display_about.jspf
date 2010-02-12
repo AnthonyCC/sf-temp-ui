@@ -1,15 +1,15 @@
 <% // APPDEV-209 Apple pricing
-    String displayPriceString = null;
+   String displayPriceString = null;
 	if(null!=product.getDisplaySalesUnits()&& product.getDisplaySalesUnits().length > 0) {
 		FDSalesUnit fdSalesUnit = product.getDisplaySalesUnits()[0];
 		double salesUnitRatio = (double)fdSalesUnit.getDenominator()/(double)fdSalesUnit.getNumerator()	;		
 		String baseUnit = fdSalesUnit.getName();
-		String[] scalesPrice =product.getPricing().getScaleDisplay();
+		String[] scalesPrice =product.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getScaleDisplay();
 		double displayPrice = 0;
 		if(null !=scalesPrice && scalesPrice.length >0){
-			displayPrice = product.getPricing().getMinPrice()/salesUnitRatio;
+			displayPrice = product.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getMinPrice()/salesUnitRatio;
 		}else{
-			displayPrice = productInfo.getDefaultPrice()/salesUnitRatio;
+			displayPrice = productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()/salesUnitRatio;
 		}
 
 		if(displayPrice>0){

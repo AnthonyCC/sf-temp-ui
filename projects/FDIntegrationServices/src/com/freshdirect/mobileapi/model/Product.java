@@ -33,6 +33,7 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.ConfiguredPrice;
 import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.common.pricing.SalesUnitRatio;
@@ -59,6 +60,7 @@ import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.view.ProductRating;
@@ -122,10 +124,14 @@ public class Product {
     public static String PRICE_LABEL = "Price";
 
     protected ProductImpression product;
+    
+    protected PricingContext pricingContext;
 
     protected FDProduct defaultProduct = null;
 
     protected Sku defaultSku = null;
+    
+    protected PriceCalculator defaultPriceCalculator;
 
     protected Map<String, Date> shortTermUnavailable = new HashMap<String, Date>();
 
@@ -211,7 +217,10 @@ public class Product {
     @SuppressWarnings("unchecked")
     public Product(ProductModel productModel, FDUserI user, Variant variant) throws ModelException {
         this.product = new ProductImpression(productModel);
-
+        this.pricingContext = user != null ? user.getPricingContext() : null;
+        if (pricingContext == null) {
+            pricingContext = PricingContext.DEFAULT;
+        }
         this.user = user;
         this.variant = variant;
 
@@ -223,23 +232,25 @@ public class Product {
             while (li.hasNext()) {
                 SkuModel skuModel = (SkuModel) li.next();
                 if (skuModel != null && !skuModel.isUnavailable()) {
-                    Sku sku = Sku.wrap(skuModel);
+                    Sku sku = Sku.wrap(new PriceCalculator(pricingContext, productModel, skuModel), skuModel);
                     this.skus.add(sku);
                 }
             }
 
             this.hasSingleSku = this.skus.size() == 1;
 
+            this.defaultPriceCalculator = new PriceCalculator(user.getPricingContext(), productModel);
+
             if (this.hasSingleSku) {
                 this.defaultSku = this.skus.get(0);
             } else {
                 if (this.defaultSku == null) {
-                    this.defaultSku = Sku.wrap(productModel.getDefaultSku());
+                    this.defaultSku = Sku.wrap(defaultPriceCalculator, defaultPriceCalculator.getSkuModel());
                 }
             }
 
             try {
-                this.defaultProduct = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(this.defaultSku.getSkuCode()));
+                this.defaultProduct = defaultPriceCalculator.getProduct();
 
                 //It appears that category groupings are also coming through.  Bypassing those.
                 if (product.getProductModel().getParentNode() instanceof CategoryModel) {
@@ -309,7 +320,15 @@ public class Product {
             //
             // !!! need to look at isPricedByLB again with scaled pricing in effect
             //
-            this.isPricedByLB = ("LB".equalsIgnoreCase((this.defaultProduct.getPricing().getMaterialPrices()[0]).getPricingUnit()));
+            
+            //this.isPricedByLB = ("LB".equalsIgnoreCase((this.defaultProduct.getPricing().getMaterialPrices()[0]).getPricingUnit()));
+            try {
+                this.isPricedByLB = "LB".equalsIgnoreCase(this.defaultPriceCalculator.getZonePriceModel().getMaterialPrices()[0].getPricingUnit());
+            } catch (FDResourceException e1) {
+                // it will never happens, because only FDProduct construction can throw exception 
+            } catch (FDSkuNotFoundException e1) {
+                // it will never happens, because only FDProduct construction can throw exception 
+            }
             this.isSoldByLB = this.isPricedByLB && ("LB".equalsIgnoreCase((this.defaultProduct.getSalesUnits()[0]).getName()));
 
             // display sales unit dropdown only (qty is always one)
@@ -1481,7 +1500,7 @@ public class Product {
         FDConfiguration configuration = new FDConfiguration(quantity, salesUnit.getName(), options);
 
         if (sku != null && salesUnit != null && quantity > 0.0) {
-            ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(pricing, configuration);
+            ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(pricing, configuration, pricingContext);
             price = configuredPrice.getPrice().getPrice();
         }
         return price;
@@ -1548,7 +1567,8 @@ public class Product {
     public int getHighestDealPercentage() {
         int result = 0;
         if (!product.getProductModel().isUnavailable()) {
-            result = product.getProductInfo().getHighestDealPercentage();
+            //result = product.getProductInfo().getHighestDealPercentage();
+            result = defaultPriceCalculator.getHighestDealPercentage();
         }
         return result;
     }

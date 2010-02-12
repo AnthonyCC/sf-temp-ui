@@ -41,6 +41,8 @@
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
 <%@page import="com.freshdirect.smartstore.service.RecommendationServiceFactory"%>
 <%@page import="com.freshdirect.smartstore.service.VariantRegistry"%>
+<%@page import="com.freshdirect.fdstore.pricing.ProductPricingFactory"%>
+<%@page import="com.freshdirect.common.pricing.PricingContext"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
@@ -542,6 +544,9 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    					Customer ID: <%= customerId != null ? customerId : unknown %>
 	    				</p>
 	    				<p class="result">
+	    					Zone ID: <%= si.getPricingContext() != null ? si.getPricingContext().getZoneId() : unknown %>
+	    				</p>
+	    				<p class="result">
 	    					Cohort ID: <%= cohortId != null ? cohortId : unknown %>
 	    				</p>
 	    				<p class="result">
@@ -903,6 +908,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						while (it.hasNext()) {
 							ContentNodeModel cnm = (ContentNodeModel) it.next();
 							ProductModel pm = (ProductModel) cnm;
+							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm, si.getPricingContext() != null ? si.getPricingContext() : PricingContext.DEFAULT);
 							String actionURL = FDURLUtil.getProductURI(pm, "preview");
 							boolean found = recsB != null && recsB.indexOf(cnm) >= 0;
 							String notFound = "";
@@ -913,7 +919,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							}
 							String days = "";
 							if ("detailed".equals(view)) {
-								int d = (int) nsLookup.getVariable(cnm);
+								int d = (int) nsLookup.getVariable(cnm, si.getPricingContext());
 								if (d < -2000000000)
 									days = "&lt;unknown&gt;";
 								else
@@ -946,8 +952,9 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 											brands += ", " + b.getFullName();
 										}
 									%><%= brands %></span><br>
-									<span style="white-space: nowrap">Highest Deal: <%= pm.getHighestDealPercentage() %>%</span>&nbsp;
-									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm) %></span>&nbsp;
+									<span style="white-space: nowrap">Promo Deal: <%= pm.getDealPercentage() %>%</span>&nbsp;
+									<span style="white-space: nowrap">Tiered Deal: <%= pm.getTieredDealPercentage() %>%</span>&nbsp;
+									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm, si.getPricingContext()) %></span>&nbsp;
 									<span style="white-space: nowrap">Product Age: <%= days %></span>
 								</div>
 								<% } %>
@@ -973,6 +980,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						while (it.hasNext()) {
 							ContentNodeModel cnm = (ContentNodeModel) it.next();
 							ProductModel pm = (ProductModel) cnm;
+							pm = ProductPricingFactory.getInstance().getPricingAdapter(pm, si.getPricingContext() != null ? si.getPricingContext() : PricingContext.DEFAULT);
 							String actionURL = FDURLUtil.getProductURI(pm, "preview");
 							Integer change = recsA != null && recsA.indexOf(cnm) >= 0 ? new Integer(recsA.indexOf(cnm) - idx) : null;
 							String changeString = "N/A";
@@ -997,7 +1005,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							}
 							String days = "";
 							if ("detailed".equals(view)) {
-								int d = (int) nsLookup.getVariable(cnm);
+								int d = (int) nsLookup.getVariable(cnm, si.getPricingContext());
 								if (d < -2000000000)
 									days = "&lt;unknown&gt;";
 								else
@@ -1025,8 +1033,9 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 											brands += ", " + b.getFullName();
 										}
 									%><%= brands %></span><br>
-									<span style="white-space: nowrap">Highest Deal: <%= pm.getHighestDealPercentage() %>%</span>&nbsp;
-									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm) %></span>&nbsp;
+									<span style="white-space: nowrap">Promo Deal: <%= pm.getDealPercentage() %>%</span>&nbsp;
+									<span style="white-space: nowrap">Tiered Deal: <%= pm.getTieredDealPercentage() %>%</span>&nbsp;
+									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm, si.getPricingContext()) %></span>&nbsp;
 									<span style="white-space: nowrap">Product Age: <%= days %></span>
 								</div>
 								<% } %>

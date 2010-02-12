@@ -327,6 +327,9 @@ class SalesOrderHelper {
 			public String getCustMat35() {
 				return "";
 			}
+			public String getSalesDist() {
+				return "100000";
+			}
 		};
 
 		bapi.addOrderItemIn(item);

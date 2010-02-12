@@ -317,7 +317,7 @@ if (displayThing.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
    try {
 			 	if (dfltSku !=null) {
 					  FDProductInfo pi = FDCachedFactory.getProductInfo( dfltSku.getSkuCode() );					  
-					  price=currencyFormatter.format(pi.getDefaultPrice());
+					  price=currencyFormatter.format(pi.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice());
                        //String salesUnitDescr = displayProduct.getSalesUnits()[0].getDescription();
 
                       String salesUnitDescr =  FDCachedFactory.getProduct( pi).getSalesUnits()[0].getDescription();

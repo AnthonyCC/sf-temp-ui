@@ -81,7 +81,7 @@ public class FDStoreRecommender {
             List<FDCartLineI> orderlines = cart.getOrderLines();
             Set<ContentNodeModel> products = new HashSet<ContentNodeModel>();
             for (FDCartLineI cartLine : orderlines) {
-                products.add(cartLine.getProductRef().lookupProductModel());
+                products.add(cartLine.lookupProduct());
             }
             return products;
         }

@@ -1,12 +1,13 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.cms.*'%>
 <%@ page import='com.freshdirect.cms.application.*'%>
 <%@ page import='com.freshdirect.cms.node.*'%>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='java.util.*'%>
 <%@ page import='java.net.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -39,6 +40,7 @@ if (redirectURL!=null) {
     response.sendRedirect(redirectURL);
     return;
 }
+    FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 %>
 <tmpl:insert template='/common/template/right_nav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - <%= recipeDepartment.getName() %></tmpl:put>

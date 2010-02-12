@@ -196,7 +196,7 @@ termCounter++; %>
 		String variantId = request.getParameter("variant");
     	templateLine = new FDCartLineModel( new FDSku(defaultProduct), 
     	     (productNode.isPreconfigured() ? ((ConfiguredProduct)productNode).getProduct() : productNode), 
-    	      configuration, variantId);
+    	      configuration, variantId, user.getPricingContext().getZoneId());
     }
 %>
 <fd:FDShoppingCart id='cart' result='result' action='<%= tgAction %>' successPage='<%= successPage %>'>

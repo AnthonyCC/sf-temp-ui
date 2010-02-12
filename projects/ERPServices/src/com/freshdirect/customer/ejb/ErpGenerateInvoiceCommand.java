@@ -18,6 +18,7 @@ import com.freshdirect.common.pricing.Price;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
+
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -144,10 +145,10 @@ public class ErpGenerateInvoiceCommand {
 		Pricing pricing = fdProduct.getPricing();
 		FDConfiguration prConf = new FDConfiguration(quantity, orderLine.getSalesUnit(), orderLine.getOptions());
 		try {
-			FDConfiguredPrice price = FDPricingEngine.doPricing(fdProduct, prConf, orderLine.getDiscount());
+			FDConfiguredPrice price = FDPricingEngine.doPricing(fdProduct, prConf, orderLine.getDiscount(), orderLine.getPricingContext());
 			orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue());
 			orderLine.setDiscountAmount(price.getPromotionValue());			
-			Price oldPrice=PricingEngine.getConfiguredPrice(pricing, prConf).getPrice();
+			Price oldPrice=PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getPricingContext()).getPrice();
 			Price pr = new Price(MathUtil.roundDecimal(oldPrice.getBasePrice()-price.getPromotionValue()), MathUtil.roundDecimal(oldPrice.getSurcharge()));
 			return pr;
 		} catch (PricingException e) {
@@ -165,7 +166,7 @@ public class ErpGenerateInvoiceCommand {
 		Pricing pricing = fdProduct.getPricing();
 		FDConfiguration prConf = new FDConfiguration(quantity, orderLine.getSalesUnit(), orderLine.getOptions());
 		try {
-			return PricingEngine.getConfiguredPrice(pricing, prConf).getPrice();
+			return PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getPricingContext()).getPrice();
 		} catch (PricingException e) {
 			throw new EJBException(e);
 		}						
@@ -207,7 +208,7 @@ public class ErpGenerateInvoiceCommand {
 	}
 
 	private ErpInvoiceModel makeNewInvoice(ErpAbstractOrderModel order, ErpInvoiceModel oldInvoice, List invoiceLines, List charges) {
-		ErpInvoiceModel invoice = new ErpInvoiceModel();
+		ErpInvoiceModel invoice = new ErpInvoiceModel(); 
 		invoice.setTransactionDate(new Date());
 		invoice.setTransactionSource(EnumTransactionSource.SYSTEM);
 		invoice.setInvoiceNumber(oldInvoice.getInvoiceNumber());

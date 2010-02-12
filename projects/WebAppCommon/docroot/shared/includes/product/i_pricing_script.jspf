@@ -15,13 +15,13 @@ if (!document.cvPricesArray) {
 if (!document.salesUnitRatiosArray) {
 	document.salesUnitRatiosArray = new Array();
 }
-
+<% FDSessionUser p_user = (FDSessionUser)session.getAttribute(SessionName.USER); %>
 <logic:iterate id="sku" collection="<%= skus %>" type="SkuModel">
  <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
   <fd:FDProduct id="product" productInfo="<%= productInfo %>">
 <%				
 	Pricing pricing = product.getPricing();
-	MaterialPrice[] matPrices = pricing.getMaterialPrices();
+	MaterialPrice[] matPrices = pricing.getZonePrice(p_user.getPricingContext().getZoneId()).getMaterialPrices();
 	CharacteristicValuePrice[] cvPrices = pricing.getCharacteristicValuePrices();
 	SalesUnitRatio[] suRatios = pricing.getSalesUnitRatios();
 

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -54,17 +55,21 @@ public class SessionInput {
 	
 	//private Set eligiblePromotions = null;
 
+	//Added for Zone Pricing.
+	private PricingContext pricingCtx;
 	/**
 	 * Constructor.
 	 * 
 	 * @param customerId
 	 *            the custumer to recommend for (as ERP id)
 	 * @param customerServiceType
+	 * 
 	 *            the customer's service type (Home, Corporate, etc.)
 	 */
-	public SessionInput(String customerId, EnumServiceType customerServiceType) {
+	public SessionInput(String customerId, EnumServiceType customerServiceType, PricingContext pricingCtx) {
 		this.customerId = customerId;
 		this.customerServiceType = customerServiceType;
+		this.pricingCtx = pricingCtx;
 	}
 
 	/**
@@ -82,6 +87,7 @@ public class SessionInput {
 			//this.eligiblePromotions = user.getPromotionEligibility().getEligiblePromotionCodes();
 			if (user.getIdentity() != null)
 				this.customerId = user.getIdentity().getErpCustomerPK();
+			this.pricingCtx = user.getPricingContext();
 		}
 	}
 
@@ -219,5 +225,13 @@ public class SessionInput {
 
 	public void setIncludeCartItems(boolean includeCartItems) {
 		this.includeCartItems = includeCartItems;
+	}
+
+	public PricingContext getPricingContext() {
+		return pricingCtx;
+	}
+
+	public void setPricingContext(PricingContext pricingCtx) {
+		this.pricingCtx = pricingCtx;
 	}
 }

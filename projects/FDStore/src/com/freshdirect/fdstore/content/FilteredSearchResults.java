@@ -17,9 +17,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.RecipesUtil;
 import com.freshdirect.smartstore.scoring.Score;
 import com.freshdirect.smartstore.sorting.PopularityComparator;
@@ -178,6 +180,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 	private static final long      serialVersionUID  = 1L;
 
     String                         customerId;
+    PricingContext                 pricingContext;
     int                            start             = 0;
     
 
@@ -207,17 +210,28 @@ public class FilteredSearchResults extends SearchResults implements Serializable
      *            the customer id
      * @param originalSearchTerm the original search term (blueberries)
      */
-    public FilteredSearchResults(String searchTerm, SearchResults original, String customerId, String originalSearchTerm) {
-        super(original.getProducts(), original.getRecipes(), original.isProductsRelevant(), searchTerm);
+    public FilteredSearchResults(String searchTerm, SearchResults original, String customerId, String originalSearchTerm,  PricingContext pCtx) {
+    	//Convert Products to ProductModelPricingAdapter for Zone Pricing.
+        super(convertToPricingAdapter(original.getProducts(), pCtx), original.getRecipes(), original.isProductsRelevant(), searchTerm);
         setSpellingSuggestion(original.getSpellingSuggestion(), original.isSuggestionMoreRelevant());
         this.customerId = customerId;
         this.originalSearchTerm = originalSearchTerm;
+        this.pricingContext = pCtx;
     }
 
-    public FilteredSearchResults(String searchTerm, SearchResults original, String customerId) {
-        this(searchTerm, original, customerId, searchTerm);
+    public FilteredSearchResults(String searchTerm, SearchResults original, String customerId, PricingContext pCtx) {
+        this(searchTerm, original, customerId, searchTerm, pCtx);
     }
 
+	private static List convertToPricingAdapter(List products, PricingContext pCtx){
+		List adapters = new ArrayList<ProductModel>(products.size());
+		ProductPricingFactory factory = ProductPricingFactory.getInstance();
+		for(Iterator<ProductModel> it = products.iterator(); it.hasNext();){
+			adapters.add(factory.getPricingAdapter(((ProductModel) it.next()), pCtx));
+		}
+		return adapters;
+	}
+	
     public void sortProductsBy(SearchSortType code, boolean inverse) {
         List<ContentNodeModel> products = getProducts();
         currentComparator = getComparator(code, inverse, products);
@@ -260,16 +274,16 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                 c = inverse ? (Comparator<ContentNodeModel>) ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE : (Comparator<ContentNodeModel>) ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR;
                 break;
             case BY_POPULARITY:
-                c = new PopularityComparator(inverse, products);
+                c = new PopularityComparator(inverse, products, pricingContext);
                 break;
             case BY_SALE:
-            	c = new SaleComparator(inverse, products);
+            	c = new SaleComparator(inverse, products, pricingContext);
             	break;
             case BY_RELEVANCY:
             default:
                 CategoryScoreOracle sc = scoreOracle != null ? scoreOracle : new DefaultCategoryScoreOracle();
-                c = (customerId != null) ? new UserRelevancyComparator(inverse, searchTerm, customerId, sc, nodeTree, products, originalSearchTerm) : new RelevancyComparator(inverse, searchTerm,
-                        sc, nodeTree, products, originalSearchTerm);
+                c = (customerId != null) ? new UserRelevancyComparator(inverse, searchTerm, customerId, pricingContext, sc, nodeTree, products, originalSearchTerm) : new RelevancyComparator(inverse, searchTerm,
+                        pricingContext, sc, nodeTree, products, originalSearchTerm);
         }
         return c;
     }

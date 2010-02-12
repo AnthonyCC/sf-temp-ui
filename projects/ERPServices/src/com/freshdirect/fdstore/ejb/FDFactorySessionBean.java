@@ -22,16 +22,20 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.ejb.ErpInfoHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.ejb.ErpProductEB;
 import com.freshdirect.erp.ejb.ErpProductHome;
+import com.freshdirect.erp.ejb.ErpZoneInfoHome;
+import com.freshdirect.erp.ejb.ErpZoneInfoSB;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductModel;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.SessionBeanSupport;
 
 /**
@@ -44,6 +48,8 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 
 	private transient ErpInfoHome infoHome = null;
 	private transient ErpProductHome productHome = null;
+	private transient ErpZoneInfoHome zoneHome = null;
+	
 	
 	private FDProductHelper productHelper = new FDProductHelper();
 
@@ -260,8 +266,72 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			throw new FDResourceException(ce);
 		}
 	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * Get product with specified version. 
+	 *
+	 * @param sku SKU code
+	 * @param version requested version
+	 *
+	 * @return FDProduct object
+	 *
+	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
+	 */
+	public ErpZoneMasterInfo getZoneInfo(String zoneId) throws FDSkuNotFoundException, FDResourceException {
+		if (this.zoneHome==null) {
+			this.lookupZoneInfoHome();
+		}
+		try {
+			// find ErpProduct by sku & version
+			
+		
+			ErpZoneInfoSB infoSB = zoneHome.create();
+		
+			return infoSB.findZoneInfoMaster(zoneId);
+
+		} catch (CreateException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			this.productHome=null;
+			throw new FDResourceException(re);
+		}
+    }
     
 
+	/**
+	 * Get product with specified version. 
+	 *
+	 * @param sku SKU code
+	 * @param version requested version
+	 *
+	 * @return FDProduct object
+	 *
+	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
+	 */
+	public Collection getZoneInfos(String zoneIds[]) throws FDSkuNotFoundException, FDResourceException {
+		if (this.zoneHome==null) {
+			this.lookupZoneInfoHome();
+		}
+		try {
+			// find ErpProduct by sku & version
+		
+			ErpZoneInfoSB infoSB = zoneHome.create();
+		
+			return infoSB.findZoneInfoMaster(zoneIds);
+
+		} catch (CreateException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			this.productHome=null;
+			throw new FDResourceException(re);
+		}
+    }
+	
 	private void lookupInfoHome() throws FDResourceException {
 		Context ctx = null;
 		try {
@@ -290,6 +360,29 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 
+	
+	   
+    private  void lookupZoneInfoHome() throws FDResourceException {
+		if (zoneHome != null) {
+			return;
+		}
+		Context ctx = null;
+		try {
+			ctx = FDStoreProperties.getInitialContext();
+			zoneHome = (ErpZoneInfoHome) ctx.lookup("freshdirect.erp.ZoneInfoManager");
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+				}
+			} catch (NamingException ne) {
+				ne.printStackTrace();
+			}
+		}
+	}
+	
 	public void ejbCreate() throws CreateException {
 		// nothing required
 	}

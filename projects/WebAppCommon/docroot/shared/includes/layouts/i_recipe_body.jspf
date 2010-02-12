@@ -2,7 +2,6 @@
 %><%@ page import="java.util.ArrayList"
 %><%@ page import="java.util.Iterator"
 %><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
-%><%@ page import="com.freshdirect.fdstore.attributes.Attribute"
 %><%@ page import="com.freshdirect.fdstore.customer.FDProductSelectionI"
 %><%@ page import="com.freshdirect.fdstore.customer.FDProductSelection"
 %><%@ page import="com.freshdirect.fdstore.customer.OrderLineUtil"
@@ -25,6 +24,8 @@
 %><%@ page import="com.freshdirect.fdstore.FDProduct"
 %><%@ page import="com.freshdirect.framework.webapp.ActionError"
 %><%@ page import="com.freshdirect.webapp.util.JspMethods"
+%><%@ page import='com.freshdirect.fdstore.customer.*'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*' 
 %><%--
 -- This includes paints the recipe body and bottom (no side navs)
 -- Expects the host page to define the following variables:
@@ -38,7 +39,7 @@
     String          successPage;
 -- Host page will need various Imports...(see recipe.jsp)
 --%><%!
-	public static FDProductSelectionI convertToSelection(ConfiguredProduct confProd, RecipeSection section) throws FDSkuNotFoundException, FDResourceException {
+	public static FDProductSelectionI convertToSelection(ConfiguredProduct confProd, RecipeSection section, String pZoneId) throws FDSkuNotFoundException, FDResourceException {
 		FDProductInfo prodInfo = FDCachedFactory.getProductInfo(confProd.getSkuCode());
 		ProductModel prod = ContentFactory.getInstance().getProduct(confProd.getSkuCode());
 
@@ -46,7 +47,7 @@
 		FDProductSelection r = new FDProductSelection(
 			new FDSku(prodInfo.getSkuCode(), prodInfo.getVersion()),
 			prod,
-			configuration);
+			configuration,pZoneId);
 			
 		try {
 			OrderLineUtil.cleanup(r);
@@ -414,7 +415,7 @@ int prodIdx = 0;
         SkuModel            sku          = null;
 
         if (!configuredProduct.isUnavailable()) {
-            orderLine    = convertToSelection(configuredProduct, currSection);
+            orderLine    = convertToSelection(configuredProduct, currSection, user.getPricingContext().getZoneId());
             _productNode = orderLine.lookupProduct();
             sku          = _productNode.getSku(orderLine.getSkuCode());
         }
@@ -484,7 +485,7 @@ int prodIdx = 0;
                 FDProductInfo productInfo = orderLine.lookupFDProductInfo();
                 FDProduct product = orderLine.lookupFDProduct();
                 
-                String prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice());
+                String prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice());
                 String priceUnit = productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
                 %>
                 <td><font class="text10bold"><%= orderLine.getDescription() %> - <%= prodPrice %>/<%=priceUnit%></font>

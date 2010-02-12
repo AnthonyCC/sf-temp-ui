@@ -1,6 +1,5 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.util.*'%>
@@ -51,22 +50,26 @@ if (redirectURL !=null) {
 //[APPREQ-77] Page uses include media type layout
 int layouttype = departmentModel.getLayoutType(-1);
 boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_INCLUDE.getId());
+FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 
 %><tmpl:insert template='<%= (isIncludeMediaLayout ? "/common/template/no_nav.jsp" : "/common/template/right_nav.jsp") %>'>
     <tmpl:put name='title' direct='true'>FreshDirect - <%= department.getFullName() %></tmpl:put>
     <tmpl:put name='content' direct='true'>
 <% int ttl=14400; 
    String keyPrefix="deptLayout_"; 
-if("fru".equals(deptId) ||"veg".equals(deptId))  {
-    
-    FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
+if("fru".equals(deptId) ||"veg".equals(deptId) || "sea".equals(deptId))  {
+
     if(user.isProduceRatingEnabled()) {
+        //Caching fru,veg,sea,gro,hba,dai,fro,big,mea depts per pricing zone.
+        keyPrefix=keyPrefix+user.getPricingZoneId();
         keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";
         ttl=180;
     }
-} else if("gro".equals(deptId) ||"hba".equals(deptId)||"dai".equals(deptId) ||"fro".equals(deptId))  {
+} else if("gro".equals(deptId) ||"hba".equals(deptId)||"dai".equals(deptId) ||"fro".equals(deptId) ||"big".equals(deptId))  {
+    keyPrefix=keyPrefix+user.getPricingZoneId();
     ttl=3600;
 } else if("mea".equals(deptId)){
+    keyPrefix=keyPrefix+user.getPricingZoneId();
 	ttl=120;
 }
 %>

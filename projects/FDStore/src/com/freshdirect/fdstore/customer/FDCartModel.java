@@ -28,6 +28,7 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
@@ -1289,5 +1290,12 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 */
 	public void setBufferAmt(double bufferAmt) {
 		this.bufferAmt = bufferAmt;
+	}
+	
+	public void setPricingContextToOrderLines(PricingContext pCtx) {
+		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = (FDCartLineI)i.next();
+			cartLine.setPricingContext(pCtx);
+		}
 	}
 }

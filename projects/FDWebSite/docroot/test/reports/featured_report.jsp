@@ -2,6 +2,8 @@
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='java.util.*' %>
 
 <%
@@ -133,6 +135,7 @@ padding-right: 0px;
 </head>
 <body>
 <%
+    FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
     String deptName = request.getParameter("deptName");
     String deptId = request.getParameter("deptId");
 	StoreModel store = getStore();
@@ -243,7 +246,7 @@ padding-right: 0px;
                                     FDProductInfo prdInfo = FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
                                     boolean unavail = prd.isUnavailable();
 %>
-                            <tr><td CLASS="noBorder"><%= ++c %></td><td CLASS="noBorder">&nbsp;&nbsp;</td><td CLASS="noBorder"><%= unavail?"<i>":"" %><%= noBreak(prd.getFullName()) %><%= unavail?"</i>":"" %></td><td CLASS="noBorder">&nbsp;&nbsp;</td><td align=right CLASS="noBorder"><%= currencyFormatter.format(prdInfo.getDefaultPrice()) %>/<%= prdInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></td></tr>
+                            <tr><td CLASS="noBorder"><%= ++c %></td><td CLASS="noBorder">&nbsp;&nbsp;</td><td CLASS="noBorder"><%= unavail?"<i>":"" %><%= noBreak(prd.getFullName()) %><%= unavail?"</i>":"" %></td><td CLASS="noBorder">&nbsp;&nbsp;</td><td align=right CLASS="noBorder"><%= currencyFormatter.format(prdInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>/<%= prdInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></td></tr>
 <%                               }
                             }
                         }

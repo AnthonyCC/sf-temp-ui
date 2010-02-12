@@ -1,9 +1,10 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.content.util.*' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='java.util.*'%>
 <%@ page import='java.net.*'%>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -13,7 +14,9 @@
 <%!
     java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
-
+<%
+FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+%>
 <tmpl:insert template='/common/template/dnav.jsp'>
 	<tmpl:put name='title' direct='true'>Don't Know Beans</tmpl:put>
 		<tmpl:put name='content' direct='true'>
@@ -298,7 +301,7 @@ for (int displayLoop=0;displayLoop<loopCounter;displayLoop++) {
 
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <% 
-        prodPrice = currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+        prodPrice = currencyFormatter.format(productInfo.getZonePriceInfo(sessionuser.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %>						
         </fd:FDProductInfo>
 <%

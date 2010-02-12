@@ -23,7 +23,7 @@ public class BalkingExpiringReferenceTestCase extends TestCase {
 	public void testBalkingExpiringReference() {
 		final Message message = new Message("hello");
 		
-		BalkingExpiringReference ref = new BalkingExpiringReference(800) {
+		ExpiringReference ref = new BalkingExpiringReference(800) {
 			protected Object load() {
 				try {
 					Thread.sleep(300);

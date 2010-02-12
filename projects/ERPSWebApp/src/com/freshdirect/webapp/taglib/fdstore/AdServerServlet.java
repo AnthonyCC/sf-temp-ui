@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 
+
 /**@author ekracoff on Jul 20, 2004*/
 public class AdServerServlet extends HttpServlet{
 
@@ -23,18 +24,35 @@ public class AdServerServlet extends HttpServlet{
 		String[] prodId = request.getParameterValues("product_id");
 		String[] price = request.getParameterValues("price");
 		String[] avail = request.getParameterValues("available");
+		String zonePricingEnabled = request.getParameter("zonePricingEnabled");
 
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			PreparedStatement  ps = conn.prepareStatement("Insert into CreativeUpdate (ProductId, Available, Price) values (?,?,?)");
-			for (int counter = 0; counter < prodId.length; counter++) {
-				ps.setString(1, prodId[counter]);
-				ps.setString(2, avail[counter]);
-				ps.setString(3, price[counter]);
-				ps.addBatch();
+			PreparedStatement  ps = null;
+			System.out.println("Zone Pricing Enabled:"+zonePricingEnabled);
+			if(null ==zonePricingEnabled || "false".equalsIgnoreCase(zonePricingEnabled)){
+				ps = conn.prepareStatement("Insert into CreativeUpdate (ProductId, Available, Price) values (?,?,?)");
+				for (int counter = 0; counter < prodId.length; counter++) {
+					ps.setString(1, prodId[counter]);
+					ps.setString(2, avail[counter]);
+					ps.setString(3, price[counter]);
+					ps.addBatch();
+				}
+								
+			}else {
+				String[] zoneId = request.getParameterValues("zoneId");
+				String[] zoneType = request.getParameterValues("zoneType");
+				ps = conn.prepareStatement("Insert into CreativeUpdate_Zone (ProductId, Available, Price, ZoneId, ZoneType) values (?,?,?,?,?)");
+				for (int counter = 0; counter < prodId.length; counter++) {
+					ps.setString(1, prodId[counter]);
+					ps.setString(2, avail[counter]);
+					ps.setString(3, price[counter]);
+					ps.setString(4, zoneId[counter]);
+					ps.setString(5, zoneType[counter]);
+					ps.addBatch();
+				}
 			}
-			
 			int[] result = ps.executeBatch();
 			ps.close();
 			

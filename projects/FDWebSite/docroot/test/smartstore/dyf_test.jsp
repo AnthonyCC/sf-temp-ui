@@ -33,6 +33,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.test.SmartStoreSession' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.fdstore.content.ContentNodeModelUtil" %>
+<%@page import="com.freshdirect.fdstore.ZonePriceListing"%>
 <%!
 Logger LOG = LoggerFactory.getInstance("dyf_test.jsp");
  %>
@@ -107,7 +108,7 @@ FDCartLineModel createCartLine(String skuCode, double quantity, String salesUnit
 		FDConfiguration conf = new FDConfiguration(quantity,salesUnit,options);
 
 		if (skuModel.getProductModel() != null) {
-			line = new FDCartLineModel(new FDSku(fdProd),skuModel.getProductModel(),conf,null);
+			line = new FDCartLineModel(new FDSku(fdProd),skuModel.getProductModel(),conf,null, ZonePriceListing.MASTER_DEFAULT_ZONE);
 		} else {
 			LOG.info("[" + skuCode + "]-> skuModel.getProductModel() = NULL, Skipping ...");
 		}

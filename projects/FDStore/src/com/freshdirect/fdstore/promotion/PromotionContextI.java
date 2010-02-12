@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -92,5 +93,6 @@ public interface PromotionContextI {
 	public double getTotalLineItemDiscount();
 	
 	public void clearHeaderDiscounts();
-		
+	
+	public PricingContext getPricingContext();
 }

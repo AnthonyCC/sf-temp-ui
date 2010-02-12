@@ -175,7 +175,8 @@ public class FDGiftCardEmailFactory extends FDEmailFactory{
 				try {
 					FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
 					ProductModel productModel = ContentFactory.getInstance().getProduct(FDStoreProperties.getRobinHoodSkucode());
-					map.put("defaultPrice",productInfo.getDefaultPrice());
+					String pricingZoneId =  order.getOrderLine(0).getPricingContext().getZoneId();
+					map.put("defaultPrice",productInfo.getZonePriceInfo(pricingZoneId).getDefaultPrice());
 					map.put("defaultPriceUnit",productInfo.getDefaultPriceUnit().toLowerCase());
 					map.put("productFullName", productModel.getFullName());
 				} catch (FDResourceException e) {

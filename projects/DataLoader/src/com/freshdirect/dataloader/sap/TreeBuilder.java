@@ -12,6 +12,7 @@ import java.util.*;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.erp.model.*;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.dataloader.*;
@@ -304,6 +305,9 @@ public class TreeBuilder {
         //
         HashMap materialPrices = materialPriceParser.getMaterialPrices();
         
+        
+        
+        
         Map materialBasePrices=materialPriceParser.getMaterialBasePrices();
         //
         // get all of the sales units
@@ -339,10 +343,52 @@ public class TreeBuilder {
                 // set the prices for the material, sorted by scale quantity
                 //
                 ArrayList priceList = new ArrayList(prices);
+                boolean isDefaultZoneExists=false;
+                for(int i=0;i<priceList.size();i++){
+                	
+                	ErpMaterialPriceModel pModel=(ErpMaterialPriceModel)priceList.get(i);
+                	if(ErpServicesProperties.getMasterDefaultZoneId().equalsIgnoreCase(pModel.getSapZoneId())){
+                		isDefaultZoneExists=true;
+                	}
+                }
+                
+                if(!isDefaultZoneExists){
+                	exceptionList.add(new BadDataException("No Master Default Zone Id found for Material " + material.getSapId()));
+                }
+                
                 if(materialBasePrices.containsKey(material.getSapId())) {
-                	BasePriceInfo bpInfo=(BasePriceInfo)materialBasePrices.get(material.getSapId());
-                	material.setBasePrice(bpInfo.getPrice());
-                	material.setBasePricingUnit(bpInfo.getUnit());
+                	HashSet basePriceSet=(HashSet)materialBasePrices.get(material.getSapId());
+                	if(basePriceSet!=null && basePriceSet.size()>0){
+                		Iterator iterator=basePriceSet.iterator();
+                	
+	                	while(iterator.hasNext())
+	                	{
+	                	    BasePriceInfo bpInfo=(BasePriceInfo)iterator.next();
+	                	    String zoneId=bpInfo.getZoneId();
+	                	    if(prices!=null && zoneId!=null){
+	                    		Iterator matIterator=prices.iterator();
+	                    		ErpMaterialPriceModel unitPriceModel=null;
+	                    		double minquantity=0;
+	                        	while(matIterator.hasNext())
+	                        	{                        		
+	                        		ErpMaterialPriceModel priceModel=(ErpMaterialPriceModel)matIterator.next();
+	                        		if(zoneId.equalsIgnoreCase(priceModel.getSapZoneId())){
+	                        			 if(priceModel.getScaleQuantity()<=minquantity){
+	                        			    unitPriceModel=priceModel;	 
+	                        			 }
+	                        			 
+	                        		}
+	                        	} 
+	                        	if(unitPriceModel!=null){
+	                        		LOGGER.info("setting the promo price for "+unitPriceModel.getSapZoneId());
+	                        		unitPriceModel.setPromoPrice(bpInfo.getPrice());
+	                        	}
+	                	    }                	    
+	                	    
+	                	 //material.setBasePrice(bpInfo.getPrice());
+	                	 //material.setBasePricingUnit(bpInfo.getUnit());
+	                	}
+                	}	
                 }
                 Collections.sort(priceList, matlPriceComparator);
                 material.setPrices(priceList);

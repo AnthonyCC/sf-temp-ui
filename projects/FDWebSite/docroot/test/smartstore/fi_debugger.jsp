@@ -396,14 +396,14 @@ p.fi{margin:20px 0px;}
 					<fd:FDProductInfo id="productInfo" skuCode="<%=productNode.getDefaultSku().getSkuCode()%>">
 					<%
 						fiProdPrice = JspMethods.currencyFormatter
-											.format(productInfo.getDefaultPrice())
+											.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())
 											/** +"/"+productInfo.getDisplayableDefaultPriceUnit().toLowerCase() **/
 											;
 						
-									fiHasWas = productInfo.hasWasPrice();
+									fiHasWas = productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale();
 									if (fiHasWas) {
 										fiProdBasePrice = JspMethods.currencyFormatter
-											.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
+											.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()); //+"/"+ productInfo.getDefaultPriceUnit().toLowerCase();
 									}
 					%>
 					</fd:FDProductInfo>

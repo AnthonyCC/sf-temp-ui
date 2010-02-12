@@ -20,6 +20,8 @@ import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.AttributeIndex;
 import com.freshdirect.cms.search.LuceneSearchService;
+import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentNodeTree.NodeIterator;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
@@ -80,7 +82,7 @@ public class ContentTreeTest extends TestCase {
         assertEquals("categories list size", 6, categories.size());
         
         SearchResults sr = new SearchResults(products, new ArrayList(), true, "milk");
-        FilteredSearchResults fsr = new FilteredSearchResults("milk", sr, null);
+        FilteredSearchResults fsr = new FilteredSearchResults("milk", sr, null, new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE));
         // sort products by name
         fsr.sortProductsBy(SearchSortType.BY_NAME, false);
         fsr.setFilter(null);

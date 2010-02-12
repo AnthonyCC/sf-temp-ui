@@ -60,7 +60,7 @@ public class YmalYfRecommendationService extends AbstractRecommendationService i
 			return Collections.EMPTY_LIST;
 		
 		ProductModel currentNode = (ProductModel) favorites.get(0);
-		SessionInput i2 = new SessionInput(input.getCustomerId(), input.getCustomerServiceType());
+		SessionInput i2 = new SessionInput(input.getCustomerId(), input.getCustomerServiceType(), input.getPricingContext());
 		i2.setMaxRecommendations(input.getMaxRecommendations());
 		i2.setCartContents(input.getCartContents());
 		i2.setCurrentNode(currentNode);

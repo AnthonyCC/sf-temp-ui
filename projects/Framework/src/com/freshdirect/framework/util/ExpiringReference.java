@@ -33,5 +33,13 @@ public abstract class ExpiringReference<X> {
 	public synchronized void forceRefresh() {
 		lastRefresh = 0;
 	}
-	
+
+	public synchronized void set(X value) {
+		referent = value;
+		lastRefresh = System.currentTimeMillis();
+	}
+
+	protected boolean isExpired() {
+		return System.currentTimeMillis() - lastRefresh > this.refreshPeriod;
+	}
 }

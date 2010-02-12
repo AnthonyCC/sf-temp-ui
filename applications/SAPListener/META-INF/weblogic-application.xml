@@ -46,6 +46,16 @@
         </listener-uri>
     </listener>
 
+
+    <listener>
+        <listener-class>
+            com.freshdirect.dataloader.zoneinfo.WLSSapZoneServer
+        </listener-class>
+        <listener-uri>
+            DataLoaderEJB-WL.jar
+        </listener-uri>
+    </listener>
+
     <listener>
         <listener-class>
             com.freshdirect.fdstore.warmup.WLSWarmup

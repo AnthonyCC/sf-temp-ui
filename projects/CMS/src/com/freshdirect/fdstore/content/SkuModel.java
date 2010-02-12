@@ -17,6 +17,7 @@ import java.util.List;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -25,6 +26,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.OncePerRequestDateCache;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.atp.FDAvailabilityHelper;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.framework.util.DateRange;
@@ -258,7 +260,9 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 			
 			return FDAvailabilityHelper.getFirstAvailableDate(this.availability, days) != null;
 		}
-		
 	}
 
+	public PricingContext getPricingContext() {
+		return new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE);
+	}
 }

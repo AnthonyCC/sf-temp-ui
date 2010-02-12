@@ -1,3 +1,5 @@
+<%@ page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
+<%@ page import ='com.freshdirect.fdstore.customer.*'%>
 <%-- Featured Products column --%>
 <%  
 	String baseURL = "";
@@ -9,6 +11,7 @@
 	}
 
     List favorites = currentFolder instanceof ProductContainer ? ((ProductContainer) currentFolder).getFeaturedProducts() : Collections.EMPTY_LIST;
+    favorites = ProductPricingFactory.getInstance().getPricingAdapter((List<ProductModel>)favorites, user.getPricingContext());
 
     // List validFavorites = new ArrayList();
     List favHTMLPieces = new ArrayList();
@@ -52,17 +55,17 @@
 
         	
        	%><fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"><% 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
+        prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
         
 		
 		//comment out here for DEBUG, just make everything a deal
-		hasWas=productInfo.hasWasPrice();
+		hasWas=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale();
 		//hasWas = true;
 
         if(hasWas) {
-            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
+            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()); //+"/"+ productInfo.getDefaultPriceUnit().toLowerCase();
         }  
-        deal=productInfo.getHighestDealPercentage();
+        deal=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getHighestDealPercentage();
         isDeal=deal>0;
 
 		%></fd:FDProductInfo><%

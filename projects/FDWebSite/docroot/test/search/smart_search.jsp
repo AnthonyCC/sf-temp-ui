@@ -28,6 +28,10 @@
 <%@page import="com.freshdirect.webapp.taglib.test.SnapshotGenerator"%>
 <%@page import="com.freshdirect.smartstore.fdstore.ProductStatisticsProvider"%>
 <%@page import="com.freshdirect.cms.ContentKey.InvalidContentKeyException"%>
+<%@page import="java.io.ByteArrayInputStream"%>
+<%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
+<%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>
 
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='logic' prefix='logic'%>
@@ -41,7 +45,17 @@
 
 	URLGenerator g = new URLGenerator(request);
 
-	String userId = request.getParameter("userID") != null ? request.getParameter("userID") : SnapshotGenerator.getCurrentUserId(session);
+	FDUserI fdUser;
+	String userId = null;
+	if (request.getParameter("userID") != null) {
+		userId = request.getParameter("userID").trim();
+		fdUser = FDCustomerManager.getFDUser(new FDIdentity(userId));
+	} else {
+ 		fdUser = (FDUserI) session.getAttribute(SessionName.USER);
+ 		if (fdUser != null && fdUser.getIdentity() != null) {
+ 			userId = fdUser.getIdentity().getErpCustomerPK();
+ 		}
+ 	}
 	
 	SearchSnapshot snapshot = null;
 	
@@ -56,10 +70,7 @@
 	}
 	
 %>
-
-
-
-<%@page import="java.io.ByteArrayInputStream"%><html>
+<html>
 <head>
 <title>SmartSearch Test Page</title>
 <style>
@@ -190,7 +201,7 @@
 				
 				// Start generating
 				SnapshotGenerator.startGenerating(csvfile != null ? csvfile.getInputStream() : new ByteArrayInputStream(searchTerms.getBytes()), 
-				        snapshotname, userId.trim().length() == 0 ? null : userId);
+				        snapshotname, fdUser);
 			}
 		}
 		if (!uploadError.equals("")) {

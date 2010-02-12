@@ -9,6 +9,15 @@
 package com.freshdirect.common.pricing;
 
 import java.io.Serializable;
+import java.util.Iterator;
+
+import com.freshdirect.customer.ErpZoneMasterInfo;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.ZonePriceInfoModel;
+import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.ZonePriceModel;
 
 /**
  * Aggregates all relevant information for performing pricing.
@@ -18,7 +27,8 @@ import java.io.Serializable;
  */
 public class Pricing implements Serializable {
 
-	private MaterialPrice[] materialPrices;
+	//private MaterialPrice[] materialPrices;
+	private ZonePriceListing zonePriceList;
 	private CharacteristicValuePrice[] cvPrices;
 	private SalesUnitRatio[] salesUnits;
 
@@ -27,8 +37,8 @@ public class Pricing implements Serializable {
 	 * @param cvPrices array of characteristic value pricing conditions
 	 * @param salesUnits array of sales unit ratios
 	 */
-	public Pricing(MaterialPrice[] materialPrices, CharacteristicValuePrice[] cvPrices, SalesUnitRatio[] salesUnits) {
-		this.materialPrices=materialPrices;
+	public Pricing(ZonePriceListing zonePriceList, CharacteristicValuePrice[] cvPrices, SalesUnitRatio[] salesUnits) {
+		this.zonePriceList=zonePriceList;
 		this.cvPrices=cvPrices;
 		this.salesUnits=salesUnits;
 	}
@@ -51,52 +61,6 @@ public class Pricing implements Serializable {
 		return this.salesUnits;
 	}
 		
-	
-	/**
-	 * Get all material pricing conditions.
-	 *
-	 * @return array of MaterialPrice objects
-	 */
-	public MaterialPrice[] getMaterialPrices() {
-		return this.materialPrices;
-	}
-
-	/**
-	 * Get matching pricing condition for pricing unit.
-	 *
-	 * @return null if not found
-	 */
-	public MaterialPrice findMaterialPrice(String pricingUnit) {
-		for (int i=0; i<this.materialPrices.length; i++) {
-			if (pricingUnit.equals( this.materialPrices[i].getPricingUnit() )) {
-				return this.materialPrices[i];
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Get matching pricing condition for scaled quantity.
-	 *
-	 * @param scaleQuantity quantity in scale unit of measure
-	 *
-	 * @return matching condition, or the lowest if no match  
-	 */
-	public MaterialPrice findMaterialPrice(double scaleQuantity) {
-		MaterialPrice lowest = null;
-		double lowestBound = Double.POSITIVE_INFINITY;
-		for (int i = 0; i < this.materialPrices.length; i++) {
-			MaterialPrice mp = this.materialPrices[i];
-			if (mp.isWithinBounds(scaleQuantity)) {
-				return this.materialPrices[i];
-			}
-			if (mp.getScaleLowerBound() < lowestBound) {
-				lowestBound = mp.getScaleLowerBound();
-				lowest = mp;
-			}
-		}
-		return lowest;
-	}
 
 	/**
 	 * Get matching sales unit ratio.
@@ -132,69 +96,20 @@ public class Pricing implements Serializable {
 	}
 	
 	
-	/**
-	 * Determine if scales apply.
-	 * It checks the scaleUnit on first element in the MaterialPrice array.
-	 *
-	 * @return true if scales apply, false if no scales (or there are no mat. pricing conditions)
-	 */
-	public boolean hasScales() {
-		if ( this.materialPrices.length==0 ) {
-			return false;
-		}
-		String scaleUnit = this.materialPrices[0].getScaleUnit();
-		return ( "".equals(scaleUnit) ? false : true );
-	}
-	
-	/**
-	 * Determine scale unit of measure (applicable only if hasScales()==true).
-	 *
-	 * @return scale unit of measure
-	 */
-	public String getScaleUnit() {
-		return this.materialPrices[0].getScaleUnit();
-	}
 
-	public String[] getScaleDisplay() {
-		String[] scales = new String[ this.materialPrices.length-1 ];
-		for (int i=0; i<scales.length; i++) {
-			scales[i] = this.materialPrices[i+1].getScaleDisplay();
-		}
-		return scales;
-	}
-	
-	public String[] getScaleDisplay(double savingsPercentage) {
-		String[] scales = new String[ this.materialPrices.length-1 ];
-		for (int i=0; i<scales.length; i++) {
-			scales[i] = this.materialPrices[i+1].getScaleDisplay(savingsPercentage);
-		}
-		return scales;
-	}
-
-	public int[] getScalePercentage(double basePrice) {
-		int[] percents = new int[ this.materialPrices.length-1 ];
-		for (int i=0; i<percents.length; i++) {
-			percents[i] = this.materialPrices[i+1].getScalePercentage(basePrice);
-		}
-		return percents;
-	}
-	
-	public String[] getWineScaleDisplay(boolean isBreakRequired) {
-		String[] scales = new String[ this.materialPrices.length-1 ];
-		for (int i=0; i<scales.length; i++) {
-			scales[i] = this.materialPrices[i+1].getWineScaleDisplay(isBreakRequired);
-		}
-		return scales;
-	}
-	
-	
 	public String toString() {
 		StringBuffer buf=new StringBuffer("Pricing[");
 		for (int i=0; i<salesUnits.length; i++) {
 			buf.append("\n\t").append(salesUnits[i].toString());
 		}
-		for (int i=0; i<materialPrices.length; i++) {
-			buf.append("\n\t").append(materialPrices[i].toString());
+		Iterator<ZonePriceModel> it = zonePriceList.getZonePrices().iterator();
+		while(it.hasNext()){
+			ZonePriceModel zpModel = (ZonePriceModel) it.next();
+			buf.append("\n\t").append("Zone ID:").append(zpModel.getSapZoneId());;
+			MaterialPrice[] materialPrices = zpModel.getMaterialPrices();
+			for (int i=0; i<materialPrices.length; i++) {
+				buf.append("\n\t").append(materialPrices[i].toString());
+			}
 		}
 		for (int i=0; i<cvPrices.length; i++) {
 			buf.append("\n\t").append(cvPrices[i].toString());
@@ -203,27 +118,25 @@ public class Pricing implements Serializable {
 		return buf.toString();
 	}
 
-	public double getMinPrice() {
-		if (materialPrices.length == 0)
-			return Double.NaN;
 
-		double p = materialPrices[0].getPrice();
-		for (int i=1; i<materialPrices.length; ++i) {
-			p = Math.min(p, materialPrices[i].getPrice());
+	
+	public ZonePriceModel getZonePrice(String pZoneId) {
+		try {
+			ZonePriceModel zpModel = this.zonePriceList.getZonePrice(pZoneId);
+			if(zpModel == null) {
+				//do a item cascading to its parent until we find a price info.
+				ErpZoneMasterInfo zoneInfo = FDCachedFactory.getZoneInfo(pZoneId);
+				zpModel = getZonePrice(zoneInfo.getParentZone().getSapId());
+			}
+			return zpModel;
+		}
+		catch(FDResourceException fe){
+			throw new FDRuntimeException(fe, "Unexcepted error happened while fetching the Zone Price Model");
 		}
 
-		return p;
 	}
-
-	public double getMaxUnitPrice() {
-		if (materialPrices.length == 0)
-			return Double.NaN;
-
-		double p = materialPrices[0].getPrice();
-		for (int i=1; i<materialPrices.length; ++i) {
-			p = Math.max(p, materialPrices[i].getPrice());
-		}
-
-		return p;
+	
+	public ZonePriceListing getZonePriceList(){
+		return this.zonePriceList;
 	}
 }

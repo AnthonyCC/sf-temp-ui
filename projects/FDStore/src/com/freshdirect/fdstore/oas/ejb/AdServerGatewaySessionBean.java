@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.oas.ejb;
 
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -15,8 +16,12 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.ZonePromoDiscount;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -53,7 +58,7 @@ public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 		SkuModel sku = prod.getDefaultSku();
 		//if default sku is null we dont care about pricing
 		if(sku == null){
-			results.add(new AdServerRow(prod.getContentName(), false, null));
+			results.add(new AdServerRow(prod.getContentName(), false, null, null, null));
 		} else {
 			evaluatePrices(prod, sku);
 		}
@@ -63,12 +68,33 @@ public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 
 	private void evaluatePrices(ProductModel prod, SkuModel sku) {
 		try {
-			MaterialPrice[] prices = sku.getProduct().getPricing().getMaterialPrices();
+			//@TODO Start pushing prices for every available zone. Temporarily passing master default prices alone.
+//			MaterialPrice[] prices = sku.getProduct().getPricing().getZonePrice(ZonePriceListing.MASTER_DEFAULT_ZONE).getMaterialPrices();
+//			for (int i=0; i<prices.length; i++) {
+//				MaterialPrice mp = prices[i];
+//				String price = mp.getScaleLowerBound() + "@" + mp.getPrice();
+//				results.add(new AdServerRow(prod.getContentName(), !prod.isUnavailable(), price));
+//			}
+			ZonePriceListing zonePriceList = sku.getProduct().getPricing().getZonePriceList();
+			if(null != zonePriceList){ 
+				Collection zonePrices = zonePriceList.getZonePrices();
+				if(zonePrices!= null && zonePrices.size() > 0){
+					for (Iterator iterator = zonePrices.iterator(); iterator.hasNext();) {
+						ZonePriceModel zonePriceModel = (ZonePriceModel) iterator.next();
+						MaterialPrice[] prices = sku.getProduct().getPricing().getZonePrice(zonePriceModel.getSapZoneId()).getMaterialPrices();						
+						for (int i=0; i<prices.length; i++) {
+							MaterialPrice mp = prices[i];
+							String price = mp.getScaleLowerBound() + "@" + mp.getPrice();
+							if(!FDStoreProperties.isZonePricingEnabled()){
+								if("M".equalsIgnoreCase(getZoneType(zonePriceModel.getSapZoneId())))
+								results.add(new AdServerRow(prod.getContentName(), !prod.isUnavailable(), price, zonePriceModel.getSapZoneId(), getZoneType(zonePriceModel.getSapZoneId())));
+							}else{
+								results.add(new AdServerRow(prod.getContentName(), !prod.isUnavailable(), price, zonePriceModel.getSapZoneId(), getZoneType(zonePriceModel.getSapZoneId())));
+							}
+						}
+					}
+				}
 			
-			for (int i=0; i<prices.length; i++) {
-				MaterialPrice mp = prices[i];
-				String price = mp.getScaleLowerBound() + "@" + mp.getPrice();
-				results.add(new AdServerRow(prod.getContentName(), !prod.isUnavailable(), price));
 			}
 		} catch (FDResourceException e) {
 			throw new RuntimeException(e);
@@ -76,6 +102,20 @@ public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 			//keep going if this happens
 			e.printStackTrace();
 		}
+	}
+
+	private String getZoneType(String sapZoneId) {
+		String zoneType = null;
+		if(null != sapZoneId){
+			if(ZonePriceListing.MASTER_DEFAULT_ZONE.equalsIgnoreCase(sapZoneId)){
+				zoneType="M";
+			}else if(ZonePriceListing.RESIDENTIAL_DEFAULT_ZONE.equalsIgnoreCase(sapZoneId)||ZonePriceListing.CORPORATE_DEFAULT_ZONE.equalsIgnoreCase(sapZoneId)){
+				zoneType="S";
+			}else{
+				zoneType="C";
+			}
+		}
+		return zoneType;
 	}
 
 	private void enqueue(HashSet results) {

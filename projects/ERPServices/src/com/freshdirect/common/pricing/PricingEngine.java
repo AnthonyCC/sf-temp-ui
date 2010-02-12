@@ -79,12 +79,12 @@ public class PricingEngine {
 	 *
 	 * @throws PricingException
 	 */
-	public static ConfiguredPrice getConfiguredPrice(Pricing pricing, FDConfigurableI configuration) throws PricingException {
+	public static ConfiguredPrice getConfiguredPrice(Pricing pricing, FDConfigurableI configuration, PricingContext pCtx) throws PricingException {
 
 		if (DEBUG) LOGGER.debug("getConfiguredPrice got " + configuration);
 
 		// calculate base price
-		ConfiguredPrice basePrice = calculateMaterialPrice(pricing, configuration);
+		ConfiguredPrice basePrice = calculateMaterialPrice(pricing, configuration, pCtx.getZoneId());
 		if (DEBUG) LOGGER.debug("getConfiguredPrice basePrice: "+basePrice);
 
 		// calculate characteristic value prices
@@ -95,14 +95,14 @@ public class PricingEngine {
 		return new ConfiguredPrice(pr, basePrice.getPricingCondition());
 	}
 
-
+	/*
 	public static Pricing getCompositePricing(double compositePrice) {
 		MaterialPrice matPrices[] = { new MaterialPrice(compositePrice, "EA") };
 		CharacteristicValuePrice[] cvPrices = new CharacteristicValuePrice[0];
 		SalesUnitRatio[] suRatios = new SalesUnitRatio[0];
 		return new Pricing(matPrices, cvPrices, suRatios);
 	}
-
+	*/
 	/**
 	 * Calculate material price.
 	 *
@@ -110,13 +110,13 @@ public class PricingEngine {
 	 *
 	 * @throws PricingException
 	 */
-	private static ConfiguredPrice calculateMaterialPrice(Pricing pricing, FDConfigurableI configuration) throws PricingException {
+	private static ConfiguredPrice calculateMaterialPrice(Pricing pricing, FDConfigurableI configuration, String pZoneId) throws PricingException {
 		// calculate price
-		if (pricing.hasScales()) {
-			return calculateScalePrice(pricing, configuration);
+		if (pricing.getZonePrice(pZoneId).hasScales()) {
+			return calculateScalePrice(pricing, configuration, pZoneId);
 		
 		} else {
-			return calculateSimplePrice(pricing, configuration);
+			return calculateSimplePrice(pricing, configuration, pZoneId);
 		}
 	}
 
@@ -127,13 +127,13 @@ public class PricingEngine {
 	 *
 	 * @throws PricingException
 	 */
-	private static ConfiguredPrice calculateScalePrice(Pricing pricing, FDConfigurableI configuration) throws PricingException {
+	private static ConfiguredPrice calculateScalePrice(Pricing pricing, FDConfigurableI configuration, String pZoneId) throws PricingException {
 		
 		double quantity = configuration.getQuantity();
 		String salesUnit = configuration.getSalesUnit();
 		
 		// pricing with scales
-		String scaleUnit = pricing.getScaleUnit();
+		String scaleUnit = pricing.getZonePrice(pZoneId).getScaleUnit();
 		double scaledQuantity;
 		if ( !salesUnit.equals(scaleUnit) ) {
 			// different UOMs, perform conversion
@@ -157,7 +157,7 @@ public class PricingEngine {
 		if (DEBUG) LOGGER.debug("Scale pricing - scaledQuantity "+scaledQuantity+" "+scaleUnit);
 
 		// find pricing condition for quantity (in scaleUnit)
-		MaterialPrice materialPrice = pricing.findMaterialPrice(scaledQuantity);
+		MaterialPrice materialPrice = pricing.getZonePrice(pZoneId).findMaterialPrice(scaledQuantity);
 	
 		double pricingQuantity;
 		if ( !salesUnit.equals(materialPrice.getPricingUnit()) ) {
@@ -183,13 +183,13 @@ public class PricingEngine {
 	 * @return material price
 	 * @throws PricingException
 	 */
-	private static ConfiguredPrice calculateSimplePrice(Pricing pricing, FDConfigurableI configuration) throws PricingException {
+	private static ConfiguredPrice calculateSimplePrice(Pricing pricing, FDConfigurableI configuration, String pZoneId) throws PricingException {
 
 		double quantity = configuration.getQuantity();
 		String salesUnit = configuration.getSalesUnit();
 
 		// regular pricing
-		MaterialPrice materialPrice = pricing.findMaterialPrice(salesUnit);
+		MaterialPrice materialPrice = pricing.getZonePrice(pZoneId).findMaterialPrice(salesUnit);
 		if (materialPrice==null) {
 			// not found, we need a ratio
 			SalesUnitRatio ratio = pricing.findSalesUnitRatio(salesUnit);
@@ -198,7 +198,7 @@ public class PricingEngine {
 			}
 
 			// find pricing condition by pricing unit
-			materialPrice = pricing.findMaterialPrice( ratio.getSalesUnit() );
+			materialPrice = pricing.getZonePrice(pZoneId).findMaterialPrice( ratio.getSalesUnit() );
 			if (materialPrice == null) {
 				throw new PricingException("No materialPrice found for "+ratio.getSalesUnit());
 			}

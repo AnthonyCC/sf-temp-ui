@@ -52,7 +52,7 @@
             sku = (SkuModel) Collections.min(skus, priceComp);
         }
 %>      <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"> <% 
-        	prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) +"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+        	prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) +"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %>      </fd:FDProductInfo> <%
         String productPageLink_ = response.encodeURL("/product.jsp?catId=" + prodParent
             +"&prodCatId="+prodParent

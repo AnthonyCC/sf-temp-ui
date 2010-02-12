@@ -13,6 +13,7 @@ import java.util.Map;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -57,9 +58,10 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     
     // produce rating
     
-    private EnumOrderLineRating produceRating=null; 
+    private EnumOrderLineRating produceRating=null;
+    
 
-    /**
+	/**
      *  The ID of the category shown when this product was displayed as a YMAL
      *  when added to the cart. Optional property.
      */
@@ -97,6 +99,10 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
      */ 
     
     private String savingsId;
+    
+    //Added for Zone Pricing
+    private PricingContext pricingCtx;
+    private String pricingZoneId;
     
     public String getSavingsId() {
 		return savingsId;
@@ -276,6 +282,23 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     			return this.getPrice();
     	return this.getPrice() + this.getDiscountAmount();
     }
+
+	public PricingContext getPricingContext() {
+		return pricingCtx;
+	}
+
+	public void setPricingContext(PricingContext pricingCtx) {
+		this.pricingCtx = pricingCtx;
+	}
+	
+    public String getPricingZoneId() {
+		return pricingZoneId;
+	}
+
+	public void setPricingZoneId(String pricingZoneId) {
+		this.pricingZoneId = pricingZoneId;
+	}
+
 }
 
 

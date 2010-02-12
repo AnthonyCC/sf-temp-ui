@@ -59,7 +59,7 @@ public void produceBrandsAndTypes(Set brands, List typesList, Collection sortedC
 <%
 
 //********** Start of Stuff to let JSPF's become JSP's **************
-
+FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId"); 
 boolean isDepartment = false;
@@ -152,7 +152,7 @@ if (currentCategory != null) {
 			<tr valign="bottom">
 <logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 		ProductModel productNode = contentNode;
-		ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode, recommendations.getVariant().getHideBursts());
+		ProductLabeling pl = new ProductLabeling(user, productNode, recommendations.getVariant().getHideBursts());
 
 	String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %><%-- display a product --%>
@@ -169,16 +169,16 @@ if (currentCategory != null) {
 		ord=1;
 	%><logic:iterate id='contentNode' collection="<%=products%>" type="com.freshdirect.fdstore.content.ProductModel"><%
 		ProductModel productNode = contentNode;
-			ProductLabeling pl = new ProductLabeling((FDUserI) session.getAttribute(SessionName.USER), productNode, recommendations.getVariant().getHideBursts());
+			ProductLabeling pl = new ProductLabeling(user, productNode, recommendations.getVariant().getHideBursts());
 			String fiProdPrice = null;
 			String fiProdBasePrice=null;
 			boolean fiIsDeal=false;	// is deal?
 	%><fd:FDProductInfo id="productInfo" skuCode="<%=productNode.getDefaultSku().getSkuCode()%>"><%
-		fiProdPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) /** +"/"+productInfo.getDisplayableDefaultPriceUnit().toLowerCase() **/;
+		fiProdPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) /** +"/"+productInfo.getDisplayableDefaultPriceUnit().toLowerCase() **/;
 			
-			fiIsDeal=productInfo.hasWasPrice();
+			fiIsDeal=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale();
 			if (fiIsDeal) {
-		fiProdBasePrice	= JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
+		fiProdBasePrice	= JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()); //+"/"+ productInfo.getDefaultPriceUnit().toLowerCase();
 			}
 	%></fd:FDProductInfo><%
 String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));

@@ -1,7 +1,11 @@
+<%@ page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
+<%@ page import ='com.freshdirect.fdstore.customer.*'%>
 <%-- Featured Products column --%>
 <%  
+    FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER); 
+
 	List favorites = currentFolder instanceof ProductContainer ? ((ProductContainer) currentFolder).getFeaturedProducts() : Collections.EMPTY_LIST;
-	
+	favorites = ProductPricingFactory.getInstance().getPricingAdapter((List<ProductModel>)favorites, yser.getPricingContext());
     // List validFavorites = new ArrayList();
     List favHTMLPieces = new ArrayList();
     List favHTMLPieceLinks = new ArrayList();
@@ -24,7 +28,7 @@
 		ContentNodeModel prodParent = product.getParentNode(); 
         List skus = product.getSkus();
 
-        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel) || skus.size()==0) // || !(product.hasWasPrice())
+        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel) || skus.size()==0) // || !(product.getZonePriceInfo(yser.getPricingContext().getZoneId()).isItemOnSale())
         	continue;
 
         // validFavorites.add(product);	
@@ -46,12 +50,12 @@
 
         	
        	%><fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"><% 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
-        hasWas=productInfo.hasWasPrice();
+        prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(yser.getPricingContext().getZoneId()).getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
+        hasWas=productInfo.getZonePriceInfo(yser.getPricingContext().getZoneId()).isItemOnSale();
         if(hasWas) {
-            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
+            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(yser.getPricingContext().getZoneId()).getSellingPrice()); //+"/"+ productInfo.getDefaultPriceUnit().toLowerCase();
         }  
-        deal=productInfo.getHighestDealPercentage();
+        deal=productInfo.getZonePriceInfo(yser.getPricingContext().getZoneId()).getHighestDealPercentage();
         isDeal=deal>0;
         
 		%></fd:FDProductInfo><%

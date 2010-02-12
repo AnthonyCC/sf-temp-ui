@@ -1,18 +1,23 @@
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
-<%@ page import='com.freshdirect.fdstore.content.util.*'  %><%@ page import='com.freshdirect.fdstore.*, com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.fdstore.content.util.*'  %>
+<%@ page import='com.freshdirect.fdstore.*, com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@page import="com.freshdirect.fdstore.util.HowToCookItUtil"%>
 <%@page import="com.freshdirect.fdstore.util.RatingUtil"%>
+<%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='bean' prefix='bean' %>
+
 <fd:CheckLoginStatus />
 <%! 
     java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
 <% 
+FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId");
 String productId = request.getParameter("productId");
@@ -290,7 +295,7 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <% 
-        prodPrice = currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+        prodPrice = currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %>                      
         </fd:FDProductInfo>
 <%

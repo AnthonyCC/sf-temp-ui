@@ -84,7 +84,7 @@ public class FDFavoritesTest extends TestCase {
 
         assertNotNull("spe_cooki_cooki category", favorites);
 
-        SessionInput si = new SessionInput((String) null, null);
+        SessionInput si = new SessionInput((String) null, null, null);
 
         List nodes = getFeaturedItemsService().recommendNodes(si);
         assertNotNull("recommended nodes", nodes);

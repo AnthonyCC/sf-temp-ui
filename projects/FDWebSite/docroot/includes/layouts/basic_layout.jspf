@@ -47,7 +47,7 @@ extractable specs table/td width, #cols
 
 		<fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 		<% 
-			productPrice = "<b>"+currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase()+"</b>";
+			productPrice = "<b>"+currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase()+"</b>";
 		%>						
 		</fd:FDProductInfo>
 		<% 

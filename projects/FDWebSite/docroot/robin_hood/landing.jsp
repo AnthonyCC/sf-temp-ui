@@ -82,7 +82,7 @@
 									} 
 									qty = Math.floor( (qty-1.0)/1.0 )*1.0  + 1.0;
 									document.rh_form.quantity.value = qty;
-									document.rh_form.total_price.value = formatCurrency(qty * <%=productInfo.getDefaultPrice()%>);
+									document.rh_form.total_price.value = formatCurrency(qty * <%=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()%>);
 								}
 							</script>
 						<table border="0" cellspacing="0" cellpadding="2" width="450">
@@ -111,7 +111,7 @@
 								<td>
 									<table align="right">
 									<tr>
-										<td  align="right"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %>	</td>
+										<td  align="right"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.currencyFormatter.format( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %>	</td>
 									</tr>
 									</table>
 								</td>
@@ -122,7 +122,7 @@
 								<% if(null !=cartLine && !cartLine.getOrderedQuantity().equals("0")){ %>
 								<td align="right"><input type="text" id="total_price" name="total_price" class="text11" size="8" value="<%= JspMethods.currencyFormatter.format( cartLine.getFixedPrice() ) %>"/></td>
 								<%} else{ %>
-								<td align="right"><input type="text" id="total_price" name="total_price" class="text11" size="8" value="<%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>"/></td>
+								<td align="right"><input type="text" id="total_price" name="total_price" class="text11" size="8" value="<%= JspMethods.currencyFormatter.format( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice() ) %>"/></td>
 								<%} %>
 								
 							</tr>

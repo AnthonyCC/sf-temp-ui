@@ -127,6 +127,10 @@ public class ErpServicesProperties {
     private final static String PROP_CLICKTHROUGHS_ENTRY_LIMIT = "clickthroughs.entry.limit";
     private final static String PROP_CLICKTHROUGHS_FLUSH_SECONDS = "clickthroughs.flush.seconds";
     
+    private final static String PROP_DEFAULT_ZONE_ID="zone.default.zoneId";
+    
+    private final static String PROP_MASTER_DEFAULT_ZONE_ID = "zone.master_default.zoneId";
+    
 	private final static Properties config;
 
 	private final static String PROP_PROMOTION_RT_SIZE_LIMIT = "promotion.rt.size.limit";
@@ -147,9 +151,10 @@ public class ErpServicesProperties {
 	
 	private final static String PROP_FUNCTION_TRUCKINFO = "sap.function.truckinfo";
 	
-	private final static String PROP_FUNCTION_COOLINFO = "sap.function.coolinfo";
-
+	private final static String PROP_FUNCTION_ZONEINFO = "sap.function.zoneinfo";
 	
+	private final static String PROP_FUNCTION_COOLINFO = "sap.function.coolinfo";
+			
 	private final static String PROP_FD_GIVEX_TOKEN  = "payment.givex.fd.tokenId";
 	private final static String PROP_FD_GIVEX_USER  = "payment.givex.fd.user";
 	private final static String PROP_FD_GIVEX_USER_PASSWD  = "payment.givex.fd.user.passwd";
@@ -272,6 +277,7 @@ public class ErpServicesProperties {
 		
 		defaults.put(PROP_FUNCTION_ROUTEINFO, "ZBAPI_ROUTE_INFO");
 		defaults.put(PROP_FUNCTION_TRUCKINFO, "ZBAPI_TRUCK_INFO");
+		defaults.put(PROP_FUNCTION_TRUCKINFO, "ZBAPI_ZONE_INFO");
 		
 		defaults.put(PROP_FUNCTION_COOLINFO, "ZSDI_COUNTRY_ORIGIN");
 		
@@ -289,11 +295,15 @@ public class ErpServicesProperties {
 		defaults.put(PROP_GIFT_CARD_ORDER_COUNT, "3");
 		defaults.put(PROP_REGISTER_CRON_QUEUE, "false");
 		defaults.put(PROP_PRE_AUTHORIZE, "true");
+
+		defaults.put(PROP_DEFAULT_ZONE_ID, "0000100000,0000100001,0000100002");
+		defaults.put(PROP_MASTER_DEFAULT_ZONE_ID, "0000100000");
+		
+		
 		defaults.put(PROP_AVS_ERROR_ORDER_COUNT, "5");
 		defaults.put(PROP_SIGNUP_PROMO_DUPLICATE_ADDR_DELV_DAYS, "180");
 		defaults.put(PROP_AVS_ADDRESS_CHECK, "false");
 		
-
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
 	}
@@ -644,6 +654,12 @@ public class ErpServicesProperties {
 		return config.getProperty(PROP_FUNCTION_TRUCKINFO);
 	}
 	
+	
+	public static String getZoneInfoFunctionName() {
+		return config.getProperty(PROP_FUNCTION_ZONEINFO);
+	}
+
+	
 	public static String getCOOLManagerHome() {
 		return config.getProperty(PROP_COOL_MANAGER_HOME);
 	}
@@ -700,6 +716,15 @@ public class ErpServicesProperties {
 		
 	public static int getAvsErrorOrderCountLimit() {
 		return Integer.parseInt(config.getProperty(PROP_AVS_ERROR_ORDER_COUNT));
+	}
+	
+	public static String getDefaultSAPZoneId() {
+		return config.getProperty(PROP_DEFAULT_ZONE_ID);
+	}
+	
+	
+	public static String getMasterDefaultZoneId(){
+		return config.getProperty(PROP_MASTER_DEFAULT_ZONE_ID);
 	}
 	
 	public static int getSignupPromoDeliveryDaysLimit(){

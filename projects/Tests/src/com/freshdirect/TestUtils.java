@@ -28,11 +28,15 @@ import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerEntityBean;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
+import com.freshdirect.erp.ejb.ErpZoneInfoHome;
+import com.freshdirect.erp.ejb.ErpZoneInfoSB;
+import com.freshdirect.erp.ejb.ErpZoneInfoSessionBean;
 import com.freshdirect.event.ejb.EventLoggerHome;
 import com.freshdirect.event.ejb.EventLoggerSB;
 import com.freshdirect.event.ejb.EventLoggerSessionBean;
@@ -110,6 +114,10 @@ public class TestUtils {
             }
         };
         user.setIdentity(new FDIdentity(erpCustomerId, fdCustomerId));
+    	//Set dummy pricing context for zone pricing.
+    	//user.setZipCode("11101");
+    	//user.setSelectedServiceType(EnumServiceType.HOME);
+        user.createDummyPricingContext();
         return user;
     }
 
@@ -157,6 +165,13 @@ public class TestUtils {
                 DlvManagerSessionBean.class);
         container.deploy(dlvAdminDesc);
         
+        //Added for zone pricing.
+        SessionBeanDescriptor zoneInfoDesc = new SessionBeanDescriptor("freshdirect.erp.ZoneInfoManager", ErpZoneInfoHome.class, ErpZoneInfoSB.class,
+                ErpZoneInfoSessionBean.class);
+        container.deploy(zoneInfoDesc);
+        
+        
+
         return container;
     }
 

@@ -6,9 +6,9 @@
 	String[] scales = null;
 
 	if ( isWineLayout ) {
-		scales = product.getPricing().getWineScaleDisplay(true);
+		scales = product.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getWineScaleDisplay(true);
 	} else {
-		scales = product.getPricing().getScaleDisplay();
+		scales = product.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getScaleDisplay();
 	}
 	
 	if ( scales.length > 0 ) {

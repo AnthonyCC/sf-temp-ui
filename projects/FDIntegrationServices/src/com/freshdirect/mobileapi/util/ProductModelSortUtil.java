@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.util;
 import java.util.Comparator;
 import java.util.List;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.CategoryNodeTree;
 import com.freshdirect.fdstore.content.FilteredSearchResults;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -51,12 +52,12 @@ public class ProductModelSortUtil extends SortUtil<ProductModel> {
         }
     }
 
-    public ProductModelSortUtil(List<ProductModel> targetList, SortType sortType, CategoryNodeTree nodeTree) {
+    public ProductModelSortUtil(List<ProductModel> targetList, SortType sortType, CategoryNodeTree nodeTree, PricingContext pricingContext) {
         super(targetList);
 
         SearchResults originalSearchResults = new SearchResults(targetList, null, false, "");
 
-        FilteredSearchResults filterResults = new FilteredSearchResults("", originalSearchResults, null);
+        FilteredSearchResults filterResults = new FilteredSearchResults("", originalSearchResults, null, pricingContext);
         SearchSortType sortMode = null;
         switch (sortType) {
         case RELEVANCY:

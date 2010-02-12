@@ -5,12 +5,16 @@ public class BasePriceInfo implements java.io.Serializable {
 	private String materialID;
 	private double price;
 	private String unit;
+	private String zoneId;
 	
-	public BasePriceInfo(String materialID, double price, String unit) {
+	
+
+	public BasePriceInfo(String materialID, double price, String unit, String zoneId) {
 		
 		this.materialID = materialID;
 		this.price = price;
 		this.unit = unit;
+		this.zoneId = zoneId;
 	}
 	
 
@@ -33,11 +37,19 @@ public class BasePriceInfo implements java.io.Serializable {
 		this.unit = unit;
 	}
 	
+	public String getZoneId() {
+		return zoneId;
+	}
+
+	public void setZoneId(String zoneId) {
+		this.zoneId = zoneId;
+	}
+	
 	public int hashCode() {
 		
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + ((materialID == null) ? 0 : materialID.hashCode());
+		result = PRIME * result + ((materialID == null && zoneId == null) ? 0 : materialID.hashCode()+zoneId.hashCode());
 		long temp;
 		temp = Double.doubleToLongBits(price);
 		result = PRIME * result + (int) (temp ^ (temp >>> 32));
@@ -54,18 +66,20 @@ public class BasePriceInfo implements java.io.Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		final BasePriceInfo other = (BasePriceInfo) obj;
-		if (materialID == null) {
-			if (other.materialID != null)
+		if (materialID == null || zoneId == null) {
+			if (other.materialID != null || other.zoneId != null)
 				return false;
-		} else if (!materialID.equals(other.materialID))
+		} else if (!materialID.equals(other.materialID) || !zoneId.equals(other.zoneId))
 			return false;
 		if (Double.doubleToLongBits(price) != Double.doubleToLongBits(other.price))
 			return false;
 		if (unit == null) {
 			if (other.unit != null)
 				return false;
-		} else if (!unit.equals(other.unit))
+		} else if (!unit.equals(other.unit)){
 			return false;
+		}
+		
 		return true;
 	}
 	

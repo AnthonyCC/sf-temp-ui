@@ -9,6 +9,7 @@
 package com.freshdirect.fdstore.warmup;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -20,10 +21,12 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDInventoryCache;
 import com.freshdirect.fdstore.FDNutritionCache;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -31,6 +34,7 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentSearch;
+import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
 import com.freshdirect.smartstore.service.SearchScoringRegistry;
@@ -86,9 +90,9 @@ public class Warmup {
 		new Thread() {
 			public void run() {
 				try {
-					// Warmup
+					// Warmup					
+					warmupZones();
 					warmupProducts();
-					
 					warmupProductNewness();
 					
 					if (FDStoreProperties.isPreloadSmartStore()) {
@@ -117,14 +121,23 @@ public class Warmup {
 	private void warmupSmartCategories() {
 		Set<ContentKey> categories = CmsManager.getInstance().getContentKeysByType(ContentType.get("Category"));
 		LOGGER.info("found " + categories.size() + " categories");
-		for (ContentKey catKey : categories) {
-			ContentNodeModel node = contentFactory.getContentNodeByKey(catKey);
-			if (node instanceof CategoryModel) {
-				CategoryModel category = (CategoryModel) node;
-				if (category.getRecommender() != null)
-					LOGGER.info("category " + category.getContentName() + " is smart, pre-loading child products");
-					category.getProducts();
+		try {
+			Collection<String> zones = FDZoneInfoManager.loadAllZoneInfoMaster();
+			for (ContentKey catKey : categories) {
+				ContentNodeModel node = contentFactory.getContentNodeByKey(catKey);
+				if (node instanceof CategoryModel) {
+					CategoryModel category = (CategoryModel) node;
+					if (category.getRecommender() != null) {
+						LOGGER.info("category " + category.getContentName() + " is smart, pre-loading child products for " + zones.size() + " zones");
+						for (String zone : zones) {
+							contentFactory.setCurrentPricingContext(new PricingContext(zone));
+							category.getProducts();
+						}
+					}
+				}
 			}
+		} catch (FDResourceException e) {
+			LOGGER.error("cannot load zones for Smart Categories", e);
 		}
 	}
 
@@ -132,7 +145,8 @@ public class Warmup {
 		LOGGER.info("Loading lightweight product data");
 
 		final List prodInfos = new ArrayList(FDCachedFactory.getProductInfos((String[]) this.skuCodes.toArray(new String[0])));
-		
+		//Filter discontinued Products
+		filterDiscontinuedProducts(prodInfos);
 		LOGGER.info("Lightweight product data loaded");
 
 		LOGGER.info("Loading heavyweight product data in " + MAX_THREADS + " threads");
@@ -169,6 +183,25 @@ public class Warmup {
 			t.start();
 		}
 	}
+	
+	private void filterDiscontinuedProducts(List prodInfos) {
+		for(Iterator it=prodInfos.iterator(); it.hasNext();){
+			FDProductInfo prodInfo = (FDProductInfo) it.next();
+			if(prodInfo.isDiscontinued()){
+				it.remove();
+			}
+		}
+	}
+	
+	private void warmupZones() throws FDResourceException {
+		LOGGER.info("Loading zone data");
+		Collection zoneInfoList=FDZoneInfoManager.loadAllZoneInfoMaster();	
+		final List zoneInfos = new ArrayList(FDCachedFactory.getZoneInfos((String[]) zoneInfoList.toArray(new String[0])));
+		
+		LOGGER.info("Lightweight zone data loaded size is :"+zoneInfos.size());
+
+	}
+	
 
 	private void warmupProductNewness() throws FDResourceException {
 		// initiating the asynchronous load of new and reintroduced products cache

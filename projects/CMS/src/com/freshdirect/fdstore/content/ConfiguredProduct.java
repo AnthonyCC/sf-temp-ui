@@ -11,6 +11,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.customer.ejb.ErpOrderLineUtil;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -21,6 +22,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DateUtil;
 
@@ -382,6 +384,11 @@ public class ConfiguredProduct extends ProxyProduct {
 	public int getExpertWeight() {
 		return getProduct().getExpertWeight();
 	}
+	
+	@Override
+	public PricingContext getPricingContext(){
+		return new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE);
+	}
 
     @Override
     public ProductModel getPrimaryProductModel() {
@@ -397,6 +404,7 @@ public class ConfiguredProduct extends ProxyProduct {
     public boolean isInPrimaryHome() {
         return true;
     }
+
 
 
 }

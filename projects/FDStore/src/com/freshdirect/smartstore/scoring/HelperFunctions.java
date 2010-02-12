@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -491,11 +492,12 @@ public class HelperFunctions {
     public static List getTopN(List nodes, String factorName, int n,
     		SessionInput input, final DataAccess dataAccess) {
     	String userId = input.getCustomerId();
+    	PricingContext pricingCtx = input.getPricingContext();
     	String[] variables = { factorName };
     	OrderingFunction of = new OrderingFunction();
     	for (Object node : nodes) {
     		ContentNodeModel model = (ContentNodeModel) node;
-    		of.addScore(model, dataAccess.getVariables(userId, model, variables));
+    		of.addScore(model, dataAccess.getVariables(userId, pricingCtx, model, variables));
     	}
     	List results = new ArrayList(n);
     	List ranked = of.getRankedContents();

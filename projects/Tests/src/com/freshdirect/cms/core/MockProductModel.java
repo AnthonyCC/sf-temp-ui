@@ -12,6 +12,7 @@ import java.util.Set;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -26,6 +27,7 @@ import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.EnumTemplateType;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -509,6 +511,15 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     public SkuModel getPreferredSku() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.freshdirect.fdstore.content.ProductModel#getPrice(double)
+     */
+    @Override
+    public double getPrice(double savingsPercentage) {
+    	// TODO Auto-generated method stub
+    	return 0.;
     }
 
     /* (non-Javadoc)
@@ -1619,4 +1630,37 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public PricingContext getPricingContext() {
+		return null;
+	}
+	
+	@Override
+	public SkuModel getDefaultSku(PricingContext ctx) {
+	    return null;
+	}
+
+    @Override
+    public SkuModel getValidSkuCode(PricingContext ctx, String skuCode) {
+        if (skuCode != null && skuModels != null) {
+            for (SkuModel s : skuModels) {
+                if (skuCode.equals(s.getSkuCode())) {
+                    return s;
+                }
+            }
+        }
+        return getDefaultSku(ctx);
+    }
+    
+    
+    @Override
+    public PriceCalculator getPriceCalculator() {
+        return new PriceCalculator(getPricingContext(), this, getDefaultSku());
+    }
+    
+    
+    @Override
+    public PriceCalculator getPriceCalculator(String skuCode) {
+        return new PriceCalculator(getPricingContext(), this, getValidSkuCode(getPricingContext(), skuCode));
+    }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -123,6 +124,11 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 
 	public SkuModel getDefaultSku() {
 		return getProduct().getDefaultSku();
+	}
+	
+	@Override
+	public SkuModel getDefaultSku(PricingContext ctx) {
+	    return getProduct().getDefaultSku(ctx);
 	}
 
 	public Set getCommonNutritionInfo(ErpNutritionInfoType type) throws FDResourceException {
@@ -663,5 +669,10 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
     @Override
     public String getDefaultSkuCode() {
         return getProduct().getDefaultSkuCode();
+    }
+
+    @Override
+    public String getPriceFormatted(double savingsPercentage, String skuCode) {
+        return getProduct().getPriceFormatted(savingsPercentage, skuCode);
     }
 }

@@ -415,6 +415,31 @@
 		<jndi-name>freshdirect.smartstore.OfflineRecommender</jndi-name>
 	</weblogic-enterprise-bean>
 	
+    	<weblogic-enterprise-bean>
+		<ejb-name>FDZoneInfoManager</ejb-name>
+		<stateless-session-descriptor>
+			<pool>
+				<max-beans-in-free-pool>10</max-beans-in-free-pool>
+			</pool>
+			<stateless-clustering></stateless-clustering>
+		</stateless-session-descriptor>
+		<transaction-descriptor></transaction-descriptor>
+		<reference-descriptor>
+			<resource-description>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<jndi-name>fddatasource</jndi-name>
+			</resource-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/ErpZoneInfoManager</ejb-ref-name>
+				<jndi-name>freshdirect.erp.ZoneInfoManager</jndi-name>
+			</ejb-reference-description>                        
+		</reference-descriptor>
+
+		<jndi-name>freshdirect.fdstore.ZoneInfoManager</jndi-name>
+	</weblogic-enterprise-bean>
+    
+    
+    
 <weblogic-enterprise-bean>
 		<ejb-name>FDSurvey</ejb-name>
 		<stateless-session-descriptor>

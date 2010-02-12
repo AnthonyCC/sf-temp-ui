@@ -17,7 +17,7 @@
 <%
 
 //********** Start of Stuff to let JSPF's become JSP's **************
-
+FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 String catId = request.getParameter("catId");
 String deptId = request.getParameter("deptId");
 boolean isDepartment = false;
@@ -153,7 +153,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %>
                     <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <%
-                    lstUnitPrice = "<font class=\"price\">"+JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+productInfo.getDisplayableDefaultPriceUnit().toLowerCase()+"</font>";
+                    lstUnitPrice = "<font class=\"price\">"+JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+productInfo.getDisplayableDefaultPriceUnit().toLowerCase()+"</font>";
 %>
                     </fd:FDProductInfo>
 <%              }

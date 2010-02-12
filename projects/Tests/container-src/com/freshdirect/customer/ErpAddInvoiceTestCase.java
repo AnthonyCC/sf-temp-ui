@@ -18,6 +18,17 @@ import junit.framework.TestCase;
 import com.freshdirect.TestUtil;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAbstractOrderModel;
+import com.freshdirect.customer.ErpAppliedCreditModel;
+import com.freshdirect.customer.ErpChargeLineModel;
+import com.freshdirect.customer.ErpDiscountLineModel;
+import com.freshdirect.customer.ErpInvoiceLineModel;
+import com.freshdirect.customer.ErpInvoiceModel;
+import com.freshdirect.customer.ErpInvoicedCreditModel;
+import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.dataloader.payment.ejb.InvoiceLoaderHome;
@@ -96,12 +107,12 @@ public class ErpAddInvoiceTestCase extends TestCase {
 			invoiceNumber = "00009001";
 		}
 		invoice.setInvoiceNumber(invoiceNumber);
-		Discount discount = order.getDiscount();
+		Discount discount = null;//order.getDiscount(EnumDiscountType.DOLLAR_OFF).getDiscount();
 		Discount invDiscount = null;
 		if(discount != null){
 			invDiscount = new Discount("UNKNOWN", discount.getDiscountType(), discount.getAmount());
 		}
-		invoice.setDiscount(invDiscount);
+		//invoice.setDiscount(new ErpDiscountLineModel(invDiscount));
 		invoice.setDiscounts(order.getDiscounts());
 		invoice.setSubTotal(order.getSubTotal());
 		invoice.setTax(order.getTax());

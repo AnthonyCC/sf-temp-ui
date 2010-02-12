@@ -421,7 +421,7 @@ public class SapOrderAdapter implements SapOrderI {
 				Pricing pricing = fdProduct.getPricing();
 				FDConfigurableI prConf = new FDConfiguration(orderLine.getQuantity(), orderLine.getSalesUnit(), orderLine
 					.getOptions());
-				ConfiguredPrice confPrice = PricingEngine.getConfiguredPrice(pricing, prConf);
+				ConfiguredPrice confPrice = PricingEngine.getConfiguredPrice(pricing, prConf, orderLine.getPricingContext());
 				return confPrice.getPricingCondition();
 			} catch (PricingException e) {
 				throw new IllegalStateException("Unable to determine pricing condition");
@@ -567,7 +567,11 @@ public class SapOrderAdapter implements SapOrderI {
 				return orderLine.getPrice();			
 			return 0;
 		}
-
+		
+		public String getPricingZoneId() {
+			//Ignore begining zeroes. 0000100000 --> 100000
+			return orderLine.getPricingZoneId().substring(4);
+		}
 	}
 
 }

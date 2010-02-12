@@ -18,6 +18,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -26,6 +27,7 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -129,16 +131,18 @@ public class OfflineRecommenderSessionBean extends FDSessionBeanSupport {
 				} catch (FDSkuNotFoundException e) {
 					ps.setNull(11, Types.VARCHAR);
 				}
-
+				//Get Product Pricing Adapter based on pricing context.
+				ProductModel adapter = ProductPricingFactory.getInstance().getPricingAdapter(product,user.getPricingContext());
+				PriceCalculator pc = adapter.getPriceCalculator();
 				// price, pricing
-				ps.setString(12, product.getPriceFormatted(0));
-				ps.setString(13, product.getWasPriceFormatted(0));
-				ps.setString(14, product.getTieredPrice(0));
-				ps.setString(15, product.getAboutPriceFormatted(0));
+				ps.setString(12, pc.getPriceFormatted(0));
+				ps.setString(13, pc.getWasPriceFormatted(0));
+				ps.setString(14, pc.getTieredPrice(0));
+				ps.setString(15, pc.getAboutPriceFormatted(0));
 
 				// burst
 				String burst = ProductDisplayUtil.getProductBurstCode(user,
-						siteFeature, product);
+						siteFeature, adapter);
 				if (burst == null)
 					ps.setNull(16, Types.VARCHAR);
 				else

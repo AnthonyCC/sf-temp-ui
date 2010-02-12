@@ -20,6 +20,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.event.RecommendationEventLogger;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.aspects.DlvManagerMunicipalityAspect;
@@ -80,7 +81,7 @@ public class RecommendationServiceTestBase extends TestCase {
                 }
             }
             
-            public double[] getVariables(String userId,
+            public double[] getVariables(String userId, PricingContext pricingCtx,
 					ContentNodeModel contentNode, String[] variables) {
 				Map varMap = getVariables(userId, contentNode.getContentKey().getId());
 				double[] result = new double[variables.length];

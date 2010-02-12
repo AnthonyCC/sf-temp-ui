@@ -16,6 +16,7 @@ import java.util.List;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.ErpVisitorI;
+import com.freshdirect.erp.PricingFactory;
 import com.freshdirect.framework.collection.LocalObjectList;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DayOfWeekSet;
@@ -241,6 +242,8 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	 * @param prices collection of ErpMaterialPriceModel objects
 	 */
 	public void setPrices(List prices) {
+		//Sort by sap zone id before setting
+		Collections.sort(prices, PricingFactory.erpMatPriceModelComparator);
 		this.prices.set(prices);
 	}
 

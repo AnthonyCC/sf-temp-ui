@@ -364,7 +364,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	}
 
 	public boolean isPricedByLb() {
-		return ("LB".equalsIgnoreCase((this.pricing.getMaterialPrices()[0]).getPricingUnit()));
+		return ("LB".equalsIgnoreCase((this.pricing.getZonePriceList().getZonePrice(ZonePriceListing.MASTER_DEFAULT_ZONE).getMaterialPrices()[0]).getPricingUnit()));
 	}
 
 	public boolean hasSingleSalesUnit() {

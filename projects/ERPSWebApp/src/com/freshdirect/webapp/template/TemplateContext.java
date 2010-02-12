@@ -13,20 +13,18 @@ import javax.servlet.jsp.JspException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
-import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDProductInfo;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeCategory;
 import com.freshdirect.fdstore.content.RecipeSubcategory;
-import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.content.BaseTemplateContext;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.JspMethods;
@@ -35,6 +33,8 @@ import com.freshdirect.webapp.util.JspMethods;
  * Collection of helper methods made available to templates.
  */
 public class TemplateContext extends BaseTemplateContext{
+	
+	private PricingContext pricingContext;
 
 	private final static Image IMAGE_BLANK = new Image("/media_stat/images/layout/clear.gif", 1, 1);
 
@@ -58,6 +58,11 @@ public class TemplateContext extends BaseTemplateContext{
 	public TemplateContext(Map parameters) {
 		//this.parameters = Collections.unmodifiableMap(parameters);
 		super(parameters);
+	}
+	
+	public TemplateContext(Map parameters, PricingContext pCtx) {
+		super(parameters);
+		this.pricingContext = pCtx;
 	}
 	
 	/**
@@ -117,6 +122,9 @@ public class TemplateContext extends BaseTemplateContext{
 				if (node == null) {
 					// not found, fallback to primary home
 					id = id.substring(0, sep);
+				} else {
+					//Return ProductModelPricingAdapter for zone pricing.
+					return ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)node), pricingContext);
 				}
 			}
 		}
@@ -197,18 +205,8 @@ public class TemplateContext extends BaseTemplateContext{
 		
 		if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
 			ProductModel product    = (ProductModel) node;
-			SkuModel     defaultSku = product.getDefaultSku();
-			
-			try {
-				if (defaultSku != null) {
-					FDProductInfo pi    = FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
-					//pi.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pi.getDefaultPriceUnit().toLowerCase())
-					price =  currencyFormatter.format(pi.getDefaultPrice())+"/"+ pi.getDisplayableDefaultPriceUnit();
-					
-			 	}
-			} catch (FDResourceException e) {
-			} catch (FDSkuNotFoundException e) {
-			}
+			PriceCalculator calc = new PriceCalculator(pricingContext, product);
+			price= calc.getDefaultPrice();
 		}
 		
 		return price;
@@ -219,19 +217,8 @@ public class TemplateContext extends BaseTemplateContext{
 		//System.out.println("********** inside getBasePrice "+node);
 		if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
 			ProductModel product    = (ProductModel) node;
-			String     defaultSku = product.getDefaultSkuCode();
-			//System.out.println("********** inside getBasePrice default sku: "+defaultSku);
-			
-			try {
-				if (defaultSku != null) {
-					FDProductInfo pi    = FDCachedFactory.getProductInfo(defaultSku);
-					//pi.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pi.getDefaultPriceUnit().toLowerCase())
-					price =  currencyFormatter.format(pi.getBasePrice());
-					//System.out.println("********** inside getBasePrice baseprice: "+price);
-			 	}
-			} catch (FDResourceException e) {
-			} catch (FDSkuNotFoundException e) {
-			}
+			PriceCalculator calc = new PriceCalculator(pricingContext, product);
+			price = calc.getSellingPriceOnly();
 		}
 		
 		return price;
@@ -246,17 +233,8 @@ public class TemplateContext extends BaseTemplateContext{
 		
 		if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
 			ProductModel product    = (ProductModel) node;
-			SkuModel     defaultSku = product.getDefaultSku();
-			
-			try {
-				if (defaultSku != null) {
-					FDProductInfo pi    = FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
-					//pi.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pi.getDefaultPriceUnit().toLowerCase())
-					price =  currencyFormatter.format(pi.getDefaultPrice());
-			 	}
-			} catch (FDResourceException e) {
-			} catch (FDSkuNotFoundException e) {
-			}
+			PriceCalculator calc = new PriceCalculator(pricingContext, product);
+			price= calc.getDefaultPriceOnly();
 		}
 		
 		return price;
@@ -394,6 +372,6 @@ public class TemplateContext extends BaseTemplateContext{
 	 * Method to get the price/lb, for display. 
 	 */
 	public String getAboutPrice(ContentNodeModel node)throws JspException {
-		return JspMethods.getAboutPriceForDisplay(node);
+		return JspMethods.getAboutPriceForDisplay(node, pricingContext);
 	}	
 }

@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.BalkingExpiringReference;
+import com.freshdirect.framework.util.ExpiringReference;
+import com.freshdirect.framework.util.LruCache;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.smartstore.SessionInput;
 
@@ -17,9 +19,9 @@ public class CachingDataGenerator extends DataGenerator {
 
     private static final int       HOUR_IN_MILLIS = 60 * 60 * 1000;
 
-    protected static TimedLruCache cache          = new TimedLruCache(FDStoreProperties.getSmartStoreDataSourceCacheSize(), HOUR_IN_MILLIS);
+    protected static LruCache<String, BalkingExpiringReference> cache          = new LruCache<String, BalkingExpiringReference>(FDStoreProperties.getSmartStoreDataSourceCacheSize());
 
-    private static Executor        threadPool     = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue(),
+    private static Executor        threadPool     = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
                                                           new ThreadPoolExecutor.DiscardPolicy());
 
     boolean                        cacheEnabled;
@@ -36,7 +38,7 @@ public class CachingDataGenerator extends DataGenerator {
     public final List generate(SessionInput sessionInput, final DataAccess input) {
         if (cacheEnabled) {
             String key = getKey(sessionInput);
-            final SessionInput inp = new SessionInput(sessionInput.getCustomerId(), sessionInput.getCustomerServiceType());
+            final SessionInput inp = new SessionInput(sessionInput.getCustomerId(), sessionInput.getCustomerServiceType(), sessionInput.getPricingContext());
             inp.setCurrentNode(sessionInput.getCurrentNode());
             inp.setExplicitList(sessionInput.getExplicitList());
             if (cache.get(key) == null) {
@@ -48,7 +50,7 @@ public class CachingDataGenerator extends DataGenerator {
 
                 });
             }
-            List cached = (List) ((BalkingExpiringReference) cache.get(key)).get();
+            List cached = (List) cache.get(key).get();
             if (cached != null) {
                 return cached;
             }
@@ -67,7 +69,7 @@ public class CachingDataGenerator extends DataGenerator {
             return Collections.EMPTY_LIST;
         }
 
-        List cached = (List) ((BalkingExpiringReference) cache.get(key)).get();
+        List cached = (List) cache.get(key).get();
         if (cached != null) {
             return cached;
         }

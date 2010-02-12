@@ -81,7 +81,7 @@
     <FONT CLASS="text10bold"><%= unAvailableFontStart %><%= thisProdBrandLabel %><%= unAvailableFontEnd %></FONT>
     <FONT CLASS="text10"><%= unAvailableFontStart %><%= displayProduct.getFullName().substring(thisProdBrandLabel.length()).trim()+prodMatrix %><%= unAvailableFontEnd %></FONT>
     </A>
-    <%= unAvailableFontStart %> <NOBR><%= !"nm".equalsIgnoreCase(salesUnitDescription) ? "- " + salesUnitDescription  : "" %><%= unAvailableFontEnd %><%="nutrition".equalsIgnoreCase(sortBy)?"&nbsp;<b>" + JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) + "</b>":"" %></NOBR>
+    <%= unAvailableFontStart %> <NOBR><%= !"nm".equalsIgnoreCase(salesUnitDescription) ? "- " + salesUnitDescription  : "" %><%= unAvailableFontEnd %><%="nutrition".equalsIgnoreCase(sortBy)?"&nbsp;<b>" + JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) + "</b>":"" %></NOBR>
 <%
     Date earliestDate = sku.getEarliestAvailability();
     Calendar testDate = new GregorianCalendar();
@@ -176,13 +176,13 @@
         
     <%  if (!skuAvailable) {  %>
     <td colspan="2" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font>
-    <%  } else if(productInfo.hasWasPrice()) {    %>
-    <TD WIDTH="55" ALIGN="RIGHT">&nbsp;<font  class="groceryProductLinePrice" style="COLOR: #c00"><%= JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) %>&nbsp;</font>
+    <%  } else if(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale()) {    %>
+    <TD WIDTH="55" ALIGN="RIGHT">&nbsp;<font  class="groceryProductLinePrice" style="COLOR: #c00"><%= JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;</font>
     
     </TD>
 <%
     } else { %>
-    <TD WIDTH="55" ALIGN="RIGHT">&nbsp;<font class="groceryProductLinePrice"><%= JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) %>&nbsp;</font>
+    <TD WIDTH="55" ALIGN="RIGHT">&nbsp;<font class="groceryProductLinePrice"><%= JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;</font>
     <%}
 }
 %>

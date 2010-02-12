@@ -435,12 +435,12 @@ if(productCode!=null && prodCatId !=null ) {
             JspLogger.PRODUCT.warn("Grocery Page: catching FDSkuNotFoundException and Continuing:\n FDProductInfo:="+productInfo+"\nException message:= "+fdsnf.getMessage());
         }
 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice());
-        hasWas=productInfo.hasWasPrice();
+        prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice());
+        hasWas=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale();
         if(hasWas) {
-            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice());
+            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice());
         }
-        deal=productInfo.getHighestDealPercentage();
+        deal=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getHighestDealPercentage();
         if (deal > 0) {
             dealsImage=new StringBuffer("/media_stat/images/deals/brst_lg_").append(deal).append(".gif").toString();        	
         }
@@ -1003,8 +1003,8 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
                     SkuModel sku = (SkuModel)allSkuModels.get(j);
                     if (sku==null) continue;
                     String _dealImage="";
-                    if(sku.getProductInfo().getHighestDealPercentage() > 0) {
-                        _dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(sku.getProductInfo().getHighestDealPercentage()).append(".gif").toString();
+                    if(sku.getProductInfo().getZonePriceInfo(user.getPricingContext().getZoneId()).getHighestDealPercentage() > 0) {
+                        _dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(sku.getProductInfo().getZonePriceInfo(user.getPricingContext().getZoneId()).getHighestDealPercentage()).append(".gif").toString();
                     }
                     ProductModel displayProduct = sku.getProductModel();
                         Image groDeptImage = (Image)displayProduct.getCategoryImage();

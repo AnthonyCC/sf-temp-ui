@@ -231,7 +231,7 @@
     <checkoutLabeled dir="projects/MarketingAdmin"/>
     <checkoutLabeled dir="projects/TransportationAdmin"/>
     <checkoutLabeled dir="projects/RoutingServices"/>
-		<checkoutLabeled dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->
+		<checkoutLabeled dir="projects/FDIntegrationServices"/>   <!-- Added: Schematic rsung -->
 		<checkoutLabeled dir="applications"/>
 		<!--	<checkoutLabeled dir="release"/> -->
 	</target>
@@ -2397,7 +2397,7 @@
 	</target>
 
 	<target name="ears" description="build all apps"
-		depends="backend-app,sap-app,storefront-app,crm-app,dlv-app,erps-app,cms-app,fdadmin-app,fdintegrationservices-app">
+                depends="backend-app,sap-app,storefront-app,crm-app,dlv-app,erps-app,cms-app,fdadmin-app,fdintegrationservices-app">
 	</target>
 
 	<target name="media-checkout" >

@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
@@ -59,6 +60,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
         List<ContentNodeModel> result = dataGenerator.generate(input, dataAccess);
 
         String userId = input.getCustomerId();
+        PricingContext pricingCtx = input.getPricingContext();
         List<RankedContent> rankedContents = new ArrayList<RankedContent>(result.size());
         
         if (scoring != null) {
@@ -69,7 +71,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
                 OrderingFunction orderingFunction = scoring.createOrderingFunction();
                 for (Iterator<ContentNodeModel> iter = result.iterator(); iter.hasNext();) {
                     ContentNodeModel contentNode = iter.next();
-                    double[] values = dataAccess.getVariables(userId, contentNode, variableNames);
+                    double[] values = dataAccess.getVariables(userId, pricingCtx, contentNode, variableNames);
                     double[] score = scoring.getScores(values);
                     orderingFunction.addScore(contentNode, score);
                 }
@@ -80,7 +82,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 
                 for (Iterator<ContentNodeModel> iter = result.iterator(); iter.hasNext();) {
                     ContentNodeModel contentNode = iter.next();
-                    double[] values = dataAccess.getVariables(userId, contentNode, variableNames);
+                    double[] values = dataAccess.getVariables(userId, pricingCtx, contentNode, variableNames);
                     double[] score = scoring.getScores(values);
                     scores.add(new RankedContent.Single(score[0], contentNode));
                 }

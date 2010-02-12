@@ -7,10 +7,11 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.smartstore.CmsRecommenderService;
+import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recommender;
 import com.freshdirect.fdstore.content.RecommenderStrategy;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -24,7 +25,8 @@ public class CmsRecommenderServiceImpl implements CmsRecommenderService {
 	private static final long serialVersionUID = 7555105742910594364L;
 
 	@Override
-	public List recommendNodes(String recommenderId, String categoryId) {
+	public List<String> recommendNodes(String recommenderId, String categoryId, String zoneId) {
+		// TODO handle zoneId
 		ContentNodeModel node = ContentFactory.getInstance().getContentNode(
 				recommenderId);
 		if (node instanceof Recommender) {
@@ -43,11 +45,11 @@ public class CmsRecommenderServiceImpl implements CmsRecommenderService {
 				SessionInput input = new SessionInput(null);
 				input.setCurrentNode(category);
 				input.setExplicitList(recommenderNode.getScope());
-				List products = recommender.recommendNodes(input);
-				List prodIds = new ArrayList(products.size());
+				input.setPricingContext(new PricingContext(zoneId));
+				List<ContentNodeModel> products = recommender.recommendNodes(input);
+				List<String> prodIds = new ArrayList<String>(products.size());
 				for (int i = 0; i < products.size(); i++) {
-					ProductModel product = (ProductModel) products.get(i);
-					prodIds.add(product.getContentName());
+					prodIds.add(products.get(i).getContentKey().getId());
 				}
 				return prodIds;
 			} else {

@@ -11,6 +11,7 @@ import javax.servlet.jsp.JspWriter;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -310,10 +311,10 @@ public class DCPDReportGenerator {
 	        	
 	            if (skuNode.getProductInfo() != null) {
 	            	rating = skuNode.getProductInfo().getRating();
-	            	price="$"+String.valueOf(skuNode.getProductInfo().getDefaultPrice());
-		        	if(skuNode.getProductInfo().getBasePrice()!=0) {
-		        		basePrice="$"+String.valueOf(skuNode.getProductInfo().getBasePrice());
-		        		isDeal=String.valueOf(skuNode.getProductInfo().hasWasPrice());
+	            	price="$"+String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDefaultPrice());
+		        	if(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getSellingPrice()!=0) {
+		        		basePrice="$"+String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getSellingPrice());
+		        		isDeal=String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).isItemOnSale());
 		        	}	            	
 	            } else {
 	            	rating = null;

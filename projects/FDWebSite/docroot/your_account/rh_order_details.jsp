@@ -193,7 +193,7 @@ int idx = 0;
 			<td class="text11bold" align="center"><%= cartLine.getOrderedQuantity() %></td>
 			<td style="padding-left:30px;" class="text11bold" align="center"><b><%=productModel.getFullName() %></b>	</td>
 			<td></td>
-			<td align="center"><%= JspMethods.currencyFormatter.format( productInfo.getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %></td>
+			<td align="center"><%= JspMethods.currencyFormatter.format( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %></td>
 			<td></td>
 			<td  align="center"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.currencyFormatter.format( cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal() ) %>
 		

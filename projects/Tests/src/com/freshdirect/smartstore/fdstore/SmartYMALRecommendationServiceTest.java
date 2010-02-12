@@ -31,7 +31,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
     
     public void setUp() throws Exception {
         super.setUp();
-        input = new SessionInput("12345", null);
+        input = new SessionInput("12345", null, null);
         input.setNoShuffle(true);
         input.setMaxRecommendations(10);
     }

@@ -22,12 +22,14 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
@@ -37,9 +39,12 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
+import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.fdstore.util.HowToCookItUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -212,7 +217,7 @@ public class JspMethods {
 			//
 			try {
 				productInfo = FDCachedFactory.getProductInfo(sku.getSkuCode());
-				prodPrice = productInfo.getDefaultPrice();
+				prodPrice = productInfo.getZonePriceInfo(theProduct.getPricingContext().getZoneId()).getDefaultPrice();
 			} catch (FDResourceException fdre) {
 				LOGGER.warn("FDResourceException occured", fdre);
 				throw new JspException(
@@ -639,24 +644,15 @@ public class JspMethods {
 		SkuModel dfltSku = null;
 		if (displayThing.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
 			displayProduct = (ProductModel) displayThing;
-			dfltSku = displayProduct.getDefaultSku();
+			PriceCalculator priceCalculator = displayProduct.getPriceCalculator();
+			dfltSku = priceCalculator.getSkuModel();
 			String thisProdBrandLabel = null;
 			try {
 				if (dfltSku != null && showPrice) {
-					FDProductInfo pi = FDCachedFactory.getProductInfo(dfltSku
-							.getSkuCode());
-					FDProduct fdProduct = FDCachedFactory.getProduct(dfltSku
-							.getSkuCode(), pi.getVersion());
 					// pi.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(),
 					// pi.getDefaultPriceUnit().toLowerCase())
-					displayObj
-							.setPrice(currencyFormatter.format(pi
-									.getDefaultPrice())
-									+ "/"
-									+ pi.getDisplayableDefaultPriceUnit()
-											.toLowerCase());
-					String salesUnitDescr = FDCachedFactory.getProduct(pi)
-							.getSalesUnits()[0].getDescription();
+					displayObj.setPrice(priceCalculator.getPriceFormatted(0));
+					String salesUnitDescr = priceCalculator.getProduct().getSalesUnits()[0].getDescription();
 					if (!"nm".equalsIgnoreCase(salesUnitDescr)
 							&& !"ea".equalsIgnoreCase(salesUnitDescr)
 							&& !"".equalsIgnoreCase(salesUnitDescr)) {
@@ -667,7 +663,7 @@ public class JspMethods {
 
 					/* Display Sales Units price-Apple Pricing[AppDev-209] */
 					displayObj
-							.setDisplaySalesUnitPrice(getAboutPriceForDisplay(pi));
+							.setDisplaySalesUnitPrice(priceCalculator.getAboutPriceFormatted(0));
 
 				}
 				thisProdBrandLabel = displayProduct.getPrimaryBrandName();
@@ -934,84 +930,31 @@ public class JspMethods {
 	 * Apple Pricing - APPDEV-209. Utility method to calculate the price/lb
 	 * based on the base price and weight, for display.
 	 * 
-	 * @param prodInfo -
-	 *            FDProductInfo
-	 * @return
-	 */
-	public static String getAboutPriceForDisplay(FDProductInfo prodInfo)
-			throws JspException {
-		String displayPriceString = "";
-		try {
-			FDProduct fdProduct = FDCachedFactory.getProduct(prodInfo);
-			if (null != fdProduct.getDisplaySalesUnits()
-					&& fdProduct.getDisplaySalesUnits().length > 0) {
-				FDSalesUnit fdSalesUnit = fdProduct.getDisplaySalesUnits()[0];
-				double salesUnitRatio = (double) fdSalesUnit.getDenominator()
-						/ (double) fdSalesUnit.getNumerator();
-				String alternateUnit = fdSalesUnit.getName();
-				// double displayPrice =
-				// prodInfo.getDefaultPrice()/salesUnitRatio;
-				String[] scales = fdProduct.getPricing().getScaleDisplay();
-				double displayPrice = 0;
-				if (null != scales && scales.length > 0) {
-					displayPrice = fdProduct.getPricing().getMinPrice()
-							/ salesUnitRatio;
-				} else {
-					displayPrice = prodInfo.getDefaultPrice() / salesUnitRatio;
-				}
-				if (displayPrice > 0) {
-					displayPriceString = JspMethods.currencyFormatter
-							.format(displayPrice)
-							+ "/" + alternateUnit.toLowerCase();
-				}
-			}
-		} catch (FDResourceException fdre) {
-			throw new JspException(fdre);
-		} catch (FDSkuNotFoundException fdse) {
-			throw new JspException(fdse);
-		}
-		return displayPriceString;
-	}
-
-	/**
-	 * Apple Pricing - APPDEV-209. Utility method to calculate the price/lb
-	 * based on the base price and weight, for display.
-	 * 
 	 * @param node -
 	 *            ContentNodeI
 	 * @return
 	 */
-	public static String getAboutPriceForDisplay(ContentNodeModel node)
-			throws JspException {
-		String displayPriceString = "";
+	public static String getAboutPriceForDisplay(ContentNodeModel node, PricingContext pricingContext)
+	throws JspException {
 		if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
 			ProductModel product = (ProductModel) node;
-			String defaultSku = product.getDefaultSkuCode();
-			try {
-				if (defaultSku != null) {
-					FDProductInfo pi = FDCachedFactory
-							.getProductInfo(defaultSku);
-					displayPriceString = getAboutPriceForDisplay(pi);
-				}
-			} catch (FDResourceException fdre) {
-				throw new JspException(fdre);
-			} catch (FDSkuNotFoundException fdse) {
-				throw new JspException(fdse);
-			}
+			PriceCalculator priceCalculator = new PriceCalculator(pricingContext, product);
+			String str = priceCalculator.getAboutPriceFormatted(0);
+			return str != null ? str : "";
 		}
-		return displayPriceString;
+		return "";
 	}
 
 	/**
-	 * Apple Pricing - APPDEV-209. This method will be used to display the about
-	 * weight and price/lb in product with single sku and multiple sku pages.
-	 * 
-	 * @param prodInfo
-	 * @return
-	 * @throws JspException
-	 */
-	public static String getAboutPriceAndWeightForDisplay(FDProductInfo prodInfo)
-			throws JspException {
+	* Apple Pricing - APPDEV-209. This method will be used to display the about
+	* weight and price/lb in product with single sku and multiple sku pages.
+	* 
+	* @param prodInfo
+	* @return
+	* @throws JspException
+	*/
+	public static String getAboutPriceAndWeightForDisplay(FDProductInfo prodInfo, PricingContext pricingContext)
+		throws JspException {
 		String displayPriceString = "";
 		try {
 			FDProduct fdProduct = FDCachedFactory.getProduct(prodInfo);
@@ -1021,7 +964,7 @@ public class JspMethods {
 				double salesUnitRatio = (double) fdSalesUnit.getDenominator()
 						/ (double) fdSalesUnit.getNumerator();
 				String alternateUnit = fdSalesUnit.getName();
-				double displayPrice = prodInfo.getDefaultPrice()
+				double displayPrice = prodInfo.getZonePriceInfo(pricingContext.getZoneId()).getDefaultPrice()
 						/ salesUnitRatio;
 				if (displayPrice > 0) {
 					displayPriceString = "about " + salesUnitRatio
@@ -1039,11 +982,11 @@ public class JspMethods {
 	}
 
 	/**
-	 * For truncating the decimal number to 2 digits.
-	 * 
-	 * @param number
-	 * @return
-	 */
+	* For truncating the decimal number to 2 digits.
+	* 
+	* @param number
+	* @return
+	*/
 	public static double formatDecimal(double number) {
 		DecimalFormat decimalFormat = new DecimalFormat("0.##");
 		String strNumber = decimalFormat.format(number);

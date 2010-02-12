@@ -13,11 +13,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryNodeTree;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -30,7 +29,6 @@ import com.freshdirect.framework.util.CSVUtils;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.scoring.ScoringAlgorithm;
 import com.freshdirect.smartstore.service.SearchScoringRegistry;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 public class SnapshotGenerator {
 
@@ -48,11 +46,6 @@ public class SnapshotGenerator {
         return status.toString();
     }
 
-    public static String getCurrentUserId(HttpSession session) {
-        FDUserI sessionUser = FDSessionUser.getFDSessionUser(session);
-        return sessionUser!=null ? sessionUser.getUserId() : null;
-    }
-
     /**
      * Start a separate thread which generates search results xml into a temporary directory.
      * 
@@ -60,7 +53,7 @@ public class SnapshotGenerator {
      * @param label
      * @return
      */
-    public static boolean startGenerating(final InputStream input, final String label, final String customerId) {
+    public static boolean startGenerating(final InputStream input, final String label, final FDUserI fdUser) {
         File directory = new File(FDStoreProperties.getTemporaryDirectory(),"search-snapshots");
         if (!directory.exists()) {
             directory.mkdirs();
@@ -71,7 +64,9 @@ public class SnapshotGenerator {
             Thread t = new Thread("snapshot-generating-"+path.getName()) {
                 public void run() {
                     try {
-                        generate(input, label, fos, customerId);
+                        generate(input, label, fos,
+                        		fdUser != null && fdUser.getIdentity() != null ? fdUser.getIdentity().getErpCustomerPK() : null,
+                        		fdUser != null ? fdUser.getPricingContext() : PricingContext.DEFAULT);
                     } catch (IOException e) {
                         LOG.error("Error : "+e.getMessage(),e);
                     }
@@ -109,7 +104,7 @@ public class SnapshotGenerator {
      * @return
      * @throws IOException
      */
-    public static boolean generate(InputStream input, String label, OutputStream output, String customerId) throws IOException {
+    public static boolean generate(InputStream input, String label, OutputStream output, String customerId, PricingContext pricingContext) throws IOException {
         synchronized (SnapshotGenerator.class) {
             if (running) {
                 return false;
@@ -135,6 +130,7 @@ public class SnapshotGenerator {
             status.setLength(0);
             
             ScoreProvider provider = ScoreProvider.getInstance();
+            @SuppressWarnings("unchecked")
             List<List<String>> rows = CSVUtils.parse(input, false, false);
             for (Iterator<List<String>> iter = rows.iterator(); iter.hasNext();) {
                 List<String> row = iter.next();
@@ -156,7 +152,7 @@ public class SnapshotGenerator {
                         
                         SearchResults res = s.search(term);
 
-                        FilteredSearchResults fres = new FilteredSearchResults(term, res, customerId);
+                        FilteredSearchResults fres = new FilteredSearchResults(term, res, customerId, pricingContext);
                         //fres.setScoreOracle(new FilteredSearchResults.HierarchicalGrouppingScoreOracle(CategoryNodeTree.createTree(fres.getProducts())));
                         CategoryNodeTree nodeTree = CategoryNodeTree.createTree(fres.getProducts(), true);
                         fres.setNodeTree(nodeTree);
@@ -170,7 +166,7 @@ public class SnapshotGenerator {
                         for (int i=0;i<fres.getProducts().size();i++) {
                             ContentNodeModel model = (ContentNodeModel) fres.getProducts().get(i);
                             String fullname = StringUtils.replace(model.getFullName(), "&", "&amp;");
-                            double[] scores = scoring.getScoreOf(customerId, provider, model);
+                            double[] scores = scoring.getScoreOf(customerId, pricingContext, provider, model);
                             StringBuilder sb = new StringBuilder();
                             for (double x : scores) {
                                 sb.append(x).append(',');

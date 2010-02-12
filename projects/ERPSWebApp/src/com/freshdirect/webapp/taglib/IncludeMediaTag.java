@@ -8,9 +8,14 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.PricingContext;
+
+import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.MediaUtils;
 
 public class IncludeMediaTag extends BodyTagSupport {
@@ -23,6 +28,7 @@ public class IncludeMediaTag extends BodyTagSupport {
 	private Map parameters;
 	
 	private Boolean withErrorReport;
+	
 	
 	public void setName(String file) {
 		this.name = file;
@@ -41,7 +47,10 @@ public class IncludeMediaTag extends BodyTagSupport {
 		    if (this.name == null) {
 		        throw new NullPointerException("Media path not specified!");
 		    }
-			MediaUtils.render(this.name, this.pageContext.getOut(), this.parameters, this.withErrorReport);
+			FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+			//Pass the pricing context to the template context
+			MediaUtils.render(this.name, this.pageContext.getOut(), this.parameters, this.withErrorReport, 
+					user != null && user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT);
 			
 			return SKIP_BODY;
 		} catch (FileNotFoundException e) {
@@ -55,4 +64,5 @@ public class IncludeMediaTag extends BodyTagSupport {
 			throw new JspException(e);
 		} 
 	}
+
 }

@@ -77,10 +77,14 @@ public class LazyTimedCache<K,V> extends TimedLruCache<K,V> {
 					synchronized(this.cache) {
 						do {
 							this.cache.wait(this.maxDelay);
+							//System.out.println("Object waiting for $$$$$$$$ "+(System.currentTimeMillis()-startTime)+" secs");
 						} while (System.currentTimeMillis()-startTime < this.refreshFrequency);
+						
 						expiredKeys = this.cache.clearExpiredKeys();
 					}
+					
 					if (expiredKeys!=null) {
+						//System.out.println("Next Refresh started for "+expiredKeys.size());
 						this.refresh(expiredKeys);
 					}
 				}

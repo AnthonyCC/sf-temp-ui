@@ -133,5 +133,7 @@ public interface SapOrderLineI extends Serializable {
 	public List getInventories();
 	
 	public double getFixedPrice();
+	
+	public String getPricingZoneId();
 
 }

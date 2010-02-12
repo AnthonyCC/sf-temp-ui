@@ -247,33 +247,32 @@ public class FDPromotionVisitor {
 			
 		}	
 		return true;
-	}
+	}			
 
 	private static void applyPromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {
-		String headerPromoCode = "";
-		for (Iterator i = eligibilities.getEligiblePromotionCodes().iterator(); i.hasNext();) {
-			String promoCode = (String) i.next();
-			PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-			if(!EnumPromotionType.WINDOW_STEERING.equals(promo.getPromotionType())) {
-				boolean applied = promo.apply(context);
-				if (applied) {
-					if(promo.isHeaderDiscount()){
-						//This logic has been added to filter the max discount promocode
-						//when there are more than one. Currently this happens only in the
-						//case of automatic header discounts.
-						headerPromoCode = promoCode;
-					} else {
-						//Add any non-header promos to the applied list. 
-						eligibilities.setApplied(promoCode);	
-					}
-				}
-			}
-		}
-		//Add the final header promo code to the applied list. 
-		if(headerPromoCode.length() > 0 && eligibilities.isEligible(headerPromoCode)){
-			eligibilities.setApplied(headerPromoCode);
-		}
-	}
-
+        String headerPromoCode = "";
+        for (Iterator i = eligibilities.getEligiblePromotionCodes().iterator(); i.hasNext();) {
+              String promoCode = (String) i.next();
+              PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+              if(!EnumPromotionType.WINDOW_STEERING.equals(promo.getPromotionType())) {
+                    boolean applied = promo.apply(context);
+                    if (applied) {
+                          if(promo.isHeaderDiscount()){
+                                //This logic has been added to filter the max discount promocode
+                                //when there are more than one. Currently this happens only in the
+                                //case of automatic header discounts.
+                                headerPromoCode = promoCode;
+                          } else {
+                                //Add any non-header promos to the applied list. 
+                                eligibilities.setApplied(promoCode);      
+                          }
+                    }
+              }
+        }
+        //Add the final header promo code to the applied list. 
+        if(headerPromoCode.length() > 0 && eligibilities.isEligible(headerPromoCode)){
+              eligibilities.setApplied(headerPromoCode);
+        }
+  }
 
 }

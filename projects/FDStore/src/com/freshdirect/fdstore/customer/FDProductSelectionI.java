@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
@@ -149,6 +150,9 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	 *         shown when added to the cart.
 	 */
 	public void setOriginatingProductId(String originatingProductId);
+	
+	
+	public void setPricingContext(PricingContext pCtx) ;
 	
 	/**
 	 *  Get the ID of the originating product for which this product was shown as a YMAL.

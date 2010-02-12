@@ -77,7 +77,7 @@ public class VendorRecommendationTest extends RecommendationServiceTestBase {
     }
 
     public void testProductToProductRecommendation() throws CompileException {
-        SessionInput s = new SessionInput("", null);
+        SessionInput s = new SessionInput("", null, null);
         s.setNoShuffle(true);
 
         ScriptedRecommendationService r1test = build("ProductRecommendation(\"r1\",\"prod1\")", null);
@@ -93,7 +93,7 @@ public class VendorRecommendationTest extends RecommendationServiceTestBase {
     }
     
     public void testUserToProductRecommendation() throws CompileException {
-        SessionInput s = new SessionInput("", null);
+        SessionInput s = new SessionInput("", null, null);
         s.setNoShuffle(true);
 
         ScriptedRecommendationService r1test = build("PersonalRecommendation(\"r1\",)", null);
@@ -102,7 +102,7 @@ public class VendorRecommendationTest extends RecommendationServiceTestBase {
         assertEquals("1 recommendation", 1, nodes.size());
         assertEquals("first node is ... ", "r1_prod1_3", ((ContentNodeModel)nodes.get(0)).getContentKey().getId());
 
-        s = new SessionInput("123", null);
+        s = new SessionInput("123", null, null);
         s.setNoShuffle(true);
 
         nodes = r1test.recommendNodes(s, da);

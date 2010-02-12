@@ -3,6 +3,9 @@
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+
 <%@ page import='java.util.*'%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -77,10 +80,11 @@ if (brandId!=null) {
 			}
 			
             String prodPrice = null;
+            FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 %>
             <fd:FDProductInfo id="productInfo" skuCode="<%=  sku.getSkuCode() %>">
 <%   
-            prodPrice = currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+            prodPrice = currencyFormatter.format(productInfo.getZonePriceInfo(sessionuser.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %>  					
             </fd:FDProductInfo>
 <%

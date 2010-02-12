@@ -44,7 +44,7 @@ public class CartLineItem {
      * @param variantId
      * @param userSelectVariations
      */
-    public CartLineItem(String skuCode, double quantity, String salesUnit, String variantId, Map<String, String> userSelectVariations) {
+    public CartLineItem(String skuCode, double quantity, String salesUnit, String variantId, Map<String, String> userSelectVariations, String zoneId) {
         // Get FDSku object
         FDProduct product = null;
         try {
@@ -72,7 +72,7 @@ public class CartLineItem {
         Map<String, String> completeVariations = buildSelectedVariations(product.getVariations(), userSelectVariations);
         FDConfiguration fDConfiguration = new FDConfiguration(quantity, salesUnit, completeVariations);
 
-        fdCartline = new FDCartLineModel(fDSku, prodNode, fDConfiguration, variantId);
+        fdCartline = new FDCartLineModel(fDSku, prodNode, fDConfiguration, variantId, zoneId);
     }
 
     private Map<String, String> buildSelectedVariations(FDVariation[] variations, Map<String, String> userSelectVariations) {

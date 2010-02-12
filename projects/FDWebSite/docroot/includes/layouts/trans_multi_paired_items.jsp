@@ -9,6 +9,8 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
+
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -167,7 +169,7 @@ for(Iterator collIter = sortedColl.iterator();collIter.hasNext() ;) {
                     but I suspect that creative will want to display unavailable items...hope I'm wrong. (RG)  */
       }
       prodsAvailable++;
-      sortedList.add(currItem);
+      sortedList.add(ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)currItem) ,user.getPricingContext()));
     }
 }  
 int itemsToDisplay = sortedList.size();
@@ -280,7 +282,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 					   try {
 							if (dfltSku !=null) {
 								  FDProductInfo pi = FDCachedFactory.getProductInfo( dfltSku.getSkuCode());                                                        
-								  priceStr=currencyFormatter.format(pi.getDefaultPrice())+"/"+ pi.getDisplayableDefaultPriceUnit().toLowerCase();
+								  priceStr=currencyFormatter.format(pi.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ pi.getDisplayableDefaultPriceUnit().toLowerCase();
 							}
 						} catch (FDResourceException fde) {
 							throw new JspException(fde);

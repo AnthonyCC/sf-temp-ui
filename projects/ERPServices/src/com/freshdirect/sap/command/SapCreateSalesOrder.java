@@ -67,6 +67,8 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 		helper.buildOrderText(order);
 		//this.buildCreditCard( order.getCustomer().getCreditCard() );
 		helper.buildCreditMemos(order.getCreditMemos());
+
+		System.out.println("Customer Number : "+order.getCustomer().getSapCustomerNumber());
 		if (order.isFreeOrder()) {
 			helper.markAsFreeOrder();
 		}

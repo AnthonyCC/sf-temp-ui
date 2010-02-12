@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.scoring;
 
 import java.util.Map;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 
 /**
@@ -55,8 +56,8 @@ public class ScoringAlgorithm {
         return new OrderingFunction();
     }
 
-    public double[] getScoreOf(String userId, DataAccess dataAccess, ContentNodeModel node) {
-        double[] variables = dataAccess.getVariables(userId, node, getVariableNames());
+    public double[] getScoreOf(String userId, PricingContext pricingCtx, DataAccess dataAccess, ContentNodeModel node) {
+        double[] variables = dataAccess.getVariables(userId, pricingCtx, node, getVariableNames());
         return getScores(variables);
     }
 }

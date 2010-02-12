@@ -1,5 +1,6 @@
 package com.freshdirect.smartstore.fdstore;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 
 /**
@@ -15,5 +16,8 @@ public interface StoreLookup {
 	 * @param contentNode
 	 * @return factor value
 	 */
-	public double getVariable(ContentNodeModel contentNode);
+	public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext);
+	
+	public void reloadCache();
+	
 }

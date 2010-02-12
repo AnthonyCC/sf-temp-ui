@@ -8,13 +8,31 @@
  */
 package com.freshdirect.erp;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.log4j.Category;
+
+import com.freshdirect.common.pricing.CharacteristicValuePrice;
+import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.common.pricing.SalesUnitRatio;
+import com.freshdirect.erp.model.ErpCharacteristicModel;
+import com.freshdirect.erp.model.ErpCharacteristicValueModel;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpMaterialModel;
+import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.erp.model.ErpProductInfoModel;
+import com.freshdirect.erp.model.ErpSalesUnitModel;
+import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.log4j.*;
-
-import com.freshdirect.common.pricing.*;
-import com.freshdirect.erp.model.*;
 
 /**
  * Factory class that creates Pricing objects from Erp model objects.
@@ -27,6 +45,31 @@ public class PricingFactory {
 	private static Category LOGGER = LoggerFactory.getInstance( PricingFactory.class );
 	private final static boolean DEBUG = false;
 	
+	public static Comparator erpMatPriceModelComparator  = new Comparator() {
+		public int compare(Object obj1, Object obj2) {
+				ErpMaterialPriceModel mp1 = (ErpMaterialPriceModel) obj1;
+				ErpMaterialPriceModel mp2 = (ErpMaterialPriceModel) obj2;
+				return mp1.getSapZoneId().compareTo(mp2.getSapZoneId());
+		}
+	};
+
+	public static Comparator erpMatpriceComparator  = new Comparator() {
+		public int compare(Object obj1, Object obj2) {
+				ErpProductInfoModel.ErpMaterialPrice mp1 = (ErpProductInfoModel.ErpMaterialPrice) obj1;
+				ErpProductInfoModel.ErpMaterialPrice mp2 = (ErpProductInfoModel.ErpMaterialPrice) obj2;
+				return mp1.getSapZoneId().compareTo(mp2.getSapZoneId());
+		}
+	};
+	
+    public static Comparator scaleQuantityComparator = new Comparator() {
+        public int compare(Object o1, Object o2) {
+            ErpProductInfoModel.ErpMaterialPrice mp1 = (ErpProductInfoModel.ErpMaterialPrice) o1;
+            ErpProductInfoModel.ErpMaterialPrice mp2 = (ErpProductInfoModel.ErpMaterialPrice) o2;
+            return new Double(mp1.getScaleQuantity()).compareTo(new Double(mp2.getScaleQuantity()));
+        }
+    };
+    
+	
 	/**
 	 * Build a Pricing object for a single material.
 	 * 
@@ -36,10 +79,34 @@ public class PricingFactory {
 	public static Pricing getPricing(ErpMaterialModel material, ErpCharacteristicValuePriceModel[] charValuePrices) {
 		// build material pricing conditions
 		if (DEBUG) LOGGER.debug("Building material pricing");
-
+		List<ErpMaterialPriceModel> materialPriceList =material.getPrices(); 
+		//Collections.sort(materialPriceList, erpMatPriceModelComparator);
+		String sapZoneId = "";
+		List subList = new ArrayList<ErpMaterialPriceModel>();
+		ZonePriceListing zonePriceList = new ZonePriceListing();
+		MaterialPrice promoPrice = null;
+		for(Iterator it=materialPriceList.iterator();it.hasNext();){
+			ErpMaterialPriceModel erpMaterialPrice = (ErpMaterialPriceModel)it.next();
+			
+			if(sapZoneId.length() == 0 || sapZoneId.equals(erpMaterialPrice.getSapZoneId())){
+					subList.add(erpMaterialPrice);
+			}
+			else if(!sapZoneId.equals(erpMaterialPrice.getSapZoneId())) {
+				MaterialPrice[] materialPrices = buildMaterialPrices(
+						(ErpMaterialPriceModel[]) subList.toArray(new ErpMaterialPriceModel[0]));
+				ZonePriceModel zpModel = new ZonePriceModel(sapZoneId, materialPrices);
+				zonePriceList.addZonePrice(zpModel);
+				subList.clear();
+				subList.add(erpMaterialPrice);
+			}
+			sapZoneId = erpMaterialPrice.getSapZoneId();
+		} 
+		//Do the same for the last zone in the list.
 		MaterialPrice[] materialPrices = buildMaterialPrices(
-			(ErpMaterialPriceModel[]) material.getPrices().toArray(new ErpMaterialPriceModel[0])
-		);
+				(ErpMaterialPriceModel[]) subList.toArray(new ErpMaterialPriceModel[0]));
+		ZonePriceModel zpModel = new ZonePriceModel(sapZoneId, materialPrices);
+		zonePriceList.addZonePrice(sapZoneId, zpModel);
+		subList.clear();
 
 		// build characteristic value pricing conditions
 		if (DEBUG) LOGGER.debug("Building CV pricing");
@@ -49,9 +116,20 @@ public class PricingFactory {
 		if (DEBUG) LOGGER.debug("Building sales unit ratios");
 		SalesUnitRatio[] salesUnitRatios = buildSalesUnitRatios( material.getSalesUnits() );
 
-		return new Pricing(materialPrices, cvPrices, salesUnitRatios);
+		return new Pricing(zonePriceList, cvPrices, salesUnitRatios);
 	}
 
+	private static MaterialPrice buildPromoPrice(ErpMaterialPriceModel erpPrice) {
+
+		// get scale unit from first erp price
+		String scaleUnit = erpPrice.getScaleUnit();
+		if (!"".equals(scaleUnit.trim())) {
+			//Cannot have promo price for scaled pricing.
+			return null;
+		}
+		if (DEBUG) LOGGER.debug("Adding new PromoPrice ["+ erpPrice.getPrice() +","+ erpPrice.getPricingUnit() +"]");
+		return new MaterialPrice(erpPrice.getPrice(), erpPrice.getPricingUnit(),erpPrice.getPromoPrice());
+	}
 	/**
 	 * Build a MaterialPrice array.
 	 *
@@ -72,7 +150,7 @@ public class PricingFactory {
 			for (int i=0; i<prices.length; i++) {
 				ErpMaterialPriceModel p=erpPrices[i];
 				if (DEBUG) LOGGER.debug("Adding new MaterialPrice ["+ p.getPrice() +","+ p.getPricingUnit() +"]");
-				prices[i] = new MaterialPrice(p.getPrice(), p.getPricingUnit());
+				prices[i] = new MaterialPrice(p.getPrice(), p.getPricingUnit(), p.getPromoPrice());
 			}
 
 		} else {
@@ -98,8 +176,8 @@ public class PricingFactory {
 				} else {
 					upper=erpPrices[i+1].getScaleQuantity();
 				}
-				if (DEBUG) LOGGER.debug("Adding new MaterialPrice w/ scale ["+ p.getPrice() +","+ p.getPricingUnit() +","+ lower +","+ upper +","+ scaleUnit +"]");
-				prices[i] = new MaterialPrice(p.getPrice(), p.getPricingUnit(), lower, upper, scaleUnit);
+				if (DEBUG) LOGGER.debug("Adding new MaterialPrice w/ scale ["+ p.getPrice() +","+ p.getPricingUnit() +","+ lower +","+ upper +","+ scaleUnit +","+p.getPromoPrice()+"]");
+				prices[i] = new MaterialPrice(p.getPrice(), p.getPricingUnit(), lower, upper, scaleUnit, p.getPromoPrice());
 			}
 		}
 		return prices;

@@ -7,6 +7,8 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.Map;
 
+import com.freshdirect.common.pricing.PricingContext;
+
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.content.TemplateRenderer;
 import com.freshdirect.framework.template.ITemplateRenderer;
@@ -81,6 +83,17 @@ public class MediaUtils {
 		// JspWriter out = this.pageContext.getOut();
 		
 		TemplateContext context = parameters != null ? new TemplateContext(parameters) : null;
+		boolean errorReport = withErrorReport == null ? false : withErrorReport.booleanValue();
+
+		MediaUtils.renderMedia(url, out, context, errorReport);
+	}
+	
+	public static void render(String name, Writer out, Map parameters, Boolean withErrorReport, PricingContext pricingContext) throws IOException, TemplateException {
+		URL url = MediaUtils.resolve(FDStoreProperties.getMediaPath(), name);
+
+		// JspWriter out = this.pageContext.getOut();
+		
+		TemplateContext context = parameters != null ? new TemplateContext(parameters, pricingContext) : null;
 		boolean errorReport = withErrorReport == null ? false : withErrorReport.booleanValue();
 
 		MediaUtils.renderMedia(url, out, context, errorReport);

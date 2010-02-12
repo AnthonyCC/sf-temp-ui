@@ -749,6 +749,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 		while(rs.next()){
 			sapcustomerId = rs.getString("sap_id");	
 		}
+		System.out.println("SAP Customer ID :"+sapcustomerId.length());
 		rs.close();
 		ps.close();
 		

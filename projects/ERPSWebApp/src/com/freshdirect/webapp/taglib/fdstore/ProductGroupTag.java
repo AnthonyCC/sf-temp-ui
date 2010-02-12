@@ -10,6 +10,9 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 /**
@@ -31,7 +34,13 @@ public class ProductGroupTag extends AbstractGetterTag {
 	}
 	
 	protected Object getResult() throws FDResourceException {
-		return ContentFactory.getInstance().getProductByName( this.categoryId, this.productId );
+		ProductModel pm = ContentFactory.getInstance().getProductByName( this.categoryId, this.productId );
+		//Convert to Product Pricing Adapter for Zone Pricing.
+		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+		if(pm != null)
+			return ProductPricingFactory.getInstance().getPricingAdapter(pm, user.getPricingContext());
+		else
+			return null;
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {

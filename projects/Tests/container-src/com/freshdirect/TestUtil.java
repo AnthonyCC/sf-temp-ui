@@ -24,7 +24,7 @@ public class TestUtil {
 		defaults.put("tests.contextFactory", "weblogic.jndi.WLInitialContextFactory");
 		//stage: app1.stage.nyc2:7221
 		//int: app1.dev.nyc1:7221
-		defaults.put("tests.providerURL", "t3://localhost:80");
+		defaults.put("tests.providerURL", "t3://localhost:7001");
 		CONFIG = com.freshdirect.framework.util.ConfigHelper.getPropertiesFromClassLoader("tests.properties", defaults);
 	}
 

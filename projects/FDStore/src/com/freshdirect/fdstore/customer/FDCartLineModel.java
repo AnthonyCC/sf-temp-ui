@@ -49,13 +49,13 @@ public class FDCartLineModel extends AbstractCartLine {
 		super(orderLine, firstInvoiceLine, lastInvoiceLine, returnLine);
 	}
 
-	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId) {
-		super(sku, productRef, configuration, variantId);
+	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, String pZoneId) {
+		super(sku, productRef, configuration, variantId, pZoneId);
 		this.orderLine.setCartlineId(ID_GENERATOR.getNextId());
 	}
 	
-	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String cartlineId, String recipeSourceId, boolean requestNotification, String variantId) {
-		super(sku, productRef, configuration, variantId);
+	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String cartlineId, String recipeSourceId, boolean requestNotification, String variantId, String pZoneId) {
+		super(sku, productRef, configuration, variantId, pZoneId);
 		this.orderLine.setCartlineId(cartlineId);
 		this.orderLine.setRecipeSourceId(recipeSourceId);
 		this.orderLine.setRequestNotification(requestNotification);
@@ -72,9 +72,10 @@ public class FDCartLineModel extends AbstractCartLine {
 				FDProductInfo productInfo = FDCachedFactory.getProductInfo(ol.getSku().getSkuCode());
 				EnumOrderLineRating rating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
 				ol.setProduceRating(rating);
-				ol.setBasePrice(productInfo.getBasePrice());
-				ol.setBasePriceUnit(productInfo.getBasePriceUnit());
-				
+				ol.setBasePrice(productInfo.getZonePriceInfo(getPricingContext().getZoneId()).getSellingPrice());
+				ol.setBasePriceUnit(productInfo.getDefaultPriceUnit());	
+				//ol.setUserZoneId(getPricingContext().getZoneId());				
+				ol.setPricingZoneId(productInfo.getZonePriceInfo(getPricingContext().getZoneId()).getSapZoneId());
 //				Promotion p= (Promotion) PromotionFactory.getInstance().getPromotion("SORI_TEST");
 //				PercentOffApplicator app = (PercentOffApplicator)p.getApplicator();
 //				double discUnitPrice =  (ol.getPrice()/ol.getQuantity()) * app.getPercentOff();
@@ -106,7 +107,7 @@ public class FDCartLineModel extends AbstractCartLine {
 
 	public FDCartLineI createCopy() {
 		FDCartLineModel newLine = new FDCartLineModel(this.getSku(), this
-				.getProductRef().lookupProductModel(), this.getConfiguration(), this.getVariantId());
+				.getProductRef().lookupProductModel(), this.getConfiguration(), this.getVariantId(), this.getPricingContext().getZoneId());
 		newLine.setRecipeSourceId(this.getRecipeSourceId());
 		newLine.setRequestNotification(this.isRequestNotification());
 		newLine.setSource(this.source);

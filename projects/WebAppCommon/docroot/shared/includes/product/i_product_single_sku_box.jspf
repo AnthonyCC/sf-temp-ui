@@ -34,13 +34,13 @@
                     %>(<%= secDomainValue.getLabel() %>)<%
                 }
                 %>
-				<% if ( productInfo.hasWasPrice() ) { %>
-	                <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+				<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ) { %>
+	                <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
 	                <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></font>				
                     <br/>
-                    <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getBasePrice()) %>)</font>
+                    <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()) %>)</font>
 				<% } else { %>
-	                <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+	                <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
 	                <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></font>
 				<% } %> 
                 <br/>
@@ -60,14 +60,14 @@
 	                %>
 	                
 	                
-					<% if ( productInfo.hasWasPrice() ) { %>
-	                	<font class="productPageSinglePrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+					<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ) { %>
+	                	<font class="productPageSinglePrice" color="#C94747"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
 	                	<font class="productPageSinglePriceUnit" color="#C94747">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
                         <br/>
-                        <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getBasePrice()) %>)</font>
+                        <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()) %>)</font>
                         <br/>
 					<% } else { %>
-	                	<font class="productPageSinglePrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+	                	<font class="productPageSinglePrice"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
 	                	<font class="productPageSinglePriceUnit">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
 					<% } %> 
 

@@ -10,6 +10,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
@@ -117,7 +118,7 @@ public class FDCustomerProductListLineItem extends FDCustomerListItem {
 
 		return cachedProduct; 
 	}
-	
+	 
 
 	public FDProductSelectionI convertToSelection() throws IllegalStateException, FDSkuNotFoundException, FDResourceException{
 		FDProductInfo prodInfo = FDCachedFactory.getProductInfo(this.getSkuCode());
@@ -125,7 +126,7 @@ public class FDCustomerProductListLineItem extends FDCustomerListItem {
 		
 		FDProductSelection r = new  FDProductSelection(new FDSku(prodInfo.getSkuCode(), prodInfo.getVersion()),
 									  prod,
-									  this.configuration);
+									  this.configuration, ZonePriceListing.MASTER_DEFAULT_ZONE);
 		
 		r.setCustomerListLineId(this.getPK() == null ? null : this.getPK().getId());
 		

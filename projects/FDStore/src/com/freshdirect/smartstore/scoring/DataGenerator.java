@@ -12,7 +12,7 @@ public class DataGenerator {
     Set<String> factors;
 
     public List<ContentNodeModel> generate(SessionInput sessionInput, DataAccess input) {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public void setFactors(Set<String> factors) {
@@ -22,5 +22,4 @@ public class DataGenerator {
     public Set<String> getFactors() {
         return factors;
     }
-
 }

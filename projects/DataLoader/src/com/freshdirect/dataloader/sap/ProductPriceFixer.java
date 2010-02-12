@@ -17,6 +17,7 @@ import com.freshdirect.erp.*;
 import com.freshdirect.erp.model.*;
 import com.freshdirect.erp.ejb.*;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.ZonePriceListing;
 
 import com.freshdirect.common.pricing.*;
 
@@ -87,9 +88,9 @@ public class ProductPriceFixer {
                 System.out.println(erpMatl.getSapId() + " lowest ratio is " + lowestRatio.getNumerator() + " / " + lowestRatio.getDenominator());
                 FDConfiguration prConf = new FDConfiguration( 1.0, lowestRatio.getAlternativeUnit() );
                 
-                try {
+                try { 
 
-                    MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice( pr, prConf ).getPricingCondition();
+                    MaterialPrice pricingCondition = PricingEngine.getConfiguredPrice( pr, prConf, PricingContext.DEFAULT).getPricingCondition();
 
                     double defaultPrice = pricingCondition.getPrice();
                     String defaultPriceUnit = pricingCondition.getPricingUnit();
@@ -97,7 +98,7 @@ public class ProductPriceFixer {
                     System.out.println(erpMatl.getSapId() + " " + defaultPrice + " " + defaultPriceUnit);
 
                     //
-                    // update the product table
+                    // update the product table 
                     //
                     ps.clearParameters();
                     ps.setDouble(1, defaultPrice);

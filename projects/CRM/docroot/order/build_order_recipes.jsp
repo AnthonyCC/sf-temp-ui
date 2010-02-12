@@ -2,13 +2,14 @@
 
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.cms.*'%>
 <%@ page import='com.freshdirect.cms.application.*'%>
 <%@ page import='com.freshdirect.cms.node.*'%>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='java.util.*'%>
 <%@ page import='java.net.*'%>
 
@@ -17,6 +18,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%
+    FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
     RecipeDepartment recipeDepartment = (RecipeDepartment) ContentFactory.getInstance().getContentNode("rec");
 
 	//

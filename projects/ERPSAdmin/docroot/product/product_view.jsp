@@ -2,6 +2,7 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.util.FormElementNameHelper' %>
+<%@ page import='com.freshdirect.erp.model.*' %>
 <%@ page import='java.text.DecimalFormat' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -87,12 +88,33 @@ function copyConfirm(value){
                 <form action="product_view.jsp" method="post">
                 <input type=hidden name=action value=save>
                 <table width="600" cellspacing="2" cellpadding="0">
-                    <tr><th align="left">Default Price</th><th align="left">Default Pricing Unit Description</th></tr>
-                    <tr><td><%= product.getDefaultPrice() %> / <%= product.getDefaultPriceUnit().toLowerCase() %></td><td align="left"><input type=text size=20 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION) %>'></td></tr>
+                    <tr><th align="left">Default Pricing Unit Description</th></tr>
+                    <tr>                    
+                    <td align="left"><input type=text size=20 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION) %>'></td></tr>
                     <tr><td colspan="2" align="center"><input type="submit" value="save changes"></td></tr>
                 </table>
                 </form>
-                <%  }   %>
+                <table width="600" cellspacing="2" cellpadding="0">
+                <tr><th align="left">Zone Id</th><th align="left">Price</th></tr>
+                <% 
+                
+                      java.util.List prices=product.getProxiedMaterial().getPrices();
+                      for(int i=0;i<prices.size();i++)
+                      {
+                    	  ErpMaterialPriceModel model=(ErpMaterialPriceModel)prices.get(i);   
+                      
+                %>
+                
+                
+                    
+                    <tr>                    
+                    <td align="left"><%=model.getSapId() %></td>
+                    <td align="left"><%=model.getPrice() %></td></tr>                                
+                <%
+                      }
+                 %></table>     
+                                                                                     
+                  <%  }   %>
                 <table width="600" cellspacing=2 cellpadding=0>
                     <tr><th align="left" class="section_title" colspan=3>SAP Material</td></tr>
 					<% if (product.getSkuCode() == null) { %>

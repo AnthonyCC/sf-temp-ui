@@ -17,6 +17,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.fdstore.*;
 import com.freshdirect.fdstore.content.*;
 import com.freshdirect.fdstore.customer.*;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**
  *
@@ -60,12 +63,14 @@ public class ConfigureProductTag extends com.freshdirect.framework.webapp.BodyTa
 			//
 			// Get sku for this ProductModel
 			//
-		        String skuCode = product.getDefaultSkuCode();
-			if (skuCode==null) {
+			FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+			PriceCalculator priceCalculator = new PriceCalculator(user.getPricingContext(), product);
+			SkuModel defaultSku = priceCalculator.getSkuModel();
+			if (defaultSku==null) {
 				return SKIP_BODY;
 			}
-
-			FDProductInfo productInfo = FDCachedFactory.getProductInfo(skuCode);
+			String skuCode = defaultSku.getSkuCode();
+			FDProductInfo productInfo = priceCalculator.getProductInfo();
 			FDProduct fdProd = FDCachedFactory.getProduct( skuCode, productInfo.getVersion() );
 
 
@@ -76,7 +81,7 @@ public class ConfigureProductTag extends com.freshdirect.framework.webapp.BodyTa
 			// FIXME: variant ID is null here (last param). Is it correct?
 			String configDescValue = this.buildConfiguration(fdProd);
 			this.configProductValue = new FDCartLineModel(new FDSku(fdProd),
-					this.product, this.configuration, null);
+					this.product, this.configuration, null, getPricingZoneId());
 
 			//
 			// Set variables in PageContext
@@ -160,13 +165,19 @@ public class ConfigureProductTag extends com.freshdirect.framework.webapp.BodyTa
 		// make the configured product for this sales unit & these options
 		//
 		this.configuration = new FDConfiguration(0, salesUnit, optionMap);
-System.out.println(" Config  Desc: "+configBuffer.toString());
 		//this.configProductValue = new FDConfiguredProduct(fdproduct, salesUnit.getName(), optionMap);
 		// set the configuration description
 		return configBuffer.toString();
 
 	}
 
+    private String getPricingZoneId() {
+        FDUserI user = FDSessionUser.getFDSessionUser(pageContext.getSession());
+        if (user == null) {
+            throw new FDRuntimeException("User object is Null");
+        }
+        return user.getPricingZoneId();
+    }
 
 
 }

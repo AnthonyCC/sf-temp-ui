@@ -16,6 +16,7 @@ import java.util.Set;
 import java.io.IOException;
 
 import com.freshdirect.fdstore.*;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.*;
 
 import com.freshdirect.common.customer.EnumServiceType;
@@ -162,6 +163,11 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         if (this.id != null) {
             pageContext.setAttribute(this.id, user);
         }
+        
+        if (user != null)
+        	ContentFactory.getInstance().setCurrentPricingContext(user.getPricingContext());
+        else
+        	LOGGER.warn("cannot set pricing context");
 
         /*
          * 

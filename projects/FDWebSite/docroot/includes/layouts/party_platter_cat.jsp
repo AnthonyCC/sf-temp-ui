@@ -2,6 +2,8 @@
 <%@ page import='com.freshdirect.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='java.util.*'%>
 <%@ page import='java.net.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -11,6 +13,7 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
+FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 String catId = request.getParameter("catId");
 boolean isGroceryVirtual=false;
 CategoryModel currentFolder = (CategoryModel) ContentFactory.getInstance().getContentNode(catId);
@@ -94,7 +97,7 @@ for(Iterator itr=sortedColl.iterator(); itr.hasNext() && allSoldOut;) {
 <%            if (pm.isUnavailable()) {     %>
                  <td align="left"><font color="#cccccc"><b><%=pm.getFullName()%></b></a></td><td>&nbsp;-&nbsp;<font color="#ff0000"><b>SOLD OUT</b></font></td>
 <%            } else {   %>
-                <td><a href="/product.jsp?catId=<%=pm.getParentNode()%>&productId=<%=pm%>&trk=cpage"><b><%=pm.getFullName()%></b></a></td><td>&nbsp;-&nbsp;<b><%=JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())%></td></b></td>
+                <td><a href="/product.jsp?catId=<%=pm.getParentNode()%>&productId=<%=pm%>&trk=cpage"><b><%=pm.getFullName()%></b></a></td><td>&nbsp;-&nbsp;<b><%=JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())%></td></b></td>
 <%            }  %> </tr>
           </fd:FDProductInfo>
 <%      }  %></table>

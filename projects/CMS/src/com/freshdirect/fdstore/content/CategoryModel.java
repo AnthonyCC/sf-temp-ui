@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
@@ -18,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.smartstore.CmsRecommenderService;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.conf.FDRegistry;
@@ -33,11 +36,20 @@ public class CategoryModel extends ProductContainer {
 			TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
 			new ThreadPoolExecutor.DiscardPolicy());
 	
-	private static final long TWO_MINUTES = 2l * 60l * 1000l;
+	private static final long FIVE_MINUTES = 5l * 60l * 1000l;
 	
 	private final class RecommendedProductsRef extends BalkingExpiringReference {
-		private RecommendedProductsRef(long refreshPeriod, Executor executor) {
-			super(refreshPeriod, executor);
+		String zoneId;
+
+		private RecommendedProductsRef(Executor executor, String zoneId) {
+			super(FIVE_MINUTES, executor);
+			this.zoneId = zoneId;
+			// synchronous load
+			try {
+				set(load());
+			} catch (RuntimeException e) {
+				LOGGER.error("failed to initialize smart products for category " + CategoryModel.this.getContentName() + " and zone " + zoneId + " synchronously");
+			}
 		}
 
 		@Override
@@ -47,16 +59,16 @@ public class CategoryModel extends ProductContainer {
 			String recommenderId = CategoryModel.this.getRecommender() != null ?
 					CategoryModel.this.getRecommender().getContentName()
 					: null;
-			LOGGER.debug("loader started for category " + categoryId + ", recommender: " + recommenderId);
+			LOGGER.debug("loader started for category " + categoryId + ", zone " + zoneId + ", recommender: " + recommenderId);
 			if ( recommenderService != null && recommenderId != null ) {
-				List<String> prodIds = recommenderService.recommendNodes( recommenderId, categoryId );
+				List<String> prodIds = recommenderService.recommendNodes(recommenderId, categoryId, zoneId);
 				List<ProductModel> products = new ArrayList<ProductModel>( prodIds.size() );
 				for ( String productId : prodIds ) {
 					ContentNodeModel product = ContentFactory.getInstance().getContentNode( productId );
 					if ( product instanceof ProductModel && !products.contains( product ) )
 						products.add( (ProductModel)product );
 				}
-				LOGGER.debug( "found " + products.size() + " products for category " + categoryId );
+				LOGGER.debug( "found " + products.size() + " products for category " + categoryId + ", zone " + zoneId);
 				return products;
 			} else {
 				LOGGER.warn("recommender service ("
@@ -77,11 +89,20 @@ public class CategoryModel extends ProductContainer {
 			}
 			return null;
 		}
+		
+		public String getZoneId() {
+			return zoneId;
+		}
 	}
 
 	private CategoryAlias categoryAlias;
+
+	/**
+	 * map of zoneId --> recommended products reference
+	 */
+	private Map<String, RecommendedProductsRef> recommendedProductsRefMap = new HashMap<String, RecommendedProductsRef>();
 	
-	private BalkingExpiringReference recommendedProductsRef;
+	private Object recommendedProductsSync = new Object();
 
 	private List subcategoriesModels = new ArrayList();
 
@@ -340,17 +361,21 @@ public class CategoryModel extends ProductContainer {
 
 		Recommender recommender = getRecommender();
 		if (recommender != null) {
-			if (recommendedProductsRef == null)
-				recommendedProductsRef = new RecommendedProductsRef(TWO_MINUTES, threadPool);
+			String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
+			LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
+			synchronized (recommendedProductsSync) {
+			if (recommendedProductsRefMap.get(zoneId) == null)
+				recommendedProductsRefMap.put(zoneId, new RecommendedProductsRef(threadPool, zoneId));
+			}
 
 			try {
-				List recProds = (List) recommendedProductsRef.get();
+				List recProds = (List) recommendedProductsRefMap.get(zoneId).get();
 				if (recProds != null) {
 					for (Iterator pItr = recProds.iterator(); pItr.hasNext();) {
 					        ContentNodeModelImpl newProd = (ContentNodeModelImpl) ((ContentNodeModelImpl) pItr.next()).clone();
 						newProd.setParentNode(this);
-						newProd.setPriority(prodList.size());
 						if (!prodList.contains(newProd)) {
+							newProd.setPriority(prodList.size());
 							prodList.add(newProd);
 						}
 					}
@@ -360,8 +385,7 @@ public class CategoryModel extends ProductContainer {
 			}
 		}
 		
-		return new ArrayList(prodList);
-		
+		return prodList;
 	}
 
     private List getFilterList() {

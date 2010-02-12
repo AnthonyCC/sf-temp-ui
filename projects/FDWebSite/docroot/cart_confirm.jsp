@@ -85,6 +85,7 @@ Recipe recipe = null;
     //--------OAS Page Variables-----------------------
     request.setAttribute("sitePage", productNode.getPath());
     request.setAttribute("listPos", "LittleRandy,SystemMessage,SideCartBottom");
+    FDUserI userd = (FDUserI)session.getAttribute(SessionName.USER);
 %>
 
 <tmpl:insert template='<%=jspTemplate%>'>
@@ -115,7 +116,7 @@ Recipe recipe = null;
     FDProduct defaultProduct = prdNode.getDefaultSku().getProduct();
 	boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays().isEmpty();
 	
-    boolean isPricedByLB = ("LB".equalsIgnoreCase((defaultProduct.getPricing().getMaterialPrices()[0]).getPricingUnit()));
+    boolean isPricedByLB = ("LB".equalsIgnoreCase((defaultProduct.getPricing().getZonePrice(userd.getPricingContext().getZoneId()).getMaterialPrices()[0]).getPricingUnit()));
     boolean isSoldByLB = isPricedByLB && ("LB".equalsIgnoreCase((defaultProduct.getSalesUnits()[0]).getName()));
     ContentFactory contentFactory = ContentFactory.getInstance();
     Image confirmImage = prdNode.getConfirmImage();
@@ -177,7 +178,7 @@ Recipe recipe = null;
 <%  }
             itemShown++;
   }
-  FDUserI userd = (FDUserI)session.getAttribute(SessionName.USER);
+  
   int level = userd.getLevel();
   if(level == FDUserI.GUEST && !userd.isInZone() && !userd.isCorporateUser()){%>
     <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>

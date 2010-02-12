@@ -24,6 +24,8 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.PricingContext;
+
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
@@ -194,7 +196,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
             Date endDate = new Date(lastRequestDate);
             for (int i = 0; i < logEntries.size(); i++) {
                 ((SessionImpressionLogEntry) logEntries.get(i)).setStartEndTime(startDate, endDate);
+                ((SessionImpressionLogEntry) logEntries.get(i)).setZoneId(user.getPricingZoneId());
+                System.out.println("SessionImpressionLogEntry:sessionId:"+((SessionImpressionLogEntry) logEntries.get(i)).getSessionId());
             }
+            
             SessionImpressionLog.getInstance().saveLogEntries(logEntries);
         }
     }
@@ -1033,5 +1038,22 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public int getTotalRegularOrderCount() throws FDResourceException {
     	return this.user.getTotalRegularOrderCount();
     }
+	
+    public String getPricingZoneId(){
+    	return this.user.getPricingZoneId();
+    }
+
+	public PricingContext getPricingContext() {
+		return this.user.getPricingContext();
+	}
+
+	/*
+	public void setPricingContext(PricingContext pricingContext){
+		this.user.setPricingContext(pricingContext);
+	}
+	*/
+	public void resetPricingContext() {
+		this.user.resetPricingContext();
+	}
 }
 

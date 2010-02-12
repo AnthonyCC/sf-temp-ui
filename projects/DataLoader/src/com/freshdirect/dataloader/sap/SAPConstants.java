@@ -77,6 +77,7 @@ public interface SAPConstants {
 	public static final String PLATTER = "Platter";
 	public static final String DAY_INDICATOR = "Day-specific Indicator";
 	public static final String RATING="Produce Rating";
+	public static final String ZONE_ID="Zone Price";
 	public static final String DAYS_FRESH = "Days Fresh";
 	public static final String DAYS_IN_HOUSE = "Days In House";
 

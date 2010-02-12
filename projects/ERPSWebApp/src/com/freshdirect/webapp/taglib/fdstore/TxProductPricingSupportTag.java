@@ -140,7 +140,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 			
 			
 			Pricing pricing = product.getPricing();
-			MaterialPrice[] matPrices = pricing.getMaterialPrices();
+			MaterialPrice[] matPrices = pricing.getZonePrice(customer.getPricingZoneId()).getMaterialPrices();
 			CharacteristicValuePrice[] cvPrices = pricing.getCharacteristicValuePrices();
 			SalesUnitRatio[] suRatios = pricing.getSalesUnitRatios();
 

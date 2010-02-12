@@ -7,12 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentNodeModelReference;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.YmalSource;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.util.Reference;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
@@ -59,18 +62,22 @@ public class Recommendations implements Serializable {
 	// array of logged products
 	boolean logged[];
 	
+	//Added for Zone Pricing.
+	private PricingContext pricingCtx;
 
 	/**
 	 * Constructor.
 	 * @param variant 
 	 * @param contentKeys List<{@link ProductModel}>
 	 */
-	public Recommendations(Variant variant, List<ContentNodeModel> contentNodes, boolean isRefreshable, boolean isSmartSavings, int wsize) {
+	public Recommendations(Variant variant, List<ContentNodeModel> contentNodes, boolean isRefreshable, boolean isSmartSavings, int wsize, PricingContext pricingCtx) {
 		this.variant = new VariantReference(variant);
 		this.productReferences = new ArrayList<ProductReference>(contentNodes.size());
 		this.products = new ArrayList<ProductModel>(contentNodes.size());
+		this.pricingCtx = pricingCtx;
 		for (ContentNodeModel m : contentNodes) {
-		    ProductModel p = (ProductModel)m;
+			//Convert to ProductModelPricingAdapter for Zone Pricing
+		    ProductModel p = ProductPricingFactory.getInstance().getPricingAdapter((ProductModel)m,pricingCtx);
 		    this.products.add(p);
 		    this.productReferences.add(new ProductReference(p));
 		}
@@ -105,7 +112,7 @@ public class Recommendations implements Serializable {
 	}
 
 	public Recommendations(Variant variant, List<ContentNodeModel> contentNodes) {
-		this(variant, contentNodes, true, false, MAX_PRODS);
+		this(variant, contentNodes, true, false, MAX_PRODS, new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE));
 	}
 	
 	/**
@@ -119,7 +126,8 @@ public class Recommendations implements Serializable {
 	 */
 	public Recommendations(Variant variant, List<ContentNodeModel> products, SessionInput sessionInput,
 			boolean isRefreshable, boolean isSmartSavings) {
-		this(variant, products, isRefreshable, isSmartSavings, sessionInput != null && sessionInput.getMaxRecommendations() > 0 ? sessionInput.getMaxRecommendations() : MAX_PRODS );
+		this(variant, products, isRefreshable, isSmartSavings, sessionInput != null && sessionInput.getMaxRecommendations() > 0 ? sessionInput.getMaxRecommendations() : MAX_PRODS,
+				sessionInput != null && sessionInput.getPricingContext() != null ? sessionInput.getPricingContext() : new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE));
 		if (sessionInput != null) {
 		    this.previousRecommendations = sessionInput.getPreviousRecommendations();
 		    this.category = new ContentNodeModelReference<CategoryModel> (sessionInput.getCategory());

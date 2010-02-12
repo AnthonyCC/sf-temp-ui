@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.scoring.DataAccess;
@@ -18,15 +19,17 @@ import com.freshdirect.smartstore.service.SearchScoringRegistry;
 class ScriptedContentNodeComparator implements Comparator<ContentNodeModel> {
     final DataAccess dataAccess;
     final String userId;
+    final PricingContext pricingContext;
     final ScoringAlgorithm algorithm;
 
     private String[] variables;
     private Map<ContentKey, Score> cache = new HashMap<ContentKey, Score>();
 
-    ScriptedContentNodeComparator(DataAccess dataAccess, String userId, ScoringAlgorithm algorithm) {
+    ScriptedContentNodeComparator(DataAccess dataAccess, String userId, PricingContext pricingContext, ScoringAlgorithm algorithm) {
         super();
         this.dataAccess = dataAccess;
         this.userId = userId;
+        this.pricingContext = pricingContext;
         this.algorithm = algorithm;
         this.variables = algorithm.getVariableNames();
     }
@@ -34,7 +37,7 @@ class ScriptedContentNodeComparator implements Comparator<ContentNodeModel> {
     Score getScore(ContentNodeModel contentNode) {
         Score score = cache.get(contentNode.getContentKey());
         if (score == null) {
-            double[] vars = dataAccess.getVariables(userId, contentNode, variables);
+            double[] vars = dataAccess.getVariables(userId, pricingContext, contentNode, variables);
             score = new Score(contentNode, algorithm.getScores(vars));
             cache.put(contentNode.getContentKey(), score);
         }
@@ -49,20 +52,13 @@ class ScriptedContentNodeComparator implements Comparator<ContentNodeModel> {
     }
     
     /**
-     * Return a global popularity based comparator, where the scoring functions comes from FDStoreProperties.
-     *  
-     */
-    public static ScriptedContentNodeComparator createGlobalComparator() {
-       return new ScriptedContentNodeComparator(ScoreProvider.getInstance(), null, SearchScoringRegistry.getInstance().getGlobalScoringAlgorithm());
-    }
-
-    /**
      * Return an user specific comparator based on a custom scoring functions, which is defined by FDStoreProperties.
      * @param userId
      * @return
      */
-    public static ScriptedContentNodeComparator createUserComparator(String userId) {
-        return new ScriptedContentNodeComparator(ScoreProvider.getInstance(), userId, SearchScoringRegistry.getInstance().getUserScoringAlgorithm());
+    public static ScriptedContentNodeComparator createComparator(String userId, PricingContext pricingContext, boolean global) {
+        return new ScriptedContentNodeComparator(ScoreProvider.getInstance(), userId, pricingContext, 
+        		global ? SearchScoringRegistry.getInstance().getGlobalScoringAlgorithm() : SearchScoringRegistry.getInstance().getUserScoringAlgorithm());
     }    
 
 }

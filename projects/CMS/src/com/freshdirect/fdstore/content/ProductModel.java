@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -43,12 +44,17 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 
 		public int compare(Object obj1, Object obj2) {
 			try {
-				FDProductInfo pi1 = FDCachedFactory.getProductInfo(((SkuModel) obj1).getSkuCode());
-				FDProductInfo pi2 = FDCachedFactory.getProductInfo(((SkuModel) obj2).getSkuCode());
-				if (pi1.getDefaultPrice() > pi2.getDefaultPrice()) {
+				SkuModel sku1 = ((SkuModel) obj1);
+				SkuModel sku2 = ((SkuModel) obj2);
+				String zoneId1 = sku1.getPricingContext().getZoneId();
+				String zoneId2 = sku2.getPricingContext().getZoneId();
+				FDProductInfo pi1 = FDCachedFactory.getProductInfo(sku1.getSkuCode());
+				FDProductInfo pi2 = FDCachedFactory.getProductInfo(sku2.getSkuCode());
+				if (pi1.getZonePriceInfo(zoneId1).getDefaultPrice() > 
+								pi2.getZonePriceInfo(zoneId2).getDefaultPrice()) {
 					flips++;
 					return 1;
-				} else if (pi1.getDefaultPrice() < pi2.getDefaultPrice()) {
+				} else if (pi1.getZonePriceInfo(zoneId1).getDefaultPrice() < pi2.getZonePriceInfo(zoneId2).getDefaultPrice()) {
 					flips++;
 					return -1;
 				} else {
@@ -73,6 +79,34 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 
 	}
 	
+	
+	public static class ZonePriceComparator implements Comparator<SkuModel> {
+	    String zoneId;
+	    
+            public ZonePriceComparator(String zoneId) {
+                this.zoneId = zoneId;
+            }
+
+            @Override
+            public int compare(SkuModel sku1, SkuModel sku2) {
+                try {
+                    FDProductInfo pi1 = FDCachedFactory.getProductInfo(sku1.getSkuCode());
+                    FDProductInfo pi2 = FDCachedFactory.getProductInfo(sku2.getSkuCode());
+                    if (pi1.getZonePriceInfo(zoneId).getDefaultPrice() > pi2.getZonePriceInfo(zoneId).getDefaultPrice()) {
+                        return 1;
+                    } else if (pi1.getZonePriceInfo(zoneId).getDefaultPrice() < pi2.getZonePriceInfo(zoneId).getDefaultPrice()) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                } catch (FDResourceException e) {
+                    throw new RuntimeException(e);
+                } catch (FDSkuNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+	}
+	
 	public static class ProductModelPriceComparator implements Comparator {
 
 	    final boolean inverse;
@@ -86,8 +120,9 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
                 ProductModel model1 = (ProductModel) o1;
                 SkuModel sku1 = model1.getDefaultSku();
                 if (sku1 != null) {
+    				String zoneId1 = sku1.getPricingContext().getZoneId();
                     try {
-                        price1 = sku1.getProductInfo().getDefaultPrice();
+                        price1 = sku1.getProductInfo().getZonePriceInfo(zoneId1).getDefaultPrice();
                     } catch (FDResourceException e) {
                         e.printStackTrace();
                     } catch (FDSkuNotFoundException e) {
@@ -98,8 +133,9 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
                 ProductModel model2 = (ProductModel) o2;
                 SkuModel sku2 = model2.getDefaultSku();
                 if (sku2 != null) {
+                    String zoneId2 = sku2.getPricingContext().getZoneId();
                     try {
-                        price2 = sku2.getProductInfo().getDefaultPrice();
+                        price2 = sku2.getProductInfo().getZonePriceInfo(zoneId2).getDefaultPrice();
                     } catch (FDResourceException e) {
                         e.printStackTrace();
                     } catch (FDSkuNotFoundException e) {
@@ -555,6 +591,9 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public String getDefaultSkuCode();
 
+	public SkuModel getDefaultSku(PricingContext context);
+	
+	
 	/**
 	 * @param type a multivalued ErpNutritionInfoType
 	 * @return common Set of nutrition information of all available SKUs 
@@ -663,6 +702,8 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public String getTieredPrice(double savingsPercentage);
 	
+	public double getPrice(double savingsPercentage);
+
 	public String getPriceFormatted(double savingsPercentage);
 	
 	public String getPriceFormatted(double savingsPercentage, String skuCode);
@@ -678,6 +719,29 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	//Gift Card changes
 	public List getGiftcardType();
 	
+	public PricingContext getPricingContext();
+
+        /**
+         * @param skuCode
+         * @return the default sku code, if sku code is not specified or the sku is
+         *         not in the products sku, otherwise the specified SkuModel.
+         */
+        public SkuModel getValidSkuCode(PricingContext ctx, String skuCode);
+
+        /**
+         * 
+         * @return a price calculator which encapsulates the default sku, and the pricing context. If there is no default sku, it returns a pricing calculator which returns sensible defaults.
+         */
+        public PriceCalculator getPriceCalculator();
+        
+
+        /**
+         * 
+         * @return a price calculator which encapsulates the default sku, if the given skuCode is invalid, otherwise the sku which is specified, and the pricing context.
+         */
+        public PriceCalculator getPriceCalculator(String skuCode);
+        
+        
 	/**
          * This is used for getting a media attribute, if the usage of the normal getters are not feasible. 
          * For example, when the name of the attribute comes from the client side. It's not a very fortunate

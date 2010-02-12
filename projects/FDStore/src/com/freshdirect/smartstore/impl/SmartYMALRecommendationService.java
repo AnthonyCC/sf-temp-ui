@@ -83,7 +83,7 @@ public class SmartYMALRecommendationService extends
 			List recommenders = ymalSet.getRecommenders();
 
 			SessionInput smartInput = new SessionInput(input.getCustomerId(),
-					input.getCustomerServiceType());
+					input.getCustomerServiceType(), input.getPricingContext());
 			smartInput.setYmalSource(ymalSource);
 			smartInput.setCurrentNode(selectedProduct);
 			smartInput.setCartContents(addContentKeys(new HashSet(), prodList));

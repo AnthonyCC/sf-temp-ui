@@ -43,6 +43,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
@@ -297,7 +298,7 @@ public class OrderConsumer implements IConsumer {
 					new FDCartLineModel(
 						new FDSku(productInfo),
 						productmodel,
-						new FDConfiguration(quantity, salesUnit.getName(), optionMap), null);
+						new FDConfiguration(quantity, salesUnit.getName(), optionMap), null, ZonePriceListing.MASTER_DEFAULT_ZONE);
 
 				cartLine.refreshConfiguration();
 				

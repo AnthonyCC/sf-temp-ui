@@ -261,7 +261,7 @@ ADD</a><% } else { %>&nbsp;<% } %></TD>
 				<TD WIDTH="69%" <%= (isAvailable) ? "" : "class='text7silver'" %>>
 					&nbsp;&nbsp;<a href="<%= prodPageLink %>"><img border="0" src="<%= imgSrc %>" width="<%= imgWidth %>" height="<%= imgHeight %>"></a>&nbsp;<a href="<%=prodPageLink%>" class="product<%= (isAvailable) ? "" : "unavailable" %>"><%= productNode.getFullName() %></a> <%= configuredProd.getConfigurationDesc() != null ? "("+ configuredProd.getConfigurationDesc() +")":"" %></TD>
 <fd:FDProductInfo id="productInfo" skuCode="<%= configSku %>">
-				<TD WIDTH="8%" class="product<%= (isAvailable) ? "" : "_unavailable" %>"><% if (isAvailable) { %><%= CCFormatter.formatCurrency(productInfo.getDefaultPrice()) %>/<%= productInfo.getDisplayableDefaultPriceUnit() %><% } else { %>Not Available<% } %></td>
+				<TD WIDTH="8%" class="product<%= (isAvailable) ? "" : "_unavailable" %>"><% if (isAvailable) { %><%= CCFormatter.formatCurrency(productInfo.getZonePriceInfo(searchUser.getPricingContext().getZoneId()).getDefaultPrice()) %>/<%= productInfo.getDisplayableDefaultPriceUnit() %><% } else { %>Not Available<% } %></td>
 </fd:FDProductInfo>
 				<TD WIDTH="5%" ALIGN="CENTER"><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%=productNode%>&catId=<%=cat%>','740','555','summ')" class="help" title="Product description & Information" style="font-size: 6pt;">?</a><B><% if (showCrossSells) { %><a href="place_order_related_items.jsp?searchIndex=<%= searchIndex %>&productId=<%= productNode %>&catId=<%= cat%>" title="Related Products">&reg;</a><% } else { %><% } %></B>
 				<input type="hidden" name="productId" value="<%= productNode.isPreconfigured() ? ((ConfiguredProduct)productNode).getProduct() : productNode %>">

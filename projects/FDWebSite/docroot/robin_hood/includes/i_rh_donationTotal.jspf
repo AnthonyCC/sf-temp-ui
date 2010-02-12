@@ -8,7 +8,7 @@
 	FDProductInfo productInfo = FDCachedFactory
 			.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
 	Integer totalQuantity = user.getDonationTotalQuantity();
-	double totalPrice = totalQuantity * productInfo.getDefaultPrice();
+	double totalPrice = totalQuantity * productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice();
 %>
 <table width="690" cellspacing="0" cellpadding="0" border="0">
 	<tr>

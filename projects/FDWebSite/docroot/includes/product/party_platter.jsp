@@ -102,7 +102,7 @@ if (!hasTemplate) {
 
 	String variantId = request.getParameter("variant");
 
-	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId);
+	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId, user.getPricingContext().getZoneId());
 }
 //* check to see if any of the mandatory variations are all unavailable.  (rule: platter unavailable if all comp of a var is unavail)
 //* while we're at it, save skucode and productModel for future use.
@@ -180,7 +180,7 @@ if (EnumProductLayout.MULTI_ITEM_MEAL.equals(prodLayout)) {
   <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	 <tr><td valign="top" align="center" colspan="3">
 	<span class="title18"><%=productNode.getFullName()%></span><br><span class="space2pix"><br></span>
-	<span class="title16"><%= currencyFormatter.format(defaultProductInfo.getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></span>
+	<span class="title16"><%= currencyFormatter.format(defaultProductInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></span>
 	<br><span class="space8pix"><br></span>
 	</td></tr>
   	<% 
@@ -216,7 +216,7 @@ if (EnumProductLayout.MULTI_ITEM_MEAL.equals(prodLayout)) {
   <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	 <tr><td valign="top" align="center">
 	<%	if (introCopyPath!=null) {   %><fd:IncludeMedia name='<%= introCopyPath %>'/> <%  }  %>
-	<tr><td align="center"><FONT CLASS="title18"><%= currencyFormatter.format(defaultProductInfo.getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></font>
+	<tr><td align="center"><FONT CLASS="title18"><%= currencyFormatter.format(defaultProductInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></font>
 	<br><span class="space8pix"><br></span></td></tr>
   </table>
 <% }  %>  

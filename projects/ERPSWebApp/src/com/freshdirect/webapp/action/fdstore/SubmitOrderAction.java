@@ -609,9 +609,10 @@ public class SubmitOrderAction extends WebActionSupport {
 
 			user.setRedeemedPromotion(null);
 			
-			//Siva: Modified to track user last order zipcode
-			if(cart != null && cart.getDeliveryAddress() != null) {
+			//Siva: Modified to track user last order zipcode and not a pick up order.
+			if(cart != null && cart.getDeliveryAddress() != null && !(cart.getDeliveryAddress() instanceof ErpDepotAddressModel)) {
 				user.setZipCode(cart.getDeliveryAddress().getZipCode());
+				user.setSelectedServiceType(cart.getDeliveryAddress().getServiceType());
 			}
 			
 			user.invalidateCache();

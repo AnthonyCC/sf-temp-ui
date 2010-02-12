@@ -9,6 +9,7 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.JspMethods;
@@ -44,7 +45,7 @@ public class RatingPlusScalePriceTag extends ProductRatingTag {
 				return SKIP_BODY;
 			}
 			
-			ProductImpression impression = new ProductImpression(product);			
+			ProductImpression impression = new ProductImpression(ProductPricingFactory.getInstance().getPricingAdapter(product, user.getPricingContext()));			
 			
 			String scaleString = impression.getProductModel().getTieredPrice(savingsPercentage);
 			

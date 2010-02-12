@@ -27,7 +27,7 @@ public class SessionImpressionLogSessionBean extends SessionBeanSupport {
 	private static String INSERT = "INSERT INTO CUST.LOG_SESSION_IMPRESSIONS "
 			+ "(ID, FDUSER_ID, SESSION_ID, START_TIME,"
 			+ " END_TIME, VARIANT_ID, PRODUCT_IMPRESSIONS,"
-			+ " FEATURE_IMPRESSIONS, TAB_IMPRESSIONS) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			+ " FEATURE_IMPRESSIONS, TAB_IMPRESSIONS,ZONEID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	public void saveLogEntry(SessionImpressionLogEntry entry) throws RemoteException {
 		Connection conn = null;
@@ -69,6 +69,7 @@ public class SessionImpressionLogSessionBean extends SessionBeanSupport {
         ps.setInt(7, entry.getProductImpressions());
         ps.setInt(8, entry.getFeatureImpressions());
         ps.setInt(9, entry.getTabImpressions());
+        ps.setString(10, entry.getZoneId());
     }
 
 	public void saveLogEntries(Collection entries) throws RemoteException {

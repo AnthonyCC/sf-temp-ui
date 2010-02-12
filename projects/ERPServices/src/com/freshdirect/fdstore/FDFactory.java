@@ -22,6 +22,7 @@ import javax.ejb.CreateException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
@@ -109,6 +110,67 @@ class FDFactory {
 		}
 	}
 
+	
+	  /**
+	 * Get product information object for a specific version of a sku.
+	 *
+	 * @param sku SKU code
+     * @param version requested version
+	 *
+	 * @return FDProductInfo object
+	 *
+ 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
+	 * @throws FDResourceException if an error occured using remote resources
+	 */
+	public static ErpZoneMasterInfo getZoneInfo(String zoneId) throws FDResourceException  {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+
+            return sb.getZoneInfo(zoneId);
+           
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	
+	  /**
+	 * Get product information object for a specific version of a sku.
+	 *
+	 * @param sku SKU code
+     * @param version requested version
+	 *
+	 * @return FDProductInfo object
+	 *
+ 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
+	 * @throws FDResourceException if an error occured using remote resources
+	 */
+	public static Collection getZoneInfo(String zoneIds[]) throws FDResourceException, FDSkuNotFoundException {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+
+            return sb.getZoneInfos(zoneIds);
+           
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	
 	/**
 	 * Get current product information object for multiple SKUs.
 	 *
@@ -234,14 +296,11 @@ class FDFactory {
 		return new FDProductInfo(
 			pinfo.getSkuCode(),
 			pinfo.getVersion(),
-			pinfo.getDefaultPrice(),
-			pinfo.getDisplayableDefaultPriceUnit(),
 			null,
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.AVAILABLE,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			"", null,pinfo.getRating(),pinfo.getFreshness(), pinfo.getBasePrice(),pinfo.getBasePriceUnit(),pinfo.hasWasPrice(),pinfo.getDealPercentage(),
-			pinfo.getTieredDealPercentage());
+			null,pinfo.getRating(),pinfo.getFreshness(), pinfo.getZonePriceInfoList());
 	}
 	
 	/**
@@ -251,13 +310,11 @@ class FDFactory {
 		return new FDProductInfo(
 			skuCode,
 			0,
-			1.99,
-			"LB",
 			null,
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.TEMP_UNAV,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			"", null,"",null, 0.0,"",false,-1,-1);
+			null,"",null,ZonePriceInfoListing.getDummy());
 	}
 
 

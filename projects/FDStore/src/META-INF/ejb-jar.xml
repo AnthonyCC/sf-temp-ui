@@ -298,8 +298,23 @@
 				<res-auth>Container</res-auth>
 			</resource-ref>
 		</session>        
-                
-                <message-driven>
+           
+        <session>
+			<ejb-name>FDZoneInfoManager</ejb-name>
+			<home>com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome</home>
+			<remote>com.freshdirect.fdstore.zone.ejb.FDZoneInfoSB</remote>
+			<ejb-class>com.freshdirect.fdstore.zone.ejb.FDZoneInfoSessionBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Container</transaction-type>
+        	<ejb-ref>
+				<ejb-ref-name>ejb/ErpZoneInfoManager</ejb-ref-name>
+				<ejb-ref-type>Session</ejb-ref-type>
+				<home>com.freshdirect.erp.ejb.ErpZoneInfoHome</home>
+				<remote>com.freshdirect.erp.ejb.ErpZoneInfoSB</remote>
+			</ejb-ref>
+		</session>        
+
+        <message-driven>
 			<ejb-name>AdServerListener</ejb-name>
 			<ejb-class>com.freshdirect.fdstore.oas.ejb.AdServerListener</ejb-class>
 			<transaction-type>Container</transaction-type>
@@ -358,6 +373,11 @@
 				<method-intf>Remote</method-intf>
 				<method-name>*</method-name>
 			</method>
+			<method>
+				<ejb-name>FDZoneInfoManager</ejb-name>
+				<method-intf>Remote</method-intf>
+				<method-name>*</method-name>
+			</method>                                    
 			<trans-attribute>Required</trans-attribute>
 		</container-transaction>
                 

@@ -10,6 +10,7 @@ package com.freshdirect.fdstore;
 
 import java.util.*;
 
+import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.framework.util.*;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -41,6 +42,37 @@ public class FDCachedFactory {
 	 * FDProduct instances hashed by FDSku instances.
 	 */
 	private final static LazyTimedCache productCache = new LazyTimedCache(FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
+	
+	
+	/**
+	 * FDProduct instances hashed by FDSku instances.
+	 */
+	private final static LazyTimedCache zoneCache = new LazyTimedCache(FDStoreProperties.getZoneCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
+
+	
+	/**
+	 * Thread that reloads expired productInfos, every 10 seconds.
+	 */
+	private final static Thread zRefreshThread = new LazyTimedCache.RefreshThread(zoneCache, "FDZoneInfoRefresh", 10000) {
+		protected void refresh(List expiredKeys) {
+			try {
+				LOGGER.debug("FDZoneRefresh reloading "+expiredKeys.size()+" zoneInfos");
+				Collection pis = FDFactory.getZoneInfo((String[])expiredKeys.toArray(new String[0]) );
+
+				// cache these
+				ErpZoneMasterInfo tempi;
+				for (Iterator i=pis.iterator(); i.hasNext(); ) {
+					tempi = (ErpZoneMasterInfo)i.next();
+					this.cache.put(tempi.getSapId(), tempi);
+				}
+
+			} catch (Exception ex) {
+				LOGGER.warn("Error occured in FDProductInfoRefresh", ex);
+			}
+		}
+	};
+
+	
 
 	/**
 	 * Thread that reloads expired productInfos, every 10 seconds.
@@ -123,6 +155,33 @@ public class FDCachedFactory {
 		}
 		return pi;
 	}
+	
+	
+	
+
+	/**
+	 * Get zone information.
+	 * 
+	 * @param zoneId
+	 * @return
+	 * @throws FDResourceException
+	 */
+	public static ErpZoneMasterInfo getZoneInfo(String zoneId) throws FDResourceException{
+		Object cached = zoneCache.get(zoneId);
+		ErpZoneMasterInfo pi;
+		if (cached==null) {
+			try { 
+				pi = FDFactory.getZoneInfo(zoneId);
+				zoneCache.put(zoneId, pi);
+			} catch (FDResourceException ex) {				
+				throw ex;	
+			}
+		}  else {
+			pi = (ErpZoneMasterInfo) cached;
+		}
+		return pi;
+	}
+	
 
 	/**
 	 * Get current product information object for multiple SKUs.
@@ -177,6 +236,63 @@ public class FDCachedFactory {
 		return foundProductInfos;
 	}
 
+	
+
+	/**
+	 * Get current product information object for multiple SKUs.
+	 *
+	 * @param skus array of SKU codes
+	 *
+	 * @return a list of FDProductInfo objects found
+	 *
+	 * @throws FDResourceException if an error occured using remote resources
+	 */
+	public static Collection getZoneInfos(String[] zoneIds) throws FDResourceException {
+				
+		String[] missingZoneIds = new String[zoneIds.length];
+		int missingCount = 0;
+		List foundZoneInfos = new ArrayList(zoneIds.length);
+
+		// find skus already in the cache
+		Object tempo;		
+		for (int i=0; i<zoneIds.length; i++) {
+			tempo = zoneCache.get(zoneIds[i]);
+			if (tempo==null) {
+				missingZoneIds[missingCount++]=zoneIds[i];
+			} else if (tempo!=SKU_NOT_FOUND) {
+				foundZoneInfos.add(tempo);
+			}
+		}
+
+		if (missingCount==0) {
+			// nothing's missing
+			return foundZoneInfos;
+		}
+
+		// get what's missing
+		String[] loadZoneIds;
+		if (missingCount==missingZoneIds.length) {
+			// everything's missing
+			loadZoneIds = missingZoneIds;
+		} else {
+			loadZoneIds = new String[missingCount];
+			System.arraycopy(missingZoneIds, 0, loadZoneIds, 0, missingCount);
+		}
+		List pis = new ArrayList();
+		ErpZoneMasterInfo tempi;
+		
+
+		
+		// cache these
+		for (int i=0;i<loadZoneIds.length;i++) {
+			tempi= FDFactory.getZoneInfo(zoneIds[i]);
+			zoneCache.put(tempi.getSapId(), tempi);
+			foundZoneInfos.add(tempi);
+		}				
+		return foundZoneInfos;						
+	}
+	
+	
 	/**
 	 * Get product with specified version. 
 	 *

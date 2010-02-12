@@ -71,18 +71,6 @@
                 </td><tr>
             </table>
 			
-            <!-- material prices -->
-            <table cellspacing=2 cellpadding=2>
-                <tr><th>Pricing Unit</th><th>Price</th><th>Scale Quantity</th><th>Scale Unit</th></tr>
-                <logic:iterate id="materialPrice" collection="<%= material.getPrices() %>" type="com.freshdirect.erp.model.ErpMaterialPriceModel">
-                <tr>
-                    <td><%= materialPrice.getPricingUnit() %></td>
-                    <td><%= materialPrice.getPrice() %></td>
-                    <td><%= materialPrice.getScaleQuantity() %></td>
-                    <td><%= materialPrice.getScaleUnit() %></td>
-                </tr>
-                </logic:iterate>
-            </table>
 
             <!-- sales units -->
             <table cellspacing=2 cellpadding=2>
@@ -106,6 +94,10 @@
                     <td align=right><input type=button value=cancel></td><td align=left><input type=submit value="save changes"></td>
                 </tr></td></table></tr>
             </table>
+            
+
+            
+            
             </form>
 
             <table width="600" cellspacing=2 cellpadding=0>
@@ -163,6 +155,23 @@
                 </table>
                 <hr width="600" size="2" color="#000000">
             </logic:iterate>
+
+
+                        <!-- material prices -->
+            <table cellspacing=2 cellpadding=2>
+                <tr><th>Pricing Unit</th><th>Price</th><th>Scale Quantity</th><th>Scale Unit</th><th>Zone Pricing</th></tr>
+                <logic:iterate id="materialPrice" collection="<%= material.getPrices() %>" type="com.freshdirect.erp.model.ErpMaterialPriceModel">
+                <tr>
+                    <td><%= materialPrice.getPricingUnit() %></td>
+                    <td><%= materialPrice.getPrice() %></td>
+                    <td><%= materialPrice.getScaleQuantity() %></td>
+                    <td><%= materialPrice.getScaleUnit() %></td>
+                    <td><%= materialPrice.getSapZoneId() %></td>
+                </tr>
+                </logic:iterate>
+            </table>
+
+
 
         </fd:Material>
 

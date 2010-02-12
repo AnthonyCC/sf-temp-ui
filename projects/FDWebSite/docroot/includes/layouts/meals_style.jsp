@@ -17,7 +17,7 @@
 <%
 
 //********** Start of Stuff to let JSPF's become JSP's **************
-
+FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId"); 
 boolean isDepartment = false;
@@ -301,7 +301,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
 %>
                     <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <% 
-                    lstUnitPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+                    lstUnitPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %>						
                     </fd:FDProductInfo>
 <%              }

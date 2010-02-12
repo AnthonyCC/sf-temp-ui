@@ -43,7 +43,7 @@ public class ErpNutritionModel extends ModelSupport {
 	 * @param String skuCode
 	 */
 	public void setSkuCode(String skuCode) {
-		this.skuCode = skuCode;
+		this.skuCode = skuCode != null ? skuCode.intern() : null;
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class ErpNutritionModel extends ModelSupport {
 	 * @param String nutrition type, String uom
 	 */
 	public void setUomFor(String key, String value) {
-		uom.put(key, value);
+		uom.put(key.intern(), value != null ? value.intern() : null);
 	}
 
 	/**

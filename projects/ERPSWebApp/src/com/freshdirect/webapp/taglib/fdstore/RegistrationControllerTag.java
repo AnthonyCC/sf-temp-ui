@@ -174,6 +174,17 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				user.setZipCode(scrubbedAddress.getZipCode());
 				FDCustomerManager.storeUser(user.getUser());
 				session.setAttribute(USER, user);
+			}else {
+				//Already is a home or a corporate customer.
+				if(user.getOrderHistory().getValidOrderCount()==0 && !user.getZipCode().equals(scrubbedAddress.getZipCode())
+						&& !user.getSelectedServiceType().equals(scrubbedAddress.getServiceType())) {
+					//check if customer has no order history and if zipcode has changed. If yes then update the
+					//service type to most recent service type.					
+					user.setSelectedServiceType(scrubbedAddress.getServiceType());
+					user.setZipCode(scrubbedAddress.getZipCode());
+					FDCustomerManager.storeUser(user.getUser());
+					session.setAttribute(USER, user);
+				}
 			}
 		}
 		
@@ -212,7 +223,14 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				new Object[] {user.getCustomerServiceContact()}));*/
 			this.applyFraudChange(user);
 		}
-		
+		/*
+		if(user.getOrderHistory().getValidOrderCount()==0)
+		{
+		  user.setZipCode(erpAddress.getZipCode());
+		  user.setSelectedServiceType(erpAddress.getServiceType());
+  		  //user.resetPricingContext();
+		}
+		*/
 		FDReservation reservation = user.getReservation();
 		if(reservation != null){
 			reservation = FDCustomerManager.validateReservation(user, reservation);
@@ -237,13 +255,20 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 		try {
 			boolean foundFraud =
-				FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), erpAddress);
+				FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), erpAddress);			
 			if (foundFraud) {
 //				session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format(
 //					SystemMessageList.MSG_NOT_UNIQUE_INFO,
 //					new Object[] {user.getCustomerServiceContact()}));
 				this.applyFraudChange(user);
 			}
+			/*
+			if(user.getOrderHistory().getValidOrderCount()==0)
+			{
+				user.setZipCode(erpAddress.getZipCode());
+				user.setSelectedServiceType(erpAddress.getServiceType());
+			}	
+			*/
 
 		} catch (ErpDuplicateAddressException ex) {
 			LOGGER.warn(

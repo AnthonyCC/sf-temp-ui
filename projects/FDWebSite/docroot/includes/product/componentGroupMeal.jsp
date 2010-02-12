@@ -112,7 +112,7 @@ if (!hasTemplate) {
 
 	String variantId = request.getParameter("variant");
 	
-	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId);
+	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode, cfg, variantId, user.getPricingContext().getZoneId());
 }
 
 
@@ -189,7 +189,7 @@ if (pgErrs.size()>0) {
 	    <span class="title13"><%=productNode.getSubtitle()%></span><br>
   <%      } %>  
 	    <span class="space2pix"><br></span>
-	  <span class="title16"><%= currencyFormatter.format(defaultProductInfo.getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></span>
+	  <span class="title16"><%= currencyFormatter.format(defaultProductInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></span>
 	  <br><span class="space8pix"><br></span>
 	</td></tr>
 	<tr>

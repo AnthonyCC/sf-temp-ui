@@ -3,20 +3,21 @@
  */
 package com.freshdirect.smartstore.fdstore;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 
 public abstract class CachingStoreLookup implements StoreLookup {
-	OnlineScoreCache cache;
+    StoreLookup cache;
 	
-	public CachingStoreLookup(OnlineScoreCache cache) {
+	public CachingStoreLookup(StoreLookup cache) {
 		this.cache = cache;
 	}
 
-	public double getVariable(ContentNodeModel contentNode) {
-		return cache.getVariable(contentNode);
+	public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+		return cache.getVariable(contentNode, pricingContext);
 	}
 
 	public void reloadCache() {
-		cache.reload();
+		cache.reloadCache();
 	}
 }

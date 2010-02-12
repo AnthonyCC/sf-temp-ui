@@ -1,4 +1,3 @@
-<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager" %>
 <%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
@@ -156,7 +155,7 @@ if(weRecommendImgProds.size() > 0) {
             String weRecPrice = null;
             if (weRecSku==null) continue;
             
-            weRecPrice = currencyFormatter.format(weRecSku.getProductInfo().getDefaultPrice())+"/"+ weRecSku.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase();
+            weRecPrice = currencyFormatter.format(weRecSku.getProductInfo().getZonePriceInfo(nav_promo_user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ weRecSku.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase();
 %>						
         <tr valign="top"><td width="12"><br></td>
             <td width="35"><A HREF="<%=prdURL%>"><img src="<%=prdImgPath%>" <%=prdImgDim%> border="0" alt="<%=prdMdl.getGlanceName()%>"></A><br><font class="space4pix"><br></font></td>

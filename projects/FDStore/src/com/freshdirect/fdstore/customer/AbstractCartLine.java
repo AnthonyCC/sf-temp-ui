@@ -32,8 +32,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 
 	private final String variantId;
 
-	protected AbstractCartLine(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId) {
-		super(sku, productRef, configuration, variantId);
+	protected AbstractCartLine(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, String pZoneId) {
+		super(sku, productRef, configuration, variantId, pZoneId);
 
 		this.firstInvoiceLine = null;
 		this.lastInvoiceLine = null;
