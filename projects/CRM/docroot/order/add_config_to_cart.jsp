@@ -99,4 +99,5 @@
             destinationBuf.append( request.getParameter("searchIndex") );
         }
 	response.sendRedirect( destinationBuf.toString() );
-return;%>
+return;
+%>
