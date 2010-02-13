@@ -14,10 +14,12 @@
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*' %>
+
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <%
 //********** Start of Stuff to let JSPF's become JSP's **************
@@ -674,6 +676,10 @@ if(productCode!=null && prodCatId !=null ) {
 </td>
 <td width="10">&nbsp;</td><%-- buffer cell --%>
 <td align="center">
+	
+	<oscache:cache time="300">
+		<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+	</oscache:cache>
 <%
 	if(qualifies && !productNode.isUnavailable()){
 %>
@@ -1069,6 +1075,21 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 <%
 } //end else
 
+	//fix for What's Good "context" being set to a different cat than product's cat and price not being found
+	if (syncProdIdx == -1) {
+		ProductModel prodModel = null;
+		//check these values before using
+		if ((prodCatId != null || !"".equals(prodCatId)) && (productCode != null || !"".equals(productCode))) {
+			prodModel = ContentFactory.getInstance().getProductByName(prodCatId, productCode); 
+		}
+		//check if we have a product model
+		if (prodModel != null) {
+			skus.add((SkuModel)prodModel.getSku(syncProdSkuCode));
+			//these shouldn't be empty at this point
+			itemShownIndex = skus.size();
+			syncProdIdx = itemShownIndex;
+		}
+	}
 
 %>
 <%-- if we are adding to the cart via the form submit, then we need to set a variable in a hidden field --%>
