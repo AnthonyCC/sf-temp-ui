@@ -268,6 +268,14 @@ int syncProdIdx = -1;
 double syncProdQty=0.0;
 String syncProdSkuCode = null;
 String syncProdSalesUnit = null;
+//fix for What's Good "context" being set to a different cat than product's cat and price not being found
+String prodCatId = request.getParameter("prodCatId");
+boolean bigProdShown = false;
+boolean hasNutrition = false;
+boolean hasIngredients = false;
+
+String productCode = request.getParameter("productId");
+String reqSkuCode = request.getParameter("skuCode");
 
 /** List of all SKUs in the page, for the pricing structures */
 List skus = new ArrayList( itemsToDisplay );
@@ -310,6 +318,19 @@ for (Iterator skuItr=sortedColl.iterator(); skuItr.hasNext();) {
                 allSkuModels.add((SkuModel) cn);
         }
 }
+
+//fix for What's Good "context" being set to a different cat than product's cat and price not being found
+	ProductModel prodModel = null;
+	//check these values before using
+	if ((prodCatId != null || !"".equals(prodCatId)) && (productCode != null || !"".equals(productCode))) {
+		prodModel = ContentFactory.getInstance().getProductByName(prodCatId, productCode);
+		//check if we have a product model, and a default sku
+		if (prodModel != null && prodModel.getDefaultSku() != null) {
+			//add to skus list
+			allSkuModels.add(prodModel.getDefaultSku());
+		} 
+	}
+
 skuCount=allSkuModels.size();
 
 
@@ -336,13 +357,6 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 //If there is a specific product selected then show it above the listings here
 //lets get the product with the product cod in the section, display this product, then the rest of the products
 
-String prodCatId = request.getParameter("prodCatId");
-boolean bigProdShown = false;
-boolean hasNutrition = false;
-boolean hasIngredients = false;
-
-String productCode = request.getParameter("productId");
-String reqSkuCode = request.getParameter("skuCode");
 if(productCode!=null && prodCatId !=null ) {
         Image bigProductImage = null;
 
@@ -1074,22 +1088,6 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 %></table><br><br>
 <%
 } //end else
-
-	//fix for What's Good "context" being set to a different cat than product's cat and price not being found
-	if (syncProdIdx == -1) {
-		ProductModel prodModel = null;
-		//check these values before using
-		if ((prodCatId != null || !"".equals(prodCatId)) && (productCode != null || !"".equals(productCode))) {
-			prodModel = ContentFactory.getInstance().getProductByName(prodCatId, productCode); 
-		}
-		//check if we have a product model
-		if (prodModel != null) {
-			skus.add((SkuModel)prodModel.getSku(syncProdSkuCode));
-			//these shouldn't be empty at this point
-			itemShownIndex = skus.size();
-			syncProdIdx = itemShownIndex;
-		}
-	}
 
 %>
 <%-- if we are adding to the cart via the form submit, then we need to set a variable in a hidden field --%>
