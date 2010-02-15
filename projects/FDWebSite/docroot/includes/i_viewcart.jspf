@@ -278,7 +278,7 @@ FDIdentity identity = user.getIdentity();
 	if (view.getDepositValue() != 0) {
 		%>
 		<tr class="orderViewSummary">
-			<td colspan="6" align="right">NY State Bottle Deposit and Handling Fee:</td>
+			<td colspan="6" align="right">State Bottle Deposit and Handling Fee:</td>
 			<td colspan="1" align="right"><%=CCFormatter.formatCurrency(view.getDepositValue())%></td>
 			<td colspan="3">&nbsp;</td>
 		</tr>
@@ -323,7 +323,7 @@ FDIdentity identity = user.getIdentity();
 	if (cart.getDepositValue() > 0) {
 		%>
 		<tr valign="top" class="orderSummary">
-			<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=bottle','small');">NY State Bottle Deposit and Handling Fee:</a></td>
+			<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=bottle','small');">State Bottle Deposit and Handling Fee:</a></td>
 			<td colspan="1" align="right"><%=CCFormatter.formatCurrency(cart.getDepositValue())%></td>
 			<td colspan="3"></td>
 		</tr>
@@ -572,7 +572,7 @@ FDIdentity identity = user.getIdentity();
 		%></fd:CustomerCreditHistoryGetterTag><%
 	}
 	%>
-	<tr><td colspan="7" align="right"><br><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = NY State Bottle Deposit and Handling Fee</td></tr>
+	<tr><td colspan="7" align="right"><br><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit and Handling Fee</td></tr>
 </table>
 </div>
 <a name="cartRec"></a>

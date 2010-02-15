@@ -12,7 +12,7 @@
 		if (bottleDeposit) {
 			template = "/shared/template/small_pop.jsp";
 			filePath = "/media/editorial/fee/bottle_deposit.html";
-			title = "NY State Bottle Deposit and Handling fee"; 
+			title = "State Bottle Deposit and Handling fee"; 
 		} 
 %>
 
