@@ -50,7 +50,7 @@ BufferedImage background = null;
 String baseUrl = "";
 String schemeUrl = request.getScheme();
 String serverName = request.getServerName();
-String serverPort = ( !"".equals(Integer.toString(request.getServerPort())) )?":"+Integer.toString(request.getServerPort()):"";
+String serverPort = ( !"".equals(Integer.toString(request.getServerPort())) && request.getServerPort() != 80 )?":"+Integer.toString(request.getServerPort()):"";
 
 baseUrl = schemeUrl+"://"+serverName+serverPort;
 
