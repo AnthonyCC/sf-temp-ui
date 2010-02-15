@@ -1,6 +1,6 @@
 <%@ page 
 		contentType="image/jpg" 
-		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.sun.image.codec.jpeg.*, com.freshdirect.fdstore.content.ProductModel, com.freshdirect.fdstore.content.*, com.freshdirect.webapp.util.*, com.freshdirect.framework.util.log.LoggerFactory, org.apache.log4j.Category, com.freshdirect.fdstore.content.ContentFactory, com.freshdirect.cms.ContentKey'
+		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.sun.image.codec.jpeg.*, com.freshdirect.fdstore.content.ProductModel, com.freshdirect.fdstore.content.*, com.freshdirect.webapp.util.*, com.freshdirect.framework.util.log.LoggerFactory, org.apache.log4j.Category, com.freshdirect.fdstore.content.ContentFactory, com.freshdirect.cms.ContentKey, com.freshdirect.framework.util.NVL'
 %><% 
 
 /* Make sure there's no wayward returns or spaces outside of code brackets, or the image could be corrupted. */
@@ -47,7 +47,13 @@ BufferedImage overlay = null;
 BufferedImage background = null;
 
 /* make sure urls are FULL urls (http://host:port/path/file.ext) */
-String baseUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
+String baseUrl = "";
+String schemeUrl = request.getScheme();
+String serverName = request.getServerName();
+String serverPort = ( !"".equals(Integer.toString(request.getServerPort())) )?":"+Integer.toString(request.getServerPort()):"";
+
+baseUrl = schemeUrl+"://"+serverName+serverPort;
+
 URL overlayUrl = null;
 URL prodImgUrl = new URL(baseUrl+"/media/images/temp/soon_80x80.gif"); //default, including if pSize is unavailable
 
