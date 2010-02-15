@@ -770,7 +770,7 @@ if(shelfLife != null && shelfLife.trim().length() > 0) { %>
 		
 	</table>
 	<br>
-	<A HREF="javascript:pop('/help/freshness.jsp',335,375)">Learn more about our Freshness Guarantee</A>
+	<A HREF="javascript:pop('/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee</A>
 
 <%}
 // ******** END -- Freshness Guarantee graphic ******************	

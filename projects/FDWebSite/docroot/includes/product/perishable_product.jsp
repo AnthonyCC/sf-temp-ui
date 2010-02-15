@@ -173,7 +173,7 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 					<tr>
 						<td align="right">
 						<br>
-						<a href="javascript:pop('/help/freshness.jsp',335,375)">Learn more about our Freshness Guarantee - CLICK HERE</a>
+						<a href="javascript:pop('/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK HERE</a>
 						</td>
 					</tr>
 				</table>
