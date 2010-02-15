@@ -316,12 +316,14 @@ try {
 	log(myDebug, "Got an Exception: " + e.getMessage());
 }
 
-
+//null check background image
+if (background != null) {
 //and the actual output
 	JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(response.getOutputStream());
 	JPEGEncodeParam jep = encoder.getDefaultJPEGEncodeParam(background);
 	jep.setQuality(iQ, (boolean)true);
 	encoder.encode(background, jep);
+}
 	response.getOutputStream().close();
 
 /* Print debug messages */
