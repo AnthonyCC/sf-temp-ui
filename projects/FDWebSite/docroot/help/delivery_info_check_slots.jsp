@@ -30,20 +30,27 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
     String fldApartment = NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "");
 	String fldZipCode = request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode());
     String fldCity = NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "");
-	String fldState = NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "");
-
+   	String fldState = NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "");
+	
     if ((fldZipCode == null) || "".equals(fldZipCode)) {
         if (user != null) {
             fldZipCode = user.getZipCode();
         }
     } if (fldZipCode == null) fldZipCode = "";
-//same check for address
-	if ((fldAddress1 == null) || "".equals(fldAddress1)) {
-        if (user != null) {
+//same check for address, city, state
+    if (((fldAddress1 == null) || "".equals(fldAddress1)) && (fldApartment==null ||"".equals(fldApartment)) && (fldCity==null || "".equals(fldCity)) && (fldState==null|| "".equals(fldState))) {
+	if (user != null) {
             fldAddress1 = user.getAddress().getAddress1();
+			fldApartment=user.getAddress().getApartment();
+			fldCity=user.getAddress().getCity();
+			fldState=user.getAddress().getState();
         }
     } if (fldAddress1 == null) fldAddress1 = "";
+   if(fldApartment==null) fldApartment="";
+   if(fldCity==null) fldCity="";
+   if(fldState==null) fldState="";
 
+  
 %>
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
