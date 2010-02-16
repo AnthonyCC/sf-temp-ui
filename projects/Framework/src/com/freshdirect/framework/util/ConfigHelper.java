@@ -17,9 +17,9 @@ import java.util.Properties;
  *
  * @version $Revision: 3$
  * @author $Author: Viktor Szathmary$
- */ 
+ */
 public class ConfigHelper {
-    
+
     /**
      * Loads a .properties file from the
      * The resource path is a "/"-separated path name that identifies the resource
@@ -31,14 +31,25 @@ public class ConfigHelper {
      */
     public static Properties getPropertiesFromClassLoader(String resourcePath) throws IOException {
         Properties props = new Properties();
-    	InputStream stream = ClassLoader.getSystemResourceAsStream(resourcePath);
-    	if (stream==null) {
-        	throw new IOException("Resource not found");
+        InputStream stream = null;
+        try {
+            stream = ClassLoader.getSystemResourceAsStream(resourcePath);
+            if (stream == null) {
+                throw new IOException("Resource not found");
+            }
+            props.load(stream);
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    //Trying to close. IOException is okay here
+                }
+            }
         }
-       	props.load(stream);
         return props;
     }
-    
+
     /**
      * Loads a .properties file from the classpath
      * The resource path is a "/"-separated path name that identifies the resource
@@ -51,14 +62,23 @@ public class ConfigHelper {
      */
     public static Properties getPropertiesFromClassLoader(String resourcePath, Properties defaultProperties) {
         Properties props = new Properties(defaultProperties);
+        InputStream stream = null;
         try {
-        	InputStream stream = ClassLoader.getSystemResourceAsStream(resourcePath);
-        	if (stream!=null) {
-            	props.load(stream);
+            stream = ClassLoader.getSystemResourceAsStream(resourcePath);
+            if (stream != null) {
+                props.load(stream);
             }
             return props;
         } catch (IOException ioe) {
             return props;
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    //Trying to close. IOException is okay here
+                }
+            }
         }
     }
 

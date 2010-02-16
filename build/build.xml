@@ -231,7 +231,7 @@
     <checkoutLabeled dir="projects/MarketingAdmin"/>
     <checkoutLabeled dir="projects/TransportationAdmin"/>
     <checkoutLabeled dir="projects/RoutingServices"/>
-		<checkoutLabeled dir="projects/FDIntegrationServices"/>   <!-- Added: Schematic rsung -->
+		<checkoutLabeled dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->
 		<checkoutLabeled dir="applications"/>
 		<!--	<checkoutLabeled dir="release"/> -->
 	</target>
@@ -2397,7 +2397,7 @@
 	</target>
 
 	<target name="ears" description="build all apps"
-                depends="backend-app,sap-app,storefront-app,crm-app,dlv-app,erps-app,cms-app,fdadmin-app,fdintegrationservices-app">
+		depends="backend-app,sap-app,storefront-app,crm-app,dlv-app,erps-app,cms-app,fdadmin-app,fdintegrationservices-app">
 	</target>
 
 	<target name="media-checkout" >
@@ -2798,11 +2798,14 @@
 				<include name="struts.jar"/>
 				<include name="spring.jar"/>
 				<include name="standard.jar"/>
-				<include name="jstl.jar"/>				
-				<include name="poi-3.0-rc4-20070503.jar"/>
-				<include name="lucene-core-2.2.0.jar"/>
-				<include name="lucene-queries-2.2.0.jar"/>
-				<include name="lucene-spellchecker-2.2.0.jar"/>
+				<include name="jstl.jar"/>		
+				
+				<include name="poi-3.5-FINAL-20090928.jar"/>
+
+				<include name="lucene-core-${lucene.version}.jar"/>
+				<include name="lucene-queries-${lucene.version}.jar"/>
+				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+						
 				<include name="opencsv-1.8.jar"/>
 				
 				<include name="commons-discovery-0.2.jar"/>
