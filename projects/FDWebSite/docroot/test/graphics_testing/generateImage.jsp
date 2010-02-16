@@ -1,6 +1,6 @@
 <%@ page 
 		contentType="image/jpg" 
-		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.sun.image.codec.jpeg.*, com.freshdirect.fdstore.content.ProductModel, com.freshdirect.fdstore.content.*, com.freshdirect.webapp.util.*, com.freshdirect.framework.util.log.LoggerFactory, org.apache.log4j.Category, com.freshdirect.fdstore.content.ContentFactory, com.freshdirect.cms.ContentKey, com.freshdirect.framework.util.NVL'
+		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.sun.image.codec.jpeg.*, com.freshdirect.fdstore.content.ProductModel, com.freshdirect.fdstore.content.*, com.freshdirect.webapp.util.*, com.freshdirect.framework.util.log.LoggerFactory, org.apache.log4j.Category, com.freshdirect.fdstore.content.ContentFactory, com.freshdirect.cms.ContentKey, com.freshdirect.framework.util.NVL,com.freshdirect.fdstore.FDStoreProperties'
 %><% 
 
 /* Make sure there's no wayward returns or spaces outside of code brackets, or the image could be corrupted. */
@@ -46,20 +46,21 @@ BufferedImage prodImage = null;
 BufferedImage overlay = null;
 BufferedImage background = null;
 
-/* make sure urls are FULL urls (http://host:port/path/file.ext) */
-String baseUrl = "";
-String schemeUrl = request.getScheme();
-String serverName = request.getServerName();
-String serverPort = ( !"".equals(Integer.toString(request.getServerPort())) && request.getServerPort() != 80 )?":"+Integer.toString(request.getServerPort()):"";
+//get the media path
+String mediaPath = FDStoreProperties.getMediaPath();
+//make the media static path
+String mediaStaticPath = mediaPath.replaceAll("content/", "static/docroot");
 
-baseUrl = schemeUrl+"://"+serverName+serverPort;
+//all of the functions return a path with a starting slash, so remove trailing slash from base urls
+mediaPath = mediaPath.substring(0, mediaPath.lastIndexOf("/"));
+mediaStaticPath = mediaStaticPath.substring(0, mediaStaticPath.lastIndexOf("/"));
 
 URL overlayUrl = null;
-URL prodImgUrl = new URL(baseUrl+"/media/images/temp/soon_80x80.gif"); //default, including if pSize is unavailable
+URL prodImgUrl = new URL(mediaPath+"/media/images/temp/soon_80x80.gif"); //default, including if pSize is unavailable
 
-//deals - /media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif");
-//fave - src=\"/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\
-//new - /media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\
+//deals - //media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif");
+//fave - src=\"//media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\
+//new - //media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\
 
 //defaults
 	int prodWidth = 0;
@@ -158,55 +159,55 @@ if (request.getParameter("pId") != null && request.getParameter("pId") != "") {
 		}
 /*
 		log(myDebug, "pSize : "+pSize);
-		log(myDebug, "baseUrl+product.getAlternateImage().getPath() : "+baseUrl+product.getAlternateImage().getPath());
+		log(myDebug, "mediaPath+product.getAlternateImage().getPath() : "+mediaPath+product.getAlternateImage().getPath());
 		log(myDebug, "pSize2 : "+pSize);
-		log(myDebug, "baseUrl+product.getProdImage().getPath() : "+baseUrl+product.getProdImage().getPath());
+		log(myDebug, "mediaPath+product.getProdImage().getPath() : "+mediaPath+product.getProdImage().getPath());
 		log(myDebug, "pSize3 : "+pSize);
-		log(myDebug, "baseUrl+product.getCategoryImage().getPath() : "+baseUrl+product.getCategoryImage().getPath());
+		log(myDebug, "mediaPath+product.getCategoryImage().getPath() : "+mediaPath+product.getCategoryImage().getPath());
 		log(myDebug, "pSize4 : "+pSize);
-		log(myDebug, "baseUrl+product.getConfirmImage().getPath() : "+baseUrl+product.getConfirmImage().getPath());
+		log(myDebug, "mediaPath+product.getConfirmImage().getPath() : "+mediaPath+product.getConfirmImage().getPath());
 		log(myDebug, "pSize5 : "+pSize);
-		log(myDebug, "baseUrl+product.getDetailImage().getPath() : "+baseUrl+product.getDetailImage().getPath());
+		log(myDebug, "mediaPath+product.getDetailImage().getPath() : "+mediaPath+product.getDetailImage().getPath());
 		log(myDebug, "pSize6 : "+pSize);
-		log(myDebug, "baseUrl+product.getThumbnailImage().getPath() : "+baseUrl+product.getThumbnailImage().getPath());
+		log(myDebug, "mediaPath+product.getThumbnailImage().getPath() : "+mediaPath+product.getThumbnailImage().getPath());
 		log(myDebug, "pSize7 : "+pSize);
-		log(myDebug, "baseUrl+product.getZoomImage().getPath() : "+baseUrl+product.getZoomImage().getPath());
+		log(myDebug, "mediaPath+product.getZoomImage().getPath() : "+mediaPath+product.getZoomImage().getPath());
 		log(myDebug, "pSize8 : "+pSize);
-		log(myDebug, "baseUrl+product.getRolloverImage().getPath() : "+baseUrl+product.getRolloverImage().getPath());
+		log(myDebug, "mediaPath+product.getRolloverImage().getPath() : "+mediaPath+product.getRolloverImage().getPath());
 		log(myDebug, "pSize9 : "+pSize);
 */
 		//check that we have a product image and path
 		if ("a".equals(pSize)) {
 			if (product.getAlternateImage() != null && product.getAlternateImage().getPath() != "") {
-				prodImgUrl = new URL(baseUrl+product.getAlternateImage().getPath());
+				prodImgUrl = new URL(mediaPath+product.getAlternateImage().getPath());
 			}
 		}else if ("c".equals(pSize)) {
 			if (product.getProdImage() != null && product.getProdImage().getPath() != "") {
-				prodImgUrl = new URL(baseUrl+product.getProdImage().getPath());
+				prodImgUrl = new URL(mediaPath+product.getProdImage().getPath());
 			}
 		}else if ("ct".equals(pSize)) {
 			if (product.getCategoryImage() != null && product.getCategoryImage().getPath() != "") {
-				prodImgUrl = new URL(baseUrl+product.getCategoryImage().getPath());
+				prodImgUrl = new URL(mediaPath+product.getCategoryImage().getPath());
 			}
 		}else if ("cr".equals(pSize)) {
 			if (product.getRolloverImage() != null && product.getRolloverImage().getPath() != "") {
-				prodImgUrl = new URL(baseUrl+product.getRolloverImage().getPath());
+				prodImgUrl = new URL(mediaPath+product.getRolloverImage().getPath());
 			}
 		}else if ("cx".equals(pSize)) {
 			if (product.getConfirmImage() != null && product.getConfirmImage().getPath() != "") { 
-				prodImgUrl = new URL(baseUrl+product.getConfirmImage().getPath());
+				prodImgUrl = new URL(mediaPath+product.getConfirmImage().getPath());
 			}
 		}else if ("p".equals(pSize)) {
 			if (product.getDetailImage() != null && product.getDetailImage().getPath() != "") {
-				prodImgUrl = new URL(baseUrl+product.getDetailImage().getPath());
+				prodImgUrl = new URL(mediaPath+product.getDetailImage().getPath());
 			}
 		}else if ("f".equals(pSize)) {
 			if (product.getThumbnailImage() != null && product.getThumbnailImage().getPath() != "") {
-				prodImgUrl = new URL(baseUrl+product.getThumbnailImage().getPath());
+				prodImgUrl = new URL(mediaPath+product.getThumbnailImage().getPath());
 			}
 		}else if ("z".equals(pSize)) {
 			if (product.getZoomImage() != null && product.getZoomImage().getPath() != "") {
-				prodImgUrl = new URL(baseUrl+product.getZoomImage().getPath());
+				prodImgUrl = new URL(mediaPath+product.getZoomImage().getPath());
 			}
 		}
 			
@@ -236,15 +237,15 @@ if (request.getParameter("pId") != null && request.getParameter("pId") != "") {
 					//try to get product's deal amount
 					bValTemp = product.getHighestDealPercentage();
 					if (bValTemp>=0) {
-						overlayUrl = new URL(baseUrl+"/media_stat/images/deals/brst_"+bSize+"_"+bValTemp+".gif");
+						overlayUrl = new URL(mediaStaticPath+"/media_stat/images/deals/brst_"+bSize+"_"+bValTemp+".gif");
 					}
 				}else{
-					overlayUrl = new URL(baseUrl+"/media_stat/images/deals/brst_"+bSize+"_"+bVal+".gif");
+					overlayUrl = new URL(mediaStaticPath+"/media_stat/images/deals/brst_"+bSize+"_"+bVal+".gif");
 				}
 			}else if ( "fave".equalsIgnoreCase(request.getParameter("bType")) ) {
-				overlayUrl = new URL(baseUrl+"/media_stat/images/bursts/brst_"+bSize+"_fave.gif");
+				overlayUrl = new URL(mediaStaticPath+"/media_stat/images/bursts/brst_"+bSize+"_fave.gif");
 			}else if ( "new".equalsIgnoreCase(request.getParameter("bType")) ) {
-				overlayUrl = new URL(baseUrl+"/media_stat/images/bursts/brst_"+bSize+"_new.gif");
+				overlayUrl = new URL(mediaStaticPath+"/media_stat/images/bursts/brst_"+bSize+"_new.gif");
 			}else if( "X".equalsIgnoreCase(request.getParameter("bType")) ) {
 				//force no burst
 				overlayUrl = null;
@@ -253,7 +254,7 @@ if (request.getParameter("pId") != null && request.getParameter("pId") != "") {
 			//try to get product's deal amount
 			bValTemp = product.getHighestDealPercentage();
 			if (bValTemp>=0) {
-				overlayUrl = new URL(baseUrl+"/media_stat/images/deals/brst_"+bSize+"_"+bValTemp+".gif");
+				overlayUrl = new URL(mediaStaticPath+"/media_stat/images/deals/brst_"+bSize+"_"+bValTemp+".gif");
 			}
 		}
 
@@ -327,7 +328,8 @@ if (background != null) {
 	response.getOutputStream().close();
 
 /* Print debug messages */
-	log(myDebug, "baseUrl : "+baseUrl);
+	log(myDebug, "mediaPath : "+mediaPath);
+	log(myDebug, "mediaStaticPath : "+mediaStaticPath);
 
 	log(myDebug, "retImageWidth : "+retImageWidth);
 	log(myDebug, "retImageHeight : "+retImageHeight);
