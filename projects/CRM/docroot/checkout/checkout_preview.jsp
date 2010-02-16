@@ -37,7 +37,11 @@
 <jsp:include page='/includes/order_header.jsp'/>
 
 			<% if (!user.isOrderMinimumMet()) { %>
-				<div class="error">NOTE: Order amount is below the minimum $<%= FDUserI.MINIMUM_ORDER_AMOUNT %></div>
+				<% if(order.getDeliveryAddress().getServiceType().getName().equalsIgnoreCase("CORPORATE")) {%>
+					<div class="error">NOTE: Order amount is below the minimum $<%= FDUserI.MIN_CORP_ORDER_AMOUNT %></div>
+				<%}else {%>
+					<div class="error">NOTE: Order amount is below the minimum $<%= FDUserI.MINIMUM_ORDER_AMOUNT %></div>
+				<% } %>
 			<% } %>
 			<fd:ErrorHandler result='<%=result%>' name='fraud_check_failed' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 			<fd:ErrorHandler result='<%=result%>' name='system' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
