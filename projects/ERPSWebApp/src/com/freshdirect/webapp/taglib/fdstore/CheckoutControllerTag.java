@@ -1144,7 +1144,22 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					SystemMessageList.MSG_REQUIRED));
 			return;
 		}
-
+		
+		//Checking for CC a/c's. If NO, restricting the customer to place order using E-check
+		String app = (String) pageContext.getSession().getAttribute( SessionName.APPLICATION);
+		if (!"CALLCENTER".equalsIgnoreCase(app)) {
+			int numCreditCards=0;
+			for (Iterator iterator = paymentMethods.iterator(); iterator.hasNext();) {
+	              ErpPaymentMethodI paymentM = (ErpPaymentMethodI) iterator.next();
+	           if (EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {
+	                  numCreditCards++;
+	           }
+	        }
+	        if(numCreditCards<1){
+	        	LOGGER.debug("No CC Account in Customer payment methods: "+numCreditCards);
+	        	result.addError(new ActionError("payment_method",SystemMessageList.MSG_NOCC_ACCOUNT_NUMBER));
+	        }
+		}
 		//
 		// set payment in cart and store cart if valid payment found
 		//
