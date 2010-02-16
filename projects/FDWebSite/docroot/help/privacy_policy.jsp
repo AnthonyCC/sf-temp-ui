@@ -5,6 +5,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<fd:CheckLoginStatus guestAllowed='true'/>
 <%
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 String help = " Help -";
