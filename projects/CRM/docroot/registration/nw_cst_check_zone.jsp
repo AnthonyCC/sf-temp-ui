@@ -18,7 +18,7 @@
 
 		String moreInfoPage = "more_info.jsp?successPage=nw_cst_enter_details.jsp";
 		String failurePage = "delivery.jsp?successPage=nw_cst_enter_details.jsp&serviceType="+serviceType;
-		String successPage = "nw_cst_enter_details.jsp";
+		String successPage = "nw_cst_enter_details.jsp?serviceType="+serviceType;
 
 		//check for new serviceType, and if either GC or RH is enabled
 			if ( EnumServiceType.WEB.getName().equalsIgnoreCase(serviceType) ) {
