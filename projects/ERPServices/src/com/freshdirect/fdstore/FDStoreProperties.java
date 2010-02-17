@@ -406,6 +406,9 @@ public class FDStoreProperties {
 	
 	private final static String PROP_ZONE_PICKUP_ZIPCODE = "fdstore.zone.pricing.pickup.zipcode";
 	
+	//Windows steering
+	private final static String WINDOW_STEERING_PROMOTION_PREFIX="fdstore.windowsteering.promo.prefix";
+	
 	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
@@ -699,6 +702,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_ZONE_PRICING_ENABLED, "true");		
 		defaults.put(PROP_ZONE_PICKUP_ZIPCODE, "11101");
 		
+		//Window Steering
+		defaults.put(WINDOW_STEERING_PROMOTION_PREFIX,"WS_");
 		
 		refresh();
 	}
@@ -1598,5 +1603,10 @@ public class FDStoreProperties {
 	
 	public static boolean isZonePricingEnabled(){
 		return Boolean.valueOf(config.getProperty(PROP_ZONE_PRICING_ENABLED)).booleanValue();
+	}
+
+	public static String getWindowSteeringPromoPrefix() {
+		// TODO Auto-generated method stub
+		return get(WINDOW_STEERING_PROMOTION_PREFIX);
 	}
 }

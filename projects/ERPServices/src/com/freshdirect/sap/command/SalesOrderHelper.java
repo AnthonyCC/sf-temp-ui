@@ -22,8 +22,8 @@ import com.freshdirect.common.pricing.CreditMemo;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.MaterialPrice;
-import com.freshdirect.common.pricing.ZonePromoDiscount;
 import com.freshdirect.customer.ErpDiscountLineModel;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.sap.PosexUtil;
 import com.freshdirect.sap.SapChargeLineI;
@@ -153,7 +153,9 @@ class SalesOrderHelper {
 				
 				
 				//if(discountLine.getDiscount() instanceof ZonePromoDiscount)
-				if("WINDOW_STEERING".equals(discountLine.getDiscount().getPromotionCode()) && isCreateOrder)
+				//if("WINDOW_STEERING".equals(discountLine.getDiscount().getPromotionCode())/* && isCreateOrder*/)
+				if( discountLine!=null && discountLine.getDiscount()!=null 
+				   && discountLine.getDiscount().getPromotionCode().startsWith(FDStoreProperties.getWindowSteeringPromoPrefix()))
 				{
 					if (EnumDiscountType.DOLLAR_OFF.equals(discountLine.getDiscount().getDiscountType())) {
 						//orderDiscountAmount += promo.getDiscount().getAmount();
