@@ -11,6 +11,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,9 +22,11 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -57,7 +60,6 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 		FDCartModel cartMerged = new FDCartModel( cartCurrent );
 		cartMerged.mergeCart( cartSaved );
 		cartMerged.sortOrderLines();
-			
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		if ("POST".equalsIgnoreCase(request.getMethod())) {
 			// figure out which option was selected
@@ -78,6 +80,10 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
                     user.updateUserState();
                     session.setAttribute(USER, user);
 				}
+				
+				user.getShoppingCart().setPricingContextToOrderLines(user.getPricingContext());
+		
+				
                 // get rid of the extra cart in the session
                 session.removeAttribute(CURRENT_CART);
 			}

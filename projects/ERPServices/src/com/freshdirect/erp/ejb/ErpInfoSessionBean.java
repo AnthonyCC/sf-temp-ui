@@ -1187,10 +1187,23 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	
 	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) {
 		
+		
+		StringBuffer statement=new StringBuffer("SELECT p1.sku_code FROM erps.PRODUCT p1,erps.material m, erps.materialprice mp, erps.materialproxy mpr ") 
+		.append(" WHERE p1.VERSION=(SELECT MAX(VERSION) FROM erps.PRODUCT ") 
+         .append(" WHERE sku_code=p1.sku_code) ") 
+         .append(" and MPR.PRODUCT_ID=p1.id ")
+         .append(" and MPR.MAT_ID=m.id ")
+         .append(" and M.ID=MP.MAT_ID ")
+         .append(" and MP.PROMO_PRICE>0 ")                  
+         .append(" and ((MP.PRICE-MP.PROMO_PRICE)/mp.price)*100 between ? and ? ");
+		
+		/*
 		StringBuffer statement=new StringBuffer("SELECT p1.sku_code FROM erps.PRODUCT p1 ")
 		        .append(" WHERE p1.VERSION=(SELECT MAX(VERSION) FROM erps.PRODUCT ")
 		        .append(" WHERE sku_code=p1.sku_code) AND p1.base_price<>0  AND ")
 		        .append("((p1.BASE_PRICE-p1.DEFAULT_PRICE)/p1.BASE_PRICE)*100 BETWEEN ? AND ?" );
+		        */
+		
 		Connection conn = null;
 		try {
 			

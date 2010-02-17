@@ -20,8 +20,10 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -102,8 +104,10 @@ public class LoginControllerTag extends AbstractControllerTag {
                     }
                     
                 } else if ((currentLines > 0) && (loginLines == 0)) {
-                    // keep current cart
+                    // keep current cart                	
                     loginUser.setShoppingCart(currentUser.getShoppingCart());
+                    loginUser.getShoppingCart().setPricingContextToOrderLines(loginUser.getPricingContext());                                     
+                    
                 }
                 // current user has gift card recipients that need to be added to the login user's recipients list
                 if(currentUser.getRecipentList().getRecipents().size() > 0) {

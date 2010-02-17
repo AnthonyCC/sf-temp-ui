@@ -21,6 +21,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.jsp.JspException;
+
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.AddressModel;
@@ -1296,6 +1298,14 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI cartLine = (FDCartLineI)i.next();
 			cartLine.setPricingContext(pCtx);
+			try {
+				OrderLineUtil.cleanup(cartLine);
+			} catch (FDInvalidConfigurationException e) {
+				e.printStackTrace();
+			} catch(FDResourceException e1){
+				e1.printStackTrace();
+			}
+			
 		}
 	}
 }
