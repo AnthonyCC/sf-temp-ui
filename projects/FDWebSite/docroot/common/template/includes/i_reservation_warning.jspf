@@ -47,27 +47,7 @@
 						<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 					</tr>
 				</table>
-			<%}else if(diff > 0 && diff <= 40){ // was 20 %>
-				<% 
-				Calendar extendedCal = DateUtil.toCalendar(rsv.getExpirationDateTime());
-				extendedCal.add(Calendar.HOUR, 1);
-				String queryString = NVL.apply(request.getQueryString(), "");
-				String successPage = request.getRequestURI();
-				if(!"".equals(queryString)){
-					successPage += "?"+queryString;
-				}
-				%>
-				<table width="745" cellpadding="0" cellspacing="0" border="0">
-				<tr align="center">
-					<td style="padding-bottom:5px;"><b><font color="#990000">Your Delivery Timeslot Reservation Expires in <%=diff%> Minutes</font></b><br>
-					Your delivery reservation (<%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%>) will expire tonight at <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b><br>
-					<a href="/your_account/extend_reservation.jsp?successPage=<%=successPage%>"><b>Click here to extend your reservation for one hour. Today's cutoff time for this timeslot is <%=CCFormatter.formatDeliveryTime(rsv.getCutoffTime())%>.</b></a>
-					</td>
-				</tr>
-				<tr bgcolor="#999966">
-					<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-				</tr>
-			</table>
+			
 			<%}%>
 		<%}%>
 	<%}%>

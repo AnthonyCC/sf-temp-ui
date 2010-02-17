@@ -145,21 +145,25 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 	
 	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		if ("extendReservation".equals(this.getActionName())) {
+			throw new JspException(new StringBuilder().append("Action ").append(this.getActionName()).append(" is not supported.").toString());
+			/* APPDEV-593 Remove support for extend reservation.
+			 *
 			HttpSession session = request.getSession();
 			FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 			FDReservation reservation = user.getReservation();
 
 			try {
 				reservation = FDDeliveryManager.getInstance().extendReservation(reservation);
+				
 			} catch (FDResourceException e) {
 				throw new JspException(e);
 			}
 
-			user.setReservation(reservation);
+			 user.setReservation(reservation);
 			session.setAttribute(SessionName.USER, user);
 			if (this.getSuccessPage() != null) {
 				this.redirectTo(this.getSuccessPage());
-			}
+			}*/
 		}
 		return true;
 	}
