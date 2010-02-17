@@ -82,7 +82,18 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 				}
 				
 				user.getShoppingCart().setPricingContextToOrderLines(user.getPricingContext());
-		
+				try {
+					user.getShoppingCart().refreshAll();										
+					
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FDInvalidConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				
 				
                 // get rid of the extra cart in the session
                 session.removeAttribute(CURRENT_CART);
