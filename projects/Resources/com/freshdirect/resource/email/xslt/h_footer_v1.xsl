@@ -10,7 +10,7 @@
 <center>
 	<b><a href="http://www.freshdirect.com/" style="color:#336600;">Go to FreshDirect</a></b> | <b><a href="http://www.freshdirect.com/help/contact_fd.jsp" style="color:#336600;">Contact Us</a></b> | <b><a href="http://www.freshdirect.com/your_account/order_history.jsp" style="color:#336600;">Check or Change an Order</a></b> | <b><a href="http://www.freshdirect.com/help/faq_home.jsp?page=faqHome" style="color:#336600;">Frequently Asked Questions</a></b>
 	<br/><br/><img src="http://www.freshdirect.com/media_stat/images/template/freshness/fresh_guar_photos.jpg" alt=""/><br/>
-	<span class="fdFooter_s">&#169; 2002 - 2009 FRESHDIRECT. All Rights Reserved.</span>
+	<span class="fdFooter_s">&#169; 2002 - 2010 FRESHDIRECT. All Rights Reserved.</span>
 
 </center>
 	</xsl:template>
