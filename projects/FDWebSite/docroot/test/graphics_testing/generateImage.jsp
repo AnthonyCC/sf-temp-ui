@@ -51,9 +51,14 @@ String mediaPath = FDStoreProperties.getMediaPath();
 //make the media static path
 String mediaStaticPath = mediaPath.replaceAll("content/", "static/docroot");
 
+
 //all of the functions return a path with a starting slash, so remove trailing slash from base urls
-mediaPath = mediaPath.substring(0, mediaPath.lastIndexOf("/"));
-mediaStaticPath = mediaStaticPath.substring(0, mediaStaticPath.lastIndexOf("/"));
+if ("/".equals(mediaPath.charAt(mediaPath.length())) {
+	mediaPath = mediaPath.substring(0, mediaPath.lastIndexOf("/"));
+}
+if ("/".equals(mediaStaticPath.charAt(mediaStaticPath.length())) {
+	mediaStaticPath = mediaStaticPath.substring(0, mediaStaticPath.lastIndexOf("/"));
+}
 
 URL overlayUrl = null;
 URL prodImgUrl = new URL(mediaPath+"/media/images/temp/soon_80x80.gif"); //default, including if pSize is unavailable
