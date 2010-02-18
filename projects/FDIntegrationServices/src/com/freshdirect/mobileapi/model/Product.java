@@ -65,7 +65,6 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.view.ProductRating;
 import com.freshdirect.fdstore.content.view.WebProductRating;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.ProductLabeling;
 import com.freshdirect.fdstore.util.RatingUtil;
@@ -79,14 +78,11 @@ import com.freshdirect.mobileapi.model.comparator.DomainValueComparator;
 import com.freshdirect.mobileapi.model.comparator.VariationComparator;
 import com.freshdirect.mobileapi.model.tagwrapper.GetDlvRestrictionsTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
-import com.freshdirect.mobileapi.util.GeneralCacheAdministratorFactory;
 import com.freshdirect.mobileapi.util.ProductUtil;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.webapp.util.CCFormatter;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.RestrictionUtil;
-import com.opensymphony.oscache.base.NeedsRefreshException;
-import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
 /**
  * Wrapper class for ProductModel and ProductImpression classe. The Idea is to
@@ -100,8 +96,6 @@ public class Product {
 
     // 5minutes
     private static final int REFRESH_PERIOD = 300;
-
-    private static GeneralCacheAdministrator cacheAdmin = GeneralCacheAdministratorFactory.getCacheAdminInstance();
 
     public enum ImageType {
         ALTERNATE, CATEGORY, CONFIRM, DESCRIPTIVE, DETAIL, FEATURE, PRODUCT, RATING_RELATED, ROLLOVER, THUMBNAIL, ZOOM, LARGE_BURST, THUMB_BURST, WINE_ALT
@@ -124,13 +118,13 @@ public class Product {
     public static String PRICE_LABEL = "Price";
 
     protected ProductImpression product;
-    
+
     protected PricingContext pricingContext;
 
     protected FDProduct defaultProduct = null;
 
     protected Sku defaultSku = null;
-    
+
     protected PriceCalculator defaultPriceCalculator;
 
     protected Map<String, Date> shortTermUnavailable = new HashMap<String, Date>();
@@ -202,10 +196,6 @@ public class Product {
 
     public Product(ProductModel productModel, FDUserI user) throws ModelException {
         this(productModel, user, null);
-    }
-
-    public Product(ProductModel productModel) throws ModelException {
-        this(productModel, null, null);
     }
 
     private FDUserI user; //Used for product burst labeling
@@ -320,10 +310,11 @@ public class Product {
             //
             // !!! need to look at isPricedByLB again with scaled pricing in effect
             //
-            
+
             //this.isPricedByLB = ("LB".equalsIgnoreCase((this.defaultProduct.getPricing().getMaterialPrices()[0]).getPricingUnit()));
             try {
-                this.isPricedByLB = "LB".equalsIgnoreCase(this.defaultPriceCalculator.getZonePriceModel().getMaterialPrices()[0].getPricingUnit());
+                this.isPricedByLB = "LB".equalsIgnoreCase(this.defaultPriceCalculator.getZonePriceModel().getMaterialPrices()[0]
+                        .getPricingUnit());
             } catch (FDResourceException e1) {
                 // it will never happens, because only FDProduct construction can throw exception 
             } catch (FDSkuNotFoundException e1) {
@@ -459,7 +450,7 @@ public class Product {
                 }
                 if (QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(
                         QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0) {
-                    
+
                     List<DomainValue> domains = sku.getVariationMatrix() == null ? Collections.EMPTY_LIST : sku.getVariationMatrix();
                     StringBuffer key = new StringBuffer();
                     key.append("*");
@@ -471,7 +462,7 @@ public class Product {
                         key.deleteCharAt(key.length() - 2);
                     }
                     key.append(" avail");
-                    
+
                     this.shortTermUnavailable.put(key.toString(), earliestDate);
                 }
 
@@ -522,7 +513,7 @@ public class Product {
             for (ComponentGroupModel componentGroup : componentGroups) {
                 ComponentGroup cgp;
                 try {
-                    cgp = new ComponentGroup(componentGroup, this);
+                    cgp = new ComponentGroup(componentGroup, this, user);
                     this.componentGroups.add(cgp);
                 } catch (FDException e) {
                     throw new ModelException("Unable to get ComponentGroup", e);
@@ -1037,32 +1028,32 @@ public class Product {
     }
 
     public boolean hasHalfPint() {
-    	boolean value = true;
-    	try {
-    		product.getProductModel().getContainerWeightHalfPint();
-    	} catch (NullPointerException e) {
-    		value = false;
-    	}
+        boolean value = true;
+        try {
+            product.getProductModel().getContainerWeightHalfPint();
+        } catch (NullPointerException e) {
+            value = false;
+        }
         return value;
     }
 
     public boolean hasPint() {
-    	boolean value = true;
-    	try {
-    		product.getProductModel().getContainerWeightPint();
-    	} catch (NullPointerException e) {
-    		value = false;
-    	}
+        boolean value = true;
+        try {
+            product.getProductModel().getContainerWeightPint();
+        } catch (NullPointerException e) {
+            value = false;
+        }
         return value;
     }
 
     public boolean hasQuart() {
-    	boolean value = true;
-    	try {
-    		product.getProductModel().getContainerWeightQuart();
-    	} catch (NullPointerException e) {
-    		value = false;
-    	}
+        boolean value = true;
+        try {
+            product.getProductModel().getContainerWeightQuart();
+        } catch (NullPointerException e) {
+            value = false;
+        }
         return value;
     }
 
@@ -1080,7 +1071,7 @@ public class Product {
             result = product.getProductModel().getCountryOfOrigin();
             if (result.size() == 0) {
                 String seafoodOrigin = product.getProductModel().getSeafoodOrigin();
-                if (seafoodOrigin != null && seafoodOrigin.length()>0) {
+                if (seafoodOrigin != null && seafoodOrigin.length() > 0) {
                     result.add(seafoodOrigin);
                 }
             }
@@ -1454,7 +1445,7 @@ public class Product {
         return inProductInCart;
     }
 
-    public static Product wrap(ProductModel productModel, FDUser user, Variant variant) throws ModelException {
+    public static Product wrap(ProductModel productModel, FDUserI user, Variant variant) throws ModelException {
         Product result = null;
         if (EnumProductLayout.WINE.equals(productModel.getProductLayout())) {
             result = new Wine(productModel, user, variant);
@@ -1466,7 +1457,7 @@ public class Product {
         return result;
     }
 
-    public static Product wrap(ProductModel productModel, FDUser user) throws ModelException {
+    public static Product wrap(ProductModel productModel, FDUserI user) throws ModelException {
         return wrap(productModel, user, null);
     }
 
@@ -1586,32 +1577,18 @@ public class Product {
         ProductModel productModel = null;
         Product result = null;
 
-        String cacheKey = Product.class.toString() + "getProduct" + id + categoryId;
+        productModel = ContentFactory.getInstance().getProduct(categoryId, id);
 
-        try {
-            result = (Product) cacheAdmin.getFromCache(cacheKey, REFRESH_PERIOD);
-        } catch (NeedsRefreshException nre) {
-            try {
-                LOG.info("Refreshing/Getting product from CMS " + id + " with key" + cacheKey);
-
-                productModel = ContentFactory.getInstance().getProduct(categoryId, id);
-
-                if (productModel == null) {
-                    LOG.info("Unable to get product, trying with content node key");
-                    productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + id));
-                }
-                result = Product.wrap(productModel, user.getFDSessionUser().getUser());
-                cacheAdmin.putInCache(cacheKey, result);
-            } catch (Throwable ex) {
-                LOG.error("Throwable caught at cache update", ex);
-                result = (Product) nre.getCacheContent();
-                LOG.debug("Cancelling cache update. Exception encountered.");
-                cacheAdmin.cancelUpdate(cacheKey);
-                if (null == result) {
-                    throw new ServiceException(ex.getMessage(), ex);
-                }
-            }
+        if (productModel == null) {
+            LOG.info("Unable to get product, trying with content node key");
+            productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode("Product:" + id));
         }
+        try {
+            result = Product.wrap(productModel, user.getFDSessionUser().getUser());
+        } catch (ModelException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+
         return result;
     }
 

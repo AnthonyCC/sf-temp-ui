@@ -23,22 +23,14 @@ import com.freshdirect.mobileapi.model.tagwrapper.GetPeakProduceTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
-import com.freshdirect.mobileapi.util.GeneralCacheAdministratorFactory;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
-import com.opensymphony.oscache.base.NeedsRefreshException;
-import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
 /**
  * @author Rob
  *
  */
 public class WhatsGood {
-
-    // 5minutes
-    private static final int REFRESH_PERIOD = 300;
-
-    private static GeneralCacheAdministrator cacheAdmin = GeneralCacheAdministratorFactory.getCacheAdminInstance();
 
     private static final Category LOG = Logger.getLogger(WhatsGood.class);
 
@@ -145,36 +137,20 @@ public class WhatsGood {
         List<Product> result = new ArrayList<Product>();
         String deptIds[] = { "fru", "veg" };
 
-        String cacheKey = Product.class.toString() + "getPeakProduceProductList";
-
-        try {
-            result = (List<Product>) cacheAdmin.getFromCache(cacheKey, REFRESH_PERIOD);
-        } catch (NeedsRefreshException nre) {
-            try {
-                LOG.debug("Refreshing peak produce product list from CMS to cache with key" + cacheKey);
-                for (String deptId : deptIds) {
-                    GetPeakProduceTagWrapper wrapper = new GetPeakProduceTagWrapper(deptId, user);
-                    List<ProductModel> productModels = wrapper.getPeakProduct();
-                    for (ProductModel pm : productModels) {
-                        if (!pm.isUnavailable()) {
-                            try {
-                                result.add(Product.wrap(pm, user.getFDSessionUser().getUser()));
-                            } catch (ModelException e) {
-                                LOG.warn("ModelException in a product in peak produce. continuing on, instead of failing on entire list.",
-                                        e);
-                            }
-                        }
+        for (String deptId : deptIds) {
+            GetPeakProduceTagWrapper wrapper = new GetPeakProduceTagWrapper(deptId, user);
+            List<ProductModel> productModels = wrapper.getPeakProduct();
+            for (ProductModel pm : productModels) {
+                if (!pm.isUnavailable()) {
+                    try {
+                        result.add(Product.wrap(pm, user.getFDSessionUser().getUser()));
+                    } catch (ModelException e) {
+                        LOG.warn("ModelException in a product in peak produce. continuing on, instead of failing on entire list.", e);
                     }
                 }
-                LOG.debug("Updating cache with products");
-                cacheAdmin.putInCache(cacheKey, result);
-            } catch (Throwable ex) {
-                LOG.error("Throwable caught at cache update", ex);
-                result = (List<Product>) nre.getCacheContent();
-                LOG.debug("Cancelling cache update. Exception encountered.");
-                cacheAdmin.cancelUpdate(cacheKey);
             }
         }
+
         return result;
     }
 
@@ -185,111 +161,78 @@ public class WhatsGood {
     public static List<Product> getBrandNameDealsProductList(SessionUser user) throws FDException, ModelException {
         List<Product> result = new ArrayList<Product>();
 
-        String cacheKey = Product.class.toString() + "getBrandNameDealsProductList";
+        GetDealsSKUTagWrapper tagWrapper = new GetDealsSKUTagWrapper(user);
 
-        try {
-            result = (List<Product>) cacheAdmin.getFromCache(cacheKey, REFRESH_PERIOD);
-        } catch (NeedsRefreshException nre) {
-            try {
-                LOG.debug("Refreshing brand name deals product list from CMS to cache with key" + cacheKey);
-                GetDealsSKUTagWrapper tagWrapper = new GetDealsSKUTagWrapper(user);
+        List<SkuModel> skus = tagWrapper.getDealsSku();
 
-                List<SkuModel> skus = tagWrapper.getDealsSku();
-
-                for (SkuModel sku : skus) {
-                    ProductModel productModel = sku.getProductModel();
-                    result.add(Product.wrap(productModel, user.getFDSessionUser().getUser()));
-                }
-                cacheAdmin.putInCache(cacheKey, result);
-            } catch (Throwable ex) {
-                LOG.error("Throwable caught at cache update", ex);
-                result = (List<Product>) nre.getCacheContent();
-                LOG.debug("Cancelling cache update. Exception encountered.");
-                cacheAdmin.cancelUpdate(cacheKey);
-            }
-
+        for (SkuModel sku : skus) {
+            ProductModel productModel = sku.getProductModel();
+            result.add(Product.wrap(productModel, user.getFDSessionUser().getUser()));
         }
-
         return result;
     }
 
     public static List<Product> getProducts(String contentNodeId, SessionUser user) {
         List<Product> result = new ArrayList<Product>();
-        String cacheKey = Product.class.toString() + "getProductListFromContentNodeModel" + contentNodeId;
+        List contents = new ArrayList();
+        /*
+         * DUP: FDWebSite/docroot/common/template/includes/catLayoutManager.jspf
+         * LAST UPDATED ON: 12/22/2009
+         * LAST UPDATED WITH SVN#: 4379
+         * WHY: The following logic was duplicate because it was specified in a JSP file.
+         * WHAT: The duplicated code determines proper layout manager for given content folder 
+         * and retrieves products under that folder.
+         */
 
         try {
-            LOG.debug("cacheAdmin.getFromCache" + contentNodeId);
-            result = (List<Product>) cacheAdmin.getFromCache(cacheKey, REFRESH_PERIOD);
-        } catch (NeedsRefreshException nre) {
-            try {
-                List contents = new ArrayList();
-                LOG.debug("Refreshing product list from CMS to cache with key" + cacheKey);
-                /*
-                 * DUP: FDWebSite/docroot/common/template/includes/catLayoutManager.jspf
-                 * LAST UPDATED ON: 12/22/2009
-                 * LAST UPDATED WITH SVN#: 4379
-                 * WHY: The following logic was duplicate because it was specified in a JSP file.
-                 * WHAT: The duplicated code determines proper layout manager for given content folder 
-                 * and retrieves products under that folder.
-                 */
 
-                if ("wg_deals".equals(contentNodeId) && (null == ContentFactory.getInstance().getContentNode(contentNodeId))) {
-                    result = getBrandNameDealsProductList(user);
-                } else if ("wgd_produce".equals(contentNodeId) && (null == ContentFactory.getInstance().getContentNode(contentNodeId))) {
-                    result = getPeakProduceProductList(user);
+            if ("wg_deals".equals(contentNodeId) && (null == ContentFactory.getInstance().getContentNode(contentNodeId))) {
+                result = getBrandNameDealsProductList(user);
+            } else if ("wgd_produce".equals(contentNodeId) && (null == ContentFactory.getInstance().getContentNode(contentNodeId))) {
+                result = getPeakProduceProductList(user);
+            } else {
+                ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(contentNodeId);
+                LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
+                Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
+
+                //We have layout manager
+                if (layoutManagerSetting != null) {
+                    ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user);
+                    contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
+
+                    ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
+                    sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
+
                 } else {
-                    ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(contentNodeId);
-                    LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
-                    Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
-
-                    //We have layout manager
-                    if (layoutManagerSetting != null) {
-                        ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user);
-                        contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
-
-                        ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
-                        sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
-
-                    } else {
-                        //Error happened. It's a internal error so don't expose to user. just log and return empty list
-                        ActionResult layoutResult = (ActionResult) layoutManagerTagWrapper.getResult();
-                        if (layoutResult.isFailure()) {
-                            Collection<ActionError> errors = layoutResult.getErrors();
-                            for (ActionError error : errors) {
-                                LOG.error("Error while trying to retrieve whats good product: ec=" + error.getType() + "::desc="
-                                        + error.getDescription());
-                            }
-                        }
-                    }
-
-                    for (Object content : contents) {
-                        if (content instanceof ProductModel) {
-                            try {
-                                result.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
-                            } catch (Exception e) {
-                                //Don't let one rotten egg ruin it for the bunch
-                                LOG.error("ModelException encountered. Product ID=" + ((ProductModel) content).getFullName(), e);
-                            }
+                    //Error happened. It's a internal error so don't expose to user. just log and return empty list
+                    ActionResult layoutResult = (ActionResult) layoutManagerTagWrapper.getResult();
+                    if (layoutResult.isFailure()) {
+                        Collection<ActionError> errors = layoutResult.getErrors();
+                        for (ActionError error : errors) {
+                            LOG.error("Error while trying to retrieve whats good product: ec=" + error.getType() + "::desc="
+                                    + error.getDescription());
                         }
                     }
                 }
-                if (result.size() > 0) {
-                    cacheAdmin.putInCache(cacheKey, result);
-                } else {
-                    if (null != nre.getCacheContent()) {
-                        result = (List<Product>) nre.getCacheContent();
+
+                for (Object content : contents) {
+                    if (content instanceof ProductModel) {
+                        try {
+                            result.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser()));
+                        } catch (Exception e) {
+                            //Don't let one rotten egg ruin it for the bunch
+                            LOG.error("ModelException encountered. Product ID=" + ((ProductModel) content).getFullName(), e);
+                        }
                     }
-                    cacheAdmin.cancelUpdate(cacheKey);
                 }
-            } catch (Throwable ex) {
-                cacheAdmin.cancelUpdate(cacheKey);
-                LOG.error("Throwable caught at cache update", ex);
-                result = (List<Product>) nre.getCacheContent();
-                LOG.debug("Cancelling cache update. Exception encountered.");
             }
+        } catch (FDException e) {
+            LOG.error(e.getMessage(), e);
+        } catch (ModelException e) {
+            LOG.error(e.getMessage(), e);
         }
+        //Return empty result
 
         return result;
     }
-
 }

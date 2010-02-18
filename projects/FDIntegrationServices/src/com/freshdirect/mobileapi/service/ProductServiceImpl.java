@@ -27,20 +27,13 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.filter.AvailableFilter;
 import com.freshdirect.mobileapi.model.filter.IphoneFilter;
 import com.freshdirect.mobileapi.model.tagwrapper.SmartSearchTagWrapper;
-import com.freshdirect.mobileapi.util.GeneralCacheAdministratorFactory;
 import com.freshdirect.mobileapi.util.ProductModelSortUtil;
 import com.freshdirect.mobileapi.util.ProductModelSortUtil.SortType;
 import com.freshdirect.webapp.util.AutoCompleteFacade;
-import com.opensymphony.oscache.base.NeedsRefreshException;
-import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
 public class ProductServiceImpl implements ProductService {
 
     private static final org.apache.log4j.Category LOG = LoggerFactory.getInstance(ProductServiceImpl.class);
-
-    private static GeneralCacheAdministrator cacheAdmin = GeneralCacheAdministratorFactory.getCacheAdminInstance();
-
-    private int REFRESH_PERIOD = 120;
 
     private Set<Brand> brands;
 
@@ -59,26 +52,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Deprecated
     public Product getProduct(String categoryId, String productId) throws ServiceException {
-        String cacheKey = ProductServiceImpl.class.toString() + productId + categoryId;
 
-        Product result = null;
+        ProductModel product = ContentFactory.getInstance().getProductByName(categoryId, productId);
+        Product result;
         try {
-            result = (Product) cacheAdmin.getFromCache(cacheKey, REFRESH_PERIOD);
-        } catch (NeedsRefreshException nre) {
-            try {
-                LOG.info("Refreshing/Getting product from CMS " + productId + " with key" + cacheKey);
-                ProductModel product = ContentFactory.getInstance().getProductByName(categoryId, productId);
-                result = Product.wrap(product);
-                cacheAdmin.putInCache(cacheKey, result);
-            } catch (Throwable ex) {
-                LOG.error("Throwable caught at cache update", ex);
-                result = (Product) nre.getCacheContent();
-                LOG.debug("Cancelling cache update. Exception encountered.");
-                cacheAdmin.cancelUpdate(cacheKey);
-                if (null == result) {
-                    throw new ServiceException(ex.getMessage(), ex);
-                }
-            }
+            result = Product.wrap(product);
+        } catch (ModelException e) {
+            throw new ServiceException(e.getMessage(), e);
         }
 
         return result;
@@ -95,7 +75,6 @@ public class ProductServiceImpl implements ProductService {
 
     public List<Product> search(String searchTerm, Integer page, Integer max, ProductModelSortUtil.SortType sortType, String brandId,
             String categoryId, String deparmentId, SessionUser user) throws ServiceException {
-        String cacheKey = ProductServiceImpl.class.toString() + searchTerm;
         FilteredSearchResults fres = null;
         List<Product> result = new ArrayList<Product>();
         List<ProductModel> productModels = null;

@@ -12,12 +12,13 @@ import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.mobileapi.exception.ModelException;
 
 public class ComponentGroup {
-    
+
     private static final Logger LOG = Logger.getLogger(ComponentGroup.class);
-    
+
     protected List<Product> productList = new ArrayList<Product>();
 
     protected List<Variation> variations = new ArrayList<Variation>();
@@ -31,7 +32,7 @@ public class ComponentGroup {
     protected Product parent;
 
     @SuppressWarnings("unchecked")
-    public ComponentGroup(ComponentGroupModel cgm, Product productParent) throws FDResourceException, FDSkuNotFoundException,
+    public ComponentGroup(ComponentGroupModel cgm, Product productParent, FDUserI user) throws FDResourceException, FDSkuNotFoundException,
             ModelException {
         optionsDropDownVertical = cgm.isOptionsDropDownVertical();
         this.name = cgm.getContentKey().getId();
@@ -47,9 +48,12 @@ public class ComponentGroup {
                     if (optSkuCode != null) {
                         try {
                             ProductModel pm = ContentFactory.getInstance().getProduct(optSkuCode);
-                            productList.add(Product.wrap(pm));
+                            if (!pm.isUnavailable()) {
+                                productList.add(Product.wrap(pm, user));
+                            }
                         } catch (FDSkuNotFoundException e) {
-                            LOG.warn("Could not get product with sku:" + optSkuCode + "::desc=" + varOpt.getAttribute(EnumAttributeName.DESCRIPTION), e);
+                            LOG.warn("Could not get product with sku:" + optSkuCode + "::desc="
+                                    + varOpt.getAttribute(EnumAttributeName.DESCRIPTION), e);
                         }
                     }
                 }
