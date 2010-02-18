@@ -690,10 +690,15 @@ if(productCode!=null && prodCatId !=null ) {
 </td>
 <td width="10">&nbsp;</td><%-- buffer cell --%>
 <td align="center">
-	
-	<oscache:cache time="300">
-		<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-	</oscache:cache>
+	<table>
+		<tr>
+			<td align="left">
+				<oscache:cache time="300">
+					<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+				</oscache:cache>
+			</td>
+		</tr>
+	</table>
 <%
 	if(qualifies && !productNode.isUnavailable()){
 %>
