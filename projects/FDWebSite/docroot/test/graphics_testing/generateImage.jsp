@@ -49,14 +49,14 @@ BufferedImage background = null;
 //get the media path
 String mediaPath = FDStoreProperties.getMediaPath();
 //make the media static path
-String mediaStaticPath = mediaPath.replaceAll("content/", "static/docroot");
+String mediaStaticPath = mediaPath.replaceAll("content/", "static/docroot/");
 
 
 //all of the functions return a path with a starting slash, so remove trailing slash from base urls
-if ("/".equals(mediaPath.charAt(mediaPath.length())) {
+if (!"".equals(mediaPath) && "/".equals(mediaPath.charAt(mediaPath.length()-1))) {
 	mediaPath = mediaPath.substring(0, mediaPath.lastIndexOf("/"));
 }
-if ("/".equals(mediaStaticPath.charAt(mediaStaticPath.length())) {
+if (!"".equals(mediaStaticPath) && "/".equals(mediaStaticPath.charAt(mediaStaticPath.length()-1))) {
 	mediaStaticPath = mediaStaticPath.substring(0, mediaStaticPath.lastIndexOf("/"));
 }
 
