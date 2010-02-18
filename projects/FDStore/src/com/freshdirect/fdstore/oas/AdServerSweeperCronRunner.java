@@ -68,10 +68,17 @@ public class AdServerSweeperCronRunner {
 		while(rs.next()){
 			int campaignKey = rs.getInt(1);
 			String oldsearchTerm = rs.getString(2);
-			prepareZonePricingSearchTerm(conn, ucps, iczps, date, campaignKey,
+			int count =getCreativesCountForCampaign(campaignKey,conn);
+			if(count>1){
+				updateCreativesStatusForCampaign(campaignKey,conn);
+			}else{
+				prepareZonePricingSearchTerm(conn, ucps, iczps, date, campaignKey,
 					oldsearchTerm);
+			}
 			
 		}
+		rs.close();
+		ps.close();
 		int[] result = ucps.executeBatch();
 		System.out.println("Updated "+result.length+" Campaign records.");
 		ucps.close();
@@ -80,6 +87,31 @@ public class AdServerSweeperCronRunner {
 		System.out.println("Inserted "+result.length+" CampaignZoneTerm records.");
 		iczps.close();
 		System.out.println("Completed updateOASdatabase() method.");
+	}
+
+
+	private static void updateCreativesStatusForCampaign(int campaignKey,Connection conn) throws SQLException{
+		
+		PreparedStatement  ps = conn.prepareStatement("update Creative c set c.DisplayFlag='No' where c.CreativeKey in(select CreativeKey from Campaign_Creative where CampaignKey="+campaignKey+")");
+		int count= ps.executeUpdate();
+		System.out.println(count+" creatives were updated to 'No' for the campaign:"+campaignKey);
+		ps.close();
+		
+	}
+
+
+	private static int getCreativesCountForCampaign(int campaignKey,Connection conn) throws SQLException{
+		PreparedStatement  ps = null;
+		int count = 0;
+		ps = conn.prepareStatement("select count(cc.CreativeKey) from Campaign_Creative cc where cc.CampaignKey="+campaignKey);
+		ResultSet rs = ps.executeQuery();
+		if(rs.next()){
+			count = rs.getInt(1);
+		}
+		rs.close();
+		ps.close();
+		return count;
+		
 	}
 
 
@@ -98,7 +130,6 @@ public class AdServerSweeperCronRunner {
 			ps1.setInt(1, campaignKey);
 			ResultSet rs1 = ps1.executeQuery();
 			searchTerm = searchTerm+"AND(";
-			
 			searchTerm = searchTerm+"((zid?)";	
 			while(rs1.next()){
 				if(rs1.isFirst())
@@ -177,7 +208,6 @@ public class AdServerSweeperCronRunner {
 				}
 			}
 			searchTerm = searchTerm+"))";
-			
 			searchTerm = searchTerm +")";
 		}
 		searchTerm = searchTerm +"))";
