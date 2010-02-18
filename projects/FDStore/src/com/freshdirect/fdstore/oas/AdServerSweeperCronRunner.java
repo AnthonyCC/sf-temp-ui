@@ -59,7 +59,7 @@ public class AdServerSweeperCronRunner {
 		if(null != campaigns && campaigns.trim().length()>0){
 			ps = conn.prepareStatement("select c.CampaignKey, c.SearchTerm from Campaign c where c.CampaignKey in("+campaigns+")");			
 		}else{
-			ps = conn.prepareStatement("select c.CampaignKey, c.SearchTerm from Campaign c where c.CampaignKey in(select cc.CampaignKey from Campaign_Creative cc where cc.CreativeKey in(Select Distinct(CreativeKey) From Creative c1, CreativeUpdate_Zone cu where c1.DisplayFlag ='Yes' and instr(c1.extraHtml, Concat('productId=', cu.ProductId, '&')) and cu.ZONETYPE<>'M' and cu.ZONETYPE is not null))");
+			ps = conn.prepareStatement("select c.CampaignKey, c.SearchTerm from Campaign c,Campaign_Creative cc where c.CampaignKey = cc.CampaignKey and cc.CreativeKey in(Select Distinct(CreativeKey) From Creative c1, CreativeUpdate_Zone cu where c1.DisplayFlag ='Yes' and instr(c1.extraHtml, Concat('productId=', cu.ProductId, '&')) and cu.ZONETYPE<>'M' and cu.ZONETYPE<>'')");
 		}
 		ResultSet rs = ps.executeQuery();
 		PreparedStatement  ucps = conn.prepareStatement("update Campaign c set c.SearchTerm = ? where c.CampaignKey=?");
@@ -94,35 +94,43 @@ public class AdServerSweeperCronRunner {
 		}
 //				searchTerm = searchTerm +"&& (zonelevel=null ||(zonelevel=true ";
 		{
-			PreparedStatement ps1 = conn.prepareStatement("select cuz.ZoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.ZONETYPE<>'M' and cuz.price is not null and c1.LinkText <> cuz.Price)and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
+			PreparedStatement ps1 = conn.prepareStatement("select cuz.ZoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.ZONETYPE<>'M' and cuz.price is not null and cuz.price<>'' and c1.LinkText<>'' and c1.LinkText <> cuz.Price)and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
 			ps1.setInt(1, campaignKey);
 			ResultSet rs1 = ps1.executeQuery();
+			searchTerm = searchTerm+"AND(";
 			
+			searchTerm = searchTerm+"((zid?)";	
 			while(rs1.next()){
-				searchTerm = searchTerm+"AND";				
-				searchTerm = searchTerm + "(zid!="+rs1.getString(1)+")";				
+				if(rs1.isFirst())
+					searchTerm = searchTerm+"AND(";	
+											
+				searchTerm = searchTerm + "(zid!="+rs1.getString(1)+")";	
+				if(!rs1.isLast())
+					searchTerm = searchTerm+"AND";
+				if(rs1.isLast())
+					searchTerm = searchTerm+")";
 			}
-			PreparedStatement ps2 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and c1.LinkText = cuz.Price)	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
+			PreparedStatement ps2 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText=''))	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
 			ps2.setInt(1, campaignKey);
 			ResultSet rs2 = ps2.executeQuery();
-			searchTerm = searchTerm+"AND(";	
+//			searchTerm = searchTerm+"AND(";	
 			
 			while(rs2.next()){
 				if(rs2.isFirst())
-					searchTerm = searchTerm+"(";
-				if(!rs2.isFirst())
-					searchTerm = searchTerm+"OR";	
+					searchTerm = searchTerm+"AND(";
 				searchTerm = searchTerm + "(zid="+rs2.getString(1)+")";
+				if(!rs2.isLast())
+					searchTerm = searchTerm+"OR";					
 				if(rs2.isLast())
 					searchTerm = searchTerm +")";
 			}
-			
-			PreparedStatement ps3 = conn.prepareStatement("select count(cuz.zoneId) from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
+			searchTerm = searchTerm+")";	
+			PreparedStatement ps3 = conn.prepareStatement("select count(cuz.zoneId) from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
 			ps3.setInt(1, campaignKey);
 			ResultSet rs3 = ps3.executeQuery();
 			if(rs3.next() && rs3.getInt(1)>0){
-				searchTerm = searchTerm +"OR((zid!?)";
-				ps3 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and c1.LinkText <> cuz.Price and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
+				searchTerm = searchTerm +"OR((zid!?)AND(szid?)";
+				ps3 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and c1.LinkText <>'' and c1.LinkText <> cuz.Price and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
 				ps3.setInt(1, campaignKey);
 				rs3 = ps3.executeQuery();
 				while(rs3.next()){
@@ -130,7 +138,7 @@ public class AdServerSweeperCronRunner {
 					searchTerm = searchTerm + "(szid!="+rs3.getString(1)+")";							
 				}
 //					searchTerm = searchTerm +"&& ";
-				PreparedStatement ps4 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and c1.LinkText = cuz.Price and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
+				PreparedStatement ps4 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText='') and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
 				ps4.setInt(1, campaignKey);
 				ResultSet rs4= ps4.executeQuery();
 				while(rs4.next()){
@@ -145,19 +153,31 @@ public class AdServerSweeperCronRunner {
 				}
 				searchTerm = searchTerm+")";
 			}
-			PreparedStatement ps5 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and c1.LinkText = cuz.Price and cuz.ZONETYPE='M')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
+			searchTerm = searchTerm +"OR((zid!?)AND(szid!?)AND(";
+			PreparedStatement ps5 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText='') and cuz.ZONETYPE='M')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
 			ps5.setInt(1, campaignKey);
-			ResultSet rs5= ps5.executeQuery();
-			while(rs5.next()){
-				if(rs5.isFirst())
+			ResultSet rs5= ps5.executeQuery();			
+			if(rs5.next()){				
+				/*if(rs5.isFirst()){
 					searchTerm = searchTerm +"OR((zid!?)AND(szid!?)AND(";
+					isMasterZonePriceMatched = true;
+				}
 				if(!rs5.isFirst()){
 					searchTerm = searchTerm +"OR";
-				}
+				}*/
 				searchTerm = searchTerm +"(mzid="+rs5.getString(1)+")";
-				if(rs5.isLast())
-					searchTerm = searchTerm+"))";
+				/*if(rs5.isLast())
+					searchTerm = searchTerm+"))";*/
+			}else{
+				ps5 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and c1.LinkText <> cuz.Price and cuz.ZONETYPE='M')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
+				ps5.setInt(1, campaignKey);
+				rs5= ps5.executeQuery();
+				if(rs5.next()){
+					searchTerm = searchTerm +"(mzid!="+rs5.getString(1)+")";	
+				}
 			}
+			searchTerm = searchTerm+"))";
+			
 			searchTerm = searchTerm +")";
 		}
 		searchTerm = searchTerm +"))";
