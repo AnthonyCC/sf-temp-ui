@@ -1,87 +1,93 @@
-<table width="550" cellpadding="0" cellspacing="0" border="0">
-	<tr>
-		<td colspan="5" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
-	</tr>
-	<tr>
-		<td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br><span class="title16"><b>Popular Items</b></span><br><br></td>
-	</tr>
-	<%  
+<%  
 	Image deptFeatImage = null;
 	DepartmentModel dept = (DepartmentModel) currentFolder;
     List favorites = dept.getFeaturedProducts();
 
-    
-    StringBuffer favoriteProducts = new StringBuffer();
+    StringBuffer favoriteProductsImages = new StringBuffer();
+    StringBuffer favoriteProductsLinks = new StringBuffer();
+
+	String mediaPath = "/media/editorial/"+deptId+"/popular_items_header.html";
+
     ContentNodeModel prodParent = null;
     ContentFactory contentFactory = ContentFactory.getInstance();
     Comparator priceComp = new ProductModel.PriceComparator();
-    int favoritesToShow = 0;  %>
+    int favoritesToShow = 0;
+%>
 
 <%-- Featured Products column --%>
-<tr valign="top" align="center">
 <logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
-<% 
-        ProductModel product = contentNode;; //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
-        if (product==null) continue;
-        prodParent = product.getParentNode(); 
-        List skus = product.getSkus(); 
-        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel)) continue;
-        SkuModel sku = null;
-        String prodPrice = null;
-        if (skus.size()==0) continue;  // skip this item..it has no skus.  Hmmm?
-        if (skus.size()==1) {
-            sku = (SkuModel)skus.get(0);  // we only need one sku
-        }
-        else {
-            sku = (SkuModel) Collections.min(skus, priceComp);
-        }
-%>        <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"> <% 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
-%>      </fd:FDProductInfo> <%
-        String productPageLink_ = response.encodeURL("/product.jsp?catId=" + prodParent
-            +"&prodCatId="+prodParent
-            +"&productId="+product+"&trk=feat");
+	<% 
+		ProductModel product = contentNode;; //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
+		if (product==null) continue;
+		prodParent = product.getParentNode(); 
+		List skus = product.getSkus(); 
+		if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel)) continue;
+		SkuModel sku = null;
+		String prodPrice = null;
+		if (skus.size()==0) continue;  // skip this item..it has no skus.  Hmmm?
+		if (skus.size()==1) {
+			sku = (SkuModel)skus.get(0);  // we only need one sku
+		} else {
+			sku = (SkuModel) Collections.min(skus, priceComp);
+		}
+		%><fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"><% 
+			prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()); 
+		%></fd:FDProductInfo><%
 
-        deptFeatImage = (Image)product.getCategoryImage();
-        favoriteProducts.append("<td width=\"20%\"><a href=\"");
-        favoriteProducts.append(productPageLink_);
-        favoriteProducts.append("\">");
-        if (deptFeatImage !=null) {
-            favoriteProducts.append("<img SRC=\"");
-            favoriteProducts.append(deptFeatImage.getPath());
-            favoriteProducts.append("\"");
-            favoriteProducts.append(JspMethods.getImageDimensions(deptFeatImage));
-            favoriteProducts.append(" border=\"0\" alt=\"");
-            favoriteProducts.append(product.getFullName());
-            favoriteProducts.append("\">");
-        }
-        favoriteProducts.append("</A><BR>");
-        favoriteProducts.append("<a href=\"");
-        favoriteProducts.append(productPageLink_);
-        favoriteProducts.append("\">");
-        String thisProdBrandLabel = product.getPrimaryBrandName();
-        if (thisProdBrandLabel.length()>0) {
-            favoriteProducts.append("<FONT CLASS=\"text10bold\">");
-            favoriteProducts.append(thisProdBrandLabel);
-            favoriteProducts.append("</font><BR>");
-        }
-        favoriteProducts.append(product.getFullName().substring(thisProdBrandLabel.length()).trim()); 
-        favoriteProducts.append("</A><BR>");
-        favoriteProducts.append("<font class=\"favoritePrice\">");
-        favoriteProducts.append(prodPrice);
-        favoriteProducts.append("</font></td>");
-        favoritesToShow++;
-        if (favoritesToShow==5) break;
-%>
-    </logic:iterate>
-<%
+		String productPageLink_ = response.encodeURL("/product.jsp?catId=" + prodParent + "&prodCatId=" + prodParent + "&productId=" + product + "&trk=feat");
 
-  if (favoritesToShow>0) {
-%>
-            <%=favoriteProducts.toString()%>
-<%
-    }
-%>
-</tr>
-</table>
-<br>
+		deptFeatImage = (Image)product.getCategoryImage();
+
+		//create images row
+		favoriteProductsImages.append("<td width=\"__cellWidth__\"><a href=\"");
+		favoriteProductsImages.append(productPageLink_);
+		favoriteProductsImages.append("\">");
+		if (deptFeatImage !=null) {
+			favoriteProductsImages.append("<img src=\"");
+			favoriteProductsImages.append(deptFeatImage.getPath());
+			favoriteProductsImages.append("\"");
+			favoriteProductsImages.append(JspMethods.getImageDimensions(deptFeatImage));
+			favoriteProductsImages.append(" border=\"0\" alt=\"");
+			favoriteProductsImages.append(product.getFullName());
+			favoriteProductsImages.append("\">");
+		}
+		favoriteProductsImages.append("</a>");
+		favoriteProductsImages.append("</td>");
+
+		//create links row
+		favoriteProductsLinks.append("<td width=\"__cellWidth__\">");
+		favoriteProductsLinks.append("<a href=\"");
+		favoriteProductsLinks.append(productPageLink_);
+		favoriteProductsLinks.append("\">");
+		String thisProdBrandLabel = product.getPrimaryBrandName();
+		if (thisProdBrandLabel.length()>0) {
+			favoriteProductsLinks.append("<font class=\"text10bold\">");
+			favoriteProductsLinks.append(thisProdBrandLabel);
+			favoriteProductsLinks.append("</font><br />");
+		}
+		favoriteProductsLinks.append(product.getFullName().substring(thisProdBrandLabel.length()).trim()); 
+		favoriteProductsLinks.append("</a><br />");
+		favoriteProductsLinks.append("<font class=\"favoritePrice\">");
+		favoriteProductsLinks.append(prodPrice);
+		favoriteProductsLinks.append("</font></td>");
+
+		favoritesToShow++;
+
+		if (favoritesToShow==5) break;
+	%>
+</logic:iterate>
+
+<% if (favoritesToShow > 0) { %>
+	<table width="550" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td colspan="<%=favoritesToShow%>"><fd:IncludeMedia name="<%= mediaPath %>" /></td>
+		</tr>
+		<tr valign="bottom" align="center">
+			<%=favoriteProductsImages.toString().replaceAll("__cellWidth__", (100/favoritesToShow)+"%")%>
+		</tr>
+		<tr valign="top" align="center">
+			<%=favoriteProductsLinks.toString().replaceAll("__cellWidth__", (100/favoritesToShow)+"%")%>
+		</tr>
+	</table>
+	<br />
+<% } %>
