@@ -36,21 +36,21 @@ public String getProdPageRatings(ProductModel _productNode, HttpServletResponse 
 
     if (webProductRating!=null) {
         StringBuffer ratingLines  = new StringBuffer();
-        String ratingLabel = "<br><b>"+webProductRating.getRatingLabel()+"</b>";
+        String ratingLabel = "<br/><b>"+webProductRating.getRatingLabel()+"</b>";
         List ratings = webProductRating.getRatings();
         List textRatings = webProductRating.getTextRatings();
 
         // add rating heading and rating lines
         if (ratings.size() > 0 ) {
             if (webProductRating.getRatingLabel()!=null) {
-                rtnString.append("<br><b>");
+                rtnString.append("<br/><b>");
                 rtnString.append(webProductRating.getRatingLabel());
                 rtnString.append("</b>");
             }
 
             for (Iterator itrRatings = ratings.iterator();itrRatings.hasNext();) {
                ProductRating prodRating = (ProductRating)itrRatings.next();
-               rtnString.append("<br><img width=\"63\" height=\"8\" src=\"/media_stat/images/template/rating3_05_0");
+               rtnString.append("<br/><img width=\"63\" height=\"8\" src=\"/media_stat/images/template/rating3_05_0");
                rtnString.append(prodRating.getRating());
                rtnString.append(".gif\" alt=\"");
                rtnString.append(prodRating.getRating());
@@ -62,10 +62,10 @@ public String getProdPageRatings(ProductModel _productNode, HttpServletResponse 
 
         //add the text ratings
         if (textRatings.size() > 0 ) {
-		rtnString.append("<br>");
+		rtnString.append("<br/>");
             for (Iterator itrRatings = textRatings.iterator();itrRatings.hasNext();) {
                ProductRating prodRating = (ProductRating)itrRatings.next();
-               rtnString.append("<br><b>");
+               rtnString.append("<br/><b>");
                rtnString.append(prodRating.getRatingName());
                rtnString.append(":</b>&nbsp;");
                rtnString.append(prodRating.getRating());
@@ -102,7 +102,7 @@ public String getProdPageRatings(ProductModel _productNode, HttpServletResponse 
 
 <table  width="80%" border="0" cellpadding="0" cellspacing="0" align="center">
 <tr>
-	<td align="center" class="title12"><br><span class="title18"><b><%= productNode.getFullName().toUpperCase() %></b></span><br><br>
+	<td align="center" class="title12"><br/><span class="title18"><b><%= productNode.getFullName().toUpperCase() %></b></span><br/><br/>
 	<% if( zoomImage!=null && zoomImage.getPath().indexOf("clear.gif")==-1 ){%>
 		<a href="javascript:window.close();"><img src="<%= zoomImage.getPath() %>" width="<%= zoomImage.getWidth() %>" height="<%= zoomImage.getHeight() %>" ALT="<%= productNode.getFullName() %>  (click to close window)" border="0"></a>
 	<% } else if (productImage!=null && productImage.getPath().indexOf("clear.gif")==-1) { %>
@@ -110,31 +110,33 @@ public String getProdPageRatings(ProductModel _productNode, HttpServletResponse 
 	<%} else { %>
 		<a href="javascript:window.close();"><img src="/media/images/temp/soon_260x260.gif" ALT="Photo Coming Soon  (click to close window)" border="0"></a>
 	<%}%>
-	<br><br>
+	<br/><br/>
 	</td></tr>
 <tr><td class="text15">
 <%
 			String seasonText = productNode.getSeasonText();
 			if (seasonText!=null) {
-			%><%=seasonText%><br><br><% } %>
+			%><%=seasonText%><br/><br/><% } %>
 
-	<% if (prodPageRatingStuff != null && !"".equals(prodPageRatingStuff)) { %><%= prodPageRatingStuff %><br><br><% } %>
+	<% if (prodPageRatingStuff != null && !"".equals(prodPageRatingStuff)) { %><%= prodPageRatingStuff %><br/><br/><% } %>
 	
 		
 	<% Html productDesc = productNode.getProductDescription(); 
 	if ( productDesc != null && !"blank.txt".equals(productDesc) ) {
-	%><b>About:</b><br>
-	<%@ include file="/shared/includes/product/i_product_about.jspf" %><br>
+	%><b>About:</b><br/>
+	<%@ include file="/shared/includes/product/i_product_about.jspf" %><br/>
 	<% } %>
 	<%  SkuModel defaultSku = !productNode.isUnavailable()?productNode.getDefaultSku():(SkuModel)productNode.getSkus().get(0);
         if (defaultSku!=null) {
         	FDProduct fdprd = productNode.isUnavailable()? null:defaultSku.getProduct(); %>
-			<% if (fdprd.getIngredients() != null && !"".equals(fdprd.getIngredients())) { %><b>Ingredients:</b><br>
-			<%= fdprd.getIngredients() %>
+			<% if (fdprd != null && fdprd.getIngredients() != null && !"".equals(fdprd.getIngredients())) { %>
+			<b>Ingredients:</b><br/><%= fdprd.getIngredients() %>
 			<%@ include file="/shared/includes/product/allergens.jspf" %>
-			<br>
+			<br/>
 			<% } %>
-			<b>Material #:</b> <%=fdprd.getMaterial().getMaterialNumber()%><br><br>
+			<% if ( fdprd != null && fdprd.getMaterial() != null && fdprd.getMaterial().getMaterialNumber() != null ) { %>
+				<b>Material #:</b> <%=fdprd.getMaterial().getMaterialNumber()%><br/><br/>
+			<% } %>
 	<% } %>
 	</td>
 </tr>
