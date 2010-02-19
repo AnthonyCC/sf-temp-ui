@@ -697,43 +697,38 @@ if(productCode!=null && prodCatId !=null ) {
         		<% if ( FDStoreProperties.useOscache() ) { %> 
 					<oscache:cache time="300">
 						<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+						<%
+							if(qualifies && !productNode.isUnavailable()) {
+						%>
+								<table>
+										<tr>
+												<td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
+												<td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=catId%>">See our $<%=prefix%> offer</a></td>
+										</tr>
+								</table>
+								<br />
+						<% } %>
+						<%@ include file="/shared/includes/product/i_product_image.jspf" %>
 					</oscache:cache>
         		<% } else { %>			        
 						<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+						<%
+							if(qualifies && !productNode.isUnavailable()) {
+						%>
+								<table>
+										<tr>
+												<td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
+												<td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=catId%>">See our $<%=prefix%> offer</a></td>
+										</tr>
+								</table>
+								<br />
+						<% } %>
+						<%@ include file="/shared/includes/product/i_product_image.jspf" %>
         		<% } %>
 			</td>
 		</tr>
 	</table>
-<%
-	if(qualifies && !productNode.isUnavailable()){
-%>
-        <table>
-                <tr>
-                        <td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
-                        <td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=catId%>">See our $<%=prefix%> offer</a></td>
-                </tr>
-        </table>
-        <br>
-<%
-	}
-if ((Image)productNode.getZoomImage()!=null) {
-%>
-
-<%
-	if(deal > 0 &&!productNode.isUnavailable()) {
-%>
-    <DIV id="sale_star" style="POSITION: absolute"><A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"  border="0"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  border="0" alt="<%="SAVE "+deal+"%"%>" src="<%=dealsImage%>"></A> </DIV>
-<%
-	}
-%>
-<A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"><img SRC="<%=bigProductImage.getPath()%>" width="<%=bigProductImage.getWidth()%>" height="<%=bigProductImage.getHeight()%>" border="0" alt="<%=productNode.getFullName()%>"></a>
-<%
-	} else {
-%>
-<A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"><img SRC="<%=bigProductImage.getPath()%>" width="<%=bigProductImage.getWidth()%>" height="<%=bigProductImage.getHeight()%>" border="0" alt="<%=productNode.getFullName()%>"></A>
-<%
-	}
-	
+	<%
 // ******** START -- Freshness Guarantee graphic ******************	
 String shelfLife = JspMethods.getFreshnessGuaranteed(productNode);
 if(shelfLife != null && shelfLife.trim().length() > 0) { %>		
