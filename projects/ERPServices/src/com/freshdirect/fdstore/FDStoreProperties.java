@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import java.text.ParseException;
@@ -31,12 +23,7 @@ import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-/**
- *
- *
- * @version $Revision$
- * @author $Author$
- */
+
 public class FDStoreProperties {
 
 	private static final Category LOGGER = LoggerFactory.getInstance( FDStoreProperties.class );
@@ -994,13 +981,13 @@ public class FDStoreProperties {
 	}
 
 	public static Context getInitialContext() throws NamingException {
-		Hashtable env = new Hashtable();
+		Hashtable<String,String> env = new Hashtable<String,String>();
 		env.put(Context.PROVIDER_URL, getProviderURL() );
 		env.put(Context.INITIAL_CONTEXT_FACTORY, getInitialContextFactory() );
 		return new InitialContext(env);
 	}
 	public static Context getRoutingInitialContext() throws NamingException {
-		Hashtable env = new Hashtable();
+		Hashtable<String,String> env = new Hashtable<String,String>();
 		env.put(Context.PROVIDER_URL, getRoutingProviderURL() );
 		env.put(Context.INITIAL_CONTEXT_FACTORY, getInitialContextFactory() );
 		return new InitialContext(env);
@@ -1378,7 +1365,7 @@ public class FDStoreProperties {
 	public static Set<String> getSmartstorePreloadFactors() {
 		String frs = get(SMARTSTORE_PRELOAD_FACTORS);
 		if (frs == null)
-			return Collections.EMPTY_SET;
+			return Collections.<String>emptySet();
 		
 		String[] factors = frs.split(",");
 		Set<String> fs = new HashSet<String>(factors.length);
@@ -1459,9 +1446,9 @@ public class FDStoreProperties {
             FDStoreProperties.lastRefresh = lastRefresh;
         }
 
-	public static Collection getIssueCreditBccAddresses() {
+	public static Collection<String> getIssueCreditBccAddresses() {
  		String[] bcc = get(CRM_CREDIT_ISSUE_BCC).split(",");
- 		List bccs = new ArrayList(bcc.length);
+ 		List<String> bccs = new ArrayList<String>(bcc.length);
  		for (int i = 0; i < bcc.length; i++) {
  			String addr = bcc[i].trim();
  			if (addr.length() != 0)
@@ -1606,7 +1593,16 @@ public class FDStoreProperties {
 	}
 
 	public static String getWindowSteeringPromoPrefix() {
-		// TODO Auto-generated method stub
 		return get(WINDOW_STEERING_PROMOTION_PREFIX);
+	}
+	
+	/**
+	 * OSCACHE should be disabled when we are in some development environment. 
+	 * ( = annotation or preview mode )
+	 * Jsp-s can refer to this when deciding to use oscache or not. 
+	 * @return true if we are in production mode (use oscache), false if we are in development mode (disable oscache)  
+	 */
+	public static boolean useOscache() {
+		return !( isAnnotationMode() || getPreviewMode() );		
 	}
 }
