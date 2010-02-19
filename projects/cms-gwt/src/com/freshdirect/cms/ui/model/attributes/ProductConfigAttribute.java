@@ -31,8 +31,8 @@ public class ProductConfigAttribute extends OneToOneAttribute {
 	}
 	
 	private ProductConfigParams			confParams	= new ProductConfigParams();
-	
-	private double						quantity;
+
+	private double						quantity	= 0;
 	private String						salesUnit;
 	private Map<String, String>			configOptions;
 	

@@ -53,8 +53,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
-		implements HasCustomDefaultValue<List<OneToManyModel>> {
+public class OneToManyRelationField extends MultiField<List<OneToManyModel>> implements HasCustomDefaultValue<List<OneToManyModel>> {
 
 	protected AdapterField af;
 	protected Grid<OneToManyModel> grid;
@@ -129,8 +128,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 
 	protected Listener<BaseEvent> addButtonListener = new Listener<BaseEvent>() {
 		public void handleEvent(BaseEvent be) {
-			final ContentTreePopUp popup = ContentTreePopUp.getInstance(
-					getAllowedTypes(), true);
+			final ContentTreePopUp popup = ContentTreePopUp.getInstance(getAllowedTypes(), true);
 			popup.setHeading(getFieldLabel());
 			popup.addListener(Events.Select, new Listener<BaseEvent>() {
 				public void handleEvent(BaseEvent be) {
@@ -156,35 +154,30 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 
 	protected Listener<BaseEvent> deleteButtonListener = new Listener<BaseEvent>() {
 		public void handleEvent(BaseEvent be) {
-
-			final List<OneToManyModel> selectedList = selection
-					.getSelectedItems();
-
+	
+			final List<OneToManyModel> selectedList = selection.getSelectedItems();
+	
 			String question;
-			if (selectedList.size() == 0) {
+			if ( selectedList.size() == 0 ) {
 				return;
-			} else if (selectedList.size() == 1) {
-				question = "Do you really want to delete '"
-						+ selectedList.get(0).getLabel() + "' ?";
+			} else if ( selectedList.size() == 1 ) {
+				question = "Do you really want to delete '" + selectedList.get( 0 ).getLabel() + "' ?";
 			} else {
-				question = "Do you really want to delete "
-						+ selectedList.size() + " items?";
+				question = "Do you really want to delete " + selectedList.size() + " items?";
 			}
-			MessageBox.confirm("Delete", question,
-					new Listener<MessageBoxEvent>() {
-
-						public void handleEvent(MessageBoxEvent we) {
-							if (we.getButtonClicked().getText().equals("Yes")) {
-								removeRelationships(selectedList);
-							}
-						}
-					});
+			MessageBox.confirm( "Delete", question, new Listener<MessageBoxEvent>() {
+	
+				public void handleEvent( MessageBoxEvent we ) {
+					if ( we.getButtonClicked().getText().equals( "Yes" ) ) {
+						removeRelationships( selectedList );
+					}
+				}
+			} );
 		}
 	};
 
 	protected Listener<BaseEvent> copyButtonListener = new CopyMoveListener(true);
-
-	protected Listener<BaseEvent> moveButtonListener = new CopyMoveListener(false);
+	protected Listener<BaseEvent> moveButtonListener = new CopyMoveListener(false);	
 	
 
 	protected Listener<BaseEvent> selectListener = new Listener<BaseEvent>() {
@@ -198,53 +191,54 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 	};
 
 	private final class CopyMoveListener implements Listener<BaseEvent> {
-	    
-	    boolean copy;
-	    
-	    public CopyMoveListener(boolean copy) {
-	        this.copy = copy;
-            }
-	    
-	    public void handleEvent(BaseEvent be) {
-		final List<OneToManyModel> selectedList = selection
-		    .getSelectedItems();
-		if (selectedList.size() == 0) {
-		    return;
-		}
-		String moveType = selectedList.get(0).getType();
-		for (Iterator<OneToManyModel> iter = selectedList.iterator(); iter.hasNext(); ) {
-		    OneToManyModel current = iter.next();
-		    if (!moveType.equals(current.getType())) {
-		        iter.remove();
-		    }
+
+		boolean	copy;
+
+		public CopyMoveListener( boolean copy ) {
+			this.copy = copy;
 		}
 
-		CmsGwt.getNavigableRelations(moveType, new BaseCallback<NavigableRelationInfo>() {
-		    public void onSuccess(final NavigableRelationInfo result) {
-                        final ContentTreePopUp popup = ContentTreePopUp.getInstance(result.getNavigableTypes(), false);
-                        if (copy) {
-                            popup.setHeading("Copy " + selectedList.size() + " item(s) to :");
-                        } else {
-                            popup.setHeading("Move " + selectedList.size() + " item(s) to :");
-                        }
+		public void handleEvent( BaseEvent be ) {
+			final List<OneToManyModel> selectedList = selection.getSelectedItems();
+			if ( selectedList.size() == 0 ) {
+				return;
+			}
+			String moveType = selectedList.get( 0 ).getType();
+			for ( Iterator<OneToManyModel> iter = selectedList.iterator(); iter.hasNext(); ) {
+				OneToManyModel current = iter.next();
+				if ( !moveType.equals( current.getType() ) ) {
+					iter.remove();
+				}
+			}
 
-                        popup.addListener(Events.Select, new Listener<BaseEvent>() {
-                            public void handleEvent(BaseEvent be) {
-                                ContentNodeModel targetNode = popup.getSelectedItem();
-                                String attrName = result.getNavigableAttributeName(targetNode.getType());
-                                if (addRelationshipsToNode(targetNode.getKey(), attrName, selectedList)) {
-                                    if (!copy) {
-                                        removeRelationships(selectedList);
-                                    }
-                                }
-                            }
-                        });
-                        popup.show();
-			        
-		    };
-		});
-	    }
-    }
+			CmsGwt.getNavigableRelations( moveType, new BaseCallback<NavigableRelationInfo>() {
+
+				public void onSuccess( final NavigableRelationInfo result ) {
+					final ContentTreePopUp popup = ContentTreePopUp.getInstance( result.getNavigableTypes(), false );
+					if ( copy ) {
+						popup.setHeading( "Copy " + selectedList.size() + " item(s) to :" );
+					} else {
+						popup.setHeading( "Move " + selectedList.size() + " item(s) to :" );
+					}
+
+					popup.addListener( Events.Select, new Listener<BaseEvent>() {
+
+						public void handleEvent( BaseEvent be ) {
+							ContentNodeModel targetNode = popup.getSelectedItem();
+							String attrName = result.getNavigableAttributeName( targetNode.getType() );
+							if ( addRelationshipsToNode( targetNode.getKey(), attrName, selectedList ) ) {
+								if ( !copy ) {
+									removeRelationships( selectedList );
+								}
+							}
+						}
+					} );
+					popup.show();
+
+				};
+			} );
+		}
+	}
 
     /**
 	 * Drag and drop listener for the grid component.
@@ -262,8 +256,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 				boolean canScrollTop = grid.getBounds(false).y < 20;
 
 				if (canScrollTop) {
-					MainLayout.getInstance().setVScrollPosition(
-							MainLayout.getInstance().getVScrollPosition() - 10);
+					MainLayout.getInstance().setVScrollPosition(MainLayout.getInstance().getVScrollPosition() - 10);
 				} else {
 					cancel();
 				}
@@ -273,13 +266,12 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>>
 		protected Timer scrollDownTimer = new Timer() {
 			@Override
 			public void run() {
-				boolean canScrollBottom = grid.getBounds(false).height
-						+ grid.getBounds(false).y > MainLayout.getInstance()
-						.getBounds(false).height - 40;
+				boolean canScrollBottom = 
+					grid.getBounds(false).height +
+					grid.getBounds(false).y > MainLayout.getInstance().getBounds(false).height - 40;
 
 				if (canScrollBottom) {
-					MainLayout.getInstance().setVScrollPosition(
-							MainLayout.getInstance().getVScrollPosition() + 10);
+					MainLayout.getInstance().setVScrollPosition(MainLayout.getInstance().getVScrollPosition() + 10);
 				} else {
 					cancel();
 				}

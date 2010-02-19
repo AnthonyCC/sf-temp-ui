@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
@@ -35,6 +34,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.treepanel.NodeTreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
+import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.MainLayout;
 import com.freshdirect.cms.ui.client.nodetree.NodeTreeSelectionModel;
 import com.freshdirect.cms.ui.client.nodetree.StringTokenizer;
@@ -277,7 +277,8 @@ public class NodeTree extends ContentPanel {
     	private boolean forceRefresh;
     	private int scrollPos;
     	
-    	public void synchronize( String path ) {    		
+    	public void synchronize( String path ) {   
+    		CmsGwt.log( "synchronizing : " + path );
         	tree.collapseAll();        	    		
         	tree.addListener( Events.Expand, this );   
     		initTokens(path);

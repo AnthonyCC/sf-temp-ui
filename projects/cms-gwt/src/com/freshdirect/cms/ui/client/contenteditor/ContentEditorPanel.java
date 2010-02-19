@@ -158,13 +158,14 @@ public class ContentEditorPanel extends DetailPanel {
 	    	} else {	    	
 		    	// TODO what to do if there are no contexts at all ??
 	    		
-	            final String contextPath = treePanel.getSelectedPath().replace( TreeContentNodeModel.pathSeparator, " " );
+	            final String contextPath = treePanel.getSelectedPath();
 
 	            if ( contextPath != null ) {
 	            	
+		            final String contextLabel = contextPath.replace( TreeContentNodeModel.pathSeparator, " > " );
 	            	final LabelField contextField = new LabelField(); 
 	            	
-	            	contextField.setValue( contextPath );
+	            	contextField.setValue( contextLabel );
 					contextField.setHeight( 22 );
 					contextField.setReadOnly( true );            	
 	            	
