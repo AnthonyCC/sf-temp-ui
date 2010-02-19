@@ -7,8 +7,11 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 
 
@@ -24,6 +27,8 @@ import com.freshdirect.framework.webapp.BodyTagSupport;
 public class CategoryImageTag extends BodyTagSupport {
 
 	private static final long serialVersionUID = 8159061278833068855L;
+	
+	private static final Logger LOGGER = LoggerFactory.getInstance( CategoryImageTag.class );
 
 	CategoryModel	category; 					// category (mandatory)
 	String			style; 						// CSS style modification (optional)
@@ -60,6 +65,11 @@ public class CategoryImageTag extends BodyTagSupport {
 	public int doStartTag() {
 		try {
 			Image catImg = category.getCategoryPhoto(); // TODO ez a kep kell?
+			
+			if ( catImg == null ) {
+				LOGGER.warn( "Missing category image: " + category.getContentKey() );
+				return SKIP_BODY;
+			}
 			
 			JspWriter out = pageContext.getOut();
 			
