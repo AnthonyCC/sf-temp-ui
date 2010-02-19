@@ -690,7 +690,8 @@ if(productCode!=null && prodCatId !=null ) {
 </td>
 <td width="10">&nbsp;</td><%-- buffer cell --%>
 <td align="center">
-	<table>
+	<br />
+	<table border="0" width="100%" cellspacing="0" cellpadding="0">
 		<tr>
 			<td align="left">
         		<% if ( FDStoreProperties.useOscache() ) { %> 
