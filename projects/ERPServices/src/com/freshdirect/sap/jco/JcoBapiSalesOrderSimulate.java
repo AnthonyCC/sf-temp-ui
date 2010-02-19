@@ -120,6 +120,29 @@ class JcoBapiSalesOrderSimulate extends JcoBapiOrder implements BapiSalesOrderSi
 		}
 	}
 
+	
+		
+	public void addOrderItemIn(OrderItemIn item) {
+		this.orderItemIn.appendRow();
+
+		this.orderItemIn.setValue(item.getMaterialNo(),	"MATERIAL");
+		this.orderItemIn.setValue(item.getPurchNo(),	"PURCH_NO_S");
+		this.orderItemIn.setValue(item.getPoItemNo(),	"PO_ITM_NO");
+		if (item.getPoItemNoS() != 0) {
+			this.orderItemIn.setValue(item.getPoItemNoS(), "POITM_NO_S");
+		}
+		this.orderItemIn.setValue(item.getItemNumber(),	"ITM_NUMBER");
+		this.orderItemIn.setValue(item.getPurchDate(),	"PO_DAT_S");
+		if (item.getReqQty() != null) {
+			this.orderItemIn.setValue((int) (item.getReqQty().doubleValue() * 1000), "REQ_QTY");
+		}
+		this.orderItemIn.setValue(item.getSalesUnit(),	"SALES_UNIT");
+		this.orderItemIn.setValue(item.getDeliveryGroup(), "DLV_GROUP");
+		this.orderItemIn.setValue(item.getCustMat35(),	"CUST_MAT35");
+		//this.orderItemIn.setValue(item.getSalesDist(), "SALES_DIST");
+	}
+
+	
 	public int getOrderItemOutSize() {
 		return this.orderItemOut.length;
 	}
