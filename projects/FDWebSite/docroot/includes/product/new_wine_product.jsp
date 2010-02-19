@@ -67,9 +67,13 @@
 			<br>
 		<%}%>
         <%-- Content start --%>
-        <oscache:cache time="300">
-		<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-		</oscache:cache>
+   		<% if ( FDStoreProperties.useOscache() ) { %> 
+	        <oscache:cache time="300">
+				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
+			</oscache:cache>
+   		<% } else { %>			        
+				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
+   		<% } %>
 		</td>
 		<td align="center" class="text11" style="padding-top:3px;">
 				<!-- Product transactional area include start -->

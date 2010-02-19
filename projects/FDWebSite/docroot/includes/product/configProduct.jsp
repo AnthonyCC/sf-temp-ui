@@ -57,13 +57,19 @@ int templateType = productNode.getTemplateType(1);
 		<TD WIDTH="200" CLASS="text12">&nbsp;<BR>
 <% if (!_isModifyCart && isWebApp) { %>
 
-         <%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
+        <%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
         <!-- Content start -->
-        <oscache:cache time="300">
-		<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-		<%@ include file="/shared/includes/product/i_product_image.jspf" %>
-		<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-	</oscache:cache>
+   		<% if ( FDStoreProperties.useOscache() ) { %> 
+	        <oscache:cache time="300">
+				<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+				<%@ include file="/shared/includes/product/i_product_image.jspf" %>
+				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
+			</oscache:cache>
+   		<% } else { %>			        
+				<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+				<%@ include file="/shared/includes/product/i_product_image.jspf" %>
+				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
+   		<% } %>
 <% } else { %>
 		<%@ include file="/shared/includes/product/i_product_image.jspf" %>
 		<%	Html productDesc = productNode.getProductDescription();	%>

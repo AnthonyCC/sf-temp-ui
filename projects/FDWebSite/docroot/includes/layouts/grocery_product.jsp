@@ -693,9 +693,13 @@ if(productCode!=null && prodCatId !=null ) {
 	<table>
 		<tr>
 			<td align="left">
-				<oscache:cache time="300">
-					<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-				</oscache:cache>
+        		<% if ( FDStoreProperties.useOscache() ) { %> 
+					<oscache:cache time="300">
+						<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+					</oscache:cache>
+        		<% } else { %>			        
+						<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+        		<% } %>
 			</td>
 		</tr>
 	</table>
