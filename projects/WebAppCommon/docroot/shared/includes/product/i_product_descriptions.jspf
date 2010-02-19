@@ -25,7 +25,7 @@
                       
  String separatorChar = "";
 	String productView = request.getParameter("product_view");
-        SkuModel defaultSku = !productNode.isUnavailable()?productNode.getDefaultSku():(SkuModel)productNode.getSkus().get(0);
+        SkuModel defaultSku = !productNode.isUnavailable() ? productNode.getDefaultSku() : (SkuModel)productNode.getSkus().get(0);
         String aboutLabel = null;
         
         if (defaultSku!=null) {
@@ -231,8 +231,14 @@
 
 			<%
 			} else if (showAbout) {
-
-				boolean isProductWine = defaultSku.getProduct().isWine();
+			
+				FDProduct fdProd = null;
+				try {
+					fdProd = defaultSku.getProduct();
+				} catch ( FDSkuNotFoundException ex ) {
+				}
+				boolean isProductWine = fdProd == null ? false : fdProd.isWine();
+				
 	            // [MNT-26] In case of wines show popup link only in wine department and
 	            //   skip on other departments like our picks
 	            boolean doShowAbout = !isProductWine;
@@ -331,7 +337,9 @@
 	} catch (Exception ex) {
 			ex.printStackTrace();
 	%>
-		<oscache:usecached />
+		<% if ( FDStoreProperties.useOscache() ) { %>
+			<oscache:usecached />
+		<% } %>
 	<%
 	}
 %>

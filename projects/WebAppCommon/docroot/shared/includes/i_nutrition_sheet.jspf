@@ -2,13 +2,12 @@
 <%@ page import='java.io.*'%>
 <%@page import="javax.xml.transform.*"%>
 <%@page import="javax.xml.transform.stream.*"%>
-<%!
-	private Transformer transformer;
-%>
 <%
+		Transformer transformer = (Transformer)pageContext.getSession().getAttribute( "nutrition_xsl_template" );
 		if (transformer == null) {
 			InputStream xslStream = pageContext.getServletContext().getResourceAsStream(("/resource/xml/nutrition_label.xsl"));
 			transformer = TransformerFactory.newInstance().newTransformer( new StreamSource(xslStream) );
+			pageContext.getSession().setAttribute( "nutrition_xsl_template", transformer );
 		}
 		org.dom4j.Document doc = new XMLSerializer().serializeDocument("nutrition", fdprd.getNutrition());
         StringWriter st = new StringWriter();

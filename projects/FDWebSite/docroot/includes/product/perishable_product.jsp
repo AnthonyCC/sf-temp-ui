@@ -18,15 +18,13 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
-
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%@ include file="/shared/includes/product/i_product_methods.jspf" %>
 
 <%
-List shelfLifeList = null;
-String leastShelfDays = null; // least number of shelf life days for multiple skus
-
+	List shelfLifeList = null;
+	String leastShelfDays = null; // least number of shelf life days for multiple skus
 
 	//*** get needed vars from request attributes, they must exist or else we throw jsp error ***/
 
@@ -102,7 +100,7 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 									    <td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
 									    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
 									    <td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
-									    <span class="text12">at least </span><span class="title12"><%=shelfLife%> days</span><span class="text12"><br> from delivery</span></td>
+									    <span class="text12">at least </span><span class="title12"><%=shelfLife%> days</span><span class="text12"><br/> from delivery</span></td>
 									    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>								    
 									</tr>
 
@@ -144,7 +142,7 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 										        	
 										    		<td>   
 											<% } %>
-											     <br /><br /><span class="title12"><i><%=label%>:</i></span><br /><span class="text12">at least</span><span class="title12"> <%=daysFresh%> days</span><span class="text12"><br> from delivery</span></td><br />								
+											     <br /><br /><span class="title12"><i><%=label%>:</i></span><br /><span class="text12">at least</span><span class="title12"> <%=daysFresh%> days</span><span class="text12"><br/> from delivery</span></td><br />								
 											    <td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
 											</tr>
 											
@@ -172,7 +170,7 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
 				<table width="188">
 					<tr>
 						<td align="right">
-						<br>
+						<br/>
 						<a href="javascript:pop('/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK HERE</a>
 						</td>
 					</tr>
@@ -191,9 +189,17 @@ String leastShelfDays = null; // least number of shelf life days for multiple sk
          		<%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
          		
         		<!-- Content start -->		  
-					<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-					<%@ include file="/shared/includes/product/i_product_image.jspf" %>
-					<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>			
+        		<% if ( FDStoreProperties.useOscache() ) { %> 
+        			<oscache:cache time="300"> 
+						<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+						<%@ include file="/shared/includes/product/i_product_image.jspf" %>
+						<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
+        			</oscache:cache> 
+        		<% } else { %>			        
+						<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
+						<%@ include file="/shared/includes/product/i_product_image.jspf" %>
+						<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>				    
+        		<% } %>
 
 			<% } else {
 				
