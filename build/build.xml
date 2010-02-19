@@ -1213,6 +1213,7 @@
 					<include name="freemarker-2.3.15.jar"/>
 					<include name="jsonrpc-1.0.jar"/>
 					<include name="bsh-2.0b4.jar"/>
+
                     <include name="jasypt-1.5.jar"/>
                     <include name="core-renderer.jar"/>
                     <include name="iText-2.0.8.jar"/>
@@ -1238,6 +1239,7 @@
 					<include name="spring.jar"/>
 					<include name="JFEP-0.1.0.jar"/>
 					<include name="roadnetservices.jar"/>
+					<include name="httpcore-4.0-alpha6.jar"/>
 					<lib/>
 				</zipfileset>
 				<extra/>
@@ -1338,7 +1340,8 @@
                     <include name="wsdl4j-1.5.1.jar"/>
                     <include name="xml-apis.jar"/>
                     <include name="commons-discovery-0.2.jar"/>					
-					<include name="jaxrpc.jar"/>				
+					<include name="jaxrpc.jar"/>
+					<include name="httpcore-4.0-alpha6.jar"/>					
 
 					<lib/>
 				</zipfileset>
