@@ -10,10 +10,15 @@ import java.util.Map.Entry;
 
 import javax.servlet.jsp.JspException;
 
+import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -24,8 +29,10 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeCategory;
 import com.freshdirect.fdstore.content.RecipeSubcategory;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSessionBean;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.content.BaseTemplateContext;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.JspMethods;
 
@@ -38,7 +45,7 @@ public class TemplateContext extends BaseTemplateContext{
 
 	private final static Image IMAGE_BLANK = new Image("/media_stat/images/layout/clear.gif", 1, 1);
 
-	//private static final Category LOGGER = Category.getInstance(TemplateContext.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(TemplateContext.class);
 
 //	private final Map parameters;
 	
@@ -218,7 +225,19 @@ public class TemplateContext extends BaseTemplateContext{
 		if (node.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
 			ProductModel product    = (ProductModel) node;
 			PriceCalculator calc = new PriceCalculator(pricingContext, product);
-			price = calc.getSellingPriceOnly();
+			try{
+				if(calc.getZonePriceInfoModel().isItemOnSale()){
+					price = calc.getSellingPriceOnly();	
+				}else{
+					
+				}
+			}catch(FDResourceException fe){
+				LOGGER.error("Error Occurred while getting base price "+fe.getMessage());
+			}catch(FDSkuNotFoundException fse){
+				LOGGER.error("Error Occurred while getting base price "+fse.getMessage());
+			}
+			
+			
 		}
 		
 		return price;
