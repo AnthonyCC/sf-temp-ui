@@ -319,16 +319,14 @@ public class TranslatorToGwt {
 
 				ContentKey valueKey = (ContentKey)value;
 				
-				if ( customFieldDefinition != null && customFieldDefinition.getType() == CustomFieldDefinition.Type.ProductConfigEditor ) {
+				if ( valueKey != null && customFieldDefinition != null && customFieldDefinition.getType() == CustomFieldDefinition.Type.ProductConfigEditor ) {
 					ProductConfigAttribute pcAttr = new ProductConfigAttribute();
 					pcAttr.setLabel( name );
-					if ( node != null && valueKey != null ) { 
-						pcAttr.setValue( toContentNodeModel( valueKey ) );
-						pcAttr.setConfigParams( getProductConfigParams( valueKey ) );
-						pcAttr.setQuantity( (Double)node.getAttributeValue( "QUANTITY" ) );
-						pcAttr.setSalesUnit( (String)node.getAttributeValue( "SALES_UNIT" ) );
-						pcAttr.setConfigOptions( (String)node.getAttributeValue( "OPTIONS" ) );
-					}
+					pcAttr.setValue( toContentNodeModel( valueKey ) );
+					pcAttr.setConfigParams( getProductConfigParams( valueKey ) );
+					pcAttr.setQuantity( (Double)node.getAttributeValue( "QUANTITY" ) );
+					pcAttr.setSalesUnit( (String)node.getAttributeValue( "SALES_UNIT" ) );
+					pcAttr.setConfigOptions( (String)node.getAttributeValue( "OPTIONS" ) );
 					attr = pcAttr;
 				} else {
 					OneToOneAttribute ooAttr = new OneToOneAttribute();
