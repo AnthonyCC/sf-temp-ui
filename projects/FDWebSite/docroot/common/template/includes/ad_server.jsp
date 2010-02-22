@@ -337,7 +337,7 @@
 		if (request.getParameter("searchParams") != null) {
 			queryString.addParam("searchParams", URLEncoder.encode(request.getParameter("searchParams"), "UTF-8"));
 		}
-		if(FDStoreProperties.isZonePricingEnabled()){
+		if(FDStoreProperties.isZonePricingAdEnabled()){
 			queryString.addParam("zonelevel","true");
 			if(null !=user){
 			String zoneId = FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null), user.getZipCode());
@@ -355,7 +355,6 @@
 			}
 			}
 		}
-System.out.println("**************Query String:"+queryString.toString());
 		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"
 				: (String) request.getAttribute("sitePage");
 		String listPos = request.getAttribute("listPos") == null ? "SystemMessage"
