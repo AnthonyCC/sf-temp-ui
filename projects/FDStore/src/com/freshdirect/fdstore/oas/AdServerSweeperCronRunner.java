@@ -55,6 +55,7 @@ public class AdServerSweeperCronRunner {
 	private static void updateOASdatabase(Connection conn, String campaigns) throws SQLException{
 		
 		System.out.println("Inside updateOASdatabase() method.");		
+		removeZoneTermFromSearchTerm(conn);
 		PreparedStatement  ps = null;
 		if(null != campaigns && campaigns.trim().length()>0){
 			ps = conn.prepareStatement("select c.CampaignKey, c.SearchTerm from Campaign c where c.CampaignKey in("+campaigns+")");			
@@ -62,7 +63,7 @@ public class AdServerSweeperCronRunner {
 			ps = conn.prepareStatement("select c.CampaignKey, c.SearchTerm from Campaign c,Campaign_Creative cc where c.CampaignKey = cc.CampaignKey and cc.CreativeKey in(Select Distinct(CreativeKey) From Creative c1, CreativeUpdate_Zone cu where c1.DisplayFlag ='Yes' and instr(c1.extraHtml, Concat('productId=', cu.ProductId, '&')) and cu.ZONETYPE<>'M' and cu.ZONETYPE<>'')");
 		}
 		ResultSet rs = ps.executeQuery();
-		PreparedStatement  ucps = conn.prepareStatement("update Campaign c set c.SearchTerm = ? where c.CampaignKey=?");
+		PreparedStatement  ucps = conn.prepareStatement("update Campaign c set c.SearchTerm = ?,c.SearchAnyAll='LOG' where c.CampaignKey=?");
 		PreparedStatement iczps = conn.prepareStatement("insert into CampaignZoneTerm(CampaignKey,ZoneSearchTerm,TimeStamp) values(?,?,?)");
 		Date date = new Date();		
 		while(rs.next()){
@@ -87,6 +88,32 @@ public class AdServerSweeperCronRunner {
 		System.out.println("Inserted "+result.length+" CampaignZoneTerm records.");
 		iczps.close();
 		System.out.println("Completed updateOASdatabase() method.");
+	}
+
+
+	private static void removeZoneTermFromSearchTerm(Connection conn) throws SQLException{
+		PreparedStatement ps = conn.prepareStatement("select c.CampaignKey,c.SearchTerm,czt.ZoneSearchTerm from Campaign c, CampaignZoneTerm czt where c.SearchTerm like '%zonelevel%' and c.CampaignKey=czt.CampaignKey and czt.TimeStamp =(select max(TimeStamp) from CampaignZoneTerm where CampaignKey=c.CampaignKey) order by c.CampaignKey");
+		PreparedStatement  ucps = conn.prepareStatement("update Campaign c set c.SearchTerm = ? where c.CampaignKey=?");
+		ResultSet rs =ps.executeQuery();
+		while(rs.next()){
+			int campaignKey = rs.getInt(1);
+			String searchTerm = rs.getString(2);
+			String zoneSearchTerm = rs.getString(3);
+			if(null!=searchTerm && !searchTerm.trim().equals("")){
+				if(null!=zoneSearchTerm && zoneSearchTerm.equals(""))
+				searchTerm = searchTerm.replace(zoneSearchTerm, "");
+			}else{
+				searchTerm = "";
+			}
+			ucps.setString(1, searchTerm);
+			ucps.setInt(2, campaignKey);
+			ucps.addBatch();			
+		}		
+		int[] rowsUpdated = ucps.executeBatch();
+		System.out.println("Updated "+rowsUpdated.length+" Campaign records with old searchTerms.");
+		ucps.close();
+		rs.close();
+		ps.close();		
 	}
 
 
@@ -119,72 +146,58 @@ public class AdServerSweeperCronRunner {
 			PreparedStatement ucps, PreparedStatement iczps, Date date,
 			int campaignKey, String oldsearchTerm) throws SQLException {
 		String searchTerm ="";
-		if(null != searchTerm && !searchTerm.trim().equals("")){
+		/*if(null != oldsearchTerm && !oldsearchTerm.trim().equals("")){
 			searchTerm = searchTerm +"AND((zonelevel!?)OR((zonelevel=true)";				
-		}else{
+		}else{*/
 			searchTerm = "((zonelevel!?)OR((zonelevel=true)";
-		}
+//		}
 //				searchTerm = searchTerm +"&& (zonelevel=null ||(zonelevel=true ";
 		{
-			PreparedStatement ps1 = conn.prepareStatement("select cuz.ZoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.ZONETYPE<>'M' and cuz.price is not null and cuz.price<>'' and c1.LinkText<>'' and c1.LinkText <> cuz.Price)and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
-			ps1.setInt(1, campaignKey);
-			ResultSet rs1 = ps1.executeQuery();
-			searchTerm = searchTerm+"AND(";
-			searchTerm = searchTerm+"((zid?)";	
-			while(rs1.next()){
-				if(rs1.isFirst())
-					searchTerm = searchTerm+"AND(";	
-											
-				searchTerm = searchTerm + "(zid!="+rs1.getString(1)+")";	
-				if(!rs1.isLast())
-					searchTerm = searchTerm+"AND";
-				if(rs1.isLast())
-					searchTerm = searchTerm+")";
-			}
-			PreparedStatement ps2 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText=''))	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
-			ps2.setInt(1, campaignKey);
-			ResultSet rs2 = ps2.executeQuery();
-//			searchTerm = searchTerm+"AND(";	
+			searchTerm = searchTerm+"AND(";			
 			
-			while(rs2.next()){
-				if(rs2.isFirst())
-					searchTerm = searchTerm+"AND(";
-				searchTerm = searchTerm + "(zid="+rs2.getString(1)+")";
-				if(!rs2.isLast())
-					searchTerm = searchTerm+"OR";					
-				if(rs2.isLast())
-					searchTerm = searchTerm +")";
+			String zidExclusionList="";
+
+			zidExclusionList = getZidExclusionString(conn, campaignKey,
+					zidExclusionList);
+			if(!zidExclusionList.equalsIgnoreCase("")){
+				searchTerm = searchTerm+"("+zidExclusionList+")";
 			}
-			searchTerm = searchTerm+")";	
+			String zidInclusionList ="";
+			zidInclusionList = getZidInclusionString(conn, campaignKey,
+					zidInclusionList);
+			if(!zidInclusionList.equalsIgnoreCase("")){
+				if(!zidExclusionList.equalsIgnoreCase("")){
+					searchTerm=searchTerm+"AND";
+				}
+				searchTerm = searchTerm+"("+zidInclusionList;
+				searchTerm=searchTerm+"OR";
+			}		
+			
+			String szidExclusionList="";
+			String szidInclusionList="";
 			PreparedStatement ps3 = conn.prepareStatement("select count(cuz.zoneId) from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
 			ps3.setInt(1, campaignKey);
-			ResultSet rs3 = ps3.executeQuery();
+			ResultSet rs3 = ps3.executeQuery();			
 			if(rs3.next() && rs3.getInt(1)>0){
-				searchTerm = searchTerm +"OR((zid!?)AND(szid?)";
-				ps3 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and c1.LinkText <>'' and c1.LinkText <> cuz.Price and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
-				ps3.setInt(1, campaignKey);
-				rs3 = ps3.executeQuery();
-				while(rs3.next()){
-					searchTerm = searchTerm+"AND";
-					searchTerm = searchTerm + "(szid!="+rs3.getString(1)+")";							
-				}
-//					searchTerm = searchTerm +"&& ";
-				PreparedStatement ps4 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText='') and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
-				ps4.setInt(1, campaignKey);
-				ResultSet rs4= ps4.executeQuery();
-				while(rs4.next()){
-					if(rs4.isFirst())	
-						searchTerm = searchTerm+"AND(";
-					if(!rs4.isFirst()){
-						searchTerm = searchTerm +"OR";
+
+				szidExclusionList = getSzidExclusionString(conn, campaignKey,
+						szidExclusionList);
+
+				if(!szidExclusionList.equalsIgnoreCase("")){
+					
+					searchTerm = searchTerm+"("+szidExclusionList;
+				}				
+				szidInclusionList = getSzidInclusionString(conn, campaignKey,
+						szidInclusionList);
+				if(!szidInclusionList.equalsIgnoreCase("")){
+					if(!szidExclusionList.equalsIgnoreCase("")){
+						searchTerm=searchTerm+"AND";
 					}
-					searchTerm = searchTerm+"(szid="+rs4.getString(1)+")";
-					if(rs4.isLast())
-						searchTerm = searchTerm+")";
-				}
-				searchTerm = searchTerm+")";
+					searchTerm=searchTerm+"("+szidInclusionList;
+				}				
 			}
-			searchTerm = searchTerm +"OR((zid!?)AND(szid!?)AND(";
+//			searchTerm = searchTerm +"OR((zid!?)AND(szid!?)AND(";
+			String mzidList="";
 			PreparedStatement ps5 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText='') and cuz.ZONETYPE='M')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
 			ps5.setInt(1, campaignKey);
 			ResultSet rs5= ps5.executeQuery();			
@@ -196,7 +209,7 @@ public class AdServerSweeperCronRunner {
 				if(!rs5.isFirst()){
 					searchTerm = searchTerm +"OR";
 				}*/
-				searchTerm = searchTerm +"(mzid="+rs5.getString(1)+")";
+				mzidList = mzidList +"(mzid="+rs5.getString(1)+")";
 				/*if(rs5.isLast())
 					searchTerm = searchTerm+"))";*/
 			}else{
@@ -204,10 +217,29 @@ public class AdServerSweeperCronRunner {
 				ps5.setInt(1, campaignKey);
 				rs5= ps5.executeQuery();
 				if(rs5.next()){
-					searchTerm = searchTerm +"(mzid!="+rs5.getString(1)+")";	
+					mzidList = mzidList +"(mzid!="+rs5.getString(1)+")";
 				}
 			}
-			searchTerm = searchTerm+"))";
+			if(!mzidList.equalsIgnoreCase("")){
+				if(!szidInclusionList.equalsIgnoreCase("")){
+					searchTerm=searchTerm+"OR";
+				}
+				searchTerm = searchTerm+"("+mzidList+")";
+				
+			}
+//			searchTerm = searchTerm+"))";
+			if(!szidInclusionList.equalsIgnoreCase("")){
+				searchTerm = searchTerm +")";
+			}
+			if(!szidExclusionList.equalsIgnoreCase("")){
+				searchTerm = searchTerm +")";
+			}
+			if(!zidInclusionList.equalsIgnoreCase("")){
+				searchTerm = searchTerm +")";
+			}
+			if(!zidExclusionList.equalsIgnoreCase("")){
+				searchTerm = searchTerm +")";
+			}
 			searchTerm = searchTerm +")";
 		}
 		searchTerm = searchTerm +"))";
@@ -221,8 +253,15 @@ public class AdServerSweeperCronRunner {
 		if(rscz.next()){
 			zoneSearchTerm = rscz.getString(1);
 		}
-		if(null !=zoneSearchTerm && !zoneSearchTerm.equals(""))
-			oldsearchTerm = oldsearchTerm.replace(zoneSearchTerm, "");
+//		if(null !=zoneSearchTerm && !zoneSearchTerm.equals(""))
+//			oldsearchTerm = oldsearchTerm.replace(zoneSearchTerm, "");
+		if(null != oldsearchTerm && !oldsearchTerm.trim().equals("")){
+			searchTerm="AND"+searchTerm;
+			oldsearchTerm="("+oldsearchTerm+")";
+		}else{
+			oldsearchTerm = "";
+		}
+		
 		ucps.setString(1, oldsearchTerm+searchTerm);
 		ucps.setInt(2, campaignKey);
 		ucps.addBatch();
@@ -231,6 +270,82 @@ public class AdServerSweeperCronRunner {
 		iczps.setString(2,searchTerm);
 		iczps.setTimestamp(3, new java.sql.Timestamp(date.getTime()));
 		iczps.addBatch();
+	}
+
+
+	private static String getSzidInclusionString(Connection conn,
+			int campaignKey, String szidInclusionList) throws SQLException {
+		PreparedStatement ps4 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText='') and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
+		ps4.setInt(1, campaignKey);
+		ResultSet rs4= ps4.executeQuery();
+		while(rs4.next()){
+			if(rs4.isFirst())	
+				szidInclusionList = szidInclusionList+"((szid!?)OR((szid?)AND(";
+			if(!rs4.isFirst()){
+				szidInclusionList = szidInclusionList +"OR";
+			}
+			szidInclusionList = szidInclusionList+"(szid="+rs4.getString(1)+")";
+			if(rs4.isLast())
+				szidInclusionList = szidInclusionList+")))";					
+		}
+		return szidInclusionList;
+	}
+
+
+	private static String getSzidExclusionString(Connection conn,
+			int campaignKey, String szidExclusionList) throws SQLException {
+		PreparedStatement ps3;
+		ResultSet rs3;
+		ps3 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and c1.LinkText <>'' and c1.LinkText <> cuz.Price and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
+		ps3.setInt(1, campaignKey);
+		rs3 = ps3.executeQuery();
+		while(rs3.next()){
+			if(rs3.isFirst())
+				szidExclusionList = szidExclusionList +"((szid!?)OR((szid?)AND(";
+			szidExclusionList = szidExclusionList + "(szid!="+rs3.getString(1)+")";
+			if(!rs3.isLast())
+				szidExclusionList = szidExclusionList+"AND";
+			if(rs3.isLast())
+				szidExclusionList = szidExclusionList +")))";
+		}
+		return szidExclusionList;
+	}
+
+
+	private static String getZidInclusionString(Connection conn,
+			int campaignKey, String zidInclusionList) throws SQLException {
+		PreparedStatement ps2 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText=''))	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
+		ps2.setInt(1, campaignKey);
+		ResultSet rs2 = ps2.executeQuery();			
+		while(rs2.next()){
+			if(rs2.isFirst())
+				zidInclusionList = zidInclusionList+"((zid!?)OR((zid?)AND(";
+			zidInclusionList = zidInclusionList + "(zid="+rs2.getString(1)+")";
+			if(!rs2.isLast())
+				zidInclusionList = zidInclusionList+"OR";
+			if(rs2.isLast())
+				zidInclusionList = zidInclusionList +")))";
+			
+		}
+		return zidInclusionList;
+	}
+
+
+	private static String getZidExclusionString(Connection conn,
+			int campaignKey, String zidExclusionList) throws SQLException {
+		PreparedStatement ps1 = conn.prepareStatement("select cuz.ZoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.ZONETYPE<>'M' and cuz.price is not null and cuz.price<>'' and c1.LinkText<>'' and c1.LinkText <> cuz.Price)and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
+		ps1.setInt(1, campaignKey);
+		ResultSet rs1 = ps1.executeQuery();
+		while(rs1.next()){
+			if(rs1.isFirst())
+				zidExclusionList = zidExclusionList+"((zid!?)OR((zid?)AND(";											
+			zidExclusionList = zidExclusionList + "(zid!="+rs1.getString(1)+")";	
+			if(!rs1.isLast())
+				zidExclusionList = zidExclusionList+"AND";
+			if(rs1.isLast())
+				zidExclusionList = zidExclusionList+")))";
+		}
+		return zidExclusionList;
 	}
 
 
