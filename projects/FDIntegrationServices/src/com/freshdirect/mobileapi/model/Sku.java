@@ -175,7 +175,8 @@ public class Sku {
 
     public double getBasePrice() {
         try {
-            return priceCalc.getZonePriceInfoModel().getDefaultPrice();
+            //return priceCalc.getZonePriceInfoModel().getDefaultPrice();
+            return priceCalc.getZonePriceInfoModel().getSellingPrice();
         } catch (FDResourceException e) {
             throw new RuntimeException(e);
         } catch (FDSkuNotFoundException e) {
