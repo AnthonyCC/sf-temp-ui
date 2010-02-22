@@ -46,7 +46,8 @@ public class EnumSiteFeature implements Serializable, Comparable {
     
     //gift cards
     public final static EnumSiteFeature GIFT_CARDS = new EnumSiteFeature("giftCards");
-
+    //Zone Pricing
+    public final static EnumSiteFeature ZONE_PRICING = new EnumSiteFeature("zonePricing");
 
     String name;
 	

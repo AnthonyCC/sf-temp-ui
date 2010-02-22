@@ -23,6 +23,8 @@ public class SiteFeatureHelper {
 			return FDStoreProperties.isSmartSearchEnabled() || feature.isEnabled(user);
 		} else if (EnumSiteFeature.GIFT_CARDS.equals(feature)) {
 			return FDStoreProperties.isGiftCardEnabled() || feature.isEnabled(user);
+		}else if (EnumSiteFeature.ZONE_PRICING.equals(feature)) {
+			return FDStoreProperties.isZonePricingEnabled() || feature.isEnabled(user);
 		}
 
 		return feature.isEnabled(user);

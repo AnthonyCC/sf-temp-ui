@@ -74,7 +74,7 @@ public class AdServerListener extends MessageDrivenBeanSupport{
 			nameValues.add(new NameValuePair("zoneId", row.getZoneId()));
 			nameValues.add(new NameValuePair("zoneType",row.getZoneType()));
 		};
-		nameValues.add(new NameValuePair("zonePricingEnabled",String.valueOf(FDStoreProperties.isZonePricingEnabled())));
+		nameValues.add(new NameValuePair("zonePricingEnabled",String.valueOf(FDStoreProperties.isZonePricingAdEnabled())));
 		NameValuePair[] data = (NameValuePair[]) nameValues.toArray(new NameValuePair[nameValues.size()]);
 
 		post.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

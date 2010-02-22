@@ -85,7 +85,7 @@ public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {
 						for (int i=0; i<prices.length; i++) {
 							MaterialPrice mp = prices[i];
 							String price = mp.getScaleLowerBound() + "@" + mp.getPrice();
-							if(!FDStoreProperties.isZonePricingEnabled()){
+							if(!FDStoreProperties.isZonePricingAdEnabled()){
 								if("M".equalsIgnoreCase(getZoneType(zonePriceModel.getSapZoneId())))
 								results.add(new AdServerRow(prod.getContentName(), !prod.isUnavailable(), price, zonePriceModel.getSapZoneId(), getZoneType(zonePriceModel.getSapZoneId())));
 							}else{

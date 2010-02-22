@@ -389,13 +389,14 @@ public class FDStoreProperties {
 	private final static String PROP_GC_NSM_AUTHSKIP_SECS  = "fdstore.gcnsm.authskip.secs";
 	private final static String PROP_GC_NSM_FREQ_SECS  = "fdstore.gcnsm.frequency.secs";
 	
-	private final static String PROP_ZONE_PRICING_ENABLED = "fdstore.zone.pricing.enabled";
-	
 	private final static String PROP_ZONE_PICKUP_ZIPCODE = "fdstore.zone.pricing.pickup.zipcode";
 	
 	//Windows steering
 	private final static String WINDOW_STEERING_PROMOTION_PREFIX="fdstore.windowsteering.promo.prefix";
 	
+	//Zone Pricing
+	private final static String PROP_ZONE_PRICING_AD_ENABLED = "fdstore.zone.pricing.ad.enabled";
+	private final static String PROP_ZONE_PRICING_ENABLED = "fdstore.zone.pricing.enabled";
 	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
@@ -687,6 +688,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_GC_NSM_AUTHSKIP_SECS, "600");
 		defaults.put(PROP_GC_NSM_FREQ_SECS, "600");
 		defaults.put(PROP_ZONE_PRICING_ENABLED, "true");		
+		defaults.put(PROP_ZONE_PRICING_AD_ENABLED, "true");
 		defaults.put(PROP_ZONE_PICKUP_ZIPCODE, "11101");
 		
 		//Window Steering
@@ -1592,6 +1594,10 @@ public class FDStoreProperties {
 		return Boolean.valueOf(config.getProperty(PROP_ZONE_PRICING_ENABLED)).booleanValue();
 	}
 
+	public static boolean isZonePricingAdEnabled(){
+		return Boolean.valueOf(config.getProperty(PROP_ZONE_PRICING_AD_ENABLED)).booleanValue();
+	}
+	
 	public static String getWindowSteeringPromoPrefix() {
 		return get(WINDOW_STEERING_PROMOTION_PREFIX);
 	}

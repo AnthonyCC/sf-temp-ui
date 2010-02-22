@@ -1295,7 +1295,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return SiteFeatureHelper.isEnabled(EnumSiteFeature.DYF, this);
 	}
 
-
+	//Zone Pricing
+	public boolean isZonePricingEnabled() {
+		return SiteFeatureHelper.isEnabled(EnumSiteFeature.ZONE_PRICING, this);
+	}
+	
 	public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
 	    if (this.identity != null) {
 			FDCustomerModel customer = this.getFDCustomer();
@@ -1667,14 +1671,20 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public PricingContext getPricingContext() {
 		try {
 			if(this.pricingContext == null){
-				//Pricing context is yet to be set. Load it from DB.
-				String zoneId=FDZoneInfoManager.findZoneId(getSelectedServiceType().getName(), getZipCode());
-				this.pricingContext = new PricingContext(zoneId);
+				if(this.isZonePricingEnabled()) {
+					//Pricing context is yet to be set. Resolve it now.
+					String zoneId=FDZoneInfoManager.findZoneId(getSelectedServiceType().getName(), getZipCode());
+					this.pricingContext = new PricingContext(zoneId);					
+				}else {
+					//Set it to Master default zone
+					this.pricingContext = PricingContext.DEFAULT;
+				}
+
 			}
 		}catch (FDResourceException e) {
 			throw new FDRuntimeException(e.getMessage());
 		}
-		return pricingContext;
+		return this.pricingContext;
 	}
 
 	protected void setPricingContext(PricingContext pricingContext) {
@@ -1685,8 +1695,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.setPricingContext(null);
 	} 
 	//Added for Junit testing.
-	public void createDummyPricingContext() {
-		this.setPricingContext(new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE));
+	public void setDefaultPricingContext() {
+		this.setPricingContext(PricingContext.DEFAULT);
 	}
 	
 	public String constructZoneIdForQueryString(){

@@ -191,9 +191,9 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
             }
         } else  if (("GET".equalsIgnoreCase(request.getMethod()))) {
 
-            LOGGER.debug("GET dumpRequest: ============");
-            JspMethods.dumpRequest(request);
-            LOGGER.debug("GET dumpRequest: ============");
+            //LOGGER.debug("GET dumpRequest: ============");
+            //JspMethods.dumpRequest(request);
+            //LOGGER.debug("GET dumpRequest: ============");
             
             LOGGER.debug("setSuccessPage null: ");
         	setSuccessPage(null);

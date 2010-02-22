@@ -117,7 +117,7 @@ public class TestUtils {
     	//Set dummy pricing context for zone pricing.
     	//user.setZipCode("11101");
     	//user.setSelectedServiceType(EnumServiceType.HOME);
-        user.createDummyPricingContext();
+        user.setDefaultPricingContext();
         return user;
     }
 
