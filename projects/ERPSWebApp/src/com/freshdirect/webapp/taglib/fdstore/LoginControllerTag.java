@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -110,7 +111,7 @@ public class LoginControllerTag extends AbstractControllerTag {
                     
                 }
                 // current user has gift card recipients that need to be added to the login user's recipients list
-                if(currentUser.getRecipentList().getRecipents().size() > 0) {
+                if(currentUser.getLevel()==FDUserI.GUEST &&  currentUser.getRecipentList().getRecipents().size() > 0) {
                 	List tempList = currentUser.getRecipentList().getRecipents();
                 	ListIterator iterator = tempList.listIterator();
                 	//add currentUser's list to login user
