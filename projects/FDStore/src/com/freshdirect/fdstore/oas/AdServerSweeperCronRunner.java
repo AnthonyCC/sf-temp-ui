@@ -198,7 +198,7 @@ public class AdServerSweeperCronRunner {
 			}
 //			searchTerm = searchTerm +"OR((zid!?)AND(szid!?)AND(";
 			String mzidList="";
-			PreparedStatement ps5 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText='') and cuz.ZONETYPE='M')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
+			PreparedStatement ps5 = conn.prepareStatement("select distinct(cuz.zoneId) from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText='') and cuz.ZONETYPE='M')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
 			ps5.setInt(1, campaignKey);
 			ResultSet rs5= ps5.executeQuery();			
 			if(rs5.next()){				
@@ -213,7 +213,7 @@ public class AdServerSweeperCronRunner {
 				/*if(rs5.isLast())
 					searchTerm = searchTerm+"))";*/
 			}else{
-				ps5 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and c1.LinkText <> cuz.Price and cuz.ZONETYPE='M')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
+				ps5 = conn.prepareStatement("select distinct(cuz.zoneId) from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and c1.LinkText <> cuz.Price and cuz.ZONETYPE='M')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
 				ps5.setInt(1, campaignKey);
 				rs5= ps5.executeQuery();
 				if(rs5.next()){
@@ -257,7 +257,9 @@ public class AdServerSweeperCronRunner {
 //			oldsearchTerm = oldsearchTerm.replace(zoneSearchTerm, "");
 		if(null != oldsearchTerm && !oldsearchTerm.trim().equals("")){
 			searchTerm="AND"+searchTerm;
-			oldsearchTerm="("+oldsearchTerm+")";
+			if(!oldsearchTerm.trim().startsWith("(") || !oldsearchTerm.trim().endsWith(")")){
+				oldsearchTerm="("+oldsearchTerm.trim()+")";
+			}
 		}else{
 			oldsearchTerm = "";
 		}
@@ -275,7 +277,7 @@ public class AdServerSweeperCronRunner {
 
 	private static String getSzidInclusionString(Connection conn,
 			int campaignKey, String szidInclusionList) throws SQLException {
-		PreparedStatement ps4 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText='') and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
+		PreparedStatement ps4 = conn.prepareStatement("select distinct(cuz.zoneId) from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.extraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText='') and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
 		ps4.setInt(1, campaignKey);
 		ResultSet rs4= ps4.executeQuery();
 		while(rs4.next()){
@@ -296,7 +298,7 @@ public class AdServerSweeperCronRunner {
 			int campaignKey, String szidExclusionList) throws SQLException {
 		PreparedStatement ps3;
 		ResultSet rs3;
-		ps3 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and c1.LinkText <>'' and c1.LinkText <> cuz.Price and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
+		ps3 = conn.prepareStatement("select distinct(cuz.zoneId) from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and c1.LinkText <>'' and c1.LinkText <> cuz.Price and cuz.ZONETYPE='S')	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
 		ps3.setInt(1, campaignKey);
 		rs3 = ps3.executeQuery();
 		while(rs3.next()){
@@ -314,7 +316,7 @@ public class AdServerSweeperCronRunner {
 
 	private static String getZidInclusionString(Connection conn,
 			int campaignKey, String zidInclusionList) throws SQLException {
-		PreparedStatement ps2 = conn.prepareStatement("select cuz.zoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText=''))	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
+		PreparedStatement ps2 = conn.prepareStatement("select distinct(cuz.zoneId) from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cuz.ZoneId<>'' and cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.price is not null and cuz.price<>'' and (c1.LinkText = cuz.Price or c1.LinkText=''))	and cr.CreativeKey = CC.CreativeKey and CC.CampaignKey =?;");
 		ps2.setInt(1, campaignKey);
 		ResultSet rs2 = ps2.executeQuery();			
 		while(rs2.next()){
@@ -333,7 +335,7 @@ public class AdServerSweeperCronRunner {
 
 	private static String getZidExclusionString(Connection conn,
 			int campaignKey, String zidExclusionList) throws SQLException {
-		PreparedStatement ps1 = conn.prepareStatement("select cuz.ZoneId from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.ZONETYPE<>'M' and cuz.price is not null and cuz.price<>'' and c1.LinkText<>'' and c1.LinkText <> cuz.Price)and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
+		PreparedStatement ps1 = conn.prepareStatement("select distinct(cuz.ZoneId) from Campaign_Creative CC, Creative cr, CreativeUpdate_Zone cuz where cr.CreativeKey in(Select Distinct(CreativeKey) From Creative c1 where instr(c1.ExtraHtml, Concat('productId=', cuz.ProductId, '&')) and cuz.ZONETYPE<>'M' and cuz.price is not null and cuz.price<>'' and c1.LinkText<>'' and c1.LinkText <> cuz.Price)and cr.CreativeKey = CC.creativeKey and CC.CampaignKey =?;");
 		ps1.setInt(1, campaignKey);
 		ResultSet rs1 = ps1.executeQuery();
 		while(rs1.next()){
