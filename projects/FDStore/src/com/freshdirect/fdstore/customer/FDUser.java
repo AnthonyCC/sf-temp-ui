@@ -31,7 +31,6 @@ import java.util.StringTokenizer;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
-
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
@@ -794,7 +793,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public EnumServiceType getSelectedServiceType(){
 		AddressModel address = this.shoppingCart.getDeliveryAddress();
-		return address != null ? address.getServiceType() : this.selectedServiceType ;
+		return address != null && !isPickupOnly() ? address.getServiceType() : this.selectedServiceType ;
 	}
 
 
