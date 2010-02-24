@@ -56,9 +56,9 @@ FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 	int ttl=14400; 
 	String keyPrefix="deptLayout_";
 
-	if("fru".equals(deptId) ||"veg".equals(deptId) || "sea".equals(deptId)) {
+	if("fru".equals(deptId) ||"veg".equals(deptId) || "sea".equals(deptId) || "wgd".equals(deptId)) {
 		if(user.isProduceRatingEnabled()) { 
-			//Caching fru,veg,sea,gro,hba,dai,fro,big,mea depts per pricing zone. keyPrefix=keyPrefix+user.getPricingZoneId(); keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_"; ttl=180; }
+			//Caching fru,veg,sea,gro,hba,dai,fro,big,mea,wgd depts per pricing zone.             keyPrefix=keyPrefix+user.getPricingZoneId();             keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";             ttl=180; }
 		} else if("gro".equals(deptId) ||"hba".equals(deptId)||"dai".equals(deptId) ||"fro".equals(deptId) ||"big".equals(deptId)){
 			keyPrefix=keyPrefix+user.getPricingZoneId();
 			ttl=3600;

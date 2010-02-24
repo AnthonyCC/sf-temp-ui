@@ -166,9 +166,9 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 		if (validator.isAddressDeliverable()) {
 			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-			if (user.isPickupOnly()) {
+			if (user.isPickupOnly() && user.getOrderHistory().getValidOrderCount()==0) {
 				//
-				// now eligible for home delivery
+				// now eligible for home/corporate delivery and still not placed an order.
 				//
 				user.setSelectedServiceType(scrubbedAddress.getServiceType());
 				user.setZipCode(scrubbedAddress.getZipCode());
@@ -176,10 +176,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				session.setAttribute(USER, user);
 			}else {
 				//Already is a home or a corporate customer.
-				if(user.getOrderHistory().getValidOrderCount()==0 && !user.getZipCode().equals(scrubbedAddress.getZipCode())
-						&& !user.getSelectedServiceType().equals(scrubbedAddress.getServiceType())) {
-					//check if customer has no order history and if zipcode has changed. If yes then update the
-					//service type to most recent service type.					
+				if(user.getOrderHistory().getValidOrderCount()==0) {
+					//check if customer has no order history.					
 					user.setSelectedServiceType(scrubbedAddress.getServiceType());
 					user.setZipCode(scrubbedAddress.getZipCode());
 					FDCustomerManager.storeUser(user.getUser());

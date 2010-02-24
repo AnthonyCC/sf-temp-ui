@@ -105,7 +105,7 @@ from erps.product p where p.version=(select max(version) from erps.product where
 		
 		<Table contentType="Sku"
 			query="SELECT id, price, unavailability_status FROM (
-SELECT sku_code AS ID, '$' || default_price || '/' || default_unit AS price, unavailability_status,
+SELECT sku_code AS ID, '$1.99/ea' AS price, unavailability_status,
 RANK() OVER (PARTITION BY sku_code ORDER BY VERSION DESC) AS RANK
 FROM erps.product p) WHERE RANK=1"/>
 		

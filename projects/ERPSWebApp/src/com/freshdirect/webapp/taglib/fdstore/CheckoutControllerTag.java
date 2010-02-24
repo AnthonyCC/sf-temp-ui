@@ -593,17 +593,16 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			user.invalidateCache();
 		}
 		if (dav.isAddressDeliverable()) {
-			if (user.isPickupOnly()) {
+			if (user.isPickupOnly() && user.getOrderHistory().getValidOrderCount()==0) {
 				//
-				// now eligible for home delivery
+				// now eligible for home/corporate delivery and still not placed an order.
 				//
 				user.setSelectedServiceType(dlvAddress.getServiceType());
 				user.setZipCode(dlvAddress.getZipCode());
 				FDCustomerManager.storeUser(user.getUser());
 			}else {
 				//Already is a home or a corporate customer.
-				if(user.getOrderHistory().getValidOrderCount()==0 && !user.getZipCode().equals(dlvAddress.getZipCode())
-						&& !user.getSelectedServiceType().equals(dlvAddress.getServiceType())) {
+				if(user.getOrderHistory().getValidOrderCount()==0) {
 					//check if customer has no order history and if zipcode has changed. If yes then update the
 					//service type to most recent service type.					
 					user.setSelectedServiceType(dlvAddress.getServiceType());
