@@ -121,7 +121,7 @@ class JcoBapiSalesOrderSimulate extends JcoBapiOrder implements BapiSalesOrderSi
 	}
 
 	
-		
+/*		
 	public void addOrderItemIn(OrderItemIn item) {
 		this.orderItemIn.appendRow();
 
@@ -141,7 +141,7 @@ class JcoBapiSalesOrderSimulate extends JcoBapiOrder implements BapiSalesOrderSi
 		this.orderItemIn.setValue(item.getCustMat35(),	"CUST_MAT35");
 		//this.orderItemIn.setValue(item.getSalesDist(), "SALES_DIST");
 	}
-
+*/
 	
 	public int getOrderItemOutSize() {
 		return this.orderItemOut.length;

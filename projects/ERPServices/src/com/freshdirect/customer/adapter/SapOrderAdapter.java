@@ -570,7 +570,7 @@ public class SapOrderAdapter implements SapOrderI {
 		
 		public String getPricingZoneId() {
 			//Ignore begining zeroes. 0000100000 --> 100000
-			return orderLine.getPricingZoneId().substring(4);
+			return orderLine.getPricingZoneId();
 		}
 	}
 

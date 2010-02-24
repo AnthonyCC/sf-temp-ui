@@ -14,6 +14,8 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
 
+import weblogic.auddi.util.Logger;
+
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.BasicAddressI;
@@ -162,7 +164,7 @@ class SalesOrderHelper {
 						this.addFakeLine(sapOrder, fakePosition, "000000000000009999", isCreateOrder);
 						this.bapi.addCondition(PosexUtil.getPosexInt(fakePosition), "PB00", -1.0 * discountLine.getDiscount().getAmount(), "USD");
 						//WS1_ is to identify windows steering promo at sap
-						passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, "WS1_"+discountLine.getDiscount().getPromotionCode());
+						passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, "WS1_"+discountLine.getDiscount().getPromotionCode(),null);
 						fakePosition++;
 					}
 				}
@@ -172,7 +174,7 @@ class SalesOrderHelper {
 						//orderDiscountAmount += promo.getDiscount().getAmount();
 						this.addFakeLine(sapOrder, fakePosition, "000000000000009999", isCreateOrder);
 						this.bapi.addCondition(PosexUtil.getPosexInt(fakePosition), "PB00", -1.0 * discountLine.getDiscount().getAmount(), "USD");
-						passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, discountLine.getDiscount().getPromotionCode());
+						passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, discountLine.getDiscount().getPromotionCode(),null);
 						fakePosition++;
 					}
 				}
@@ -183,7 +185,7 @@ class SalesOrderHelper {
 				if (EnumDiscountType.DOLLAR_OFF.equals(orderDiscount.getDiscountType())) {
 					this.addFakeLine(sapOrder, fakePosition, "000000000000009999", isCreateOrder);
 					this.bapi.addCondition(PosexUtil.getPosexInt(fakePosition), "PB00", -1.0 * orderDiscount.getAmount(), "USD");
-					passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, orderDiscount.getPromotionCode());
+					passVBAP(sapOrder, PosexUtil.getPosex(fakePosition), false, isCreateOrder, orderDiscount.getPromotionCode(),null);
 					fakePosition++;
 				} else {
 					// !!! other types of header level promotions not supported by SAP now...
@@ -235,10 +237,10 @@ class SalesOrderHelper {
 			if (disc != null) {
 				this.addPromotionCondition(i, disc);
 				//this will set the promocode + GL Code
-				passVBAP(sapOrder, PosexUtil.getPosex(i), orderLine.isRecipeItem(), isCreateOrder, disc.getPromotionCode());
+				passVBAP(sapOrder, PosexUtil.getPosex(i), orderLine.isRecipeItem(), isCreateOrder, disc.getPromotionCode(),orderLine.getPricingZoneId());
 			}else{
 				//this will set GL Code only
-				passVBAP(sapOrder, PosexUtil.getPosex(i), orderLine.isRecipeItem(), isCreateOrder, null);
+				passVBAP(sapOrder, PosexUtil.getPosex(i), orderLine.isRecipeItem(), isCreateOrder, null,orderLine.getPricingZoneId());
 			}
 		}
 
@@ -249,7 +251,7 @@ class SalesOrderHelper {
 			SapChargeLineI c = charges[i];
 			this.addFakeLine(sapOrder, pos, c.getMaterialNumber(), isCreateOrder);
 			
-			passVBAP(sapOrder, PosexUtil.getPosex(pos), false, isCreateOrder, null);
+			passVBAP(sapOrder, PosexUtil.getPosex(pos), false, isCreateOrder, null,null);
 
 			if (c.getTaxRate() > 0) {
 				this.bapi.addCondition(
@@ -407,21 +409,33 @@ class SalesOrderHelper {
 		return orderLines;
 	}
 	
-	private void passVBAP(SapOrderI sapOrder, String posex, boolean isRecipeItem, boolean isCreateOrder, String promoCode){
+	private void passVBAP(SapOrderI sapOrder, String posex, boolean isRecipeItem, boolean isCreateOrder, String promoCode,String zoneId){
 		String recipeFlag = StringUtils.rightPad(isRecipeItem ? "1" : " ", 5);
 		String glCode = StringUtils.rightPad(NVL.apply(sapOrder.getGlCode(), "").trim(), 10);
 		String promoField = StringUtils.rightPad(NVL.apply(promoCode, "").trim(), 20);
+		String zoneField = "";
+		if(zoneId==null){			
+			zoneField=StringUtils.rightPad(NVL.apply(zoneId, "").trim(), 10);
+		}else{
+			zoneField=zoneId;
+		}					
+		
 		bapi.addExtension("BAPE_VBAP", StringUtils.repeat(" ", 10) + posex //0-16
-			+ recipeFlag
-			+ StringUtils.repeat(" ", 20) + glCode //18 - 51
-			+ StringUtils.repeat(" ", 40) + promoField); // 61 - 111
+			+ recipeFlag 
+			+ StringUtils.repeat(" ", 20) + glCode //18 - 51			
+			+ zoneField //18 - 51
+			+ StringUtils.repeat(" ", 30) + promoField); // 61 - 111
 
+			
 		if (!isCreateOrder) {
+			
+				
 			bapi.addExtension("BAPE_VBAPX", StringUtils.repeat(" ", 10) + posex // 0-16 
-				+ "X" // 17, recipe change flag
-				+ StringUtils.repeat(" ", 4) + "X" // 22, tax chg
-				+ StringUtils.repeat(" ", 4) + "X"); // 27, promo code chg
-		}
+					+ "X" // 17, recipe change flag				
+					+ StringUtils.repeat(" ", 4) + "XX" // 22, tax chg
+					+ StringUtils.repeat(" ", 3) + "X"); // 27, promo code chg		
+		}			
+		
 	}
 
 }
