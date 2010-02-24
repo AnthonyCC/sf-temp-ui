@@ -60,7 +60,7 @@ public class AdServerSweeperCronRunner {
 		if(null != campaigns && campaigns.trim().length()>0){
 			ps = conn.prepareStatement("select c.CampaignKey, c.SearchTerm from Campaign c where c.CampaignKey in("+campaigns+")");			
 		}else{
-			ps = conn.prepareStatement("select c.CampaignKey, c.SearchTerm from Campaign c,Campaign_Creative cc where c.CampaignKey = cc.CampaignKey and cc.CreativeKey in(Select Distinct(CreativeKey) From Creative c1, CreativeUpdate_Zone cu where c1.DisplayFlag ='Yes' and instr(c1.extraHtml, Concat('productId=', cu.ProductId, '&')) and cu.ZONETYPE<>'M' and cu.ZONETYPE<>'')");
+			ps = conn.prepareStatement("select distinct c.CampaignKey, c.SearchTerm from Campaign c,Campaign_Creative cc where c.CampaignKey = cc.CampaignKey and cc.CreativeKey in(Select Distinct(CreativeKey) From Creative c1, CreativeUpdate_Zone cu where c1.DisplayFlag ='Yes' and instr(c1.extraHtml, Concat('productId=', cu.ProductId, '&')) and cu.ZONETYPE<>'M' and cu.ZONETYPE<>'')");
 		}
 		ResultSet rs = ps.executeQuery();
 		PreparedStatement  ucps = conn.prepareStatement("update Campaign c set c.SearchTerm = ?,c.SearchAnyAll='LOG' where c.CampaignKey=?");
@@ -100,7 +100,7 @@ public class AdServerSweeperCronRunner {
 			String searchTerm = rs.getString(2);
 			String zoneSearchTerm = rs.getString(3);
 			if(null!=searchTerm && !searchTerm.trim().equals("")){
-				if(null!=zoneSearchTerm && zoneSearchTerm.equals(""))
+				if(null!=zoneSearchTerm && !zoneSearchTerm.equals(""))
 				searchTerm = searchTerm.replace(zoneSearchTerm, "");
 			}else{
 				searchTerm = "";
@@ -119,7 +119,7 @@ public class AdServerSweeperCronRunner {
 
 	private static void updateCreativesStatusForCampaign(int campaignKey,Connection conn) throws SQLException{
 		
-		PreparedStatement  ps = conn.prepareStatement("update Creative c set c.DisplayFlag='No' where c.CreativeKey in(select CreativeKey from Campaign_Creative where CampaignKey="+campaignKey+")");
+		PreparedStatement  ps = conn.prepareStatement("update Creative c1 set c1.DisplayFlag='No' where c1.CreativeKey in(Select Distinct(cc.CreativeKey) From Campaign_Creative cc, CreativeUpdate_Zone cu  where instr(c1.extraHtml, Concat('productId=', cu.ProductId, '&')) and cu.ZONETYPE<>'M' and cu.ZONETYPE<>'' and c1.DisplayFlag='Yes' and cc.CampaignKey="+campaignKey+")");
 		int count= ps.executeUpdate();
 		System.out.println(count+" creatives were updated to 'No' for the campaign:"+campaignKey);
 		ps.close();
