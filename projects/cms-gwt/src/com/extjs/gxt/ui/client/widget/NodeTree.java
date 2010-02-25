@@ -652,6 +652,7 @@ public class NodeTree extends ContentPanel {
     	ManageStoreView.getInstance().mask("Loading...");    	
     	tree.getStore().removeAll();
 	    loader.load( null );
+	    expandedPaths = new ArrayList<String>();
 	}
 	
 	public void search( String searchTerm ) {		
@@ -725,7 +726,7 @@ public class NodeTree extends ContentPanel {
     }
     
     public void invalidate() {
-    	loader.load();
+    	refresh(expandedPaths, true);
     }
     
 //    public static void removeItemFromOrphans( String contentKey ) {
