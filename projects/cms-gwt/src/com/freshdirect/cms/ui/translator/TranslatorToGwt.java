@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
@@ -65,6 +67,7 @@ import com.freshdirect.cms.ui.model.publish.GwtPublishData;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
 import com.freshdirect.cms.ui.service.ServerException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Static class for converting server-side CMS data types to client-side serializable data types for Gwt.
@@ -81,28 +84,9 @@ public class TranslatorToGwt {
     
     public static final DateFormat US_DATE_FORMAT = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.US);
     
+    @SuppressWarnings( "unused" )
+	private static final Logger LOGGER = LoggerFactory.getInstance( TranslatorToGwt.class );
     
-	public static ContentNodeModel getContentNodeModel( ContentNodeI node ) {
-		return toContentNodeModel( node.getKey() );
-	}
-
-	public static GwtContentNode getGwtNode( ContentNodeI node, TabDefinition tabDefs ) throws ServerException {
-		ContentKey contentKey = node.getKey();
-		GwtContentNode gwtNode = new GwtContentNode( contentKey.getType().getName(), contentKey.getId() );
-		gwtNode.setLabel( node.getLabel() );
-		
-		for ( String key : (Set<String>)node.getDefinition().getAttributeNames() ) {
-			AttributeI attribute = node.getAttribute( key );
-			if ( attribute != null ) {
-				ModifiableAttributeI attr = translateAttribute(attribute.getDefinition(), attribute.getValue(), tabDefs != null ? tabDefs.getCustomFieldDefinition(key) : null, contentKey);
-				gwtNode.setOriginalAttribute( key, attr );
-			}
-		}
-
-		return gwtNode;
-	}
-	
-	
 	
 	// =========================== GwtNodeData ===========================
 
@@ -138,6 +122,22 @@ public class TranslatorToGwt {
 	    
 	    return new GwtNodeData( gwtNode, tabDef, false );
 	}
+	
+	public static GwtContentNode getGwtNode( ContentNodeI node, TabDefinition tabDefs ) throws ServerException {
+		ContentKey contentKey = node.getKey();
+		GwtContentNode gwtNode = new GwtContentNode( contentKey.getType().getName(), contentKey.getId() );
+		gwtNode.setLabel( node.getLabel() );
+		
+		for ( String key : (Set<String>)node.getDefinition().getAttributeNames() ) {
+			AttributeI attribute = node.getAttribute( key );
+			if ( attribute != null ) {
+				ModifiableAttributeI attr = translateAttribute(attribute.getDefinition(), attribute.getValue(), tabDefs != null ? tabDefs.getCustomFieldDefinition(key) : null, contentKey);
+				gwtNode.setOriginalAttribute( key, attr );
+			}
+		}
+
+		return gwtNode;
+	}	
 	
 	// =========================== TAB DEFINITIONS ===========================
 	
@@ -319,14 +319,16 @@ public class TranslatorToGwt {
 
 				ContentKey valueKey = (ContentKey)value;
 				
-				if ( valueKey != null && customFieldDefinition != null && customFieldDefinition.getType() == CustomFieldDefinition.Type.ProductConfigEditor ) {
+				if ( customFieldDefinition != null && customFieldDefinition.getType() == CustomFieldDefinition.Type.ProductConfigEditor ) {
 					ProductConfigAttribute pcAttr = new ProductConfigAttribute();
 					pcAttr.setLabel( name );
-					pcAttr.setValue( toContentNodeModel( valueKey ) );
-					pcAttr.setConfigParams( getProductConfigParams( valueKey ) );
-					pcAttr.setQuantity( (Double)node.getAttributeValue( "QUANTITY" ) );
-					pcAttr.setSalesUnit( (String)node.getAttributeValue( "SALES_UNIT" ) );
-					pcAttr.setConfigOptions( (String)node.getAttributeValue( "OPTIONS" ) );
+					if ( node != null && valueKey != null ) { 
+						pcAttr.setValue( toContentNodeModel( valueKey ) );
+						pcAttr.setConfigParams( getProductConfigParams( valueKey ) );
+						pcAttr.setQuantity( (Double)node.getAttributeValue( "QUANTITY" ) );
+						pcAttr.setSalesUnit( (String)node.getAttributeValue( "SALES_UNIT" ) );
+						pcAttr.setConfigOptions( (String)node.getAttributeValue( "OPTIONS" ) );
+					}
 					attr = pcAttr;
 				} else {
 					OneToOneAttribute ooAttr = new OneToOneAttribute();
@@ -493,11 +495,35 @@ public class TranslatorToGwt {
         return null;
     }
     
-    private static ContentNodeModel toContentNodeModel( ContentKey key ) {
-        ContentNodeI node = key.getContentNode();
+
+	// =========================== ContentNodeModel ===========================  
+    
+    public static TreeContentNodeModel toTreeContentNodeModel( ContentNodeI node ) {
+    	return toTreeContentNodeModel( node, null );
+    }    
+    
+    public static TreeContentNodeModel toTreeContentNodeModel( ContentNodeI node, TreeContentNodeModel parent ) {
+    	if ( node == null ) 
+    		return null;
+    	
+    	ContentKey key = node.getKey();
+    	TreeContentNodeModel result = new TreeContentNodeModel( key.getType().getName(), node.getLabel(), key.getEncoded(), parent );
+    	prepareModel( node, result );
+    	return result;
+    }
+    
+	public static ContentNodeModel toContentNodeModel( ContentKey key ) {
+		return toContentNodeModel( key.getContentNode() );
+	}
+	
+    public static ContentNodeModel toContentNodeModel( ContentNodeI node ) {
+    	if ( node == null )
+    		return null;
+    	
+    	ContentKey key = node.getKey();
         ContentNodeModel result = new ContentNodeModel (
         		key.getType().getName(), 
-        		node != null ? node.getLabel() : key.getId(), 
+        		node.getLabel(), 
         		key.getEncoded()
         );
         prepareModel(node, result);
@@ -733,7 +759,7 @@ public class TranslatorToGwt {
             
             List<ContentNodeModel> tempList = new ArrayList<ContentNodeModel>();
             for (ContentKey domainValue : domainValues) {
-                tempList.add(TranslatorToGwt.getContentNodeModel(domainValue.getContentNode()));
+                tempList.add(TranslatorToGwt.toContentNodeModel(domainValue.getContentNode()));
             }
             
             result.put(domain.getKey(), tempList);            

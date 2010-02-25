@@ -75,7 +75,12 @@ public final class FieldFactory {
 				aField = new PrimaryHomeSelectorField( (ContentNodeModel)value, nodeData.getContexts() );
 				break;
 			case ProductConfigEditor:
-				ProductConfigAttribute pcAttr = (ProductConfigAttribute)attribute;
+				ProductConfigAttribute pcAttr = null;
+				if ( attribute instanceof ProductConfigAttribute ) {
+					pcAttr = (ProductConfigAttribute)attribute;
+				} else {
+					pcAttr = new ProductConfigAttribute();
+				}
             	
             	ProductConfigEditor editor = new ProductConfigEditor( readonly, pcAttr );
             	pcAttr.setFieldObject( editor );

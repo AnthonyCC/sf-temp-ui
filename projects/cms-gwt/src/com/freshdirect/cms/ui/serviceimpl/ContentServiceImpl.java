@@ -146,8 +146,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 		for ( ContentNodeI node : resultNodes ) {
 			if ( node == null )
 				continue;
-			ContentNodeModel n = TranslatorToGwt.getContentNodeModel( node );
-			result.add( new TreeContentNodeModel(n,null) );
+			result.add( TranslatorToGwt.toTreeContentNodeModel( node ) );
 		}
 
 		return result;
@@ -161,8 +160,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 for (int i = 0; i < ROOTKEYS.length; i++) {
                     ContentNodeI cn = ContentKey.decode(ROOTKEYS[i]).getContentNode();
                     if (cn != null) {
-                        ContentNodeModel n = TranslatorToGwt.getContentNodeModel(cn);
-                        children.add(new TreeContentNodeModel(n));
+                        children.add( TranslatorToGwt.toTreeContentNodeModel(cn) );
                     }
                 }
                 return children;
@@ -173,8 +171,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 List<ContentKey> childKeys = new ArrayList<ContentKey>((Collection<ContentKey>)root.getChildKeys());
                 TreeSet<ContentNodeI> nodes = getOrderedNodes(childKeys);
                 for (ContentNodeI childNode : nodes) {
-                    ContentNodeModel child = TranslatorToGwt.getContentNodeModel(childNode);
-                    children.add(new TreeContentNodeModel(child, parentNode));
+                    children.add( TranslatorToGwt.toTreeContentNodeModel(childNode,parentNode) );
                 }
             }            
             return children;

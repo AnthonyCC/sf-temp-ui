@@ -8,7 +8,6 @@ public class TreeContentNodeModel extends ContentNodeModel {
 	
 	public static final String pathSeparator = "|";
 
-//	private String path;
     protected boolean hasChildren = true;
     
 
@@ -51,10 +50,20 @@ public class TreeContentNodeModel extends ContentNodeModel {
 		if ( parent != null ) {
 			setPath( parent.getPath() + pathSeparator + getKey() );			
 		} else {
-			setPath( null );
+			setPath( pathSeparator + getKey() );
 		}
     }
 	
+    public TreeContentNodeModel( String type, String label, String key, TreeContentNodeModel parent ) {
+    	super( type, label, key );    	
+		if ( parent != null ) {
+			setPath( parent.getPath() + pathSeparator + getKey() );			
+		} else {
+			setPath( pathSeparator + getKey() );
+		}
+    }
+
+    
 	public void setPath(String path) {
 		set("path", path);
 	}	
