@@ -9,17 +9,13 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
-<% FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );  
-
-
-//--------OAS Page Variables-----------------------
-request.setAttribute("sitePage", "www.freshdirect.com/newproducts_dfgs.jsp");
-request.setAttribute("listPos", "SystemMessage,CategoryNote");
-
-%>
-
 <fd:CheckLoginStatus />
+<%
+	FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );
+	//--------OAS Page Variables-----------------------
+	request.setAttribute("sitePage", "www.freshdirect.com/newproducts_dfgs.jsp");
+	request.setAttribute("listPos", "SystemMessage,CategoryNote");
+%>
 <tmpl:insert template='/common/template/right_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>
 <tmpl:put name='banner' direct='true'><a href="javascript:pop('/request_product.jsp',400,585);"><img src="/media_stat/images/template/newproduct/suggestaproduct.gif" width="148" height="100" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></tmpl:put>
