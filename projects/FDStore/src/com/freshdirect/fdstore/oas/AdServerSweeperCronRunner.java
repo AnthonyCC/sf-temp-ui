@@ -27,26 +27,32 @@ public class AdServerSweeperCronRunner {
 		System.out.println("Start AdServerSweeperCronRunner..");		
 		Connection conn = null;
 		try {
-			conn = getConnection(args);
-			if(null != args && args.length>5)
-				updateOASdatabase(conn, args[5]);
-			else
-				updateOASdatabase(conn, null);
-			System.out.println("Stop AdServerSweeperCronRunner..");
-		}catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error in AdServerSweeperCronRunner..");
-		} catch (NamingException e) {
-			e.printStackTrace();
-			System.out.println("Error in AdServerSweeperCronRunner..");
-		} finally {
 			try {
-				if(null !=conn)
-					conn.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-				System.out.println("Error in AdServerSweeperCronRunner..");
+				conn = getConnection(args);
+				conn.setAutoCommit(false);
+				if(null != args && args.length>5){
+					updateOASdatabase(conn, args[5]);
+				}else{
+					updateOASdatabase(conn, null);
+				}
+				conn.commit();
+				System.out.println("Stop AdServerSweeperCronRunner..");
+			}catch (SQLException e) {
+				if(null != conn)
+					conn.rollback();
+				e.printStackTrace();
+				System.out.println("Error in AdServerSweeperCronRunner.."+e.getMessage());
+			} catch (NamingException e) {
+				e.printStackTrace();
+				System.out.println("Error in AdServerSweeperCronRunner.."+e.getMessage());
+			} finally {
+				if(null !=conn && !conn.isClosed()){
+						conn.close();
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Error in AdServerSweeperCronRunner.."+e.getMessage());
 		}
 		
 	} 
@@ -161,14 +167,15 @@ public class AdServerSweeperCronRunner {
 					zidExclusionList);
 			if(!zidExclusionList.equalsIgnoreCase("")){
 				searchTerm = searchTerm+"("+zidExclusionList+")";
+				searchTerm=searchTerm+"AND";
 			}
 			String zidInclusionList ="";
 			zidInclusionList = getZidInclusionString(conn, campaignKey,
 					zidInclusionList);
 			if(!zidInclusionList.equalsIgnoreCase("")){
-				if(!zidExclusionList.equalsIgnoreCase("")){
+				/*if(!zidExclusionList.equalsIgnoreCase("")){
 					searchTerm=searchTerm+"AND";
-				}
+				}*/
 				searchTerm = searchTerm+"("+zidInclusionList;
 				searchTerm=searchTerm+"OR";
 			}		
@@ -183,16 +190,16 @@ public class AdServerSweeperCronRunner {
 				szidExclusionList = getSzidExclusionString(conn, campaignKey,
 						szidExclusionList);
 
-				if(!szidExclusionList.equalsIgnoreCase("")){
-					
+				if(!szidExclusionList.equalsIgnoreCase("")){					
 					searchTerm = searchTerm+"("+szidExclusionList;
+					searchTerm=searchTerm+"AND";
 				}				
 				szidInclusionList = getSzidInclusionString(conn, campaignKey,
 						szidInclusionList);
 				if(!szidInclusionList.equalsIgnoreCase("")){
-					if(!szidExclusionList.equalsIgnoreCase("")){
+					/*if(!szidExclusionList.equalsIgnoreCase("")){
 						searchTerm=searchTerm+"AND";
-					}
+					}*/
 					searchTerm=searchTerm+"("+szidInclusionList;
 				}				
 			}
@@ -237,9 +244,9 @@ public class AdServerSweeperCronRunner {
 			if(!zidInclusionList.equalsIgnoreCase("")){
 				searchTerm = searchTerm +")";
 			}
-			if(!zidExclusionList.equalsIgnoreCase("")){
+			/*if(!zidExclusionList.equalsIgnoreCase("")){
 				searchTerm = searchTerm +")";
-			}
+			}*/
 			searchTerm = searchTerm +")";
 		}
 		searchTerm = searchTerm +"))";
