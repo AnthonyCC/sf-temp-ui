@@ -6,7 +6,9 @@
     StringBuffer favoriteProductsImages = new StringBuffer();
     StringBuffer favoriteProductsLinks = new StringBuffer();
 
-	String mediaPath = "/media/editorial/"+deptId+"/popular_items_header.html";
+	String mediaPathBefore = "/media/editorial/"+deptId+"/popular_items_header.html";
+	String mediaPathAfter = "/media/editorial/"+deptId+"/popular_items_header_after.html";
+
 
     ContentNodeModel prodParent = null;
     ContentFactory contentFactory = ContentFactory.getInstance();
@@ -80,7 +82,7 @@
 <% if (favoritesToShow > 0) { %>
 	<table width="550" cellpadding="0" cellspacing="0" border="0">
 		<tr>
-			<td colspan="<%=favoritesToShow%>"><fd:IncludeMedia name="<%= mediaPath %>" /></td>
+			<td colspan="<%=favoritesToShow%>"><fd:IncludeMedia name="<%= mediaPathBefore %>" /></td>
 		</tr>
 		<tr valign="bottom" align="center">
 			<%=favoriteProductsImages.toString().replaceAll("__cellWidth__", (100/favoritesToShow)+"%")%>
@@ -88,6 +90,8 @@
 		<tr valign="top" align="center">
 			<%=favoriteProductsLinks.toString().replaceAll("__cellWidth__", (100/favoritesToShow)+"%")%>
 		</tr>
+		<tr>
+			<td colspan="<%=favoritesToShow%>"><fd:IncludeMedia name="<%= mediaPathAfter %>" /></td>
+		</tr>
 	</table>
-	<br />
 <% } %>
