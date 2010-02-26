@@ -80,9 +80,6 @@ CREATE SEQUENCE ERPS.ZONEBATCH_SEQ
   NOORDER;
 
 
-alter table cust.LOG_SESSION_IMPRESSIONS add zoneId varchar2(16);
-
-  
 Grant all on ERPS.ZONEBATCH_SEQ to fdstore_prda;
 
 grant all on ERPS.PRICING_REGION_ZIPS to fdstore_prda;

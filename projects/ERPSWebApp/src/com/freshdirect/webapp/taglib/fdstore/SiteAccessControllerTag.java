@@ -420,6 +420,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			}
 			user = new FDSessionUser(FDCustomerManager.createNewUser(this.address, serviceType), session);
 			user.setSelectedServiceType(serviceType);
+			//Added the following line for zone pricing to keep user service type up-to-date.
+			user.setZPServiceType(serviceType);
 			user.setAvailableServices(availableServices);
 
 			
@@ -438,6 +440,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			if (user.getLevel() < FDUser.RECOGNIZED) {
 				user.setAddress(this.address);
 				user.setSelectedServiceType(serviceType);
+				//Added the following line for zone pricing to keep user service type up-to-date.
+				user.setZPServiceType(serviceType);
 				user.setAvailableServices(availableServices);
 
 				CookieMonster.storeCookie(user, response);

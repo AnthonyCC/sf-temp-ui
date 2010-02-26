@@ -57,7 +57,7 @@ public class FDUserDAO {
 		
 		System.out.println("inside the create user .. creating the user");
 		String id = SequenceGenerator.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDUSER (ID, COOKIE, ZIPCODE, DEPOT_CODE, SERVICE_TYPE, CREATED, ADDRESS1, APARTMENT) values (?,?,?,?,?,SYSDATE,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDUSER (ID, COOKIE, ZIPCODE, DEPOT_CODE, SERVICE_TYPE, CREATED, ADDRESS1, APARTMENT,ZP_SERVICE_TYPE) values (?,?,?,?,?,SYSDATE,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, cookie);
 		if (zipCode != null) {
@@ -85,6 +85,13 @@ public class FDUserDAO {
 		} else {
 			ps.setNull(7, Types.VARCHAR);
 		}
+		//Add for zone pricing.
+		if(serviceType != null){
+			ps.setString(8, serviceType.getName());
+		} else {
+			ps.setNull(8, Types.VARCHAR);
+		}
+		
 		
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not created");
@@ -152,7 +159,7 @@ public class FDUserDAO {
 	
 	private static final String LOAD_FROM_IDENTITY_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
-		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID " +
+		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
 		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.id=? " +
 		"AND erpc.id = ci.customer_id";
@@ -181,7 +188,7 @@ public class FDUserDAO {
 
 	private static final String LOAD_FROM_EMAIL_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
-		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID " +
+		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE  " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
 		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.user_id=? " +
 		"AND erpc.id = ci.customer_id";
@@ -206,7 +213,7 @@ public class FDUserDAO {
 
 	private static final String LOAD_FROM_COOKIE_QUERY =
 		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
-		"erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID " +
+		"erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
 		"WHERE fdu.cookie=? and fdu.FDCUSTOMER_ID=fdc.id(+) and fdc.ERP_CUSTOMER_ID=erpc.ID(+) " +
 		"AND erpc.id = ci.customer_id(+)";
@@ -250,6 +257,11 @@ public class FDUserDAO {
             user.setLastRefTrkDtls(rs.getString("ref_trk_key_dtls"));
             // for new COS customer
             user.setUserServiceType(EnumServiceType.getEnum(rs.getString("SERVICE_TYPE")));
+            // for zone pricing
+            //Default to service type if zp_service_type is null.
+            String zpServiceType = rs.getString("ZP_SERVICE_TYPE") != null ? rs.getString("ZP_SERVICE_TYPE")  : rs.getString("SERVICE_TYPE");
+            user.setZPServiceType(EnumServiceType.getEnum(zpServiceType));
+            
 			AddressModel addr = user.getAddress();
 			if(addr != null) {
 				addr.setAddress1(rs.getString("ADDRESS1"));
@@ -279,7 +291,7 @@ public class FDUserDAO {
 	private static final String STORE_USER_SQL =
 		"UPDATE CUST.FDUSER " +
 		"SET COOKIE=?, ZIPCODE=?, FDCUSTOMER_ID=?, DEPOT_CODE=?, SERVICE_TYPE=?, ADDRESS1=?, APARTMENT=?, " +
-		"LAST_REF_PROG_ID=?, REF_PROG_INVT_ID=?, REF_TRK_KEY_DTLS=?, HPLETTER_VISITED=?, CAMPAIGN_VIEWED=?, COHORT_ID=? " + 
+		"LAST_REF_PROG_ID=?, REF_PROG_INVT_ID=?, REF_TRK_KEY_DTLS=?, HPLETTER_VISITED=?, CAMPAIGN_VIEWED=?, COHORT_ID=?, ZP_SERVICE_TYPE=? " + 
 		"WHERE ID=?";
 
 
@@ -355,6 +367,11 @@ public class FDUserDAO {
 		else
 			ps.setNull(index++, Types.VARCHAR);
 		
+		if(user.getZPServiceType() == null){
+			ps.setNull(index++, Types.VARCHAR);
+		}else{
+			ps.setString(index++, user.getZPServiceType().getName());
+		}		
 		
 		// where id = ...
 		ps.setString(index++, user.getPK().getId());

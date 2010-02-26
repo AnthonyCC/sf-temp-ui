@@ -613,6 +613,8 @@ public class SubmitOrderAction extends WebActionSupport {
 			if(cart != null && cart.getDeliveryAddress() != null && !(cart.getDeliveryAddress() instanceof ErpDepotAddressModel)) {
 				user.setZipCode(cart.getDeliveryAddress().getZipCode());
 				user.setSelectedServiceType(cart.getDeliveryAddress().getServiceType());
+				//Added the following line for zone pricing to keep user service type up-to-date.
+				user.setZPServiceType(cart.getDeliveryAddress().getServiceType());
 			}
 			
 			user.invalidateCache();

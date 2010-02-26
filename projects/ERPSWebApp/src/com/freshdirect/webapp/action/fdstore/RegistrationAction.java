@@ -187,6 +187,8 @@ public class RegistrationAction extends WebActionSupport {
 					user.isLoggedIn(true);
 					user.setZipCode(erpAddress.getZipCode());
 					user.setSelectedServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
+					//Added the following line for zone pricing to keep user service type up-to-date.
+					user.setZPServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
 					user.updateUserState();
 					//Set the Default Delivery pass status.
 					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0);
@@ -270,8 +272,12 @@ public class RegistrationAction extends WebActionSupport {
 		
 		if (EnumDeliveryStatus.DELIVER.equals(status) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status)) {
 			user.setSelectedServiceType(serviceType);
+			//Added the following line for zone pricing to keep user service type up-to-date.
+			user.setZPServiceType(serviceType);
 		} else {
 			user.setSelectedServiceType(EnumServiceType.PICKUP);
+			//Added the following line for zone pricing to keep user service type up-to-date.
+			user.setZPServiceType(EnumServiceType.PICKUP);
 		}
 		user.setAvailableServices(serviceResult.getAvailableServices());
 		

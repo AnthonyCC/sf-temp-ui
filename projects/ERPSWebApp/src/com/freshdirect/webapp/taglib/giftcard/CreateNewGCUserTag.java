@@ -117,6 +117,8 @@ public class CreateNewGCUserTag  extends com.freshdirect.framework.webapp.BodyTa
 		
 		FDSessionUser user = new FDSessionUser(fduser,request.getSession());
 		user.setSelectedServiceType(GIFTCARD_DEFAULT_SERVICE_TYPE);
+		//Added the following line for zone pricing to keep user service type up-to-date.
+		user.setZPServiceType(GIFTCARD_DEFAULT_SERVICE_TYPE);
 		user.setAvailableServices(result.getAvailableServices());					
 		CookieMonster.storeCookie(user, response);				
      		

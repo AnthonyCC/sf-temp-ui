@@ -112,6 +112,8 @@ public class DepotLoginControllerTag extends AbstractControllerTag implements Se
 		Set availableServices = new HashSet();
 		availableServices.add(EnumServiceType.PICKUP);
 		user.setSelectedServiceType(EnumServiceType.PICKUP);
+		//Added the following line for zone pricing to keep user service type up-to-date.
+		user.setZPServiceType(EnumServiceType.PICKUP);
 		user.setAvailableServices(availableServices);
 
 		session.setAttribute(USER, user);

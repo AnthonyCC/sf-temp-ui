@@ -416,5 +416,9 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public void resetPricingContext();
 
+	public EnumServiceType getZPServiceType();
+
+	public void setZPServiceType(EnumServiceType serviceType);
+
 
 }

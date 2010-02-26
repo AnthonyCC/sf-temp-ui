@@ -96,7 +96,9 @@ public class FDUser extends ModelSupport implements FDUserI {
     private EnumServiceType selectedServiceType = null;
     // for new COS customers
     private EnumServiceType userServiceType = null;
-
+    // added for zone pricing to capture zp service type.
+    private EnumServiceType zpServiceType = null;
+    
     private FDIdentity identity;
     private AddressModel address;
     private FDReservation reservation;
@@ -805,7 +807,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.userServiceType = serviceType;
 	}
 
+	public EnumServiceType getZPServiceType(){
+		return this.zpServiceType != null ? this.zpServiceType : EnumServiceType.HOME ;
+	}
 
+	public void setZPServiceType(EnumServiceType serviceType) {
+		this.zpServiceType = serviceType;
+	}
+	
 	public void setSelectedServiceType(EnumServiceType serviceType) {
 		this.selectedServiceType = serviceType;
 	}
@@ -1672,7 +1681,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			if(this.pricingContext == null){
 				if(this.isZonePricingEnabled()) {
 					//Pricing context is yet to be set. Resolve it now.
-					String zoneId=FDZoneInfoManager.findZoneId(getSelectedServiceType().getName(), getZipCode());
+					String zoneId=FDZoneInfoManager.findZoneId(getZPServiceType().getName(), getZipCode());
 					this.pricingContext = new PricingContext(zoneId);					
 				}else {
 					//Set it to Master default zone
@@ -1701,14 +1710,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public String constructZoneIdForQueryString(){
 		String zoneIdParam = "";
 		try {
-			String zoneId = FDZoneInfoManager.findZoneId(getSelectedServiceType().getName(), getZipCode());
+			String zoneId = FDZoneInfoManager.findZoneId(getZPServiceType().getName(), getZipCode());
 			if(zoneId.equalsIgnoreCase(ZonePriceListing.MASTER_DEFAULT_ZONE)){
 				zoneIdParam = "zonelevel=true && mzid="+zoneId;
 			}else if(zoneId.equalsIgnoreCase(ZonePriceListing.RESIDENTIAL_DEFAULT_ZONE)||zoneId.equalsIgnoreCase(ZonePriceListing.CORPORATE_DEFAULT_ZONE)){
 				zoneIdParam = "zonelevel=true && szid="+zoneId+"mzid="+ZonePriceListing.MASTER_DEFAULT_ZONE;
 			}else{
 				zoneIdParam = "zonelevel=true && zid="+zoneId;
-				zoneId = FDZoneInfoManager.findZoneId(getSelectedServiceType().getName(),null);
+				zoneId = FDZoneInfoManager.findZoneId(getZPServiceType().getName(),null);
 				zoneIdParam = zoneIdParam + "&& szid="+zoneId+"mzid="+ZonePriceListing.MASTER_DEFAULT_ZONE;
 			}
 		} catch (FDResourceException e) {

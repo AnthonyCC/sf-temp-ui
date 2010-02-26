@@ -597,7 +597,8 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				//
 				// now eligible for home/corporate delivery and still not placed an order.
 				//
-				user.setSelectedServiceType(dlvAddress.getServiceType());
+				//Added the following line for zone pricing to keep user service type up-to-date.
+				user.setZPServiceType(dlvAddress.getServiceType());
 				user.setZipCode(dlvAddress.getZipCode());
 				FDCustomerManager.storeUser(user.getUser());
 			}else {
@@ -605,7 +606,8 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				if(user.getOrderHistory().getValidOrderCount()==0) {
 					//check if customer has no order history and if zipcode has changed. If yes then update the
 					//service type to most recent service type.					
-					user.setSelectedServiceType(dlvAddress.getServiceType());
+					//Added the following line for zone pricing to keep user service type up-to-date.
+					user.setZPServiceType(dlvAddress.getServiceType());
 					user.setZipCode(dlvAddress.getZipCode());
 					FDCustomerManager.storeUser(user.getUser());
 				}

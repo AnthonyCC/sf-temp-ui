@@ -92,6 +92,8 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
         	FDUser fduser=FDCustomerManager.createNewUser(GIFTCARD_DEFAULT_ZPCOD, GIFTCARD_DEFAULT_SERVICE_TYPE);
         	fs_user = new FDSessionUser(fduser,request.getSession());        	
         	fs_user.setSelectedServiceType(GIFTCARD_DEFAULT_SERVICE_TYPE);
+    		//Added the following line for zone pricing to keep user service type up-to-date.
+    		user.setZPServiceType(GIFTCARD_DEFAULT_SERVICE_TYPE);
         	DlvServiceSelectionResult s_result=new DlvServiceSelectionResult();
     		//result.addServiceStatus(EnumServiceType.HOME, EnumDeliveryStatus.DELIVER);
         	s_result.addServiceStatus(GIFTCARD_DEFAULT_SERVICE_TYPE, EnumDeliveryStatus.DELIVER);

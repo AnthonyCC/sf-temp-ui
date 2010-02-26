@@ -566,6 +566,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return user.getUserServiceType() ;
 	}
 
+	public EnumServiceType getZPServiceType(){
+		return this.user.getZPServiceType();
+	}
+
+	public void setZPServiceType(EnumServiceType serviceType) {
+		this.user.setZPServiceType(serviceType);
+	}
 
 	public void setSelectedServiceType(EnumServiceType serviceType){
 		this.user.setSelectedServiceType(serviceType);

@@ -171,6 +171,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				// now eligible for home/corporate delivery and still not placed an order.
 				//
 				user.setSelectedServiceType(scrubbedAddress.getServiceType());
+				//Added the following line for zone pricing to keep user service type up-to-date.
+				user.setZPServiceType(scrubbedAddress.getServiceType());
 				user.setZipCode(scrubbedAddress.getZipCode());
 				FDCustomerManager.storeUser(user.getUser());
 				session.setAttribute(USER, user);
@@ -179,6 +181,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				if(user.getOrderHistory().getValidOrderCount()==0) {
 					//check if customer has no order history.					
 					user.setSelectedServiceType(scrubbedAddress.getServiceType());
+					//Added the following line for zone pricing to keep user service type up-to-date.
+					user.setZPServiceType(scrubbedAddress.getServiceType());
 					user.setZipCode(scrubbedAddress.getZipCode());
 					FDCustomerManager.storeUser(user.getUser());
 					session.setAttribute(USER, user);
