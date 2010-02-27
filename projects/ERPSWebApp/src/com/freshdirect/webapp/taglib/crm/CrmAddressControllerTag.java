@@ -24,6 +24,7 @@ import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
 import com.freshdirect.webapp.taglib.fdstore.DeliveryAddressValidator;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class CrmAddressControllerTag extends AbstractControllerTag {
@@ -149,10 +150,10 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 		result.addError("".equals(this.address.getZipCode()), EnumUserInfoName.DLV_ZIPCODE.getCode(), "required");
 		result.addError(address.getPhone() == null || "".equals(this.address.getPhone().getPhone()), EnumUserInfoName.DLV_HOME_PHONE.getCode(), "required");
 
-		
+
+
 		if (result.isSuccess()) {
 			DeliveryAddressValidator validator = new DeliveryAddressValidator(this.address);
-
 			// validate address
 			if (validator.validateAddress(result)) {
 				// Second turn: Check SUFFOLK condition 
@@ -164,6 +165,37 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 					result.addError(true, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
 					return;
 				}
+				
+				
+			
+				AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
+
+				if (validator.isAddressDeliverable()) {
+					FDSessionUser user = (FDSessionUser)CrmSession.getUser(pageContext.getSession());
+					if (user.isPickupOnly() && user.getOrderHistory().getValidOrderCount()==0) {
+						//
+						// now eligible for home/corporate delivery and still not placed an order.
+						//
+						user.setSelectedServiceType(scrubbedAddress.getServiceType());
+						//Added the following line for zone pricing to keep user service type up-to-date.
+						user.setZPServiceType(scrubbedAddress.getServiceType());
+						user.setZipCode(scrubbedAddress.getZipCode());
+						FDCustomerManager.storeUser(user.getUser());						
+						//session.setAttribute(USER, user);
+					}else {
+						//Already is a home or a corporate customer.
+						if(user.getOrderHistory().getValidOrderCount()==0) {
+							//check if customer has no order history.					
+							user.setSelectedServiceType(scrubbedAddress.getServiceType());
+							//Added the following line for zone pricing to keep user service type up-to-date.
+							user.setZPServiceType(scrubbedAddress.getServiceType());
+							user.setZipCode(scrubbedAddress.getZipCode());
+							FDCustomerManager.storeUser(user.getUser());
+							//session.setAttribute(USER, user);
+						}
+					}
+				}
+				
 			}
 		}
 		
