@@ -795,7 +795,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public EnumServiceType getSelectedServiceType(){
 		AddressModel address = this.shoppingCart.getDeliveryAddress();
-		return address != null && !isPickupOnly() ? address.getServiceType() : this.selectedServiceType ;
+		return address != null  ? address.getServiceType() : this.selectedServiceType ;
 	}
 
 
