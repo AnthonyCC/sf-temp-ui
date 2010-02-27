@@ -364,13 +364,13 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		p.skuCode = rs.getString(1);
 		//p.defaultPrice = rs.getDouble(2);
 		//p.defaultPriceUnit = rs.getString(3);
-		p.unavailabilityStatus = rs.getString(4);
-		p.unavailabilityDate = rs.getTimestamp(5);
-		p.unavailabilityReason = rs.getString(6);
-		p.pricingDate = rs.getTimestamp(7);
-		p.rating=rs.getString(8);
-		p.days_fresh=rs.getString(9);
-		p.days_in_house=rs.getString(10);
+		p.unavailabilityStatus = rs.getString(2);
+		p.unavailabilityDate = rs.getTimestamp(3);
+		p.unavailabilityReason = rs.getString(4);
+		p.pricingDate = rs.getTimestamp(5);
+		p.rating=rs.getString(6);
+		p.days_fresh=rs.getString(7);
+		p.days_in_house=rs.getString(8);
         
         rs.close();
         ps.close();
