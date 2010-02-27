@@ -36,7 +36,7 @@
 <%
     FDSessionUser currentUser= (FDSessionUser)session.getAttribute( SessionName.USER );
     String zoneId=currentUser.getPricingZoneId();
-    EnumServiceType serviceType=currentUser.getSelectedServiceType();
+    EnumServiceType serviceType=currentUser.getZPServiceType();
     String zipCode=currentUser.getZipCode(); 
 
 %>
