@@ -325,7 +325,7 @@ for (Iterator skuItr=sortedColl.iterator(); skuItr.hasNext();) {
 	if ((prodCatId != null || !"".equals(prodCatId)) && (productCode != null || !"".equals(productCode))) {
 		prodModel = ContentFactory.getInstance().getProductByName(prodCatId, productCode);
 		//check if we have a product model, and a default sku
-		if (prodModel != null && prodModel.getDefaultSku() != null) {
+		if (prodModel != null && prodModel.getDefaultSku() != null && !allSkuModels.contains(prodModel.getDefaultSku()) ) {
 			//add to skus list
 			allSkuModels.add(prodModel.getDefaultSku());
 		} 
@@ -697,32 +697,24 @@ if(productCode!=null && prodCatId !=null ) {
         		<% if ( FDStoreProperties.useOscache() ) { %> 
 					<oscache:cache time="300">
 						<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-						<%
-							if(qualifies && !productNode.isUnavailable()) {
-						%>
-								<table>
-										<tr>
-												<td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
-												<td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=catId%>">See our $<%=prefix%> offer</a></td>
-										</tr>
-								</table>
-								<br />
-						<% } %>
-						<%@ include file="/shared/includes/product/i_product_image.jspf" %>
 					</oscache:cache>
         		<% } else { %>			        
 						<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-						<%
-							if(qualifies && !productNode.isUnavailable()) {
-						%>
-								<table>
-										<tr>
-												<td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
-												<td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=catId%>">See our $<%=prefix%> offer</a></td>
-										</tr>
-								</table>
-								<br />
+        		<% } %>
+						<% if(qualifies && !productNode.isUnavailable()) { %>
+							<table>
+								<tr>
+									<td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
+									<td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=catId%>">See our $<%=prefix%> offer</a></td>
+								</tr>
+							</table>
+							<br />
 						<% } %>
+        		<% if ( FDStoreProperties.useOscache() ) { %> 
+					<oscache:cache time="300">
+						<%@ include file="/shared/includes/product/i_product_image.jspf" %>
+					</oscache:cache>
+        		<% } else { %>			        
 						<%@ include file="/shared/includes/product/i_product_image.jspf" %>
         		<% } %>
 			</td>
