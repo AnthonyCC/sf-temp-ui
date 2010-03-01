@@ -519,6 +519,10 @@ public class Product {
                     throw new ModelException("Unable to get ComponentGroup", e);
                 }
             }
+
+            for (Variation variation : this.variations) {
+                variation.removeUnavailableOptions();
+            }
         }
 
         this.hideForMobile = productModel.hideIphone();

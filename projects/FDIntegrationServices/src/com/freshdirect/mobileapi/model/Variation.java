@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.model;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,6 +31,15 @@ public class Variation {
     private String name;
 
     private String description;
+
+    public void removeUnavailableOptions() {
+        for (Iterator<VariationOption> it = options.iterator(); it.hasNext();) {
+            VariationOption option = (VariationOption) it.next();
+            if (option.isUnAvailable()) {
+                it.remove();
+            }
+        }
+    }
 
     public static Variation wrap(FDVariation variation, Product product) {
         NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);

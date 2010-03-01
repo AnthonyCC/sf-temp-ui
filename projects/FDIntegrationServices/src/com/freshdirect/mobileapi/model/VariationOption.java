@@ -1,6 +1,11 @@
 package com.freshdirect.mobileapi.model;
 
+import com.freshdirect.content.attributes.EnumAttributeName;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 
 public class VariationOption {
     String name;
@@ -36,4 +41,25 @@ public class VariationOption {
     public String getName() {
         return name;
     }
+
+    public boolean isUnAvailable() {
+        boolean unAvailable = false;
+        String optSkuCode = option.getAttribute(EnumAttributeName.SKUCODE);
+        ProductModel pm;
+        try {
+            pm = ContentFactory.getInstance().getProduct(optSkuCode);
+            if (pm == null) {
+                unAvailable = true;
+            } else {
+                SkuModel sku = pm.getSku(optSkuCode);
+                if (sku == null || sku.isUnavailable()) {
+                    unAvailable = true;
+                }
+            }
+        } catch (FDSkuNotFoundException e) {
+            unAvailable = true;
+        }
+        return unAvailable;
+    }
+
 }
