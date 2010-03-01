@@ -134,6 +134,7 @@ public class LoginController extends BaseController {
             //Log in user and store in session
             createUserSession(User.login(username, password), request, response);
             user = getUserFromSession(request, response);
+            user.setUserPricingContext();
             responseMessage = formatLoginMessage(user);
             resetMobileSessionData(request);
 

@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.FDTimeslotList;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -499,4 +500,10 @@ public class SessionUser {
         return sessionUser.getMinCorpOrderAmount();
     }
 
+    public void setUserPricingContext() {
+        ContentFactory.getInstance().setCurrentPricingContext(sessionUser.getPricingContext());
+    }
+
+    
+    
 }
