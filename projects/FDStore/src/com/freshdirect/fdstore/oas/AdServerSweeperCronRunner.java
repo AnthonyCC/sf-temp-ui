@@ -36,6 +36,7 @@ public class AdServerSweeperCronRunner {
 					updateOASdatabase(conn, null);
 				}
 				conn.commit();
+				conn.setAutoCommit(true);
 				System.out.println("Stop AdServerSweeperCronRunner..");
 			}catch (SQLException e) {
 				if(null != conn)
@@ -127,7 +128,7 @@ public class AdServerSweeperCronRunner {
 		
 		PreparedStatement  ps = conn.prepareStatement("update Creative c1 set c1.DisplayFlag='No' where c1.CreativeKey in(Select Distinct(cc.CreativeKey) From Campaign_Creative cc, CreativeUpdate_Zone cu  where instr(c1.extraHtml, Concat('productId=', cu.ProductId, '&')) and cu.ZONETYPE<>'M' and cu.ZONETYPE<>'' and c1.DisplayFlag='Yes' and cc.CampaignKey="+campaignKey+")");
 		int count= ps.executeUpdate();
-		System.out.println(count+" creatives were updated to 'No' for the campaign:"+campaignKey);
+//		System.out.println(count+" creatives were updated to 'No' for the campaign:"+campaignKey);
 		ps.close();
 		
 	}
