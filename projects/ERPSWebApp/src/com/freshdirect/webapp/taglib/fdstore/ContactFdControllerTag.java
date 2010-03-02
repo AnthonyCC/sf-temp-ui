@@ -96,7 +96,7 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 		
 		body = body + "\n\n\n" + form.message;
  		
-		FDCustomerManager.sendContactServiceEmail(customer, subject, body, user.isChefsTable(), false);//subject.indexOf("Delivery Areas") > -1);
+		FDCustomerManager.sendContactServiceEmail(customer, subject, body, user.isChefsTable(), subject.indexOf("Delivery Areas") > -1);
 		
 		LOGGER.debug(">>>Sent Contact Service Email from: " + customer.getEmailAddress());
 		
