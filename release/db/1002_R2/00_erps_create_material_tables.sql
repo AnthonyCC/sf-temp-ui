@@ -96,7 +96,7 @@
   using index  tablespace fderpidx  enable
    ) tablespace fderpdat;
    insert into erps.history_new
-   select * from history   ;
+   select * from erps.history   ;
   create nonunique index HISTORY_VERSION_DATE_IDX_new on history_new(VERSION ,DATE_CREATED ) tablespace   FDERPIDX;
 
 
