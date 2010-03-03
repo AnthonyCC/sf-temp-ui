@@ -41,6 +41,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DayOfWeekSet;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -1548,7 +1549,9 @@ inner:
                             productInfo = FDCachedFactory.getProductInfo(sku.getSkuCode());
                             freshness = productInfo.getFreshness();
                             if ((freshness != null && freshness.trim().length() > 0) 
-                            	&& !"X".equalsIgnoreCase(freshness.trim()) && !"0".equalsIgnoreCase(freshness.trim()) ) {
+                            		&& !"000".equalsIgnoreCase(freshness.trim()) 
+                                	&& StringUtil.isNumeric(freshness) 
+                                	&& Integer.parseInt(freshness) > 0)  {
                             	    	return freshness;
                             }   
                         }

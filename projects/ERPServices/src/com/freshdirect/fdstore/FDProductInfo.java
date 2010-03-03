@@ -10,11 +10,13 @@ package com.freshdirect.fdstore;
 
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.framework.util.StringUtil;;
 
 /**
  * Lightweight information about a product, that is necessary for display on a category page.
@@ -146,8 +148,30 @@ public class FDProductInfo extends FDSku  {
 
     public String getFreshness() {
     	if(FDStoreProperties.IsFreshnessGuaranteedEnabled()) {
-    		return this.freshness;
+    		 // Freshness Guaranteed list of qualifying sku prefixees
+            String skuPrefixes = FDStoreProperties.getFreshnessGuaranteedSkuPrefixes();
+            
+            // if we have prefixes then check them
+            if (skuPrefixes != null && !"".equals(skuPrefixes)) {
+                StringTokenizer st = new StringTokenizer(skuPrefixes, ","); // split comma-delimited list
+                String curPrefix = ""; // holds prefix to check against
+                
+                while (st.hasMoreElements()) {
+                    curPrefix = st.nextToken();
+                    // if prefix matches get product info
+                    if (getSkuCode().startsWith(curPrefix)) {
+                        
+                        if ((freshness != null && freshness.trim().length() > 0) 
+                        	&& !"000".equalsIgnoreCase(freshness.trim()) 
+                        	&& StringUtil.isNumeric(freshness) 
+                        	&& Integer.parseInt(freshness) > 0)  {
+                        	    	return freshness;
+                        }   
+                    }
+                }
+            } 
     	}
+    	
     	return null;
     }
     
