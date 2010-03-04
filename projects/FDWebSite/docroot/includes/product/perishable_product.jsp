@@ -74,9 +74,9 @@
 
 			String shelfLife = JspMethods.getFreshnessGuaranteed(productNode);
 			if(shelfLife != null && shelfLife.trim().length() > 0 ) {
-				int labelCount=0;
+					int labelCount=0;
 					int valueCount=0;
-					// sanity check to make sure we have 1 shelf life  value per domain label
+					// sanity check to make sure we have 1 shelf life value per domain label
 					if(shelfLifeList != null && !shelfLifeList.isEmpty()) {
 						ListIterator shelfItr = shelfLifeList.listIterator();
 						while(shelfItr.hasNext()) {
@@ -94,8 +94,9 @@
 							 }
 						}
 					}
+					boolean showStackedShelfLife = labelCount == valueCount && valueCount > 0 && labelCount > 0;
 					System.out.println("******************** valueCount = " + valueCount + " and labelCount = " + labelCount);
-					if(labelCount == valueCount && valueCount > 0 && labelCount > 0) {
+					if(skuSize == 1 || showStackedShelfLife) {
 				%>
 						<img src="/media_stat/images/layout/clear.gif" width="20" height="10" border="0" hspace="0" vspace="0">
 						<table width="0" border="0" cellspacing="0" cellpadding="0">
@@ -118,7 +119,7 @@
 												<span class="text12">at least </span><span class="title12"><%=shelfLife%> days</span><span class="text12"><br/> from delivery</span></td>
 												<td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
 											</tr>
-										<% } else {
+										<% } else if(showStackedShelfLife) {
 											// calculate lowest shelf life in stack sku group
 											// sku with lowest shelf life value will display per domain label
 											ListIterator lowLifeItr = shelfLifeList.listIterator();
@@ -189,7 +190,7 @@
 				<%
 				}
 				//reset list
-				session.setAttribute("freshList", null);
+				//session.setAttribute("freshList", null);
 			}%>
 <%-- **************************************** END Shelf Life ****************************************************************************** --%>
 		</td>
