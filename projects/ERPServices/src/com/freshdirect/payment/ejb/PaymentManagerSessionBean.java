@@ -166,7 +166,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 									CrmSystemCaseInfo info =new CrmSystemCaseInfo(
 											sale.getCustomerPk(),
 										CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),									
-										"AVS Exception : Found Regular order for new customer with AVS Exception for saleId "+sale.getId()+ " and customer userId ="+customerEB.getUserId());
+										"AVS Exception : Found Regular order for new customer with AVS Exception for saleId "+sale.getId()+ " and customer userId ="+customerEB.getUserId()+". "+getAVSFailedCaseSummary(auths));
 									ErpCreateCaseCommand caseCmd=new ErpCreateCaseCommand(LOCATOR, info);
 									caseCmd.setRequiresNewTx(true);
 									caseCmd.execute(); 
@@ -305,7 +305,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 								CrmSystemCaseInfo info =new CrmSystemCaseInfo(
 										sale.getCustomerPk(),
 									CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),									
-									"AVS Exception : Found Regular order for new customer with AVS Exception for saleId "+sale.getId()+ " and customer userId ="+customerEB.getUserId());
+									"AVS Exception : Found Regular order for new customer with AVS Exception for saleId "+sale.getId()+ " and customer userId ="+customerEB.getUserId()+". "+getAVSFailedCaseSummary(auths));
 								ErpCreateCaseCommand caseCmd=new ErpCreateCaseCommand(LOCATOR, info);
 								caseCmd.setRequiresNewTx(true);
 								caseCmd.execute(); 
@@ -345,6 +345,24 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	private static String getAVSFailedCaseSummary(List<ErpAuthorizationModel> auths) {
+		StringBuilder response=new StringBuilder(200);
+		for (Iterator<ErpAuthorizationModel> i = auths.iterator(); i.hasNext();) {
+			ErpAuthorizationModel auth = i.next();
+			if(auth.isApproved() && !auth.hasAvsMatched()){
+				response.append(" The authorized amount is $")
+						.append(auth.getAmount())
+						.append( " and the authorization code is ")
+						.append(auth.getAuthCode())
+						.append(" for merchant ")
+						.append(auth.getMerchantId())
+						.append(".\n");
+				
+			}
+		}
+		
+		return response.toString();
+	}
 	/**
 	 * Adds auth failures to cusotmer activity log.
 	 */
@@ -575,7 +593,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 								CrmSystemCaseInfo info =new CrmSystemCaseInfo(
 										sale.getCustomerPk(),
 									CrmCaseSubject.getEnum(CrmCaseSubject.CODE_AVS_FAILED),									
-									"AVS Exception : Found order for new customer with AVS Exception for saleId "+sale.getId()+ " and customer userId ="+customerEB.getUserId());
+									"AVS Exception : Found order for new customer with AVS Exception for saleId "+sale.getId()+ " and customer userId ="+customerEB.getUserId()+". "+getAVSFailedCaseSummary(auths));
 								ErpCreateCaseCommand caseCmd=new ErpCreateCaseCommand(LOCATOR, info);
 								caseCmd.setRequiresNewTx(true);
 								caseCmd.execute(); 

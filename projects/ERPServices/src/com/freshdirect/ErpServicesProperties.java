@@ -277,7 +277,7 @@ public class ErpServicesProperties {
 		
 		defaults.put(PROP_FUNCTION_ROUTEINFO, "ZBAPI_ROUTE_INFO");
 		defaults.put(PROP_FUNCTION_TRUCKINFO, "ZBAPI_TRUCK_INFO");
-		defaults.put(PROP_FUNCTION_TRUCKINFO, "ZBAPI_ZONE_INFO");
+		
 		
 		defaults.put(PROP_FUNCTION_COOLINFO, "ZSDI_COUNTRY_ORIGIN");
 		
