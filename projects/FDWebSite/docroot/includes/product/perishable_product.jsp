@@ -191,7 +191,9 @@
 				}
 				//reset list
 				//session.setAttribute("freshList", null);
-			}%>
+			}
+			session.setAttribute("freshList", null);
+			%>
 <%-- **************************************** END Shelf Life ****************************************************************************** --%>
 		</td>
 
