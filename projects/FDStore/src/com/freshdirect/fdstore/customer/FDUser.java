@@ -1672,8 +1672,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	 }
 	 
 	 public String getPricingZoneId(){
-		 if(this.pricingContext == null) return null;
-		 return this.pricingContext.getZoneId();
+		 return this.getPricingContext().getZoneId();
 	 }
 
 	public PricingContext getPricingContext() {

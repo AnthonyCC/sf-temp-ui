@@ -820,7 +820,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 
 	@Override
 	public Image getZoomImage() {
-		return null;
+		//Fix for APPDEV-847
+		return this.prodModel.getZoomImage();
 	}
 
 	@Override
