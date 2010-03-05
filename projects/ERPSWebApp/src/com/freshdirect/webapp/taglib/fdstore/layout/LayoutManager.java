@@ -136,7 +136,6 @@ public class LayoutManager extends BodyTagSupport {
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
 		} else if (layoutType == EnumLayoutType.FEATURED_ALL.getId()) {
 			s.setLayoutFileName("/includes/layouts/featured_all.jsp");
-			s.setIgnoreShowChildren(true);
 			s.setIgnoreDuplicateProducts(true);
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
