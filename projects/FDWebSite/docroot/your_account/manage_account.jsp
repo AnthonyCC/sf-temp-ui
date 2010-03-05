@@ -122,7 +122,7 @@ your account information, this is the place to do it.<br></td>
 		<%}%>
 		<%if(user.isEligibleForDeliveryPass()){%>
 			<font class="text13bold">
-						<a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">FreshDirect Unlimited DeliveryPass</a>
+						<a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">FreshDirect DeliveryPass</a>
 			</font><br>
 						See  your membership details.
 			<br><br>
@@ -159,7 +159,7 @@ your account information, this is the place to do it.<br></td>
 		Visit Quickshop for your shopping lists
 		<br><br>
         <font class="text13bold">
-		<a href="<%=response.encodeURL("/your_account/customer_profile_summary.jsp")%>">Your Profile</a> </font>  <font class="text13bold" color="#990000">*NEW</font>
+		<a href="<%=response.encodeURL("/your_account/customer_profile_summary.jsp")%>">Your Profile</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>
 		Tell us your food preferences
 		<br><br>

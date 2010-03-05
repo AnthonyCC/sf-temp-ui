@@ -55,7 +55,7 @@
 		<table width="675" align="center" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td colspan="2" class="text11">
-					<font class="title18">FreshDirect Unlimited DeliveryPass</font>
+					<font class="title18">FreshDirect DeliveryPass</font>
 				</td>
 			</tr>
 			<tr>
@@ -152,9 +152,9 @@
 						You have <%=DeliveryPassUtil.getAsText(user.getUsableDeliveryPassCount()-1)%> 
 						<% if(user.getUsableDeliveryPassCount()>2) {%>
 
-                                    	<b>Unlimited DeliveryPass refills</b>
+                                    	<b>DeliveryPass refills</b>
 						<%} else {%>
-	                                    <b>Unlimited DeliveryPass refill</b>
+	                                    <b>DeliveryPass refill</b>
 						<%}%> on your account. A refill will go into effect when your current membership expires.<br><br><br>
 
 						
@@ -174,17 +174,17 @@
 
 								<form name="autoRenew" method="POST">
 								<% if(!DeliveryPassUtil.getAutoRenewalDate(user).equals("")) {%>
-									<font class="text12bold">Unlimited DeliveryPass Renewal</font>
+									<font class="text12bold">DeliveryPass Renewal</font>
 									<font class="text12"> Your membership will be renewed automatically on the day your current membership expires.
 									<A HREF="javascript:pop('/about/aboutRenewal.jsp?sku=<%=user.getDlvPassInfo().getAutoRenewDPType().getCode()%>&term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>',400,560)">	
 										Click here to learn more about renewals.
 									</A>
-									<br><br>Your membership is set to renew on <%=DeliveryPassUtil.getAutoRenewalDate(user)%>.
+									<br><br>Your DeliveryPass membership is set to renew on <%=DeliveryPassUtil.getAutoRenewalDate(user)%>.
 								<%} %>
 
 								
 									<input type="hidden" name="action" value="">
-									<A HREF="#" onClick="javascript:flipAutoRenewalOFF()"><font class="text12">Click here to turn off renewal.</A>
+									<A HREF="#" onClick="javascript:flipAutoRenewalOFF()"><font class="text12">Click here to turn renewal OFF.</A>
 								</form>
 								<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
                                           <%} else if (user.getUsableDeliveryPassCount()==0) {%>
@@ -199,13 +199,13 @@
 								<br><br>	
 
 
-								<font class="text12bold">Unlimited DeliveryPass Renewal</font>
-								<font class="text12"> Passes can be renewed automatically when your current pass (or refill) expires.
+								<font class="text12bold">DeliveryPass Renewal</font>
+								<font class="text12"> Your membership can be renewed automatically when your current DeliveryPass (or refill) expires.
 								<A HREF="javascript:pop('/about/aboutRenewal.jsp?sku=<%=user.getDlvPassInfo().getAutoRenewDPType().getCode()%>&term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>&price=<%=user.getDlvPassInfo().getAutoRenewPriceAsText()%>',400,560)">								Click here to learn more about renewals.
 								</A><br><br>
 								<form name="autoRenew" method="POST">
 									<% if(!DeliveryPassUtil.getExpDate(user).equals("")) {%>
-									<b>Your pass will expire on <%=DeliveryPassUtil.getExpDate(user)%>.<b>
+									<b>Your DeliveryPass membership will expire on <%=DeliveryPassUtil.getExpDate(user)%>.<b>
 								<%}%>
 								
 									<input type="hidden" name="action" value="">

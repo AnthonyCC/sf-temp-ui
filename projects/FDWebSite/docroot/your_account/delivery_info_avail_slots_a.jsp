@@ -48,8 +48,8 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote,TimeslotBottom");
                 OAS_AD('CategoryNote');
                 //-->
       	</SCRIPT>
-<% } %><br>Available Delivery Time Slots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
-<tr><td colspan="3" class="text12">Here are the currently available time slots for delivery to this address:</td></tr>
+<% } %><br>Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
+<tr><td colspan="3" class="text12">Here are the currently available timeslots for delivery to this address:</td></tr>
 <tr><td colspan="2">&nbsp;</td><td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br><b><%=address.getAddress1()%><br><%=address.getZipCode()%></b><br><a href="/your_account/delivery_info_check_slots.jsp" class="text11">change address</a></td></tr>
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="15" height="15"></td>
 <td><img src="/media_stat/images/layout/clear.gif" width="15" height="15"></td>
@@ -81,17 +81,17 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote,TimeslotBottom");
 		<tr>
 			<td align="left">
 				<img src="/media_stat/images/template/help/greendot_trans.gif" width="10" height="10" border="0" valign="bottom" alt="Green">
-				= Time Slot Available *
+				= TimeSlot Available *
 				&nbsp;&nbsp;
 				<img src="/media_stat/images/template/help/orangedot_trans.gif" width="10" height="10" border="0" valign="bottom" alt="Orange">
-				= Time Slot Full
+				= TimeSlot Full
 			</td>
 			<td align="right">You must complete checkout for next-day deliveries before the "Order by" time.</td>
 		</tr>
 		<tr>
 			<td colspan="2">
 			<br>
-			* <b>You will select a delivery time slot at Checkout.</b> Delivery time slots are not guaranteed until completion of Checkout.
+			* <b>You will select a delivery timeslot at Checkout.</b> Delivery timeslots are not guaranteed until completion of Checkout.
 			</td>
 		</tr>
 	</table>

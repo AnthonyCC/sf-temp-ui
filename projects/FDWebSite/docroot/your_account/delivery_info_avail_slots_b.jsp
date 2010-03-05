@@ -102,8 +102,8 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 %>
 <%--@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" --%>
 
-<br>Available Delivery Time Slots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
-<tr><td colspan="3" class="text12">Here are the currently available time slots for delivery to this address:</td></tr>
+<br>Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
+<tr><td colspan="3" class="text12">Here are the currently available timeslots for delivery to this address:</td></tr>
 <tr><td colspan="2">&nbsp;</td>
 <% 
 if (shipToAddresses.size() > 1 ) { %>
@@ -188,7 +188,7 @@ zonePromoString="<%=zonePromoString %>";
 zonePromoEnabled=true;
 <%} %>
 </script>
-	<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
+<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 	
 	
 	<table width="695">
@@ -221,17 +221,17 @@ zonePromoEnabled=true;
 		<tr>
 			<td align="left">
 				<img src="/media_stat/images/windowsteering/legend_view_avail.png" width="10" height="10" border="0" valign="bottom" alt="Green">
-				Time Slot Available*
+				TimeSlot Available*
 				&nbsp;
 				<img src="/media_stat/images/windowsteering/legend_view_full.png" width="10" height="10" border="0" valign="bottom" alt="Orange">
-				Time Slot Full
+				TimeSlot Full
 			</td>
 			<td align="right" width="450">You must complete checkout for next-day deliveries before the "Order by" time.</td>
 		</tr>
 		<tr>
 			<td colspan="2">
 			<br>
-			* <b>You will select a delivery time slot at Checkout.</b> Delivery time slots are not guaranteed until completion of Checkout.
+			* <b>You will select a delivery timeslot at Checkout.</b> Delivery timeslots are not guaranteed until completion of Checkout.
 			</td>
 		</tr>
 	</table>
