@@ -1146,19 +1146,28 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			return;
 		}
 		
-		//Checking for CC a/c's. If NO, restricting the customer to place order using E-check
+		//Checking for CC a/c's or expired CC. If NO, restricting the customer to place order using E-check
 		String app = (String) pageContext.getSession().getAttribute( SessionName.APPLICATION);
 		if (!"CALLCENTER".equalsIgnoreCase(app)) {
 			int numCreditCards=0;
+			boolean isValidCreditCardAvailable = false;
 			for (Iterator iterator = paymentMethods.iterator(); iterator.hasNext();) {
 	              ErpPaymentMethodI paymentM = (ErpPaymentMethodI) iterator.next();
 	           if (EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {
-	                  numCreditCards++;
+	               numCreditCards++;
+	        	   PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, getUser());
+	               if(null == result.getError("expiration") || "".equals(result.getError("expiration"))){
+	            	   isValidCreditCardAvailable = true;
+	            	   break;
+	               }
 	           }
 	        }
-	        if(numCreditCards<1){
-	        	LOGGER.debug("No CC Account in Customer payment methods: "+numCreditCards);
+			if(numCreditCards<1){
+				LOGGER.debug("No CC Account in Customer payment methods: "+numCreditCards);
 	        	result.addError(new ActionError("payment_method",SystemMessageList.MSG_NOCC_ACCOUNT_NUMBER));
+			}else if(!isValidCreditCardAvailable){
+	        	LOGGER.debug("CC Account not valid or expired in Customer payment methods: "+paymentMethod.getAccountNumber());
+	        	result.addError(new ActionError("expiration", SystemMessageList.MSG_CARD_EXPIRATION_DATE));
 	        }
 		}
 		//

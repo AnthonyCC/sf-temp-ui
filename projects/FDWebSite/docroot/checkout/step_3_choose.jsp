@@ -220,6 +220,9 @@ if(isPaymentRequired) {
 	<fd:ErrorHandler result='<%=result%>' name="payment_method" id='errorMsg'>
 			<%@ include file="/includes/i_error_messages.jspf" %>	
 	</fd:ErrorHandler>	
+	<fd:ErrorHandler result='<%=result%>' name="expiration" id='errorMsg'>
+			<%@ include file="/includes/i_error_messages.jspf" %>	
+	</fd:ErrorHandler>	
 	
 	<!--<% if (isCheckEligible && !isECheckRestricted && !hasCreditCard) { // move msg to sys msg list when ready%>
 		<% String errorMsg = "You must have a valid credit card on your FreshDirect account to pay for your order from a checking account. To proceed with Checkout, please review and revise your credit card information as necessary."; %>
