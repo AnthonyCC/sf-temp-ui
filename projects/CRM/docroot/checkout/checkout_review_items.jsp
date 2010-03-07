@@ -265,10 +265,12 @@
 								String deptName = ContentFactory.getInstance().getProductByName( cartLine.getCategoryName(), cartLine.getProductName() ).getDepartment().getContentName();
 
 								//if (view.isDisplayDepartment()) {
+								//fix for APPDEV-685
+								//change page called, and pass in deptId as "catId" to fix dept link
 							%>
 								<tr>
 									<td colspan="3"></td>
-									<td colspan="7" style="color: #f93;"><a href="/department.jsp?deptId=<%=deptName%>&trk=cart"><b><%=lastDept.toUpperCase()%></b></a></td>
+									<td colspan="7" style="color: #f93;"><a href="/order/build_order_browse.jsp?catId=<%=deptName%>&trk=cart"><b><%=lastDept.toUpperCase()%></b></a></td>
 								</tr>
 						<%
 								//}
@@ -348,9 +350,12 @@
 							if (productNode.isPlatter()) {
 								platterDlvInfo = true;
 							}
+
+							//fix for APPDEV-685
+							//change page called to fix product link
 						%>
 			
-							<td colspan="2"><div style="margin-left:16px; text-indent:-8px;"><span class="text10bold"><a href="/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
+							<td colspan="2"><div style="margin-left:16px; text-indent:-8px;"><span class="text10bold"><a href="/order/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
 							<%= fdProduct.getKosherInfo().isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
 							<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
 							<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>

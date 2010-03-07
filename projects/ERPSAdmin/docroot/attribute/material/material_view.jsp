@@ -65,9 +65,15 @@
                 </td><tr>
             </table>
             
+            <!-- restrictions -->
 			<table cellspacing=2 cellpadding=2>
                 <tr><td class="field_title">Restrictions</td><td><input size='12' name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.RESTRICTIONS.getName()) %>' value='<%= material.getAttribute(EnumAttributeName.RESTRICTIONS) %>'>
                 (comma separated list of additional delivery restriction reason codes, eg. "TKG,VAL,EAS").
+                </td><tr>
+            </table>
+			<table cellspacing=2 cellpadding=2>
+                <tr><td class="field_title">Advance Order</td><td><input type='checkbox' name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.ADVANCE_ORDER_FLAG.getName()) %>' <%= (true == material.getAttributeBoolean(EnumAttributeName.ADVANCE_ORDER_FLAG))?"CHECKED":"" %>>
+                product qualifies for 'advance order' timeslots
                 </td><tr>
             </table>
 			

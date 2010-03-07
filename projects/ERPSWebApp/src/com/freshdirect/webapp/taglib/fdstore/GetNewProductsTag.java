@@ -6,11 +6,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class GetNewProductsTag extends AbstractGetterTag {
+
+	private static Category LOGGER = LoggerFactory.getInstance( GetNewProductsTag.class );
 
 	private int days = 14;
 	private String department = null;
@@ -29,7 +34,14 @@ public class GetNewProductsTag extends AbstractGetterTag {
 		public int compare(Object o1, Object o2) {
 			ProductModel p1 = (ProductModel) o1;
 			ProductModel p2 = (ProductModel) o2;
-			return p1.getGlanceName().compareTo(p2.getGlanceName());
+			//null check
+			String p1GlanceName = "";
+			String p2GlanceName = "";
+			
+			p1GlanceName = (p1.getGlanceName() == null) ? "" : p1.getGlanceName();
+			p2GlanceName = (p2.getGlanceName() == null) ? "" : p2.getGlanceName();
+			
+			return p1GlanceName.compareTo(p2GlanceName);
 		}
 
 	};

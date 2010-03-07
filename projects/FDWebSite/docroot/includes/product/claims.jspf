@@ -9,9 +9,14 @@ if (!common.isEmpty()) {%>
 	for (Iterator ic = common.iterator(); ic.hasNext();) {
 		EnumClaimValue claim = (EnumClaimValue) ic.next();
 		if (!EnumClaimValue.getValueForCode("NONE").equals(claim) && !EnumClaimValue.getValueForCode("OAN").equals(claim)) {
-			%>
-			<div style="margin-left:8px; text-indent: -8px;">&bull; <%= claim %></div>
-			<% 
+			//Changed for APPDEV-705
+
+			//check for different text than what Enum has (Enum shows in ERPSy-Daisy)
+			if(EnumClaimValue.getValueForCode("FR_ANTI").equals(claim)){
+				%><div>&bull; Raised Without Antibiotics</div><%
+			}else{
+				%><div style="margin-left:8px; text-indent: -8px;">&bull; <%= claim %></div><%
+			}
 		}
 	} 
 }

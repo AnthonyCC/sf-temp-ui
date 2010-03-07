@@ -175,7 +175,7 @@
   } else{%>
         
     <%  if (!skuAvailable) {  %>
-    <td colspan="2" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font>
+    <td colspan="3" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font>
     <%  } else if(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale()) {    %>
     <TD WIDTH="55" ALIGN="RIGHT">&nbsp;<font  class="groceryProductLinePrice" style="COLOR: #c00"><%= JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;</font>
     

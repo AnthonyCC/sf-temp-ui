@@ -3,22 +3,28 @@
 Only display claims applicable to all available SKUs
 --%>
 <%
-Set commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
-if (!commonOrgs.isEmpty()) {
-	%>
-	<%
-	int c = 0;
-	for (Iterator ic = commonOrgs.iterator(); ic.hasNext();) {
-		EnumOrganicValue claim = (EnumOrganicValue) ic.next();
-		if (c==0) { %><br><% }
-                if(!EnumOrganicValue.getValueForCode("NONE").equals(claim)){
-                    if(EnumOrganicValue.getValueForCode("ORGN").equals(claim)){%>
-			<div>&bull; Organic</div>
-                  <%} else { %>
-                        <div>&bull; Certified Organic</div>
-    <%              }
-                } 
-	c++;
-        } 
-}
+	Set commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
+	if (!commonOrgs.isEmpty()) {
+		%>
+		<%
+		int c = 0;
+		for (Iterator ic = commonOrgs.iterator(); ic.hasNext();) {
+			EnumOrganicValue claim = (EnumOrganicValue) ic.next();
+			if (c==0) { %><br /><% }
+			if(!EnumOrganicValue.getValueForCode("NONE").equals(claim)){
+				//Changed for APPDEV-705
+
+				//check for different text than what Enum has (Enum shows in ERPSy-Daisy)
+				if(EnumOrganicValue.getValueForCode("CERT_ORGN").equals(claim)){
+					%><div>&bull; Organic</div><%
+				}else{
+					//don't use empty
+					if ( !"".equals(claim.getName()) ) {
+						%><div>&bull; <%= claim.getName() %></div><%
+					}
+				}
+			}
+			c++;
+		} 
+	}
 %>

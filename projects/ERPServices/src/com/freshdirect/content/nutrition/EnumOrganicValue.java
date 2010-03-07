@@ -51,21 +51,22 @@ public class EnumOrganicValue implements NutritionValueEnum {
 		return false;
 	}
     
+	//Changed for APPDEV-705
     private final static List types = new ArrayList();
     static {
     	types.add(new EnumOrganicValue("NONE", "None", 0));
-		types.add(new EnumOrganicValue("ORGN", "Organic", 1));
+		//types.add(new EnumOrganicValue("70_ORGN", "Made with Organic Ingredients ", 2));
+        //types.add(new EnumOrganicValue("CALI_ORGN", "Organically grown and processed in accordance with California Organic Act of 1990", 2));
+		//types.add(new EnumOrganicValue("CERT_ICS", "Certified organic by international certification services, inc. ", 2));
         types.add(new EnumOrganicValue("CERT_ORGN", "Certified Organic", 2));
-        types.add(new EnumOrganicValue("CALI_ORGN", "Organically grown and processed in accordance with California Organic Act of 1990", 2));
-        types.add(new EnumOrganicValue("QAI_ORGN", "Certified organic by QAI (Quality Assurance International", 2));
-        types.add(new EnumOrganicValue("TEX_ORGN", "Certified organic by the Texas Department of Agriculture", 2));
-		types.add(new EnumOrganicValue("VER_ORGN", "Certified Organic by Vermont Organic Farmers", 2));
-		types.add(new EnumOrganicValue("ORE_ORGN", "Oregon Tilth Certified Organic", 2));
-		types.add(new EnumOrganicValue("CERT_QCS", "Quality certifying services (QCS)", 2));
-		types.add(new EnumOrganicValue("CERT_ICS", "Certified organic by international certification services, inc. ", 2));
-		types.add(new EnumOrganicValue("CERT_PCO", "Pennsylvania Certified Organic ", 2));
+		//types.add(new EnumOrganicValue("CERT_PCO", "Pennsylvania Certified Organic ", 2));
+		//types.add(new EnumOrganicValue("CERT_QCS", "Quality certifying services (QCS)", 2));
 		types.add(new EnumOrganicValue("MADEWORGN", "Made with Organic Ingredients ", 2));
-		types.add(new EnumOrganicValue("70_ORGN", "70% Organic Ingredients ", 2));
+		//types.add(new EnumOrganicValue("ORE_ORGN", "Oregon Tilth Certified Organic", 2));
+		types.add(new EnumOrganicValue("ORGN", "Organic", 1));
+        //types.add(new EnumOrganicValue("QAI_ORGN", "Certified organic by QAI (Quality Assurance International", 2));
+        //types.add(new EnumOrganicValue("TEX_ORGN", "Certified organic by the Texas Department of Agriculture", 2));
+		//types.add(new EnumOrganicValue("VER_ORGN", "Certified Organic by Vermont Organic Farmers", 2));
     }
 
     public static List getValues() {

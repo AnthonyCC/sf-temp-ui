@@ -8,15 +8,16 @@
 <%
 
 	String noMobile = "FALSE";
-	if ( request.getParameter("noMobile") != null && "TRUE".equals(request.getParameter("noMobile")) ) {
-		noMobile = "TRUE";
+	if ( request.getParameter("noMobile") != null ) {
+		noMobile = request.getParameter("noMobile");
 	}
 	if (FDStoreProperties.isIphoneLandingEnabled()) {
 		String UA = request.getHeader("User-Agent").toLowerCase();
 
 		//check for iphone/ipod and change results
 		if (UA.indexOf("iphone;")>=0 || UA.indexOf("ipod;")>=0) {
-			if ("FALSE".equals(noMobile)){
+			//check that site access isn't returning an error from the POST...
+			if ("FALSE".equals(noMobile) && "GET".equals(request.getMethod())){
 				noMobile = "TRUE";
 				%>
 				<jsp:forward page="/mobile/index.jsp"/>

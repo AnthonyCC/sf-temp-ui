@@ -178,6 +178,13 @@ public class MaterialTag extends com.freshdirect.framework.webapp.BodyTagSupport
         //
         String restrictions = request.getParameter(FormElementNameHelper.getFormElementName(matl, EnumAttributeName.RESTRICTIONS.getName()));
         matl.getAttributes().setAttribute(EnumAttributeName.RESTRICTIONS.getName(), restrictions);
+        //add ability to set advance order flag via erpsy-daisy gui
+        String advance_order_flag = request.getParameter(FormElementNameHelper.getFormElementName(matl, EnumAttributeName.ADVANCE_ORDER_FLAG.getName()));
+        if (advance_order_flag != null) {
+            matl.getAttributes().setAttribute(EnumAttributeName.ADVANCE_ORDER_FLAG.getName(), true);
+        } else {
+            matl.getAttributes().setAttribute(EnumAttributeName.ADVANCE_ORDER_FLAG.getName(), false);
+        }
         
         //
         // kosher production item

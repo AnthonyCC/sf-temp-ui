@@ -69,7 +69,9 @@ public class EnumClaimValue implements NutritionValueEnum {
         types.add(new EnumClaimValue("FR_GMO",  "GMO Free", 1));
         types.add(new EnumClaimValue("FR_HRM",  "Hormone Free", 1));
         types.add(new EnumClaimValue("FR_RBST", "RBST Free", 1));
-        types.add(new EnumClaimValue("FR_ANTI", "Antibiotic Free", 1));
+        //Changed for APPDEV-705
+        //types.add(new EnumClaimValue("FR_ANTI", "Antibiotic Free", 1));
+        types.add(new EnumClaimValue("FR_ANTI", "Raised w/o Antibiotics, No Antibiotics Used Ever", 1));
         
         types.add(new EnumClaimValue("LO_SODM", "Low Sodium", 1));
         types.add(new EnumClaimValue("LO_FAT",  "Low Fat", 1));
