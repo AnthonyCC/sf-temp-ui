@@ -1155,7 +1155,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	              ErpPaymentMethodI paymentM = (ErpPaymentMethodI) iterator.next();
 	           if (EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {
 	               numCreditCards++;
-	        	   PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, getUser());
+	        	   PaymentMethodUtil.validatePaymentMethod(request, paymentM, result, getUser());
 	               if(null == result.getError("expiration") || "".equals(result.getError("expiration"))){
 	            	   isValidCreditCardAvailable = true;
 	            	   break;
@@ -1165,10 +1165,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			if(numCreditCards<1){
 				LOGGER.debug("No CC Account in Customer payment methods: "+numCreditCards);
 	        	result.addError(new ActionError("payment_method",SystemMessageList.MSG_NOCC_ACCOUNT_NUMBER));
-			}else if(!isValidCreditCardAvailable){
-	        	LOGGER.debug("CC Account not valid or expired in Customer payment methods: "+paymentMethod.getAccountNumber());
-	        	result.addError(new ActionError("expiration", SystemMessageList.MSG_CARD_EXPIRATION_DATE));
-	        }
+			}
 		}
 		//
 		// set payment in cart and store cart if valid payment found
