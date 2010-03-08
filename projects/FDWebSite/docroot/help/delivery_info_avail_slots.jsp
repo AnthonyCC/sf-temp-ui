@@ -50,8 +50,8 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
                 OAS_AD('CategoryNote');
                 //-->
       	</SCRIPT>
-<% } %><br>Available Delivery Time Slots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
-<tr><td colspan="3" class="text12">Here are the currently available time slots for delivery to this address:</td></tr>
+<% } %><br>Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
+<tr><td colspan="3" class="text12">Here are the currently available timeslots for delivery to this address:</td></tr>
 <tr><td colspan="2">&nbsp;</td><td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br><b><%=address.getAddress1()%><br><%=address.getZipCode()%></b><br><a href="/help/delivery_info_check_slots.jsp" class="text11">change address</a></td></tr>
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="15" height="15"></td>
 <td><img src="/media_stat/images/layout/clear.gif" width="15" height="15"></td>
@@ -70,9 +70,9 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 </td>
 </tr>
 <tr><td align="right"><img src="/media_stat/images/template/help/greendot_trans.gif" width="10" height="10" alt="Green"></td>
-<td colspan="2" class="text12">&nbsp;=&nbsp;Time Slot Available *</td></tr>
+<td colspan="2" class="text12">&nbsp;=&nbsp;TimeSlot Available *</td></tr>
 <tr><td align="right"><img src="/media_stat/images/template/help/orangedot_trans.gif" width="10" height="10" alt="Orange"></td>
-<td colspan="2" class="text12">&nbsp;=&nbsp;Time Slot Full</td></tr>
+<td colspan="2" class="text12">&nbsp;=&nbsp;TimeSlot Full</td></tr>
 <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 </table>
 <% String preReserveSlotId = ""; %>
