@@ -114,7 +114,7 @@ FROM erps.product p) WHERE RANK=1"/>
 			query="select p.sku_code as id, decode(MP.PROMO_PRICE,0,MP.PRICE,MP.PROMO_PRICE) as price,
                   P.UNAVAILABILITY_STATUS as UNAVAILABILITY_STATUS from
                   (select max(version) version, sap_id, max(to_number(id)) mat_id  from  erps.material group by sap_id) mat,
-                  (  select price,promo_price, pricing_unit, mat_id as matid,version as version1 from erps.materialprice where scale_quantity<=1 and sap_zone_id='0000100000' )
+                  (  select price,promo_price, pricing_unit, mat_id as matid,version as version1 from erps.materialprice where scale_quantity &lt;= 1 and sap_zone_id='0000100000' )
                   mp,  erps.materialproxy mpx, erps.product p
                   where mp.matid=MAT.mat_id
                   and mp.version1=MAT.VERSION 
