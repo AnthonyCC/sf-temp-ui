@@ -271,11 +271,19 @@ public class ContentSearchUtil {
 
 	public static String[] tokenizeTerm(String term) {
 		List tokens = new ArrayList();
+		int missedTokens = 0;
 		for (StringTokenizer st = new StringTokenizer(term, " "); st.hasMoreTokens();) {
 			String token = st.nextToken();
 			if (token.length() > 2) {
 				tokens.add(token);
+			} else {
+			    missedTokens++;
 			}
+		}
+		if (tokens.size()==0 && missedTokens>1) {
+		    // there is no longer than 2 character word in the search term, but at least there are 2 of them, 
+		    // try it with without whitespace. The only relevant term for this case is '7 up'.
+		    tokens.add(term.replaceAll("\\W", ""));
 		}
 		return (String[]) tokens.toArray(new String[tokens.size()]);
 	}
