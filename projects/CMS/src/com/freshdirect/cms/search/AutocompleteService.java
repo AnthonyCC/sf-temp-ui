@@ -13,6 +13,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -22,7 +23,7 @@ public class AutocompleteService {
         boolean allow(String s);
     }
     
-    private final Category   LOGGER                    = LoggerFactory.getInstance(AutocompleteService.class);
+    private final static Logger   LOGGER                    = LoggerFactory.getInstance(AutocompleteService.class);
 
     private final static int MAX_AUTOCOMPLETE_HITS     = 20;
 
