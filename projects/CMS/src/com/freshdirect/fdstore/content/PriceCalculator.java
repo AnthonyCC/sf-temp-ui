@@ -254,7 +254,8 @@ public class PriceCalculator {
                     }
 
                     if (wasPrice != null) {
-                        return ProductModel.CURRENCY_FORMAT.format(wasPrice) + "/" + productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+						//Fix for Defect QC 407.	
+                        return ProductModel.CURRENCY_FORMAT.format(wasPrice);
                     }
                 }
                 return null;
