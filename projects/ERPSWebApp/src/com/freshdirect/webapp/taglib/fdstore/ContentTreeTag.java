@@ -118,10 +118,12 @@ public class ContentTreeTag extends BodyTagSupport {
                 }
             }
             treeElement = rootElement;
-            while (!CategoryNodeTree.UNNECESSARY_CATEGORY_REMOVER.accept(treeElement)) {
-                TreeElement child = (TreeElement) treeElement.getChildren().iterator().next();
-                selectedCategories.add(child.getModel().getContentKey().getId());
-                treeElement = child;
+            if (treeElement != null) {
+                while (!CategoryNodeTree.UNNECESSARY_CATEGORY_REMOVER.accept(treeElement)) {
+                    TreeElement child = (TreeElement) treeElement.getChildren().iterator().next();
+                    selectedCategories.add(child.getModel().getContentKey().getId());
+                    treeElement = child;
+                }
             }
         }
         contentTree.setExpandNodesToDepth(expandToDepth);
