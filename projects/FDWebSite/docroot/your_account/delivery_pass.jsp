@@ -43,7 +43,7 @@
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Unlimited DeliveryPass</tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - FreshDirect DeliveryPass</tmpl:put>
     <tmpl:put name='content' direct='true'>
     <fd:DlvPassSignupController result="result" callCenter="false">
 	<fd:ErrorHandler result='<%=result%>' name='dlvpass_discontinued' id='errorMsg'>
@@ -115,7 +115,7 @@
 					<td colspan="2">
 					<b>DeliveryPass Refills </b>&nbsp;You have <%=DeliveryPassUtil.getAsText(user.getUsableDeliveryPassCount()-1)%> DeliveryPass refill
   on your account. Now you can purchase a refill DeliveryPass which renews automatically! Simply 
-						<A HREF="#" onClick="javascript:redirectToSignup()">purchase an additional Unlimited DeliveryPass</A> and you'll never need to worry about running out.
+						<A HREF="#" onClick="javascript:redirectToSignup()">purchase an additional FreshDirect DeliveryPass</A> and you'll never need to worry about running out.
 
 						<br><br><br>
 					</td>
@@ -139,7 +139,7 @@
 				<tr>
 					<td colspan="2">
 						<br>
-						<A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!
+						<A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for DeliveryPass today!
 					</td>
 				</tr>	
 			</form>
@@ -190,7 +190,7 @@
                                           <%} else if (user.getUsableDeliveryPassCount()==0) {%>
 								<form name="signup" method="POST">
 									<input type="hidden" name="action" value="">
-									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!
+									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for FreshDirect DeliveryPass today!
 								</form>
 							<% }%>
 						<%} else {%>
@@ -199,7 +199,7 @@
 								<br><br>	
 
 
-								<font class="text12bold">DeliveryPass Renewal</font>
+								<font class="text12bold">DeliveryPass Renewals</font>
 								<font class="text12"> Your membership can be renewed automatically when your current DeliveryPass (or refill) expires.
 								<A HREF="javascript:pop('/about/aboutRenewal.jsp?sku=<%=user.getDlvPassInfo().getAutoRenewDPType().getCode()%>&term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>&price=<%=user.getDlvPassInfo().getAutoRenewPriceAsText()%>',400,560)">								Click here to learn more about renewals.
 								</A><br><br>
@@ -215,7 +215,7 @@
                                           <%} else if (user.getUsableDeliveryPassCount()==0){%>
 								<form name="signup" method="POST">
 									<input type="hidden" name="action" value="">
-									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!
+									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for FreshDirect DeliveryPass today!
 								</form>
 							<% }%>
 
@@ -294,7 +294,7 @@
 			<td align="center" colspan="2">
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="20" BORDER="0"><BR>
 <A HREF="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560)">
-				<font class="text11bold">Click here to learn more about Unlimited DeliveryPass.</font>
+				<font class="text11bold">Click here to learn more about FreshDirect DeliveryPass.</font>
 				</A>
 			</td>
 		</tr>				

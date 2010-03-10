@@ -12,7 +12,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 					<a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>">Reserve&nbsp;Delivery</a><br />
 				<%}%>
 				<%if(user.isDlvPassActive() || user.isEligibleForDeliveryPass()){%>
-	                         <a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">Unlimited&nbsp;DeliveryPass</a><br />
+	                         <a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">FreshDirect&nbsp;DeliveryPass</a><br />
 				<% } %>
 				<% 
 					/*
