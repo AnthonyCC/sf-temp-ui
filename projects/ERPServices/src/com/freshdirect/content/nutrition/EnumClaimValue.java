@@ -106,6 +106,8 @@ public class EnumClaimValue implements NutritionValueEnum {
 		types.add(new EnumClaimValue("SOY",       "Soy Free", 1));
 		types.add(OAN_ORGANIC);
 		types.add(KOSHER_FOR_PASSOVER);
+		
+		types.add(new EnumClaimValue("KOS_NOPAS", "Not certified for Passover.", 1));
 
 		types.add(new EnumClaimValue("PEANUTS",       "Produced in our bakery, where tree nuts and peanuts are used.", 1));
     }
