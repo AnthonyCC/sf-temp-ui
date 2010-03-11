@@ -63,7 +63,7 @@ public class USQReportCreator extends DBReportCreator {
 			return "select di.first_name, di.last_name, si.id, si.requested_date, "
 				+ "(select upc from erps.material where version=ol.version and sap_id=ol.material_number) UPC, "
 				+ "ol.material_number, ol.description, il.actual_quantity, "
-				+ "(select default_price from erps.product where version=ol.version and sku_code=ol.sku_code) UNIT_PRICE, "
+				+ " (select price from erps.materialprice where version=ol.version and mat_id= (select id from erps.material where version=ol.version and sap_id=ol.material_number) and sap_zone_id=ol.pricing_zone_id and scale_quantity<=1 ) UNIT_PRICE, "
 				+ "il.line_tax, il.actual_price as price, (il.actual_price + il.line_tax)  as total "
 				+ "from (select s.id, sa.requested_date, sa.id as salesaction_id from cust.salesaction sa, cust.sale s "
 				+ "	 where sa.requested_date = ? and sa.action_type in ('CRO', 'MOD') "
