@@ -1160,6 +1160,9 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	            	   isValidCreditCardAvailable = true;
 	            	   break;
 	               }
+	               if(result.getError("expiration")!=null){
+	            	   result.addError(new ActionError("expiration",SystemMessageList.MSG_CC_EXPIRED_ACT_NUMBER));
+	               }
 	           }
 	        }
 			if(numCreditCards<1){

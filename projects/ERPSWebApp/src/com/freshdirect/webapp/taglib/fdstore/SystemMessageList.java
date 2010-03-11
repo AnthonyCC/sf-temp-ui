@@ -65,6 +65,7 @@ public interface SystemMessageList {
 	public final static String MSG_CARD_EXPIRATION_DATE			= "Please double-check your credit card's expiration date and enter it again.";
 	public final static String MSG_DUPLICATE_ACCOUNT_NUMBER 	= "This is a duplicate account. Please double check and make any changes or enter a different account.";
 	public final static String MSG_NOCC_ACCOUNT_NUMBER 	= "You must have a valid credit card on your FreshDirect account to pay for your order from a checking account. To proceed with Checkout, please review and revise your credit card information as necessary.";
+	public final static String MSG_CC_EXPIRED_ACT_NUMBER 	= "There must be a valid credit card attached to your account to pay by check, but your card on file has expired. Please update it or select another payment option to continue.";
 	// eCheck
 	public final static String MSG_INVALID_ABA_ROUTE_NUMBER 	= "This ABA route number is invalid.";
 	public final static String MSG_INVALID_BANK_ACCOUNT_TYPE 	= "This bank account type is invalid.";
