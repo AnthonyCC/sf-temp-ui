@@ -170,11 +170,11 @@
 						<% if(EnumDPAutoRenewalType.YES.equals(arType)) {%>
 
 							<% if(user.getDlvPassInfo().getAutoRenewUsablePassCount()>0) {%>
-								<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><br>	
+								<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
 
 								<form name="autoRenew" method="POST">
 								<% if(!DeliveryPassUtil.getAutoRenewalDate(user).equals("")) {%>
-									<font class="text12bold">DeliveryPass Renewal</font>
+									<font class="text12bold">DeliveryPass Renewals</font>
 									<font class="text12"> Your membership will be renewed automatically on the day your current membership expires.
 									<A HREF="javascript:pop('/about/aboutRenewal.jsp?sku=<%=user.getDlvPassInfo().getAutoRenewDPType().getCode()%>&term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>',400,560)">	
 										Click here to learn more about renewals.
