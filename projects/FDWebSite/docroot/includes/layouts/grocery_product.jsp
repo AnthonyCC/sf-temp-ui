@@ -701,22 +701,16 @@ if(productCode!=null && prodCatId !=null ) {
         		<% } else { %>			        
 						<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
         		<% } %>
-						<% if(qualifies && !productNode.isUnavailable()) { %>
-							<table>
-								<tr>
-									<td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
-									<td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=catId%>">See our $<%=prefix%> offer</a></td>
-								</tr>
-							</table>
-							<br />
-						<% } %>
-        		<% if ( FDStoreProperties.useOscache() ) { %> 
-					<oscache:cache time="300">
-						<%@ include file="/shared/includes/product/i_product_image.jspf" %>
-					</oscache:cache>
-        		<% } else { %>			        
-						<%@ include file="/shared/includes/product/i_product_image.jspf" %>
-        		<% } %>
+				<% if(qualifies && !productNode.isUnavailable()) { %>
+					<table>
+						<tr>
+							<td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
+							<td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=catId%>">See our $<%=prefix%> offer</a></td>
+						</tr>
+					</table>
+					<br />
+				<% } %>
+				<%@ include file="/shared/includes/product/i_product_image.jspf" %>
 			</td>
 		</tr>
 	</table>

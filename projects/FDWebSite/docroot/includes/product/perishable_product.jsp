@@ -211,7 +211,9 @@
         		<% if ( FDStoreProperties.useOscache() ) { %>
         			<oscache:cache time="300">
 						<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-						<%@ include file="/shared/includes/product/i_product_image.jspf" %>
+        			</oscache:cache>
+					<%@ include file="/shared/includes/product/i_product_image.jspf" %>
+        			<oscache:cache time="300">
 						<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
         			</oscache:cache>
         		<% } else { %>
