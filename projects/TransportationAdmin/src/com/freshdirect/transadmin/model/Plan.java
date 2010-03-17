@@ -25,6 +25,7 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI  {
 	private String supervisorId;
 	private String userId;
 	private Date maxTime;
+	private String isOpen;
 	
 	public String getSupervisorId() {
 		return supervisorId;
@@ -183,6 +184,14 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI  {
 
 	public void setMaxTime(Date maxTime) {
 		this.maxTime = maxTime;
+	}
+
+	public String getOpen() {
+		return isOpen;
+	}
+
+	public void setOpen(String isOpen) {
+		this.isOpen = isOpen;
 	}
 
 

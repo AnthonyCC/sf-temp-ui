@@ -415,6 +415,7 @@ class TimeNode
 					}
 				}				
 			}
+			p.setOpen(DepotTimeNode.isOpen(p,resources));
 		}
 		
 		//add bullpen for remaining employees
@@ -572,7 +573,8 @@ class DepotTimeNode
 							count++;
 						}
 					}
-				}								
+				}
+				p.setOpen(isOpen(p,resources));
 			}
 			//Runner[add all the runners available]
 			List runners=getRunners(s.getFirstDlvTime());
@@ -626,7 +628,73 @@ class DepotTimeNode
 			}
 	}
 	
-
+    public static String isOpen(Plan p,Set resources)
+    {
+    	
+    	int driverMin=0;
+    	int helperMin=0;
+    	int runnerMin=0;
+    	int drivers=0;
+    	int helpers=0;
+    	int runners=0;
+    	
+    	try {
+			if(resources!=null)
+			for(Iterator j=resources.iterator();j.hasNext();)
+			{
+				ZonetypeResource r=(ZonetypeResource)j.next();
+				//Driver
+				if(r!=null&&r.getId()!=null)
+				{
+					if(ScheduleEmployeeInfo.DRIVER.equalsIgnoreCase(r.getId().getRole()))
+					{
+						driverMin=r.getRequiredNo().intValue();
+					}
+					//Helper
+					if(ScheduleEmployeeInfo.HELPER.equalsIgnoreCase(r.getId().getRole()))
+					{
+						helperMin=r.getRequiredNo().intValue();
+					}
+					//Runner
+					if(ScheduleEmployeeInfo.RUNNER.equalsIgnoreCase(r.getId().getRole()))
+					{
+						runnerMin=r.getRequiredNo().intValue();
+					}
+				}
+			}
+			for(Iterator j=p.getPlanResources().iterator();j.hasNext();)
+			{
+				PlanResource r=(PlanResource)j.next();
+				if(r!=null&&r.getEmployeeRoleType()!=null)
+				{
+					//Driver
+					if(ScheduleEmployeeInfo.DRIVER.equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
+					{
+						drivers++;
+					}
+					//Helper
+					if(ScheduleEmployeeInfo.HELPER.equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
+					{
+						helpers++;
+					}
+					//Runner
+					if(ScheduleEmployeeInfo.RUNNER.equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
+					{
+						runners++;
+					}
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	if(drivers<driverMin||helpers<helperMin||runners<runnerMin)
+		{
+			return "Y";
+		}
+		return null;
+    	
+    }
 	public List getRunners(Date time)
 	{
 		Date key=null;		
