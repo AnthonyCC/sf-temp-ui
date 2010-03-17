@@ -59,6 +59,8 @@ public class FDContentTypes {
    	public static final ContentType RECOMMMENDER = ContentType.get("Recommender");
    	public static final ContentType RECOMMENDER_STRATEGY = ContentType.get("RecommenderStrategy");   	
    	
+   	public static final ContentType FAQ = ContentType.get("FAQ");
+   	
 	private FDContentTypes() {
 	}
 

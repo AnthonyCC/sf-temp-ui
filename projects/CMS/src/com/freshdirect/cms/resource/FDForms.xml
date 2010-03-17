@@ -23,6 +23,7 @@
 			<CmsEditor ref="starterList" />
 			<CmsEditor ref="recommender" />
 			<CmsEditor ref="recommenderStrategy" />
+			<CmsEditor ref="faq" />
 		</editors>
 	</CmsFolder>
 	
@@ -1203,4 +1204,22 @@
         </pages>
     </CmsEditor>
 	
+	<CmsEditor id="faq">
+        <contentType>FAQ</contentType>
+        <pages>
+            <CmsPage>
+                <title>Core Attributes</title>
+                <sections>
+                    <CmsSection>
+                        <title>Main attributes</title>
+                        <fields>
+                            <CmsField><attribute>FULL_NAME</attribute></CmsField>
+                            <CmsField><attribute>QUESTION</attribute></CmsField>
+                            <CmsField><attribute>ANSWER</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
+                </sections>
+            </CmsPage>
+        </pages>
+    </CmsEditor>
 </Content>

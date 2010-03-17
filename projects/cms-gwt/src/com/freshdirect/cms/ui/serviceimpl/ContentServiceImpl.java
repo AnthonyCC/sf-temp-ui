@@ -78,7 +78,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     
     private static final String[] ROOTKEYS         = { "Store:FreshDirect", "MediaFolder:/", "CmsFolder:forms", "CmsQueryFolder:queries",
             "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", "FDFolder:starterLists",
-            "FDFolder:synonymList", SearchRelevancyList.SEARCH_RELEVANCY_KEY, SearchRelevancyList.WORD_STEMMING_EXCEPTION };    
+            "FDFolder:synonymList", SearchRelevancyList.SEARCH_RELEVANCY_KEY, SearchRelevancyList.WORD_STEMMING_EXCEPTION,"FDFolder:FAQ" };    
 
     @Override
     public void init() throws ServletException {
