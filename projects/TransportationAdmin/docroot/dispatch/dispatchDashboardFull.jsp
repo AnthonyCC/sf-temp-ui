@@ -72,7 +72,19 @@
                   		param1+="&pagesize="+props.pagesize.value;
                    		window.open('<c:out value="${pageContext.request.contextPath}"/>/dispatchDashboardScreen.do?'+param1,'page'+page,'width='+width+',height='+height+',left=0,top=0,toolbar=no,location=no,resizable=yes,scrollbars=yes'); 
                     }
-
+                    function OpenViewPage(mode) 
+                    {
+                        
+                    		var height=YAHOO.util.Dom.getDocumentHeight()-30;
+                    		var width=YAHOO.util.Dom. getDocumentWidth();
+                    		var props=document.forms["properties"];                     		             		
+	                   		var param1 = "";
+	                   		param1+="refreshtime="+eval("props.refreshtime"+mode+".value");
+	                   		param1+="&pagerefreshtime="+eval("props.pagerefreshtime"+mode+".value");
+	                   		param1+="&pagesize="+eval("props.pagesize"+mode+".value");
+	                   		param1+="&mode="+mode;
+                    		window.open('<c:out value="${pageContext.request.contextPath}"/>/dispatchDashboardView.do?'+param1,'view'+mode,'width='+width+',height='+height+',left=0,top=0,toolbar=no,location=no,resizable=yes,scrollbars=yes'); 
+                     }
                   </script>
                 </td>
                 <td>
@@ -82,14 +94,22 @@
                    <td>
                      <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:refreshRoute()" />
                   </td>  
-                 
-                 <td>
-                     <input type = "button" value="&nbsp;Open DashBoard&nbsp;" onclick="javascript:OpenPage(1)" />
-                  </td>
                  <td>
                      <input type = "button" value="Configure DashBoard" onclick="javascript:showForm()" />
                   </td>
+                 <td>
+                     <input type = "button" value="&nbsp;Open DashBoard&nbsp;" onclick="javascript:OpenPage(1)" />
+                  </td>
                  
+                 <td>
+                     <input type = "button" value="Ready View" onclick="javascript:OpenViewPage(1)" />
+                  </td>
+                  <td>
+                     <input type = "button" value="Waiting View" onclick="javascript:OpenViewPage(2)" />
+                  </td>
+                  <td>
+                     <input type = "button" value="N/R View" onclick="javascript:OpenViewPage(3)" />
+                  </td>
               </tr>
               </table>        
               

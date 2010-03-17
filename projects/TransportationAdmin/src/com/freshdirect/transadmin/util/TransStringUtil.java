@@ -95,7 +95,26 @@ public class TransStringUtil {
 	public static String getCurrentDate() {		
 		return dateFormat.format(new Date());
 	}
-	
+	public static String getDispatchCurrentDate()
+	{
+		clientCalendar.setTimeInMillis(System.currentTimeMillis());
+		clientCalendar.set(Calendar.HOUR,3);
+		clientCalendar.set(Calendar.MINUTE, 0);
+		clientCalendar.set(Calendar.SECOND, 0);
+		clientCalendar.set(Calendar.MILLISECOND, 0);
+		clientCalendar.set(Calendar.AM_PM, Calendar.AM);
+		long tomorrowat3=clientCalendar.getTimeInMillis();
+		long currentTime=System.currentTimeMillis();
+		if(currentTime<tomorrowat3)
+		{
+			clientCalendar.add(Calendar.DATE, -1);
+			return dateFormat.format(clientCalendar.getTime());
+		}
+		else
+		{
+			return dateFormat.format(new Date());
+		}
+	}
 	public static String getNextDate() {
 		Calendar baseDate = DateUtil.truncate(Calendar.getInstance());					
 		baseDate.add(Calendar.DATE, 1);

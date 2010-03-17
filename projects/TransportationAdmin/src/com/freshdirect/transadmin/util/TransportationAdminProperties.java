@@ -130,6 +130,22 @@ public class TransportationAdminProperties {
 	
 	private final static String PROP_TRANSPORTATION_EDITDYNAMICROUTINGFEATURE_ACCESSKEY = "transportation.editdynamicroutingfeature.accesskey";
 	
+	//Ready View
+	private final static String PROP_TRANSPORTATION_DISPATCH_READY_VIEW_REFRESHTIME		= "transportation.dispatch.readyview.refreshtime";	
+	private final static String PROP_TRANSPORTATION_DISPATCH_READY_VIEW_PAGEREFRESHTIME		= "transportation.dispatch.readyview.pagerefreshtime";	
+	private final static String PROP_TRANSPORTATION_DISPATCH_READY_VIEW_PAGESIZE		= "transportation.dispatch.readyview.pagesize";
+	private final static String PROP_TRANSPORTATION_DISPATCH_READY_VIEW_MAX_READY		= "transportation.dispatch.readyview.maxready";
+	
+	//waiting view	
+	private final static String PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_REFRESHTIME		= "transportation.dispatch.waitingview.refreshtime";	
+	private final static String PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_PAGEREFRESHTIME		= "transportation.dispatch.waitingview.pagerefreshtime";	
+	private final static String PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_PAGESIZE		= "transportation.dispatch.waitingview.pagesize";
+	
+	//NR view	
+	private final static String PROP_TRANSPORTATION_DISPATCH_NR_VIEW_REFRESHTIME		= "transportation.dispatch.nrview.refreshtime";	
+	private final static String PROP_TRANSPORTATION_DISPATCH_NR_VIEW_PAGEREFRESHTIME		= "transportation.dispatch.nrview.pagerefreshtime";	
+	private final static String PROP_TRANSPORTATION_DISPATCH_NR_VIEW_PAGESIZE		= "transportation.dispatch.nrview.pagesize";
+	
 	static {
 				
 	
@@ -223,6 +239,19 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_VALIDATION, "false");
 		
 		defaults.put(PROP_TRANSPORTATION_EDITDYNAMICROUTINGFEATURE_ACCESSKEY, "2746766f6bfb620d471e9a477fd63804");
+		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_REFRESHTIME, "45");		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_PAGEREFRESHTIME, "10");		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_PAGESIZE, "10");		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_MAX_READY, "10");
+		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_REFRESHTIME, "45");		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_PAGEREFRESHTIME, "10");		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_PAGESIZE, "16");	
+		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_REFRESHTIME, "45");		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_PAGEREFRESHTIME, "10");		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_PAGESIZE, "16");	
 		
 		refresh();		
 	}
@@ -492,4 +521,47 @@ public class TransportationAdminProperties {
 		return get(PROP_TRANSPORTATION_EDITDYNAMICROUTINGFEATURE_ACCESSKEY);
 	}
 	
+	public static int getDispatchDashboardReadyViewRefreshTime() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_REFRESHTIME));
+	}	
+	public static int getDispatchDashboardPageReadyViewRefreshTime() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_PAGEREFRESHTIME));
+	}	
+	public static int getDispatchDashboardPageReadyViewSize() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_PAGESIZE));
+	}
+	public static int getMaxReadyView() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_MAX_READY));
+	}
+	
+	public static int getDispatchDashboardWaitingViewRefreshTime() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_REFRESHTIME));
+	}	
+	public static int getDispatchDashboardPageWaitingViewRefreshTime() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_PAGEREFRESHTIME));
+	}	
+	public static int getDispatchDashboardPageWaitingViewSize() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_PAGESIZE));
+	}
+	
+	
+	public static int getDispatchDashboardNRViewRefreshTime() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_REFRESHTIME));
+	}	
+	public static int getDispatchDashboardPageNRViewRefreshTime() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_PAGEREFRESHTIME));
+	}	
+	public static int getDispatchDashboardPageNRViewSize() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_PAGESIZE));
+	}
 }

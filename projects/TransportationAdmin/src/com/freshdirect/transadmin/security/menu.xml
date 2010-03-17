@@ -19,7 +19,7 @@
 	     	     	<access-roles>TrnAdmin,TrnGuest,TrnDispatch,TrnPlanning</access-roles>
 	     </menu>
 	      <menu id="OPR007" title="Dispatch Dashboard" orientation="LEFT" link="dispatchDashboard.do">
-	     	     	<access-uris>dispatchDashboard.do</access-uris>
+	     	     	<access-uris>dispatchDashboard.do,dispatchDashboardView.do</access-uris>
 	     	     	<access-roles>TrnAdmin,TrnGuest,TrnDispatch,TrnPlanning</access-roles>
 	     </menu>	     	     
 	     <menu id="OPR003" title="Route" orientation="RIGHT" link="route.do?routetype=R">

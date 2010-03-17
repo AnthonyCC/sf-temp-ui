@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.UPSRouteInfo" table="UPSROUTE_INFO">
+        <id name="routeKey" type="long">
+            <column name="ROUTE_KEY" length="20" />          
+        </id>
+        
+        <property name="routeNumber" type="string">
+            <column name="ROUTE_NUMBER" length="10" />
+        </property>
+        <property name="routeDate" type="timestamp">
+            <column name="ROUTE_DATE"   />
+        </property>
+        <property name="startTime" type="timestamp">
+            <column name="UPS_START_TIME"  />
+        </property>
+        <property name="lastStop" type="timestamp">
+            <column name="LAST_STOP_COMPLETED"   />
+        </property>
+        <property name="endTime" type="timestamp">
+            <column name="UPS_COMPLETE_TIME"   />
+        </property>
+        
+    </class>
+</hibernate-mapping>

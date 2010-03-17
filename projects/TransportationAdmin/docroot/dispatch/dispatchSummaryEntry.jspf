@@ -38,11 +38,29 @@
     
 <form name="properties">
 <table>
+<tr><td><b>Normal View:</b></td></tr>
 <tr><td>Refresh Time:  </td><td><input type=input name="refreshtime" value="<%=TransportationAdminProperties.getDispatchDashboardRefreshTime()%>"></td></tr>
 <tr><td>Pagination Interval:</td><td><input type=input name="pagerefreshtime" value="<%=TransportationAdminProperties.getDispatchDashboardPageRefreshTime()%>"></td></tr>
 <tr><td>Page Size:</td><td><input type=input name="pagesize" value="<%=TransportationAdminProperties.getDispatchDashboardPageSize()%>"></td></tr>
+
+<tr><td><b>Ready View:</b></td></tr>
+<tr><td>Refresh Time:  </td><td><input type=input name="refreshtime1" value="<%=TransportationAdminProperties.getDispatchDashboardReadyViewRefreshTime()%>"></td></tr>
+<tr><td>Pagination Interval:</td><td><input type=input name="pagerefreshtime1" value="<%=TransportationAdminProperties.getDispatchDashboardPageReadyViewRefreshTime()%>"></td></tr>
+<tr><td>Page Size:</td><td><input type=input name="pagesize1" value="<%=TransportationAdminProperties.getDispatchDashboardPageReadyViewSize()%>"></td></tr>
+
+<tr><td><b>Waiting View:</b></td></tr>
+<tr><td>Refresh Time:  </td><td><input type=input name="refreshtime2" value="<%=TransportationAdminProperties.getDispatchDashboardWaitingViewRefreshTime()%>"></td></tr>
+<tr><td>Pagination Interval:</td><td><input type=input name="pagerefreshtime2" value="<%=TransportationAdminProperties.getDispatchDashboardPageWaitingViewRefreshTime()%>"></td></tr>
+<tr><td>Page Size:</td><td><input type=input name="pagesize2" value="<%=TransportationAdminProperties.getDispatchDashboardPageWaitingViewSize()%>"></td></tr>
+
+<tr><td><b>N/R View:</b></td></tr>
+<tr><td>Refresh Time:  </td><td><input type=input name="refreshtime3" value="<%=TransportationAdminProperties.getDispatchDashboardNRViewRefreshTime()%>"></td></tr>
+<tr><td>Pagination Interval:</td><td><input type=input name="pagerefreshtime3" value="<%=TransportationAdminProperties.getDispatchDashboardPageNRViewRefreshTime()%>"></td></tr>
+<tr><td>Page Size:</td><td><input type=input name="pagesize3" value="<%=TransportationAdminProperties.getDispatchDashboardPageNRViewSize()%>"></td></tr>
+
+
 <tr>
-		                  <td colspan="2" align="center"><input type="button" value="Close" onclick="javascript:hidePanel()" /> </td>
+		                  <td colspan="2" align="center"><input type="button" value="Save & Close" onclick="javascript:hidePanel()" /> </td>
 </tr> 
 </table>
 </form>   

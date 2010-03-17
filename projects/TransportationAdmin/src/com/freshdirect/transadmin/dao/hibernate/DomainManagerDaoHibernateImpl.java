@@ -333,4 +333,12 @@ public class DomainManagerDaoHibernateImpl
 		return getDataList("ScheduleEmployee where employeeId ='"+employeeId+"' and day='"+day+"'");
 	}
 
+	public Collection getUPSRouteInfo(String routeDate) {
+		// TODO Auto-generated method stub
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("UPSRouteInfo u WHERE u.routeDate='"+routeDate+"'");		
+		return (Collection) getDataList(strBuf.toString());		
+	}
+	
+
 }

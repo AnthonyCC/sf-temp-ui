@@ -27,7 +27,8 @@
 				<value>com/freshdirect/transadmin/model/TrnCutOff.hbm.xml</value>  
 				<value>com/freshdirect/transadmin/model/TrnRouteNumber.hbm.xml</value>  
 				<value>com/freshdirect/transadmin/model/TrnDeliveryModel.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/Dispatch.hbm.xml</value>  				
+				<value>com/freshdirect/transadmin/model/Dispatch.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/DispatchReason.hbm.xml</value>  	  				
 				<value>com/freshdirect/transadmin/model/DispatchResource.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/Employeerole.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/EmployeeRoleType.hbm.xml</value>  				
@@ -51,6 +52,7 @@
 				<value>com/freshdirect/transadmin/model/ScheduleEmployee.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TimeslotLog.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TimeslotLogDtl.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/UPSRouteInfo.hbn.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

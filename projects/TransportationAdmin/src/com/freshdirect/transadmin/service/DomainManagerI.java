@@ -99,4 +99,6 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Collection getRouteMappingByCutOff(String routeDate, String cutOff);
 	
+	Collection getUPSRouteInfo(String routeDate);
+	
 }

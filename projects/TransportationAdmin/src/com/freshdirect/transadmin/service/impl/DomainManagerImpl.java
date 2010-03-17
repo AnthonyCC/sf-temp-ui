@@ -239,5 +239,10 @@ public class DomainManagerImpl
 	public Collection getRouteMappingByCutOff(String routeDate, String cutOff) {
 		return getDomainManagerDao().getRouteMappingByCutOff(routeDate, cutOff);
 }
+
+	public Collection getUPSRouteInfo(String routeDate) {
+		// TODO Auto-generated method stub
+		return getDomainManagerDao().getUPSRouteInfo(routeDate);
+	}
 	
 }
