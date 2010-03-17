@@ -27,7 +27,7 @@ public class AutocompleteService {
 
     private final static int MAX_AUTOCOMPLETE_HITS     = 20;
 
-    private final static Set<String> skipWordsInAutoCompletion = new HashSet<String>();
+    final static Set<String> skipWordsInAutoCompletion = new HashSet<String>();
     static {
         skipWordsInAutoCompletion.addAll(LuceneSearchService.stopWords);
         skipWordsInAutoCompletion.add("all");
@@ -41,9 +41,10 @@ public class AutocompleteService {
 
     final SortedSet<String>             badSingularForms = new TreeSet<String>();
     
-    public AutocompleteService() {
-
-    }
+    private CounterCreatorI counterCreator = new CounterCreatorImpl();
+    
+    
+    public AutocompleteService() {}
 
     public AutocompleteService(Collection<String> words) {
         prefixSet = initWords(words);
@@ -89,20 +90,10 @@ public class AutocompleteService {
         return result;
     }
 
-    private List<String> filterWords(String[] words) {
-        List<String> result = new ArrayList<String> (words.length);
-        for (int i = 0; i < words.length; i++) {
-            if (!skipWordsInAutoCompletion.contains(words[i])) {
-                result.add(words[i]);
-            }
-        }
-        return result;
-    }
 
     public void setWordList(Collection<String> words) {
         prefixSet = initWords(words);
     }
-    
     
 
     private SortedSet<HitCounter> initWords(Collection<String> words) {
@@ -113,13 +104,13 @@ public class AutocompleteService {
                 fullname = fullname.toLowerCase().replace('&', ' ').replace('"', ' ').replace('.', ' ').replace(':', ' ').replace(',', ' ').replace('-', ' ')
                         .replace('(', ' ').replace(')', ' ').replace(/* NBSP */(char)160, ' ').replace(/* REG TRADEMARK */ (char) 174, ' ');
 
-                createCounters(counters, fullname);
+                counterCreator.createCounters(counters, fullname);
 
                 char[] buf = fullname.toCharArray();
                 String unaccented = ISOLatin1AccentFilter.removeAccents(buf, buf.length);
                 // String.replace returns the same object if no change occured, so == is good for comparison 
                 if (!unaccented.equals(fullname)) {
-                    createCounters(counters, unaccented);
+                    counterCreator.createCounters(counters, unaccented);
                 }
                 
             }
@@ -201,37 +192,9 @@ public class AutocompleteService {
         return word;
     }
     
-    
-
-    private void createCounters(HashMap<String, HitCounter> counters, String fullname) {
-        List<String> strings = filterWords(StringUtils.split(fullname));
-
-        final int len = strings.size();
-        for (int j = 0; j < len; j++) {
-            String word = (String) strings.get(j);
-            HitCounter prefix = accumulate(counters, word, 1, null);
-            if (j + 1 < len) {
-                String word2 = (String) strings.get(j + 1);
-                prefix = accumulate(counters, word + ' ' + word2, 2, prefix);
-                if (j + 2 < len) {
-                    String word3 = (String) strings.get(j + 2);
-                    accumulate(counters, word + ' ' + word2 + ' ' + word3, 3, prefix);
-                }
-            }
-        }
+    public void setCounterCreator(CounterCreatorI cc) {
+    	this.counterCreator = cc;
     }
-
-    private HitCounter accumulate(HashMap<String, HitCounter> counters, String str, int wordCount, HitCounter before) {
-        HitCounter hc = (HitCounter) counters.get(str);
-        if (hc == null) {
-            hc = new HitCounter(str, wordCount, before);
-            counters.put(str, hc);
-        } else {
-            hc.inc();
-        }
-        return hc;
-    }
-
 
     static class HitCounter implements Comparable<HitCounter> {
         String     prefix;

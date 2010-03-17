@@ -14,11 +14,11 @@
 	.yui-ac-highlight {
 		background-color: #E0E3D0;
 	}
-	#terms ul {
+	#brands ul {
 		margin: 0px;
 		padding: 0px;
 	}
-	#terms li {
+	#brands li {
 		list-style-type: none;
 		text-indent: -8px;
 		padding: 2px;
@@ -33,5 +33,5 @@
 <script type="text/javascript" src="/assets/yui/autocomplete/autocomplete-min.js"></script> 
 <script type="text/javascript" src="/assets/javascript/smsearch_autocomplete.js"></script>
 <script type="text/javascript">
-YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory());
+YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands","brandParams"));
 </script>

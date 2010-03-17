@@ -1,12 +1,10 @@
 package com.freshdirect.fdstore.content;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -14,10 +12,15 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.AutocompleteService;
+import com.freshdirect.cms.search.AutoComplete;
 import com.freshdirect.cms.search.BrandNameExtractor;
+import com.freshdirect.cms.search.BrandNameWordList;
+import com.freshdirect.cms.search.CounterCreatorImpl;
 import com.freshdirect.cms.search.LuceneSpellingSuggestionService;
+import com.freshdirect.cms.search.ProductNameWordList;
 import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.cms.search.SearchRelevancyList;
+import com.freshdirect.cms.search.SimpleCounterCreator;
 import com.freshdirect.cms.search.SpellingHit;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -27,9 +30,9 @@ public class ContentSearch {
     
     private static ContentSearch instance = new ContentSearch();
 
-    AutocompleteService autocompletion;
-    Thread autocompleteUpdater;
-    
+    AutoComplete productAutocompletion = new AutoComplete(new ProductNameWordList(), new CounterCreatorImpl());
+    AutoComplete brandAutocompletion = new AutoComplete(new BrandNameWordList(), new SimpleCounterCreator());
+        
 
     boolean disableAutocompleter = false;
     
@@ -85,7 +88,7 @@ public class ContentSearch {
                 BrandNameExtractor brandNameExtractor = new BrandNameExtractor();
 
                 tokens = ContentSearchUtil.tokenizeTerm(normalizedTerm);
-                AutocompleteService autocompleter = initAutocompleter();
+                AutocompleteService autocompleter = productAutocompletion.initAutocompleter("product");
                 StringBuffer luceneTerm;
                 
                 // we need to check tokens length, because search like 'v8' cause empty token array.
@@ -303,95 +306,45 @@ public class ContentSearch {
         return filteredResults;
     }
 
-
-
-    public AutocompleteService createAutocompleteService() {
-        LOGGER.info("createAutocompleteService");
-        Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(FDContentTypes.PRODUCT);
-        LOGGER.info("contentKeysByType loaded :"+contentKeysByType.size());
-        
-        List<String> words = new ArrayList<String>(contentKeysByType.size());
-        
-        ContentFactory contentFactory = ContentFactory.getInstance();
-        for (Iterator<ContentKey> keyIterator = contentKeysByType.iterator();keyIterator.hasNext();) {
-            ContentKey key = keyIterator.next();
-            ContentNodeModel nodeModel = contentFactory.getContentNodeByKey(key);
-            if (nodeModel instanceof ProductModel) {
-                ProductModel pm = (ProductModel) nodeModel;
-                //if (pm.isDisplayableBasedOnCms()) {
-                if (pm.isDisplayable()) {
-                    words.add(pm.getFullName());
-                }
-            }
-        }
-        LOGGER.info("product names extracted:"+words.size());
-        
-        AutocompleteService a = new AutocompleteService(words);
-        a.addAllBadSingular(SearchRelevancyList.getBadPluralFormsFromCms());
-        return a;     
-    }
-
     
     /**
      * Set a custom autocomplete service
      * @param autocompletion
-     */
-    public void setAutocompleteService(AutocompleteService autocompletion) {
-        this.autocompletion = autocompletion;
-    }
-    
+     */    
     @SuppressWarnings("unchecked")
     public List<String> getAutocompletions(String prefix) {
-        initAutocompleter();
-        if (this.autocompletion!=null) {
-            return this.autocompletion.getAutocompletions(prefix);
+        AutocompleteService autocompleter = productAutocompletion.initAutocompleter("product");
+
+        if (autocompleter!=null) {
+            return autocompleter.getAutocompletions(prefix);
         } else {
             return Collections.EMPTY_LIST;
         }
     }
-    
 
     @SuppressWarnings("unchecked")
     public List<String> getAutocompletions(String prefix, AutocompleteService.Predicate predicate) {
-        initAutocompleter();
-        if (this.autocompletion!=null) {
-            return this.autocompletion.getAutocompletions(prefix, predicate);
+        AutocompleteService autocompleter = productAutocompletion.initAutocompleter("product");
+
+        if (autocompleter!=null) {
+            return autocompleter.getAutocompletions(prefix);
         } else {
             return Collections.EMPTY_LIST;
         }
     }
-    
 
-    private AutocompleteService initAutocompleter() {
-        synchronized(this) {
-            if (this.autocompletion == null) {
-                if (autocompleteUpdater == null && disableAutocompleter == false) {
-                    autocompleteUpdater = new Thread(new Runnable() {
-                        public void run() {
-                            //while(true) {
-                                long time = System.currentTimeMillis();
-                                LOGGER.info("autocomplete re-calculation started");
-                                ContentSearch.this.autocompletion = createAutocompleteService();
-                                time = System.currentTimeMillis() - time; 
-                                LOGGER.info("autocomplete re-calculation finished, elapsed time : "+time+" ms");
-                                /*try {
-                                    Thread.sleep(24*60*60*1000);
-                                } catch (InterruptedException e) {
-                                    LOGGER.info("interrupted:"+e.getMessage(), e);
-                                }*/
-                            //}
-                        }
-                    },"autocompleteUpdater");
-                    autocompleteUpdater.setDaemon(true);
-                    autocompleteUpdater.start();
-                }
-                return null;
-            } else {
-                return autocompletion;
-            }
+    @SuppressWarnings("unchecked")
+    public List<String> getBrandAutocompletions(String prefix) {
+        AutocompleteService autocompleter = brandAutocompletion.initAutocompleter("brand");
+
+        if (autocompleter!=null) {
+            return autocompleter.getAutocompletions(prefix);
+        } else {
+            return Collections.EMPTY_LIST;
         }
     }
-    
+
+        
     /**
      * Return a Map<ContentKey,Integer> which contains the predefined scores for the given search term. The map can be null.
      * 
@@ -412,10 +365,11 @@ public class ContentSearch {
     public void refreshRelevencyScores() {
         synchronized(this) {
             this.searchRelevancyMap = SearchRelevancyList.createFromCms();
-            initAutocompleter();
-            if (autocompletion != null) {
-                autocompletion.clearBadSingular();
-                autocompletion.addAllBadSingular(SearchRelevancyList.getBadPluralFormsFromCms());
+            AutocompleteService autocompleter = productAutocompletion.initAutocompleter("product");
+
+            if (autocompleter != null) {
+            	autocompleter.clearBadSingular();
+            	autocompleter.addAllBadSingular(SearchRelevancyList.getBadPluralFormsFromCms());
             }
         }
     }
