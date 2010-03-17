@@ -10,12 +10,14 @@ package com.freshdirect.fdstore.ejb;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBObject;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
+import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -97,6 +99,11 @@ public interface FDFactorySB extends EJBObject {
 	public ErpZoneMasterInfo getZoneInfo(String zoneId) throws RemoteException, FDResourceException;
 	
 	public Collection getZoneInfos(String zoneIds[]) throws RemoteException, FDResourceException;
+
+	public Map<String, Date> getNewSkusTest() throws RemoteException, FDResourceException;
+
+	public Map<String, Date> getBackInStockSkusTest() throws RemoteException, FDResourceException;
 	
+	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException, FDResourceException; 
 }
 
