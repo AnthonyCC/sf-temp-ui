@@ -64,6 +64,15 @@
         <property name="keysReady" type="yes_no">
             <column name="KEYS_READY" length="1" />
         </property>
+         <property name="isOverride" type="yes_no">
+            <column name="ISOVERRIDE" length="1" />
+        </property>
+        <many-to-one name="overrideReason" class="com.freshdirect.transadmin.model.DispatchReason" fetch="select" lazy="false">
+            <column name="OVERRIDE_REASON_ID" length="5" />
+        </many-to-one>   
+         <property name="overrideUser" type="string">
+            <column name="OVERRIDE_USER" length="20" />
+        </property> 
         <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
             <column name="REGION" length="16" not-null="true" />
         </many-to-one>      
@@ -73,5 +82,6 @@
             </key>
             <one-to-many class="com.freshdirect.transadmin.model.DispatchResource" />
         </set>
+        
     </class>
 </hibernate-mapping>

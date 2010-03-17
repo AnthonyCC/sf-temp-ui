@@ -93,6 +93,7 @@ public class DispatchFormController extends AbstractFormController {
 
 		refData.put("zones", zones);
 		refData.put("regions", domainManagerService.getRegions());
+		refData.put("reasons", dispatchManagerService.getDispatchReasons(true));
 		return refData;
 	}
 
@@ -173,6 +174,7 @@ public class DispatchFormController extends AbstractFormController {
 			errorList.add(objExp.getMessage());
 
 		} catch (Exception objExp) {
+		    objExp.printStackTrace();
 			errorList = new ArrayList();
 			errorList.add(this.getMessage("sys.error.1001", new Object[]{this.getDomainObjectName()}));
 		}
@@ -197,7 +199,9 @@ public class DispatchFormController extends AbstractFormController {
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {
 			zone=domainManagerService.getZone(model.getZoneCode());
 		}
-
+		String overrideReasonCode=request.getParameter("overrideReasonCode");
+		if(overrideReasonCode==null)model.setOverrideReasonCode(null);
+		
 		model=(DispatchCommand)DispatchPlanUtil.reconstructWebPlanInfo(model,zone,employeeManagerService);
 
 		try{

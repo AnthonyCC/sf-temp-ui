@@ -45,7 +45,7 @@ public class DispatchValidator extends AbstractValidator {
 		//validateIntegerMinMax("sequence",new Integer(model.getSequence()),1,99,errors);
 		//ValidationUtils.rejectIfEmpty(errors, "truck", "app.error.112", new Object[]{"Truck Number"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
-		if( TransportationAdminProperties.isDispatchValidation())
+		if(!model.getIsOverride())
 		{
 			validateResources(model.getDriverReq(),model.getDriverMax(),"drivers",model.getDrivers(),errors);
 			validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);

@@ -192,17 +192,20 @@
             
                   </td>
                    <td>
-                     <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('dispDate','zone','region','dispatch.do')" />
+                     <input type = "button" value="View" onclick="javascript:doCompositeLink('dispDate','zone','region','dispatch.do')" />
                   </td>  
                   <td>
-                     <input type = "button" value="&nbsp;Refresh Route&nbsp;" onclick="javascript:refreshRoute()" />
+                     <input type = "button" value="Refresh Route" onclick="javascript:refreshRoute()" />
                   </td>
                   <td>
-                     <input type = "button" value="&nbsp;Unassigned Routes&nbsp;" onclick="javascript:doUnassignedRoutes('dispDate')" />
+                     <input type = "button" value="Unassigned Routes" onclick="javascript:doUnassignedRoutes('dispDate')" />
                   </td> 
                   <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%> 
                   <td>
-                     <input type = "button" value="&nbsp;Activity Log&nbsp;" onclick="javascript:doActivityLog('dispDate')" />
+                     <input type = "button" value="Activity Log" onclick="javascript:doActivityLog('dispDate')" />
+                  </td>
+                  <td>
+                     <input type = "button" value="Reason Code" onclick="javascript:doReasonCode()" />
                   </td>
                   <%} %>
                   <td>
@@ -227,11 +230,18 @@
         function doUnassignedRoutes(compId1) {
         	 var param1 = document.getElementById(compId1).value;
         	javascript:pop('unassignedroute.do?routeDate='+param1, 400,600);
-        }
+        }        
 		function doActivityLog(compId1) {
         	 var param1 = document.getElementById(compId1).value;
         	 showForm(param1);
         }
+		function doReasonCode() 
+		{
+			document.getElementById("result").innerHTML="";
+	       	var panel=init("panel-2","Override Reason Code");
+	       	panel.render(document.body);
+	        panel.show();
+       }
       </script>      
       </div>
     
@@ -264,6 +274,7 @@
               <ec:column property="runners"  cell="dispatchResCell" title="Runner"  filterable="true" alias="runners"/>
                <ec:column alias="trnTruckGpsNumber" property="extras" width="10"  title="Extras"/>
               <ec:column  alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time"  cell="date" format="hh:mm aaa"/>
+              <ec:column property="override"  title="Override Dispatch"/>
               
             </ec:row>
           </ec:table>
@@ -272,6 +283,7 @@
       addMultiRowHandlersColumnFilter('ec_table', 'rowMouseOver', 'editdispatch.do','id',0, 4,'dispDate');
     </script>
     <%@ include file='i_activityLog.jspf'%> 
+     <%@ include file='i_ReasonCode.jspf'%> 
     <form name="newSubmit" action="dispatch.do" method="post">
     <input type=hidden name=id><input type=hidden name=dispDate>
     </form>

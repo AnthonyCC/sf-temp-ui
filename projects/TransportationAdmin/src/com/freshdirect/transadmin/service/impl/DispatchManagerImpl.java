@@ -525,5 +525,9 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	{
 		return getDispatchManagerDao().getUserPref(userId);
 	}
+
+	public Collection getDispatchReasons(boolean active) {
+		return getDispatchManagerDao().getDispatchReasons(active);
+	}
 	
 }

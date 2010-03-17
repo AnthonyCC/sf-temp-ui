@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 5, 2008 2:34:34 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.DispatchReason" table="DISPATCH_REASON_CODE">
+       <id name="code" type="string">
+            <column name="CODE" length="7" />
+             <generator class="sequence">
+    			<param name="sequence">DISPATCHREASONSEQ</param>
+			</generator>
+        </id>        
+        <property name="reason" type="string">
+            <column name="REASON" length="50" not-null="true" />
+        </property>
+        <property name="active" type="yes_no">
+            <column name="ACTIVE" length="1" />
+        </property>   
+    </class>
+</hibernate-mapping>

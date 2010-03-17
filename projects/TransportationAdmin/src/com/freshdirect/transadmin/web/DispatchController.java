@@ -67,6 +67,7 @@ import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
+import com.freshdirect.transadmin.util.UPSDataCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.WebDispatchStatistics;
@@ -345,7 +346,7 @@ public class DispatchController extends AbstractMultiActionController {
 			mav.getModel().put("dispDate", dispDate);
 		} else {
 			//By default get the today's dispatches.
-			Collection c=getDispatchInfos(TransStringUtil.getCurrentServerDate(), zone, region, false,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
+			Collection c=getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), zone, region, false,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
 			DispatchPlanUtil.setDispatchStatus(c,false);
 			mav.getModel().put("dispatchInfos",c);
 			mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
@@ -358,7 +359,7 @@ public class DispatchController extends AbstractMultiActionController {
 	public ModelAndView dispatchSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
 		ModelAndView mav = new ModelAndView("dispatchSummaryView");
-		Collection c=getDispatchInfos(TransStringUtil.getCurrentServerDate(), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
+		Collection c=getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
 		//By default get the today's dispatches.
 		DispatchPlanUtil.setDispatchStatus(c,false);
 		mav.getModel().put("dispatchInfos",c);
@@ -371,7 +372,7 @@ public class DispatchController extends AbstractMultiActionController {
 	{
 		
 		try {
-			Collection c1=getDispatchInfos(TransStringUtil.getCurrentServerDate(), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
+			Collection c1=getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
 			Collection c2=this.getDispatchManagerService().getUnassignedActiveEmployees();
 			String date=TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate());
 			Collection c3=dispatchManagerService.getPlan(date, null);
@@ -389,6 +390,57 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 		return null;
 	}
+	
+	public ModelAndView dispatchDashboardViewHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		int mode=0;
+		String view="dispatchDashboardNewView";
+		try {
+			mode=Integer.parseInt(request.getParameter("mode"));
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(mode==3) view="dispatchDashboardNewNRView";
+			
+		return processDashboardViewRequest(request, response, view,mode);
+	}
+	private ModelAndView processDashboardViewRequest(HttpServletRequest request, HttpServletResponse response, String view,int mode) {
+		
+		try {
+			String dispDate = request.getParameter("dispDate");			
+			if(TransStringUtil.isEmpty(dispDate)) {
+				dispDate=TransStringUtil.getDispatchCurrentDate();
+			}
+			try {
+				request.setAttribute("lastTime", TransStringUtil.getServerTime(new Date()));
+			} catch (ParseException e1) {}
+			//By default get the today's dispatches.
+			Collection c=getDispatchInfos(getServerDate(dispDate), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
+			if(mode==3)
+			DispatchPlanUtil.setDispatchStatus(c,false);
+			else DispatchPlanUtil.setDispatchStatus(c,true);
+				
+			Collection upsRouteInfos=UPSDataCacheManager.getInstance().getData(domainManagerService);
+			if(upsRouteInfos!=null&&upsRouteInfos.size()>0)
+			{
+				Iterator iterator=c.iterator();			
+				while(iterator.hasNext())	
+				{
+					DispatchCommand command = (DispatchCommand)iterator.next();
+					command.setUPSRouteInfo(upsRouteInfos);
+				}
+			}
+			ModelAndView mav=new ModelAndView(view);
+			mav.getModel().put("dispatchInfos",DispatchPlanUtil.getsortedDispatchView(c,mode));
+			mav.getModel().put("dispDate", dispDate);
+			return mav;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new ModelAndView("dispatchDashboardView");
+	}
 	public ModelAndView dispatchDashboardHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
 		return processDashboardRequest(request, response, "dispatchDashboardViewFull");
@@ -404,7 +456,7 @@ public class DispatchController extends AbstractMultiActionController {
 		try {
 			String dispDate = request.getParameter("dispDate");			
 			if(TransStringUtil.isEmpty(dispDate)) {
-				dispDate=TransStringUtil.getCurrentDate();
+				dispDate=TransStringUtil.getDispatchCurrentDate();
 			}
 			try {
 				request.setAttribute("lastTime", TransStringUtil.getServerTime(new Date()));

@@ -24,6 +24,7 @@ import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.datamanager.report.ICommunityReport;
 import com.freshdirect.transadmin.datamanager.report.XlsCommunityReport;
+import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.UserPref;
@@ -317,6 +318,43 @@ public class DispatchProviderController extends JsonRpcController implements
     		result.add(z);
     	}
     	return result;
+	}
+	public int addReasonCode(String reason) 
+	{
+		try {
+			DispatchReason r=new DispatchReason();
+			r.setReason(reason);
+			dispatchManagerService.saveEntity(r);
+			return 0;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	public Collection getReasonCode(boolean active) 
+	{
+		try {
+			return dispatchManagerService.getDispatchReasons(active);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public int setReasonCode(String code,String reason, boolean enable) {
+		try {
+			DispatchReason r=new DispatchReason();
+			r.setCode(code);
+			r.setReason(reason);
+			r.setActive(enable);
+			dispatchManagerService.saveEntity(r);
+			return 0;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
 	}
 	
 }

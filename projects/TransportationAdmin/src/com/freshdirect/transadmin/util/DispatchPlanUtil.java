@@ -15,9 +15,11 @@ import java.util.Set;
 
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.transadmin.model.Dispatch;
+import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Region;
+import com.freshdirect.transadmin.model.UPSRouteInfo;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.service.DomainManagerI;
@@ -175,7 +177,9 @@ public class DispatchPlanUtil {
 		
 		if(htInData!=null)command.setHtinDate((Date)htInData.get(dispatch.getRoute()));
 		if(htOutData!=null)command.setHtoutDate((Date)htOutData.get(dispatch.getRoute()));
-		
+		if(dispatch.getIsOverride()!=null)command.setIsOverride(dispatch.getIsOverride());
+		if(dispatch.getOverrideReason()!=null)command.setOverrideReasonCode(dispatch.getOverrideReason().getCode());
+		command.setOverrideUser(dispatch.getOverrideUser());
 		return command;
 	}
 
@@ -208,7 +212,8 @@ public class DispatchPlanUtil {
 		plan.setIsBullpen(planInfo.getIsBullpen());
 		plan.setSupervisorId(planInfo.getSupervisorCode());
 		plan.setPlanResources(planInfo.getResources());
-		plan.setUserId(planInfo.getUserId());		
+		plan.setUserId(planInfo.getUserId());	
+		plan.setOpen(planInfo.getOpen());
 		return plan;
 
 	}
@@ -259,6 +264,23 @@ public class DispatchPlanUtil {
 		dispatch.setEzpassNumber(command.getEzpassNumber());	
 		dispatch.setPhonesAssigned(new Boolean(command.isPhoneAssigned()));
 		dispatch.setKeysReady(new Boolean(command.isKeysReady()));
+		dispatch.setIsOverride(command.getIsOverride());
+		if(command.getOverrideReasonCode()!=null&&command.getOverrideReasonCode().length()>0)
+		{
+			DispatchReason reason=new DispatchReason();
+			reason.setCode(command.getOverrideReasonCode());
+			dispatch.setOverrideReason(reason);
+		}
+		dispatch.setOverrideUser(command.getOverrideUser());
+		if((dispatch.getOverrideUser()==null||dispatch.getOverrideUser().length()==0)&&command.getIsOverride())
+		{
+			dispatch.setOverrideUser(dispatch.getUserId());
+		}
+		if(command.getIsOverride()==false)
+		{
+			dispatch.setOverrideUser(null);
+			dispatch.setOverrideReason(null);
+		}
 		return dispatch;
 
 	}
@@ -446,7 +468,100 @@ public class DispatchPlanUtil {
 		
 		return result;
 	}
-
+	public static Collection getsortedDispatchView(Collection unsorted,int mode)
+	{
+		//1 ---ready view
+		//2 ---waiting view
+		//3 ---NR view		
+		if(unsorted!=null)
+		{
+			if(mode==1)
+			{
+				List ready=new ArrayList();
+				Iterator unsortedIterator=unsorted.iterator();
+				int dispatchCategory = 0;
+				while(unsortedIterator.hasNext())	{
+					DispatchCommand command = (DispatchCommand)unsortedIterator.next();
+					dispatchCategory = categorizeDispatch(command);
+					if(dispatchCategory == -1&&(command.getStartTimeEx()!=null&&System.currentTimeMillis()>command.getStartTimeEx().getTime())
+						&&command.getDispatchStatus()==EnumStatus.EmpReady	) 
+					{
+						ready.add(command);
+					}									
+				}
+				DispatchTimeComparator compare=new DispatchTimeComparator();				
+				compare.setStatus(true);
+				Collections.sort(ready, compare);				
+				int READY_MAX=TransportationAdminProperties.getMaxReadyView();
+				int n=ready.size();if(n>READY_MAX) n=READY_MAX;
+				List readyTotal=new ArrayList();
+				for(int i=0;i<n;i++ )
+				{
+					DispatchCommand temp=(DispatchCommand)((List)ready).get(i);
+					if(temp.getDispatchStatus()==EnumStatus.EmpReady) temp.setDispatchStatus(EnumStatus.Ready);
+					readyTotal.add(temp);
+				}
+				Collections.sort(readyTotal,new DispatchReadyViewComparator());
+				return readyTotal;
+			}
+			
+			if(mode==2)
+			{
+				List total=new ArrayList();
+				Iterator unsortedIterator=unsorted.iterator();
+				int dispatchCategory = 0;
+				while(unsortedIterator.hasNext())	{
+					DispatchCommand command = (DispatchCommand)unsortedIterator.next();
+					dispatchCategory = categorizeDispatch(command);
+					if(dispatchCategory == -1)
+					{
+						total.add(command);
+					}									
+				}
+				DispatchTimeComparator compare=new DispatchTimeComparator();				
+				compare.setStatus(true);
+				Collections.sort(total, compare);				
+				int READY_MAX=TransportationAdminProperties.getMaxReadyView();
+				int n=total.size();if(n>READY_MAX) n=READY_MAX;				
+				Iterator totalItr=total.iterator();
+				int i=0;
+				while(totalItr.hasNext())
+				{				
+					if(i==n-1) break;
+					i++;
+					DispatchCommand temp=(DispatchCommand)totalItr.next();
+					if((temp.getStartTimeEx()!=null&&System.currentTimeMillis()>temp.getStartTimeEx().getTime())
+						&&temp.getDispatchStatus()==EnumStatus.EmpReady	)
+					{
+						totalItr.remove();
+					}
+				}
+				Collections.sort(total,new DispatchWaitingViewComparator());
+				return total;
+			}
+			
+			if(mode==3)
+			{
+				List dispatched=new ArrayList();
+				Iterator unsortedIterator=unsorted.iterator();
+				int dispatchCategory = 0;
+				while(unsortedIterator.hasNext())	{
+					DispatchCommand command = (DispatchCommand)unsortedIterator.next();
+					dispatchCategory = categorizeDispatch(command);
+					if(dispatchCategory ==1&&!command.isCheckedIn())
+					{
+						dispatched.add(command);
+					}									
+				}
+				DispatchTimeComparator compare=new DispatchTimeComparator();				
+				Collections.sort(dispatched, compare);					
+				return dispatched;
+			}
+			
+		}
+		return null;
+	}
+	
 	public static Collection getsortedDispatch(Collection unsorted)
 	{
 		Collection total=new ArrayList();
@@ -554,7 +669,75 @@ public class DispatchPlanUtil {
 
 	}
 	
+	private static class DispatchReadyViewComparator implements Comparator{       
+
+
+		public int compare(Object o1, Object o2) {
+
+			if(o1 instanceof DispatchCommand && o2 instanceof DispatchCommand)
+			{
+				DispatchCommand p1=(DispatchCommand)o1;
+				DispatchCommand p2=(DispatchCommand)o2;
+
+				try {
+					
+					Date d1=TransStringUtil.getServerTime(p1.getStartTime());
+					Date d2=TransStringUtil.getServerTime(p2.getStartTime());
+					int result= d1.compareTo(d2);
+					if(result==0)
+					{
+						UPSRouteInfo u1=p1.getUpsRouteInfo();
+						UPSRouteInfo u2=p2.getUpsRouteInfo();
+						if(u1!=null&&u2!=null&&u1.getStartTime()!=null&&u2.getStartTime()!=null)
+						{
+							result= u1.getStartTime().compareTo(u2.getStartTime());
+						}
+					}
+					return result;
+						
+				} catch (Exception e) {
+					
+				}
+				
+			}
+			return 0;
+		}
+
+	}	
 	
+	private static class DispatchWaitingViewComparator implements Comparator{       
+
+
+		public int compare(Object o1, Object o2) {
+
+			if(o1 instanceof DispatchCommand && o2 instanceof DispatchCommand)
+			{
+				DispatchCommand p1=(DispatchCommand)o1;
+				DispatchCommand p2=(DispatchCommand)o2;
+
+				try {						
+						UPSRouteInfo u1=p1.getUpsRouteInfo();
+						UPSRouteInfo u2=p2.getUpsRouteInfo();
+						if(u1!=null&&u2!=null&&u1.getStartTime()!=null&&u2.getStartTime()!=null)
+						{
+							int result= u1.getStartTime().compareTo(u2.getStartTime());
+							if(result==0)
+							{
+								int r1=Integer.parseInt(p1.getRoute());
+								int r2=Integer.parseInt(p2.getRoute());
+								result=r1-r2;
+							}
+							return result;
+						}						
+				} catch (Exception e) {
+					
+				}
+				
+			}
+			return 0;
+		}
+
+	}		
 	public static void setDispatchStatus(Collection c,boolean remove) 
 	{
 		if(remove)
@@ -644,7 +827,7 @@ public class DispatchPlanUtil {
 				}
 				
 				//do not do any status if no employees assigned
-				if("Y".equalsIgnoreCase(command.getOpen())) 
+				if(!command.getIsOverride()&&"Y".equalsIgnoreCase(command.getOpen())) 
 				{
 					//command.setDispatchStatus(EnumStatus.NoStatus);
 					return ;

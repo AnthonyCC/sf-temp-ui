@@ -11,4 +11,7 @@ public interface IDispatchProvider {
 	public int updateUserPref(String key,String value);
 	public String getUserPref(String key);
 	public Collection getActiveZones(String date);
+	public Collection getReasonCode(boolean active);
+	public int addReasonCode(String reason);
+	public int setReasonCode(String code,String reason, boolean enable);
 }

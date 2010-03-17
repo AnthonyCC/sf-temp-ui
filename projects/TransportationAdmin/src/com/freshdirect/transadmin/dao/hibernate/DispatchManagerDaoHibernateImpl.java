@@ -216,4 +216,12 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
+
+	public Collection getDispatchReasons(boolean active) 
+	{
+		if(active)
+			return getDataList("DispatchReason ds where ds.active is null or ds.active='Y' order by ds.code");
+		else 
+			return getDataList("DispatchReason ds where ds.active='N' order by ds.code");
+	}
 }

@@ -73,4 +73,5 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	public Collection getUserPref(String userId);
 	
+	public Collection getDispatchReasons(boolean active);
 }

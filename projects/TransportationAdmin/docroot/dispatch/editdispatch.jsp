@@ -114,7 +114,19 @@
       	}     	      	
       	dispatchForm.submit();
       }
-  
+
+      function checkOverride(chxbox)
+      {    	 
+          if(chxbox.checked)
+          {
+        	  dispatchForm.overrideReasonCode.disabled=false;
+          }
+          else
+          {
+        	  dispatchForm.overrideReasonCode.disabled=true;
+          }
+      }
+      
       </script>
       <style>
         .time_picker_div {padding:5px;
@@ -132,7 +144,7 @@
       <input type=hidden name="routeNo" value="" />
       <input type=hidden name="zoneId" value="" />
       <input type=hidden name="dispDate" value="<%=dispDate %>" />
-
+	  <form:hidden path="overrideUser" />
     
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
 		<tr>
@@ -212,7 +224,33 @@
 						<td colspan="2"> 
 							<form:checkbox path="isBullpen" value="true" onclick="bullpen(this)"/>
 						</td>
-					</tr>              
+					</tr>
+					<tr>
+						<td>Override Resource Check</td>
+						<td colspan="2"> 
+							<form:checkbox path="isOverride" onclick="checkOverride(this)"/>
+						</td>
+					</tr>    
+					<tr>
+						<td>Override Reason:</td>						
+						<td>
+						<c:choose>                    
+								<c:when test='${dispatchForm.isOverride == "true"}'> 
+									<form:select path="overrideReasonCode" >							
+										<form:options items="${reasons}" itemLabel="reason" itemValue="code" />
+									</form:select>
+								</c:when>
+								<c:otherwise> 
+									<form:select path="overrideReasonCode" disabled="true">							
+										<form:options items="${reasons}" itemLabel="reason" itemValue="code" />
+									</form:select>
+								</c:otherwise> 
+							</c:choose>							
+						</td>
+                        <td>
+                          &nbsp;<form:errors path="overrideReasonCode" />
+                        </td>  
+					</tr>                   
 					<tr>
 						<td>Region</td>
 						<td colspan="2">       

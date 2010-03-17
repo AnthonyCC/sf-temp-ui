@@ -34,6 +34,10 @@ public class Dispatch implements java.io.Serializable{
 	private Boolean keysReady;
 	private Date checkedInTime;
 	
+	private Boolean isOverride;
+	private DispatchReason overrideReason;
+	private String overrideUser;
+	
 	public Dispatch() {
 	}
 
@@ -249,6 +253,30 @@ public class Dispatch implements java.io.Serializable{
 
 	public void setCheckedInTime(Date checkedInTime) {
 		this.checkedInTime = checkedInTime;
+	}
+
+	public Boolean getIsOverride() {
+		return isOverride;
+	}
+
+	public void setIsOverride(Boolean isOverride) {
+		this.isOverride = isOverride;
+	}
+
+	public DispatchReason getOverrideReason() {
+		return overrideReason;
+	}
+
+	public void setOverrideReason(DispatchReason overrideReason) {
+		this.overrideReason = overrideReason;
+	}
+
+	public String getOverrideUser() {
+		return overrideUser;
+	}
+
+	public void setOverrideUser(String overrideUser) {
+		this.overrideUser = overrideUser;
 	}
 
 }

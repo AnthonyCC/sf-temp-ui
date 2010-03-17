@@ -61,9 +61,21 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 
 	private List termintedEmployees = null;
 	
+	private boolean isOverride;
+	private String overrideReasonCode;
+	private String overrideUser;
+	
 	public String getOpen()
 	{		
 		if(getResourceSize(drivers)<driverReq||getResourceSize(helpers)<helperReq||getResourceSize(runners)<runnerReq)
+		{
+			return "Y";
+		}
+		return null;
+	}
+	public String getOverride()
+	{		
+		if(getIsOverride())
 		{
 			return "Y";
 		}
@@ -77,7 +89,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		for(int i=0,n=resources.size();i<n;i++)
 		{
 			EmployeeInfo e=(EmployeeInfo)resources.get(i);
-			if(e!=null&&e.getEmployeeId()!=null)result++;
+			if(e!=null&&e.getEmployeeId()!=null&&e.getEmployeeId().length()>0)result++;
 		}
 		return result;
 	}
@@ -699,5 +711,29 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 
 	public void setMaxTime(String maxTime) {
 		this.maxTime = maxTime;
+	}
+
+	public boolean getIsOverride() {
+		return isOverride;
+	}
+
+	public void setIsOverride(boolean isOverride) {
+		this.isOverride = isOverride;
+	}
+
+	public String getOverrideReasonCode() {
+		return overrideReasonCode;
+	}
+
+	public void setOverrideReasonCode(String overrideReasonCode) {
+		this.overrideReasonCode = overrideReasonCode;
+	}
+
+	public String getOverrideUser() {
+		return overrideUser;
+	}
+
+	public void setOverrideUser(String overrideUser) {
+		this.overrideUser = overrideUser;
 	}
 }

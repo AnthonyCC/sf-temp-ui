@@ -1,0 +1,68 @@
+<script>                                
+function addReason()
+{
+	if(document.getElementById("addReason").value.length>0)
+	{
+	 var reason=document.getElementById("addReason").value;
+	 var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+     var result= jsonrpcClient.AsyncDispatchProvider.addReasonCode(reason);
+     if(result==0){ document.getElementById("result").innerHTML="Reason Code Successfully Added"; loadReasons();}
+     else document.getElementById("result").innerHTML="Operation failed";
+    
+	}
+}
+function addreasonData(id,enable)
+{
+	 document.getElementById(id).length = 0;
+	 var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+     var results= jsonrpcClient.AsyncDispatchProvider.getReasonCode(enable);
+         
+	 for(var i=0;i<results.list.length;i++)
+	  {		 
+		  	var optn = document.createElement("OPTION");
+		  	optn.text = results.list[i].reason;
+         	optn.value = results.list[i].code;
+         	document.getElementById(id).options.add(optn);         	    
+     }
+	
+}
+function enableReasons(id,enable)
+{
+	var value = document.getElementById(id).options[document.getElementById(id).selectedIndex].value;
+	var text = document.getElementById(id).options[document.getElementById(id).selectedIndex].text;
+	var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+    var result= jsonrpcClient.AsyncDispatchProvider.setReasonCode(value,text,enable);  
+    if(result==0){ document.getElementById("result").innerHTML="Reason Code Successfully Updated"; loadReasons();}
+    else document.getElementById("result").innerHTML="Operation failed";
+   
+}
+function loadReasons()
+{
+addreasonData("enable",false);
+addreasonData("disable",true);
+}
+</script>
+
+<div id="reasoncode" style="display: none;">
+<div id="panel-2">
+      <div class="bd">
+      <span id="result" style="color:red"></span><br>
+           <div id="panel-2-bg" style="background-color:#D7C8FF;" >
+             <table style="font-size:9pt;"> 
+             <tr>
+             <td>Add Override Reason:<input type="text" id="addReason" maxlength="50"></input></td><td><input type="button" value="Add Reason" onclick="addReason()"/></td>
+             </tr>
+             <tr>
+             <td>Enable Override Reason:<select id="enable"></select></td><td><input type="button" value="Enable" onclick="enableReasons('enable',true)"/></td>
+             </tr>
+             <tr>
+             <td>Disable Override Reason:<select id="disable"></select></td><td><input type="button" value="Disable" onclick="enableReasons('disable',false)"/></td>
+             </tr>
+             </table>
+           </div> 
+      </div>    
+    </div>
+</div>
+<script >
+loadReasons();
+</script>
