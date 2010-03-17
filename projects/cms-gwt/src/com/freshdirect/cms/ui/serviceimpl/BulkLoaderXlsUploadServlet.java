@@ -79,23 +79,26 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 
 	private static MediaServiceI mediaService;
 
-	@Override
-	public void init() throws ServletException {
-		super.init();
-
-		contentTypeNames = new HashSet<String>();
-
-		Set<ContentType> contentTypes = CmsManager.getInstance().getTypeService().getContentTypes();
-		for (ContentType type : contentTypes) {
-			if (type != null) {
-				contentTypeNames.add(type.getName());
+	private static synchronized void initMediaService() {
+		if (mediaService == null) {
+			try {
+				mediaService = (MediaServiceI) FDRegistry.getInstance().getService(MediaServiceI.class);
+			} catch (RuntimeException e) {
+				LOGGER.warn("Failed to retrieve media service -- CMS instance not in DB mode", e);
 			}
 		}
+	}
 
-		try {
-			mediaService = (MediaServiceI) FDRegistry.getInstance().getService(MediaServiceI.class);
-		} catch (RuntimeException e) {
-			LOGGER.warn("Failed to retrieve media service -- CMS instance not in DB mode", e);
+	private static synchronized void initContentTypeNames() {
+		if (contentTypeNames == null) {
+			contentTypeNames = new HashSet<String>();
+
+			Set<ContentType> contentTypes = CmsManager.getInstance().getTypeService().getContentTypes();
+			for (ContentType type : contentTypes) {
+				if (type != null) {
+					contentTypeNames.add(type.getName());
+				}
+			}
 		}
 	}
 
@@ -114,6 +117,9 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 			try {
 				Map<Integer, GwtBulkLoadRow> rows = new LinkedHashMap<Integer, GwtBulkLoadRow>();
 
+				initContentTypeNames();
+				initMediaService();
+				
 				POIFSFileSystem fs = new POIFSFileSystem(file.getInputStream());
 				HSSFWorkbook workbook = new HSSFWorkbook(fs);
 				HSSFFormulaEvaluator evaluator = new HSSFFormulaEvaluator(workbook);
@@ -922,6 +928,7 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 		if (stringValue.charAt(0) == '/') {
 			if (mediaService == null) {
 				status.setStateWithMessage(ERROR_CELL, "media service unavailable");
+				return null;
 			}
 			try {
 				ContentNodeI node = mediaService.getContentNode(stringValue);
