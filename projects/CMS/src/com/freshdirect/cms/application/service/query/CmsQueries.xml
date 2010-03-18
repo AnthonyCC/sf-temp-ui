@@ -105,6 +105,38 @@ cn.contenttype_id='Product' and a.def_name = 'INVISIBLE' and a.value='true' and 
 ]]>
 						</script>
 					</CmsReport>
+					<CmsReport id="circularReferences">
+						<name>Circular References</name>
+						<description>Shows the reference cycles created with VIRTUAL_GROUP references and sub categories</description>
+						<script>
+<![CDATA[						
+select parent_contentnode_id as parent_key$, def_name, child_contentnode_id as child_key$ from (
+select connect_by_iscycle cyc,level,r.parent_contentnode_id, r.def_name, r.child_contentnode_id 
+from cms.relationship r
+start with r.parent_contentnode_id like 'Category:%'
+connect by nocycle prior r.child_contentnode_id = r.parent_contentnode_id and
+(r.def_name = 'categories' or r.def_name = 'subcategories' or r.def_name = 'VIRTUAL_GROUP') ) where cyc <> 0 
+group by 
+parent_contentnode_id, def_name, child_contentnode_id						
+]]>
+						</script>
+					
+					</CmsReport>
+					<CmsReport id="multipleReferences">
+						<name>Multiple Virtual References</name>
+						<description>List categories which VIRTUAL GROUP points to a category which already has a VIRTUAL GROUP</description>
+						<script>
+<![CDATA[
+select r1.parent_contentnode_id as parent_key$, r1.child_contentnode_id as child_key$, r2.child_contentnode_id as grandchild_key$ from cms.relationship r1, cms.relationship r2 
+where 
+ r1.def_name = 'VIRTUAL_GROUP' and
+ r2.def_name = 'VIRTUAL_GROUP' and
+ r1.child_contentnode_id = r2.parent_contentnode_id
+]]>					
+						</script>		
+					</CmsReport>
+					
+					
 					
 					<CmsReport id="hierarchyReport">
 						<name>Hierarchy Report</name>

@@ -325,75 +325,79 @@ public class CategoryModel extends ProductContainer {
             return new ArrayList<CategoryModel>(virtualGroups);
 	}
 
-	public List getProducts() {
-		List prodList = getPrivateProducts();
+    public List getProducts() {
+        List<ContentNodeModel> prodList = getPrivateProducts();
 
-		if (categoryAlias == null) {
-			List l = getVirtualGroupRefs();
-			if (l != null) {
-				this.categoryAlias = new CategoryAlias(l, getFilterList());
-			}
-		}
+        if (categoryAlias == null) {
+            List<CategoryModel> l = getVirtualGroupRefs();
+            if (l != null) {
+                this.categoryAlias = new CategoryAlias(l, getFilterList());
+            }
+        }
 
-		if (categoryAlias != null) {
-			try {
-				Collection aliasProds = this.categoryAlias.processCategoryAlias();
-				if (aliasProds != null) { // if we had an error..then we get null, cause empty list is valid
-					for (Iterator pItr = aliasProds.iterator(); pItr.hasNext();) {
-					        ContentNodeModelImpl newProd = (ContentNodeModelImpl) ((ContentNodeModelImpl) pItr.next()).clone();
-						newProd.setParentNode(this);
-						newProd.setPriority(prodList.size());
-						if (!prodList.contains(newProd)) { // don't put a duplicate product in there
-							prodList.add(newProd);
-//							LOGGER.debug(" ##### added aliased product: " + newProd.getContentName());
-						} else {
-//							LOGGER.debug(" #### "
-//								+ newProd.getContentName()
-//								+ " already in list, not adding product: "
-//								+ newProd.getContentName());
-						}
-					}
-				}
-			} catch (Exception ex) {
-				LOGGER.warn("exception during category aliasing", ex);
-			}
-		}
+        if (categoryAlias != null) {
+            try {
+                Collection<ProductModel> aliasProds = this.categoryAlias.processCategoryAlias();
+                if (aliasProds != null) { // if we had an error..then we get
+                                          // null, cause empty list is valid
+                    for (Iterator<ProductModel> pItr = aliasProds.iterator(); pItr.hasNext();) {
+                        ContentNodeModelImpl newProd = (ContentNodeModelImpl) ((ContentNodeModelImpl) pItr.next()).clone();
+                        newProd.setParentNode(this);
+                        newProd.setPriority(prodList.size());
+                        if (!prodList.contains(newProd)) { // don't put a
+                                                           // duplicate product
+                                                           // in there
+                            prodList.add(newProd);
+                            // LOGGER.debug(" ##### added aliased product: " +
+                            // newProd.getContentName());
+                        } else {
+                            // LOGGER.debug(" #### "
+                            // + newProd.getContentName()
+                            // + " already in list, not adding product: "
+                            // + newProd.getContentName());
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                LOGGER.warn("exception during category aliasing", ex);
+            }
+        }
 
-		Recommender recommender = getRecommender();
-		if (recommender != null) {
-			String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
-			LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
-			synchronized (recommendedProductsSync) {
-			if (recommendedProductsRefMap.get(zoneId) == null)
-				recommendedProductsRefMap.put(zoneId, new RecommendedProductsRef(threadPool, zoneId));
-			}
+        Recommender recommender = getRecommender();
+        if (recommender != null) {
+            String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
+            LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
+            synchronized (recommendedProductsSync) {
+                if (recommendedProductsRefMap.get(zoneId) == null)
+                    recommendedProductsRefMap.put(zoneId, new RecommendedProductsRef(threadPool, zoneId));
+            }
 
-			try {
-				List recProds = (List) recommendedProductsRefMap.get(zoneId).get();
-				if (recProds != null) {
-					for (Iterator pItr = recProds.iterator(); pItr.hasNext();) {
-					        ContentNodeModelImpl newProd = (ContentNodeModelImpl) ((ContentNodeModelImpl) pItr.next()).clone();
-						newProd.setParentNode(this);
-						if (!prodList.contains(newProd)) {
-							newProd.setPriority(prodList.size());
-							prodList.add(newProd);
-						}
-					}
-				}
-			} catch (Exception e) {
-				LOGGER.warn("exception during smart category recommendation", e);
-			}
-		}
-		
-		return prodList;
-	}
+            try {
+                List recProds = (List) recommendedProductsRefMap.get(zoneId).get();
+                if (recProds != null) {
+                    for (Iterator pItr = recProds.iterator(); pItr.hasNext();) {
+                        ContentNodeModelImpl newProd = (ContentNodeModelImpl) ((ContentNodeModelImpl) pItr.next()).clone();
+                        newProd.setParentNode(this);
+                        if (!prodList.contains(newProd)) {
+                            newProd.setPriority(prodList.size());
+                            prodList.add(newProd);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.warn("exception during smart category recommendation", e);
+            }
+        }
 
-    private List getFilterList() {
-        List filterList;
+        return prodList;
+    }
+
+    private List<String> getFilterList() {
+        List<String> filterList;
 
         String filters = (String) getCmsAttributeValue("FILTER_LIST");
         if (filters != null) {
-            filterList = new ArrayList();
+            filterList = new ArrayList<String>();
             StringTokenizer stFilterNames = new StringTokenizer(filters, ",");
             for (; stFilterNames.hasMoreTokens();) {
                 String tok = stFilterNames.nextToken();
@@ -540,7 +544,7 @@ public class CategoryModel extends ProductContainer {
 			try {
 				for (Iterator<CategoryModel> ci = categoryRefs.iterator(); ci.hasNext();) {
 					CategoryModel cm = ci.next();
-					products.addAll(cm.getProducts());
+					products.addAll(cm.getPrivateProducts());
 				}
 				return filterProducts((List) products);
 			} catch (FDResourceException fdre) {
