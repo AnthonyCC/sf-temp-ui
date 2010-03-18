@@ -87,7 +87,7 @@ public class Warmup {
 			ContentSearch.getInstance().getAutocompletions("qwertyuqwerty");
 		}
 		
-		new Thread() {
+		new Thread("warmup-step-2") {
 			public void run() {
 				try {
 					// Warmup					
