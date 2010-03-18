@@ -143,7 +143,7 @@
 											%>
 													<tr valign="top">
 													<% if(printHeader) { %>
-														<td><img src="/media_stat/images/layout/clear.gif" width="9" height="0"></td>
+														<td><img src="/media_stat/images/layout/clear.gif" width="1" height="0"></td>
 														<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=leastShelfDays%>.gif" width="27" height="27" border="0"></td>
 														<td><img src="/media_stat/images/layout/clear.gif" width="9" height="0"></td>
 														<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10">
@@ -154,15 +154,16 @@
 														<td colspan="3">&nbsp;</td>
 														<td>
 													<% } %>
-														<br />
+														<table><tr><td>
 														<span class="title12"><i><%=label%>:</i></span><br /><span class="text12">at least</span><span class="title12"> <%=daysFresh%> day<%= (Integer.parseInt(daysFresh) > 1) ? "s": ""%></span><span class="text12"><br/> from delivery</span></td>
 														<td><img src="/media_stat/images/layout/clear.gif" width="9" height="0"></td>
+														</tr></table>
 													</tr>
 											<%
 												}
 											}%>
 											<tr>
-												<td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="2"></td>
+												<td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
 											</tr>
 										<%
 										//reset list
