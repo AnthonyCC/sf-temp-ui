@@ -11,7 +11,6 @@ package com.freshdirect.fdstore.ejb;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
-import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.ejb.ErpInfoHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.ejb.ErpProductEB;
@@ -47,7 +45,6 @@ import com.freshdirect.framework.core.SessionBeanSupport;
  * @author $Author$
  */
 public class FDFactorySessionBean extends SessionBeanSupport {
-	private static final long serialVersionUID = 8471002847721814732L;
 
 	private transient ErpInfoHome infoHome = null;
 	private transient ErpProductHome productHome = null;
@@ -430,57 +427,4 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public Map<String, Date> getNewSkusTest() throws FDResourceException {
-		if (this.infoHome == null) {
-			this.lookupInfoHome();
-		}
-		try {
-			ErpInfoSB infoSB = this.infoHome.create();
-
-			return infoSB.getNewSkusTest();
-
-		} catch (RemoteException re) {
-			this.infoHome = null;
-			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome = null;
-			throw new FDResourceException(ce);
-		}
-	}
-
-	public Map<String, Date> getBackInStockSkusTest() throws FDResourceException {
-		if (this.infoHome == null) {
-			this.lookupInfoHome();
-		}
-		try {
-			ErpInfoSB infoSB = this.infoHome.create();
-
-			return infoSB.getBackInStockSkusTest();
-
-		} catch (RemoteException re) {
-			this.infoHome = null;
-			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome = null;
-			throw new FDResourceException(ce);
-		}
-	}
-
-	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException, FDResourceException {
-		if (this.infoHome == null) {
-			this.lookupInfoHome();
-		}
-		try {
-			ErpInfoSB infoSB = this.infoHome.create();
-
-			return infoSB.getSkuAvailabilityHistory(skuCode);
-
-		} catch (RemoteException re) {
-			this.infoHome = null;
-			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome = null;
-			throw new FDResourceException(ce);
-		}		
-	}
 }

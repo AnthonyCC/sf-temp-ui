@@ -33,13 +33,10 @@
 		<span class="bull">&bull;</span> <a href="all_ymal_perf_test.jsp"><span>All Smart YMALs Performance Test</span></a>
 		</p>
     	<p>
-		<span class="bull">&bull;</span> <a href="all_ymal_perf_test.jsp"><span>All YMAL Performance Test</span></a>
-		</p>        
-    	<p>
-		<span class="bull">&bull;</span> <a href="tabs_perf_test.jsp"><span>Cart Tabs Performance Test Page</span></a>
+		<span class="bull">&bull;</span> <a href="tabs_test.jsp"><span>Cart Tabs Test Page</span></a>
 		</p>
     	<p>
-		<span class="bull">&bull;</span> <a href="tabs_test.jsp"><span>Cart Tabs Test Page</span></a>
+		<span class="bull">&bull;</span> <a href="tabs_perf_test.jsp"><span>Cart Tabs Performance Test Page</span></a>
 		</p>
     	<p>
 		<span class="bull">&bull;</span> <a href="view_cohorts.jsp"><span>Cohorts Summary</span></a>
@@ -54,22 +51,16 @@
 		<span class="bull">&bull;</span> <a href="fi_debugger.jsp"><span>Featured Items Debugger</span></a>
 		</p>
     	<p>
-		<span class="bull">&bull;</span> <a href="new_and_back.jsp"><span>New and Back in Stock Products Test Page</span></a>
-		</p>
-        <p>
-		<span class="bull">&bull;</span> <a href="view_promovariant_cfg.jsp"><span>Promo Variant Configurations</span></a> <a href="view_promovariant_cfg.jsp?refresh=1">(reload)</a>
-		</p>
-    	<p>
 		<span class="bull">&bull;</span> <a href="request_simulator.jsp"><span>Request Simulator</span></a>
 		</p>
     	<p>
 		<span class="bull">&bull;</span> <a href="view_config.jsp"><span>Variant Configurations</span></a> <a href="view_config.jsp?refresh=1">(reload)</a>
 		</p>
     	<p>
-		<span class="bull">&bull;</span> <a href="my_variant.jsp"><span>Variant Lookup</span></a>
+		<span class="bull">&bull;</span> <a href="compare_variants.jsp"><span>Variants Comparison</span></a>
 		</p>
     	<p>
-		<span class="bull">&bull;</span> <a href="compare_variants.jsp"><span>Variants Comparison</span></a>
+		<span class="bull">&bull;</span> <a href="my_variant.jsp"><span>Variant Lookup</span></a>
 		</p>
     	<p>
 		<span class="bull">&bull;</span> <a href="view_tabs.jsp"><span>View Cart Tab Strategies</span></a>
@@ -77,15 +68,19 @@
     	<p>
 		<span class="bull">&bull;</span> <a href="view_ymals.jsp"><span>View Smart YMALs</span></a>
 		</p>
-		<p>
-		<span class="bull">&bull;</span> <a href="ymal_display.jsp">YMAL Display Test</a>
-		</p>
     	<p>
 		<span class="bull">&bull;</span> <a href="ymal_perf_test.jsp"><span>YMAL Performance Test</span></a>
 		</p>
-    	<p>
-		<span class="bull">&bull;</span> <a href="zone_pricing.jsp"><span>Zone Pricing Test Page</span></a>
+		<p>
+			<span class="bull">&bull;</span> <a href="ymal_display.jsp">YMAL Display Test</a>
 		</p>
+    	<p>
+		<span class="bull">&bull;</span> <a href="all_ymal_perf_test.jsp"><span>All YMAL Performance Test</span></a>
+		</p>        
+        <p>
+		<span class="bull">&bull;</span> <a href="view_promovariant_cfg.jsp"><span>Promo Variant Configurations</span></a> <a href="view_promovariant_cfg.jsp?refresh=1">(reload)</a>
+		</p>
+        
     	<p>
 		<span class="bull">&bull;</span> <span>Impression logger :
 		<% if (ImpressionLogger.isGlobalEnabled()) { %>
