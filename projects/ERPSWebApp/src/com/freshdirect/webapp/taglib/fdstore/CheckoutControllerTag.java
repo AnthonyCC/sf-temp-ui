@@ -1146,35 +1146,39 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			return;
 		}
 		
-		//Checking for CC a/c's or expired CC. If NO, restricting the customer to place order using E-check
+		//
+		// set payment in cart and store cart if valid payment found
+		//
+		PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result,
+				getUser());
+		
+		//Checking for CC a/c's or atleast one valid CC. If NO, restricting the customer to place order using E-check
 		String app = (String) pageContext.getSession().getAttribute( SessionName.APPLICATION);
-		if (!"CALLCENTER".equalsIgnoreCase(app)) {
+		if (!"CALLCENTER".equalsIgnoreCase(app) && EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()) && result.isSuccess()) {
 			int numCreditCards=0;
 			boolean isValidCreditCardAvailable = false;
 			for (Iterator iterator = paymentMethods.iterator(); iterator.hasNext();) {
 	              ErpPaymentMethodI paymentM = (ErpPaymentMethodI) iterator.next();
 	           if (EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {
 	               numCreditCards++;
-	        	   PaymentMethodUtil.validatePaymentMethod(request, paymentM, result, getUser());
-	               if(null == result.getError("expiration") || "".equals(result.getError("expiration"))){
+	        	   ActionResult tempResult=new ActionResult();
+				   PaymentMethodUtil.validatePaymentMethod(request, paymentM, tempResult, getUser());
+	               if(null == tempResult.getError("expiration") || "".equals(tempResult.getError("expiration"))){
 	            	   isValidCreditCardAvailable = true;
 	            	   break;
 	               }
-	               if(result.getError("expiration")!=null){
-	            	   result.addError(new ActionError("expiration",SystemMessageList.MSG_CC_EXPIRED_ACT_NUMBER));
-	               }
-	           }
+	            }
 	        }
 			if(numCreditCards<1){
 				LOGGER.debug("No CC Account in Customer payment methods: "+numCreditCards);
 	        	result.addError(new ActionError("payment_method",SystemMessageList.MSG_NOCC_ACCOUNT_NUMBER));
+			}else{
+				if(!isValidCreditCardAvailable){
+					result.addError(new ActionError("expiration",SystemMessageList.MSG_CC_EXPIRED_ACT_NUMBER));
+				}
 			}
 		}
-		//
-		// set payment in cart and store cart if valid payment found
-		//
-		PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result,
-				getUser());
+		
 
 		FDCartModel cart = getCart();
 		paymentMethod.setBillingRef(billingRef);
