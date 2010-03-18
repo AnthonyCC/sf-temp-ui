@@ -33,7 +33,7 @@ import java.util.Map.Entry;
 
 public class CorporateServiceSurveyTag extends AbstractControllerTag implements SessionName {
 
-	private static Category LOGGER = LoggerFactory.getInstance( CorporateServiceInterestTag.class );
+	private static Category LOGGER = LoggerFactory.getInstance( CorporateServiceSurveyTag.class );
 	
 	protected String getParam(HttpServletRequest request, String fieldName) {
 		return NVL.apply(request.getParameter(fieldName), "").trim();
@@ -172,9 +172,13 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		String actionName = this.getActionName();
 		try {
+			LOGGER.debug("actionName " + actionName);
 			if ("submitCorporateServiceSurvey".equalsIgnoreCase(actionName)) {
 				//this.performSendCorporateServiceInfo(request, actionResult);
+				LOGGER.debug("Error performing action " + actionName);
 				this.storeCorporateServiceInfo(request, actionResult);
+			}else{
+				this.storeCorporateServiceInfo(request, actionResult, actionName);
 			}
 		} catch (FDResourceException ex) {
 			LOGGER.error("Error performing action " + actionName, ex);
@@ -182,6 +186,51 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 		}
 
 		return true;
+	}
+
+	/*
+	 *	allow customized values
+	 *
+	 *	make sure you've added the custom value to EnumSurveyType.java
+	 *	otherwise, the survey will fail to be saved
+	 */
+	protected void storeCorporateServiceInfo(HttpServletRequest request, ActionResult result, String actionName) throws FDResourceException {
+		populateCorporateServiceForm(request);
+		validateCorporateServiceForm(result);
+
+		HttpSession session = pageContext.getSession();
+		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+		
+		
+		if(result.isSuccess()){
+			FDIdentity identity = user.getIdentity();
+			
+			//set into session
+			user.setLastCOSSurvey(actionName);
+			user.setLastCOSSurveySuccess(true);
+	
+			FDSurveyResponse surveyResponse = new FDSurveyResponse(identity, new SurveyKey(actionName, user.getSelectedServiceType()));
+			for(Iterator i = request.getParameterMap().entrySet().iterator(); i.hasNext();){
+				Entry e = (Entry) i.next();
+				String question = (String)e.getKey();
+				String[] answers = (String[])e.getValue();
+	
+				surveyResponse.addAnswer(question, answers);
+			}
+			
+			FDCustomerManager.storeSurvey(surveyResponse);
+			
+			LOGGER.debug("CorpServTag redirectSuccessPage " + redirectSuccessPage);
+			LOGGER.debug("CorpServTag this.getSuccessPage() "+this.getSuccessPage());
+			
+			//this.setSuccessPage(null);
+			this.setSuccessPage(this.getSuccessPage()+((this.getSuccessPage().indexOf("?")>0)?"&":"?")+"successPage="+URLEncoder.encode(redirectSuccessPage+"info=thankyou#survey"));
+			LOGGER.debug("CorpServTag this.getSuccessPage()2 "+this.getSuccessPage());
+		}
+		
+		LOGGER.debug("CorpServTag err ");
+		LOGGER.debug("actionName "+actionName);
+		user.setLastCOSSurveySuccess(false);
 	}
 	
 	protected void storeCorporateServiceInfo(HttpServletRequest request, ActionResult result) throws FDResourceException {
@@ -204,7 +253,9 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 			
 			FDCustomerManager.storeSurvey(surveyResponse);
 
-			this.setSuccessPage(this.getSuccessPage() + "?successPage="+URLEncoder.encode(redirectSuccessPage)+"&info=thankyou#survey");
+			this.setSuccessPage(this.getSuccessPage()+((this.getSuccessPage().indexOf("?")>0)?"&":"?")+"successPage="+URLEncoder.encode(redirectSuccessPage)+"&info=thankyou#survey");
+
+			pageContext.setAttribute("formSubmitted", true);
 		} 
 	}
 

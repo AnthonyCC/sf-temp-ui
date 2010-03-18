@@ -105,7 +105,7 @@
 	                                                                               
 	// Assign the correct template
 	if (isIncludeMediaLayout) {
-		jspTemplate = noLeftNav ? "/common/template/no_nav.jsp" : "/common/template/left_dnav.jsp";
+		jspTemplate = noLeftNav ? "/common/template/top_nav_only.jsp" : "/common/template/left_dnav.jsp";
 	} else if (noLeftNav) {
 	    jspTemplate = "/common/template/right_dnav.jsp";
 	} else {

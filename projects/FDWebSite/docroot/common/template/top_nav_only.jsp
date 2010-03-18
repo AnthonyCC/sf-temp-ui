@@ -56,12 +56,21 @@
 		%>
 		<%@ include file="/common/template/includes/globalnav.jspf" %> 
 		<table width="745" border="0" cellpadding="0" cellspacing="0">
-			<tr><td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_left_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
+			<tr>
+				<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_left_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
 				<td width="733" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" width="733" height="1" border="0"></td>
 				<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_right_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
 			</tr>
 			<tr>
-				<td width="733" valign="top"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+				<td width="733" valign="top" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+			</tr>
+			<tr>
+				<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+				<td colspan="3"><%@ include file="/common/template/includes/deptnav.jspf" %></td>
+				<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			</tr>
+			<tr>
+				<td width="745" bgcolor="#999966" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr valign="TOP">
 				<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
@@ -70,9 +79,7 @@
 					<!-- content lands here -->
 					<tmpl:get name='content'/>
 					<!-- content ends above here-->
-					<br /><br />
-					
-					test</td>
+					<br /><br /></td>
 				<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr>

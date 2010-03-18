@@ -88,7 +88,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	private String tabSiteFeature = null;
 	
-	//No. of Gift Card apply attempts     
+	//No. of Gift Card apply attempts
 	private int gcRetryCount = 0;
 	
 	private String lastSenderName = null;
@@ -106,6 +106,26 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private String addressVerficationMsg;
     
     private List oneTimeGCPaymentError=null;
+    
+    //Vending changes
+    private boolean lastCOSSurveySuccess;	//holds if survey was success
+    private String lastCOSSurvey = null;	//holds name of survey
+    
+	public void setLastCOSSurveySuccess(boolean lastCOSSurveySuccess) {
+		this.lastCOSSurveySuccess = lastCOSSurveySuccess;
+	}
+	
+    public boolean getLastCOSSurveySuccess() {
+    	return this.lastCOSSurveySuccess;
+    }
+
+	public void setLastCOSSurvey(String lastCOSSurvey) {
+		this.lastCOSSurvey = lastCOSSurvey;
+	}
+    
+    public String getLastCOSSurvey() {
+    	return this.lastCOSSurvey;
+    }
 	
     public List getOneTimeGCPaymentError() {
 		return oneTimeGCPaymentError;
@@ -1062,5 +1082,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void resetPricingContext() {
 		this.user.resetPricingContext();
 	}
+
 }
 

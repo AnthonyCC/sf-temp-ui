@@ -21,7 +21,8 @@ public enum EnumSurveyType {
     ,USABILITY("Usability")
     ,WINE_REQUEST("Wine Request Feedback")
     ,CANCEL_ORDER_FEEDBACK("Cancel_order_feedback") // this is not used, I believe
-    ,COS_SURVEY_V2("COS_Survey_v2") // this is not used too ...
+    ,COS_SURVEY_V2("COS_Survey_v2") // this is used in CorporateServiceSurveyTag.java
+    ,COS_SURVEY_VENDING("COS_Survey_Vending") //added for vending website
     ;
     
     String label;

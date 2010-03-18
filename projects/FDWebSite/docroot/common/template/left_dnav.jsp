@@ -46,17 +46,17 @@
 </tr>
 
 <tr valign="top">
-<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-<td bgcolor="#E0E3D0"><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
-<td bgcolor="#E0E3D0"><%@ include file="/common/template/includes/left_side_nav.jspf" %><BR>
-<img src="/media_stat/images/layout/clear.gif" height="1" width="125"></td>
-<td align="center"><img src="/media_stat/images/layout/clear.gif" height="15" width="1"><br>
-<%-- content lands here --%>
-<tmpl:get name='content'/>
-<%-- content ends above here--%>
-<br><br></td>
-<td><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></td>
-<td bgcolor="#999966"><img src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
+	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	<td bgcolor="#E0E3D0"><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+	<td bgcolor="#E0E3D0"><%@ include file="/common/template/includes/left_side_nav.jspf" %><BR>
+		<img src="/media_stat/images/layout/clear.gif" height="1" width="125"></td>
+		<td align="center"><img src="/media_stat/images/layout/clear.gif" height="15" width="1"><br>
+		<%-- content lands here --%>
+		<tmpl:get name='content'/>
+		<%-- content ends above here--%>
+		<br><br></td>
+	<td><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></td>
+	<td bgcolor="#999966"><img src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
 </tr>
 
 <tr valign="bottom">

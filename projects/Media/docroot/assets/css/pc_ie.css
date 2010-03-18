@@ -649,3 +649,13 @@ a.tab:active	{ color : #845286; }
 .siteAccessInc_RobinHood { width: 260px; }
 .siteAccessInc_RobinHood a { font-weight: bold; }
 .siteAccessInc_RobinHood td { padding: 4px 0px; }
+
+/* COS Survey */
+table.COSSurvey { width: 550px; }
+table.COSSurvey, table.COSSurvey td { padding: 0; margin: 0; border-collapse: collapse; }
+table.COSSurvey td.padLeft10 { padding-left: 10px; }
+table.COSSurvey td.padRight10 { padding-right: 10px; }
+img.COSSurvey_spacer01 { width: 140px; height: 8px; }
+img.COSSurvey_spacer02 { width: 180px; height: 8px; }
+img.COSSurvey_spacer03 { width: 80px; height: 8px; }
+img.COSSurvey_spacer04 { width: 140px; height: 8px; }

@@ -107,7 +107,7 @@ Amount Due: $0.00
 </xsl:if>
 T = Taxable Item
 S = Special Price
-D = NY State Bottle Deposit and Handling Fee
+D = State Bottle Deposit and Handling Fee
 
 </xsl:template>
 
@@ -186,7 +186,7 @@ Tax (<xsl:value-of select="$view/description" />): $<xsl:value-of select='format
 <xsl:text>
 </xsl:text>
 <xsl:if test="number($view/depositValue) > 0">
-NY State Bottle Deposit and Handling Fee (<xsl:value-of select="$view/description" />): $<xsl:value-of select='format-number($view/depositValue, "###,##0.00", "USD")'/>
+State Bottle Deposit and Handling Fee (<xsl:value-of select="$view/description" />): $<xsl:value-of select='format-number($view/depositValue, "###,##0.00", "USD")'/>
 </xsl:if>
 <xsl:text>
 </xsl:text>
