@@ -95,7 +95,6 @@
 						}
 					}
 					boolean showStackedShelfLife = labelCount == valueCount && valueCount > 0 && labelCount > 0;
-					System.out.println("******************** valueCount = " + valueCount + " and labelCount = " + labelCount);
 					if(skuSize == 1 || showStackedShelfLife) {
 				%>
 						<img src="/media_stat/images/layout/clear.gif" width="20" height="10" border="0" hspace="0" vspace="0">
@@ -107,7 +106,7 @@
 							</tr>
 							<tr>
 								<td colspan="3" align="center" valign="top">
-								<table width="0" border="0" cellspacing="0" cellpadding="0">
+								<table width="0" border="0" cellspacing="0" cellpadding="5">
 									<tr><td colspan="3" align="center" style="border-left: solid 1px #999966; border-right: solid 1px #999966;">
 										<table border="0" cellspacing="0" cellpadding="0" width="0">
 										<%if(shelfLifeList.isEmpty() && skuSize == 1) { %>
@@ -116,7 +115,7 @@
 												<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
 												<td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
 												<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
-												<span class="text12">at least </span><span class="title12"><%=shelfLife%> days</span><span class="text12"><br/> from delivery</span></td>
+												<span class="text12">at least </span><span class="title12"><%=shelfLife%> day<%= (Integer.parseInt(shelfLife) > 1) ? "s": ""%></span><span class="text12"><br/> from delivery</span></td>
 												<td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
 											</tr>
 										<% } else if(showStackedShelfLife) {
@@ -144,25 +143,26 @@
 											%>
 													<tr valign="top">
 													<% if(printHeader) { %>
-														<td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
+														<td><img src="/media_stat/images/layout/clear.gif" width="9" height="0"></td>
 														<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=leastShelfDays%>.gif" width="27" height="27" border="0"></td>
-														<td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
+														<td><img src="/media_stat/images/layout/clear.gif" width="9" height="0"></td>
 														<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10">
+														<img src="/media_stat/images/layout/clear.gif" width="9" height="10">
 													<%
 														 printHeader = false;
 													} else { %>
 														<td colspan="3">&nbsp;</td>
-
-															<td>
+														<td>
 													<% } %>
-														 <br /><br /><span class="title12"><i><%=label%>:</i></span><br /><span class="text12">at least</span><span class="title12"> <%=daysFresh%> days</span><span class="text12"><br/> from delivery</span></td><br />
-														<td><img src="/media_stat/images/layout/clear.gif" width="9" height="1"></td>
+														<br />
+														<span class="title12"><i><%=label%>:</i></span><br /><span class="text12">at least</span><span class="title12"> <%=daysFresh%> day<%= (Integer.parseInt(daysFresh) > 1) ? "s": ""%></span><span class="text12"><br/> from delivery</span></td>
+														<td><img src="/media_stat/images/layout/clear.gif" width="9" height="0"></td>
 													</tr>
 											<%
 												}
 											}%>
 											<tr>
-												<td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="20"></td>
+												<td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="2"></td>
 											</tr>
 										<%
 										//reset list
@@ -182,16 +182,15 @@
 						<table width="188">
 							<tr>
 								<td align="right">
-								<br/>
+								<img src="/media_stat/images/layout/clear.gif" width="100%" height="6">
 								<a href="javascript:pop('/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK HERE</a>
 								</td>
 							</tr>
 						</table>
 				<%
 				}
-				//reset list
-				//session.setAttribute("freshList", null);
 			}
+			//reset list
 			session.setAttribute("freshList", null);
 			%>
 <%-- **************************************** END Shelf Life ****************************************************************************** --%>

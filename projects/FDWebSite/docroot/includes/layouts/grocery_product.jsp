@@ -760,8 +760,14 @@ if(shelfLife != null && shelfLife.trim().length() > 0) { %>
 		</tr>
 		
 	</table>
-	<br>
-	<A HREF="javascript:pop('/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee</A>
+	<table width="188">
+		<tr>
+			<td align="right">
+			<img src="/media_stat/images/layout/clear.gif" width="100%" height="6">
+			<a href="javascript:pop('/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK HERE</a>
+			</td>
+		</tr>
+	</table>
 
 <%}
 // ******** END -- Freshness Guarantee graphic ******************	
