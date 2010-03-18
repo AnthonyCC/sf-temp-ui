@@ -151,7 +151,7 @@ public class ContentFactory {
 	public ContentNodeModel getContentNode(String id) {
 		this.getStore(); // ensure Store is loaded
 
-		if (id == null)
+		if ( id == null || id.trim().equals( "" ) )
 			return null;
 
 		ContentNodeModel m = (ContentNodeModel) this.contentNodes.get(id);

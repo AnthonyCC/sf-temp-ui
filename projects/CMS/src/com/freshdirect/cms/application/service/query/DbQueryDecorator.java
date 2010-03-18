@@ -18,6 +18,7 @@ import javax.sql.DataSource;
 import org.apache.commons.collections.Factory;
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
@@ -49,6 +50,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class DbQueryDecorator implements ContentDecoratorI, Serializable {
 
+	private static final long	serialVersionUID	= 5964284952966441735L;
+
 	private final static Category LOGGER = LoggerFactory.getInstance(DbQueryDecorator.class);
 	
 	private final static String MAP_SEPARATOR = "|";
@@ -65,12 +68,12 @@ public class DbQueryDecorator implements ContentDecoratorI, Serializable {
 			return null;
 		}
 
-		String language = (String) node.getAttribute("language").getValue();
+		String language = (String) node.getAttributeValue( "language" );
 		if (!(language == null || "SQL".equals(language))) {
 			return null;
 		}
 
-		String query = (String) node.getAttribute("script").getValue();
+		String query = (String) node.getAttributeValue("script");
 		if (query == null) {
 			LOGGER.warn("No script for " + node);
 			return null;
@@ -79,8 +82,8 @@ public class DbQueryDecorator implements ContentDecoratorI, Serializable {
 		Object results;
 		if (type.equals(CmsQueryTypes.REPORT)) {
 
-			String paramString = (String) node.getAttribute("parameters").getValue();
-			Map parameters = paramString == null ? null : AttributeMappedNode.stringToMap(paramString, MAP_SEPARATOR);
+			String paramString = (String) node.getAttributeValue("parameters");
+			Map<String, String> parameters = paramString == null ? null : AttributeMappedNode.stringToMap(paramString, MAP_SEPARATOR);
 			results = LazyInstanceProxy.newInstance(ITable.class, new ReportFactory(query, parameters));
 
 		} else {
@@ -89,18 +92,20 @@ public class DbQueryDecorator implements ContentDecoratorI, Serializable {
 		}
 
 		ContentNodeI clone = node.copy();
-		clone.getAttribute("results").setValue(results);
+		clone.setAttributeValue("results",results);
 
 		if (type.equals(CmsQueryTypes.REPORT)) {
 
 			LOGGER.debug("decorateNode() " + node.getKey());
 			String[] params = HashMessageFormat.getMessageParams(query);
-			Map paramDefs = new HashMap(params.length);
+			Map<String, AttributeDefI> paramDefs = new HashMap<String, AttributeDefI>(params.length);
 			for (int i = 0; i < params.length; i++) {
 				String key = params[i];
-				paramDefs.put(key, new AttributeDef(EnumAttributeType.STRING, "param_" + key, "Parameter " + key));
+				AttributeDefI attrDef = new AttributeDef(EnumAttributeType.STRING, "param_" + key, "Parameter " + key); 
+				paramDefs.put(key, attrDef);
 			}
-			return new AttributeMappedNode(clone, "parameters", paramDefs, MAP_SEPARATOR);
+			ContentNodeI mappedNode = new AttributeMappedNode(clone, "parameters", paramDefs, MAP_SEPARATOR); 
+			return mappedNode;
 
 		}
 		return clone;
@@ -108,10 +113,13 @@ public class DbQueryDecorator implements ContentDecoratorI, Serializable {
 	}
 
 	private final class ReportFactory implements Factory, Serializable {
-		private final String query;
-		private final Map parameters;
 
-		private ReportFactory(String query, Map parameters) {
+		private static final long	serialVersionUID	= 1111173643354577752L;
+		
+		private final String query;
+		private final Map<String, String> parameters;
+
+		private ReportFactory(String query, Map<String, String> parameters) {
 			this.query = query;
 			this.parameters = parameters;
 		}
@@ -153,6 +161,9 @@ public class DbQueryDecorator implements ContentDecoratorI, Serializable {
 	}
 
 	private class QueryFactory implements Factory, Serializable {
+		
+		private static final long	serialVersionUID	= 1656071156580780807L;
+		
 		private final String query;
 
 		private QueryFactory(String query) {
@@ -165,7 +176,7 @@ public class DbQueryDecorator implements ContentDecoratorI, Serializable {
 				conn = dataSource.getConnection();
 				PreparedStatement ps = conn.prepareStatement(query);
 
-				List l = new ArrayList();
+				List<ContentKey> l = new ArrayList<ContentKey>();
 
 				ResultSet rs = ps.executeQuery();
 				while (rs.next()) {
@@ -179,7 +190,7 @@ public class DbQueryDecorator implements ContentDecoratorI, Serializable {
 
 			} catch (SQLException e) {
 				e.printStackTrace();
-				return new ArrayList();
+				return new ArrayList<ContentKey>();
 			} finally {
 				if (conn != null) {
 					try {

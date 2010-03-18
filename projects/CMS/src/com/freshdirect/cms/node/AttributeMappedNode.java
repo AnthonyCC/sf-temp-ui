@@ -35,6 +35,8 @@ import com.freshdirect.cms.meta.AttributeDef;
  */
 public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 
+	private static final long	serialVersionUID	= -1401215988133639278L;
+	
 	private final ContentNodeI node;
 	private final String mapAttributeName;
 	private final Map<String,AttributeI> attributes;
@@ -59,19 +61,20 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 			String name = e.getKey();
 			AttributeDefI def = e.getValue();
 			MappedAttribute a = new MappedAttribute(node.getAttribute(mapAttributeName), name, def);
-			paramAttributes.put(a.getName(), a);
+			paramAttributes.put( a.getName(), a );
+			paramDefs.put( def.getName(), def );
 		}
 
 		for (Iterator<AttributeI> i = node.getAttributes().values().iterator(); i.hasNext();) {
 			AttributeI a = i.next();
-			AttributeDefI definition = null;
+			AttributeDefI attrDef = null;
 			if (mapAttributeName.equals(a.getName())) {
 				AttributeDefI p = a.getDefinition();
 				if (!EnumAttributeType.STRING.equals(p.getAttributeType())) {
 					throw new IllegalArgumentException("Mapped attribute must be a string");
 				}
 				// map as a read-only attribute
-				definition = new AttributeDef(
+				attrDef = new AttributeDef(
 					p.getAttributeType(),
 					p.getName(),
 					p.getLabel(),
@@ -81,8 +84,8 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 					p.getCardinality());
 			}
 			paramAttributes.put(a.getName(), a instanceof RelationshipI
-				? new ProxyRelationship(a, definition)
-				: new ProxyAttribute(a, definition));
+				? new ProxyRelationship(a, attrDef)
+				: new ProxyAttribute(a, attrDef));
 		}
 
 		this.attributes = Collections.unmodifiableMap(paramAttributes);
@@ -153,6 +156,8 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 
 	private class ParametrizedTypeDef implements ContentTypeDefI, Serializable {
 
+		private static final long	serialVersionUID	= -8801786529391381123L;
+		
 		private final Map<String, AttributeDefI> parameterDefs;
 
 		public ParametrizedTypeDef(Map<String, AttributeDefI> parameterDefs) {
@@ -218,14 +223,16 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 
 	private class MappedAttribute implements AttributeI {
 
-		private final AttributeDefI definition;
+		private static final long	serialVersionUID	= -9088933895251773487L;
+		
+		private final AttributeDefI def;
 		private final AttributeI mapAttribute;
 		private final String key;
 
 		public MappedAttribute(AttributeI mapAttribute, String key, AttributeDefI definition) {
 			this.mapAttribute = mapAttribute;
 			this.key = key;
-			this.definition = definition;
+			this.def = definition;
 		}
 
 		public Object getValue() {
@@ -251,11 +258,11 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 		}
 
 		public AttributeDefI getDefinition() {
-			return definition;
+			return def;
 		}
 
 		public String getName() {
-			return definition.getName();
+			return def.getName();
 		}
 		
 		@Override
@@ -301,14 +308,16 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 
 	private class ProxyAttribute implements AttributeI {
 
+		private static final long	serialVersionUID	= 1803778481911935115L;
+
 		private final AttributeI attribute;
 
-		/** optional definition to override underlying def */
-		private final AttributeDefI definition;
+		/** optional def to override underlying def */
+		private final AttributeDefI def;
 
 		private ProxyAttribute(AttributeI attribute, AttributeDefI definition) {
 			this.attribute = attribute;
-			this.definition = definition;
+			this.def = definition;
 		}
 
 		public Object getValue() {
@@ -324,7 +333,7 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 		}
 
 		public AttributeDefI getDefinition() {
-			return definition != null ? definition : attribute.getDefinition();
+			return def != null ? def : attribute.getDefinition();
 		}
 
 		public String getName() {
@@ -339,6 +348,8 @@ public class AttributeMappedNode implements ContentNodeI, NodeWrapperI {
 	}
 
 	private class ProxyRelationship extends ProxyAttribute implements RelationshipI {
+
+		private static final long	serialVersionUID	= -4603017798015439104L;
 
 		ProxyRelationship(AttributeI attribute, AttributeDefI definition) {
 			super(attribute, definition);
