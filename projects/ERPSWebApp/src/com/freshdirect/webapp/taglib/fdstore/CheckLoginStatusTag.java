@@ -114,6 +114,26 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             }
 
         }
+        //
+        // 
+        // Fix for APPDEV-755
+        //
+        if (guestAllowed && request.getRequestURI().indexOf("forget_password_main_confirmation.jsp") != -1 && request.getParameter("siteAccessPage")==null) {
+            //
+            // make sure the robot has a user in it's session so that pages
+            // won't blow up for it
+            //
+            if (user == null) {
+                FDUser robotUser = new FDUser(new PrimaryKey("robot"));
+                Set availableServices = new HashSet();
+                availableServices.add(EnumServiceType.HOME);
+                robotUser.setSelectedServiceType(EnumServiceType.HOME);
+                robotUser.setAvailableServices(availableServices);
+                robotUser.isLoggedIn(false);
+                user = new FDSessionUser(robotUser, session);
+                session.setAttribute(USER, user);
+            }
+        }
         
         //If user is coming from pretty URL redirect it to site_access_lite page
         if(user==null){
