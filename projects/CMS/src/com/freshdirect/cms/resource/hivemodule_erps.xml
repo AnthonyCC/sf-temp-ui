@@ -111,15 +111,19 @@ FROM erps.product p) WHERE RANK=1"/>
 		-->
         <!-- Query updated for zone pricing -->
 		<Table contentType="Sku"
-			query="select p.sku_code as id, decode(MP.PROMO_PRICE,0,MP.PRICE,MP.PROMO_PRICE) as price,
-                  P.UNAVAILABILITY_STATUS as UNAVAILABILITY_STATUS from
-                  (select max(version) version, sap_id, max(to_number(id)) mat_id  from  erps.material group by sap_id) mat,
-                  (  select price,promo_price, pricing_unit, mat_id as matid,version as version1 from erps.materialprice where scale_quantity &lt;= 1 and sap_zone_id='0000100000' )
-                  mp,  erps.materialproxy mpx, erps.product p
-                  where mp.matid=MAT.mat_id
-                  and mp.version1=MAT.VERSION 
-                  and mpx.mat_id=mat.mat_id 
-                  and mpx.product_id = p.id"/>
+			query="SELECT id,price,UNAVAILABILITY_STATUS FROM (SELECT p.sku_code                                              AS ID                   ,
+      				DECODE(MP.PROMO_PRICE,0,MP.PRICE,MP.PROMO_PRICE) AS price,
+					P.UNAVAILABILITY_STATUS AS UNAVAILABILITY_STATUS,
+      				RANK() OVER (PARTITION BY p.sku_code ORDER BY p.VERSION DESC) AS RANK                 
+		       	FROM erps.materialprice mp
+				INNER JOIN erps.materialproxy mpx
+         			ON mp.mat_id = mpx.mat_id
+    			INNER JOIN erps.product p
+         			ON mpx.product_id = p.id
+    			INNER JOIN erps.material m
+         			ON m.id           = mp.mat_id
+      			WHERE mp.sap_zone_id = '0000100000'
+    				AND mp.scale_quantity  &lt; = 1) WHERE rank = 1"/>
         
 		<Relationship
 			name="materials"
