@@ -69,7 +69,7 @@
  <service-point id="DbMappingCache" interface="com.freshdirect.framework.cache.CacheI">
 	<invoke-factory>
 			<construct class="com.freshdirect.framework.cache.SimpleLruCache" service-id-property="name">
-				<set property="capacity" value="1000"/>
+				<set property="capacity" value="50000"/>
 				<set property="timeout" value="1200"/>
 			</construct>
 		</invoke-factory>
