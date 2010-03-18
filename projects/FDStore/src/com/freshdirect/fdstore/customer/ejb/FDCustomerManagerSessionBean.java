@@ -187,6 +187,7 @@ import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.ejb.PaymentManagerSB;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
+import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 
 
 
@@ -1014,6 +1015,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(
 				new PrimaryKey(info.getIdentity().getErpCustomerPK()));
 			erpCustomerEB.removePaymentMethod(pk);
+			
+			RestrictedPaymentMethodModel restrictedPymtMethod=PaymentFraudManager.getRestrictedPaymentMethodByPaymentMethodId(pk.getId(),null);
+			if(restrictedPymtMethod!=null) {
+				PaymentFraudManager.removeRestrictedPaymentMethod(restrictedPymtMethod.getPK(), EnumTransactionSource.SYSTEM.getCode());
+			}
 
 			this.logActivity(info.createActivity(EnumAccountActivityType.DELETE_PAYMENT_METHOD, pk.getId()));
 
