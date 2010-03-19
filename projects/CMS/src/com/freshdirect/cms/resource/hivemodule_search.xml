@@ -49,6 +49,8 @@ Symbols:
 		<AttributeIndex contentType="RecommenderStrategy"  attributeName="FULL_NAME"/>
 		<ContentIndex contentType="Sku"/>
 		<ContentIndex contentType="ConfiguredProduct"/>
+		<AttributeIndex contentType="FAQ" attributeName="question"/>
+		<AttributeIndex contentType="FAQ" attributeName="answer"/>
 		<!--
 		<AttributeIndex contentType="Html" attributeName="path"/>
 		<AttributeIndex contentType="Image" attributeName="path"/>
