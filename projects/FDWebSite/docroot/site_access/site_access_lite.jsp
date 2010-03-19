@@ -108,7 +108,7 @@ request.setAttribute("listPos", "CategoryNote");
 			<table border="0" cellspacing="0" cellpadding="0" width="600">
 				<tr><td align="left"><img src="/media_stat/images/template/site_access/siteaccess_header.gif" width="551" height="49" alt="Our food is fresh. Our customers are spoiled." border="0"><br></td></tr>
 				<tr><td><img src="/media_stat/images/layout/clear.gif" width="196" height="20"><br></td></tr>
-				<tr><td align="left"><img src="/media_stat/images/template/site_access/managers_zip_check.jpg" width="580" height="174" alt="Managers" border="0"><br></td></tr>
+				<tr><td align="left"><img src="/media/editorial/site_access/images/siteaccess_aboutus_mangrs.jpg" width="550" height="220" alt="Managers" border="0"><br></td></tr>
 				<tr><td><img src="/media_stat/images/layout/clear.gif" width="196" height="20"><br></td></tr>
 				<tr><td align="left"><font class="text12"><b>Before we direct to you to our store, please enter your ZIP code and hit "Go" to<br>
 				see if you are within our delivery area. We will automatically redirect you to the<br>page you requested. </b></font></td></tr>
