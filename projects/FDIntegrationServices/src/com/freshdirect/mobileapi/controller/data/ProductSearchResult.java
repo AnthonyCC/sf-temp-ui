@@ -19,6 +19,8 @@ public class ProductSearchResult {
 
     private boolean inCart;
 
+    private String formattedUnitPriceLabel;
+
     public boolean isInCart() {
         return inCart;
     }
@@ -72,6 +74,26 @@ public class ProductSearchResult {
     private boolean soldByWeight;
 
     private boolean pricedByWeight;
+
+    public String getFormattedUnitPriceLabel() {
+
+        if ((null == formattedUnitPriceLabel) && (null != sku)) {
+            StringBuilder currentPrice = new StringBuilder("$").append(String.format("%01.2f", sku.getPrice())).append("/").append(
+                    sku.getPriceUnit().toLowerCase());
+            if (sku.isHasWasPrice()) {
+                formattedUnitPriceLabel = currentPrice.append(" (was ").append("$").append(String.format("%01.2f", sku.getBasePrice())).append(
+                        ")").toString();
+            } else {
+                formattedUnitPriceLabel = currentPrice.toString();
+            }
+        }
+        return formattedUnitPriceLabel;
+    }
+
+    public void setFormattedUnitPriceLabel(String formattedUnitPriceLabel) {
+        this.formattedUnitPriceLabel = formattedUnitPriceLabel;
+    }
+
 
     public boolean isPlatter() {
         return platter;
