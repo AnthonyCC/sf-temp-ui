@@ -54,7 +54,8 @@
 			}
 
 		%>
-		<%@ include file="/common/template/includes/globalnav.jspf" %> 
+		<%@ include file="/common/template/includes/globalnav.jspf" %>
+
 		<table width="745" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_left_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
@@ -79,7 +80,7 @@
 					<!-- content lands here -->
 					<tmpl:get name='content'/>
 					<!-- content ends above here-->
-					<br /><br /></td>
+				</td>
 				<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr>
