@@ -109,13 +109,20 @@ public class TranslatorToGwt {
 	 *	Fills in tab definitions, but no context data. 	
 	 */
 	public static GwtNodeData gwtNodeDataSkeleton ( String type, String id ) throws ServerException {
-		ContentNodeI node;
-		try {
-			node = CmsManager.getInstance().createPrototypeContentNode(ContentKey.create(ContentType.get(type), id));
-	    } catch (InvalidContentKeyException e) {
-	        e.printStackTrace();
-	        throw new ServerException( "Invalid content key : " + type + ":" + id );
-	    }
+            ContentNodeI node;
+            try {
+                ContentKey keey = ContentKey.create(ContentType.get(type), id);
+                ContentNodeI oldNode = CmsManager.getInstance().getContentNode(keey);
+                if (oldNode != null) {
+                    // there is already a node, return null.
+                    return null;
+                }
+                
+                node = CmsManager.getInstance().createPrototypeContentNode(keey);
+            } catch (InvalidContentKeyException e) {
+                e.printStackTrace();
+                throw new ServerException("Invalid content key : " + type + ":" + id);
+            }
 
 	    TabDefinition tabDef = TranslatorToGwt.gwtTabDefinition(node);
 	    GwtContentNode gwtNode = TranslatorToGwt.getGwtNode(node, tabDef);
