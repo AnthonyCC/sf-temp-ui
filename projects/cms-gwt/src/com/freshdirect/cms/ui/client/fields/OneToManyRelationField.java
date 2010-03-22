@@ -74,7 +74,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 	private ToolButton sortButton;
 	private CheckBox selectCheckbox;
 
-	private CheckBoxSelectionModel<OneToManyModel> selection;
+	private CheckBoxSelectionModel<OneToManyModel> selection = new CheckBoxSelectionModel<OneToManyModel>();
 
 	protected String attributeKey;
 	protected String parentType;
@@ -455,10 +455,9 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 				idx++;
 			}
 		}
-		{
-			selection = new CheckBoxSelectionModel<OneToManyModel>();
-			config.add(selection.getColumn());
-		}
+		
+		config.add(selection.getColumn());
+			
 		return config;
 	}
 
@@ -731,8 +730,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			deleteButton.setEnabled(!readOnly);
 
 			if (readOnly) {
-				deleteButton.removeListener(Events.OnClick,
-						deleteButtonListener);
+				deleteButton.removeListener(Events.OnClick,	deleteButtonListener);
 			} else {
 				deleteButton.addListener(Events.OnClick, deleteButtonListener);
 			}
@@ -752,8 +750,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			selectCheckbox.setEnabled(!readOnly);
 			if (readOnly) {
 				selectCheckbox.removeListener(Events.OnClick, selectListener);
-				selectCheckbox
-						.removeListener(Events.OnKeyPress, selectListener);
+				selectCheckbox.removeListener(Events.OnKeyPress, selectListener);
 			} else {
 				selectCheckbox.addListener(Events.OnClick, selectListener);
 				selectCheckbox.addListener(Events.OnKeyPress, selectListener);
