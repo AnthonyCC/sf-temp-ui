@@ -488,7 +488,11 @@ public class LuceneSearchService implements ContentSearchServiceI {
 							query, // name + STEMMED_SUFFIX
 							query, // FULL_NAME + STEMMED_SUFFIX
 							query, // title
-							query  // title + STEMMED_SUFFIX
+							query,  // title + STEMMED_SUFFIX
+							query,
+							query,
+							query,
+							query
 					},
 					new String[] {
 							FIELD_CONTENT_ID,
@@ -501,7 +505,11 @@ public class LuceneSearchService implements ContentSearchServiceI {
 							"name" + STEMMED_SUFFIX,
 							"FULL_NAME" + STEMMED_SUFFIX,
 							"title",
-							"title" + STEMMED_SUFFIX
+							"title" + STEMMED_SUFFIX,
+							"question",
+							"answer",
+							"question"+STEMMED_SUFFIX,
+							"answer"+STEMMED_SUFFIX
 					}
 			    , STEMMER);
 
