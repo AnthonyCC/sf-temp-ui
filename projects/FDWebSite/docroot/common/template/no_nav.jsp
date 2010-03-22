@@ -70,9 +70,7 @@
 					<!-- content lands here -->
 					<tmpl:get name='content'/>
 					<!-- content ends above here-->
-					<br /><br />
-					
-					test</td>
+					<br /><br /></td>
 				<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr>
