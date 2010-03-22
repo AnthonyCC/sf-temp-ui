@@ -19,11 +19,11 @@ public class Faq extends ContentNodeModelImpl {
 	}
 	
 	public String getQuestion(){
-		return getAttribute("question", "");
+		return getAttribute("QUESTION", "");
 	}
 	
 	public String getAnswer(){
-		return getAttribute("answer", "");
+		return getAttribute("ANSWER", "");
 	}
 	
 	public String getDescription() {

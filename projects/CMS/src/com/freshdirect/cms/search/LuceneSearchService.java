@@ -506,10 +506,10 @@ public class LuceneSearchService implements ContentSearchServiceI {
 							"FULL_NAME" + STEMMED_SUFFIX,
 							"title",
 							"title" + STEMMED_SUFFIX,
-							"question",
-							"answer",
-							"question"+STEMMED_SUFFIX,
-							"answer"+STEMMED_SUFFIX
+							"QUESTION",
+							"ANSWER",
+							"QUESTION"+STEMMED_SUFFIX,
+							"ANSWER"+STEMMED_SUFFIX
 					}
 			    , STEMMER);
 
