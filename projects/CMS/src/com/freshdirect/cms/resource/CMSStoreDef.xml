@@ -293,6 +293,12 @@
 			<RelationshipDef name="FEATURED_BRANDS"  label="Featured Brands" cardinality="Many">
 				<DestinationDef contentType="Brand" />
 			</RelationshipDef>
+			<!-- Festured New Products / Brands -->
+			<RelationshipDef name="FEATURED_NEW_PRODBRANDS"  label="Featured New Prods/Brands" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+				<DestinationDef contentType="Brand" />
+			</RelationshipDef>
 			<RelationshipDef name="HOWTOCOOKIT_USAGE"  label="HTCI Usage" cardinality="Many">
 				<DestinationDef contentType="Domain" />
 			</RelationshipDef>

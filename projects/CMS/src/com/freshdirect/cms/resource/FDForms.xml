@@ -219,6 +219,7 @@
 						<fields>
 							<CmsField><attribute>FEATURED_PRODUCTS</attribute></CmsField>
 							<CmsField><attribute>FEATURED_BRANDS</attribute></CmsField>
+							<CmsField><attribute>FEATURED_NEW_PRODBRANDS</attribute></CmsField>
 							<CmsField><attribute>VIRTUAL_GROUP</attribute></CmsField>
 							<CmsField><attribute>FILTER_LIST</attribute></CmsField>
 							<CmsField><attribute>HOWTOCOOKIT_USAGE</attribute></CmsField>
