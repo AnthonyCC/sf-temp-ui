@@ -127,6 +127,20 @@ function copyConfirm(value){
 						<tr><td><%= material.getDescription() %></td><td><%= material.getSapId() %></td><td><%= material.getUPC() %></td></tr>
 					<% } %>
                 </table>
+
+                <%  if (product.getSkuCode() != null) { %>
+                <form action="product_view.jsp" method="post">
+                <input type=hidden name=action value=save>
+                <table width="600" cellspacing="2" cellpadding="0">
+                    <tr><th align="left" class="section_title">New / Back-in-Stock Manual Override</th></tr>
+                    <tr><td align="left">Date of becoming new <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.NEW_PRODUCT_DATE.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.NEW_PRODUCT_DATE) %>'>
+                    (use one of the following formats: MM/dd/yy, MM/dd/yyyy, MM/dd/yyyy HH:mm)</td></tr>
+                    <tr><td align="left">Back-in-stock date <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.BACK_IN_STOCK_DATE.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.BACK_IN_STOCK_DATE) %>'>
+                    (use one of the following formats: MM/dd/yy, MM/dd/yyyy, MM/dd/yyyy HH:mm)</td></tr>
+                    <tr><td colspan="2" align="center"><input type="submit" value="save changes"></td></tr>
+                </table>
+                </form>
+                <% } %>
                 <br>
                 
             <%  } %>

@@ -575,7 +575,7 @@ public class ContentFactory {
 					newProductsLastUpdated = System.currentTimeMillis();
 				} catch (FDResourceException e) {
 					LOGGER.error("failed to update new products cache; retrying a minute later", e);
-					newProductsLastUpdated += 60000;
+					newProductsLastUpdated = System.currentTimeMillis() - 14 * 60000;
 				}
 			}
 			return Collections.unmodifiableMap(newProducts);
@@ -660,7 +660,7 @@ public class ContentFactory {
 					backInStockProductsLastUpdated = System.currentTimeMillis();
 				} catch (FDResourceException e) {
 					LOGGER.error("failed to update back-in-stock products cache; retrying a minute later", e);
-					backInStockProductsLastUpdated += 60000;
+					backInStockProductsLastUpdated = System.currentTimeMillis() - 14 * 60000;
 				}
 			}
 			return Collections.unmodifiableMap(backInStockProducts);
@@ -706,5 +706,19 @@ public class ContentFactory {
 			return ((double) System.currentTimeMillis() - when.getTime()) / (double) DAY_IN_MILLISECONDS;
 		else
 			return (double) Integer.MIN_VALUE; // very long time ago
+	}
+	
+	/**
+	 * Forces to refresh the new and back-in-stock products cache
+	 */
+	public void refreshNewAndBackCache() {
+		synchronized (newProductsLock) {
+			newProductsLastUpdated = Integer.MIN_VALUE;
+			getNewProducts();
+		}
+		synchronized (backInStockProductsLock) {
+			backInStockProductsLastUpdated = Integer.MIN_VALUE;
+			getBackInStockProducts();
+		}
 	}
 }

@@ -466,7 +466,43 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException, FDResourceException {
+	public Map<String, Date> getOverriddenNewSkus() throws FDResourceException {
+		if (this.infoHome == null) {
+			this.lookupInfoHome();
+		}
+		try {
+			ErpInfoSB infoSB = this.infoHome.create();
+
+			return infoSB.getOverriddenNewSkus();
+
+		} catch (RemoteException re) {
+			this.infoHome = null;
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			this.infoHome = null;
+			throw new FDResourceException(ce);
+		}
+	}
+
+	public Map<String, Date> getOverriddenBackInStockSkus() throws FDResourceException {
+		if (this.infoHome == null) {
+			this.lookupInfoHome();
+		}
+		try {
+			ErpInfoSB infoSB = this.infoHome.create();
+
+			return infoSB.getOverriddenBackInStockSkus();
+
+		} catch (RemoteException re) {
+			this.infoHome = null;
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			this.infoHome = null;
+			throw new FDResourceException(ce);
+		}
+	}
+	
+	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws FDResourceException {
 		if (this.infoHome == null) {
 			this.lookupInfoHome();
 		}
@@ -474,6 +510,24 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			ErpInfoSB infoSB = this.infoHome.create();
 
 			return infoSB.getSkuAvailabilityHistory(skuCode);
+
+		} catch (RemoteException re) {
+			this.infoHome = null;
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			this.infoHome = null;
+			throw new FDResourceException(ce);
+		}		
+	}
+
+	public void refreshNewAndBackViews() throws FDResourceException {
+		if (this.infoHome == null) {
+			this.lookupInfoHome();
+		}
+		try {
+			ErpInfoSB infoSB = this.infoHome.create();
+
+			infoSB.refreshNewAndBackViews();
 
 		} catch (RemoteException re) {
 			this.infoHome = null;

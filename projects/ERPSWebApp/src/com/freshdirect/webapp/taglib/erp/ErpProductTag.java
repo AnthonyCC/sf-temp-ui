@@ -94,6 +94,17 @@ public class ErpProductTag extends com.freshdirect.framework.webapp.BodyTagSuppo
         if (pricing_unit_descr != null) {
             prod.getAttributes().setAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pricing_unit_descr);
         }
+
+        String new_product_date = request.getParameter(FormElementNameHelper.getFormElementName(prod, EnumAttributeName.NEW_PRODUCT_DATE.getName()));
+        if (new_product_date != null) {
+            prod.getAttributes().setAttribute(EnumAttributeName.NEW_PRODUCT_DATE.getName(), new_product_date);
+        }
+
+        String back_in_stock_date = request.getParameter(FormElementNameHelper.getFormElementName(prod, EnumAttributeName.BACK_IN_STOCK_DATE.getName()));
+        if (back_in_stock_date != null) {
+            prod.getAttributes().setAttribute(EnumAttributeName.BACK_IN_STOCK_DATE.getName(), back_in_stock_date);
+        }
+        
     }
     
     

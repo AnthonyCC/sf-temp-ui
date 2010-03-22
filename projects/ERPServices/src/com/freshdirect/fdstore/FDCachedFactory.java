@@ -403,4 +403,16 @@ public class FDCachedFactory {
 	public static List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws FDResourceException {
 		return FDFactory.getSkuAvailabilityHistory(skuCode);
 	}
+
+	public static Map<String, Date> getOverriddenNewSkus() throws FDResourceException {
+		return FDFactory.getOverriddenNewSkus();
+	}
+
+	public static Map<String, Date> getOverdiddenBackInStockSkus() throws FDResourceException {
+		return FDFactory.getOverriddenBackInStockSkus();
+	}
+	
+	public static void refreshNewAndBackViews() throws FDResourceException {
+		FDFactory.refreshNewAndBackViews();
+	}
 }

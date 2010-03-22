@@ -13,6 +13,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -1359,8 +1362,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			rs = ps.executeQuery();
 
 			Map<String, Date> skus = new TreeMap<String, Date>();
+			Date now = new Date();
+			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
 			while (rs.next()) {
-				skus.put(rs.getString(1), rs.getDate(2));
+				Date date = rs.getTimestamp(2);
+				if (date.before(now) && date.after(first))
+					skus.put(rs.getString(1), date);
 			}
 
 			return skus;
@@ -1395,14 +1402,130 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			rs = ps.executeQuery();
 
 			Map<String, Date> skus = new TreeMap<String, Date>();
+			Date now = new Date();
+			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
 			while (rs.next()) {
-				skus.put(rs.getString(1), rs.getDate(2));
+				Date date = rs.getTimestamp(2);
+				if (date.before(now) && date.after(first))
+					skus.put(rs.getString(1), date);
 			}
 
 			return skus;
 
 		} catch (SQLException sqle) {
 			LOGGER.error("Unable to find back in stock SKU dates", sqle);
+			throw new EJBException(sqle);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				LOGGER.warn("Unable to close db resources", sqle);
+			}
+		}
+	}
+	
+	private static DateFormat DATE_FORMAT1 = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+
+	private static DateFormat DATE_FORMAT2 = new SimpleDateFormat("MM/dd/yyyy");
+
+	private static DateFormat DATE_FORMAT3 = new SimpleDateFormat("MM/dd/yy");
+	
+	public Map<String, Date> getOverriddenNewSkus() {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT root_id, atr_value FROM erps.attributes WHERE atr_name = 'new_prod_date'");
+			rs = ps.executeQuery();
+
+			Map<String, Date> skus = new TreeMap<String, Date>();
+			Date now = new Date();
+			Date first = new Date(now.getTime() - 120l * 24l * 3600000l);
+			while (rs.next()) {
+				String sku = rs.getString(1);
+				String ds = rs.getString(2);
+				Date date;
+				try {
+					date = DATE_FORMAT1.parse(ds);
+				} catch (ParseException e) {
+					try {
+						date = DATE_FORMAT3.parse(ds);
+					} catch (ParseException e1) {
+						try {
+							date = DATE_FORMAT2.parse(ds);
+						} catch (ParseException e2) {
+							// skip this bad date
+							continue;
+						}
+					}
+				}
+				if (date.before(now) && date.after(first))
+					skus.put(sku, date);
+			}
+
+			return skus;
+
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to find overridden new skus dates", sqle);
+			throw new EJBException(sqle);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				LOGGER.warn("Unable to close db resources", sqle);
+			}
+		}
+	}
+
+	public Map<String, Date> getOverriddenBackInStockSkus() {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT root_id, atr_value FROM erps.attributes WHERE atr_name = 'back_in_stock'");
+			rs = ps.executeQuery();
+
+			Map<String, Date> skus = new TreeMap<String, Date>();
+			Date now = new Date();
+			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
+			while (rs.next()) {
+				String sku = rs.getString(1);
+				String ds = rs.getString(2);
+				Date date;
+				try {
+					date = DATE_FORMAT1.parse(ds);
+				} catch (ParseException e) {
+					try {
+						date = DATE_FORMAT3.parse(ds);
+					} catch (ParseException e1) {
+						try {
+							date = DATE_FORMAT2.parse(ds);
+						} catch (ParseException e2) {
+							// skip this bad date
+							continue;
+						}
+					}
+				}
+				if (date.before(now) && date.after(first))
+					skus.put(sku, date);
+			}
+
+			return skus;
+
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to find overridden back in stock SKU dates", sqle);
 			throw new EJBException(sqle);
 		} finally {
 			try {
@@ -1446,6 +1569,28 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			try {
 				if (rs != null)
 					rs.close();
+				if (ps != null)
+					ps.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				LOGGER.warn("Unable to close db resources", sqle);
+			}
+		}
+	}
+	
+	public void refreshNewAndBackViews() {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareCall("CALL erps.refresh_new_and_back()");
+			ps.execute();
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to update materialized views (NEW_PRODUCTS and BACK_IN_STOCK_PRODUCTS)", sqle);
+			throw new EJBException(sqle);
+		} finally {
+			try {
 				if (ps != null)
 					ps.close();
 				if (conn != null)

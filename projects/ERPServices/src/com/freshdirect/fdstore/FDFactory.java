@@ -443,8 +443,9 @@ class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			return sb.getNewSkus();
-
+			Map<String, Date> results = sb.getNewSkus();
+			results.putAll(sb.getOverriddenNewSkus());
+			return results;
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -460,7 +461,25 @@ class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			return sb.getBackInStockSkus();
+			Map<String, Date> results = sb.getBackInStockSkus();
+			results.putAll(sb.getOverriddenBackInStockSkus());
+			return results;
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	public static Map<String, Date> getOverriddenNewSkus() throws FDResourceException {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+			return sb.getOverriddenNewSkus();
 
 		} catch (CreateException ce) {
 			factoryHome=null;
@@ -471,6 +490,23 @@ class FDFactory {
 		}
 	}
 
+	public static Map<String, Date> getOverriddenBackInStockSkus() throws FDResourceException {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+			return sb.getOverriddenBackInStockSkus();
+
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
 	public static List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws FDResourceException {
 		if (factoryHome==null) {
 			lookupFactoryHome();
@@ -478,6 +514,23 @@ class FDFactory {
 		try {
 			FDFactorySB sb = factoryHome.create();
 			return sb.getSkuAvailabilityHistory(skuCode);
+
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	public static void refreshNewAndBackViews() throws FDResourceException {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+			sb.refreshNewAndBackViews();
 
 		} catch (CreateException ce) {
 			factoryHome=null;

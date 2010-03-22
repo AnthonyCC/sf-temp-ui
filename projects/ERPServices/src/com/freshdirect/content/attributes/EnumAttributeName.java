@@ -36,6 +36,8 @@ public class EnumAttributeName {
     public final static EnumAttributeName RESTRICTIONS				= new EnumAttributeName("restrictions", EnumAttributeType.STRING, "");
     public final static EnumAttributeName SPECIALPRODUCT			= new EnumAttributeName("specialproduct", EnumAttributeType.STRING, "");
     public final static EnumAttributeName ADVANCE_ORDER_FLAG		= new EnumAttributeName("advance_order_flag",EnumAttributeType.BOOLEAN,new Boolean(false));
+    public final static EnumAttributeName NEW_PRODUCT_DATE			= new EnumAttributeName("new_prod_date", EnumAttributeType.STRING, "");
+    public final static EnumAttributeName BACK_IN_STOCK_DATE		= new EnumAttributeName("back_in_stock", EnumAttributeType.STRING, "");
 
     private final String name;
     private final EnumAttributeType type;

@@ -9,7 +9,7 @@
 <%@page import="java.text.DateFormat"%>
 <%!
 DecimalFormat decimalFormat = new DecimalFormat("0.###");
-DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm");
+DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 String formatDay(Date now, Date then) {
 	double d = ((double) (now.getTime() - then.getTime())) / 1000. / 3600. / 24.;
@@ -85,7 +85,7 @@ table {
 }
 
 .warning {
-	color: #FF6633;
+	color: #FF6633 !important;
 }
 
 .comment {
@@ -124,6 +124,22 @@ table {
 .no-wrap {
 	white-space: nowrap;
 }
+.overridden {
+	background-color: #FF9999;
+}
+
+.legend {
+	margin: 4px;
+}
+
+.legend td {
+	margin: 4px;
+}
+
+.legend .color {
+	width: 8px;
+	height: 8px;
+}
 </style>
 </head>
 <body class="text12">
@@ -132,6 +148,15 @@ String skuCode = request.getParameter("skuCode");
 if (skuCode == null)
 	skuCode = "";
 boolean showProducts = request.getParameter("products") != null;
+if (request.getParameter("reload") != null) {
+	ContentFactory.getInstance().refreshNewAndBackCache();
+	response.sendRedirect(request.getRequestURI() + (showProducts ? "?products=1" : ""));
+	return;
+} else if (request.getParameter("refreshViews") != null) {
+	FDCachedFactory.refreshNewAndBackViews();
+	response.sendRedirect(request.getRequestURI() + (showProducts ? "?products=1" : ""));
+	return;
+}
  %>
 <form method="get" action="<%= request.getRequestURI() %>" id="form">
 <div class="form-header">
@@ -147,12 +172,20 @@ boolean showProducts = request.getParameter("products") != null;
 				<p class="upper-space lower-space"><a href="<%= request.getRequestURI() %>">Switch to SKU view</a></p>
 				<% } %>
 				</td>
+				<td class="text12 bold lower-space2">
+				<% if (!showProducts) { %>
+				<p class="upper-space lower-space"><a class="warning" href="<%= request.getRequestURI() + "?refreshViews=1" %>">Refresh materialized views</a> <span class="error text12" style="font-weight: bold;">&lt;&mdash; !!! USE WITH CARE !!!</span></p>
+				<% } else { %>
+				<p class="upper-space lower-space"><a href="<%= request.getRequestURI() + "?reload=1&products=1" %>">Reload cache</a></p>
+				<% } %>
+				</td>
 			</tr>
 		    <% if (!showProducts) { %>
 			<tr>
 				<td class="text12 bold">
-				<p class="lower-space">Specify a SKU code</p>
+				<p class="lower-space">To view the history of a SKU,<br>specify its SKU code</p>
 				<p><input type="text" name="skuCode" value="<%= skuCode %>"></p>
+				<p class="upper-space">or click on either SKU in the table(s) below</p>
 				</td>
 			</tr>
 			<% } %>
@@ -216,6 +249,7 @@ boolean showProducts = request.getParameter("products") != null;
 	<h2>New SKUs</h2>
 	<%
 	Map<String, Date> newSkus = FDCachedFactory.getNewSkus();
+	Map<String, Date> newOverridden = FDCachedFactory.getOverriddenNewSkus();
 	if (!newSkus.isEmpty()) {
 	 %>
 	<table class="data">
@@ -226,15 +260,22 @@ boolean showProducts = request.getParameter("products") != null;
 		</tr>
 		<%
 		for (Map.Entry<String, Date> entry : newSkus.entrySet()) {
+			boolean overridden = newOverridden.containsKey(entry.getKey());
 		 %>
 		<tr>
-			<td class="text12"><a href="<%= request.getRequestURI() + "?skuCode=" + entry.getKey() %>"><%= entry.getKey() %></a></td>
-			<td class="text12"><%= dateFormat.format(entry.getValue()) %></td>
-			<td class="text12"><%= formatDay(now, entry.getValue()) %></td>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><a href="<%= request.getRequestURI() + "?skuCode=" + entry.getKey() %>"><%= entry.getKey() %></a></td>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><%= dateFormat.format(entry.getValue()) %></td>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><%= formatDay(now, entry.getValue()) %></td>
 		</tr>
 		<%
 		}
 		 %>
+	</table>
+	<table class="legend">
+		<tr>
+			<td class="text12 color"><div class="overridden color">&nbsp;</div></td>
+			<td class="text12">&nbsp;&ndash;&nbsp;manually overridden</td>
+		</tr>
 	</table>
 	<%
 	} else {
@@ -248,6 +289,7 @@ boolean showProducts = request.getParameter("products") != null;
 	<h2>Back-in-Stock SKUs</h2>
 	<%
 	Map<String, Date> backInStockSkus = FDCachedFactory.getBackInStockSkus();
+	Map<String, Date> backOverridden = FDCachedFactory.getOverdiddenBackInStockSkus();
 	if (!backInStockSkus.isEmpty()) {
 	 %>
 	<table class="data">
@@ -258,15 +300,22 @@ boolean showProducts = request.getParameter("products") != null;
 		</tr>
 		<%
 		for (Map.Entry<String, Date> entry : backInStockSkus.entrySet()) {
+			boolean overridden = backOverridden.containsKey(entry.getKey());
 		 %>
 		<tr>
-			<td class="text12"><a href="<%= request.getRequestURI() + "?sku_code=" + entry.getKey() %>"><%= entry.getKey() %></a></td>
-			<td class="text12"><%= dateFormat.format(entry.getValue()) %></td>
-			<td class="text12"><%= formatDay(now, entry.getValue()) %></td>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><a href="<%= request.getRequestURI() + "?sku_code=" + entry.getKey() %>"><%= entry.getKey() %></a></td>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><%= dateFormat.format(entry.getValue()) %></td>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><%= formatDay(now, entry.getValue()) %></td>
 		</tr>
 		<%
 		}
 		 %>
+	</table>
+	<table class="legend">
+		<tr>
+			<td class="text12 color"><div class="overridden color">&nbsp;</div></td>
+			<td class="text12">&nbsp;&ndash;&nbsp;manually overridden</td>
+		</tr>
 	</table>
 	<%
 	} else {
