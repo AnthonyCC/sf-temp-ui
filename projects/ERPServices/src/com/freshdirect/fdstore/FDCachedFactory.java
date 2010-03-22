@@ -11,6 +11,7 @@ package com.freshdirect.fdstore;
 import java.util.*;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
+import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.framework.util.*;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -403,5 +404,15 @@ public class FDCachedFactory {
 		return FDFactory.findPeakProduceSKUsByDepartment(skuPrefixes);
 	}
 	
+	public static Map<String, Date> getNewSkusTest() throws FDResourceException {
+		return FDFactory.getNewSkusTest();
+	}
+
+	public static Map<String, Date> getBackInStockSkusTest() throws FDResourceException {
+		return FDFactory.getBackInStockSkusTest();
+	}
 	
+	public static List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws FDResourceException {
+		return FDFactory.getSkuAvailabilityHistory(skuCode);
+	}
 }
