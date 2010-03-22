@@ -437,13 +437,13 @@ class FDFactory {
 		
 	}
 
-	public static Map<String, Date> getNewSkusTest() throws FDResourceException {
+	public static Map<String, Date> getNewSkus() throws FDResourceException {
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			return sb.getNewSkusTest();
+			return sb.getNewSkus();
 
 		} catch (CreateException ce) {
 			factoryHome=null;
@@ -454,13 +454,13 @@ class FDFactory {
 		}
 	}
 
-	public static Map<String, Date> getBackInStockSkusTest() throws FDResourceException {
+	public static Map<String, Date> getBackInStockSkus() throws FDResourceException {
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			return sb.getBackInStockSkusTest();
+			return sb.getBackInStockSkus();
 
 		} catch (CreateException ce) {
 			factoryHome=null;

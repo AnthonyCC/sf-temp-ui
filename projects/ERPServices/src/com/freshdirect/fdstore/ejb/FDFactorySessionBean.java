@@ -430,14 +430,14 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public Map<String, Date> getNewSkusTest() throws FDResourceException {
+	public Map<String, Date> getNewSkus() throws FDResourceException {
 		if (this.infoHome == null) {
 			this.lookupInfoHome();
 		}
 		try {
 			ErpInfoSB infoSB = this.infoHome.create();
 
-			return infoSB.getNewSkusTest();
+			return infoSB.getNewSkus();
 
 		} catch (RemoteException re) {
 			this.infoHome = null;
@@ -448,14 +448,14 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public Map<String, Date> getBackInStockSkusTest() throws FDResourceException {
+	public Map<String, Date> getBackInStockSkus() throws FDResourceException {
 		if (this.infoHome == null) {
 			this.lookupInfoHome();
 		}
 		try {
 			ErpInfoSB infoSB = this.infoHome.create();
 
-			return infoSB.getBackInStockSkusTest();
+			return infoSB.getBackInStockSkus();
 
 		} catch (RemoteException re) {
 			this.infoHome = null;

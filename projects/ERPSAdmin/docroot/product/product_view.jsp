@@ -3,6 +3,7 @@
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.util.FormElementNameHelper' %>
 <%@ page import='com.freshdirect.erp.model.*' %>
+<%@ page import='java.util.*' %>
 <%@ page import='java.text.DecimalFormat' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

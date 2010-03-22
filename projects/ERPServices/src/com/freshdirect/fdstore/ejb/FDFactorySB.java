@@ -100,9 +100,9 @@ public interface FDFactorySB extends EJBObject {
 	
 	public Collection getZoneInfos(String zoneIds[]) throws RemoteException, FDResourceException;
 
-	public Map<String, Date> getNewSkusTest() throws RemoteException, FDResourceException;
+	public Map<String, Date> getNewSkus() throws RemoteException, FDResourceException;
 
-	public Map<String, Date> getBackInStockSkusTest() throws RemoteException, FDResourceException;
+	public Map<String, Date> getBackInStockSkus() throws RemoteException, FDResourceException;
 	
 	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException, FDResourceException; 
 }

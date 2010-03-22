@@ -207,14 +207,7 @@ public class Warmup {
 		// initiating the asynchronous load of new and reintroduced products cache
 		if (FDStoreProperties.isPreloadNewness()) {
 			LOGGER.info("preloading product newness");
-			contentFactory.getProductNewnesses();
-			LOGGER.info("preloading product newness, phase #2");
-			contentFactory.getNewProducts(60, null);
-			contentFactory.getNewProducts(30, null);
-			contentFactory.getNewProducts(21, null);
-			contentFactory.getNewProducts(15, null);
-			contentFactory.getNewProducts(14, null);
-			contentFactory.getNewProducts(7, null);
+			contentFactory.getNewProducts();
 			LOGGER.info("finished preloading product newness");
 		} else {
 			LOGGER.info("skipped preloading product newness");			
@@ -222,12 +215,7 @@ public class Warmup {
 
 		if (FDStoreProperties.isPreloadReintroduced()) {
 			LOGGER.info("preloading reintroduced products");
-			contentFactory.getReintroducedProducts(60, null);
-			contentFactory.getReintroducedProducts(30, null);
-			contentFactory.getReintroducedProducts(21, null);
-			contentFactory.getReintroducedProducts(15, null);
-			contentFactory.getReintroducedProducts(14, null);
-			contentFactory.getReintroducedProducts(7, null);
+			contentFactory.getBackInStockProducts();
 			LOGGER.info("finished preloading reintroduced products");
 		} else {
 			LOGGER.info("skipped preloading reintroduced products");			

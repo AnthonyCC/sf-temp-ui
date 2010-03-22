@@ -1007,6 +1007,11 @@ public class ScoreProvider implements DataAccess {
 			"Newness",
 			FactorUtil.getNewnessLookup()
 		);
+
+		storeLookups.put(
+			"BackInStock",
+			FactorUtil.getBackInStockLookup()
+		);
 		// Database scores
 		
 		

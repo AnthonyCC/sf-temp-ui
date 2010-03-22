@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -272,12 +273,7 @@ public class FactorUtil {
 	public static StoreLookup getNewnessLookup() {
 		return new StoreLookup() {
 			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
-				Number n = null;
-				try {
-					n = (Number) ContentFactory.getInstance().getProductNewnesses().get(contentNode);
-				} catch (FDResourceException e) {
-				}
-				return n != null ? n.doubleValue() : Integer.MIN_VALUE;
+				return ContentFactory.getInstance().getProductAge((ProductModel) contentNode);
 			}
 			
 			@Override
@@ -287,6 +283,19 @@ public class FactorUtil {
 		};
 	}
 	
+	public static StoreLookup getBackInStockLookup() {
+		return new StoreLookup() {
+			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return ContentFactory.getInstance().getBackInStockProductAge((ProductModel) contentNode);
+			}
+			
+			@Override
+			public void reloadCache() {
+			                
+			}
+		};
+	}
+
 	protected static class ReorderRateConverter extends FactorRangeConverter {
 
 		private Set<String> dbColumns =

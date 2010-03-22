@@ -380,18 +380,6 @@ public class FDCachedFactory {
 		return foundProducts;
 	}
 
-	public static Collection getNewSkuCodes(int days) throws FDResourceException {
-    	return FDFactory.getNewSkuCodes(days);
-    }
-	
-	public static Map<String, Integer> getSkusOldness() throws FDResourceException {
-    	return FDFactory.getSkusOldness();
-    }
-
-	public static Collection getReintroducedSkuCodes(int days) throws FDResourceException {
-    	return FDFactory.getReintroducedSkuCodes(days);
-    }
-
 	public static Collection getOutOfStockSkuCodes() throws FDResourceException {
 		return FDFactory.getOutOfStockSkuCodes();
 	}
@@ -404,12 +392,12 @@ public class FDCachedFactory {
 		return FDFactory.findPeakProduceSKUsByDepartment(skuPrefixes);
 	}
 	
-	public static Map<String, Date> getNewSkusTest() throws FDResourceException {
-		return FDFactory.getNewSkusTest();
+	public static Map<String, Date> getNewSkus() throws FDResourceException {
+		return FDFactory.getNewSkus();
 	}
 
-	public static Map<String, Date> getBackInStockSkusTest() throws FDResourceException {
-		return FDFactory.getBackInStockSkusTest();
+	public static Map<String, Date> getBackInStockSkus() throws FDResourceException {
+		return FDFactory.getBackInStockSkus();
 	}
 	
 	public static List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws FDResourceException {

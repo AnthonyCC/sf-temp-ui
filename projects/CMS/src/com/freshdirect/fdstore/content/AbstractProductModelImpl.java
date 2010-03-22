@@ -182,13 +182,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
     }
 	
 	public boolean isNew() {
-		try {
-			Collection newProds = ContentFactory.getInstance().getNewProducts(
-					FDStoreProperties.getSmartstoreNewproductsDays(), null);
-			return newProds != null && newProds.contains(this);
-		} catch (FDResourceException e) {
-			return false;
-		}
+		return ContentFactory.getInstance().getNewProducts().containsKey(this);
 	}
 
         public int getDealPercentage() {

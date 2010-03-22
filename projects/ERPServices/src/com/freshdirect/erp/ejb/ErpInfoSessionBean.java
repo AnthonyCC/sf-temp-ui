@@ -1346,87 +1346,16 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		return null;
 	}
 
-	private static final String QUERY_NEW_SKUS_TEST =
-		"SELECT sku_code, " +
-		"  new_product_date " +
-		"FROM " +
-		"  (SELECT sku_code, " +
-		"    event_date new_product_date " +
-		"  FROM " +
-		"    (SELECT sku_code, " +
-		"      version, " +
-		"      availability, " +
-		"      lead(availability, 1, NULL) over (partition BY sku_code order by version DESC nulls last) previous_availability, " +
-		"      lead(availability, 2, NULL) over (partition BY sku_code order by version DESC nulls last) previous_previous_availability, " +
-		"      event_date, " +
-		"      lead(event_date, 1, NULL) over (partition BY sku_code order by version DESC nulls last) previous_event_date, " +
-		"      lead(event_date, 2, NULL) over (partition BY sku_code order by version DESC nulls last) previous_previous_event_date, " +
-		"      ROW_NUMBER() OVER (PARTITION BY sku_code ORDER BY version DESC NULLS LAST) row_no " +
-		"    FROM " +
-		"      (SELECT sku_code, " +
-		"        version, " +
-		"        availability, " +
-		"        event_date " +
-		"      FROM " +
-		"        (SELECT sku_code, " +
-		"          version, " +
-		"          availability, " +
-		"          event_date, " +
-		"          lead(availability, 1, NULL) over (partition BY sku_code order by version DESC nulls last) previous_availability " +
-		"        FROM " +
-		"          (SELECT p2.sku_code, " +
-		"            h2.version, " +
-		"            CASE " +
-		"              WHEN p2.unavailability_status IS NULL " +
-		"              THEN 1 " +
-		"              ELSE 0 " +
-		"            END availability, " +
-		"            h2.date_created event_date " +
-		"          FROM erps.product p2 " +
-		"          INNER JOIN erps.history h2 " +
-		"          ON p2.version = h2.version " +
-		"          INNER JOIN " +
-		"            (SELECT p1.sku_code, " +
-		"              MIN(p1.version) first_available " +
-		"            FROM erps.product p1 " +
-		"            INNER JOIN erps.history h1 " +
-		"            ON p1.version                 = h1.version " +
-		"            WHERE h1.date_created         > sysdate - 120 " +
-		"            AND p1.unavailability_status IS NULL " +
-		"            GROUP BY p1.sku_code " +
-		"            ) sq1 ON p2.sku_code = sq1.sku_code " +
-		"          WHERE h2.version      <= sq1.first_available " +
-		"          ) sq2 " +
-		"        ) sq3 " +
-		"      WHERE previous_availability IS NULL " +
-		"      OR availability             <> previous_availability " +
-		"      ) sq4 " +
-		"    ) sq5 " +
-		"  WHERE row_no                       = 1 " +
-		"  AND event_date                     > sysdate - 120 " +
-		"  AND (previous_availability        IS NULL " +
-		"  OR previous_previous_availability IS NULL " +
-		"  OR previous_event_date             < event_date - 730) " +
-		"  ) sq6 " +
-		"INNER JOIN " +
-		"  (SELECT sku_code, " +
-		"    MAX(version) latest_version " +
-		"  FROM erps.product " +
-		"  GROUP BY sku_code " +
-		"  ) sq7 " +
-		"ON sq6.sku_code = sq7.sku_code " +
-		"INNER JOIN erps.product p3 " +
-		"ON p3.sku_code                  = sq7.sku_code " +
-		"AND p3.version                  = sq7.latest_version " +
-		"WHERE p3.unavailability_status IS NULL ";
+	private static final String QUERY_NEW_SKUS =
+		"SELECT * FROM erps.new_products";
 
-	public Map<String, Date> getNewSkusTest() {
+	public Map<String, Date> getNewSkus() {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement(QUERY_NEW_SKUS_TEST);
+			ps = conn.prepareStatement(QUERY_NEW_SKUS);
 			rs = ps.executeQuery();
 
 			Map<String, Date> skus = new TreeMap<String, Date>();
@@ -1453,89 +1382,16 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	private static final String QUERY_BACK_IN_STOCK_SKUS_TEST = 
-		"SELECT sku_code, " +
-		"  back_in_stock_product_date " +
-		"FROM " +
-		"  (SELECT sku_code, " +
-		"    event_date back_in_stock_product_date " +
-		"  FROM " +
-		"    (SELECT sku_code, " +
-		"      version, " +
-		"      availability, " +
-		"      lead(availability, 1, NULL) over (partition BY sku_code order by version DESC nulls last) previous_availability, " +
-		"      lead(availability, 2, NULL) over (partition BY sku_code order by version DESC nulls last) previous_previous_availability, " +
-		"      event_date, " +
-		"      lead(event_date, 1, NULL) over (partition BY sku_code order by version DESC nulls last) previous_event_date, " +
-		"      lead(event_date, 2, NULL) over (partition BY sku_code order by version DESC nulls last) previous_previous_event_date, " +
-		"      ROW_NUMBER() OVER (PARTITION BY sku_code ORDER BY version DESC NULLS LAST) row_no " +
-		"    FROM " +
-		"      (SELECT sku_code, " +
-		"        version, " +
-		"        availability, " +
-		"        event_date " +
-		"      FROM " +
-		"        (SELECT sku_code, " +
-		"          version, " +
-		"          availability, " +
-		"          event_date, " +
-		"          lead(availability, 1, NULL) over (partition BY sku_code order by version DESC nulls last) previous_availability " +
-		"        FROM " +
-		"          (SELECT p2.sku_code, " +
-		"            h2.version, " +
-		"            CASE " +
-		"              WHEN p2.unavailability_status IS NULL " +
-		"              THEN 1 " +
-		"              ELSE 0 " +
-		"            END availability, " +
-		"            h2.date_created event_date " +
-		"          FROM erps.product p2 " +
-		"          INNER JOIN erps.history h2 " +
-		"          ON p2.version = h2.version " +
-		"          INNER JOIN " +
-		"            (SELECT p1.sku_code, " +
-		"              MIN(p1.version) first_available " +
-		"            FROM erps.product p1 " +
-		"            INNER JOIN erps.history h1 " +
-		"            ON p1.version                 = h1.version " +
-		"            WHERE h1.date_created         > sysdate - 30 " +
-		"            AND p1.unavailability_status IS NULL " +
-		"            GROUP BY p1.sku_code " +
-		"            ) sq1 ON p2.sku_code = sq1.sku_code " +
-		"          WHERE h2.version      <= sq1.first_available " +
-		"          ) sq2 " +
-		"        ) sq3 " +
-		"      WHERE previous_availability IS NULL " +
-		"      OR availability             <> previous_availability " +
-		"      ) sq4 " +
-		"    ) sq5 " +
-		"  WHERE row_no                        = 1 " +
-		"  AND event_date                      > sysdate - 30 " +
-		"  AND previous_availability          IS NOT NULL " +
-		"  AND previous_previous_availability IS NOT NULL " +
-		"  AND previous_event_date             < event_date - 273.75 " +
-		"  AND previous_event_date            >= event_date - 730 " +
-		"  ORDER BY sku_code " +
-		"  ) sq6 " +
-		"INNER JOIN " +
-		"  (SELECT sku_code, " +
-		"    MAX(version) latest_version " +
-		"  FROM erps.product " +
-		"  GROUP BY sku_code " +
-		"  ) sq7 " +
-		"ON sq6.sku_code = sq7.sku_code " +
-		"INNER JOIN erps.product p3 " +
-		"ON p3.sku_code                  = sq7.sku_code " +
-		"AND p3.version                  = sq7.latest_version " +
-		"WHERE p3.unavailability_status IS NULL";
+	private static final String QUERY_BACK_IN_STOCK_SKUS = 
+		"SELECT * FROM erps.back_in_stock_products";
 
-	public Map<String, Date> getBackInStockSkusTest() {
+	public Map<String, Date> getBackInStockSkus() {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement(QUERY_BACK_IN_STOCK_SKUS_TEST);
+			ps = conn.prepareStatement(QUERY_BACK_IN_STOCK_SKUS);
 			rs = ps.executeQuery();
 
 			Map<String, Date> skus = new TreeMap<String, Date>();

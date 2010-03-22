@@ -81,9 +81,9 @@ public interface ErpInfoSB extends EJBObject {
 
 	public List findPeakProduceSKUsByDepartment(List skuPrefixes) throws RemoteException;
 
-	public Map<String, Date> getNewSkusTest() throws RemoteException;
+	public Map<String, Date> getNewSkus() throws RemoteException;
 
-	public Map<String, Date> getBackInStockSkusTest() throws RemoteException;
+	public Map<String, Date> getBackInStockSkus() throws RemoteException;
 
 	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException;   
 }

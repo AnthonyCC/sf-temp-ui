@@ -3,9 +3,12 @@ package com.freshdirect.fdstore.content;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -42,13 +45,26 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author $Author:Robert Gayle$
  */
 public class ContentFactory {
-
-	final static Category LOGGER = LoggerFactory.getInstance(ContentFactory.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(ContentFactory.class);
 
 	private static ContentFactory instance = new ContentFactory();
+	
+	private static Map<ProductModel, Date> newProducts = Collections.emptyMap();
+	
+	private static long newProductsLastUpdated = Long.MIN_VALUE;
+	
+	private static final Object newProductsLock = new Object();
 
-	private static BalkingExpiringReference<Map<ContentKey, Integer>> productNewnesses = null;
+	private static Map<ProductModel, Date> backInStockProducts = Collections.emptyMap();
+	
+	private static long backInStockProductsLastUpdated = Long.MIN_VALUE;
 
+	private static final Object backInStockProductsLock = new Object();
+	
+	private static final long NEW_AND_BACK_REFRESH_PERIOD = 1000 * 60 * 15; // 15 minutes
+
+	private static final long DAY_IN_MILLISECONDS = 1000 * 3600 * 24;
+	
 	/**
 	 * @label caches
 	 */
@@ -76,6 +92,15 @@ public class ContentFactory {
 		LOGGER.info("ContentFactory instance replaced");
 	}
 
+	public static List<ProductModel> filterProductsByDeptartment(List<ProductModel> products, String departmentId) {
+		if (departmentId != null)
+			for (ListIterator<ProductModel> li = products.listIterator(); li.hasNext();) {
+				ProductModel p = li.next();
+				if (!departmentId.equals(p.getDepartment().getContentName()))
+					li.remove();
+			}
+		return products;
+	}
 
 	public ContentFactory() {
 		this.store = null;
@@ -221,7 +246,7 @@ public class ContentFactory {
 			if (primaryHome == null) {
 				CategoryModel ph = prod.getPrimaryHome();
 				if (ph != null) {
-				    primaryHome = (CategoryModel) ph;
+				    primaryHome = ph;
 				}
 			}
 
@@ -265,127 +290,6 @@ public class ContentFactory {
 		ProductModel pm = category.getProductByName(prodName);
 
 		return pm;
-	}
-	
-
-	private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
-
-	private static final TimedLruCache newProductsCache = new TimedLruCache(10, 1000 * 60 * 60 /* 1hour */);
-	
-	// for linked blocking queue core pool size is the max number of threads
-	private static Executor threadPool = new ThreadPoolExecutor(1, 1, 60,
-			TimeUnit.SECONDS, new LinkedBlockingQueue(), new ThreadPoolExecutor.DiscardPolicy());
-
-	public Collection<ProductModel> getNewProducts(int days, String deptId) throws FDResourceException {
-		final ContentFactory cf = ContentFactory.getInstance();
-		final Integer cacheKey = new Integer(days);
-		if (newProductsCache.get(cacheKey) == null) {
-			Collection<ProductModel> items = findProductsWithAge(days);
-			newProductsCache.put(cacheKey, items);
-			LOGGER.info("loaded " + days + "-day new products cache with "
-					+ items.size() + " items");
-		}
-		Collection<ProductModel> cached = (Collection<ProductModel>) newProductsCache.get(cacheKey);
-		if (cached != null) {
-			List<ProductModel> list = new ArrayList<ProductModel>(cached);
-			cf.filterProdsByDept(list, deptId);
-			return new HashSet<ProductModel>(list);
-		} else
-			return null;
-	}
-	
-	private Collection<ProductModel> findProductsWithAge(int days) throws FDResourceException {
-		List<ProductModel> products = new ArrayList<ProductModel>();
-		for (Map.Entry<ContentKey, Integer> entry : getProductNewnesses().entrySet()) {
-		    ContentKey key = entry.getKey();
-                    int age = Math.abs(((Integer) entry.getValue()).intValue());
-                    if (age <= days) {
-                        ContentNodeModel nodeModel = getContentNodeByKey(key);
-                        if (nodeModel instanceof ProductModel && filterProduct((ProductModel)nodeModel) != null) {
-                            products.add((ProductModel) nodeModel);
-                        }
-                    }
-		}
-		return products;
-	}
-	
-	public Map<ContentKey, Integer> getProductNewnesses() throws FDResourceException {
-            synchronized (sync) {
-                if (productNewnesses == null) {
-                    productNewnesses = new BalkingExpiringReference<Map<ContentKey, Integer>>(DAY_IN_MILLIS, threadPool, new HashMap<ContentKey, Integer>()) {
-                        protected Map<ContentKey, Integer> load() {
-                            String name = Thread.currentThread().getName();
-                            try {
-                                Thread.currentThread().setName("product-newness-calculation");
-                                Map<ContentKey, Integer> pn = extractProductNewnesses();
-                                newProductsCache.clear();
-                                return pn;
-                            } catch (FDResourceException e) {
-                                LOGGER.error("somethin' very error", e);
-                                return null;
-                            } finally {
-                                Thread.currentThread().setName(name);
-                            }
-                        }
-                    };
-                    productNewnesses.forceRefresh();
-                }
-            }
-            return productNewnesses.get();
-	}
-
-	private Map<ContentKey, Integer> extractProductNewnesses() throws FDResourceException {
-		final ContentFactory cf = ContentFactory.getInstance();
-		Map<String, Integer> so = FDCachedFactory.getSkusOldness();
-		Map<ContentKey, Integer> pn = new HashMap<ContentKey, Integer>(so.size());
-		for (Map.Entry<String, Integer> e : so.entrySet()) {
-		    ProductModel key = cf.filterProduct(e.getKey().toString());
-                    if (key != null) {
-                        ContentKey ckey = key.getContentKey();
-                        int nv = -((Integer) e.getValue()).intValue();
-                        if (pn.containsKey(ckey)) {
-                            int ov = ((Integer) pn.get(ckey)).intValue();
-                            if (nv > ov) {
-                                pn.put(ckey, new Integer(nv));
-                            }
-                        } else {
-                            pn.put(ckey, new Integer(nv));
-                        }
-                    }
-		}
-		return pn;
-	}
-
-	private static final Map reintroducedProductsCache = Collections.synchronizedMap(new HashMap());
-	
-	public Collection getReintroducedProducts(final int days, final String deptId) throws FDResourceException {
-	    final Integer cacheKey = new Integer(days);
-            if (!reintroducedProductsCache.containsKey(cacheKey)) {
-                reintroducedProductsCache.put(cacheKey, new BalkingExpiringReference(DAY_IN_MILLIS, threadPool) {
-                    protected Object load() {
-                        String name = Thread.currentThread().getName();
-                        try {
-                            Thread.currentThread().setName("reintroducedProductsCache-"+days);
-                            Collection skus = FDCachedFactory.getReintroducedSkuCodes(days);
-                            List prods = skus != null ? ContentFactory.this.filterWholeProducts(skus) : Collections.EMPTY_LIST;
-                            return prods;
-                        } catch (FDResourceException e) {
-                            LOGGER.info("failed to retrieve new sku codes for " + days + " days");
-                            return null;
-                        } finally {
-                            Thread.currentThread().setName(name);
-                        }
-                    }
-                });
-            }
-            Collection cached = (Collection) ((ExpiringReference) reintroducedProductsCache.get(cacheKey)).get();
-            if (cached != null) {
-                List list = new ArrayList(cached);
-                filterProdsByDept(list, deptId);
-                return list;
-            } else {
-                return null;
-            }
 	}
 
 	/**
@@ -433,13 +337,6 @@ public class ContentFactory {
 		return prods;
 	}
 
-	private ProductModel filterProduct(ProductModel prod) {
-		if (prod.isHidden() || !prod.isSearchable() || prod.isUnavailable()) {
-			return null;
-		} else
-			return prod;
-	}
-	
     private ProductModel filterProduct(String skuCode) {
         try {
             ProductModel prod = this.getProduct(skuCode);
@@ -454,20 +351,6 @@ public class ContentFactory {
             return null;
         }
     }
-    
-	
-
-	private void filterProdsByDept(List prods, String dept) {
-		if (dept == null) {
-			return;
-		}
-		for (ListIterator li = prods.listIterator(); li.hasNext();) {
-			ProductModel prod = (ProductModel) li.next();
-			if (!dept.equals(prod.getDepartment().getContentName())) {
-				li.remove();
-			}
-		}
-	}
 
 	public void preLoad() {
 
@@ -663,5 +546,165 @@ public class ContentFactory {
 	public void setCurrentPricingContext(PricingContext pricingContext) {
 		LOGGER.debug("setting pricing context to " + pricingContext + " in thread " + Thread.currentThread().getId());
 		currentPricingContext.set(pricingContext);
+	}
+	
+	/**
+	 * Return the products and their corresponding dates of becoming new
+	 * 
+	 * @return a {@link Map} of {@link ProductModel} - {@link Date} pairs
+	 */
+	public Map<ProductModel, Date> getNewProducts() {
+		synchronized (newProductsLock) {
+			if (System.currentTimeMillis() > newProductsLastUpdated + NEW_AND_BACK_REFRESH_PERIOD) {
+				// refresh
+				try {
+					Map<String, Date> skus = FDCachedFactory.getNewSkus();
+					Map<ProductModel, Date> newCache = new HashMap<ProductModel, Date>(skus.size());
+					for (Map.Entry<String, Date> entry : skus.entrySet()) {
+						SkuModel sku = (SkuModel) getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
+						if (!sku.isUnavailable()) {
+							ProductModel p = sku.getProductModel();
+							if (p != null) {
+								Date prev = newCache.get(p);
+								if (prev == null || entry.getValue().after(prev))
+									newCache.put(p, entry.getValue());
+							}
+						}
+					}
+					newProducts = newCache;
+					newProductsLastUpdated = System.currentTimeMillis();
+				} catch (FDResourceException e) {
+					LOGGER.error("failed to update new products cache; retrying a minute later", e);
+					newProductsLastUpdated += 60000;
+				}
+			}
+			return Collections.unmodifiableMap(newProducts);
+		}
+	}
+
+	/**
+	 * Return the products new in the last n days
+	 * 
+	 * @param inDays
+	 *            the n days criteria
+	 * @return the list of the products in the sorted order where the most recent product comes first
+	 */
+	public LinkedHashMap<ProductModel, Date> getNewProducts(int inDays) {
+		final Map<ProductModel, Date> x = getNewProducts();
+		List<ProductModel> products = new ArrayList<ProductModel>(x.size());
+		long limit = System.currentTimeMillis() - inDays * DAY_IN_MILLISECONDS;
+		for (Map.Entry<ProductModel, Date> entry : x.entrySet()) {
+			if (entry.getValue().getTime() > limit)
+				products.add(entry.getKey());
+		}
+		Collections.sort(products, new Comparator<ProductModel>() {
+			@Override
+			public int compare(ProductModel o1, ProductModel o2) {
+				return -x.get(o1).compareTo(x.get(o2));
+			}
+		});
+		LinkedHashMap<ProductModel, Date> productsInDays = new LinkedHashMap<ProductModel, Date>();
+		for (ProductModel p : products)
+			productsInDays.put(p, x.get(p));
+		return productsInDays;
+	}
+	
+	/**
+	 * Returns for how many days the product has been new.
+	 * 
+	 * @param product
+	 * @return the number of days (plus fraction of day)
+	 */
+	public double getProductAge(ProductModel product) {
+		Date when = getNewProducts().get(product);
+		if (when != null)
+			return ((double) System.currentTimeMillis() - when.getTime()) / (double) DAY_IN_MILLISECONDS;
+		else
+			return (double) Integer.MIN_VALUE; // very long time ago
+	}
+	
+	/**
+	 * Alias to {@link #getProductAge(ProductModel)}
+	 * 
+	 * @param product
+	 * @return
+	 */
+	public double getNewProductAge(ProductModel product) {
+		return getProductAge(product);
+	}
+
+	/**
+	 * Return the products and their corresponding dates of becoming back in stock
+	 * 
+	 * @return a {@link Map} of {@link ProductModel} - {@link Date} pairs
+	 */
+	public Map<ProductModel, Date> getBackInStockProducts() {
+		synchronized (backInStockProductsLock) {
+			if (System.currentTimeMillis() > backInStockProductsLastUpdated + NEW_AND_BACK_REFRESH_PERIOD) {
+				// refresh
+				try {
+					Map<String, Date> skus = FDCachedFactory.getBackInStockSkus();
+					Map<ProductModel, Date> newCache = new HashMap<ProductModel, Date>(skus.size());
+					for (Map.Entry<String, Date> entry : skus.entrySet()) {
+						SkuModel sku = (SkuModel) getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
+						if (!sku.isUnavailable()) {
+							ProductModel p = sku.getProductModel();
+							if (p != null) {
+								Date prev = newCache.get(p);
+								if (prev == null || entry.getValue().after(prev))
+									newCache.put(p, entry.getValue());
+							}
+						}
+					}
+					backInStockProducts = newCache;
+					backInStockProductsLastUpdated = System.currentTimeMillis();
+				} catch (FDResourceException e) {
+					LOGGER.error("failed to update back-in-stock products cache; retrying a minute later", e);
+					backInStockProductsLastUpdated += 60000;
+				}
+			}
+			return Collections.unmodifiableMap(backInStockProducts);
+		}
+	}
+
+	/**
+	 * Return the products back-in-stock in the last n days
+	 * 
+	 * @param inDays
+	 *            the n days criteria
+	 * @return the list of the products in the sorted order where the most recent product comes first
+	 */
+	public LinkedHashMap<ProductModel, Date> getBackInStockProducts(int inDays) {
+		final Map<ProductModel, Date> x = getBackInStockProducts();
+		List<ProductModel> products = new ArrayList<ProductModel>(x.size());
+		long limit = System.currentTimeMillis() - inDays * DAY_IN_MILLISECONDS;
+		for (Map.Entry<ProductModel, Date> entry : x.entrySet()) {
+			if (entry.getValue().getTime() > limit)
+				products.add(entry.getKey());
+		}
+		Collections.sort(products, new Comparator<ProductModel>() {
+			@Override
+			public int compare(ProductModel o1, ProductModel o2) {
+				return -x.get(o1).compareTo(x.get(o2));
+			}
+		});
+		LinkedHashMap<ProductModel, Date> productsInDays = new LinkedHashMap<ProductModel, Date>();
+		for (ProductModel p : products)
+			productsInDays.put(p, x.get(p));
+		return productsInDays;
+	}
+	
+	/**
+	 * Returns for how many days the product has been back in stock.
+	 * 
+	 * @param product
+	 * @return the number of days (plus fraction of day)
+	 */
+	public double getBackInStockProductAge(ProductModel product) {
+		Date when = getBackInStockProducts().get(product);
+		if (when != null)
+			return ((double) System.currentTimeMillis() - when.getTime()) / (double) DAY_IN_MILLISECONDS;
+		else
+			return (double) Integer.MIN_VALUE; // very long time ago
 	}
 }

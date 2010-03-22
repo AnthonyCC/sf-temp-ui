@@ -47,14 +47,10 @@ public class GetNewProductsTag extends AbstractGetterTag {
 	};
 
 	protected Object getResult() throws Exception {
-		Collection prods = ContentFactory.getInstance().getNewProducts(this.days, this.department);
-		if (prods != null) {
-			List ret = new ArrayList(prods);
-			Collections.sort(ret, prods.size() > 10 ? ProductModel.DEPTFULL_COMPARATOR : GLANCE_COMPARATOR);
-			return ret;
-		} else {
-			return Collections.EMPTY_LIST;
-		}
+		List<ProductModel> prods = new ArrayList<ProductModel>(ContentFactory.getInstance().getNewProducts(days).keySet());
+		prods = ContentFactory.filterProductsByDeptartment(prods, department);
+		Collections.sort(prods, prods.size() > 10 ? ProductModel.DEPTFULL_COMPARATOR : GLANCE_COMPARATOR);
+		return prods;
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {

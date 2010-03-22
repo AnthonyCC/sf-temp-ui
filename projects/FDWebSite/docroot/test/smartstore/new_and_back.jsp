@@ -9,6 +9,7 @@
 <%@page import="java.text.DateFormat"%>
 <%!
 DecimalFormat decimalFormat = new DecimalFormat("0.###");
+DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm");
 
 String formatDay(Date now, Date then) {
 	double d = ((double) (now.getTime() - then.getTime())) / 1000. / 3600. / 24.;
@@ -19,6 +20,8 @@ String formatDay(Date now, Date then) {
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.erp.SkuAvailabilityHistory"%>
 <%@page import="java.text.SimpleDateFormat"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -55,11 +58,15 @@ table {
 	width: 100%;
 }
 
-.form-header table td p.lower-space {
+.lower-space {
 	padding-bottom: 4px;
 }
 
-.form-header table td p.upper-space {
+.lower-space2 {
+	padding-bottom: 20px;
+}
+
+.upper-space {
 	padding-top: 4px;
 }
 
@@ -124,22 +131,35 @@ table {
 String skuCode = request.getParameter("skuCode");
 if (skuCode == null)
 	skuCode = "";
+boolean showProducts = request.getParameter("products") != null;
  %>
 <form method="get" action="<%= request.getRequestURI() %>" id="form">
-<div class="form-header" class="rec-chooser title14">
+<div class="form-header">
 <table>
 	<tr>
 		<td class="text12" colspan="2">
 		<table style="width: auto;">
+			<tr>
+				<td class="text12 bold lower-space2">
+				<% if (!showProducts) { %>
+				<p class="upper-space lower-space"><a href="<%= request.getRequestURI() + "?products=1" %>">Switch to product view</a></p>
+				<% } else { %>
+				<p class="upper-space lower-space"><a href="<%= request.getRequestURI() %>">Switch to SKU view</a></p>
+				<% } %>
+				</td>
+			</tr>
+		    <% if (!showProducts) { %>
 			<tr>
 				<td class="text12 bold">
 				<p class="lower-space">Specify a SKU code</p>
 				<p><input type="text" name="skuCode" value="<%= skuCode %>"></p>
 				</td>
 			</tr>
+			<% } %>
 		</table>
 		</td>
 	</tr>
+	<% if (!showProducts) { %>
 	<tr>
 		<td class="text12">
 			<p class="lower-space upper-space">
@@ -147,12 +167,14 @@ if (skuCode == null)
 			</p>
 		</td>
 	</tr>
+	<% } %>
 </table>
 </div>
 <div class="content-body">
 	<%
-	DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm");
 	String nullValue = "<span style=\"color: gray;\">(null)</null>";
+	Date now = new Date();
+	if (!showProducts) {
 	if (skuCode.length() > 0) {
 	%>
 	<div class="section-break">
@@ -193,8 +215,7 @@ if (skuCode == null)
 	<div class="section-break">
 	<h2>New SKUs</h2>
 	<%
-	Date now = new Date();
-	Map<String, Date> newSkus = FDCachedFactory.getNewSkusTest();
+	Map<String, Date> newSkus = FDCachedFactory.getNewSkus();
 	if (!newSkus.isEmpty()) {
 	 %>
 	<table class="data">
@@ -207,7 +228,7 @@ if (skuCode == null)
 		for (Map.Entry<String, Date> entry : newSkus.entrySet()) {
 		 %>
 		<tr>
-			<td class="text12"><%= entry.getKey() %></td>
+			<td class="text12"><a href="<%= request.getRequestURI() + "?skuCode=" + entry.getKey() %>"><%= entry.getKey() %></a></td>
 			<td class="text12"><%= dateFormat.format(entry.getValue()) %></td>
 			<td class="text12"><%= formatDay(now, entry.getValue()) %></td>
 		</tr>
@@ -226,7 +247,7 @@ if (skuCode == null)
 	<div class="section-break">
 	<h2>Back-in-Stock SKUs</h2>
 	<%
-	Map<String, Date> backInStockSkus = FDCachedFactory.getBackInStockSkusTest();
+	Map<String, Date> backInStockSkus = FDCachedFactory.getBackInStockSkus();
 	if (!backInStockSkus.isEmpty()) {
 	 %>
 	<table class="data">
@@ -239,7 +260,7 @@ if (skuCode == null)
 		for (Map.Entry<String, Date> entry : backInStockSkus.entrySet()) {
 		 %>
 		<tr>
-			<td class="text12"><%= entry.getKey() %></td>
+			<td class="text12"><a href="<%= request.getRequestURI() + "?sku_code=" + entry.getKey() %>"><%= entry.getKey() %></a></td>
 			<td class="text12"><%= dateFormat.format(entry.getValue()) %></td>
 			<td class="text12"><%= formatDay(now, entry.getValue()) %></td>
 		</tr>
@@ -255,6 +276,76 @@ if (skuCode == null)
 	}
 	 %>
 	</div>
+	<%
+	} else { // !showProducts
+	 %>
+	<div class="section-break">
+	<h2>New Products</h2>
+	<%
+	Map<ProductModel, Date> newProducts = ContentFactory.getInstance().getNewProducts(Integer.MAX_VALUE);
+	if (!newProducts.isEmpty()) {
+	 %>
+	<table class="data">
+		<tr>
+			<th class="text12">Product Id</th>
+			<th class="text12">Date</th>
+			<th class="text12">Age</th>
+		</tr>
+		<%
+		for (Map.Entry<ProductModel, Date> entry : newProducts.entrySet()) {
+		 %>
+		<tr>
+			<td class="text12"><%= entry.getKey().getContentName() %></td>
+			<td class="text12"><%= dateFormat.format(entry.getValue()) %></td>
+			<td class="text12"><%= formatDay(now, entry.getValue()) %></td>
+		</tr>
+		<%
+		}
+		 %>
+	</table>
+	<%
+	} else {
+	 %>
+	<div>No new products.</div>
+	<%
+	}
+	 %>
+	</div>
+	<div class="section-break">
+	<h2>Back-in-Stock Products</h2>
+	<%
+	Map<ProductModel, Date> backInStockProducts = ContentFactory.getInstance().getBackInStockProducts(Integer.MAX_VALUE);
+	if (!backInStockProducts.isEmpty()) {
+	 %>
+	<table class="data">
+		<tr>
+			<th class="text12">Product Id</th>
+			<th class="text12">Date</th>
+			<th class="text12">Age</th>
+		</tr>
+		<%
+		for (Map.Entry<ProductModel, Date> entry : backInStockProducts.entrySet()) {
+		 %>
+		<tr>
+			<td class="text12"><%= entry.getKey().getContentName() %></td>
+			<td class="text12"><%= dateFormat.format(entry.getValue()) %></td>
+			<td class="text12"><%= formatDay(now, entry.getValue()) %></td>
+		</tr>
+		<%
+		}
+		 %>
+	</table>
+	<%
+	} else {
+	 %>
+	<div>No back in stock products.</div>
+	<%
+	}
+	 %>
+	</div>
+	<%
+	} // !showProducts
+	 %>
 </div>
 </form>
 </body>
