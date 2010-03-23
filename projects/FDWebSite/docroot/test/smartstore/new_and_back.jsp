@@ -303,7 +303,7 @@ if (request.getParameter("reload") != null) {
 			boolean overridden = backOverridden.containsKey(entry.getKey());
 		 %>
 		<tr>
-			<td class="text12<%= overridden ? " overridden" : "" %>"><a href="<%= request.getRequestURI() + "?sku_code=" + entry.getKey() %>"><%= entry.getKey() %></a></td>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><a href="<%= request.getRequestURI() + "?skuCode=" + entry.getKey() %>"><%= entry.getKey() %></a></td>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><%= dateFormat.format(entry.getValue()) %></td>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><%= formatDay(now, entry.getValue()) %></td>
 		</tr>
