@@ -424,6 +424,18 @@ class DispatchComparator extends LogComparator
 			{
 				updates.add(obj);
 			}
+			if(( obj=compareValueswithNull("ISOVERRIDE",oldDispatch.getIsOverride(),newDispatch.getIsOverride()))!=null)
+			{
+				updates.add(obj);
+			}
+			if(( obj=compareValueswithNull("OVERRIDE_REASON_ID",oldDispatch.getOverrideReason(),newDispatch.getOverrideReason()))!=null)
+			{
+				updates.add(obj);
+			}
+			if(( obj=compareValueswithNull("OVERRIDE_USER",oldDispatch.getOverrideUser(),newDispatch.getOverrideUser()))!=null)
+			{
+				updates.add(obj);
+			}
 		}
 		
 		return result;

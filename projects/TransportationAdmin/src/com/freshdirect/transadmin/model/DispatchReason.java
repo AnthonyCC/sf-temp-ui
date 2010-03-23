@@ -26,5 +26,9 @@ public class DispatchReason
 		this.active = active;
 	}
 	
+	public String toString() 
+	{		
+		return code;
+	}
 	
 }
