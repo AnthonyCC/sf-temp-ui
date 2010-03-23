@@ -527,7 +527,7 @@ public class DispatchPlanUtil {
 				int i=0;
 				while(totalItr.hasNext())
 				{				
-					if(i==n-1) break;
+					if(i==n) break;
 					i++;
 					DispatchCommand temp=(DispatchCommand)totalItr.next();
 					if((temp.getStartTimeEx()!=null&&System.currentTimeMillis()>temp.getStartTimeEx().getTime())
@@ -941,5 +941,19 @@ public class DispatchPlanUtil {
 		else
 			return employee.getPunchInfo().isPunchedOut();
 
+	}
+	
+	public static boolean isEligibleForPlan(String kronosStatus,String trnStatus)
+	{
+		if("Inactive".equalsIgnoreCase(kronosStatus))
+		{
+			if("true".equalsIgnoreCase(trnStatus)) return true;			
+		}
+		if("Active".equalsIgnoreCase(kronosStatus))
+		{
+			if("true".equalsIgnoreCase(trnStatus)) return true;			
+			if(trnStatus==null) return true;
+		}
+		return false;
 	}
 }
