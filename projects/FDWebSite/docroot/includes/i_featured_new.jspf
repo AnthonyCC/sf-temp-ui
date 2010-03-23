@@ -1,0 +1,126 @@
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%
+	//for now, keep two lists
+		List pList=new ArrayList();
+		List bList=new ArrayList();
+	//for now, fake the params we need
+		CategoryModel currentCAT = null;
+		boolean isCat;
+		String catRefUrl ="";
+		int itemsMinToShow=1;
+		int itemsToShow=4;
+		int itemsShown=0;
+		String trkCodeNew="featNew";
+
+		String catIdNew = "usq_fw_cooking"; //testing category with data
+		ContentNodeModel currentFolderNew = ContentFactory.getInstance().getContentNode(catIdNew);
+		isCat = (currentFolderNew instanceof CategoryModel);
+		if (isCat) {
+			currentCAT = (CategoryModel)currentFolderNew;
+			//put items into lists
+				//pList = currentCAT.getFeaturedProducts();
+				//bList = currentCAT.getFeaturedBrands();
+				//pList.addAll(bList);
+
+			pList = currentCAT.getFeaturedNewProdBrands();
+			
+			catRefUrl = response.encodeURL("/category.jsp?catId="+currentCAT.getContentKey().getId()+"&trk="+trkCodeNew);
+		}
+	//make sure we have the minimum amount first
+	if (pList.size()>=itemsMinToShow) {
+%>
+		<div class="title16" style="text-align: left;">Our Favorite New Additions<br /><br /></div>
+		<table cellpadding="0" cellspacing="0" border="0" width="100%">
+			<tr valign="bottom">
+			<%
+				for (int i = 0; i < pList.size(); i++) {
+			
+					if (itemsShown>=itemsToShow) continue;
+
+					if (pList.get(i) instanceof ProductModel) {
+						//do product related stuff
+						ProductModel productMod=(ProductModel)pList.get(i);
+						if (productMod.isDiscontinued() || productMod.isUnavailable()) { continue; }
+
+						String prodNameAttribute = JspMethods.getProductNameToUse(productMod);
+						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catIdNew,productMod,prodNameAttribute,false);
+						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+						String actionURI = FDURLUtil.getProductURI( productMod, trkCodeNew );
+
+						%>
+							
+							<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
+								<display:ProductImage product="<%= productMod %>" showRolloverImage="false" action="<%= actionURI %>" />
+							</td>
+						<%
+						itemsShown++;
+					}else if (pList.get(i) instanceof BrandModel) {
+						//do brand related stuff
+						BrandModel brandMod=(BrandModel)pList.get(i);
+						if (brandMod==null) continue;
+						Image bLogo = brandMod.getLogoLarge();
+						if (bLogo==null) {
+							bLogo = new Image();
+							bLogo.setPath("/media_stat/images/layout/clear.gif");
+							bLogo.setWidth(12);
+							bLogo.setHeight(30);
+						 };
+						 
+						String brandLink = response.encodeURL("/category.jsp?catId="+catIdNew+"&brandValue="+brandMod.getContentName()+"&groceryVirtual="+catIdNew+"&trk="+trkCodeNew);
+						%>	
+						<td align="center">
+							<a href="<%= brandLink %>"><img src="<%= bLogo.getPath() %>" width="<%= bLogo.getWidth() %>" height="<%= bLogo.getHeight() %>" alt="<%= brandMod.getFullName() %>" border="0"></a>
+						</td>
+						<%
+						itemsShown++;
+					}
+				}
+				
+				//reset count
+				itemsShown=0;
+			%>
+			</tr>
+			<tr valign="top">
+			<%
+				for (int i = 0; i < pList.size(); i++) {
+
+						if (itemsShown>=itemsToShow) continue;
+
+							if (pList.get(i) instanceof ProductModel) {
+								//do product related stuff
+							ProductModel productMod=(ProductModel)pList.get(i);
+							if (productMod.isDiscontinued() || productMod.isUnavailable()) { continue; }
+
+							String prodNameAttribute = JspMethods.getProductNameToUse(productMod);
+							DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catIdNew,productMod,prodNameAttribute,false);
+							int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+							String actionURI = FDURLUtil.getProductURI( productMod, trkCodeNew );
+
+							%>
+								
+								<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
+									<display:ProductRating product="<%= productMod %>" action="<%= actionURI %>" />
+									<display:ProductName product="<%= productMod %>" action="<%= actionURI %>" showNew="true" />
+									<display:ProductPrice impression="<%= new ProductImpression(productMod) %>" showDescription="true" />
+								</td>
+							<%
+							itemsShown++;
+						}else if (pList.get(i) instanceof BrandModel) {
+							//do brand related stuff
+							BrandModel brandMod=(BrandModel)pList.get(i);
+							if (brandMod==null) continue;
+							 
+							String brandLink = response.encodeURL("/category.jsp?catId="+catIdNew+"&brandValue="+brandMod.getContentName()+"&groceryVirtual="+catIdNew+"&trk="+trkCodeNew);
+							%>
+							<td align="center">
+								<div><a href="<%= brandLink %>"><strong><%= brandMod.getFullName() %></strong><br />New Products</a></div>
+								<div class="text10" style="font-weight: normal; font-style: italic; color: #999;">(Click to see all)</div>
+							</td>
+							<%
+							itemsShown++;
+						}
+				}
+			%>
+			</tr>
+			</table>
+	<% } %>
