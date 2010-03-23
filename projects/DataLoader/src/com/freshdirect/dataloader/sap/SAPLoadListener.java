@@ -33,6 +33,8 @@ import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.sap.ejb.SAPLoaderHome;
 import com.freshdirect.dataloader.sap.ejb.SAPLoaderSB;
 import com.freshdirect.dataloader.sap.jco.SapBatchListenerI;
+import com.freshdirect.erp.ejb.ErpInfoHome;
+import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -324,8 +326,11 @@ public class SAPLoadListener implements SapBatchListenerI {
 			sapl.loadData(classes, activeMaterials, characteristicValuePrices);
 
 			LOGGER.info("----- loaded data -----");
-			
-			LOGGER.info("----- normally exiting doLoad() -----");
+
+	    	if (refreshNewAndBack(ctx))
+	    		LOGGER.info("----- normally exiting doLoad() -----");
+	    	else
+	    		LOGGER.info("----- dLoad() completed with warnings -----");
 
 		} catch (CreateException ce) {
 			LOGGER.warn("Unable to create session bean", ce);
@@ -340,6 +345,34 @@ public class SAPLoadListener implements SapBatchListenerI {
 			}
 		}
 
+	}
+
+	public static boolean refreshNewAndBack(Context ctx) {
+		LOGGER.info("----- refreshing new and back-in-stock products materialized views -----");
+		try {
+			ErpInfoHome infoHome = (ErpInfoHome) ctx.lookup("freshdirect.erp.Info");
+
+			ErpInfoSB infoSB = infoHome.create();
+
+			try {
+				infoSB.refreshNewAndBackViews();
+			} catch (RemoteException e) {
+				LOGGER.error("Unable to refresh new and back-in-stock products materialized views", e);
+				return false;
+			}
+		} catch (NamingException e) {
+		    LOGGER.error("Unable to find home for ErpInfo", e);
+			return false;
+		} catch (CreateException e) {
+		    LOGGER.error("Unable to create a new version of an ErpInfo", e);
+			return false;
+		} catch (RemoteException e) {
+		    LOGGER.error("Unexpected system level exception while trying to create an ErpInfo", e);
+			return false;
+		}
+		
+		LOGGER.info("----- refreshing new and back-in-stock products materialized views completed successfully -----");
+		return true;
 	}
 
 }
