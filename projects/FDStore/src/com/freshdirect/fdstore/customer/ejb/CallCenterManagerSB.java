@@ -105,7 +105,7 @@ public interface CallCenterManagerSB extends EJBObject {
 	
 	public Map returnOrders(FDActionInfo info, List returnOrders) throws FDResourceException, RemoteException;
 	
-	public int fixSettlemnentBatch(String batch_id) throws FDResourceException, RemoteException;
+	public int fixSettlemnentBatch(String batch_id) throws FDResourceException, RemoteException;	
 	
-
+	public void saveTopFaqs(List faqIds) throws FDResourceException, RemoteException;
 }

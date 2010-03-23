@@ -1794,7 +1794,37 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-
-
+	
+	private static final String INSERT_TOP_FAQS =
+		"INSERT INTO CUST.TOP_FAQS(CMSNODE_ID, TIME_STAMP) VALUES(?,?)";
+	public void saveTopFaqs(List faqIds) throws FDResourceException, RemoteException{
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			List lst = new ArrayList();
+			Date date = new Date();
+			PreparedStatement ps = conn.prepareStatement(INSERT_TOP_FAQS);
+			for (Iterator iterator = faqIds.iterator(); iterator.hasNext();) {
+				String faqNodeId = (String) iterator.next();
+				ps.setString(1, faqNodeId);
+				ps.setTimestamp(2, new java.sql.Timestamp(date.getTime()));	
+				ps.addBatch();
+			}
+			int[] result = ps.executeBatch();			
+			ps.close();			
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle) {
+					LOGGER.debug("Error while cleaning:", sqle);
+				}
+			}
+		}
+	}
+   
 
 }

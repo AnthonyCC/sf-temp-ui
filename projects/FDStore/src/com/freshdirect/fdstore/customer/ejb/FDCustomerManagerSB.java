@@ -721,5 +721,7 @@ public interface FDCustomerManagerSB extends EJBObject {
     public void saveDonationOptIn(String custId, String saleId, boolean optIn)throws RemoteException,FDResourceException ;
     
     public void resubmitGCOrders() throws RemoteException, FDResourceException;
+    
+    public List getTopFaqs() throws FDResourceException, RemoteException;
 }
 

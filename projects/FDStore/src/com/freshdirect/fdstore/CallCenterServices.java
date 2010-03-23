@@ -768,6 +768,43 @@ public class CallCenterServices {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	
+	public static List getTopFaqs() throws FDResourceException {
+		/*if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getTopFaqs();
+
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}*/
+		return FDCustomerManager.getTopFaqs();
+	}
+	
+	public static void saveTopFaqs(List faqIds) throws FDResourceException{
+		
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			sb.saveTopFaqs(faqIds);
+
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
 
 
 } // class CallCenterServices

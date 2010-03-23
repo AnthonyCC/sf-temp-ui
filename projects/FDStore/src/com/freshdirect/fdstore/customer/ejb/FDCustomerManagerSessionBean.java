@@ -4914,4 +4914,35 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				throw new FDResourceException(ce);
 			} 
 		}
+		
+		
+		private static final String TOP_FAQS =
+			"select CMSNODE_ID from CUST.TOP_FAQS where TIME_STAMP = (select max(TIME_STAMP) from CUST.TOP_FAQS)";
+		public List getTopFaqs() throws FDResourceException, RemoteException{
+			Connection conn = null;
+			try {
+				conn = this.getConnection();
+				List lst = new ArrayList();
+				PreparedStatement ps = conn.prepareStatement(TOP_FAQS);
+				ResultSet rs = ps.executeQuery();
+				while(rs.next()){			
+					lst.add(rs.getString("CMSNODE_ID"));
+				}
+				rs.close();
+				ps.close();
+
+				return lst;
+			} catch (SQLException sqle) {
+				LOGGER.error(sqle.getMessage());
+				throw new FDResourceException(sqle);
+			} finally {
+				if (conn != null) {
+					try {
+						conn.close();
+					} catch (SQLException sqle) {
+						LOGGER.debug("Error while cleaning:", sqle);
+					}
+				}
+			}
+		}
 }
