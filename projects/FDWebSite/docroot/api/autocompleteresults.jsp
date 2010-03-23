@@ -6,7 +6,6 @@
 	/* author greg
 	*/
 
-	
 	if (request.getParameter("prefix") != null && request.getParameter("prefix") != "") {
 		List results = ContentSearch.getInstance().getAutocompletions(request.getParameter("prefix"));				
 		//System.err.println(request.getParameter("prefix") + "(" + (results != null ? results.size() : 0 )+ ")");
