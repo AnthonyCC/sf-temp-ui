@@ -12,6 +12,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -443,8 +444,19 @@ class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			Map<String, Date> results = sb.getNewSkus();
-			results.putAll(sb.getOverriddenNewSkus());
+			Date now = new Date();
+			Date first = new Date(now.getTime() - 120l * 24l * 3600000l);
+			Map<String, Date> regular = sb.getNewSkus();
+			Map<String, Date> overridden = sb.getOverriddenNewSkus();
+			Map<String, Date> results = new HashMap<String, Date>((regular.size() + overridden.size()) * 4 / 3);
+			for (Map.Entry<String, Date> entry : regular.entrySet())
+				if (entry.getValue().after(first) && entry.getValue().before(now))
+					results.put(entry.getKey(), entry.getValue());
+			for (Map.Entry<String, Date> entry : overridden.entrySet())
+				if (entry.getValue().compareTo(first) <= 0)
+					results.remove(entry.getKey());
+				else if (entry.getValue().before(now))
+					results.put(entry.getKey(), entry.getValue());
 			return results;
 		} catch (CreateException ce) {
 			factoryHome=null;
@@ -461,8 +473,19 @@ class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			Map<String, Date> results = sb.getBackInStockSkus();
-			results.putAll(sb.getOverriddenBackInStockSkus());
+			Date now = new Date();
+			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
+			Map<String, Date> regular = sb.getBackInStockSkus();
+			Map<String, Date> overridden = sb.getOverriddenBackInStockSkus();
+			Map<String, Date> results = new HashMap<String, Date>((regular.size() + overridden.size()) * 4 / 3);
+			for (Map.Entry<String, Date> entry : regular.entrySet())
+				if (entry.getValue().after(first) && entry.getValue().before(now))
+					results.put(entry.getKey(), entry.getValue());
+			for (Map.Entry<String, Date> entry : overridden.entrySet())
+				if (entry.getValue().compareTo(first) <= 0)
+					results.remove(entry.getKey());
+				else if (entry.getValue().before(now))
+					results.put(entry.getKey(), entry.getValue());
 			return results;
 		} catch (CreateException ce) {
 			factoryHome=null;
@@ -479,8 +502,14 @@ class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			return sb.getOverriddenNewSkus();
-
+			Date now = new Date();
+			Date first = new Date(now.getTime() - 120l * 24l * 3600000l);
+			Map<String, Date> overridden = sb.getOverriddenNewSkus();
+			Map<String, Date> results = new HashMap<String, Date>(overridden.size() * 4 / 3);
+			for (Map.Entry<String, Date> entry : overridden.entrySet())
+				if (entry.getValue().after(first) && entry.getValue().before(now))
+					results.put(entry.getKey(), entry.getValue());
+			return results;
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -496,8 +525,14 @@ class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			return sb.getOverriddenBackInStockSkus();
-
+			Date now = new Date();
+			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
+			Map<String, Date> overridden = sb.getOverriddenBackInStockSkus();
+			Map<String, Date> results = new HashMap<String, Date>(overridden.size() * 4 / 3);
+			for (Map.Entry<String, Date> entry : overridden.entrySet())
+				if (entry.getValue().after(first) && entry.getValue().before(now))
+					results.put(entry.getKey(), entry.getValue());
+			return results;
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");

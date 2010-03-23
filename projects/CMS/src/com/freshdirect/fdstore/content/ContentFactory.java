@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,10 +13,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Category;
 
@@ -33,11 +28,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.framework.util.BalkingExpiringReference;
-import com.freshdirect.framework.util.Counter;
-import com.freshdirect.framework.util.ExpiringReference;
 import com.freshdirect.framework.util.LruCache;
-import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -76,8 +67,6 @@ public class ContentFactory {
 	/** Map of {@link ContentKey} (IDs) -> {@link com.freshdirect.fdstore.content.ContentNodeModel} */
 	private final Map<ContentKey, ContentNodeModel> nodesByKey;
 	
-	private final Object sync = new Object();
-
 	/** Map of sku codes / product nodes */
 	private LruCache<String,ContentKey> skuProduct;
 	

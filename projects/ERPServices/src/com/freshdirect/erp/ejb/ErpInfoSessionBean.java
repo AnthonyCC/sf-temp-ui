@@ -1362,12 +1362,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			rs = ps.executeQuery();
 
 			Map<String, Date> skus = new TreeMap<String, Date>();
-			Date now = new Date();
-			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
 			while (rs.next()) {
-				Date date = rs.getTimestamp(2);
-				if (date.before(now) && date.after(first))
-					skus.put(rs.getString(1), date);
+				skus.put(rs.getString(1), rs.getTimestamp(2));
 			}
 
 			return skus;
@@ -1402,12 +1398,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			rs = ps.executeQuery();
 
 			Map<String, Date> skus = new TreeMap<String, Date>();
-			Date now = new Date();
-			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
 			while (rs.next()) {
-				Date date = rs.getTimestamp(2);
-				if (date.before(now) && date.after(first))
-					skus.put(rs.getString(1), date);
+				skus.put(rs.getString(1), rs.getTimestamp(2));
 			}
 
 			return skus;
@@ -1445,8 +1437,6 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			rs = ps.executeQuery();
 
 			Map<String, Date> skus = new TreeMap<String, Date>();
-			Date now = new Date();
-			Date first = new Date(now.getTime() - 120l * 24l * 3600000l);
 			while (rs.next()) {
 				String sku = rs.getString(1);
 				String ds = rs.getString(2);
@@ -1465,8 +1455,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						}
 					}
 				}
-				if (date.before(now) && date.after(first))
-					skus.put(sku, date);
+				skus.put(sku, date);
 			}
 
 			return skus;
@@ -1498,8 +1487,6 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			rs = ps.executeQuery();
 
 			Map<String, Date> skus = new TreeMap<String, Date>();
-			Date now = new Date();
-			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
 			while (rs.next()) {
 				String sku = rs.getString(1);
 				String ds = rs.getString(2);
@@ -1518,8 +1505,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						}
 					}
 				}
-				if (date.before(now) && date.after(first))
-					skus.put(sku, date);
+				skus.put(sku, date);
 			}
 
 			return skus;
