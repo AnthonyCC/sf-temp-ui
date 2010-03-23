@@ -164,6 +164,50 @@
                                }
                             
 
+                        /**
+                        * field for ReferenceNumber
+                        */
+
+                        
+                                    protected java.lang.String localReferenceNumber ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localReferenceNumberTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getReferenceNumber(){
+                               return localReferenceNumber;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ReferenceNumber
+                               */
+                               public void setReferenceNumber(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localReferenceNumberTracker = true;
+                                       } else {
+                                          localReferenceNumberTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localReferenceNumber=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -357,6 +401,40 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
+                             } if (localReferenceNumberTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"referenceNumber", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"referenceNumber");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("referenceNumber");
+                                    }
+                                
+
+                                          if (localReferenceNumber==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("referenceNumber cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localReferenceNumber);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
                              }
                     xmlWriter.writeEndElement();
                
@@ -543,7 +621,16 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRouteId));
-                            }
+                            } if (localReferenceNumberTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "referenceNumber"));
+                                 
+                                        if (localReferenceNumber != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localReferenceNumber));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("referenceNumber cannot be null!!");
+                                        }
+                                    }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -673,6 +760,24 @@
                                         
                                                object.setRouteId(java.lang.Integer.MIN_VALUE);
                                            
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","referenceNumber").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setReferenceNumber(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
                                     }
                                   
                             while (!reader.isStartElement() && !reader.isEndElement())

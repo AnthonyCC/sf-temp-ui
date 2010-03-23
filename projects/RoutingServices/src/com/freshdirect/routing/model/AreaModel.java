@@ -1,5 +1,7 @@
 package com.freshdirect.routing.model;
 
+import java.math.BigInteger;
+
 public class AreaModel extends BaseModel implements IAreaModel  {
 	
 	private String areaCode;
@@ -15,7 +17,27 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 
 	private double deliveryRate;
 	
+	private int stemFromTime;
 	
+    private int stemToTime;
+	
+	
+	public int getStemFromTime() {
+		return stemFromTime;
+	}
+
+	public void setStemFromTime(int stemFromTime) {
+		this.stemFromTime = stemFromTime;
+	}
+
+	public int getStemToTime() {
+		return stemToTime;
+	}
+
+	public void setStemToTime(int stemToTime) {
+		this.stemToTime = stemToTime;
+	}
+
 	public double getDeliveryRate() {
 		return deliveryRate;
 	}

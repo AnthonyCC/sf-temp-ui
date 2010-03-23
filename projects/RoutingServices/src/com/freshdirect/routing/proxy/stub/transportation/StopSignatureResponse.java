@@ -1,6 +1,6 @@
 
 /**
- * UpdatePositionReturnCode.java
+ * StopSignatureResponse.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,15 +10,15 @@
             
 
             /**
-            *  UpdatePositionReturnCode bean class
+            *  StopSignatureResponse bean class
             */
         
-        public  class UpdatePositionReturnCode
+        public  class StopSignatureResponse
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
                 "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                "UpdatePositionReturnCode",
+                "StopSignatureResponse",
                 "ns1");
 
             
@@ -31,77 +31,6 @@
         }
 
         
-
-                        /**
-                        * field for UpdatePositionReturnCode
-                        */
-
-                        
-                                    protected java.lang.String localUpdatePositionReturnCode ;
-                                
-                            private static java.util.HashMap _table_ = new java.util.HashMap();
-
-                            // Constructor
-                            
-                                protected UpdatePositionReturnCode(java.lang.String value, boolean isRegisterValue) {
-                                    localUpdatePositionReturnCode = value;
-                                    if (isRegisterValue){
-                                        
-                                               _table_.put(localUpdatePositionReturnCode, this);
-                                           
-                                    }
-
-                                }
-                            
-                                    public static final java.lang.String _uprcUnknown =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("uprcUnknown");
-                                
-                                    public static final java.lang.String _uprcValid =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("uprcValid");
-                                
-                                    public static final java.lang.String _uprcZeroLatLong =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("uprcZeroLatLong");
-                                
-                                    public static final java.lang.String _uprcBadSpeed =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("uprcBadSpeed");
-                                
-                                    public static final java.lang.String _uprcUnreasonable =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("uprcUnreasonable");
-                                
-                                    public static final java.lang.String _uprcBadPositionTime =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("uprcBadPositionTime");
-                                
-                                public static final UpdatePositionReturnCode uprcUnknown =
-                                    new UpdatePositionReturnCode(_uprcUnknown,true);
-                            
-                                public static final UpdatePositionReturnCode uprcValid =
-                                    new UpdatePositionReturnCode(_uprcValid,true);
-                            
-                                public static final UpdatePositionReturnCode uprcZeroLatLong =
-                                    new UpdatePositionReturnCode(_uprcZeroLatLong,true);
-                            
-                                public static final UpdatePositionReturnCode uprcBadSpeed =
-                                    new UpdatePositionReturnCode(_uprcBadSpeed,true);
-                            
-                                public static final UpdatePositionReturnCode uprcUnreasonable =
-                                    new UpdatePositionReturnCode(_uprcUnreasonable,true);
-                            
-                                public static final UpdatePositionReturnCode uprcBadPositionTime =
-                                    new UpdatePositionReturnCode(_uprcBadPositionTime,true);
-                            
-
-                                public java.lang.String getValue() { return localUpdatePositionReturnCode;}
-
-                                public boolean equals(java.lang.Object obj) {return (obj == this);}
-                                public int hashCode() { return toString().hashCode();}
-                                public java.lang.String toString() {
-                                
-                                        return localUpdatePositionReturnCode.toString();
-                                    
-
-                                }
-
-                        
 
      /**
      * isReaderMTOMAware
@@ -135,7 +64,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       UpdatePositionReturnCode.this.serialize(MY_QNAME,factory,xmlWriter);
+                       StopSignatureResponse.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -157,56 +86,51 @@
             throws javax.xml.stream.XMLStreamException, org.apache.axis2.databinding.ADBException{
             
                 
-                //We can safely assume an element has only one type associated with it
+
+
+                java.lang.String prefix = null;
+                java.lang.String namespace = null;
                 
-                            java.lang.String namespace = parentQName.getNamespaceURI();
-                            java.lang.String localName = parentQName.getLocalPart();
-                        
-                            if (! namespace.equals("")) {
-                                java.lang.String prefix = xmlWriter.getPrefix(namespace);
 
-                                if (prefix == null) {
-                                    prefix = generatePrefix(namespace);
+                    prefix = parentQName.getPrefix();
+                    namespace = parentQName.getNamespaceURI();
 
-                                    xmlWriter.writeStartElement(prefix, localName, namespace);
-                                    xmlWriter.writeNamespace(prefix, namespace);
-                                    xmlWriter.setPrefix(prefix, namespace);
-
-                                } else {
-                                    xmlWriter.writeStartElement(namespace, localName);
-                                }
-
-                            } else {
-                                xmlWriter.writeStartElement(localName);
+                    if ((namespace != null) && (namespace.trim().length() > 0)) {
+                        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+                        if (writerPrefix != null) {
+                            xmlWriter.writeStartElement(namespace, parentQName.getLocalPart());
+                        } else {
+                            if (prefix == null) {
+                                prefix = generatePrefix(namespace);
                             }
 
-                            // add the type details if this is used in a simple type
-                               if (serializeType){
-                                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
-                                   if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
-                                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                                           namespacePrefix+":UpdatePositionReturnCode",
-                                           xmlWriter);
-                                   } else {
-                                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                                           "UpdatePositionReturnCode",
-                                           xmlWriter);
-                                   }
-                               }
-                            
-                                          if (localUpdatePositionReturnCode==null){
-                                            
-                                                     throw new org.apache.axis2.databinding.ADBException("Value cannot be null !!");
-                                                
-                                         }else{
-                                        
-                                                       xmlWriter.writeCharacters(localUpdatePositionReturnCode);
-                                            
-                                         }
-                                    
-                            xmlWriter.writeEndElement();
+                            xmlWriter.writeStartElement(prefix, parentQName.getLocalPart(), namespace);
+                            xmlWriter.writeNamespace(prefix, namespace);
+                            xmlWriter.setPrefix(prefix, namespace);
+                        }
+                    } else {
+                        xmlWriter.writeStartElement(parentQName.getLocalPart());
+                    }
+                
+                  if (serializeType){
+               
 
-                    
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
+                   if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
+                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                           namespacePrefix+":StopSignatureResponse",
+                           xmlWriter);
+                   } else {
+                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                           "StopSignatureResponse",
+                           xmlWriter);
+                   }
+
+               
+                   }
+               
+                    xmlWriter.writeEndElement();
+               
 
         }
 
@@ -363,14 +287,14 @@
 
 
         
+                 java.util.ArrayList elementList = new java.util.ArrayList();
+                 java.util.ArrayList attribList = new java.util.ArrayList();
+
                 
-                //We can safely assume an element has only one type associated with it
-                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(MY_QNAME,
-                            new java.lang.Object[]{
-                            org.apache.axis2.databinding.utils.reader.ADBXMLStreamReader.ELEMENT_TEXT,
-                            org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUpdatePositionReturnCode)
-                            },
-                            null);
+
+                return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
+            
+            
 
         }
 
@@ -383,39 +307,6 @@
 
         
         
-                public static UpdatePositionReturnCode fromValue(java.lang.String value)
-                      throws java.lang.IllegalArgumentException {
-                    UpdatePositionReturnCode enumeration = (UpdatePositionReturnCode)
-                       
-                               _table_.get(value);
-                           
-
-                    if (enumeration==null) throw new java.lang.IllegalArgumentException();
-                    return enumeration;
-                }
-                public static UpdatePositionReturnCode fromString(java.lang.String value,java.lang.String namespaceURI)
-                      throws java.lang.IllegalArgumentException {
-                    try {
-                       
-                                       return fromValue(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(value));
-                                   
-
-                    } catch (java.lang.Exception e) {
-                        throw new java.lang.IllegalArgumentException();
-                    }
-                }
-
-                public static UpdatePositionReturnCode fromString(javax.xml.stream.XMLStreamReader xmlStreamReader,
-                                                                    java.lang.String content) {
-                    if (content.indexOf(":") > -1){
-                        java.lang.String prefix = content.substring(0,content.indexOf(":"));
-                        java.lang.String namespaceUri = xmlStreamReader.getNamespaceContext().getNamespaceURI(prefix);
-                        return UpdatePositionReturnCode.Factory.fromString(content,namespaceUri);
-                    } else {
-                       return UpdatePositionReturnCode.Factory.fromString(content,"");
-                    }
-                }
-            
 
         /**
         * static method to create the object
@@ -424,12 +315,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static UpdatePositionReturnCode parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            UpdatePositionReturnCode object = null;
-                // initialize a hash map to keep values
-                java.util.Map attributeMap = new java.util.HashMap();
-                java.util.List extraAttributeList = new java.util.ArrayList();
-            
+        public static StopSignatureResponse parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            StopSignatureResponse object =
+                new StopSignatureResponse();
 
             int event;
             java.lang.String nillableValue = null;
@@ -441,6 +329,32 @@
                     reader.next();
 
                 
+                if (reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","type")!=null){
+                  java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                        "type");
+                  if (fullTypeName!=null){
+                    java.lang.String nsPrefix = null;
+                    if (fullTypeName.indexOf(":") > -1){
+                        nsPrefix = fullTypeName.substring(0,fullTypeName.indexOf(":"));
+                    }
+                    nsPrefix = nsPrefix==null?"":nsPrefix;
+
+                    java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
+                    
+                            if (!"StopSignatureResponse".equals(type)){
+                                //find namespace for the prefix
+                                java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
+                                return (StopSignatureResponse)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                     nsUri,type,reader);
+                              }
+                        
+
+                  }
+                
+
+                }
+
+                
 
                 
                 // Note all attributes that were handled. Used to differ normal attributes
@@ -448,29 +362,17 @@
                 java.util.Vector handledAttributes = new java.util.Vector();
                 
 
+                 
                     
-                while(!reader.isEndElement()) {
-                    if (reader.isStartElement()  || reader.hasText()){
-                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                        if (content.indexOf(":") > 0) {
-                                            // this seems to be a Qname so find the namespace and send
-                                            prefix = content.substring(0, content.indexOf(":"));
-                                            namespaceuri = reader.getNamespaceURI(prefix);
-                                            object = UpdatePositionReturnCode.Factory.fromString(content,namespaceuri);
-                                        } else {
-                                            // this seems to be not a qname send and empty namespace incase of it is
-                                            // check is done in fromString method
-                                            object = UpdatePositionReturnCode.Factory.fromString(content,"");
-                                        }
-                                        
-                                        
-                             } else {
+                    reader.next();
+                  
+                            while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
-                             }  
-                           }  // end of while loop
-                        
+                            
+                                if (reader.isStartElement())
+                                // A start element we are not expecting indicates a trailing invalid property
+                                throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                            
 
 
 

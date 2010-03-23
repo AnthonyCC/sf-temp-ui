@@ -1684,6 +1684,21 @@
             }
                 
            /**
+            * auto generated Axis2 call back method for updateStopSignature method
+            * override this method for handling normal response from updateStopSignature operation
+            */
+           public void receiveResultupdateStopSignature(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from updateStopSignature operation
+           */
+            public void receiveErrorupdateStopSignature(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for saveGlobalConfig method
             * override this method for handling normal response from saveGlobalConfig operation
             */
@@ -1826,21 +1841,6 @@
             }
                 
            /**
-            * auto generated Axis2 call back method for addRICUser method
-            * override this method for handling normal response from addRICUser operation
-            */
-           public void receiveResultaddRICUser(
-                    ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from addRICUser operation
-           */
-            public void receiveErroraddRICUser(java.lang.Exception e) {
-            }
-                
-           /**
             * auto generated Axis2 call back method for updateRoutePosition method
             * override this method for handling normal response from updateRoutePosition operation
             */
@@ -1854,6 +1854,36 @@
            * override this method for handling error response from updateRoutePosition operation
            */
             public void receiveErrorupdateRoutePosition(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for massStopSequence method
+            * override this method for handling normal response from massStopSequence operation
+            */
+           public void receiveResultmassStopSequence(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from massStopSequence operation
+           */
+            public void receiveErrormassStopSequence(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for addRICUser method
+            * override this method for handling normal response from addRICUser operation
+            */
+           public void receiveResultaddRICUser(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from addRICUser operation
+           */
+            public void receiveErroraddRICUser(java.lang.Exception e) {
             }
                 
            /**

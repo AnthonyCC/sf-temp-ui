@@ -44,7 +44,7 @@
         //creating the operations
         org.apache.axis2.description.AxisOperation __operation;
 
-        _operations = new org.apache.axis2.description.AxisOperation[27];
+        _operations = new org.apache.axis2.description.AxisOperation[29];
         
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
@@ -145,7 +145,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "buildDriverDirections"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "saveArcOverridesEx"));
 	    _service.addOperation(__operation);
 	    
 
@@ -157,7 +157,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "mapZoomIn"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "buildDriverDirections"));
 	    _service.addOperation(__operation);
 	    
 
@@ -169,7 +169,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "buildPathEx"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "mapZoomIn"));
 	    _service.addOperation(__operation);
 	    
 
@@ -181,7 +181,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "mapZoomRange"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "buildPathEx"));
 	    _service.addOperation(__operation);
 	    
 
@@ -193,7 +193,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "findMapArcsEx"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "mapZoomRange"));
 	    _service.addOperation(__operation);
 	    
 
@@ -205,7 +205,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "geocode"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "findMapArcsEx"));
 	    _service.addOperation(__operation);
 	    
 
@@ -217,7 +217,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "mapGoToPlace"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "geocode"));
 	    _service.addOperation(__operation);
 	    
 
@@ -229,7 +229,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "enableAllArcsByExtents"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "mapGoToPlace"));
 	    _service.addOperation(__operation);
 	    
 
@@ -241,7 +241,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "mapZoomOut"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "enableAllArcsByExtents"));
 	    _service.addOperation(__operation);
 	    
 
@@ -253,7 +253,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "geocodeEx"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "pOIShowEnabled"));
 	    _service.addOperation(__operation);
 	    
 
@@ -265,7 +265,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "nop"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "mapZoomOut"));
 	    _service.addOperation(__operation);
 	    
 
@@ -277,7 +277,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "mapRetrieveMapDataVersion"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "geocodeEx"));
 	    _service.addOperation(__operation);
 	    
 
@@ -289,7 +289,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "findMapRegionDetails"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "nop"));
 	    _service.addOperation(__operation);
 	    
 
@@ -301,7 +301,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "saveArcOverrides"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "mapRetrieveMapDataVersion"));
 	    _service.addOperation(__operation);
 	    
 
@@ -313,7 +313,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "buildPath"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "findMapRegionDetails"));
 	    _service.addOperation(__operation);
 	    
 
@@ -325,7 +325,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "buildCompressedPath"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "saveArcOverrides"));
 	    _service.addOperation(__operation);
 	    
 
@@ -337,7 +337,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "buildDriverDirectionsEx"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "buildPath"));
 	    _service.addOperation(__operation);
 	    
 
@@ -349,7 +349,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "buildMatrixEx"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "buildCompressedPath"));
 	    _service.addOperation(__operation);
 	    
 
@@ -361,13 +361,37 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "mapConvertToLatLong"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "buildDriverDirectionsEx"));
 	    _service.addOperation(__operation);
 	    
 
 	    
 	    
             _operations[26]=__operation;
+            
+        
+                   __operation = new org.apache.axis2.description.OutInAxisOperation();
+                
+
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "buildMatrixEx"));
+	    _service.addOperation(__operation);
+	    
+
+	    
+	    
+            _operations[27]=__operation;
+            
+        
+                   __operation = new org.apache.axis2.description.OutInAxisOperation();
+                
+
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "mapConvertToLatLong"));
+	    _service.addOperation(__operation);
+	    
+
+	    
+	    
+            _operations[28]=__operation;
             
         
         }
@@ -442,7 +466,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__DistanceToClosestCity
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#distanceToClosestCity
-                     * @param distanceToClosestCity191
+                     * @param distanceToClosestCity202
                     
                      */
 
@@ -450,7 +474,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCityResult distanceToClosestCity(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt192)
+                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt203)
                         
 
                     throws java.rmi.RemoteException
@@ -476,7 +500,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    pt192,
+                                                    pt203,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "distanceToClosestCity")));
@@ -561,12 +585,12 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__DistanceToClosestCity
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startdistanceToClosestCity
-                    * @param distanceToClosestCity191
+                    * @param distanceToClosestCity202
                 
                 */
                 public  void startdistanceToClosestCity(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt192,
+                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt203,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -590,7 +614,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    pt192,
+                                                    pt203,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "distanceToClosestCity")));
@@ -707,7 +731,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__FormatPositionText
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#formatPositionText
-                     * @param formatPositionText195
+                     * @param formatPositionText206
                     
                      */
 
@@ -715,7 +739,7 @@
 
                             public  java.lang.String formatPositionText(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt196,boolean useArcDetail197,boolean useKilometers198)
+                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt207,boolean useArcDetail208,boolean useKilometers209)
                         
 
                     throws java.rmi.RemoteException
@@ -741,9 +765,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.FormatPositionText dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    pt196,
-                                                    useArcDetail197,
-                                                    useKilometers198,
+                                                    pt207,
+                                                    useArcDetail208,
+                                                    useKilometers209,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "formatPositionText")));
@@ -828,12 +852,12 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__FormatPositionText
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startformatPositionText
-                    * @param formatPositionText195
+                    * @param formatPositionText206
                 
                 */
                 public  void startformatPositionText(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt196,boolean useArcDetail197,boolean useKilometers198,
+                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt207,boolean useArcDetail208,boolean useKilometers209,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -857,9 +881,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.FormatPositionText dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    pt196,
-                                                    useArcDetail197,
-                                                    useKilometers198,
+                                                    pt207,
+                                                    useArcDetail208,
+                                                    useKilometers209,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "formatPositionText")));
@@ -976,7 +1000,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__VersionInformation
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#versionInformation
-                     * @param versionInformation201
+                     * @param versionInformation212
                     
                      */
 
@@ -1094,7 +1118,7 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__VersionInformation
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startversionInformation
-                    * @param versionInformation201
+                    * @param versionInformation212
                 
                 */
                 public  void startversionInformation(
@@ -1239,7 +1263,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__FindMapArcs
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#findMapArcs
-                     * @param findMapArcs204
+                     * @param findMapArcs215
                     
                      */
 
@@ -1247,7 +1271,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.MapArc[] findMapArcs(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria205)
+                            com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria216)
                         
 
                     throws java.rmi.RemoteException
@@ -1273,7 +1297,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.FindMapArcs dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria205,
+                                                    criteria216,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "findMapArcs")));
@@ -1358,12 +1382,12 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__FindMapArcs
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startfindMapArcs
-                    * @param findMapArcs204
+                    * @param findMapArcs215
                 
                 */
                 public  void startfindMapArcs(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria205,
+                 com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria216,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -1387,7 +1411,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.FindMapArcs dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria205,
+                                                    criteria216,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "findMapArcs")));
@@ -1504,7 +1528,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__MapCenter
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#mapCenter
-                     * @param mapCenter208
+                     * @param mapCenter219
                     
                      */
 
@@ -1512,7 +1536,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.MapData mapCenter(
 
-                            int x209,int y210,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria211,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options212)
+                            int x220,int y221,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria222,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options223)
                         
 
                     throws java.rmi.RemoteException
@@ -1538,10 +1562,10 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.MapCenter dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    x209,
-                                                    y210,
-                                                    criteria211,
-                                                    options212,
+                                                    x220,
+                                                    y221,
+                                                    criteria222,
+                                                    options223,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "mapCenter")));
@@ -1626,12 +1650,12 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__MapCenter
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startmapCenter
-                    * @param mapCenter208
+                    * @param mapCenter219
                 
                 */
                 public  void startmapCenter(
 
-                 int x209,int y210,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria211,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options212,
+                 int x220,int y221,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria222,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options223,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -1655,10 +1679,10 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.MapCenter dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    x209,
-                                                    y210,
-                                                    criteria211,
-                                                    options212,
+                                                    x220,
+                                                    y221,
+                                                    criteria222,
+                                                    options223,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "mapCenter")));
@@ -1775,7 +1799,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__BatchGeocode
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#batchGeocode
-                     * @param batchGeocode215
+                     * @param batchGeocode226
                     
                      */
 
@@ -1783,7 +1807,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.GeocodeData[] batchGeocode(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.Address[] adresses216,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options217)
+                            com.freshdirect.routing.proxy.stub.roadnet.Address[] adresses227,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options228)
                         
 
                     throws java.rmi.RemoteException
@@ -1809,8 +1833,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.BatchGeocode dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    adresses216,
-                                                    options217,
+                                                    adresses227,
+                                                    options228,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "batchGeocode")));
@@ -1895,12 +1919,12 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__BatchGeocode
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startbatchGeocode
-                    * @param batchGeocode215
+                    * @param batchGeocode226
                 
                 */
                 public  void startbatchGeocode(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.Address[] adresses216,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options217,
+                 com.freshdirect.routing.proxy.stub.roadnet.Address[] adresses227,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options228,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -1924,8 +1948,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.BatchGeocode dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    adresses216,
-                                                    options217,
+                                                    adresses227,
+                                                    options228,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "batchGeocode")));
@@ -2042,7 +2066,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__BuildMatrix
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#buildMatrix
-                     * @param buildMatrix220
+                     * @param buildMatrix231
                     
                      */
 
@@ -2050,7 +2074,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.TimeDistanceResult[] buildMatrix(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points221)
+                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points232)
                         
 
                     throws java.rmi.RemoteException
@@ -2076,7 +2100,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.BuildMatrix dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    points221,
+                                                    points232,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildMatrix")));
@@ -2161,12 +2185,12 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__BuildMatrix
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startbuildMatrix
-                    * @param buildMatrix220
+                    * @param buildMatrix231
                 
                 */
                 public  void startbuildMatrix(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points221,
+                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points232,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -2190,7 +2214,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.BuildMatrix dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    points221,
+                                                    points232,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildMatrix")));
@@ -2307,7 +2331,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__Map
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#map
-                     * @param map224
+                     * @param map235
                     
                      */
 
@@ -2315,7 +2339,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.MapData map(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria225,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options226)
+                            com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria236,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options237)
                         
 
                     throws java.rmi.RemoteException
@@ -2341,8 +2365,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.Map dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria225,
-                                                    options226,
+                                                    criteria236,
+                                                    options237,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "map")));
@@ -2427,12 +2451,12 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__Map
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startmap
-                    * @param map224
+                    * @param map235
                 
                 */
                 public  void startmap(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria225,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options226,
+                 com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria236,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options237,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -2456,8 +2480,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.Map dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria225,
-                                                    options226,
+                                                    criteria236,
+                                                    options237,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "map")));
@@ -2572,17 +2596,17 @@
                 
                     /**
                      * Auto generated method signature
-                     * Service definition of function ns1__BuildDriverDirections
-                     * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#buildDriverDirections
-                     * @param buildDriverDirections229
+                     * Service definition of function ns1__SaveArcOverridesEx
+                     * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#saveArcOverridesEx
+                     * @param saveArcOverridesEx240
                     
                      */
 
                     
 
-                            public  com.freshdirect.routing.proxy.stub.roadnet.DirectionData buildDriverDirections(
+                            public  int saveArcOverridesEx(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations230,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options231)
+                            java.lang.String key241,com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] overrides242,com.freshdirect.routing.proxy.stub.roadnet.ArcOverrideSaveOptions options243)
                         
 
                     throws java.rmi.RemoteException
@@ -2591,6 +2615,275 @@
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
                org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[8].getName());
+              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/SaveArcOverridesExRequest");
+              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
+
+              
+              
+                  addPropertyToOperationClient(_operationClient,org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,"&");
+              
+
+              // create a message context
+              _messageContext = new org.apache.axis2.context.MessageContext();
+
+              
+
+              // create SOAP envelope with that payload
+              org.apache.axiom.soap.SOAPEnvelope env = null;
+                    com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesEx dummyWrappedType = null;
+                                                    env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
+                                                    key241,
+                                                    overrides242,
+                                                    options243,
+                                                    dummyWrappedType,
+                                                    optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                                    "saveArcOverridesEx")));
+                                                
+        //adding SOAP soap_headers
+         _serviceClient.addHeadersToEnvelope(env);
+        // set the message context with that soap envelope
+        _messageContext.setEnvelope(env);
+
+        // add the message contxt to the operation client
+        _operationClient.addMessageContext(_messageContext);
+
+        //execute the operation client
+        _operationClient.execute(true);
+
+         
+               org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(
+                                           org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+                org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
+                
+                
+                                java.lang.Object object = fromOM(
+                                             _returnEnv.getBody().getFirstElement() ,
+                                             com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesExResponse.class,
+                                              getEnvelopeNamespaces(_returnEnv));
+
+                               
+                                        return getSaveArcOverridesExResponseResponse((com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesExResponse)object);
+                                   
+         }catch(org.apache.axis2.AxisFault f){
+
+            org.apache.axiom.om.OMElement faultElt = f.getDetail();
+            if (faultElt!=null){
+                if (faultExceptionNameMap.containsKey(faultElt.getQName())){
+                    //make the fault by reflection
+                    try{
+                        java.lang.String exceptionClassName = (java.lang.String)faultExceptionClassNameMap.get(faultElt.getQName());
+                        java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
+                        java.lang.Exception ex=
+                                (java.lang.Exception) exceptionClass.newInstance();
+                        //message class
+                        java.lang.String messageClassName = (java.lang.String)faultMessageMap.get(faultElt.getQName());
+                        java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
+                        java.lang.Object messageObject = fromOM(faultElt,messageClass,null);
+                        java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
+                                   new java.lang.Class[]{messageClass});
+                        m.invoke(ex,new java.lang.Object[]{messageObject});
+                        
+
+                        throw new java.rmi.RemoteException(ex.getMessage(), ex);
+                    }catch(java.lang.ClassCastException e){
+                       // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    } catch (java.lang.ClassNotFoundException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }catch (java.lang.NoSuchMethodException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    } catch (java.lang.reflect.InvocationTargetException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }  catch (java.lang.IllegalAccessException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }   catch (java.lang.InstantiationException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }
+                }else{
+                    throw f;
+                }
+            }else{
+                throw f;
+            }
+            } finally {
+                _messageContext.getTransportOut().getSender().cleanup(_messageContext);
+            }
+        }
+            
+                /**
+                * Auto generated method signature for Asynchronous Invocations
+                * Service definition of function ns1__SaveArcOverridesEx
+                * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startsaveArcOverridesEx
+                    * @param saveArcOverridesEx240
+                
+                */
+                public  void startsaveArcOverridesEx(
+
+                 java.lang.String key241,com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] overrides242,com.freshdirect.routing.proxy.stub.roadnet.ArcOverrideSaveOptions options243,
+
+                  final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
+
+                throws java.rmi.RemoteException{
+
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[8].getName());
+             _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/SaveArcOverridesExRequest");
+             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
+
+              
+              
+                  addPropertyToOperationClient(_operationClient,org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,"&");
+              
+
+
+              // create SOAP envelope with that payload
+              org.apache.axiom.soap.SOAPEnvelope env=null;
+              final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+
+                    
+                                    //Style is Doc.
+                                    com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesEx dummyWrappedType = null;
+                                                    env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
+                                                    key241,
+                                                    overrides242,
+                                                    options243,
+                                                     dummyWrappedType,
+                                                    optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                                    "saveArcOverridesEx")));
+                                                
+        // adding SOAP soap_headers
+         _serviceClient.addHeadersToEnvelope(env);
+        // create message context with that soap envelope
+        _messageContext.setEnvelope(env);
+
+        // add the message context to the operation client
+        _operationClient.addMessageContext(_messageContext);
+
+
+                    
+                        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+                            public void onMessage(org.apache.axis2.context.MessageContext resultContext) {
+                            try {
+                                org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
+                                
+                                        java.lang.Object object = fromOM(resultEnv.getBody().getFirstElement(),
+                                                                         com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesExResponse.class,
+                                                                         getEnvelopeNamespaces(resultEnv));
+                                        callback.receiveResultsaveArcOverridesEx(
+                                            getSaveArcOverridesExResponseResponse((com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesExResponse)object));
+                                        
+                            } catch (org.apache.axis2.AxisFault e) {
+                                callback.receiveErrorsaveArcOverridesEx(e);
+                            }
+                            }
+
+                            public void onError(java.lang.Exception error) {
+								if (error instanceof org.apache.axis2.AxisFault) {
+									org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+									org.apache.axiom.om.OMElement faultElt = f.getDetail();
+									if (faultElt!=null){
+										if (faultExceptionNameMap.containsKey(faultElt.getQName())){
+											//make the fault by reflection
+											try{
+													java.lang.String exceptionClassName = (java.lang.String)faultExceptionClassNameMap.get(faultElt.getQName());
+													java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
+													java.lang.Exception ex=
+														(java.lang.Exception) exceptionClass.newInstance();
+													//message class
+													java.lang.String messageClassName = (java.lang.String)faultMessageMap.get(faultElt.getQName());
+														java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
+													java.lang.Object messageObject = fromOM(faultElt,messageClass,null);
+													java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
+															new java.lang.Class[]{messageClass});
+													m.invoke(ex,new java.lang.Object[]{messageObject});
+													
+					
+										            callback.receiveErrorsaveArcOverridesEx(new java.rmi.RemoteException(ex.getMessage(), ex));
+                                            } catch(java.lang.ClassCastException e){
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorsaveArcOverridesEx(f);
+                                            } catch (java.lang.ClassNotFoundException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorsaveArcOverridesEx(f);
+                                            } catch (java.lang.NoSuchMethodException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorsaveArcOverridesEx(f);
+                                            } catch (java.lang.reflect.InvocationTargetException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorsaveArcOverridesEx(f);
+                                            } catch (java.lang.IllegalAccessException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorsaveArcOverridesEx(f);
+                                            } catch (java.lang.InstantiationException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorsaveArcOverridesEx(f);
+                                            } catch (org.apache.axis2.AxisFault e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorsaveArcOverridesEx(f);
+                                            }
+									    } else {
+										    callback.receiveErrorsaveArcOverridesEx(f);
+									    }
+									} else {
+									    callback.receiveErrorsaveArcOverridesEx(f);
+									}
+								} else {
+								    callback.receiveErrorsaveArcOverridesEx(error);
+								}
+                            }
+
+                            public void onFault(org.apache.axis2.context.MessageContext faultContext) {
+                                org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                                onError(fault);
+                            }
+
+                            public void onComplete() {
+                                try {
+                                    _messageContext.getTransportOut().getSender().cleanup(_messageContext);
+                                } catch (org.apache.axis2.AxisFault axisFault) {
+                                    callback.receiveErrorsaveArcOverridesEx(axisFault);
+                                }
+                            }
+                });
+                        
+
+          org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        if ( _operations[8].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+           _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+          _operations[8].setMessageReceiver(
+                    _callbackReceiver);
+        }
+
+           //execute the operation client
+           _operationClient.execute(false);
+
+                    }
+                
+                    /**
+                     * Auto generated method signature
+                     * Service definition of function ns1__BuildDriverDirections
+                     * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#buildDriverDirections
+                     * @param buildDriverDirections246
+                    
+                     */
+
+                    
+
+                            public  com.freshdirect.routing.proxy.stub.roadnet.DirectionData buildDriverDirections(
+
+                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations247,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options248)
+                        
+
+                    throws java.rmi.RemoteException
+                    
+                    {
+              org.apache.axis2.context.MessageContext _messageContext = null;
+              try{
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[9].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/BuildDriverDirectionsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -2608,8 +2901,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.BuildDriverDirections dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    destinations230,
-                                                    options231,
+                                                    destinations247,
+                                                    options248,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildDriverDirections")));
@@ -2694,18 +2987,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__BuildDriverDirections
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startbuildDriverDirections
-                    * @param buildDriverDirections229
+                    * @param buildDriverDirections246
                 
                 */
                 public  void startbuildDriverDirections(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations230,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options231,
+                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations247,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options248,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[8].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[9].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/BuildDriverDirectionsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -2723,8 +3016,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.BuildDriverDirections dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    destinations230,
-                                                    options231,
+                                                    destinations247,
+                                                    options248,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildDriverDirections")));
@@ -2826,9 +3119,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[8].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[9].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[8].setMessageReceiver(
+          _operations[9].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -2841,7 +3134,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__MapZoomIn
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#mapZoomIn
-                     * @param mapZoomIn234
+                     * @param mapZoomIn251
                     
                      */
 
@@ -2849,7 +3142,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.MapData mapZoomIn(
 
-                            int x235,int y236,int zoomDegree237,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria238,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options239)
+                            int x252,int y253,int zoomDegree254,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria255,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options256)
                         
 
                     throws java.rmi.RemoteException
@@ -2857,7 +3150,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[9].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[10].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/MapZoomInRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -2875,11 +3168,11 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.MapZoomIn dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    x235,
-                                                    y236,
-                                                    zoomDegree237,
-                                                    criteria238,
-                                                    options239,
+                                                    x252,
+                                                    y253,
+                                                    zoomDegree254,
+                                                    criteria255,
+                                                    options256,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "mapZoomIn")));
@@ -2964,18 +3257,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__MapZoomIn
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startmapZoomIn
-                    * @param mapZoomIn234
+                    * @param mapZoomIn251
                 
                 */
                 public  void startmapZoomIn(
 
-                 int x235,int y236,int zoomDegree237,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria238,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options239,
+                 int x252,int y253,int zoomDegree254,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria255,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options256,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[9].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[10].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/MapZoomInRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -2993,11 +3286,11 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.MapZoomIn dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    x235,
-                                                    y236,
-                                                    zoomDegree237,
-                                                    criteria238,
-                                                    options239,
+                                                    x252,
+                                                    y253,
+                                                    zoomDegree254,
+                                                    criteria255,
+                                                    options256,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "mapZoomIn")));
@@ -3099,9 +3392,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[9].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[10].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[9].setMessageReceiver(
+          _operations[10].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -3114,7 +3407,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__BuildPathEx
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#buildPathEx
-                     * @param buildPathEx242
+                     * @param buildPathEx259
                     
                      */
 
@@ -3122,7 +3415,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.PathData buildPathEx(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations243,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options244)
+                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations260,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options261)
                         
 
                     throws java.rmi.RemoteException
@@ -3130,7 +3423,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[10].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[11].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/BuildPathExRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3148,8 +3441,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.BuildPathEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    destinations243,
-                                                    options244,
+                                                    destinations260,
+                                                    options261,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildPathEx")));
@@ -3234,18 +3527,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__BuildPathEx
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startbuildPathEx
-                    * @param buildPathEx242
+                    * @param buildPathEx259
                 
                 */
                 public  void startbuildPathEx(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations243,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options244,
+                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations260,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options261,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[10].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[11].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/BuildPathExRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3263,8 +3556,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.BuildPathEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    destinations243,
-                                                    options244,
+                                                    destinations260,
+                                                    options261,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildPathEx")));
@@ -3366,9 +3659,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[10].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[11].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[10].setMessageReceiver(
+          _operations[11].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -3381,7 +3674,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__MapZoomRange
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#mapZoomRange
-                     * @param mapZoomRange247
+                     * @param mapZoomRange264
                     
                      */
 
@@ -3389,7 +3682,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.MapData mapZoomRange(
 
-                            int ulScreenX248,int ulScreenY249,int lrScreenX250,int lrScreenY251,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria252,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options253)
+                            int ulScreenX265,int ulScreenY266,int lrScreenX267,int lrScreenY268,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria269,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options270)
                         
 
                     throws java.rmi.RemoteException
@@ -3397,7 +3690,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[11].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[12].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/MapZoomRangeRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3415,12 +3708,12 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.MapZoomRange dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    ulScreenX248,
-                                                    ulScreenY249,
-                                                    lrScreenX250,
-                                                    lrScreenY251,
-                                                    criteria252,
-                                                    options253,
+                                                    ulScreenX265,
+                                                    ulScreenY266,
+                                                    lrScreenX267,
+                                                    lrScreenY268,
+                                                    criteria269,
+                                                    options270,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "mapZoomRange")));
@@ -3505,18 +3798,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__MapZoomRange
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startmapZoomRange
-                    * @param mapZoomRange247
+                    * @param mapZoomRange264
                 
                 */
                 public  void startmapZoomRange(
 
-                 int ulScreenX248,int ulScreenY249,int lrScreenX250,int lrScreenY251,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria252,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options253,
+                 int ulScreenX265,int ulScreenY266,int lrScreenX267,int lrScreenY268,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria269,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options270,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[11].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[12].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/MapZoomRangeRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3534,12 +3827,12 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.MapZoomRange dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    ulScreenX248,
-                                                    ulScreenY249,
-                                                    lrScreenX250,
-                                                    lrScreenY251,
-                                                    criteria252,
-                                                    options253,
+                                                    ulScreenX265,
+                                                    ulScreenY266,
+                                                    lrScreenX267,
+                                                    lrScreenY268,
+                                                    criteria269,
+                                                    options270,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "mapZoomRange")));
@@ -3641,9 +3934,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[11].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[12].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[11].setMessageReceiver(
+          _operations[12].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -3656,7 +3949,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__FindMapArcsEx
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#findMapArcsEx
-                     * @param findMapArcsEx256
+                     * @param findMapArcsEx273
                     
                      */
 
@@ -3664,7 +3957,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.MapArc[] findMapArcsEx(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria257,com.freshdirect.routing.proxy.stub.roadnet.FindMapArcOptions options258)
+                            com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria274,com.freshdirect.routing.proxy.stub.roadnet.FindMapArcOptions options275)
                         
 
                     throws java.rmi.RemoteException
@@ -3672,7 +3965,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[12].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[13].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/FindMapArcsExRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3690,8 +3983,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.FindMapArcsEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria257,
-                                                    options258,
+                                                    criteria274,
+                                                    options275,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "findMapArcsEx")));
@@ -3776,18 +4069,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__FindMapArcsEx
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startfindMapArcsEx
-                    * @param findMapArcsEx256
+                    * @param findMapArcsEx273
                 
                 */
                 public  void startfindMapArcsEx(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria257,com.freshdirect.routing.proxy.stub.roadnet.FindMapArcOptions options258,
+                 com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria274,com.freshdirect.routing.proxy.stub.roadnet.FindMapArcOptions options275,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[12].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[13].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/FindMapArcsExRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3805,8 +4098,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.FindMapArcsEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria257,
-                                                    options258,
+                                                    criteria274,
+                                                    options275,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "findMapArcsEx")));
@@ -3908,9 +4201,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[12].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[13].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[12].setMessageReceiver(
+          _operations[13].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -3923,7 +4216,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__Geocode
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#geocode
-                     * @param geocode261
+                     * @param geocode278
                     
                      */
 
@@ -3931,7 +4224,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.GeocodeData geocode(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.Address address262)
+                            com.freshdirect.routing.proxy.stub.roadnet.Address address279)
                         
 
                     throws java.rmi.RemoteException
@@ -3939,7 +4232,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[13].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[14].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/GeocodeRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3957,7 +4250,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.Geocode dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    address262,
+                                                    address279,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "geocode")));
@@ -4042,18 +4335,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__Geocode
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startgeocode
-                    * @param geocode261
+                    * @param geocode278
                 
                 */
                 public  void startgeocode(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.Address address262,
+                 com.freshdirect.routing.proxy.stub.roadnet.Address address279,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[13].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[14].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/GeocodeRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4071,7 +4364,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.Geocode dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    address262,
+                                                    address279,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "geocode")));
@@ -4173,9 +4466,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[13].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[14].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[13].setMessageReceiver(
+          _operations[14].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -4188,7 +4481,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__MapGoToPlace
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#mapGoToPlace
-                     * @param mapGoToPlace265
+                     * @param mapGoToPlace282
                     
                      */
 
@@ -4196,7 +4489,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.MapData mapGoToPlace(
 
-                            java.lang.String place266,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria267,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options268)
+                            java.lang.String place283,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria284,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options285)
                         
 
                     throws java.rmi.RemoteException
@@ -4204,7 +4497,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[14].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[15].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/MapGoToPlaceRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4222,9 +4515,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.MapGoToPlace dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    place266,
-                                                    criteria267,
-                                                    options268,
+                                                    place283,
+                                                    criteria284,
+                                                    options285,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "mapGoToPlace")));
@@ -4309,18 +4602,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__MapGoToPlace
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startmapGoToPlace
-                    * @param mapGoToPlace265
+                    * @param mapGoToPlace282
                 
                 */
                 public  void startmapGoToPlace(
 
-                 java.lang.String place266,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria267,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options268,
+                 java.lang.String place283,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria284,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options285,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[14].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[15].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/MapGoToPlaceRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4338,9 +4631,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.MapGoToPlace dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    place266,
-                                                    criteria267,
-                                                    options268,
+                                                    place283,
+                                                    criteria284,
+                                                    options285,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "mapGoToPlace")));
@@ -4442,9 +4735,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[14].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[15].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[14].setMessageReceiver(
+          _operations[15].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -4457,7 +4750,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__EnableAllArcsByExtents
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#enableAllArcsByExtents
-                     * @param enableAllArcsByExtents271
+                     * @param enableAllArcsByExtents288
                     
                      */
 
@@ -4465,7 +4758,7 @@
 
                             public  int enableAllArcsByExtents(
 
-                            java.lang.String key272,com.freshdirect.routing.proxy.stub.roadnet.MapExtents extents273)
+                            java.lang.String key289,com.freshdirect.routing.proxy.stub.roadnet.MapExtents extents290)
                         
 
                     throws java.rmi.RemoteException
@@ -4473,7 +4766,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[15].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[16].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/EnableAllArcsByExtentsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4491,8 +4784,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.EnableAllArcsByExtents dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    key272,
-                                                    extents273,
+                                                    key289,
+                                                    extents290,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "enableAllArcsByExtents")));
@@ -4577,18 +4870,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__EnableAllArcsByExtents
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startenableAllArcsByExtents
-                    * @param enableAllArcsByExtents271
+                    * @param enableAllArcsByExtents288
                 
                 */
                 public  void startenableAllArcsByExtents(
 
-                 java.lang.String key272,com.freshdirect.routing.proxy.stub.roadnet.MapExtents extents273,
+                 java.lang.String key289,com.freshdirect.routing.proxy.stub.roadnet.MapExtents extents290,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[15].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[16].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/EnableAllArcsByExtentsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4606,8 +4899,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.EnableAllArcsByExtents dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    key272,
-                                                    extents273,
+                                                    key289,
+                                                    extents290,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "enableAllArcsByExtents")));
@@ -4709,9 +5002,272 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[15].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[16].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[15].setMessageReceiver(
+          _operations[16].setMessageReceiver(
+                    _callbackReceiver);
+        }
+
+           //execute the operation client
+           _operationClient.execute(false);
+
+                    }
+                
+                    /**
+                     * Auto generated method signature
+                     * Service definition of function ns1__POIShowEnabled
+                     * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#pOIShowEnabled
+                     * @param pOIShowEnabled293
+                    
+                     */
+
+                    
+
+                            public  boolean pOIShowEnabled(
+
+                            )
+                        
+
+                    throws java.rmi.RemoteException
+                    
+                    {
+              org.apache.axis2.context.MessageContext _messageContext = null;
+              try{
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[17].getName());
+              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/POIShowEnabledRequest");
+              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
+
+              
+              
+                  addPropertyToOperationClient(_operationClient,org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,"&");
+              
+
+              // create a message context
+              _messageContext = new org.apache.axis2.context.MessageContext();
+
+              
+
+              // create SOAP envelope with that payload
+              org.apache.axiom.soap.SOAPEnvelope env = null;
+                    com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabled dummyWrappedType = null;
+                                                    env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
+                                                    dummyWrappedType,
+                                                    optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                                    "pOIShowEnabled")));
+                                                
+        //adding SOAP soap_headers
+         _serviceClient.addHeadersToEnvelope(env);
+        // set the message context with that soap envelope
+        _messageContext.setEnvelope(env);
+
+        // add the message contxt to the operation client
+        _operationClient.addMessageContext(_messageContext);
+
+        //execute the operation client
+        _operationClient.execute(true);
+
+         
+               org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(
+                                           org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+                org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
+                
+                
+                                java.lang.Object object = fromOM(
+                                             _returnEnv.getBody().getFirstElement() ,
+                                             com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabledResponse.class,
+                                              getEnvelopeNamespaces(_returnEnv));
+
+                               
+                                        return getPOIShowEnabledResponsePoiShowEnabled((com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabledResponse)object);
+                                   
+         }catch(org.apache.axis2.AxisFault f){
+
+            org.apache.axiom.om.OMElement faultElt = f.getDetail();
+            if (faultElt!=null){
+                if (faultExceptionNameMap.containsKey(faultElt.getQName())){
+                    //make the fault by reflection
+                    try{
+                        java.lang.String exceptionClassName = (java.lang.String)faultExceptionClassNameMap.get(faultElt.getQName());
+                        java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
+                        java.lang.Exception ex=
+                                (java.lang.Exception) exceptionClass.newInstance();
+                        //message class
+                        java.lang.String messageClassName = (java.lang.String)faultMessageMap.get(faultElt.getQName());
+                        java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
+                        java.lang.Object messageObject = fromOM(faultElt,messageClass,null);
+                        java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
+                                   new java.lang.Class[]{messageClass});
+                        m.invoke(ex,new java.lang.Object[]{messageObject});
+                        
+
+                        throw new java.rmi.RemoteException(ex.getMessage(), ex);
+                    }catch(java.lang.ClassCastException e){
+                       // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    } catch (java.lang.ClassNotFoundException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }catch (java.lang.NoSuchMethodException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    } catch (java.lang.reflect.InvocationTargetException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }  catch (java.lang.IllegalAccessException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }   catch (java.lang.InstantiationException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }
+                }else{
+                    throw f;
+                }
+            }else{
+                throw f;
+            }
+            } finally {
+                _messageContext.getTransportOut().getSender().cleanup(_messageContext);
+            }
+        }
+            
+                /**
+                * Auto generated method signature for Asynchronous Invocations
+                * Service definition of function ns1__POIShowEnabled
+                * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startpOIShowEnabled
+                    * @param pOIShowEnabled293
+                
+                */
+                public  void startpOIShowEnabled(
+
+                 
+
+                  final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
+
+                throws java.rmi.RemoteException{
+
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[17].getName());
+             _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/POIShowEnabledRequest");
+             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
+
+              
+              
+                  addPropertyToOperationClient(_operationClient,org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,"&");
+              
+
+
+              // create SOAP envelope with that payload
+              org.apache.axiom.soap.SOAPEnvelope env=null;
+              final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+
+                    
+                                    //Style is Doc.
+                                    com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabled dummyWrappedType = null;
+                                                    env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
+                                                     dummyWrappedType,
+                                                    optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                                    "pOIShowEnabled")));
+                                                
+        // adding SOAP soap_headers
+         _serviceClient.addHeadersToEnvelope(env);
+        // create message context with that soap envelope
+        _messageContext.setEnvelope(env);
+
+        // add the message context to the operation client
+        _operationClient.addMessageContext(_messageContext);
+
+
+                    
+                        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+                            public void onMessage(org.apache.axis2.context.MessageContext resultContext) {
+                            try {
+                                org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
+                                
+                                        java.lang.Object object = fromOM(resultEnv.getBody().getFirstElement(),
+                                                                         com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabledResponse.class,
+                                                                         getEnvelopeNamespaces(resultEnv));
+                                        callback.receiveResultpOIShowEnabled(
+                                            getPOIShowEnabledResponsePoiShowEnabled((com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabledResponse)object));
+                                        
+                            } catch (org.apache.axis2.AxisFault e) {
+                                callback.receiveErrorpOIShowEnabled(e);
+                            }
+                            }
+
+                            public void onError(java.lang.Exception error) {
+								if (error instanceof org.apache.axis2.AxisFault) {
+									org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+									org.apache.axiom.om.OMElement faultElt = f.getDetail();
+									if (faultElt!=null){
+										if (faultExceptionNameMap.containsKey(faultElt.getQName())){
+											//make the fault by reflection
+											try{
+													java.lang.String exceptionClassName = (java.lang.String)faultExceptionClassNameMap.get(faultElt.getQName());
+													java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
+													java.lang.Exception ex=
+														(java.lang.Exception) exceptionClass.newInstance();
+													//message class
+													java.lang.String messageClassName = (java.lang.String)faultMessageMap.get(faultElt.getQName());
+														java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
+													java.lang.Object messageObject = fromOM(faultElt,messageClass,null);
+													java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
+															new java.lang.Class[]{messageClass});
+													m.invoke(ex,new java.lang.Object[]{messageObject});
+													
+					
+										            callback.receiveErrorpOIShowEnabled(new java.rmi.RemoteException(ex.getMessage(), ex));
+                                            } catch(java.lang.ClassCastException e){
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorpOIShowEnabled(f);
+                                            } catch (java.lang.ClassNotFoundException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorpOIShowEnabled(f);
+                                            } catch (java.lang.NoSuchMethodException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorpOIShowEnabled(f);
+                                            } catch (java.lang.reflect.InvocationTargetException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorpOIShowEnabled(f);
+                                            } catch (java.lang.IllegalAccessException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorpOIShowEnabled(f);
+                                            } catch (java.lang.InstantiationException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorpOIShowEnabled(f);
+                                            } catch (org.apache.axis2.AxisFault e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorpOIShowEnabled(f);
+                                            }
+									    } else {
+										    callback.receiveErrorpOIShowEnabled(f);
+									    }
+									} else {
+									    callback.receiveErrorpOIShowEnabled(f);
+									}
+								} else {
+								    callback.receiveErrorpOIShowEnabled(error);
+								}
+                            }
+
+                            public void onFault(org.apache.axis2.context.MessageContext faultContext) {
+                                org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                                onError(fault);
+                            }
+
+                            public void onComplete() {
+                                try {
+                                    _messageContext.getTransportOut().getSender().cleanup(_messageContext);
+                                } catch (org.apache.axis2.AxisFault axisFault) {
+                                    callback.receiveErrorpOIShowEnabled(axisFault);
+                                }
+                            }
+                });
+                        
+
+          org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        if ( _operations[17].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+           _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+          _operations[17].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -4724,7 +5280,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__MapZoomOut
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#mapZoomOut
-                     * @param mapZoomOut276
+                     * @param mapZoomOut296
                     
                      */
 
@@ -4732,7 +5288,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.MapData mapZoomOut(
 
-                            int x277,int y278,int zoomDegree279,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria280,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options281)
+                            int x297,int y298,int zoomDegree299,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria300,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options301)
                         
 
                     throws java.rmi.RemoteException
@@ -4740,7 +5296,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[16].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[18].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/MapZoomOutRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4758,11 +5314,11 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.MapZoomOut dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    x277,
-                                                    y278,
-                                                    zoomDegree279,
-                                                    criteria280,
-                                                    options281,
+                                                    x297,
+                                                    y298,
+                                                    zoomDegree299,
+                                                    criteria300,
+                                                    options301,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "mapZoomOut")));
@@ -4847,18 +5403,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__MapZoomOut
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startmapZoomOut
-                    * @param mapZoomOut276
+                    * @param mapZoomOut296
                 
                 */
                 public  void startmapZoomOut(
 
-                 int x277,int y278,int zoomDegree279,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria280,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options281,
+                 int x297,int y298,int zoomDegree299,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria300,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options301,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[16].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[18].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/MapZoomOutRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4876,11 +5432,11 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.MapZoomOut dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    x277,
-                                                    y278,
-                                                    zoomDegree279,
-                                                    criteria280,
-                                                    options281,
+                                                    x297,
+                                                    y298,
+                                                    zoomDegree299,
+                                                    criteria300,
+                                                    options301,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "mapZoomOut")));
@@ -4982,9 +5538,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[16].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[18].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[16].setMessageReceiver(
+          _operations[18].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -4997,7 +5553,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__GeocodeEx
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#geocodeEx
-                     * @param geocodeEx284
+                     * @param geocodeEx304
                     
                      */
 
@@ -5005,7 +5561,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.GeocodeData geocodeEx(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.Address address285,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options286)
+                            com.freshdirect.routing.proxy.stub.roadnet.Address address305,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options306)
                         
 
                     throws java.rmi.RemoteException
@@ -5013,7 +5569,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[17].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[19].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/GeocodeExRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5031,8 +5587,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.GeocodeEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    address285,
-                                                    options286,
+                                                    address305,
+                                                    options306,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "geocodeEx")));
@@ -5117,18 +5673,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__GeocodeEx
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startgeocodeEx
-                    * @param geocodeEx284
+                    * @param geocodeEx304
                 
                 */
                 public  void startgeocodeEx(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.Address address285,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options286,
+                 com.freshdirect.routing.proxy.stub.roadnet.Address address305,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options306,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[17].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[19].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/GeocodeExRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5146,8 +5702,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.GeocodeEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    address285,
-                                                    options286,
+                                                    address305,
+                                                    options306,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "geocodeEx")));
@@ -5249,9 +5805,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[17].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[19].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[17].setMessageReceiver(
+          _operations[19].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -5264,7 +5820,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__Nop
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#nop
-                     * @param nop289
+                     * @param nop309
                     
                      */
 
@@ -5280,7 +5836,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[18].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[20].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/NopRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5382,7 +5938,7 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__Nop
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startnop
-                    * @param nop289
+                    * @param nop309
                 
                 */
                 public  void startnop(
@@ -5393,7 +5949,7 @@
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[18].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[20].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/NopRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5512,9 +6068,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[18].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[20].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[18].setMessageReceiver(
+          _operations[20].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -5527,7 +6083,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__MapRetrieveMapDataVersion
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#mapRetrieveMapDataVersion
-                     * @param mapRetrieveMapDataVersion292
+                     * @param mapRetrieveMapDataVersion312
                     
                      */
 
@@ -5543,7 +6099,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[19].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[21].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/MapRetrieveMapDataVersionRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5645,7 +6201,7 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__MapRetrieveMapDataVersion
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startmapRetrieveMapDataVersion
-                    * @param mapRetrieveMapDataVersion292
+                    * @param mapRetrieveMapDataVersion312
                 
                 */
                 public  void startmapRetrieveMapDataVersion(
@@ -5656,7 +6212,7 @@
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[19].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[21].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/MapRetrieveMapDataVersionRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5775,9 +6331,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[19].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[21].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[19].setMessageReceiver(
+          _operations[21].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -5790,7 +6346,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__FindMapRegionDetails
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#findMapRegionDetails
-                     * @param findMapRegionDetails295
+                     * @param findMapRegionDetails315
                     
                      */
 
@@ -5798,7 +6354,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.RegionDetail[] findMapRegionDetails(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] pts296)
+                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] pts316)
                         
 
                     throws java.rmi.RemoteException
@@ -5806,7 +6362,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[20].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[22].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/FindMapRegionDetailsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5824,7 +6380,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.FindMapRegionDetails dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    pts296,
+                                                    pts316,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "findMapRegionDetails")));
@@ -5909,18 +6465,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__FindMapRegionDetails
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startfindMapRegionDetails
-                    * @param findMapRegionDetails295
+                    * @param findMapRegionDetails315
                 
                 */
                 public  void startfindMapRegionDetails(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] pts296,
+                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] pts316,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[20].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[22].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/FindMapRegionDetailsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5938,7 +6494,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.FindMapRegionDetails dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    pts296,
+                                                    pts316,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "findMapRegionDetails")));
@@ -6040,9 +6596,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[20].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[22].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[20].setMessageReceiver(
+          _operations[22].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -6055,7 +6611,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveArcOverrides
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#saveArcOverrides
-                     * @param saveArcOverrides299
+                     * @param saveArcOverrides319
                     
                      */
 
@@ -6063,7 +6619,7 @@
 
                             public  int saveArcOverrides(
 
-                            java.lang.String key300,com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] overrides301)
+                            java.lang.String str320,com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] vec321)
                         
 
                     throws java.rmi.RemoteException
@@ -6071,7 +6627,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[21].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[23].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/SaveArcOverridesRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6089,8 +6645,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverrides dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    key300,
-                                                    overrides301,
+                                                    str320,
+                                                    vec321,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "saveArcOverrides")));
@@ -6175,18 +6731,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveArcOverrides
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startsaveArcOverrides
-                    * @param saveArcOverrides299
+                    * @param saveArcOverrides319
                 
                 */
                 public  void startsaveArcOverrides(
 
-                 java.lang.String key300,com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] overrides301,
+                 java.lang.String str320,com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] vec321,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[21].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[23].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/SaveArcOverridesRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6204,8 +6760,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverrides dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    key300,
-                                                    overrides301,
+                                                    str320,
+                                                    vec321,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "saveArcOverrides")));
@@ -6307,9 +6863,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[21].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[23].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[21].setMessageReceiver(
+          _operations[23].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -6322,7 +6878,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__BuildPath
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#buildPath
-                     * @param buildPath304
+                     * @param buildPath324
                     
                      */
 
@@ -6330,7 +6886,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.PathData buildPath(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations305)
+                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations325)
                         
 
                     throws java.rmi.RemoteException
@@ -6338,7 +6894,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[22].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[24].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/BuildPathRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6356,7 +6912,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.BuildPath dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    destinations305,
+                                                    destinations325,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildPath")));
@@ -6441,18 +6997,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__BuildPath
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startbuildPath
-                    * @param buildPath304
+                    * @param buildPath324
                 
                 */
                 public  void startbuildPath(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations305,
+                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations325,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[22].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[24].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/BuildPathRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6470,7 +7026,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.BuildPath dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    destinations305,
+                                                    destinations325,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildPath")));
@@ -6572,9 +7128,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[22].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[24].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[22].setMessageReceiver(
+          _operations[24].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -6587,7 +7143,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__BuildCompressedPath
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#buildCompressedPath
-                     * @param buildCompressedPath308
+                     * @param buildCompressedPath328
                     
                      */
 
@@ -6595,7 +7151,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.CompressedPathData buildCompressedPath(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations309,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions310,com.freshdirect.routing.proxy.stub.roadnet.PathCompressionOptions pathCompressionOptions311)
+                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations329,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions330,com.freshdirect.routing.proxy.stub.roadnet.PathCompressionOptions pathCompressionOptions331)
                         
 
                     throws java.rmi.RemoteException
@@ -6603,7 +7159,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[23].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[25].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/BuildCompressedPathRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6621,9 +7177,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.BuildCompressedPath dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    destinations309,
-                                                    pathOptions310,
-                                                    pathCompressionOptions311,
+                                                    destinations329,
+                                                    pathOptions330,
+                                                    pathCompressionOptions331,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildCompressedPath")));
@@ -6708,18 +7264,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__BuildCompressedPath
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startbuildCompressedPath
-                    * @param buildCompressedPath308
+                    * @param buildCompressedPath328
                 
                 */
                 public  void startbuildCompressedPath(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations309,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions310,com.freshdirect.routing.proxy.stub.roadnet.PathCompressionOptions pathCompressionOptions311,
+                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations329,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions330,com.freshdirect.routing.proxy.stub.roadnet.PathCompressionOptions pathCompressionOptions331,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[23].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[25].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/BuildCompressedPathRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6737,9 +7293,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.BuildCompressedPath dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    destinations309,
-                                                    pathOptions310,
-                                                    pathCompressionOptions311,
+                                                    destinations329,
+                                                    pathOptions330,
+                                                    pathCompressionOptions331,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildCompressedPath")));
@@ -6841,9 +7397,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[23].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[25].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[23].setMessageReceiver(
+          _operations[25].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -6856,7 +7412,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__BuildDriverDirectionsEx
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#buildDriverDirectionsEx
-                     * @param buildDriverDirectionsEx314
+                     * @param buildDriverDirectionsEx334
                     
                      */
 
@@ -6864,7 +7420,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.DirectionData buildDriverDirectionsEx(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations315,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options316,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions317)
+                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations335,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options336,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions337)
                         
 
                     throws java.rmi.RemoteException
@@ -6872,7 +7428,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[24].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[26].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/BuildDriverDirectionsExRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6890,9 +7446,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.BuildDriverDirectionsEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    destinations315,
-                                                    options316,
-                                                    pathOptions317,
+                                                    destinations335,
+                                                    options336,
+                                                    pathOptions337,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildDriverDirectionsEx")));
@@ -6977,18 +7533,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__BuildDriverDirectionsEx
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startbuildDriverDirectionsEx
-                    * @param buildDriverDirectionsEx314
+                    * @param buildDriverDirectionsEx334
                 
                 */
                 public  void startbuildDriverDirectionsEx(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations315,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options316,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions317,
+                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations335,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options336,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions337,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[24].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[26].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/BuildDriverDirectionsExRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7006,9 +7562,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.BuildDriverDirectionsEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    destinations315,
-                                                    options316,
-                                                    pathOptions317,
+                                                    destinations335,
+                                                    options336,
+                                                    pathOptions337,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildDriverDirectionsEx")));
@@ -7110,9 +7666,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[24].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[26].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[24].setMessageReceiver(
+          _operations[26].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -7125,7 +7681,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__BuildMatrixEx
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#buildMatrixEx
-                     * @param buildMatrixEx320
+                     * @param buildMatrixEx340
                     
                      */
 
@@ -7133,7 +7689,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.TimeDistanceResult[] buildMatrixEx(
 
-                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points321,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options322)
+                            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points341,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options342)
                         
 
                     throws java.rmi.RemoteException
@@ -7141,7 +7697,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[25].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[27].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/BuildMatrixExRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7159,8 +7715,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.BuildMatrixEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    points321,
-                                                    options322,
+                                                    points341,
+                                                    options342,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildMatrixEx")));
@@ -7245,18 +7801,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__BuildMatrixEx
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startbuildMatrixEx
-                    * @param buildMatrixEx320
+                    * @param buildMatrixEx340
                 
                 */
                 public  void startbuildMatrixEx(
 
-                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points321,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options322,
+                 com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points341,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options342,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[25].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[27].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/BuildMatrixExRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7274,8 +7830,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.BuildMatrixEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    points321,
-                                                    options322,
+                                                    points341,
+                                                    options342,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "buildMatrixEx")));
@@ -7377,9 +7933,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[25].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[27].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[25].setMessageReceiver(
+          _operations[27].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -7392,7 +7948,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__MapConvertToLatLong
                      * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#mapConvertToLatLong
-                     * @param mapConvertToLatLong325
+                     * @param mapConvertToLatLong345
                     
                      */
 
@@ -7400,7 +7956,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.roadnet.MapPoint mapConvertToLatLong(
 
-                            int x326,int y327,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria328,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options329)
+                            int x346,int y347,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria348,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options349)
                         
 
                     throws java.rmi.RemoteException
@@ -7408,7 +7964,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[26].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[28].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/MapConvertToLatLongRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7426,10 +7982,10 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.roadnet.MapConvertToLatLong dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    x326,
-                                                    y327,
-                                                    criteria328,
-                                                    options329,
+                                                    x346,
+                                                    y347,
+                                                    criteria348,
+                                                    options349,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "mapConvertToLatLong")));
@@ -7514,18 +8070,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__MapConvertToLatLong
                 * @see com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService#startmapConvertToLatLong
-                    * @param mapConvertToLatLong325
+                    * @param mapConvertToLatLong345
                 
                 */
                 public  void startmapConvertToLatLong(
 
-                 int x326,int y327,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria328,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options329,
+                 int x346,int y347,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria348,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options349,
 
                   final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[26].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[28].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/RouteNetWebService/RouteNetPortType/MapConvertToLatLongRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7543,10 +8099,10 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.roadnet.MapConvertToLatLong dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    x326,
-                                                    y327,
-                                                    criteria328,
-                                                    options329,
+                                                    x346,
+                                                    y347,
+                                                    criteria348,
+                                                    options349,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
                                                     "mapConvertToLatLong")));
@@ -7648,9 +8204,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[26].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[28].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[26].setMessageReceiver(
+          _operations[28].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -7915,6 +8471,34 @@
 
             }
         
+            private  org.apache.axiom.om.OMElement  toOM(com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesEx param, boolean optimizeContent)
+            throws org.apache.axis2.AxisFault {
+
+            
+                        try{
+                             return param.getOMElement(com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesEx.MY_QNAME,
+                                          org.apache.axiom.om.OMAbstractFactory.getOMFactory());
+                        } catch(org.apache.axis2.databinding.ADBException e){
+                            throw org.apache.axis2.AxisFault.makeFault(e);
+                        }
+                    
+
+            }
+        
+            private  org.apache.axiom.om.OMElement  toOM(com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesExResponse param, boolean optimizeContent)
+            throws org.apache.axis2.AxisFault {
+
+            
+                        try{
+                             return param.getOMElement(com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesExResponse.MY_QNAME,
+                                          org.apache.axiom.om.OMAbstractFactory.getOMFactory());
+                        } catch(org.apache.axis2.databinding.ADBException e){
+                            throw org.apache.axis2.AxisFault.makeFault(e);
+                        }
+                    
+
+            }
+        
             private  org.apache.axiom.om.OMElement  toOM(com.freshdirect.routing.proxy.stub.roadnet.BuildDriverDirections param, boolean optimizeContent)
             throws org.apache.axis2.AxisFault {
 
@@ -8131,6 +8715,34 @@
             
                         try{
                              return param.getOMElement(com.freshdirect.routing.proxy.stub.roadnet.EnableAllArcsByExtentsResponse.MY_QNAME,
+                                          org.apache.axiom.om.OMAbstractFactory.getOMFactory());
+                        } catch(org.apache.axis2.databinding.ADBException e){
+                            throw org.apache.axis2.AxisFault.makeFault(e);
+                        }
+                    
+
+            }
+        
+            private  org.apache.axiom.om.OMElement  toOM(com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabled param, boolean optimizeContent)
+            throws org.apache.axis2.AxisFault {
+
+            
+                        try{
+                             return param.getOMElement(com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabled.MY_QNAME,
+                                          org.apache.axiom.om.OMAbstractFactory.getOMFactory());
+                        } catch(org.apache.axis2.databinding.ADBException e){
+                            throw org.apache.axis2.AxisFault.makeFault(e);
+                        }
+                    
+
+            }
+        
+            private  org.apache.axiom.om.OMElement  toOM(com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabledResponse param, boolean optimizeContent)
+            throws org.apache.axis2.AxisFault {
+
+            
+                        try{
+                             return param.getOMElement(com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabledResponse.MY_QNAME,
                                           org.apache.axiom.om.OMAbstractFactory.getOMFactory());
                         } catch(org.apache.axis2.databinding.ADBException e){
                             throw org.apache.axis2.AxisFault.makeFault(e);
@@ -8787,6 +9399,52 @@
                              
                                     
                                 private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory,
+                                    java.lang.String param1,
+                                    com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] param2,
+                                    com.freshdirect.routing.proxy.stub.roadnet.ArcOverrideSaveOptions param3,
+                                    com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesEx dummyWrappedType,
+                                 boolean optimizeContent) throws org.apache.axis2.AxisFault{
+
+                                try{
+                                com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesEx wrappedType = new com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesEx();
+
+                                 
+                                              wrappedType.setKey(param1);
+                                         
+                                              wrappedType.setOverrides(param2);
+                                         
+                                              wrappedType.setOptions(param3);
+                                         
+
+                               org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
+                                  
+                                        emptyEnvelope.getBody().addChild(wrappedType.getOMElement(com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesEx.MY_QNAME,factory));
+                                    
+
+                                return emptyEnvelope;
+                               } catch(org.apache.axis2.databinding.ADBException e){
+                                    throw org.apache.axis2.AxisFault.makeFault(e);
+                               }
+                               }
+
+
+
+                                
+                             
+                             /* methods to provide back word compatibility */
+
+                             
+
+                                
+                                private int getSaveArcOverridesExResponseResponse(
+                                com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesExResponse wrappedType){
+                                
+                                        return wrappedType.getResponse();
+                                    
+                                }
+                             
+                                    
+                                private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory,
                                     com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] param1,
                                     com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions param2,
                                     com.freshdirect.routing.proxy.stub.roadnet.BuildDriverDirections dummyWrappedType,
@@ -9152,6 +9810,43 @@
                              
                                     
                                 private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory,
+                                    com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabled dummyWrappedType,
+                                 boolean optimizeContent) throws org.apache.axis2.AxisFault{
+
+                                try{
+                                com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabled wrappedType = new com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabled();
+
+                                 
+
+                               org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
+                                  
+                                        emptyEnvelope.getBody().addChild(wrappedType.getOMElement(com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabled.MY_QNAME,factory));
+                                    
+
+                                return emptyEnvelope;
+                               } catch(org.apache.axis2.databinding.ADBException e){
+                                    throw org.apache.axis2.AxisFault.makeFault(e);
+                               }
+                               }
+
+
+
+                                
+                             
+                             /* methods to provide back word compatibility */
+
+                             
+
+                                
+                                private boolean getPOIShowEnabledResponsePoiShowEnabled(
+                                com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabledResponse wrappedType){
+                                
+                                        return wrappedType.getPoiShowEnabled();
+                                    
+                                }
+                             
+                                    
+                                private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory,
                                     int param1,
                                     int param2,
                                     int param3,
@@ -9370,9 +10065,9 @@
                                 com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverrides wrappedType = new com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverrides();
 
                                  
-                                              wrappedType.setKey(param1);
+                                              wrappedType.setStr(param1);
                                          
-                                              wrappedType.setOverrides(param2);
+                                              wrappedType.setVec(param2);
                                          
 
                                org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
@@ -9755,6 +10450,20 @@
 
                 }
            
+                if (com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesEx.class.equals(type)){
+                
+                           return com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesEx.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                    
+
+                }
+           
+                if (com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesExResponse.class.equals(type)){
+                
+                           return com.freshdirect.routing.proxy.stub.roadnet.SaveArcOverridesExResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                    
+
+                }
+           
                 if (com.freshdirect.routing.proxy.stub.roadnet.BuildDriverDirections.class.equals(type)){
                 
                            return com.freshdirect.routing.proxy.stub.roadnet.BuildDriverDirections.Factory.parse(param.getXMLStreamReaderWithoutCaching());
@@ -9863,6 +10572,20 @@
                 if (com.freshdirect.routing.proxy.stub.roadnet.EnableAllArcsByExtentsResponse.class.equals(type)){
                 
                            return com.freshdirect.routing.proxy.stub.roadnet.EnableAllArcsByExtentsResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                    
+
+                }
+           
+                if (com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabled.class.equals(type)){
+                
+                           return com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabled.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                    
+
+                }
+           
+                if (com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabledResponse.class.equals(type)){
+                
+                           return com.freshdirect.routing.proxy.stub.roadnet.POIShowEnabledResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
                     
 
                 }

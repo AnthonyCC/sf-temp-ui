@@ -850,6 +850,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "MassStopSequenceInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.MassStopSequenceInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "RoutingImportOrder".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder.Factory.parse(reader);
@@ -2053,6 +2063,16 @@
                   "DeliveryAreaOrderCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderCriteria.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "StopSignatureInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.StopSignatureInfo.Factory.parse(reader);
                         
 
                   }

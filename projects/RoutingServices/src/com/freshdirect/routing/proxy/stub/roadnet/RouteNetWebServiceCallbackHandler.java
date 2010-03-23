@@ -173,6 +173,22 @@
             }
                 
            /**
+            * auto generated Axis2 call back method for saveArcOverridesEx method
+            * override this method for handling normal response from saveArcOverridesEx operation
+            */
+           public void receiveResultsaveArcOverridesEx(
+                    int result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from saveArcOverridesEx operation
+           */
+            public void receiveErrorsaveArcOverridesEx(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for buildDriverDirections method
             * override this method for handling normal response from buildDriverDirections operation
             */
@@ -298,6 +314,22 @@
            * override this method for handling error response from enableAllArcsByExtents operation
            */
             public void receiveErrorenableAllArcsByExtents(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for pOIShowEnabled method
+            * override this method for handling normal response from pOIShowEnabled operation
+            */
+           public void receiveResultpOIShowEnabled(
+                    boolean result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from pOIShowEnabled operation
+           */
+            public void receiveErrorpOIShowEnabled(java.lang.Exception e) {
             }
                 
            /**

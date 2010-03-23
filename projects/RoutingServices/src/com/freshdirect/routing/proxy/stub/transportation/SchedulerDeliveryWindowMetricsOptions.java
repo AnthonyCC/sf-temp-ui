@@ -173,6 +173,68 @@
                                }
                             
 
+                        /**
+                        * field for PreRouteStemTimeAdjustmentSeconds
+                        */
+
+                        
+                                    protected int localPreRouteStemTimeAdjustmentSeconds =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt("0");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getPreRouteStemTimeAdjustmentSeconds(){
+                               return localPreRouteStemTimeAdjustmentSeconds;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param PreRouteStemTimeAdjustmentSeconds
+                               */
+                               public void setPreRouteStemTimeAdjustmentSeconds(int param){
+                            
+                                            this.localPreRouteStemTimeAdjustmentSeconds=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for PostRouteStemTimeAdjustmentSeconds
+                        */
+
+                        
+                                    protected int localPostRouteStemTimeAdjustmentSeconds =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt("0");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getPostRouteStemTimeAdjustmentSeconds(){
+                               return localPostRouteStemTimeAdjustmentSeconds;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param PostRouteStemTimeAdjustmentSeconds
+                               */
+                               public void setPostRouteStemTimeAdjustmentSeconds(int param){
+                            
+                                            this.localPostRouteStemTimeAdjustmentSeconds=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -344,6 +406,64 @@
                                            localTimeZone.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","timeZone"),
                                                factory,xmlWriter);
                                         
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"preRouteStemTimeAdjustmentSeconds", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"preRouteStemTimeAdjustmentSeconds");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("preRouteStemTimeAdjustmentSeconds");
+                                    }
+                                
+                                               if (localPreRouteStemTimeAdjustmentSeconds==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("preRouteStemTimeAdjustmentSeconds cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPreRouteStemTimeAdjustmentSeconds));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"postRouteStemTimeAdjustmentSeconds", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"postRouteStemTimeAdjustmentSeconds");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("postRouteStemTimeAdjustmentSeconds");
+                                    }
+                                
+                                               if (localPostRouteStemTimeAdjustmentSeconds==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("postRouteStemTimeAdjustmentSeconds cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPostRouteStemTimeAdjustmentSeconds));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
                     xmlWriter.writeEndElement();
                
 
@@ -549,6 +669,18 @@
                                     }
                                     elementList.add(localTimeZone);
                                 
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "preRouteStemTimeAdjustmentSeconds"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPreRouteStemTimeAdjustmentSeconds));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "postRouteStemTimeAdjustmentSeconds"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPostRouteStemTimeAdjustmentSeconds));
+                            
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -706,6 +838,44 @@
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","timeZone").equals(reader.getName())){
                                 
                                                 object.setTimeZone(com.freshdirect.routing.proxy.stub.transportation.TimeZoneValue.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","preRouteStemTimeAdjustmentSeconds").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPreRouteStemTimeAdjustmentSeconds(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","postRouteStemTimeAdjustmentSeconds").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPostRouteStemTimeAdjustmentSeconds(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();
                                     

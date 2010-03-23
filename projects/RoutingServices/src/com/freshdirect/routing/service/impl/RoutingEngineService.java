@@ -333,7 +333,12 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			
 			SchedulerDeliveryWindowMetricsOptions options = RoutingDataEncoder.encodeSchedulerDeliveryWindowMetricsOptions();
 			options.setDeliveryWindows(RoutingDataEncoder.encodeDeliveryWindowBaseList(slots));
-			
+			int preRouteStemTime = schedulerId.getArea().getStemFromTime() == 0 
+										? schedulerId.getArea().getStemToTime() : schedulerId.getArea().getStemFromTime(); 
+			int postRouteStemTime = schedulerId.getArea().getStemToTime() == 0 
+										? schedulerId.getArea().getStemFromTime() : schedulerId.getArea().getStemToTime();
+			options.setPreRouteStemTimeAdjustmentSeconds(preRouteStemTime * 60);
+			options.setPostRouteStemTimeAdjustmentSeconds(postRouteStemTime * 60);
 						
 			result = RoutingDataDecoder.decodeDeliveryWindowMetrics(
 											port.schedulerCalculateDeliveryWindowMetrics(

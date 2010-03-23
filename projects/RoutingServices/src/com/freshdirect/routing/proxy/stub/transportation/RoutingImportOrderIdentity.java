@@ -32,6 +32,36 @@
         
 
                         /**
+                        * field for InternalOrderID
+                        */
+
+                        
+                                    protected int localInternalOrderID ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getInternalOrderID(){
+                               return localInternalOrderID;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param InternalOrderID
+                               */
+                               public void setInternalOrderID(int param){
+                            
+                                            this.localInternalOrderID=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for OrderID
                         */
 
@@ -245,6 +275,35 @@
                                                    xmlWriter.writeCharacters(localRegionID);
                                             
                                           }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"internalOrderID", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"internalOrderID");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("internalOrderID");
+                                    }
+                                
+                                               if (localInternalOrderID==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("internalOrderID cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInternalOrderID));
+                                               }
                                     
                                    xmlWriter.writeEndElement();
                              
@@ -487,6 +546,12 @@
                                         }
                                     
                                       elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "internalOrderID"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInternalOrderID));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                                       "orderID"));
                                  
                                 elementList.add(
@@ -591,6 +656,25 @@
                                     
                                               object.setRegionID(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","internalOrderID").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setInternalOrderID(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();
                                     

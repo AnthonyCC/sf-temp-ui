@@ -1,30 +1,29 @@
 
 /**
- * SaveArcOverrides.java
+ * MassStopSequenceInfo.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
  */
             
-                package com.freshdirect.routing.proxy.stub.roadnet;
+                package com.freshdirect.routing.proxy.stub.transportation;
             
 
             /**
-            *  SaveArcOverrides bean class
+            *  MassStopSequenceInfo bean class
             */
         
-        public  class SaveArcOverrides
+        public  class MassStopSequenceInfo extends com.freshdirect.routing.proxy.stub.transportation.RouteEventInfo
         implements org.apache.axis2.databinding.ADBBean{
-        
-                public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
-                "http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                "SaveArcOverrides",
-                "ns1");
-
+        /* This type was generated from the piece of schema that had
+                name = MassStopSequenceInfo
+                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
+                Namespace Prefix = ns1
+                */
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/RouteNetWebService")){
+            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -33,50 +32,70 @@
         
 
                         /**
-                        * field for Str
+                        * field for RouteIdentity
                         */
 
                         
-                                    protected java.lang.String localStr ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.RouteIdentity localRouteIdentity ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localRouteIdentityTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
-                           * @return java.lang.String
+                           * @return com.freshdirect.routing.proxy.stub.transportation.RouteIdentity
                            */
-                           public  java.lang.String getStr(){
-                               return localStr;
+                           public  com.freshdirect.routing.proxy.stub.transportation.RouteIdentity getRouteIdentity(){
+                               return localRouteIdentity;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param Str
+                               * @param param RouteIdentity
                                */
-                               public void setStr(java.lang.String param){
+                               public void setRouteIdentity(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity param){
                             
-                                            this.localStr=param;
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localRouteIdentityTracker = true;
+                                       } else {
+                                          localRouteIdentityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localRouteIdentity=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for Vec
+                        * field for InternalStopIds
                         * This was an Array!
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] localVec ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.StopIdentity[] localInternalStopIds ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localInternalStopIdsTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[]
+                           * @return com.freshdirect.routing.proxy.stub.transportation.StopIdentity[]
                            */
-                           public  com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] getVec(){
-                               return localVec;
+                           public  com.freshdirect.routing.proxy.stub.transportation.StopIdentity[] getInternalStopIds(){
+                               return localInternalStopIds;
                            }
 
                            
@@ -85,48 +104,55 @@
 
                                
                               /**
-                               * validate the array for Vec
+                               * validate the array for InternalStopIds
                                */
-                              protected void validateVec(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] param){
+                              protected void validateInternalStopIds(com.freshdirect.routing.proxy.stub.transportation.StopIdentity[] param){
                              
-                              if ((param != null) && (param.length < 1)){
-                                throw new java.lang.RuntimeException();
-                              }
-                              
                               }
 
 
                              /**
                               * Auto generated setter method
-                              * @param param Vec
+                              * @param param InternalStopIds
                               */
-                              public void setVec(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] param){
+                              public void setInternalStopIds(com.freshdirect.routing.proxy.stub.transportation.StopIdentity[] param){
                               
-                                   validateVec(param);
+                                   validateInternalStopIds(param);
 
                                
-                                      this.localVec=param;
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localInternalStopIdsTracker = true;
+                                          } else {
+                                             localInternalStopIdsTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localInternalStopIds=param;
                               }
 
                                
                              
                              /**
                              * Auto generated add method for the array for convenience
-                             * @param param com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.StopIdentity
                              */
-                             public void addVec(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride param){
-                                   if (localVec == null){
-                                   localVec = new com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[]{};
+                             public void addInternalStopIds(com.freshdirect.routing.proxy.stub.transportation.StopIdentity param){
+                                   if (localInternalStopIds == null){
+                                   localInternalStopIds = new com.freshdirect.routing.proxy.stub.transportation.StopIdentity[]{};
                                    }
 
                             
+                                 //update the setting tracker
+                                localInternalStopIdsTracker = true;
+                            
 
                                java.util.List list =
-                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localVec);
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localInternalStopIds);
                                list.add(param);
-                               this.localVec =
-                             (com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[])list.toArray(
-                            new com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[list.size()]);
+                               this.localInternalStopIds =
+                             (com.freshdirect.routing.proxy.stub.transportation.StopIdentity[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.StopIdentity[list.size()]);
 
                              }
                              
@@ -159,15 +185,15 @@
 
 
         
-                org.apache.axiom.om.OMDataSource dataSource =
-                       new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
+               org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SaveArcOverrides.this.serialize(MY_QNAME,factory,xmlWriter);
+                       MassStopSequenceInfo.this.serialize(parentQName,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
-               MY_QNAME,factory,dataSource);
+               parentQName,factory,dataSource);
             
        }
 
@@ -211,75 +237,103 @@
                         xmlWriter.writeStartElement(parentQName.getLocalPart());
                     }
                 
-                  if (serializeType){
-               
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/RouteNetWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SaveArcOverrides",
+                           namespacePrefix+":MassStopSequenceInfo",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SaveArcOverrides",
+                           "MassStopSequenceInfo",
                            xmlWriter);
                    }
 
                
-                   }
-               
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                            if (localSource==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("source cannot be null!!");
+                                            }
+                                           localSource.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","source"),
+                                               factory,xmlWriter);
+                                        
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"str", namespace);
+                                            xmlWriter.writeStartElement(prefix,"messageId", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"str");
+                                            xmlWriter.writeStartElement(namespace,"messageId");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("str");
+                                        xmlWriter.writeStartElement("messageId");
                                     }
                                 
-
-                                          if (localStr==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("str cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localStr);
-                                            
-                                          }
+                                               if (localMessageId==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("messageId cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMessageId));
+                                               }
                                     
                                    xmlWriter.writeEndElement();
-                             
-                                       if (localVec!=null){
-                                            for (int i = 0;i < localVec.length;i++){
-                                                if (localVec[i] != null){
-                                                 localVec[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","vec"),
+                              if (localRouteIdentityTracker){
+                                    if (localRouteIdentity==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"routeIdentity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"routeIdentity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("routeIdentity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localRouteIdentity.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","routeIdentity"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localInternalStopIdsTracker){
+                                       if (localInternalStopIds!=null){
+                                            for (int i = 0;i < localInternalStopIds.length;i++){
+                                                if (localInternalStopIds[i] != null){
+                                                 localInternalStopIds[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","internalStopIds"),
                                                            factory,xmlWriter);
                                                 } else {
                                                    
-                                                           throw new org.apache.axis2.databinding.ADBException("vec cannot be null!!");
+                                                        // we don't have to do any thing since minOccures is zero
                                                     
                                                 }
 
                                             }
                                      } else {
                                         
-                                               throw new org.apache.axis2.databinding.ADBException("vec cannot be null!!");
+                                               throw new org.apache.axis2.databinding.ADBException("internalStopIds cannot be null!!");
                                         
                                     }
-                                 
+                                 }
                     xmlWriter.writeEndElement();
                
 
@@ -442,36 +496,52 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                                                                      "str"));
+                    attribList.add(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema-instance","type"));
+                    attribList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","MassStopSequenceInfo"));
+                
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "source"));
+                            
+                            
+                                    if (localSource==null){
+                                         throw new org.apache.axis2.databinding.ADBException("source cannot be null!!");
+                                    }
+                                    elementList.add(localSource);
+                                
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "messageId"));
                                  
-                                        if (localStr != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStr));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("str cannot be null!!");
-                                        }
-                                    
-                             if (localVec!=null) {
-                                 for (int i = 0;i < localVec.length;i++){
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMessageId));
+                             if (localRouteIdentityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "routeIdentity"));
+                            
+                            
+                                    elementList.add(localRouteIdentity==null?null:
+                                    localRouteIdentity);
+                                } if (localInternalStopIdsTracker){
+                             if (localInternalStopIds!=null) {
+                                 for (int i = 0;i < localInternalStopIds.length;i++){
 
-                                    if (localVec[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                                                                          "vec"));
-                                         elementList.add(localVec[i]);
+                                    if (localInternalStopIds[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                          "internalStopIds"));
+                                         elementList.add(localInternalStopIds[i]);
                                     } else {
                                         
-                                               throw new org.apache.axis2.databinding.ADBException("vec cannot be null !!");
+                                                // nothing to do
                                             
                                     }
 
                                  }
                              } else {
                                  
-                                        throw new org.apache.axis2.databinding.ADBException("vec cannot be null!!");
+                                        throw new org.apache.axis2.databinding.ADBException("internalStopIds cannot be null!!");
                                     
                              }
 
-                        
+                        }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -496,9 +566,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SaveArcOverrides parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SaveArcOverrides object =
-                new SaveArcOverrides();
+        public static MassStopSequenceInfo parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            MassStopSequenceInfo object =
+                new MassStopSequenceInfo();
 
             int event;
             java.lang.String nillableValue = null;
@@ -522,10 +592,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"SaveArcOverrides".equals(type)){
+                            if (!"MassStopSequenceInfo".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SaveArcOverrides)com.freshdirect.routing.proxy.stub.roadnet.ExtensionMapper.getTypeObject(
+                                return (MassStopSequenceInfo)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -547,17 +617,14 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list2 = new java.util.ArrayList();
+                        java.util.ArrayList list4 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","str").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","source").equals(reader.getName())){
                                 
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setStr(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                                object.setSource(com.freshdirect.routing.proxy.stub.transportation.RouteEventSource.Factory.parse(reader));
                                               
                                         reader.next();
                                     
@@ -571,16 +638,59 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","vec").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","messageId").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setMessageId(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","routeIdentity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setRouteIdentity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setRouteIdentity(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","internalStopIds").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list2.add(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride.Factory.parse(reader));
+                                    list4.add(com.freshdirect.routing.proxy.stub.transportation.StopIdentity.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone2 = false;
-                                                        while(!loopDone2){
+                                                        boolean loopDone4 = false;
+                                                        while(!loopDone4){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -591,30 +701,29 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone2 = true;
+                                                                loopDone4 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","vec").equals(reader.getName())){
-                                                                    list2.add(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride.Factory.parse(reader));
+                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","internalStopIds").equals(reader.getName())){
+                                                                    list4.add(com.freshdirect.routing.proxy.stub.transportation.StopIdentity.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone2 = true;
+                                                                    loopDone4 = true;
                                                                 }
                                                             }
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
-                                                        object.setVec((com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[])
+                                                        object.setInternalStopIds((com.freshdirect.routing.proxy.stub.transportation.StopIdentity[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride.class,
-                                                                list2));
+                                                                com.freshdirect.routing.proxy.stub.transportation.StopIdentity.class,
+                                                                list4));
                                                             
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                              
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

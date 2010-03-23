@@ -19,14 +19,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__DistanceToClosestCity
-                    * @param distanceToClosestCity50
+                    * @param distanceToClosestCity52
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCityResult distanceToClosestCity(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt51)
+                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt53)
                         throws java.rmi.RemoteException
              ;
 
@@ -34,12 +34,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__DistanceToClosestCity
-                * @param distanceToClosestCity50
+                * @param distanceToClosestCity52
             
           */
         public void startdistanceToClosestCity(
 
-            com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt51,
+            com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt53,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -50,14 +50,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__FormatPositionText
-                    * @param formatPositionText54
+                    * @param formatPositionText56
                 
          */
 
          
                      public java.lang.String formatPositionText(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt55,boolean useArcDetail56,boolean useKilometers57)
+                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt57,boolean useArcDetail58,boolean useKilometers59)
                         throws java.rmi.RemoteException
              ;
 
@@ -65,12 +65,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__FormatPositionText
-                * @param formatPositionText54
+                * @param formatPositionText56
             
           */
         public void startformatPositionText(
 
-            com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt55,boolean useArcDetail56,boolean useKilometers57,
+            com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt57,boolean useArcDetail58,boolean useKilometers59,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -81,7 +81,7 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__VersionInformation
-                    * @param versionInformation60
+                    * @param versionInformation62
                 
          */
 
@@ -96,7 +96,7 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__VersionInformation
-                * @param versionInformation60
+                * @param versionInformation62
             
           */
         public void startversionInformation(
@@ -112,14 +112,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__FindMapArcs
-                    * @param findMapArcs63
+                    * @param findMapArcs65
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.MapArc[] findMapArcs(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria64)
+                        com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria66)
                         throws java.rmi.RemoteException
              ;
 
@@ -127,12 +127,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__FindMapArcs
-                * @param findMapArcs63
+                * @param findMapArcs65
             
           */
         public void startfindMapArcs(
 
-            com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria64,
+            com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria66,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -143,14 +143,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__MapCenter
-                    * @param mapCenter67
+                    * @param mapCenter69
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.MapData mapCenter(
 
-                        int x68,int y69,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria70,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options71)
+                        int x70,int y71,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria72,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options73)
                         throws java.rmi.RemoteException
              ;
 
@@ -158,12 +158,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__MapCenter
-                * @param mapCenter67
+                * @param mapCenter69
             
           */
         public void startmapCenter(
 
-            int x68,int y69,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria70,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options71,
+            int x70,int y71,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria72,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options73,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -174,14 +174,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__BatchGeocode
-                    * @param batchGeocode74
+                    * @param batchGeocode76
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.GeocodeData[] batchGeocode(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.Address[] adresses75,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options76)
+                        com.freshdirect.routing.proxy.stub.roadnet.Address[] adresses77,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options78)
                         throws java.rmi.RemoteException
              ;
 
@@ -189,12 +189,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__BatchGeocode
-                * @param batchGeocode74
+                * @param batchGeocode76
             
           */
         public void startbatchGeocode(
 
-            com.freshdirect.routing.proxy.stub.roadnet.Address[] adresses75,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options76,
+            com.freshdirect.routing.proxy.stub.roadnet.Address[] adresses77,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options78,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -205,14 +205,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__BuildMatrix
-                    * @param buildMatrix79
+                    * @param buildMatrix81
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.TimeDistanceResult[] buildMatrix(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points80)
+                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points82)
                         throws java.rmi.RemoteException
              ;
 
@@ -220,12 +220,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__BuildMatrix
-                * @param buildMatrix79
+                * @param buildMatrix81
             
           */
         public void startbuildMatrix(
 
-            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points80,
+            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points82,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -236,14 +236,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__Map
-                    * @param map83
+                    * @param map85
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.MapData map(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria84,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options85)
+                        com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria86,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options87)
                         throws java.rmi.RemoteException
              ;
 
@@ -251,12 +251,43 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__Map
-                * @param map83
+                * @param map85
             
           */
         public void startmap(
 
-            com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria84,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options85,
+            com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria86,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options87,
+
+            final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
+
+            throws java.rmi.RemoteException;
+
+     
+
+        /**
+          * Auto generated method signature
+          * Service definition of function ns1__SaveArcOverridesEx
+                    * @param saveArcOverridesEx90
+                
+         */
+
+         
+                     public int saveArcOverridesEx(
+
+                        java.lang.String key91,com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] overrides92,com.freshdirect.routing.proxy.stub.roadnet.ArcOverrideSaveOptions options93)
+                        throws java.rmi.RemoteException
+             ;
+
+        
+         /**
+            * Auto generated method signature for Asynchronous Invocations
+            * Service definition of function ns1__SaveArcOverridesEx
+                * @param saveArcOverridesEx90
+            
+          */
+        public void startsaveArcOverridesEx(
+
+            java.lang.String key91,com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] overrides92,com.freshdirect.routing.proxy.stub.roadnet.ArcOverrideSaveOptions options93,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -267,14 +298,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__BuildDriverDirections
-                    * @param buildDriverDirections88
+                    * @param buildDriverDirections96
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.DirectionData buildDriverDirections(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations89,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options90)
+                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations97,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options98)
                         throws java.rmi.RemoteException
              ;
 
@@ -282,12 +313,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__BuildDriverDirections
-                * @param buildDriverDirections88
+                * @param buildDriverDirections96
             
           */
         public void startbuildDriverDirections(
 
-            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations89,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options90,
+            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations97,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options98,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -298,14 +329,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__MapZoomIn
-                    * @param mapZoomIn93
+                    * @param mapZoomIn101
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.MapData mapZoomIn(
 
-                        int x94,int y95,int zoomDegree96,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria97,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options98)
+                        int x102,int y103,int zoomDegree104,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria105,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options106)
                         throws java.rmi.RemoteException
              ;
 
@@ -313,12 +344,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__MapZoomIn
-                * @param mapZoomIn93
+                * @param mapZoomIn101
             
           */
         public void startmapZoomIn(
 
-            int x94,int y95,int zoomDegree96,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria97,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options98,
+            int x102,int y103,int zoomDegree104,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria105,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options106,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -329,14 +360,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__BuildPathEx
-                    * @param buildPathEx101
+                    * @param buildPathEx109
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.PathData buildPathEx(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations102,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options103)
+                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations110,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options111)
                         throws java.rmi.RemoteException
              ;
 
@@ -344,12 +375,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__BuildPathEx
-                * @param buildPathEx101
+                * @param buildPathEx109
             
           */
         public void startbuildPathEx(
 
-            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations102,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options103,
+            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations110,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options111,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -360,14 +391,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__MapZoomRange
-                    * @param mapZoomRange106
+                    * @param mapZoomRange114
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.MapData mapZoomRange(
 
-                        int ulScreenX107,int ulScreenY108,int lrScreenX109,int lrScreenY110,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria111,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options112)
+                        int ulScreenX115,int ulScreenY116,int lrScreenX117,int lrScreenY118,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria119,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options120)
                         throws java.rmi.RemoteException
              ;
 
@@ -375,12 +406,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__MapZoomRange
-                * @param mapZoomRange106
+                * @param mapZoomRange114
             
           */
         public void startmapZoomRange(
 
-            int ulScreenX107,int ulScreenY108,int lrScreenX109,int lrScreenY110,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria111,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options112,
+            int ulScreenX115,int ulScreenY116,int lrScreenX117,int lrScreenY118,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria119,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options120,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -391,14 +422,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__FindMapArcsEx
-                    * @param findMapArcsEx115
+                    * @param findMapArcsEx123
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.MapArc[] findMapArcsEx(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria116,com.freshdirect.routing.proxy.stub.roadnet.FindMapArcOptions options117)
+                        com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria124,com.freshdirect.routing.proxy.stub.roadnet.FindMapArcOptions options125)
                         throws java.rmi.RemoteException
              ;
 
@@ -406,12 +437,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__FindMapArcsEx
-                * @param findMapArcsEx115
+                * @param findMapArcsEx123
             
           */
         public void startfindMapArcsEx(
 
-            com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria116,com.freshdirect.routing.proxy.stub.roadnet.FindMapArcOptions options117,
+            com.freshdirect.routing.proxy.stub.roadnet.FindMapArcCriteria criteria124,com.freshdirect.routing.proxy.stub.roadnet.FindMapArcOptions options125,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -422,14 +453,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__Geocode
-                    * @param geocode120
+                    * @param geocode128
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.GeocodeData geocode(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.Address address121)
+                        com.freshdirect.routing.proxy.stub.roadnet.Address address129)
                         throws java.rmi.RemoteException
              ;
 
@@ -437,12 +468,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__Geocode
-                * @param geocode120
+                * @param geocode128
             
           */
         public void startgeocode(
 
-            com.freshdirect.routing.proxy.stub.roadnet.Address address121,
+            com.freshdirect.routing.proxy.stub.roadnet.Address address129,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -453,14 +484,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__MapGoToPlace
-                    * @param mapGoToPlace124
+                    * @param mapGoToPlace132
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.MapData mapGoToPlace(
 
-                        java.lang.String place125,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria126,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options127)
+                        java.lang.String place133,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria134,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options135)
                         throws java.rmi.RemoteException
              ;
 
@@ -468,12 +499,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__MapGoToPlace
-                * @param mapGoToPlace124
+                * @param mapGoToPlace132
             
           */
         public void startmapGoToPlace(
 
-            java.lang.String place125,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria126,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options127,
+            java.lang.String place133,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria134,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options135,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -484,14 +515,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__EnableAllArcsByExtents
-                    * @param enableAllArcsByExtents130
+                    * @param enableAllArcsByExtents138
                 
          */
 
          
                      public int enableAllArcsByExtents(
 
-                        java.lang.String key131,com.freshdirect.routing.proxy.stub.roadnet.MapExtents extents132)
+                        java.lang.String key139,com.freshdirect.routing.proxy.stub.roadnet.MapExtents extents140)
                         throws java.rmi.RemoteException
              ;
 
@@ -499,12 +530,43 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__EnableAllArcsByExtents
-                * @param enableAllArcsByExtents130
+                * @param enableAllArcsByExtents138
             
           */
         public void startenableAllArcsByExtents(
 
-            java.lang.String key131,com.freshdirect.routing.proxy.stub.roadnet.MapExtents extents132,
+            java.lang.String key139,com.freshdirect.routing.proxy.stub.roadnet.MapExtents extents140,
+
+            final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
+
+            throws java.rmi.RemoteException;
+
+     
+
+        /**
+          * Auto generated method signature
+          * Service definition of function ns1__POIShowEnabled
+                    * @param pOIShowEnabled143
+                
+         */
+
+         
+                     public boolean pOIShowEnabled(
+
+                        )
+                        throws java.rmi.RemoteException
+             ;
+
+        
+         /**
+            * Auto generated method signature for Asynchronous Invocations
+            * Service definition of function ns1__POIShowEnabled
+                * @param pOIShowEnabled143
+            
+          */
+        public void startpOIShowEnabled(
+
+            
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -515,14 +577,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__MapZoomOut
-                    * @param mapZoomOut135
+                    * @param mapZoomOut146
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.MapData mapZoomOut(
 
-                        int x136,int y137,int zoomDegree138,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria139,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options140)
+                        int x147,int y148,int zoomDegree149,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria150,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options151)
                         throws java.rmi.RemoteException
              ;
 
@@ -530,12 +592,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__MapZoomOut
-                * @param mapZoomOut135
+                * @param mapZoomOut146
             
           */
         public void startmapZoomOut(
 
-            int x136,int y137,int zoomDegree138,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria139,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options140,
+            int x147,int y148,int zoomDegree149,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria150,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options151,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -546,14 +608,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__GeocodeEx
-                    * @param geocodeEx143
+                    * @param geocodeEx154
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.GeocodeData geocodeEx(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.Address address144,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options145)
+                        com.freshdirect.routing.proxy.stub.roadnet.Address address155,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options156)
                         throws java.rmi.RemoteException
              ;
 
@@ -561,12 +623,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__GeocodeEx
-                * @param geocodeEx143
+                * @param geocodeEx154
             
           */
         public void startgeocodeEx(
 
-            com.freshdirect.routing.proxy.stub.roadnet.Address address144,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options145,
+            com.freshdirect.routing.proxy.stub.roadnet.Address address155,com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions options156,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -577,7 +639,7 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__Nop
-                    * @param nop148
+                    * @param nop159
                 
          */
 
@@ -592,7 +654,7 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__Nop
-                * @param nop148
+                * @param nop159
             
           */
         public void startnop(
@@ -608,7 +670,7 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__MapRetrieveMapDataVersion
-                    * @param mapRetrieveMapDataVersion151
+                    * @param mapRetrieveMapDataVersion162
                 
          */
 
@@ -623,7 +685,7 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__MapRetrieveMapDataVersion
-                * @param mapRetrieveMapDataVersion151
+                * @param mapRetrieveMapDataVersion162
             
           */
         public void startmapRetrieveMapDataVersion(
@@ -639,14 +701,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__FindMapRegionDetails
-                    * @param findMapRegionDetails154
+                    * @param findMapRegionDetails165
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.RegionDetail[] findMapRegionDetails(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] pts155)
+                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] pts166)
                         throws java.rmi.RemoteException
              ;
 
@@ -654,12 +716,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__FindMapRegionDetails
-                * @param findMapRegionDetails154
+                * @param findMapRegionDetails165
             
           */
         public void startfindMapRegionDetails(
 
-            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] pts155,
+            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] pts166,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -670,14 +732,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__SaveArcOverrides
-                    * @param saveArcOverrides158
+                    * @param saveArcOverrides169
                 
          */
 
          
                      public int saveArcOverrides(
 
-                        java.lang.String key159,com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] overrides160)
+                        java.lang.String str170,com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] vec171)
                         throws java.rmi.RemoteException
              ;
 
@@ -685,12 +747,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__SaveArcOverrides
-                * @param saveArcOverrides158
+                * @param saveArcOverrides169
             
           */
         public void startsaveArcOverrides(
 
-            java.lang.String key159,com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] overrides160,
+            java.lang.String str170,com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] vec171,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -701,14 +763,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__BuildPath
-                    * @param buildPath163
+                    * @param buildPath174
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.PathData buildPath(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations164)
+                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations175)
                         throws java.rmi.RemoteException
              ;
 
@@ -716,12 +778,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__BuildPath
-                * @param buildPath163
+                * @param buildPath174
             
           */
         public void startbuildPath(
 
-            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations164,
+            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations175,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -732,14 +794,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__BuildCompressedPath
-                    * @param buildCompressedPath167
+                    * @param buildCompressedPath178
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.CompressedPathData buildCompressedPath(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations168,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions169,com.freshdirect.routing.proxy.stub.roadnet.PathCompressionOptions pathCompressionOptions170)
+                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations179,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions180,com.freshdirect.routing.proxy.stub.roadnet.PathCompressionOptions pathCompressionOptions181)
                         throws java.rmi.RemoteException
              ;
 
@@ -747,12 +809,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__BuildCompressedPath
-                * @param buildCompressedPath167
+                * @param buildCompressedPath178
             
           */
         public void startbuildCompressedPath(
 
-            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations168,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions169,com.freshdirect.routing.proxy.stub.roadnet.PathCompressionOptions pathCompressionOptions170,
+            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations179,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions180,com.freshdirect.routing.proxy.stub.roadnet.PathCompressionOptions pathCompressionOptions181,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -763,14 +825,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__BuildDriverDirectionsEx
-                    * @param buildDriverDirectionsEx173
+                    * @param buildDriverDirectionsEx184
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.DirectionData buildDriverDirectionsEx(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations174,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options175,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions176)
+                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations185,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options186,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions187)
                         throws java.rmi.RemoteException
              ;
 
@@ -778,12 +840,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__BuildDriverDirectionsEx
-                * @param buildDriverDirectionsEx173
+                * @param buildDriverDirectionsEx184
             
           */
         public void startbuildDriverDirectionsEx(
 
-            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations174,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options175,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions176,
+            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] destinations185,com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions options186,com.freshdirect.routing.proxy.stub.roadnet.PathOptions pathOptions187,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -794,14 +856,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__BuildMatrixEx
-                    * @param buildMatrixEx179
+                    * @param buildMatrixEx190
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.TimeDistanceResult[] buildMatrixEx(
 
-                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points180,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options181)
+                        com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points191,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options192)
                         throws java.rmi.RemoteException
              ;
 
@@ -809,12 +871,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__BuildMatrixEx
-                * @param buildMatrixEx179
+                * @param buildMatrixEx190
             
           */
         public void startbuildMatrixEx(
 
-            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points180,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options181,
+            com.freshdirect.routing.proxy.stub.roadnet.MapPoint[] points191,com.freshdirect.routing.proxy.stub.roadnet.PathOptions options192,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 
@@ -825,14 +887,14 @@
         /**
           * Auto generated method signature
           * Service definition of function ns1__MapConvertToLatLong
-                    * @param mapConvertToLatLong184
+                    * @param mapConvertToLatLong195
                 
          */
 
          
                      public com.freshdirect.routing.proxy.stub.roadnet.MapPoint mapConvertToLatLong(
 
-                        int x185,int y186,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria187,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options188)
+                        int x196,int y197,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria198,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options199)
                         throws java.rmi.RemoteException
              ;
 
@@ -840,12 +902,12 @@
          /**
             * Auto generated method signature for Asynchronous Invocations
             * Service definition of function ns1__MapConvertToLatLong
-                * @param mapConvertToLatLong184
+                * @param mapConvertToLatLong195
             
           */
         public void startmapConvertToLatLong(
 
-            int x185,int y186,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria187,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options188,
+            int x196,int y197,com.freshdirect.routing.proxy.stub.roadnet.MapCriteria criteria198,com.freshdirect.routing.proxy.stub.roadnet.MapOptions options199,
 
             final com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceCallbackHandler callback)
 

@@ -211,6 +211,7 @@ public class RoutingDataEncoder {
 								.getGeographicLocation().getLatitude())*1000000));
 		order.setLongitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation()
 								.getGeographicLocation().getLongitude())*1000000));
+		
 		return order;
 	}
 	
@@ -235,6 +236,7 @@ public class RoutingDataEncoder {
 				.getGeographicLocation().getLatitude())*1000000));
 		order.setLongitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation()
 				.getGeographicLocation().getLongitude())*1000000));
+		
 		return order;
 	}
 	
@@ -347,8 +349,8 @@ public class RoutingDataEncoder {
 		//param2 area;
 		//param3 deliveryDate;
 		SchedulerUpdateOrderOptions options = new SchedulerUpdateOrderOptions();
-		options.setNewOrderNumber(orderModel.getOrderNumber());		
-				
+		options.setNewReferenceNumber(orderModel.getOrderNumber());	
+						
 		return options;
 	}
 	
@@ -522,8 +524,7 @@ public class RoutingDataEncoder {
 		base.setStart(null);
 		base.setEnd(null);
 		options.setDeliveryWindows(new SchedulerDeliveryWindowBase[]{base});
-
-
+		
 		metrics.setOptions(options);
 		return metrics;
 	}

@@ -1,6 +1,6 @@
 
 /**
- * SaveArcOverrides.java
+ * SaveArcOverridesEx.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,15 +10,15 @@
             
 
             /**
-            *  SaveArcOverrides bean class
+            *  SaveArcOverridesEx bean class
             */
         
-        public  class SaveArcOverrides
+        public  class SaveArcOverridesEx
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
                 "http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                "SaveArcOverrides",
+                "SaveArcOverridesEx",
                 "ns1");
 
             
@@ -33,50 +33,50 @@
         
 
                         /**
-                        * field for Str
+                        * field for Key
                         */
 
                         
-                                    protected java.lang.String localStr ;
+                                    protected java.lang.String localKey ;
                                 
 
                            /**
                            * Auto generated getter method
                            * @return java.lang.String
                            */
-                           public  java.lang.String getStr(){
-                               return localStr;
+                           public  java.lang.String getKey(){
+                               return localKey;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param Str
+                               * @param param Key
                                */
-                               public void setStr(java.lang.String param){
+                               public void setKey(java.lang.String param){
                             
-                                            this.localStr=param;
+                                            this.localKey=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for Vec
+                        * field for Overrides
                         * This was an Array!
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] localVec ;
+                                    protected com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] localOverrides ;
                                 
 
                            /**
                            * Auto generated getter method
                            * @return com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[]
                            */
-                           public  com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] getVec(){
-                               return localVec;
+                           public  com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] getOverrides(){
+                               return localOverrides;
                            }
 
                            
@@ -85,9 +85,9 @@
 
                                
                               /**
-                               * validate the array for Vec
+                               * validate the array for Overrides
                                */
-                              protected void validateVec(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] param){
+                              protected void validateOverrides(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] param){
                              
                               if ((param != null) && (param.length < 1)){
                                 throw new java.lang.RuntimeException();
@@ -98,14 +98,14 @@
 
                              /**
                               * Auto generated setter method
-                              * @param param Vec
+                              * @param param Overrides
                               */
-                              public void setVec(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] param){
+                              public void setOverrides(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] param){
                               
-                                   validateVec(param);
+                                   validateOverrides(param);
 
                                
-                                      this.localVec=param;
+                                      this.localOverrides=param;
                               }
 
                                
@@ -114,22 +114,66 @@
                              * Auto generated add method for the array for convenience
                              * @param param com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride
                              */
-                             public void addVec(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride param){
-                                   if (localVec == null){
-                                   localVec = new com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[]{};
+                             public void addOverrides(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride param){
+                                   if (localOverrides == null){
+                                   localOverrides = new com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[]{};
                                    }
 
                             
 
                                java.util.List list =
-                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localVec);
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localOverrides);
                                list.add(param);
-                               this.localVec =
+                               this.localOverrides =
                              (com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[])list.toArray(
                             new com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[list.size()]);
 
                              }
                              
+
+                        /**
+                        * field for Options
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.roadnet.ArcOverrideSaveOptions localOptions ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localOptionsTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.roadnet.ArcOverrideSaveOptions
+                           */
+                           public  com.freshdirect.routing.proxy.stub.roadnet.ArcOverrideSaveOptions getOptions(){
+                               return localOptions;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Options
+                               */
+                               public void setOptions(com.freshdirect.routing.proxy.stub.roadnet.ArcOverrideSaveOptions param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localOptionsTracker = true;
+                                       } else {
+                                          localOptionsTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localOptions=param;
+                                    
+
+                               }
+                            
 
      /**
      * isReaderMTOMAware
@@ -163,7 +207,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SaveArcOverrides.this.serialize(MY_QNAME,factory,xmlWriter);
+                       SaveArcOverridesEx.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -217,11 +261,11 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/RouteNetWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SaveArcOverrides",
+                           namespacePrefix+":SaveArcOverridesEx",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SaveArcOverrides",
+                           "SaveArcOverridesEx",
                            xmlWriter);
                    }
 
@@ -235,51 +279,82 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"str", namespace);
+                                            xmlWriter.writeStartElement(prefix,"key", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"str");
+                                            xmlWriter.writeStartElement(namespace,"key");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("str");
+                                        xmlWriter.writeStartElement("key");
                                     }
                                 
 
-                                          if (localStr==null){
+                                          if (localKey==null){
                                               // write the nil attribute
                                               
-                                                     throw new org.apache.axis2.databinding.ADBException("str cannot be null!!");
+                                                     throw new org.apache.axis2.databinding.ADBException("key cannot be null!!");
                                                   
                                           }else{
 
                                         
-                                                   xmlWriter.writeCharacters(localStr);
+                                                   xmlWriter.writeCharacters(localKey);
                                             
                                           }
                                     
                                    xmlWriter.writeEndElement();
                              
-                                       if (localVec!=null){
-                                            for (int i = 0;i < localVec.length;i++){
-                                                if (localVec[i] != null){
-                                                 localVec[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","vec"),
+                                       if (localOverrides!=null){
+                                            for (int i = 0;i < localOverrides.length;i++){
+                                                if (localOverrides[i] != null){
+                                                 localOverrides[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","overrides"),
                                                            factory,xmlWriter);
                                                 } else {
                                                    
-                                                           throw new org.apache.axis2.databinding.ADBException("vec cannot be null!!");
+                                                           throw new org.apache.axis2.databinding.ADBException("overrides cannot be null!!");
                                                     
                                                 }
 
                                             }
                                      } else {
                                         
-                                               throw new org.apache.axis2.databinding.ADBException("vec cannot be null!!");
+                                               throw new org.apache.axis2.databinding.ADBException("overrides cannot be null!!");
                                         
                                     }
-                                 
+                                  if (localOptionsTracker){
+                                    if (localOptions==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"options", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"options");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("options");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localOptions.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","options"),
+                                        factory,xmlWriter);
+                                    }
+                                }
                     xmlWriter.writeEndElement();
                
 
@@ -443,35 +518,42 @@
 
                 
                                       elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                                                                      "str"));
+                                                                      "key"));
                                  
-                                        if (localStr != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStr));
+                                        if (localKey != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localKey));
                                         } else {
-                                           throw new org.apache.axis2.databinding.ADBException("str cannot be null!!");
+                                           throw new org.apache.axis2.databinding.ADBException("key cannot be null!!");
                                         }
                                     
-                             if (localVec!=null) {
-                                 for (int i = 0;i < localVec.length;i++){
+                             if (localOverrides!=null) {
+                                 for (int i = 0;i < localOverrides.length;i++){
 
-                                    if (localVec[i] != null){
+                                    if (localOverrides[i] != null){
                                          elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                                                                          "vec"));
-                                         elementList.add(localVec[i]);
+                                                                          "overrides"));
+                                         elementList.add(localOverrides[i]);
                                     } else {
                                         
-                                               throw new org.apache.axis2.databinding.ADBException("vec cannot be null !!");
+                                               throw new org.apache.axis2.databinding.ADBException("overrides cannot be null !!");
                                             
                                     }
 
                                  }
                              } else {
                                  
-                                        throw new org.apache.axis2.databinding.ADBException("vec cannot be null!!");
+                                        throw new org.apache.axis2.databinding.ADBException("overrides cannot be null!!");
                                     
                              }
 
-                        
+                         if (localOptionsTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
+                                                                      "options"));
+                            
+                            
+                                    elementList.add(localOptions==null?null:
+                                    localOptions);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -496,9 +578,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SaveArcOverrides parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SaveArcOverrides object =
-                new SaveArcOverrides();
+        public static SaveArcOverridesEx parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            SaveArcOverridesEx object =
+                new SaveArcOverridesEx();
 
             int event;
             java.lang.String nillableValue = null;
@@ -522,10 +604,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"SaveArcOverrides".equals(type)){
+                            if (!"SaveArcOverridesEx".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SaveArcOverrides)com.freshdirect.routing.proxy.stub.roadnet.ExtensionMapper.getTypeObject(
+                                return (SaveArcOverridesEx)com.freshdirect.routing.proxy.stub.roadnet.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -552,11 +634,11 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","str").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","key").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setStr(
+                                              object.setKey(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
                                               
                                         reader.next();
@@ -571,7 +653,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","vec").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","overrides").equals(reader.getName())){
                                 
                                     
                                     
@@ -593,7 +675,7 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone2 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","vec").equals(reader.getName())){
+                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","overrides").equals(reader.getName())){
                                                                     list2.add(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride.Factory.parse(reader));
                                                                         
                                                                 }else{
@@ -603,7 +685,7 @@
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
-                                                        object.setVec((com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[])
+                                                        object.setOverrides((com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride.class,
                                                                 list2));
@@ -614,7 +696,31 @@
                                     // A start element we are not expecting indicates an invalid parameter was passed
                                     throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
                                 }
-                              
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","options").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setOptions(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setOptions(com.freshdirect.routing.proxy.stub.roadnet.ArcOverrideSaveOptions.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

@@ -424,6 +424,7 @@ public class RoutingUtil {
 		orderModel.setOrderNumber(reservation.getOrderId());
 		orderModel.getDeliveryInfo().setReservationId(reservation.getId());		
 		routingService.schedulerConfirmOrder(orderModel);
+		schedulerUpdateOrderNo(orderModel);
 	}
 
 	private static boolean schedulerUpdateOrderNo(IOrderModel orderModel) throws RoutingServiceException {

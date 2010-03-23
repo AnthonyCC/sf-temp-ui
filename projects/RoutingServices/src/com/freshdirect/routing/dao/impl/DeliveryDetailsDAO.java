@@ -64,7 +64,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			"a.BALANCE_BY BALANCE_BY, a.LOADBALANCE_FACTOR LOADBALANCE_FACTOR, a.NEEDS_LOADBALANCE NEEDS_LOADBALANCE,a.IS_DEPOT IS_DEPOT  from transp.zone z, transp.trn_area a  " +
 			" where z.area = a.code and (z.OBSOLETE <> 'X' or z.OBSOLETE IS NULL)";
 	
-	private static final String GET_TIMESLOTSBYDATE_QRY = "select t.ID REF_ID, ta.AREA, z.ZONE_CODE, z.NAME, t.START_TIME , t.END_TIME" +
+	private static final String GET_TIMESLOTSBYDATE_QRY = "select t.ID REF_ID, ta.AREA, ta.STEM_FROM_TIME  STEM_FROM, ta.STEM_TO_TIME STEM_TO, z.ZONE_CODE, z.NAME, t.START_TIME , t.END_TIME" +
 			", TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') wavecode, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT   " +
 			" from dlv.timeslot t , dlv.zone z, transp.zone ta, transp.trn_area a" +
 			" where t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE" +
@@ -118,8 +118,9 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and chefstable = 'X') as ct_alloc, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' and chefstable = 'X') as ct_orders "
 			+ "from dlv.timeslot ts, dlv.zone z "
-			+ "where ts.zone_id=z.id and ts.capacity<>0 and ts.base_date = ? and ts.CUTOFF_TIME =  ? "
-			+ ") group by code, name, st, et order by code ";
+			+ "where ts.zone_id=z.id and ts.capacity<>0 and ts.base_date = ? "//and ts.CUTOFF_TIME =  ? "
+			//+ ") group by code, name, st, et order by code "
+			;
 			
 	private static final String ORDERSIZE_ESTIMATION_QUERY = "select Ceil(Avg(NUM_REGULAR_CARTONS)) CCOUNT, " +
 			" Ceil(Avg(NUM_FREEZER_CARTONS)) FCOUNT, Ceil(Avg(NUM_ALCOHOL_CARTONS)) ACOUNT" +
@@ -326,6 +327,9 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 							IAreaModel _aModel = new AreaModel();
 							_aModel.setAreaCode(rs.getString("AREA"));
 							_aModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
+							_aModel.setStemFromTime(rs.getInt("STEM_FROM"));
+							_aModel.setStemToTime(rs.getInt("STEM_TO"));							
+							
 							_schId.setRegionId(RoutingUtil.getRegion(_aModel));
 							_schId.setArea(_aModel);
 							
@@ -340,14 +344,24 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws SQLException {
 		
 		final Map<String, List<IDeliveryWindowMetrics>> timeslotByZone = new TreeMap<String, List<IDeliveryWindowMetrics>>();
-				
+		
+		final StringBuffer query = new StringBuffer();
+		query.append(EARLY_WARNING_QUERY);
+		
+		if(cutOffTime != null) {
+			query.append(" and ts.CUTOFF_TIME =  ? ");
+		}
+		query.append(") group by code, name, st, et order by code");
+		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
                 PreparedStatement ps =
-                    connection.prepareStatement(EARLY_WARNING_QUERY);
+                    connection.prepareStatement(query.toString());
                 ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
                 
-                ps.setTimestamp(2, new java.sql.Timestamp(cutOffTime.getTime()));
+                if(cutOffTime != null) {
+                	ps.setTimestamp(2, new java.sql.Timestamp(cutOffTime.getTime()));
+                }
                 
                 return ps;
             }  

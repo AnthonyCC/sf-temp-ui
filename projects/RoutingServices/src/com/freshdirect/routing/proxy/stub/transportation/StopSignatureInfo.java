@@ -1,30 +1,29 @@
 
 /**
- * SaveArcOverrides.java
+ * StopSignatureInfo.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
  */
             
-                package com.freshdirect.routing.proxy.stub.roadnet;
+                package com.freshdirect.routing.proxy.stub.transportation;
             
 
             /**
-            *  SaveArcOverrides bean class
+            *  StopSignatureInfo bean class
             */
         
-        public  class SaveArcOverrides
+        public  class StopSignatureInfo extends com.freshdirect.routing.proxy.stub.transportation.RouteEventInfo
         implements org.apache.axis2.databinding.ADBBean{
-        
-                public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
-                "http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                "SaveArcOverrides",
-                "ns1");
-
+        /* This type was generated from the piece of schema that had
+                name = StopSignatureInfo
+                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
+                Namespace Prefix = ns1
+                */
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/RouteNetWebService")){
+            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -33,103 +32,92 @@
         
 
                         /**
-                        * field for Str
+                        * field for StopIdentity
                         */
 
                         
-                                    protected java.lang.String localStr ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.StopIdentity localStopIdentity ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localStopIdentityTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
-                           * @return java.lang.String
+                           * @return com.freshdirect.routing.proxy.stub.transportation.StopIdentity
                            */
-                           public  java.lang.String getStr(){
-                               return localStr;
+                           public  com.freshdirect.routing.proxy.stub.transportation.StopIdentity getStopIdentity(){
+                               return localStopIdentity;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param Str
+                               * @param param StopIdentity
                                */
-                               public void setStr(java.lang.String param){
+                               public void setStopIdentity(com.freshdirect.routing.proxy.stub.transportation.StopIdentity param){
                             
-                                            this.localStr=param;
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localStopIdentityTracker = true;
+                                       } else {
+                                          localStopIdentityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localStopIdentity=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for Vec
-                        * This was an Array!
+                        * field for SignatureImage
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] localVec ;
+                                    protected javax.activation.DataHandler localSignatureImage ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localSignatureImageTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[]
+                           * @return javax.activation.DataHandler
                            */
-                           public  com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] getVec(){
-                               return localVec;
+                           public  javax.activation.DataHandler getSignatureImage(){
+                               return localSignatureImage;
                            }
 
                            
                         
-
-
-                               
-                              /**
-                               * validate the array for Vec
+                            /**
+                               * Auto generated setter method
+                               * @param param SignatureImage
                                */
-                              protected void validateVec(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] param){
-                             
-                              if ((param != null) && (param.length < 1)){
-                                throw new java.lang.RuntimeException();
-                              }
-                              
-                              }
-
-
-                             /**
-                              * Auto generated setter method
-                              * @param param Vec
-                              */
-                              public void setVec(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] param){
-                              
-                                   validateVec(param);
-
-                               
-                                      this.localVec=param;
-                              }
-
-                               
-                             
-                             /**
-                             * Auto generated add method for the array for convenience
-                             * @param param com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride
-                             */
-                             public void addVec(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride param){
-                                   if (localVec == null){
-                                   localVec = new com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[]{};
-                                   }
-
+                               public void setSignatureImage(javax.activation.DataHandler param){
                             
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localSignatureImageTracker = true;
+                                       } else {
+                                          localSignatureImageTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localSignatureImage=param;
+                                    
 
-                               java.util.List list =
-                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localVec);
-                               list.add(param);
-                               this.localVec =
-                             (com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[])list.toArray(
-                            new com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[list.size()]);
-
-                             }
-                             
+                               }
+                            
 
      /**
      * isReaderMTOMAware
@@ -159,15 +147,15 @@
 
 
         
-                org.apache.axiom.om.OMDataSource dataSource =
-                       new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
+               org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SaveArcOverrides.this.serialize(MY_QNAME,factory,xmlWriter);
+                       StopSignatureInfo.this.serialize(parentQName,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
-               MY_QNAME,factory,dataSource);
+               parentQName,factory,dataSource);
             
        }
 
@@ -211,75 +199,112 @@
                         xmlWriter.writeStartElement(parentQName.getLocalPart());
                     }
                 
-                  if (serializeType){
-               
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/RouteNetWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SaveArcOverrides",
+                           namespacePrefix+":StopSignatureInfo",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SaveArcOverrides",
+                           "StopSignatureInfo",
                            xmlWriter);
                    }
 
                
-                   }
-               
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/RouteNetWebService";
+                                            if (localSource==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("source cannot be null!!");
+                                            }
+                                           localSource.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","source"),
+                                               factory,xmlWriter);
+                                        
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
 
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"str", namespace);
+                                            xmlWriter.writeStartElement(prefix,"messageId", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"str");
+                                            xmlWriter.writeStartElement(namespace,"messageId");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("str");
+                                        xmlWriter.writeStartElement("messageId");
                                     }
                                 
-
-                                          if (localStr==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("str cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localStr);
-                                            
-                                          }
+                                               if (localMessageId==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("messageId cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMessageId));
+                                               }
                                     
                                    xmlWriter.writeEndElement();
-                             
-                                       if (localVec!=null){
-                                            for (int i = 0;i < localVec.length;i++){
-                                                if (localVec[i] != null){
-                                                 localVec[i].serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","vec"),
-                                                           factory,xmlWriter);
-                                                } else {
-                                                   
-                                                           throw new org.apache.axis2.databinding.ADBException("vec cannot be null!!");
-                                                    
-                                                }
+                              if (localStopIdentityTracker){
+                                    if (localStopIdentity==null){
 
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"stopIdentity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"stopIdentity");
                                             }
-                                     } else {
+
+                                        } else {
+                                            xmlWriter.writeStartElement("stopIdentity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localStopIdentity.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","stopIdentity"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localSignatureImageTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"signatureImage", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"signatureImage");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("signatureImage");
+                                    }
+                                
                                         
-                                               throw new org.apache.axis2.databinding.ADBException("vec cannot be null!!");
-                                        
+                                    if (localSignatureImage!=null)
+                                    {
+                                       xmlWriter.writeDataHandler(localSignatureImage);
                                     }
                                  
+                                   xmlWriter.writeEndElement();
+                             }
                     xmlWriter.writeEndElement();
                
 
@@ -442,36 +467,36 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                                                                      "str"));
-                                 
-                                        if (localStr != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStr));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("str cannot be null!!");
-                                        }
-                                    
-                             if (localVec!=null) {
-                                 for (int i = 0;i < localVec.length;i++){
-
-                                    if (localVec[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService",
-                                                                          "vec"));
-                                         elementList.add(localVec[i]);
-                                    } else {
-                                        
-                                               throw new org.apache.axis2.databinding.ADBException("vec cannot be null !!");
-                                            
+                    attribList.add(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema-instance","type"));
+                    attribList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","StopSignatureInfo"));
+                
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "source"));
+                            
+                            
+                                    if (localSource==null){
+                                         throw new org.apache.axis2.databinding.ADBException("source cannot be null!!");
                                     }
-
-                                 }
-                             } else {
+                                    elementList.add(localSource);
+                                
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "messageId"));
                                  
-                                        throw new org.apache.axis2.databinding.ADBException("vec cannot be null!!");
-                                    
-                             }
-
-                        
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMessageId));
+                             if (localStopIdentityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "stopIdentity"));
+                            
+                            
+                                    elementList.add(localStopIdentity==null?null:
+                                    localStopIdentity);
+                                } if (localSignatureImageTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                        "signatureImage"));
+                                
+                            elementList.add(localSignatureImage);
+                        }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -496,9 +521,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SaveArcOverrides parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SaveArcOverrides object =
-                new SaveArcOverrides();
+        public static StopSignatureInfo parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            StopSignatureInfo object =
+                new StopSignatureInfo();
 
             int event;
             java.lang.String nillableValue = null;
@@ -522,10 +547,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"SaveArcOverrides".equals(type)){
+                            if (!"StopSignatureInfo".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SaveArcOverrides)com.freshdirect.routing.proxy.stub.roadnet.ExtensionMapper.getTypeObject(
+                                return (StopSignatureInfo)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -547,17 +572,12 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list2 = new java.util.ArrayList();
-                    
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","str").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","source").equals(reader.getName())){
                                 
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setStr(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                                object.setSource(com.freshdirect.routing.proxy.stub.transportation.RouteEventSource.Factory.parse(reader));
                                               
                                         reader.next();
                                     
@@ -571,50 +591,87 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","vec").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","messageId").equals(reader.getName())){
                                 
+                                    java.lang.String content = reader.getElementText();
                                     
+                                              object.setMessageId(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
                                     
-                                    // Process the array and step past its final element's end.
-                                    list2.add(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride.Factory.parse(reader));
-                                                                
-                                                        //loop until we find a start element that is not part of this array
-                                                        boolean loopDone2 = false;
-                                                        while(!loopDone2){
-                                                            // We should be at the end element, but make sure
-                                                            while (!reader.isEndElement())
-                                                                reader.next();
-                                                            // Step out of this element
-                                                            reader.next();
-                                                            // Step to next element event.
-                                                            while (!reader.isStartElement() && !reader.isEndElement())
-                                                                reader.next();
-                                                            if (reader.isEndElement()){
-                                                                //two continuous end elements means we are exiting the xml structure
-                                                                loopDone2 = true;
-                                                            } else {
-                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService","vec").equals(reader.getName())){
-                                                                    list2.add(com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride.Factory.parse(reader));
-                                                                        
-                                                                }else{
-                                                                    loopDone2 = true;
-                                                                }
-                                                            }
-                                                        }
-                                                        // call the converter utility  to convert and set the array
-                                                        
-                                                        object.setVec((com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[])
-                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride.class,
-                                                                list2));
-                                                            
                               }  // End of if for expected property start element
                                 
                                 else{
                                     // A start element we are not expecting indicates an invalid parameter was passed
                                     throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
                                 }
-                              
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","stopIdentity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setStopIdentity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setStopIdentity(com.freshdirect.routing.proxy.stub.transportation.StopIdentity.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","signatureImage").equals(reader.getName())){
+                                reader.next();
+                                    if (isReaderMTOMAware(reader)
+                                            &&
+                                            java.lang.Boolean.TRUE.equals(reader.getProperty(org.apache.axiom.om.OMConstants.IS_BINARY)))
+                                    {
+                                        //MTOM aware reader - get the datahandler directly and put it in the object
+                                        object.setSignatureImage(
+                                                (javax.activation.DataHandler) reader.getProperty(org.apache.axiom.om.OMConstants.DATA_HANDLER));
+                                    } else {
+                                        if (reader.getEventType() == javax.xml.stream.XMLStreamConstants.START_ELEMENT && reader.getName().equals(new javax.xml.namespace.QName(org.apache.axiom.om.impl.MTOMConstants.XOP_NAMESPACE_URI, org.apache.axiom.om.impl.MTOMConstants.XOP_INCLUDE)))
+                                        {
+                                            java.lang.String id = org.apache.axiom.om.util.ElementHelper.getContentID(reader, "UTF-8");
+                                            object.setSignatureImage(((org.apache.axiom.soap.impl.builder.MTOMStAXSOAPModelBuilder) ((org.apache.axiom.om.impl.llom.OMStAXWrapper) reader).getBuilder()).getDataHandler(id));
+                                            reader.next();
+                                            
+                                                reader.next();
+                                            
+                                        } else if(reader.hasText()) {
+                                            //Do the usual conversion
+                                            java.lang.String content = reader.getText();
+                                            object.setSignatureImage(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBase64Binary(content));
+                                            
+                                                reader.next();
+                                            
+                                        }
+                                    }
+
+                                      
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

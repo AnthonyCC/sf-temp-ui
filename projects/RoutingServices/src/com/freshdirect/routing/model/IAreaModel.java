@@ -23,4 +23,10 @@ public interface IAreaModel {
 	
 	double getDeliveryRate();
 	void setDeliveryRate(double deliveryRate);
+	
+	int getStemFromTime();
+	void setStemFromTime(int stemFromTime);
+
+	int getStemToTime();
+	void setStemToTime(int stemToTime);
 }

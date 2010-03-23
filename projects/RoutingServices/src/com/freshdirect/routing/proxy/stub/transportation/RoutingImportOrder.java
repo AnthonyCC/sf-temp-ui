@@ -76,6 +76,51 @@
                             
 
                         /**
+                        * field for InternalOrderID
+                        */
+
+                        
+                                    protected int localInternalOrderID ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localInternalOrderIDTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getInternalOrderID(){
+                               return localInternalOrderID;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param InternalOrderID
+                               */
+                               public void setInternalOrderID(int param){
+                            
+                                       // setting primitive attribute tracker to true
+                                       
+                                               if (param==java.lang.Integer.MIN_VALUE) {
+                                           localInternalOrderIDTracker = false;
+                                              
+                                       } else {
+                                          localInternalOrderIDTracker = true;
+                                       }
+                                   
+                                            this.localInternalOrderID=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for SessionIdentity
                         */
 
@@ -1493,6 +1538,35 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
+                             } if (localInternalOrderIDTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"internalOrderID", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"internalOrderID");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("internalOrderID");
+                                    }
+                                
+                                               if (localInternalOrderID==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("internalOrderID cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInternalOrderID));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
                              } if (localSessionIdentityTracker){
                                     if (localSessionIdentity==null){
 
@@ -2567,7 +2641,13 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("orderNumber cannot be null!!");
                                         }
-                                    } if (localSessionIdentityTracker){
+                                    } if (localInternalOrderIDTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "internalOrderID"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInternalOrderID));
+                            } if (localSessionIdentityTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                                       "sessionIdentity"));
                             
@@ -2878,9 +2958,9 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list29 = new java.util.ArrayList();
-                    
                         java.util.ArrayList list30 = new java.util.ArrayList();
+                    
+                        java.util.ArrayList list31 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -2898,6 +2978,26 @@
                                 
                                     else {
                                         
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","internalOrderID").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setInternalOrderID(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                               object.setInternalOrderID(java.lang.Integer.MIN_VALUE);
+                                           
                                     }
                                 
                                     
@@ -3497,53 +3597,7 @@
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list29.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.Factory.parse(reader));
-                                                                
-                                                        //loop until we find a start element that is not part of this array
-                                                        boolean loopDone29 = false;
-                                                        while(!loopDone29){
-                                                            // We should be at the end element, but make sure
-                                                            while (!reader.isEndElement())
-                                                                reader.next();
-                                                            // Step out of this element
-                                                            reader.next();
-                                                            // Step to next element event.
-                                                            while (!reader.isStartElement() && !reader.isEndElement())
-                                                                reader.next();
-                                                            if (reader.isEndElement()){
-                                                                //two continuous end elements means we are exiting the xml structure
-                                                                loopDone29 = true;
-                                                            } else {
-                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","lineItems").equals(reader.getName())){
-                                                                    list29.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.Factory.parse(reader));
-                                                                        
-                                                                }else{
-                                                                    loopDone29 = true;
-                                                                }
-                                                            }
-                                                        }
-                                                        // call the converter utility  to convert and set the array
-                                                        
-                                                        object.setLineItems((com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem[])
-                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.class,
-                                                                list29));
-                                                            
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orderActivities").equals(reader.getName())){
-                                
-                                    
-                                    
-                                    // Process the array and step past its final element's end.
-                                    list30.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.Factory.parse(reader));
+                                    list30.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
                                                         boolean loopDone30 = false;
@@ -3560,8 +3614,8 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone30 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orderActivities").equals(reader.getName())){
-                                                                    list30.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.Factory.parse(reader));
+                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","lineItems").equals(reader.getName())){
+                                                                    list30.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.Factory.parse(reader));
                                                                         
                                                                 }else{
                                                                     loopDone30 = true;
@@ -3570,10 +3624,56 @@
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
+                                                        object.setLineItems((com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem.class,
+                                                                list30));
+                                                            
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orderActivities").equals(reader.getName())){
+                                
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list31.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone31 = false;
+                                                        while(!loopDone31){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone31 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orderActivities").equals(reader.getName())){
+                                                                    list31.add(com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone31 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
                                                         object.setOrderActivities((com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity.class,
-                                                                list30));
+                                                                list31));
                                                             
                               }  // End of if for expected property start element
                                 

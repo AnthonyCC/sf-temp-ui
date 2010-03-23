@@ -370,6 +370,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/RouteNetWebService".equals(namespaceURI) &&
+                  "ArcOverrideSaveOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.roadnet.ArcOverrideSaveOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/RouteNetWebService".equals(namespaceURI) &&
                   "MapPoint".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.roadnet.MapPoint.Factory.parse(reader);
