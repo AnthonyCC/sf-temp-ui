@@ -562,7 +562,7 @@ public class ContentFactory {
 					Map<ProductModel, Date> newCache = new HashMap<ProductModel, Date>(skus.size());
 					for (Map.Entry<String, Date> entry : skus.entrySet()) {
 						SkuModel sku = (SkuModel) getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
-						if (!sku.isUnavailable()) {
+						if (sku != null && !sku.isUnavailable()) {
 							ProductModel p = sku.getProductModel();
 							if (p != null) {
 								Date prev = newCache.get(p);
@@ -647,7 +647,7 @@ public class ContentFactory {
 					Map<ProductModel, Date> newCache = new HashMap<ProductModel, Date>(skus.size());
 					for (Map.Entry<String, Date> entry : skus.entrySet()) {
 						SkuModel sku = (SkuModel) getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
-						if (!sku.isUnavailable()) {
+						if (sku != null && !sku.isUnavailable()) {
 							ProductModel p = sku.getProductModel();
 							if (p != null) {
 								Date prev = newCache.get(p);
