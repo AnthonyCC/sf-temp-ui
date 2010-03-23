@@ -80,35 +80,41 @@ var SafariBehaviorAutoComplete = function(searchField, listContainer, dataSource
     this._moveSelection = function(nKeyCode) {			    
 	    SafariBehaviorAutoComplete.superclass._moveSelection.call(that, nKeyCode);			    
 	    that._selectText(searchInput,originalQuery.length,searchInput.value.length);
-    }	
+    };
 };
 
 YAHOO.lang.extend(SafariBehaviorAutoComplete, YAHOO.widget.AutoComplete);
 
-YAHOO.util.Event.onDOMReady(function() {
-    
-    var oDS = new YAHOO.util.XHRDataSource("/api/autocompleteresults.jsp", { connMethodPost : true } );
-    oDS.responseType = YAHOO.util.XHRDataSource.TYPE_TEXT;	    	   
-    
-    oDS.responseSchema = {recordDelim: '\n', fieldDelim: '\t'};   
-    
-    // Instantiate the AutoComplete
-    var oAC = new SafariBehaviorAutoComplete("searchxParams", "terms", oDS);
-
-    oAC.generateRequest = function(sQuery) { 
-    	return "prefix=" + sQuery; 
-    };
-    
-    var termsList = document.getElementById("terms");
-    var searchInput = document.getElementById('searchxParams');
-        
-    YAHOO.util.Dom.setX(termsList, YAHOO.util.Dom.getX(searchInput));
-    YAHOO.util.Dom.setY(termsList, YAHOO.util.Dom.getY(searchInput) + searchInput.offsetHeight);
-    
-    termsList.style.zIndex = "2";    
-    
-    // one-click submit solution
-    oAC.itemSelectEvent.subscribe(function(sType, aArgs) {
-    	document.forms['adv_search'].submit();
-    });
-});
+var autoCompleteFunctionFactory = function(apiUrl,termsId,inputId) {
+	var apiUrl = apiUrl || "/api/autocompleteresults.jsp";
+	var termsId = termsId || "terms";
+	var inputId = inputId || "searchxParams";
+	
+	
+	return function() {
+		var oDS = new YAHOO.util.XHRDataSource(apiUrl, { connMethodPost : true } );
+		oDS.responseType = YAHOO.util.XHRDataSource.TYPE_TEXT;	    	   
+	    
+	    oDS.responseSchema = {recordDelim: '\n', fieldDelim: '\t'};   
+	    
+	    // Instantiate the AutoComplete
+	    var oAC = new SafariBehaviorAutoComplete(inputId, termsId, oDS);
+	
+	    oAC.generateRequest = function(sQuery) { 
+	    	return "prefix=" + sQuery; 
+	    };
+	    
+	    var termsList = document.getElementById(termsId);
+	    var searchInput = document.getElementById(inputId);
+	        
+	    YAHOO.util.Dom.setX(termsList, YAHOO.util.Dom.getX(searchInput));
+	    YAHOO.util.Dom.setY(termsList, YAHOO.util.Dom.getY(searchInput) + searchInput.offsetHeight);
+	    
+	    termsList.style.zIndex = "2";    
+	    
+	    // one-click submit solution
+	    oAC.itemSelectEvent.subscribe(function(sType, aArgs) {
+	    	document.forms['adv_search'].submit();
+	    });	
+	};
+};
