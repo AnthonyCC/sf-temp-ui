@@ -5,7 +5,7 @@
 			src="/media_stat/images/template/checkout/loy_ctbar_left.gif"
 			width="190" height="25" border="0"></TD>
 		<td width="465" align="right" style="background: #222; color: #fff"><%= user.getFirstName() %>
-		<%= user.getLastName() %>, Since <%= user.getChefsTableInduction().substring(0,4) %></td>
+		<%= user.getLastName() %><% if (user.getChefsTableInduction() != null) { %>, Since <%= user.getChefsTableInduction().substring(0,4) %><% } %></td>
 		<td width="40"><img
 			src="/media_stat/images/template/checkout/loy_ctbar_right.gif"
 			width="40" height="25" border="0"></td>
