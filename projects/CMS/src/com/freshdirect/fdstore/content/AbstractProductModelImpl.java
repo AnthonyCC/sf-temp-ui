@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.content;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -183,6 +184,31 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	
 	public boolean isNew() {
 		return ContentFactory.getInstance().getNewProducts().containsKey(this);
+	}
+	
+	@Override
+	public double getNewAge() {
+		return ContentFactory.getInstance().getNewProductAge(this);
+	}
+	
+	@Override
+	public Date getNewDate() {
+		return ContentFactory.getInstance().getNewProducts().get(this);
+	}
+	
+	@Override
+	public boolean isBackInStock() {
+		return ContentFactory.getInstance().getBackInStockProducts().containsKey(this);
+	}
+	
+	@Override
+	public double getBackInStockAge() {
+		return ContentFactory.getInstance().getBackInStockProductAge(this);
+	}
+	
+	@Override
+	public Date getBackInStockDate() {
+		return ContentFactory.getInstance().getBackInStockProducts().get(this);
 	}
 
         public int getDealPercentage() {

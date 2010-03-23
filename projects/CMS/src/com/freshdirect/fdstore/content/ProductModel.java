@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.content;
 
 import java.text.NumberFormat;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -687,6 +688,16 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public String getFreshnessGuaranteed() throws FDResourceException; 
 
 	public boolean isNew();
+	
+	public Date getNewDate();
+	
+	public double getNewAge();
+	
+	public boolean isBackInStock();
+	
+	public Date getBackInStockDate();
+	
+	public double getBackInStockAge();
 	
 	public int getDealPercentage();
 

@@ -888,6 +888,31 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	public boolean isNew() {
 		return this.prodModel.isNew();
 	}
+	
+	@Override
+	public double getNewAge() {
+		return this.prodModel.getNewAge();
+	}
+	
+	@Override
+	public Date getNewDate() {
+		return this.prodModel.getNewDate();
+	}
+	
+	@Override
+	public boolean isBackInStock() {
+		return this.prodModel.isBackInStock();
+	}
+	
+	@Override
+	public double getBackInStockAge() {
+		return this.prodModel.getBackInStockAge();
+	}
+	
+	@Override
+	public Date getBackInStockDate() {
+		return this.prodModel.getBackInStockDate();
+	}
 
 	@Override
 	public boolean isNotSearchable() {

@@ -1362,6 +1362,51 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     }
 
     /* (non-Javadoc)
+	 * @see com.freshdirect.fdstore.content.ProductModel#getBackInStockAge()
+	 */
+	@Override
+	public double getBackInStockAge() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.freshdirect.fdstore.content.ProductModel#getBackInStockDate()
+	 */
+	@Override
+	public Date getBackInStockDate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.freshdirect.fdstore.content.ProductModel#getNewAge()
+	 */
+	@Override
+	public double getNewAge() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.freshdirect.fdstore.content.ProductModel#getNewDate()
+	 */
+	@Override
+	public Date getNewDate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.freshdirect.fdstore.content.ProductModel#isBackInStock()
+	 */
+	@Override
+	public boolean isBackInStock() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
      * @see com.freshdirect.fdstore.content.ProductModel#isNotSearchable()
      */
     @Override
