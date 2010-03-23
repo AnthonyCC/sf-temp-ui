@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -111,6 +112,8 @@ public class CategoryModel extends ProductContainer {
 	private List<ProductModel> featuredProductModels = new ArrayList<ProductModel>();
 	
 	private final List featuredBrandModels = new ArrayList();
+	
+	private List featuredNewProdBrands = new ArrayList();
 
 	/**
 	 * List of ProductModels and CategoryModels.
@@ -465,6 +468,32 @@ public class CategoryModel extends ProductContainer {
 
 		return new ArrayList(featuredBrandModels);
 	}
+	
+	/* get Featured New Items (Products/Brands) */
+	public List getFeaturedNewProdBrands() {
+		boolean bRefreshed = ContentNodeModelUtil.refreshModels(
+				this,
+				"FEATURED_NEW_PRODBRANDS",
+				featuredNewProdBrands,
+				false);
+
+		if (bRefreshed) {
+			List tempList = new ArrayList();
+	
+			//loop through and get only products
+			for (ListIterator li = featuredNewProdBrands.listIterator(); li.hasNext(); ) {
+				Object nextItem = li.next();
+				if (nextItem instanceof ProductModel) {
+					ProductModel p = (ProductModel) nextItem;
+					tempList.add(p);
+				}
+			}
+			//send over to have parents adjusted
+			ContentNodeModelUtil.setNearestParentForProducts(this, tempList);
+		}
+		
+		return new ArrayList(featuredNewProdBrands);
+	}
 
 	/**
 	 * @return all the brands of available products within the category, recursively
@@ -481,7 +510,7 @@ public class CategoryModel extends ProductContainer {
 	 */
         public ContentKey getAliasAttributeValue() {
             return (ContentKey) this.getCmsAttributeValue("ALIAS");
-        }	
+        }
 
 	/**
 	 * Returns alias category if has
