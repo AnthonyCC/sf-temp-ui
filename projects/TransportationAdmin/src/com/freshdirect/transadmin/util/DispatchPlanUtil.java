@@ -483,7 +483,9 @@ public class DispatchPlanUtil {
 				while(unsortedIterator.hasNext())	{
 					DispatchCommand command = (DispatchCommand)unsortedIterator.next();
 					dispatchCategory = categorizeDispatch(command);
-					if(dispatchCategory == -1&&(command.getStartTimeEx()!=null&&System.currentTimeMillis()>command.getStartTimeEx().getTime())
+					long temp1=System.currentTimeMillis();
+					long temp2=command.getStartTimeEx().getTime();
+					if(dispatchCategory == -1&&(command.getStartTime()!=null&&checkReady(command.getStartTime()))
 						&&command.getDispatchStatus()==EnumStatus.EmpReady	) 
 					{
 						ready.add(command);
@@ -530,7 +532,7 @@ public class DispatchPlanUtil {
 					if(i==n) break;
 					i++;
 					DispatchCommand temp=(DispatchCommand)totalItr.next();
-					if((temp.getStartTimeEx()!=null&&System.currentTimeMillis()>temp.getStartTimeEx().getTime())
+					if((temp.getStartTime()!=null&&checkReady(temp.getStartTime()))
 						&&temp.getDispatchStatus()==EnumStatus.EmpReady	)
 					{
 						totalItr.remove();
