@@ -56,19 +56,10 @@ if (FDStoreProperties.isCclAjaxDebugClient()) {
 </TR>
 <TR>
 	<TD WIDTH="1" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="34" alt=""></TD>
-	<TD WIDTH="743" COLSPAN="4">
-		<form name="adv_search" id="adv_search" method="GET">
-		<table width="743" cellpadding="0" cellspacing="0">
-			<tr>
-				<td>
-				<div style="margin:15px;margin-bottom:0px;padding-bottom:15px;border-bottom: 4px solid #FF9933">
-					<table><tr><td style="padding-right:35px;"><img src="/media_stat/images/template/newproduct/new_products.gif" style="border: none;" alt=""></td>
-				</tr></table>
-				</div>
-				</td>
-			</tr>
-		</table>
-		</form>
+	<TD WIDTH="743" COLSPAN="4">		
+		<!-- header lands here -->
+		<tmpl:get name='header'/>
+		<!-- header ends above here-->	
 	</TD>
 	<TD WIDTH="1" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="34" alt=""></TD>
 </TR>
@@ -76,17 +67,15 @@ if (FDStoreProperties.isCclAjaxDebugClient()) {
 	<TD WIDTH="1" BGCOLOR="#999966"><img src="/media_stat/images/layout/999966.gif" width="1" height="1" border="0" alt=""></td>
 	<TD WIDTH="170" COLSPAN="2">		
 		<tmpl:get name='categoryPanel'/>		
-		<BR>
+		<br />
 		<img src="/media_stat/images/layout/clear.gif" height="1" width="170" alt="">
 	</TD>
 	<TD colspan="3">
     <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
     <TR><TD width="568" valign="top">
-    <div style="width: 529px;padding-left: 15px;">		
 		<!-- Featured lands here -->
 		<tmpl:get name='featured'/>
-		<!-- Featured ends above here-->	
-    </div>        
+		<!-- Featured ends above here-->
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="568" HEIGHT="1" BORDER="0" alt="">
 	</TD>
 	<TD WIDTH="5" VALIGN="BOTTOM"><img src="/media_stat/images/layout/clear.gif" height="1" width="5" alt=""></TD>
@@ -98,9 +87,9 @@ if (FDStoreProperties.isCclAjaxDebugClient()) {
 		<tmpl:get name='content'/>
 		<!-- content ends above here-->		
 	</div>
-	<BR><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="568" HEIGHT="1" BORDER="0" alt=""><BR>	
-	<br><br></TD>
+	<br /><br />
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="568" HEIGHT="1" BORDER="0" alt=""><br />	
+	<br /><br /></TD>
 	<TD WIDTH="5" VALIGN="BOTTOM"><img src="/media_stat/images/layout/clear.gif" height="1" width="5" alt=""></TD>
 	<TD BGCOLOR="#999966" VALIGN="BOTTOM" WIDTH="1"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1" alt=""></TD>
     </TR>

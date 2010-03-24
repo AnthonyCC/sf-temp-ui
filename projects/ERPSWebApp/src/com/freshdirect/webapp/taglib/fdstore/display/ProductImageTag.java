@@ -303,7 +303,7 @@ public class ProductImageTag extends BodyTagSupport {
 			} else if (pl.isDisplayNew() && !this.isNewProductPage) {
 				buf.append("<img alt=\"NEW\" src=\"/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
 			}else if (pl.isDisplayBackinStock()) {
-				buf.append("<img alt=\"BACK\" src=\"/media_stat/images/bursts/in_cart"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+				buf.append("<img alt=\"BACK\" src=\"/media_stat/images/bursts/brst_sm_bis"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
 			}
 			if (shouldGenerateAction) {
 				buf.append("</a>\n");

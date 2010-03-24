@@ -7,6 +7,7 @@
 <%@ page import='com.freshdirect.content.attributes.*'%>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.fdstore.util.SearchNavigator" %>
+<%@ page import='com.freshdirect.framework.util.NVL'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -53,31 +54,85 @@ if (true) {
 }
 
 %>
-<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
-<tmpl:put name='content' direct='true'>
-<table width="550" cellpadding="0" cellspacing="0" border="0">
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
+<%
+	//set some top-level variables to remove them from includes
+	String deptId = NVL.apply(request.getParameter("deptId"), "");
+	String catId = NVL.apply(request.getParameter("catId"), "");
+	String catRefUrl ="";
+    String trk="newp";
 
+	//showViewAll is a boolean for showing the view all text/link
+	boolean showViewAll = true;
+
+	//the view all URL
+	String viewAllURL = "http://www.freshdirect.com/newproducts.jsp";
+
+	//showFeatNew is a boolean for showing the featured new include
+	boolean showFeatNew = true;
+
+	if ("".equals(deptId)) {
+		deptId = null; //no deptId, fallback by using null
+	}
+	if ("".equals(catId)) {
+		catId = "newproduct_cat"; //no catId, fallback
+	}
+	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
+	
+	CategoryModel currentCAT = null;
+	boolean isCat;
+
+	isCat = (currentFolder instanceof CategoryModel);
+	if (isCat) {
+		currentCAT = (CategoryModel)currentFolder;
+		
+		catRefUrl = response.encodeURL("/category.jsp?catId="+currentCAT.getContentKey().getId()+"&trk="+trk);
+	}
+	
+	if ("newproduct_cat".equals(catId)) {
+		//we're on the newproducts.jsp, or no catId was passed
+		showViewAll = false;
+	}
+
+%>
+
+<tmpl:put name='content' direct='true'>
 <%
     final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #CCCCCC\">&bull;</span>&nbsp;";
 	boolean noNewProduct = false;
 	boolean noBackStock = false;
-    String trk="newp";
     int days = 120;
     SearchNavigator nav = new SearchNavigator(request);
     Set brandSet = new HashSet();
 %>
-<fd:GetNewProducts id="products" days='<%=days%>'>
+<fd:GetNewProducts id="products" days='<%=days%>' department='<%=deptId%>'>
 
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
+<table width="550" cellpadding="0" cellspacing="0" border="0">
 
-<tr><td>
-	 <SCRIPT LANGUAGE="JavaScript">
-		<!--
-		OAS_AD('CategoryNote');
-		//-->
-	</SCRIPT>
-</td></tr>
+
+<tmpl:put name='header' direct='true'><%@ include file="/includes/i_header_new.jspf" %></tmpl:put>
+<% if (showFeatNew) { %>
+	<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
+<% } %>
+
+<%
+	/*
+		I don't think we need any of these 
+			-Bryan 2010.03.24_05.52.49.PM
+
+		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
+
+		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
+
+		<tr><td>
+			 <SCRIPT LANGUAGE="JavaScript">
+				<!--
+				OAS_AD('CategoryNote');
+				//-->
+			</SCRIPT>
+		</td></tr>
+	*/
+%>
+
 <tr><td>
 <table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px;margin-top: 10px;line-height: 25px;">
 <tr>
