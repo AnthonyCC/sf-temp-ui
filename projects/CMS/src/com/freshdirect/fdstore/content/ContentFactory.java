@@ -562,6 +562,7 @@ public class ContentFactory {
 					}
 					newProducts = newCache;
 					newProductsLastUpdated = System.currentTimeMillis();
+					LOGGER.info("reloaded new products: " + newProducts.size());
 				} catch (FDResourceException e) {
 					LOGGER.error("failed to update new products cache; retrying a minute later", e);
 					newProductsLastUpdated = System.currentTimeMillis() - 14 * 60000;
@@ -647,6 +648,7 @@ public class ContentFactory {
 					}
 					backInStockProducts = newCache;
 					backInStockProductsLastUpdated = System.currentTimeMillis();
+					LOGGER.info("reloaded back-in-stock products: " + backInStockProducts.size());
 				} catch (FDResourceException e) {
 					LOGGER.error("failed to update back-in-stock products cache; retrying a minute later", e);
 					backInStockProductsLastUpdated = System.currentTimeMillis() - 14 * 60000;

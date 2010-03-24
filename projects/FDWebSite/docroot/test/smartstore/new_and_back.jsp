@@ -22,6 +22,9 @@ String formatDay(Date now, Date then) {
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -257,6 +260,7 @@ if (request.getParameter("reload") != null) {
 			<th class="text12">SKU</th>
 			<th class="text12">Date</th>
 			<th class="text12">Age</th>
+			<th class="text12">Unavailable</th>
 		</tr>
 		<%
 		for (Map.Entry<String, Date> entry : newSkus.entrySet()) {
@@ -266,6 +270,13 @@ if (request.getParameter("reload") != null) {
 			<td class="text12<%= overridden ? " overridden" : "" %>"><a href="<%= request.getRequestURI() + "?skuCode=" + entry.getKey() %>"><%= entry.getKey() %></a></td>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><%= dateFormat.format(entry.getValue()) %></td>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><%= formatDay(now, entry.getValue()) %></td>
+			<%
+			boolean unavailable = true;
+			SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
+			if (sku != null)
+				unavailable = sku.isUnavailable();			
+			 %>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><%= unavailable %></td>
 		</tr>
 		<%
 		}
@@ -297,6 +308,7 @@ if (request.getParameter("reload") != null) {
 			<th class="text12">SKU</th>
 			<th class="text12">Date</th>
 			<th class="text12">Age</th>
+			<th class="text12">Unavailable</th>
 		</tr>
 		<%
 		for (Map.Entry<String, Date> entry : backInStockSkus.entrySet()) {
@@ -306,6 +318,13 @@ if (request.getParameter("reload") != null) {
 			<td class="text12<%= overridden ? " overridden" : "" %>"><a href="<%= request.getRequestURI() + "?skuCode=" + entry.getKey() %>"><%= entry.getKey() %></a></td>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><%= dateFormat.format(entry.getValue()) %></td>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><%= formatDay(now, entry.getValue()) %></td>
+			<%
+			boolean unavailable = true;
+			SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
+			if (sku != null)
+				unavailable = sku.isUnavailable();			
+			 %>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><%= unavailable %></td>
 		</tr>
 		<%
 		}
