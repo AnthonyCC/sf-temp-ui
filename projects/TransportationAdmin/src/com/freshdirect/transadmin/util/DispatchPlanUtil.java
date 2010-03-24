@@ -482,9 +482,7 @@ public class DispatchPlanUtil {
 				int dispatchCategory = 0;
 				while(unsortedIterator.hasNext())	{
 					DispatchCommand command = (DispatchCommand)unsortedIterator.next();
-					dispatchCategory = categorizeDispatch(command);
-					long temp1=System.currentTimeMillis();
-					long temp2=command.getStartTimeEx().getTime();
+					dispatchCategory = categorizeDispatch(command);					
 					if(dispatchCategory == -1&&(command.getStartTime()!=null&&checkReady(command.getStartTime()))
 						&&command.getDispatchStatus()==EnumStatus.EmpReady	) 
 					{
