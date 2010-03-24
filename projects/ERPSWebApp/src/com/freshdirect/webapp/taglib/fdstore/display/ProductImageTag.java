@@ -43,11 +43,16 @@ public class ProductImageTag extends BodyTagSupport {
 	boolean 		useAlternateImage = false;	// alternate image
 
 	double			opacity = 1; // 1-transparency
-
+	boolean			isNewProductPage = false;
+	
 	Set<EnumBurstType> hideBursts;
 
 	public void setProduct(ProductModel prd) {
 		this.product = prd;
+	}
+	
+	public void setNewProductPage(boolean isNewProductPage) {
+		this.isNewProductPage = isNewProductPage;
 	}
 	
 	public void setStyle(String text) {
@@ -295,10 +300,11 @@ public class ProductImageTag extends BodyTagSupport {
 				buf.append("<img alt=\"SAVE " + deal + "\" src=\""+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
 			} else if (pl.isDisplayFave()) {
 				buf.append("<img alt=\"FAVE\" src=\"/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
-			} else if (pl.isDisplayNew()) {
+			} else if (pl.isDisplayNew() && !this.isNewProductPage) {
 				buf.append("<img alt=\"NEW\" src=\"/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+			}else if (pl.isDisplayBackinStock()) {
+				buf.append("<img alt=\"BACK\" src=\"/media_stat/images/bursts/in_cart"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
 			}
-
 			if (shouldGenerateAction) {
 				buf.append("</a>\n");
 			}

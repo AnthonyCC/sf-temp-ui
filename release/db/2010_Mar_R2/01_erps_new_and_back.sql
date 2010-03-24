@@ -86,6 +86,7 @@ CREATE UNIQUE INDEX new_products_index1 ON erps.new_products (sku_code);
 
 GRANT select on erps.new_products TO fdstore_prda;
 GRANT select on erps.new_products TO fdstore_prdb;
+GRANT select on erps.new_products TO fdstore_stprd01;
 
 -- create back-in-stock products materialized view
 
@@ -175,6 +176,7 @@ CREATE UNIQUE INDEX back_in_stock_index1 ON erps.back_in_stock_products(sku_code
 
 GRANT select on erps.back_in_stock_products TO fdstore_prda;
 GRANT select on erps.back_in_stock_products TO fdstore_prdb;
+GRANT select on erps.back_in_stock_products TO fdstore_stprd01;
 
 -- create refresh store procedure
 
@@ -189,6 +191,7 @@ end;
 
 GRANT execute on erps.refresh_new_and_back TO fdstore_prda;
 GRANT execute on erps.refresh_new_and_back TO fdstore_prdb;
+GRANT execute on erps.refresh_new_and_back TO fdstore_stprd01;
 
 -- ROLLBACK
 

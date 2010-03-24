@@ -23,7 +23,7 @@ public class ProductLabeling {
 	boolean displayDeal = false;
 	boolean displayFave = false;
 	boolean displayNew = false;
-
+	boolean displaybackInStock = false;
 
 	/**
 	 * @deprecated
@@ -89,12 +89,13 @@ public class ProductLabeling {
 		displayDeal = false;
 		displayFave = false;
 		displayNew = false;
-
+		displaybackInStock = false;
 
 		int deal = (hideBursts == null || !hideBursts.contains(EnumBurstType.DEAL) ) ? product.getHighestDealPercentage() : 0;
 		boolean isNew = (hideBursts == null || !hideBursts.contains(EnumBurstType.NEW) ) && product.isNew();
 		boolean isYourFave = (hideBursts == null || !hideBursts.contains(EnumBurstType.YOUR_FAVE) ) && DYFUtil.isFavorite(product, customer);
-
+		boolean isBackInStock = (hideBursts == null || !hideBursts.contains(EnumBurstType.BACK_IN_STOCK) ) && product.isBackInStock();
+		
 		// determine what to display
 		if (deal > 0) {
 			displayDeal = true;
@@ -102,6 +103,8 @@ public class ProductLabeling {
 			displayFave = true;
 		} else if (isNew) {
 			displayNew = true;
+		} else if (isBackInStock) {
+			displaybackInStock = true;
 		}
 	}
 
@@ -119,9 +122,13 @@ public class ProductLabeling {
 	public boolean isDisplayNew() {
 		return displayNew;
 	}
+	
+	public boolean isDisplayBackinStock() {
+		return displaybackInStock;
+	}
 
 	public boolean isDisplayAny() {
-		return displayDeal || displayFave || displayNew;
+		return displayDeal || displayFave || displayNew || displaybackInStock;
 	}
 
 
@@ -132,6 +139,8 @@ public class ProductLabeling {
 			return EnumBurstType.YOUR_FAVE.getCode();
 		} else if (displayNew) {
 			return EnumBurstType.NEW.getCode();
+		} else if (displaybackInStock) {
+			return EnumBurstType.BACK_IN_STOCK.getCode();
 		}
 		return null;
 	}
@@ -145,6 +154,8 @@ public class ProductLabeling {
 			burst = "YF";
 		else if (isDisplayNew())
 			burst = "NE";
+		else if (isDisplayNew())
+			burst = "BK";
 		return burst;
 	}
 
@@ -156,6 +167,10 @@ public class ProductLabeling {
 		return hideBursts != null && hideBursts.contains(EnumBurstType.NEW);
 	}
 
+	public boolean isHideBackInStock() {
+		return hideBursts != null && hideBursts.contains(EnumBurstType.BACK_IN_STOCK);
+	}
+	
 	public boolean isHideDeals() {
 		return hideBursts != null && hideBursts.contains(EnumBurstType.DEAL);
 	}

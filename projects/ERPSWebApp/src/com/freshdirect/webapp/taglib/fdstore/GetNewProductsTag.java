@@ -48,8 +48,10 @@ public class GetNewProductsTag extends AbstractGetterTag {
 
 	protected Object getResult() throws Exception {
 		List<ProductModel> prods = new ArrayList<ProductModel>(ContentFactory.getInstance().getNewProducts(days).keySet());
+		prods.addAll(ContentFactory.getInstance().getBackInStockProducts(days).keySet()); 
 		prods = ContentFactory.filterProductsByDeptartment(prods, department);
-		Collections.sort(prods, prods.size() > 10 ? ProductModel.DEPTFULL_COMPARATOR : GLANCE_COMPARATOR);
+		//Collections.sort(prods, prods.size() > 10 ? ProductModel.DEPTFULL_COMPARATOR : GLANCE_COMPARATOR);
+		Collections.sort(prods, GLANCE_COMPARATOR);
 		return prods;
 	}
 

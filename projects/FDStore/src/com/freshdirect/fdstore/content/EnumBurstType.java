@@ -1,7 +1,7 @@
 package com.freshdirect.fdstore.content;
 
 public enum EnumBurstType {
-	NEW("new"), DEAL("deal"), YOUR_FAVE("fave");
+	NEW("new"), DEAL("deal"), YOUR_FAVE("fave"), BACK_IN_STOCK("back");
 	
 	/**
 	 * Tracking Code
