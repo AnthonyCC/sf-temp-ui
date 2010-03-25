@@ -320,13 +320,15 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
 	}
 	
 	private final static ContentKey RECIPE_ROOT_FOLDER = new ContentKey(FDContentTypes.FDFOLDER, "recipes");
+	private final static ContentKey FAQ_ROOT_FOLDER = new ContentKey(FDContentTypes.FDFOLDER, "FAQ");
 
 	// FIXME orphan handling is inelegant
 	public boolean isOrphan() {
 		ContentNodeModel start = this;
 		while ((start != null)
 				&& !(start instanceof StoreModel || RECIPE_ROOT_FOLDER
-						.equals(start.getContentKey()))) {
+						.equals(start.getContentKey()) || FAQ_ROOT_FOLDER
+								.equals(start.getContentKey()))) {
 			start = start.getParentNode();
 		}
 		return start == null;

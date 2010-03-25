@@ -1,6 +1,7 @@
 <%@ page import="com.freshdirect.webapp.util.MediaHelper" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="com.freshdirect.webapp.util.FDFaqUtil" %>
 <%
 String faqPage = "faqHome";
 Map params = new HashMap();
@@ -31,6 +32,25 @@ if (user2 != null) {
     params.put("minimumOrderAmount", new Integer(0) );
     params.put("isUserCheckEligible", Boolean.FALSE );
 }
+if(faqPage.equals("what_we_do")){	
+	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("what_we_do"));
+}else if(faqPage.equals("sign_up")){	
+	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("sign_up"));
+}else if(faqPage.equals("security")){	
+	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("security"));
+}else if(faqPage.equals("shopping")){	
+	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("shopping"));
+}else if(faqPage.equals("chefstable")){	
+	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("chef_table"));
+}else if(faqPage.equals("payment")){	
+	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("payment"));
+}else if(faqPage.equals("deliveryHome")){	
+	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("deliveryHome"));
+}else if(faqPage.equals("inside")){	
+	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("inside"));
+}else if(faqPage.equals("cos")){	
+	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("cos"));
+}
 %><tmpl:insert template='/common/template/faq_help.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Help - FAQs</tmpl:put>
 	<tmpl:put name='leftnav' direct='true'>
@@ -42,11 +62,11 @@ if (user2 != null) {
 				<img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0">
 			</td>
 			<td><%
-			if(faqPage.equals("about")){%>
+			if(faqPage.equals("what_we_do")){%>
 				<fd:IncludeMedia name="/media/editorial/faq/about.ftl" parameters="<%=params%>" withErrorReport="true"/>	
 			<%}
 			
-			else if(faqPage.equals("signup")){
+			else if(faqPage.equals("sign_up")){
 				if (user2 != null && user2.isEligibleForSignupPromotion()) {
                     final java.text.DecimalFormat promoFormatter = new java.text.DecimalFormat("$#,##0");
 					params.put("eligibleForSignupPromotion", Boolean.TRUE);

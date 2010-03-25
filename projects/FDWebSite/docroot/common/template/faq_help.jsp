@@ -55,12 +55,12 @@ faqPage = request.getParameter("page");
 				<A HREF="faq_home.jsp?page=faqHome" TARGET="_top"><img src="/media_stat/images/template/help/faq_catnav.gif" width="91" height="58" alt="" border="0"></A><BR>
 				<font class="space4pix"><br></font>
 				
-				<%if(faqPage.equals("about")){%><b>What We Do</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=about" TARGET="_top">What We Do</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
+				<%if(faqPage.equals("what_we_do")){%><b>What We Do</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
+				<%}else{%><A HREF="faq_home.jsp?page=what_we_do" TARGET="_top">What We Do</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}%>	
 			
-				<%if(faqPage.equals("signup")){%><b>Signing Up</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=signup" TARGET="_top">Signing Up</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
+				<%if(faqPage.equals("sign_up")){%><b>Signing Up</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
+				<%}else{%><A HREF="faq_home.jsp?page=sign_up" TARGET="_top">Signing Up</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
 				<%}%>	
 			
 				<% if(faqPage.equals("security")){%><b>Security &amp; Privacy</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>

@@ -65,6 +65,7 @@ public class FDStoreProperties {
 	private final static String PROP_EMAIL_PRODUCT = "fdstore.email.product";
 	private final static String PROP_EMAIL_FEEDBACK = "fdstore.email.feedback";
 	private final static String PROP_EMAIL_CHEFSTABLE = "fdstore.email.chefstable";
+	private final static String PROP_EMAIL_VENDING = "fdstore.email.vending";
     private final static String PROP_HOLIDAY_LOOKAHEAD_DAYS = "fdstore.holidayLookaheadDays";
     private final static String PROP_DLV_PROMO_EXP_DATE = "fdstore.dlvPromo.expDate";
 	private final static String PROP_EMAIL_PROMOTION = "fdstore.email.promotion";
@@ -433,6 +434,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_EMAIL_PRODUCT, "products@freshdirect.com");
 		defaults.put(PROP_EMAIL_FEEDBACK, "feedback@freshdirect.com");
 		defaults.put(PROP_EMAIL_CHEFSTABLE, "chefstable@freshdirect.com");
+		defaults.put(PROP_EMAIL_VENDING, "vendinginfo@freshdirect.com");		
 		defaults.put(PROP_CONTENTMANAGER_HOME,"freshdirect.content.ContentManager");
 		defaults.put(PROP_HOLIDAY_LOOKAHEAD_DAYS, "21");
 		defaults.put(PROP_AD_SERVER_ENABLED, "false");
@@ -928,6 +930,10 @@ public class FDStoreProperties {
 
 	public static String getFeedbackEmail(){
 		return get(PROP_EMAIL_FEEDBACK);
+	}
+	
+	public static String getVendingEmail(){
+		return get(PROP_EMAIL_VENDING);
 	}
 
 	public static String getChefsTableEmail(){

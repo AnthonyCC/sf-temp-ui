@@ -6,26 +6,47 @@ package com.freshdirect.webapp.taglib.fdstore;
 //import java.util.List;
 //import java.util.Map;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.functors.AllPredicate;
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.query.ContentKeysPredicate;
+import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.common.address.PhoneNumber;
-import com.freshdirect.crm.*;
+import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.customer.ErpCustomerInfoModel;
-import com.freshdirect.mail.EmailUtil;
-import com.freshdirect.framework.util.NVL;
-import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.webapp.WebFormI;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentSearchUtil;
+import com.freshdirect.fdstore.content.SearchQueryStemmer;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.framework.webapp.WebFormI;
+import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 
 public class ContactFdControllerTag extends AbstractControllerTag implements SessionName  {
@@ -40,12 +61,50 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			
 			ContactForm form = new ContactForm(identity == null);
 			form.populateForm(request);
-			form.validateForm(actionResult);
+			if(null !=request.getParameter("searchFAQButton.x")){
+//				return false;
+				String faqKeyword = request.getParameter("searchFAQ");
+				faqKeyword = NVL.apply(faqKeyword, "");
+				faqKeyword = ContentSearchUtil.normalizeTerm(faqKeyword);
+				this.redirectTo("/help/faq_search.jsp?searchFAQ="+faqKeyword);
+				
+				/*if(null ==faqKeyword || "".equals(faqKeyword.trim())){
+					actionResult.addError(true,"search_faq_empty","Search term can't be empty or blank");
+				}*/
+				/*if (actionResult.isSuccess()) {
+					//search for faq
+					
+					Collection hits = CmsManager.getInstance().search(faqKeyword, 2000);
+					Map hitsByType = ContentSearchUtil.mapHitsByType(hits);
 
-			if (actionResult.isSuccess()) {
-				this.performContactFd(form, user);
+					String[] tokens = ContentSearchUtil.tokenizeTerm(faqKeyword);
+
+					// TODO : refactor, this way, we load ContentNodes twice, here, and in the upper method.
+					List faqs = ContentSearchUtil.filterRelevantNodes(
+							ContentSearchUtil.resolveHits((List) hitsByType
+									.get(FDContentTypes.FAQ)), tokens, SearchQueryStemmer.LowerCase);
+					
+					Set keys = new HashSet(faqs.size());
+					for (Iterator i=faqs.iterator(); i.hasNext(); ) {
+						SearchHit r = (SearchHit) i.next();
+						keys.add(r.getContentKey());
+					}
+					Predicate predicate = new ContentKeysPredicate(keys);
+					Predicate searchPredicate = new AllPredicate(new Predicate[]{predicate});
+					CmsManager manager = CmsManager.getInstance();
+					Map result = manager.queryContentNodes(FDContentTypes.FAQ, searchPredicate);
+					
+					pageContext.setAttribute("searchResult", result);
+					pageContext.setAttribute("keywords", faqKeyword);
+					
+				}*/
+			}else{
+				form.validateForm(actionResult);
+	
+				if (actionResult.isSuccess()) {
+					this.performContactFd(form, user);
+				}
 			}
-
 		} catch (FDResourceException e) {
 			LOGGER.warn("FDResourceException occured", e);
 			throw new JspException(e);
@@ -96,11 +155,37 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 		
 		body = body + "\n\n\n" + form.message;
  		
-		FDCustomerManager.sendContactServiceEmail(customer, subject, body, user.isChefsTable(), false);//subject.indexOf("Delivery Areas") > -1);
+		FDCustomerManager.sendContactServiceEmail(customer, subject, body, user.isChefsTable(), false, subject.indexOf("Fresh Meal Vending") > -1);//subject.indexOf("Delivery Areas") > -1);
 		
 		LOGGER.debug(">>>Sent Contact Service Email from: " + customer.getEmailAddress());
 		
 		this.setSuccessPage(this.getSuccessPage() + "?msg=" + form.confirmMessage);
+	}
+	
+	
+	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
+		pageContext.setAttribute("savedFaqs", getTopFaqs(actionResult));
+		return true;
+	}
+	
+	private List getTopFaqs(ActionResult actionResult){
+		try {
+			List topFaqNodes =new ArrayList();
+			List faqNodeIdList = FDCustomerManager.getTopFaqs();
+			for (Iterator iterator = faqNodeIdList.iterator(); iterator
+					.hasNext();) {
+				String nodeId = (String) iterator.next();
+//				ContentKey key = new ContentKey(FDContentTypes.FAQ, nodeId);
+//				CmsManager          manager     = CmsManager.getInstance();	
+//				ContentNodeI contentNode = manager.getContentNode(key);	
+				ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(nodeId);
+				topFaqNodes.add(contentNode);
+			}
+			return topFaqNodes;
+		} catch (FDResourceException e) {
+			actionResult.addError(true, "getSavedFaqError", " Failed to get the saved FAQs.");
+			return Collections.EMPTY_LIST;
+		}
 	}
 
 	public static class TagEI extends AbstractControllerTag.TagEI {
@@ -142,7 +227,8 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
 			new Selection(CrmCaseSubject.CODE_CORPORATE_INFO , "Corporate/Commercial Services")	,
 			new Selection(CrmCaseSubject.CODE_GIFT_CARD_INFO , "Gift Cards"),
-			new Selection(CrmCaseSubject.CODE_IPHONE_INFO , "FreshDirect iPhone app")
+			new Selection(CrmCaseSubject.CODE_IPHONE_INFO , "FreshDirect iPhone app"),
+			new Selection(CrmCaseSubject.CODE_GENERAL_INFO , "Fresh Meal Vending")
 			};
 
 	private static class ContactForm implements WebFormI {

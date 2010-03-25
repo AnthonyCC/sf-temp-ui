@@ -2135,7 +2135,7 @@ public class FDCustomerManager {
 		}		
 	}
 
-	public static void sendContactServiceEmail(FDCustomerInfo customer, String subject, String body, boolean chefstable, boolean feedback) throws FDResourceException {
+	public static void sendContactServiceEmail(FDCustomerInfo customer, String subject, String body, boolean chefstable, boolean feedback, boolean vending) throws FDResourceException {
 		lookupMailerGatewayHome();
 		lookupManagerHome();
 		try {
@@ -2146,6 +2146,8 @@ public class FDCustomerManager {
 			}else{
 				if(feedback){
 					email = FDEmailFactory.getInstance().createFeedbackEmail(customer, subject, body);
+				}else if(vending){
+					email = FDEmailFactory.getInstance().createVendingEmail(customer, subject, body);
 				}else{
 					email = FDEmailFactory.getInstance().createContactServiceEmail(customer, subject, body);
 				}

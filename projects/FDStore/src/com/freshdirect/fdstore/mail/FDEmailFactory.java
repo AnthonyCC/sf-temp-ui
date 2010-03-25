@@ -50,6 +50,7 @@ public class FDEmailFactory {
 	public static final String FEEDBACK_EMAIL = FDStoreProperties.getFeedbackEmail();
 	public static final String CHEFSTABLE_EMAIL = FDStoreProperties.getChefsTableEmail();
 	public static final String GENERAL_LABEL = "FreshDirect";
+	public static final String VENDING_EMAIL = FDStoreProperties.getVendingEmail();
 
 
 	// default instance getter
@@ -257,6 +258,21 @@ public class FDEmailFactory {
 
 	public XMLEmailI createContactServiceEmail(FDCustomerInfo customerInfo, String subject, String body) {
 		FDContactServiceEmail email = new FDContactServiceEmail(body);
+
+		if (customerInfo == null) {
+			email.setFromAddress(new EmailAddress("Unidentified Customer", GENERAL_CS_EMAIL));
+		} else {
+			email.setFromAddress(
+				new EmailAddress(customerInfo.getFirstName() + " " + customerInfo.getLastName(), customerInfo.getEmailAddress()));
+		}
+
+		email.setSubject(subject);
+
+		return email;
+	}
+	
+	public XMLEmailI createVendingEmail(FDCustomerInfo customerInfo, String subject, String body) {
+		VendingEmail email = new VendingEmail(body);
 
 		if (customerInfo == null) {
 			email.setFromAddress(new EmailAddress("Unidentified Customer", GENERAL_CS_EMAIL));
@@ -871,6 +887,15 @@ public class FDEmailFactory {
 		}
 
 	}	
+	
+	private static class VendingEmail extends FDContactServiceEmail implements XMLEmailI {
+
+		public VendingEmail(String body) {
+			super(body);
+			this.setRecipient(VENDING_EMAIL);
+		}
+
+	}
 	
 	private static class FDDPCreditEmail extends FDInfoEmail {
 		
