@@ -552,9 +552,8 @@ public class DispatchPlanUtil {
 					{
 						dispatched.add(command);
 					}									
-				}
-				DispatchTimeComparator compare=new DispatchTimeComparator();				
-				Collections.sort(dispatched, compare);					
+				}								
+				Collections.sort(dispatched, new DispatchNRViewComparator());					
 				return dispatched;
 			}
 			
@@ -737,7 +736,34 @@ public class DispatchPlanUtil {
 			return 0;
 		}
 
-	}		
+	}	
+	private static class DispatchNRViewComparator implements Comparator{       
+
+
+		public int compare(Object o1, Object o2) {
+
+			if(o1 instanceof DispatchCommand && o2 instanceof DispatchCommand)
+			{
+				DispatchCommand p1=(DispatchCommand)o1;
+				DispatchCommand p2=(DispatchCommand)o2;
+
+				try {						
+						UPSRouteInfo u1=p1.getUpsRouteInfo();
+						UPSRouteInfo u2=p2.getUpsRouteInfo();
+						if(u1!=null&&u2!=null&&u1.getEndTime()!=null&&u2.getEndTime()!=null)
+						{
+							int result= u1.getEndTime().compareTo(u2.getEndTime());							
+							return result;
+						}						
+				} catch (Exception e) {
+					
+				}
+				
+			}
+			return 0;
+		}
+
+	}			
 	public static void setDispatchStatus(Collection c,boolean remove) 
 	{
 		if(remove)
