@@ -478,13 +478,14 @@ class FDFactory {
 			Map<String, Date> regular = sb.getBackInStockSkus();
 			Map<String, Date> overridden = sb.getOverriddenBackInStockSkus();
 			Map<String, Date> results = new HashMap<String, Date>((regular.size() + overridden.size()) * 4 / 3);
+			Map<String, Date> newSkus = getNewSkus();
 			for (Map.Entry<String, Date> entry : regular.entrySet())
-				if (entry.getValue().after(first) && entry.getValue().before(now))
+				if (entry.getValue().after(first) && entry.getValue().before(now) && !newSkus.containsKey(entry.getKey()))
 					results.put(entry.getKey(), entry.getValue());
 			for (Map.Entry<String, Date> entry : overridden.entrySet())
 				if (entry.getValue().compareTo(first) <= 0)
 					results.remove(entry.getKey());
-				else if (entry.getValue().before(now))
+				else if (entry.getValue().before(now) && !newSkus.containsKey(entry.getKey()))
 					results.put(entry.getKey(), entry.getValue());
 			return results;
 		} catch (CreateException ce) {
