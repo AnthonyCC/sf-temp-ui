@@ -1,4 +1,4 @@
-var SafariBehaviorAutoComplete = function(searchField, listContainer, dataSource) {
+var SafariBehaviorAutoComplete = function(searchField, listContainer, dataSource, skipSpaces) {
     var that = this;
     var originalQuery = "";
 
@@ -20,6 +20,7 @@ var SafariBehaviorAutoComplete = function(searchField, listContainer, dataSource
         if(!this.suppressInputUpdate) {    
             var elTextbox = this._elTextbox;
             var sDelimChar = (this.delimChar) ? (this.delimChar[0] || this.delimChar) : null;
+            console.log('>'+sDelimChar+'<');
             var sResultMatch = elListItem._sResultMatch;
         
             // Calculate the new value
@@ -30,7 +31,7 @@ var SafariBehaviorAutoComplete = function(searchField, listContainer, dataSource
                 // Add new selection plus delimiter
                 sNewValue += sResultMatch + sDelimChar;
                 if(sDelimChar != " ") {
-                    sNewValue += " ";
+                    NewValue += " ";
                 }
             }
             else { 
@@ -42,7 +43,7 @@ var SafariBehaviorAutoComplete = function(searchField, listContainer, dataSource
              */
             var skipChange = false;
             var old_str_len = elTextbox.value.length;
-            if (old_str_len > 2) {
+            if (old_str_len > 2 && skipSpaces) {
             	var firstWhitespacePos = sNewValue.indexOf(' ', old_str_len);
             	if (firstWhitespacePos == old_str_len) {
             		skipChange = true;
@@ -85,10 +86,11 @@ var SafariBehaviorAutoComplete = function(searchField, listContainer, dataSource
 
 YAHOO.lang.extend(SafariBehaviorAutoComplete, YAHOO.widget.AutoComplete);
 
-var autoCompleteFunctionFactory = function(apiUrl,termsId,inputId) {
+var autoCompleteFunctionFactory = function(apiUrl,termsId,inputId, skipSpaces) {
 	var apiUrl = apiUrl || "/api/autocompleteresults.jsp";
 	var termsId = termsId || "terms";
 	var inputId = inputId || "searchxParams";
+	var skipSpaces = (skipSpaces===false) ? false:true;
 	
 	
 	return function() {
@@ -98,7 +100,7 @@ var autoCompleteFunctionFactory = function(apiUrl,termsId,inputId) {
 	    oDS.responseSchema = {recordDelim: '\n', fieldDelim: '\t'};   
 	    
 	    // Instantiate the AutoComplete
-	    var oAC = new SafariBehaviorAutoComplete(inputId, termsId, oDS);
+	    var oAC = new SafariBehaviorAutoComplete(inputId, termsId, oDS, skipSpaces);
 	
 	    oAC.generateRequest = function(sQuery) { 
 	    	return "prefix=" + sQuery; 

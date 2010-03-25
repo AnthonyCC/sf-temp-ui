@@ -33,5 +33,5 @@
 <script type="text/javascript" src="/assets/yui/autocomplete/autocomplete-min.js"></script> 
 <script type="text/javascript" src="/assets/javascript/smsearch_autocomplete.js"></script>
 <script type="text/javascript">
-YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands","brandParams"));
+YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands","brandParams",false));
 </script>

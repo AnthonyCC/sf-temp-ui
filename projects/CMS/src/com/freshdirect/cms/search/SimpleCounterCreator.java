@@ -1,6 +1,8 @@
 package com.freshdirect.cms.search;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.TreeSet;
 
 import com.freshdirect.cms.search.AutocompleteService.HitCounter;
 
@@ -14,6 +16,8 @@ import com.freshdirect.cms.search.AutocompleteService.HitCounter;
 public class SimpleCounterCreator implements CounterCreatorI {
 
 	public void createCounters(HashMap<String, HitCounter> counters, String fullname) {
+        fullname = fullname.toLowerCase().replace('&', ' ').replace('"', ' ').replace('.', ' ').replace(':', ' ').replace(',', ' ').replace('-', ' ')
+        .replace('(', ' ').replace(')', ' ').replace(/* NBSP */(char)160, ' ').replace(/* REG TRADEMARK */ (char) 174, ' ');
         accumulate(counters, fullname, 1, null);
     }
 
@@ -27,5 +31,27 @@ public class SimpleCounterCreator implements CounterCreatorI {
         }
         return hc;
     }
+
+	@Override
+	public TreeSet<HitCounter> initWords(Collection<String> words) {
+        HashMap<String, HitCounter> counters = new HashMap<String, HitCounter>();
+        for (String fullname : words) {
+            if (fullname != null) {
+
+                createCounters(counters, fullname);
+
+                char[] buf = fullname.toCharArray();
+                String unaccented = ISOLatin1AccentFilter.removeAccents(buf, buf.length);
+                if (!unaccented.equals(fullname)) {
+                    createCounters(counters, unaccented);
+                }
+            }
+        }
+        TreeSet<HitCounter> set = new TreeSet<HitCounter>();
+        for (HitCounter hc : counters.values()) {
+        	set.add(hc);
+        }
+		return set;
+	}
 
 }

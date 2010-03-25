@@ -98,34 +98,11 @@ public class AutocompleteService {
 
     private SortedSet<HitCounter> initWords(Collection<String> words) {
         LOGGER.info("word list size:" + words.size());
-        HashMap<String, HitCounter> counters = new HashMap<String, HitCounter>();
-        for (String fullname : words) {
-            if (fullname != null) {
-                fullname = fullname.toLowerCase().replace('&', ' ').replace('"', ' ').replace('.', ' ').replace(':', ' ').replace(',', ' ').replace('-', ' ')
-                        .replace('(', ' ').replace(')', ' ').replace(/* NBSP */(char)160, ' ').replace(/* REG TRADEMARK */ (char) 174, ' ');
-
-                counterCreator.createCounters(counters, fullname);
-
-                char[] buf = fullname.toCharArray();
-                String unaccented = ISOLatin1AccentFilter.removeAccents(buf, buf.length);
-                // String.replace returns the same object if no change occured, so == is good for comparison 
-                if (!unaccented.equals(fullname)) {
-                    counterCreator.createCounters(counters, unaccented);
-                }
-                
-            }
-        }
-        LOGGER.info("prefix map size:" + counters.size());
-        TreeSet<HitCounter> set = new TreeSet<HitCounter>();
-        for (HitCounter hc : counters.values()) {
-            // skip words which occures only one
-            //if (hc.number > 1) {
-                // skip autocomplete suggest
-                if (!(hc.followCount == 1 && hc.wordCount < 3)) {
-                    set.add(hc);
-                }
-            //}
-        }
+        
+        
+        
+        TreeSet<HitCounter> set = counterCreator.initWords( words );
+        
         wordSet = new TreeSet<String>();
         for (HitCounter hc : set) {
             if (hc.wordCount==1) {

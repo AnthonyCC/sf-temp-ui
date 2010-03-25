@@ -1,8 +1,10 @@
 package com.freshdirect.cms.search;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -11,6 +13,8 @@ import com.freshdirect.cms.search.AutocompleteService.HitCounter;
 public class CounterCreatorImpl implements CounterCreatorI {
 
 	public void createCounters(HashMap<String, HitCounter> counters, String fullname) {
+        fullname = fullname.toLowerCase().replace('&', ' ').replace('"', ' ').replace('.', ' ').replace(':', ' ').replace(',', ' ').replace('-', ' ')
+        .replace('(', ' ').replace(')', ' ').replace(/* NBSP */(char)160, ' ').replace(/* REG TRADEMARK */ (char) 174, ' ');
         List<String> strings = filterWords(StringUtils.split(fullname));
 
         final int len = strings.size();
@@ -48,5 +52,29 @@ public class CounterCreatorImpl implements CounterCreatorI {
         }
         return result;
     }
-    
+
+	@Override
+	public TreeSet<HitCounter> initWords(Collection<String> words) {
+        HashMap<String, HitCounter> counters = new HashMap<String, HitCounter>();
+        for (String fullname : words) {
+            if (fullname != null) {
+
+                createCounters(counters, fullname);
+
+                char[] buf = fullname.toCharArray();
+                String unaccented = ISOLatin1AccentFilter.removeAccents(buf, buf.length);
+                // String.replace returns the same object if no change occured, so == is good for comparison 
+                if (!unaccented.equals(fullname)) {
+                    createCounters(counters, unaccented);
+                }
+            }
+        }
+        TreeSet<HitCounter> set = new TreeSet<HitCounter>();
+        for (HitCounter hc : counters.values()) {
+            if (!(hc.followCount == 1 && hc.wordCount < 3)) {
+                set.add(hc);
+            }
+        }
+		return set;
+	}
 }
