@@ -146,6 +146,31 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_DISPATCH_NR_VIEW_PAGEREFRESHTIME		= "transportation.dispatch.nrview.pagerefreshtime";	
 	private final static String PROP_TRANSPORTATION_DISPATCH_NR_VIEW_PAGESIZE		= "transportation.dispatch.nrview.pagesize";
 	
+	//view CSS
+	//Ready View
+	private final static String PROP_TRANSPORTATION_DISPATCH_READY_VIEW_CSS_HEADER_FONT = "transportation.dispatch.readyview.css.header.font";	
+	private final static String PROP_TRANSPORTATION_DISPATCH_READY_VIEW_CSS_HEADER_FONT_SIZE = "transportation.dispatch.readyview.css.header.font.size";
+	private final static String PROP_TRANSPORTATION_DISPATCH_READY_VIEW_CSS_PAGE_HEADER_FONT		= "transportation.dispatch.readyview.css.page.header.font";	
+	private final static String PROP_TRANSPORTATION_DISPATCH_READY_VIEW_CSS_PAGE_HEADER_FONT_SIZE		= "transportation.dispatch.readyview.css.page.header.font.size";
+	private final static String PROP_TRANSPORTATION_DISPATCH_READY_VIEW_CSS_PAGE_FONT		= "transportation.dispatch.readyview.css.page.font";
+	private final static String PROP_TRANSPORTATION_DISPATCH_READY_VIEW_CSS_PAGE_FONT_SIZE		= "transportation.dispatch.readyview.css.page.font.size";
+	
+	//waiting View
+	private final static String PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_CSS_HEADER_FONT = "transportation.dispatch.waiting.css.header.font";	
+	private final static String PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_CSS_HEADER_FONT_SIZE = "transportation.dispatch.waiting.css.header.font.size";
+	private final static String PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_CSS_PAGE_HEADER_FONT		= "transportation.dispatch.waiting.css.page.header.font";	
+	private final static String PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_CSS_PAGE_HEADER_FONT_SIZE		= "transportation.dispatch.waiting.css.page.header.font.size";
+	private final static String PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_CSS_PAGE_FONT		= "transportation.dispatch.waiting.css.page.font";
+	private final static String PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_CSS_PAGE_FONT_SIZE		= "transportation.dispatch.waiting.css.page.font.size";
+	
+	//NR View
+	private final static String PROP_TRANSPORTATION_DISPATCH_NR_VIEW_CSS_HEADER_FONT = "transportation.dispatch.nr.css.header.font";	
+	private final static String PROP_TRANSPORTATION_DISPATCH_NR_VIEW_CSS_HEADER_FONT_SIZE = "transportation.dispatch.nr.css.header.font.size";
+	private final static String PROP_TRANSPORTATION_DISPATCH_NR_VIEW_CSS_PAGE_HEADER_FONT		= "transportation.dispatch.nr.css.page.header.font";	
+	private final static String PROP_TRANSPORTATION_DISPATCH_NR_VIEW_CSS_PAGE_HEADER_FONT_SIZE		= "transportation.dispatch.nr.css.page.header.font.size";
+	private final static String PROP_TRANSPORTATION_DISPATCH_NR_VIEW_CSS_PAGE_FONT		= "transportation.dispatch.nr.css.page.font";
+	private final static String PROP_TRANSPORTATION_DISPATCH_NR_VIEW_CSS_PAGE_FONT_SIZE		= "transportation.dispatch.nr.css.page.font.size";
+	
 	static {
 				
 	
@@ -252,6 +277,27 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_REFRESHTIME, "45");		
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_PAGEREFRESHTIME, "10");		
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_PAGESIZE, "16");	
+		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_CSS_HEADER_FONT, "verdana, arial, helvetica, sans-serif");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_CSS_HEADER_FONT_SIZE, "20");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_CSS_PAGE_HEADER_FONT, "verdana, arial, helvetica, sans-serif");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_CSS_PAGE_HEADER_FONT_SIZE, "17");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_CSS_PAGE_FONT, "verdana, arial, helvetica, sans-serif");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_READY_VIEW_CSS_PAGE_FONT_SIZE, "15");
+		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_CSS_HEADER_FONT, "verdana, arial, helvetica, sans-serif");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_CSS_HEADER_FONT_SIZE, "20");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_CSS_PAGE_HEADER_FONT, "verdana, arial, helvetica, sans-serif");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_CSS_PAGE_HEADER_FONT_SIZE, "17");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_CSS_PAGE_FONT, "verdana, arial, helvetica, sans-serif");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_WAITING_VIEW_CSS_PAGE_FONT_SIZE, "15");	
+		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_CSS_HEADER_FONT, "verdana, arial, helvetica, sans-serif");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_CSS_HEADER_FONT_SIZE, "20");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_CSS_PAGE_HEADER_FONT, "verdana, arial, helvetica, sans-serif");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_CSS_PAGE_HEADER_FONT_SIZE, "17");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_CSS_PAGE_FONT, "verdana, arial, helvetica, sans-serif");	
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_CSS_PAGE_FONT_SIZE, "15");	
 		
 		refresh();		
 	}
@@ -563,5 +609,16 @@ public class TransportationAdminProperties {
 	public static int getDispatchDashboardPageNRViewSize() 
 	{
 		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_NR_VIEW_PAGESIZE));
+	}
+	public static String getCSSPropertyValue(String view,String page,String font) 
+	{		
+		String temp="PROP_TRANSPORTATION_DISPATCH_"+view+"_VIEW_CSS_"+page+"_FONT"+(font!=null?"_"+font:"");
+		try {
+			temp=(String)TransportationAdminProperties.class.getDeclaredField(temp).get(null);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return get(temp);
 	}
 }
