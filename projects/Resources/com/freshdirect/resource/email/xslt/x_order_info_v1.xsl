@@ -149,7 +149,7 @@ Phone Handling Fee: <xsl:value-of select="format-number(order/phoneCharge, '$###
 </xsl:for-each>
 </xsl:if>
 Total Tax: <xsl:value-of select='format-number(order/taxValue, "$###,##0.00", "USD")'/> 
-State Bottle Deposit and Handling Fee: <xsl:value-of select='format-number(order/depositValue, "$###,##0.00", "USD")'/> 
+State Bottle Deposit: <xsl:value-of select='format-number(order/depositValue, "$###,##0.00", "USD")'/> 
 Estimated Order Total: <xsl:value-of select='format-number(order/total, "$###,##0.00", "USD")'/>*
 <xsl:if test="order/paymentMethod/paymentType = 'M'">
 Amount due: $0.00 

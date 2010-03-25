@@ -111,7 +111,7 @@ deposit = (cart.hasInvoice() && invoiceView != null) ? invoiceView.getDepositVal
 if (deposit > 0) {
 	%>
 	<tr align="right">
-		<td colspan="5">State Bottle Deposit and Handling Fee:</td>
+		<td colspan="5">State Bottle Deposit:</td>
 		<td><%=currencyFormatter.format(deposit)%></td>
 		<td colspan="3">&nbsp;</td>
 	</tr>
