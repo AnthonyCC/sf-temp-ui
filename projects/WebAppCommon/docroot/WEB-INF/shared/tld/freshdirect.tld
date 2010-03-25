@@ -84,30 +84,6 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
-
-	<tag>
-		<name>GetNewProducts</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetNewProductsTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.GetNewProductsTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>days</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>department</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-
 	<tag>
 		<name>GetReintroducedProducts</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetReintroducedProductsTag</tagclass>
@@ -1544,6 +1520,48 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>GetNewProducts</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetNewProductsTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.GetNewProductsTagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>searchResults</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>productList</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>categorySet</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>categoryTree</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>filteredCategoryTreeName</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>brandSet</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>selectedCategories</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>	
 	<tag>
 		<name>SmartSearch</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.SmartSearchTag</tagclass>

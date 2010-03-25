@@ -8,8 +8,8 @@ public enum SearchSortType {
 	BY_RELEVANCY(2, "relv"),
 	BY_POPULARITY(3, "pplr"),
 	DEFAULT(4, "tdef"),			// 'default' sort on text view
-	BY_SALE(5, "sale");
-	
+	BY_SALE(5, "sale"),
+	BY_RECENCY(6, "recency");
     private int type;
     private String label;
 
@@ -46,7 +46,7 @@ public enum SearchSortType {
 
     
     /**
-     * Various defaults per view
+     * Various defaults per view specific to search page.
      */
     public static final SearchSortType DEF4TEXT = SearchSortType.DEFAULT;
     public static final SearchSortType DEF4NOTTEXT = SearchSortType.BY_RELEVANCY;

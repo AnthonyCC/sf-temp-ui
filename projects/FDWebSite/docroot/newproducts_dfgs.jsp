@@ -1,11 +1,21 @@
-<%@ page import="com.freshdirect.fdstore.*" %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
-<%@ page import='com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.framework.webapp.*'%>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.content.attributes.*'%>
-<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@   page import='com.freshdirect.webapp.util.*'
+%><%@ page import="com.freshdirect.fdstore.content.DomainValue"
+%><%@ page import='com.freshdirect.framework.webapp.*'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><%@ page import='com.freshdirect.content.attributes.*'
+%><%@ page import="com.freshdirect.fdstore.util.URLGenerator"
+%><%@ page import="com.freshdirect.fdstore.util.NewProductsNavigator"
+%><%@ page import="com.freshdirect.fdstore.*"
+%><%@ page import="com.freshdirect.cms.*"
+%><%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"
+%><%@ page import="com.freshdirect.fdstore.content.*"
+%><%@ page import='com.freshdirect.fdstore.attributes.*'
+%><%@ page import='com.freshdirect.webapp.util.SearchResultUtil'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'
+%><%@ page import="java.util.*"
+%><%@ page import="java.net.URLEncoder"
+%><%@ page import="java.text.DecimalFormat"
+%><%@ page import='com.freshdirect.framework.util.NVL'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -15,152 +25,170 @@
 	//--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", "www.freshdirect.com/newproducts.jsp");
 	request.setAttribute("listPos", "SystemMessage,CategoryNote");
- %>
+    request.setAttribute("notreenav", "true");
+%>
+<%
+	//set some top-level variables to remove them from includes
+	String deptId = NVL.apply(request.getParameter("deptId"), "");
+	String catId = NVL.apply(request.getParameter("catId"), "");
+	String catRefUrl ="";
+    String trk="newp";
+        
+	//showViewAll is a boolean for showing the view all text/link
+	boolean showViewAll = true;
+
+	//the view all URL
+	String viewAllURL = "http://www.freshdirect.com/newproducts.jsp";
+
+	//showFeatNew is a boolean for showing the featured new include
+	boolean showFeatNew = true;
+
+	if ("".equals(deptId)) {
+		deptId = null; //no deptId, fallback by using null
+	}
+	if ("".equals(catId)) {
+		catId = "newproduct_cat"; //no catId, fallback
+	}
+	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
+	
+	CategoryModel currentCAT = null;
+	boolean isCat;
+
+	isCat = (currentFolder instanceof CategoryModel);
+	if (isCat) {
+		currentCAT = (CategoryModel)currentFolder;
+		
+		catRefUrl = response.encodeURL("/category.jsp?catId="+currentCAT.getContentKey().getId()+"&trk="+trk);
+	}
+	
+	if ("newproduct_cat".equals(catId)) {
+		//we're on the newproducts.jsp, or no catId was passed
+		showViewAll = false;
+	}
+
+%>
+<%
+    final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #CCCCCC\">&bull;</span>&nbsp;";
+	boolean noNewProduct = false;
+	boolean noBackStock = false;
+    int days = 120;
+    NewProductsNavigator nav = new NewProductsNavigator(request);
+%>
+<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree">
 <tmpl:insert template='/common/template/right_dnav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>
-<tmpl:put name='banner2' direct='true'><tr>
+<tmpl:put name='banner2' direct='true'>
+<tr>
 <td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
 <td colspan="4" align="center"><a href="/newproducts.jsp"><img src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0"></a></td>
 <td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
 </tr></tmpl:put>
+
+
+
 <tmpl:put name='content' direct='true'>
 
-<%!
-	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
-	final static int DAYS_1 = 15;
-	final static int DAYS_2 = 30;
-	final static int DAYS_3 = 60;
-	final static int DEFAULT_DAYS = DAYS_2;
-	final static Map DAYS = new HashMap();
-	static {
-		DAYS.put( "1", new Integer(DAYS_1) );
-		DAYS.put( "2", new Integer(DAYS_2) );
-		DAYS.put( "3", new Integer(DAYS_3) );
+
+<table width="550" cellpadding="0" cellspacing="0" border="0">
+
+
+<tmpl:put name='header' direct='true'><%@ include file="/includes/i_header_new.jspf" %></tmpl:put>
+<% if (showFeatNew) { %>
+	<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
+<% } %>
+
+<%
+	/*
+		I don't think we need any of these 
+			-Bryan 2010.03.24_05.52.49.PM
+
+		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
+
+		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
+
+		<tr><td>
+			 <SCRIPT LANGUAGE="JavaScript">
+				<!--
+				OAS_AD('CategoryNote');
+				//-->
+			</SCRIPT>
+		</td></tr>
+	*/
+%>
+
+<tr><td>
+<table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px;margin-top: 10px;line-height:     ;">
+<tr>
+<td style="width: 100%"><%--
+
+  ************
+  * Sort Bar *
+  ************
+  
+--%><span class="text11bold">Sort:</span>
+<%
+    NewProductsNavigator.SortDisplay[] sbar = nav.getSortBar();
+    
+	for (int i=0; i<sbar.length; i++) {
+		%><a href="<%= nav.getChangeSortAction(sbar[i].sortType) %>" class="<%= sbar[i].isSelected ? "text11bold" : "text11" %>"><%= sbar[i].text %></a><%
+		if (i < sbar.length-1) {
+			%><%= SEPARATOR %><%
+		}
 	}
 %>
-<table width="550" cellpadding="0" cellspacing="0" border="0">
-<%
-String deptId = request.getParameter("deptId");
-String currCatId = request.getParameter("catId");
-
-Integer daysInt = (Integer)DAYS.get( request.getParameter("days") );
-int days = daysInt==null ? DEFAULT_DAYS : daysInt.intValue();
-
-	boolean noNewProduct = false;
-	boolean noBackStock = false;
-%>
-<fd:GetNewProducts id="products" days='<%=days%>' department='<%=deptId%>'>
-
-<tr><td>
-<table cellpadding="0" cellspacing="0" border="0"><tr>
-<td align="top"><img src="/media_stat/images/template/newproduct/<%=deptId%>_new_products.gif" height="20" border="0"></td>
-<td valign="bottom">&nbsp;&nbsp;&nbsp;&nbsp;See last:
-<%if (DAYS_1==days){%><b><%= DAYS_1 %> days</b><%}else{%><a href="/newproducts_dfgs.jsp?days=1&deptId=<%= deptId %>&catId=<%= currCatId %>"><%= DAYS_1 %> days</a><%}%> | 
-<%if (DAYS_2==days){%><b><%= DAYS_2 %> days</b><%}else{%><a href="/newproducts_dfgs.jsp?days=2&deptId=<%= deptId %>&catId=<%= currCatId %>"><%= DAYS_2 %> days</a><%}%> | 
-<%if (DAYS_3==days){%><b><%= DAYS_3 %> days</b><%}else{%><a href="/newproducts_dfgs.jsp?days=3&deptId=<%= deptId %>&catId=<%= currCatId %>"><%= DAYS_3 %> days</a><%}%>
 </td>
-</tr></table>
+<td>
+	<form name="form_brand_filter" id="form_brand_filter" method="GET" style="margin: 0;">
+<% nav.appendToBrandForm(out); %>
+		<select name="brandValue" class="text9" style="width: 140px;" onchange="document.getElementById('form_brand_filter').submit()">
+			<option value=""><%= nav.getBrand() == null ? "Filter by brand" : "SHOW ALL PRODUCTS"%></option>
+<% 		if (brandSet != null) {
+			for (Iterator iter = brandSet.iterator(); iter.hasNext();) {
+				BrandModel cm = (BrandModel) iter.next();  
+%>			<option value="<%= cm.getContentKey().getId() %>" <%
+				if (cm.getContentKey().getId().equals(nav.getBrand())) {%>
+					selected="true"
+			<%	}
+		%>><%= cm.getFullName() %></option>
+<%			} // for (brandSet...)
+		} // if brandSet
+%>
+	   </select>
+	</form>
+</td>
+</tr>
+</table>
 </td></tr>
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
-
-<tr><td>
-	 <SCRIPT LANGUAGE="JavaScript">
-		<!--
-		OAS_AD('CategoryNote');
-		//-->
-	</SCRIPT>
-</td></tr>
-
 <%
-String trkCode="&trk=newp";
+System.out.println("Product size $$$$$$$$$$$ "+products.size());
 if (products.size()!=0){
 %>
 <tr><td>
-<%
-	if (products.size()>10) { 
+    <%
 		// group by department
 		String deptImageSuffix="_np";
 	%>
-	<%@ include file="/includes/layouts/newproductlist_layout.jspf" %>
-	<%
-	} else { %>
-	<%@ include file="/includes/layouts/basic_layout.jspf" %>
-	<%
-	}
-%>
-</td></tr>
 
+	<%@ include file="/includes/layouts/basic_layout_new.jspf" %>
+    
+	<%
+			// Don't show pager for text view!
+			if (!nav.isTextView()) {
+    %>
+    <%@ include file="/includes/search/generic_pager.jspf" %>
+    <%
+	    	} // view != 'text'
+    %>
+</td></tr>
 <%
 } else noNewProduct = true;
 %>
-</fd:GetNewProducts>
 
-<fd:GetReintroducedProducts id="products" days='<%=days%>' department='<%=deptId%>'>
-<%
-String trkCode="&trk=back";
-if (products.size()!=0){
-%>
-<% if (noNewProduct) {%>
-<tr><td><br><b>No products within last <%=days%> days.</b><br></td></tr>
-<% } %>
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
-<tr bgcolor="#CCCCCC"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
-<tr><td>
-<A NAME="back"></A>
-<table cellpadding="0" cellspacing="0" border="0">
-<tr><td><img src="/media_stat/images/template/newproduct/<%=deptId%>_back_in_stock.gif" height="20" border="0"></td>
-<td valign="bottom">&nbsp;&nbsp;&nbsp;&nbsp;See last: 
-<%if (DAYS_1==days){%><b><%= DAYS_1 %> days</b><%}else{%><a href="/newproducts_dfgs.jsp?days=1&deptId=<%= deptId %>&catId=<%= currCatId %>#back"><%= DAYS_1 %> days</a><%}%> | 
-<%if (DAYS_2==days){%><b><%= DAYS_2 %> days</b><%}else{%><a href="/newproducts_dfgs.jsp?days=2&deptId=<%= deptId %>&catId=<%= currCatId %>#back"><%= DAYS_2 %> days</a><%}%> | 
-<%if (DAYS_3==days){%><b><%= DAYS_3 %> days</b><%}else{%><a href="/newproducts_dfgs.jsp?days=3&deptId=<%= deptId %>&catId=<%= currCatId %>#back"><%= DAYS_3 %> days</a><%}%>
-</td>
-</tr></table>
-</td></tr>
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
 
-<tr><td>
-<%	if (products.size()>10) { 
-		// group by department
-		String deptImageSuffix="_cart";
-%>
-	<%@ include file="/includes/layouts/newproductlist_layout.jspf" %>
-<%	} else { %>
-	<%@ include file="/includes/layouts/basic_layout.jspf" %>
-<%
-	}
-%>
-</td></tr>
-<%
-} else { noBackStock = true; 
-	
-	if (!noNewProduct) {
-%>
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
-<tr bgcolor="#CCCCCC"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
-<tr><td>
-<A NAME="back"></A>
-<table cellpadding="0" cellspacing="0" border="0">
-<tr><td><img src="/media_stat/images/template/newproduct/<%=deptId%>_back_in_stock.gif" height="20" border="0"></td>
-<td valign="bottom">&nbsp;&nbsp;&nbsp;&nbsp;See last: 
-<%if (DAYS_1==days){%><b><%= DAYS_1 %> days</b><%}else{%><a href="/newproducts_dfgs.jsp?days=1&deptId=<%= deptId %>&catId=<%= currCatId %>#back"><%= DAYS_1 %> days</a><%}%> | 
-<%if (DAYS_2==days){%><b><%= DAYS_2 %> days</b><%}else{%><a href="/newproducts_dfgs.jsp?days=2&deptId=<%= deptId %>&catId=<%= currCatId %>#back"><%= DAYS_2 %> days</a><%}%> | 
-<%if (DAYS_3==days){%><b><%= DAYS_3 %> days</b><%}else{%><a href="/newproducts_dfgs.jsp?days=3&deptId=<%= deptId %>&catId=<%= currCatId %>#back"><%= DAYS_3 %> days</a><%}%>
-</td></tr></table>
-</td></tr>
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
-<tr><td><br><b>No products within last <%=days%> days.</b></td></tr>
-<% 	} 
-} %>
-</fd:GetReintroducedProducts>
 
-<% if (noNewProduct && noBackStock) {%>
-<tr><td>
-<br><b>No products within last <%=days%> days.</b>
-</td></tr>
-<% } %>
+
 </table>
 </tmpl:put>
 
 </tmpl:insert>
+</fd:GetNewProducts>

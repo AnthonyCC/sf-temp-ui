@@ -1,13 +1,21 @@
-<%@ page import="com.freshdirect.fdstore.*" %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
-<%@ page import='com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.framework.webapp.*'%>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.content.attributes.*'%>
-<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
-<%@ page import="com.freshdirect.fdstore.util.SearchNavigator" %>
-<%@ page import='com.freshdirect.framework.util.NVL'%>
+<%@   page import='com.freshdirect.webapp.util.*'
+%><%@ page import="com.freshdirect.fdstore.content.DomainValue"
+%><%@ page import='com.freshdirect.framework.webapp.*'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><%@ page import='com.freshdirect.content.attributes.*'
+%><%@ page import="com.freshdirect.fdstore.util.URLGenerator"
+%><%@ page import="com.freshdirect.fdstore.util.NewProductsNavigator"
+%><%@ page import="com.freshdirect.fdstore.*"
+%><%@ page import="com.freshdirect.cms.*"
+%><%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"
+%><%@ page import="com.freshdirect.fdstore.content.*"
+%><%@ page import='com.freshdirect.fdstore.attributes.*'
+%><%@ page import='com.freshdirect.webapp.util.SearchResultUtil'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'
+%><%@ page import="java.util.*"
+%><%@ page import="java.net.URLEncoder"
+%><%@ page import="java.text.DecimalFormat"
+%><%@ page import='com.freshdirect.framework.util.NVL'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -19,48 +27,13 @@
 	request.setAttribute("listPos", "SystemMessage,CategoryNote");
     
 %>
-<tmpl:insert template='/common/template/new_products_nav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>
-<tmpl:put name='banner2' direct='true'>
-<tr>
-<td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
-<td colspan="4" align="center"><a href="/newproducts.jsp"><img src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0"></a></td>
-<td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
-</tr></tmpl:put>
-<%
-// show category panel if found products 
-if (true) {
-%>
-<%-- CATEGORY TREE NAVIGATOR --%>
-<tmpl:put name="categoryPanel" direct="true">
-<%
-	if (true ) {
-%><!-- Category Tree to go here --><%
-	}
-%>
-</tmpl:put>
-<%
-} else {
-	if (FDStoreProperties.isAdServerEnabled()) { %>
-<tmpl:put name="categoryPanel" direct="true">
-<div style="width:155px; margin-top: 1em">
-<script type="text/javascript">
-	OAS_AD('LittleRandy');
-</script>
-</div>
-</tmpl:put>
-<%
-	}
-}
-
-%>
 <%
 	//set some top-level variables to remove them from includes
 	String deptId = NVL.apply(request.getParameter("deptId"), "");
 	String catId = NVL.apply(request.getParameter("catId"), "");
 	String catRefUrl ="";
     String trk="newp";
-
+        
 	//showViewAll is a boolean for showing the view all text/link
 	boolean showViewAll = true;
 
@@ -94,22 +67,58 @@ if (true) {
 	}
 
 %>
-
-<tmpl:put name='content' direct='true'>
 <%
     final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #CCCCCC\">&bull;</span>&nbsp;";
 	boolean noNewProduct = false;
 	boolean noBackStock = false;
     int days = 120;
-    SearchNavigator nav = new SearchNavigator(request);
-    Set brandSet = new HashSet();
+    NewProductsNavigator nav = new NewProductsNavigator(request);
 %>
-<fd:GetNewProducts id="products" days='<%=days%>' department='<%=deptId%>'>
+<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree">
+<tmpl:insert template='/common/template/new_products_nav.jsp'>
+<tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>
+<tmpl:put name='banner2' direct='true'>
+<tr>
+<td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
+<td colspan="4" align="center"><a href="/newproducts.jsp"><img src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0"></a></td>
+<td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
+</tr></tmpl:put>
+<%
+// show category panel if found products 
+if (results != null && results.numberOfResults() > 0) {
+%>
+<%-- CATEGORY TREE NAVIGATOR --%>
+<tmpl:put name="categoryPanel" direct="true">
+<%
+	if ( categoryTree != null ) {
+%><%@ include file="/includes/search/generic_treenav.jspf" %><%
+	}
+%>
+</tmpl:put>
+<%
+} else {
+	if (FDStoreProperties.isAdServerEnabled()) { %>
+<tmpl:put name="categoryPanel" direct="true">
+<div style="width:155px; margin-top: 1em">
+<script type="text/javascript">
+	OAS_AD('LittleRandy');
+</script>
+</div>
+</tmpl:put>
+<%
+	}
+}
+
+%>
+
+
+<tmpl:put name='content' direct='true'>
+
 
 <table width="550" cellpadding="0" cellspacing="0" border="0">
 
 
-<!-- tmpl:put name='header' direct='true' --><%--@ include file="/includes/i_header_new.jspf" --%><!-- /tmpl:put -->
+<tmpl:put name='header' direct='true'><%@ include file="/includes/i_header_new.jspf" %></tmpl:put>
 <% if (showFeatNew) { %>
 	<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
 <% } %>
@@ -134,7 +143,7 @@ if (true) {
 %>
 
 <tr><td>
-<table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px;margin-top: 10px;line-height: 25px;">
+<table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px;margin-top: 10px;line-height:     ;">
 <tr>
 <td style="width: 100%"><%--
 
@@ -144,10 +153,10 @@ if (true) {
   
 --%><span class="text11bold">Sort:</span>
 <%
-	SearchNavigator.SortDisplay[] sbar = nav.getSortBar();
+    NewProductsNavigator.SortDisplay[] sbar = nav.getSortBar();
     
 	for (int i=0; i<sbar.length; i++) {
-		%><a href="#" class="<%= sbar[i].isSelected ? "text11bold" : "text11" %>"><%= sbar[i].text %></a><%
+		%><a href="<%= nav.getChangeSortAction(sbar[i].sortType) %>" class="<%= sbar[i].isSelected ? "text11bold" : "text11" %>"><%= sbar[i].text %></a><%
 		if (i < sbar.length-1) {
 			%><%= SEPARATOR %><%
 		}
@@ -177,30 +186,35 @@ if (true) {
 </table>
 </td></tr>
 <%
+System.out.println("Product size $$$$$$$$$$$ "+products.size());
 if (products.size()!=0){
 %>
 <tr><td>
-<%
-//	if (products.size()>10) { 
+    <%
 		// group by department
 		String deptImageSuffix="_np";
 	%>
-	<%-- <%@ include file="/includes/layouts/newproductlist_layout.jspf" %> --%>
-	<%
-	//} else { %>
-	<%@ include file="/includes/layouts/basic_layout_new.jspf" %>
-	<%
-	//}
-%>
-</td></tr>
 
+	<%@ include file="/includes/layouts/basic_layout_new.jspf" %>
+    
+	<%
+			// Don't show pager for text view!
+			if (!nav.isTextView()) {
+    %>
+    <%@ include file="/includes/search/generic_pager.jspf" %>
+    <%
+	    	} // view != 'text'
+    %>
+</td></tr>
 <%
 } else noNewProduct = true;
 %>
-</fd:GetNewProducts>
+
+
 
 
 </table>
 </tmpl:put>
 
 </tmpl:insert>
+</fd:GetNewProducts>

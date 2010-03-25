@@ -52,8 +52,7 @@
 							bLogo.setWidth(12);
 							bLogo.setHeight(30);
 						 };
-						 
-						String brandLink = response.encodeURL("/category.jsp?catId="+catId+"&brandValue="+brandMod.getContentName()+"&groceryVirtual="+catId+"&trk="+trk);
+						String brandLink = response.encodeURL("/newproducts.jsp?refinement=1&brandValue="+brandMod.getContentName()+"&groceryVirtual="+catId+"&trk="+trk);
 						%>	
 						<td align="center" valign="bottom">
 							<a href="<%= brandLink %>"><img src="<%= bLogo.getPath() %>" width="<%= bLogo.getWidth() %>" height="<%= bLogo.getHeight() %>" alt="<%= brandMod.getFullName() %>" border="0"></a>
@@ -97,7 +96,7 @@
 							BrandModel brandMod=(BrandModel)pList.get(i);
 							if (brandMod==null) continue;
 							 
-							String brandLink = response.encodeURL("/category.jsp?catId="+catId+"&brandValue="+brandMod.getContentName()+"&groceryVirtual="+catId+"&trk="+trk);
+							String brandLink = response.encodeURL("/newproducts.jsp?refinement=1&brandValue="+brandMod.getContentName()+"&groceryVirtual="+catId+"&trk="+trk);
 							%>
 							<td align="center" valign="top">
 								<div><a href="<%= brandLink %>"><strong><%= brandMod.getFullName() %></strong><br />New Products</a></div>
