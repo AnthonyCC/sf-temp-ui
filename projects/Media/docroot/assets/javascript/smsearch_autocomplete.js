@@ -20,7 +20,6 @@ var SafariBehaviorAutoComplete = function(searchField, listContainer, dataSource
         if(!this.suppressInputUpdate) {    
             var elTextbox = this._elTextbox;
             var sDelimChar = (this.delimChar) ? (this.delimChar[0] || this.delimChar) : null;
-            console.log('>'+sDelimChar+'<');
             var sResultMatch = elListItem._sResultMatch;
         
             // Calculate the new value
