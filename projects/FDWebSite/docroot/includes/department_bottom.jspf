@@ -68,7 +68,10 @@ if ("OUR_PICKS, FRO, GRO, DAI, SPE".indexOf(department.getContentName().toUpperC
               <TR VALIGN="TOP">
 <%-- The Left side of the bottom template --%>
                    <TD WIDTH="110" ROWSPAN="2">
-                      <A HREF="<%=bioLink%>"><img src="<%=deptMngrImg.getPath()%>" <%=JspMethods.getImageDimensions(deptMngrImg) %> border="0" alt="<%=department.getFullName()%>: MANAGER"></A><BR><IMG src="/media_stat/images/layout/clear.gif"   WIDTH="110" HEIGHT="1" BORDER="0">
+                      <% if (deptMngrImg != null) { %>
+                      <A HREF="<%=bioLink%>"><img src="<%=deptMngrImg.getPath()%>" <%=JspMethods.getImageDimensions(deptMngrImg) %> border="0" alt="<%=department.getFullName()%>: MANAGER"></A>
+                      <% } %>
+                      <BR><IMG src="/media_stat/images/layout/clear.gif"   WIDTH="110" HEIGHT="1" BORDER="0">
                    </TD>
                    <TD WIDTH="220" ROWSPAN="2"> <%--left side title content --%><BR>
 
