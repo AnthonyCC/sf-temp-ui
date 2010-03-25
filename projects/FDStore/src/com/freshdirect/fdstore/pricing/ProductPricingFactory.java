@@ -27,7 +27,9 @@ public class ProductPricingFactory {
 	}
 
 	public ProductModel getPricingAdapter(ProductModel pm, PricingContext pCtx){
-		if(pm instanceof ProductModelPricingAdapter) {
+		if (pm == null) {
+			return null;
+		} else if(pm instanceof ProductModelPricingAdapter) {
 			return pm;
 		} else {
 			return new ProductModelPricingAdapter(pm, pCtx);
