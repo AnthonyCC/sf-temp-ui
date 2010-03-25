@@ -109,7 +109,7 @@ if (true) {
 <table width="550" cellpadding="0" cellspacing="0" border="0">
 
 
-<tmpl:put name='header' direct='true'><%@ include file="/includes/i_header_new.jspf" %></tmpl:put>
+<!-- tmpl:put name='header' direct='true' --><%--@ include file="/includes/i_header_new.jspf" --%><!-- /tmpl:put -->
 <% if (showFeatNew) { %>
 	<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
 <% } %>
