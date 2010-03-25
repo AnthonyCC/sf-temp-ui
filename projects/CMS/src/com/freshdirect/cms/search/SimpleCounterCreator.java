@@ -16,8 +16,7 @@ import com.freshdirect.cms.search.AutocompleteService.HitCounter;
 public class SimpleCounterCreator implements CounterCreatorI {
 
 	public void createCounters(HashMap<String, HitCounter> counters, String fullname) {
-        fullname = fullname.toLowerCase().replace('&', ' ').replace('"', ' ').replace('.', ' ').replace(':', ' ').replace(',', ' ').replace('-', ' ')
-        .replace('(', ' ').replace(')', ' ').replace(/* NBSP */(char)160, ' ').replace(/* REG TRADEMARK */ (char) 174, ' ');
+        fullname = fullname.toLowerCase();
         accumulate(counters, fullname, 1, null);
     }
 
