@@ -50,6 +50,48 @@
 			headID.appendChild(newCSS);
 		}
 	</script>	
+		<style type="text/css">
+	.eXtremeTable .tableHeader 
+	{
+		background-color: #4C4C4C;
+		color: white;		
+		font-family: <%=TransportationAdminProperties.getCSSPropertyValue("NR","PAGE_HEADER",null)%>;
+		font-size: <%=TransportationAdminProperties.getCSSPropertyValue("NR","PAGE_HEADER","SIZE")%>px;		
+		font-weight: bold;
+		text-align: center;
+		padding-right: 3px;
+		padding-left: 3px;
+		padding-top: 3px;
+		padding-bottom: 3px;
+		margin: 0px;
+		border-right-style: solid;
+		border-right-width: 1px;
+		border-color: white;
+		border: none 2px white;	
+	}
+	.eXtremeTable .odd td, .eXtremeTable .even td, .eXtremeTable .obsoleteRow td , .eXtremeTable .confirmedRow td
+	{
+		padding-top: 2px;
+		padding-right: 3px;
+		padding-bottom: 2px;
+		padding-left: 3px;
+		vertical-align: middle;
+		font-family: <%=TransportationAdminProperties.getCSSPropertyValue("NR","PAGE",null)%>;
+		font-size: <%=TransportationAdminProperties.getCSSPropertyValue("NR","PAGE","SIZE")%>px;		
+		border: none 1px white;
+		font-weight: bold;
+		text-align: center;
+		height:25px;
+	}
+	.tv_header
+	{
+		background-color: green;
+		color: white;
+		font-family: <%=TransportationAdminProperties.getCSSPropertyValue("NR","HEADER",null)%>;
+		font-size: <%=TransportationAdminProperties.getCSSPropertyValue("NR","HEADER","FONT")%>px;		
+		font-weight: bold;
+	}	
+	</style>
 <META HTTP-EQUIV="Refresh" CONTENT="<%=request.getParameter("refreshtime")%>">
 </head>
 <%

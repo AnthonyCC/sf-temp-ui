@@ -20,7 +20,12 @@
 
 
 	
-
+<%
+String modeStr="";
+if("1".equals(request.getParameter("mode"))) modeStr=" - READY";
+else if("2".equals(request.getParameter("mode"))) modeStr=" - WAITING";
+else if("3".equals(request.getParameter("mode"))) modeStr=" - N/R";
+%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -50,14 +55,68 @@
 			headID.appendChild(newCSS);
 		}
 	</script>	
+	<style type="text/css">
+	.eXtremeTable .tableHeader 
+	{
+		background-color: #4C4C4C;
+		color: white;
+		<% if("1".equals(request.getParameter("mode"))){%>
+		font-family: <%=TransportationAdminProperties.getCSSPropertyValue("READY","PAGE_HEADER",null)%>;
+		font-size: <%=TransportationAdminProperties.getCSSPropertyValue("READY","PAGE_HEADER","SIZE")%>px;	
+		<%}%>
+		<% if("2".equals(request.getParameter("mode"))){%>
+		font-family: <%=TransportationAdminProperties.getCSSPropertyValue("WAITING","PAGE_HEADER",null)%>;
+		font-size: <%=TransportationAdminProperties.getCSSPropertyValue("WAITING","PAGE_HEADER","SIZE")%>px;	
+		<%}%>
+		font-weight: bold;
+		text-align: center;
+		padding-right: 3px;
+		padding-left: 3px;
+		padding-top: 3px;
+		padding-bottom: 3px;
+		margin: 0px;
+		border-right-style: solid;
+		border-right-width: 1px;
+		border-color: white;
+		border: none 2px white;	
+	}
+	.eXtremeTable .odd td, .eXtremeTable .even td, .eXtremeTable .obsoleteRow td , .eXtremeTable .confirmedRow td
+	{
+		padding-top: 2px;
+		padding-right: 3px;
+		padding-bottom: 2px;
+		padding-left: 3px;
+		vertical-align: middle;
+		<% if("1".equals(request.getParameter("mode"))){%>
+		font-family: <%=TransportationAdminProperties.getCSSPropertyValue("READY","PAGE",null)%>;
+		font-size: <%=TransportationAdminProperties.getCSSPropertyValue("READY","PAGE","SIZE")%>px;	
+		<%}%>
+		<% if("2".equals(request.getParameter("mode"))){%>
+		font-family: <%=TransportationAdminProperties.getCSSPropertyValue("WAITING","PAGE",null)%>;
+		font-size: <%=TransportationAdminProperties.getCSSPropertyValue("WAITING","PAGE","SIZE")%>px;	
+		<%}%>	
+		border: none 1px white;
+		font-weight: bold;
+		text-align: center;
+		height:25px;
+	}
+	.tv_header
+	{
+		background-color: green;
+		color: white;
+		<% if("1".equals(request.getParameter("mode"))){%>
+		font-family: <%=TransportationAdminProperties.getCSSPropertyValue("READY","HEADER",null)%>;
+		font-size: <%=TransportationAdminProperties.getCSSPropertyValue("READY","HEADER","SIZE")%>px;	
+		<%}%>
+		<% if("2".equals(request.getParameter("mode"))){%>
+		font-family: <%=TransportationAdminProperties.getCSSPropertyValue("WAITING","HEADER",null)%>;
+		font-size: <%=TransportationAdminProperties.getCSSPropertyValue("WAITING","HEADER","SIZE")%>px;	
+		<%}%>	
+		font-weight: bold;
+	}	
+	</style>
 <META HTTP-EQUIV="Refresh" CONTENT="<%=request.getParameter("refreshtime")%>">
 </head>
-<%
-String modeStr="";
-if("1".equals(request.getParameter("mode"))) modeStr=" - READY";
-else if("2".equals(request.getParameter("mode"))) modeStr=" - WAITING";
-else if("3".equals(request.getParameter("mode"))) modeStr=" - N/R";
-%>
  <body marginwidth="0" marginheight="0">	
 	<table width="100%" border=0 height="30">
 		<tr>
