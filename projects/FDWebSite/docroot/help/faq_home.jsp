@@ -34,8 +34,8 @@ if (user2 != null) {
 }
 if(faqPage.equals("what_we_do")){	
 	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("what_we_do"));
-}else if(faqPage.equals("sign_up")){	
-	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("sign_up"));
+}else if(faqPage.equals("signing_up")){	
+	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("signing_up"));
 }else if(faqPage.equals("security")){	
 	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("security"));
 }else if(faqPage.equals("shopping")){	
@@ -66,7 +66,7 @@ if(faqPage.equals("what_we_do")){
 				<fd:IncludeMedia name="/media/editorial/faq/about.ftl" parameters="<%=params%>" withErrorReport="true"/>	
 			<%}
 			
-			else if(faqPage.equals("sign_up")){
+			else if(faqPage.equals("signing_up")){
 				if (user2 != null && user2.isEligibleForSignupPromotion()) {
                     final java.text.DecimalFormat promoFormatter = new java.text.DecimalFormat("$#,##0");
 					params.put("eligibleForSignupPromotion", Boolean.TRUE);

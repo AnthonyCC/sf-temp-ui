@@ -184,7 +184,7 @@ if(request.getParameter("message")!=null){
 					<font class="text11bold">
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=what_we_do">What We Do</a><br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=sign_up">Signing Up</a><br>
+					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=signing_up">Signing Up</a><br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=security">Security &amp; Privacy</a><br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
