@@ -66,6 +66,27 @@
 		showViewAll = false;
 	}
 
+	Image catLabel = null;
+	//check if current cat has a catLabel
+	if (isCat && currentCAT.getCategoryLabel() != null) {
+		catLabel = currentCAT.getCategoryLabel();
+	}else{
+		//get a ref to the new products cat and get it's catLabel
+		ContentNodeModel currentFolder_FALLBACK = ContentFactory.getInstance().getContentNode(FDStoreProperties.getNewProductsCatId());
+		CategoryModel currentCAT_FALLBACK = null;
+		if (currentFolder_FALLBACK instanceof CategoryModel) {
+			currentCAT_FALLBACK = (CategoryModel)currentFolder_FALLBACK;
+			catLabel = currentCAT_FALLBACK.getCategoryLabel();
+		}
+	}
+	/*
+	 *	verify we're not null
+	 *		if we are, it would mean the fallback also has no catLabel
+	 *		or, the fallback property isn't an existing category id
+	 */
+	if (catLabel==null) {
+		catLabel = new Image("/media_stat/images/clear.gif", 1, 1);
+	}
 %>
 <%
     final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #CCCCCC\">&bull;</span>&nbsp;";
@@ -84,18 +105,13 @@
 <td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
 </tr></tmpl:put>
 
-
-
-<tmpl:put name='content' direct='true'>
-
-
-<table width="550" cellpadding="0" cellspacing="0" border="0">
-
-
 <tmpl:put name='header' direct='true'><%@ include file="/includes/i_header_new.jspf" %></tmpl:put>
 <% if (showFeatNew) { %>
 	<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
 <% } %>
+
+<tmpl:put name='content' direct='true'>
+<table width="550" cellpadding="0" cellspacing="0" border="0">
 
 <%
 	/*
