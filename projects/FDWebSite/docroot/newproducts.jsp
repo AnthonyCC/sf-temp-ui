@@ -25,7 +25,6 @@
 	FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );
 	//--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", "www.freshdirect.com/newproducts.jsp");
-	/*request.setAttribute("sitePage", "www.freshdirect.com/newproducts_dfgs.jsp");*/
 	request.setAttribute("listPos", "SystemMessage,CategoryNote");
     
 %>
@@ -34,19 +33,7 @@
 	String deptId = NVL.apply(request.getParameter("deptId"), "");
 	String catId = NVL.apply(request.getParameter("catId"), "");
 	String catRefUrl ="";
-    String trk="newp";
-
-	//useSmallBurst determines is we should show the large or small(er) new burst in the header
-	boolean useSmallBurst = true;
-        
-	//showViewAll is a boolean for showing the view all text/link
-	boolean showViewAll = true;
-
-	//the view all URL
-	String viewAllURL = "/newproducts.jsp";
-
-	//showFeatNew is a boolean for showing the featured new include
-	boolean showFeatNew = false;
+	String trk="newp";
 
 	if ("".equals(deptId)) {
 		deptId = null; //no deptId, fallback by using null
@@ -65,6 +52,15 @@
 		
 		catRefUrl = response.encodeURL("/category.jsp?catId="+currentCAT.getContentKey().getId()+"&trk="+trk);
 	}
+
+	//useSmallBurst determines is we should show the large or small(er) new burst in the header
+	boolean useSmallBurst = true;
+
+	//showViewAll is a boolean for showing the view all text/link
+	boolean showViewAll = true;
+
+	//the view all URL
+	String viewAllURL = "/newproducts.jsp";
 	
 	if ((FDStoreProperties.getNewProductsCatId()).equals(catId)) {
 		//we're on the newproducts.jsp, or no catId was passed
@@ -93,6 +89,9 @@
 	if (catLabel==null) {
 		catLabel = new Image("/media_stat/images/clear.gif", 1, 1);
 	}
+
+	//showFeatNew is a boolean for showing the featured new include
+	boolean showFeatNew = true;
 
 	final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #ccc\">&bull;</span>&nbsp;";
 	boolean noNewProduct = false;
@@ -142,26 +141,6 @@ if (results != null && results.numberOfResults() > 0) {
 <tmpl:put name='content' direct='true'>
 
 <table width="550" cellpadding="0" cellspacing="0" border="0">
-
-
-	<%
-		/*
-			I don't think we need any of these 
-				-Bryan 2010.03.24_05.52.49.PM
-
-			<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
-
-			<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
-
-			<tr><td>
-				 <SCRIPT LANGUAGE="JavaScript">
-					<!--
-					OAS_AD('CategoryNote');
-					//-->
-				</SCRIPT>
-			</td></tr>
-		*/
-	%>
 
 	<tr><td>
 		<table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px; margin-left: 15px; margin-top: 15px;">

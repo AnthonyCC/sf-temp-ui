@@ -16,6 +16,7 @@
 %><%@ page import="java.net.URLEncoder"
 %><%@ page import="java.text.DecimalFormat"
 %><%@ page import='com.freshdirect.framework.util.NVL'%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -23,7 +24,7 @@
 <%
 	FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );
 	//--------OAS Page Variables-----------------------
-	request.setAttribute("sitePage", "www.freshdirect.com/newproducts.jsp");
+	request.setAttribute("sitePage", "www.freshdirect.com/newproducts_dfgs.jsp");
 	request.setAttribute("listPos", "SystemMessage,CategoryNote");
     request.setAttribute("notreenav", "true");
 %>
@@ -32,22 +33,13 @@
 	String deptId = NVL.apply(request.getParameter("deptId"), "");
 	String catId = NVL.apply(request.getParameter("catId"), "");
 	String catRefUrl ="";
-    String trk="newp";
-        
-	//showViewAll is a boolean for showing the view all text/link
-	boolean showViewAll = true;
-
-	//the view all URL
-	String viewAllURL = "http://www.freshdirect.com/newproducts.jsp";
-
-	//showFeatNew is a boolean for showing the featured new include
-	boolean showFeatNew = true;
+	String trk="newp";
 
 	if ("".equals(deptId)) {
 		deptId = null; //no deptId, fallback by using null
 	}
 	if ("".equals(catId)) {
-		catId = "newproduct_cat"; //no catId, fallback
+		catId = FDStoreProperties.getNewProductsCatId(); //no catId, fallback
 	}
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
 	
@@ -60,10 +52,21 @@
 		
 		catRefUrl = response.encodeURL("/category.jsp?catId="+currentCAT.getContentKey().getId()+"&trk="+trk);
 	}
+
+	//useSmallBurst determines is we should show the large or small(er) new burst in the header
+	boolean useSmallBurst = true;
+
+	//showViewAll is a boolean for showing the view all text/link
+	boolean showViewAll = true;
+
+	//the view all URL
+	String viewAllURL = "/newproducts.jsp";
+
 	
-	if ("newproduct_cat".equals(catId)) {
+	if ((FDStoreProperties.getNewProductsCatId()).equals(catId)) {
 		//we're on the newproducts.jsp, or no catId was passed
 		showViewAll = false;
+		useSmallBurst = true;
 	}
 
 	Image catLabel = null;
@@ -87,8 +90,9 @@
 	if (catLabel==null) {
 		catLabel = new Image("/media_stat/images/clear.gif", 1, 1);
 	}
-%>
-<%
+	//showFeatNew is a boolean for showing the featured new include
+	boolean showFeatNew = true;
+
     final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #CCCCCC\">&bull;</span>&nbsp;";
 	boolean noNewProduct = false;
 	boolean noBackStock = false;
@@ -104,7 +108,6 @@
 <td colspan="4" align="center"><a href="/newproducts.jsp"><img src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0"></a></td>
 <td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
 </tr></tmpl:put>
-
 <tmpl:put name='header' direct='true'><%@ include file="/includes/i_header_new.jspf" %></tmpl:put>
 <% if (showFeatNew) { %>
 	<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
@@ -112,25 +115,6 @@
 
 <tmpl:put name='content' direct='true'>
 <table width="550" cellpadding="0" cellspacing="0" border="0">
-
-<%
-	/*
-		I don't think we need any of these 
-			-Bryan 2010.03.24_05.52.49.PM
-
-		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
-
-		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
-
-		<tr><td>
-			 <SCRIPT LANGUAGE="JavaScript">
-				<!--
-				OAS_AD('CategoryNote');
-				//-->
-			</SCRIPT>
-		</td></tr>
-	*/
-%>
 
 <tr><td>
 <table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px;margin-top: 10px;line-height:     ;">
