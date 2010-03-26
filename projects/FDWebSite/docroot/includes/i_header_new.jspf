@@ -1,31 +1,26 @@
 <%
-		//verify that we have a cat
-		if (isCat) {
-			Image catLabel = currentCAT.getCategoryLabelNotNull();
-			int countNumb = products.size(); //products is the list from the GetNewProducts tag
-			
-			//assemble what we should say
-			String countText = "<strong>"+countNumb+" product";
-			countText += (countNumb > 1) ? "s" : "";
-			countText += "</strong>";
-			countText += " just added";
-			countText += (showViewAll) ? ", <a href=\""+viewAllURL+"\">view all</a>" : "!";
-		%>
-			<table style="margin: 0px 15px; padding-bottom: 3px;">
-				<tr>
-					<td rowspan="2" width="1%"><img src="/media_stat/images/bursts/brst_lg_new.gif" width="62" height="61" alt="New" /></td>
-					<td>
-						<div style="padding-bottom: 3px; border-bottom: 4px solid #360;">
-							<table width="100%">
-								<tr>
-									<td width="1%" valign="bottom"><img src="<%=catLabel.getPath()%>" height="<%=catLabel.getHeight()%>" width="<%=catLabel.getWidth()%>" border="0" alt="<%=currentCAT.getFullName()%>" /></td>
-									<td align="right" valign="bottom" style="font-size: 18px; font-weight: normal;"><%=countText%></td>
-								</tr>
-							</table>
-						</div>
-					</td>
-				</tr>
-			</table>
-		<%
-		}
+	/*Image catLabel = currentCAT.getCategoryLabelNotNull();*/
+	int countNumb = results.getProductsSize(); //products is the list from the GetNewProducts tag
+	
+	//assemble what we should say
+	String countText = "<strong>"+countNumb+" product";
+	countText += (countNumb != 1) ? "s" : "";
+	countText += "</strong>";
+	countText += " just added";
+	countText += (showViewAll) ? ", <a href=\""+viewAllURL+"\">view all</a>" : "!";
 %>
+<table style="margin: 0px 15px; padding-bottom: 3px;">
+	<tr>
+		<td rowspan="2" width="1%"><img src="/media_stat/images/bursts/brst_lg_new.gif" width="62" height="61" alt="New" /></td>
+		<td>
+			<div style="padding-bottom: 3px; border-bottom: 4px solid #360;">
+				<table width="100%">
+					<tr>
+						<td width="1%" valign="bottom"><img src="<%=catLabel.getPath()%>" height="<%=catLabel.getHeight()%>" width="<%=catLabel.getWidth()%>" border="0" alt="<%=(currentCAT != null) ? currentCAT.getFullName() : "" %>" /></td>
+						<td align="right" valign="bottom" style="font-size: 18px; font-weight: normal;"><%=countText%></td>
+					</tr>
+				</table>
+			</div>
+		</td>
+	</tr>
+</table>

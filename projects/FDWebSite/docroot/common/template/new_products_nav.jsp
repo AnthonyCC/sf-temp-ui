@@ -65,36 +65,21 @@ if (FDStoreProperties.isCclAjaxDebugClient()) {
 </TR>
 <TR VALIGN="TOP">
 	<TD WIDTH="1" BGCOLOR="#999966"><img src="/media_stat/images/layout/999966.gif" width="1" height="1" border="0" alt=""></td>
-	<TD WIDTH="170" COLSPAN="2">		
-		<tmpl:get name='categoryPanel'/>		
+	<TD WIDTH="170" COLSPAN="2">
+		<tmpl:get name='categoryPanel'/>
 		<br />
 		<img src="/media_stat/images/layout/clear.gif" height="1" width="170" alt="">
 	</TD>
-	<TD colspan="3">
-    <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
-    <TR><TD width="568" valign="top">
+	<TD colspan="2">
 		<!-- Featured lands here -->
 		<tmpl:get name='featured'/>
 		<!-- Featured ends above here-->
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="568" HEIGHT="1" BORDER="0" alt="">
-	</TD>
-	<TD WIDTH="5" VALIGN="BOTTOM"><img src="/media_stat/images/layout/clear.gif" height="1" width="5" alt=""></TD>
-	<TD BGCOLOR="#999966" VALIGN="BOTTOM" WIDTH="1"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1" alt=""></TD>
-    </TR>
-    <TR><TD width="568" valign="top">
-	<div style="width: 529px;padding-left: 15px;">		
 		<!-- content lands here -->
 		<tmpl:get name='content'/>
-		<!-- content ends above here-->		
-	</div>
-	<br /><br />
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="568" HEIGHT="1" BORDER="0" alt=""><br />	
-	<br /><br /></TD>
-	<TD WIDTH="5" VALIGN="BOTTOM"><img src="/media_stat/images/layout/clear.gif" height="1" width="5" alt=""></TD>
+		<!-- content ends above here-->
+	</TD>
 	<TD BGCOLOR="#999966" VALIGN="BOTTOM" WIDTH="1"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1" alt=""></TD>
-    </TR>
-    </TABLE></TD>
- </TR>   
+</TR>   
 <TR>
 	<TD BGCOLOR="#999966" VALIGN="BOTTOM" WIDTH="1"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1" alt=""></TD>
 	<TD WIDTH="5" VALIGN="BOTTOM"><img src="/media_stat/images/layout/clear.gif" height="1" width="5" alt=""></TD>

@@ -16,6 +16,7 @@
 %><%@ page import="java.net.URLEncoder"
 %><%@ page import="java.text.DecimalFormat"
 %><%@ page import='com.freshdirect.framework.util.NVL'%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -23,7 +24,8 @@
 <%
 	FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );
 	//--------OAS Page Variables-----------------------
-	request.setAttribute("sitePage", "www.freshdirect.com/newproducts_dfgs.jsp");
+	request.setAttribute("sitePage", "www.freshdirect.com/newproducts.jsp");
+	/*request.setAttribute("sitePage", "www.freshdirect.com/newproducts_dfgs.jsp");*/
 	request.setAttribute("listPos", "SystemMessage,CategoryNote");
     
 %>
@@ -38,16 +40,16 @@
 	boolean showViewAll = true;
 
 	//the view all URL
-	String viewAllURL = "http://www.freshdirect.com/newproducts.jsp";
+	String viewAllURL = "/newproducts.jsp";
 
 	//showFeatNew is a boolean for showing the featured new include
-	boolean showFeatNew = true;
+	boolean showFeatNew = false;
 
 	if ("".equals(deptId)) {
 		deptId = null; //no deptId, fallback by using null
 	}
 	if ("".equals(catId)) {
-		catId = "newproduct_cat"; //no catId, fallback
+		catId = FDStoreProperties.getNewProductsCatId(); //no catId, fallback
 	}
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
 	
@@ -61,18 +63,38 @@
 		catRefUrl = response.encodeURL("/category.jsp?catId="+currentCAT.getContentKey().getId()+"&trk="+trk);
 	}
 	
-	if ("newproduct_cat".equals(catId)) {
+	if ((FDStoreProperties.getNewProductsCatId()).equals(catId)) {
 		//we're on the newproducts.jsp, or no catId was passed
 		showViewAll = false;
 	}
 
-%>
-<%
-    final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #CCCCCC\">&bull;</span>&nbsp;";
+	Image catLabel = null;
+	//check if current cat has a catLabel
+	if (isCat && currentCAT.getCategoryLabel() != null) {
+		catLabel = currentCAT.getCategoryLabel();
+	}else{
+		//get a ref to the new products cat and get it's catLabel
+		ContentNodeModel currentFolder_FALLBACK = ContentFactory.getInstance().getContentNode(FDStoreProperties.getNewProductsCatId());
+		CategoryModel currentCAT_FALLBACK = null;
+		if (currentFolder_FALLBACK instanceof CategoryModel) {
+			currentCAT_FALLBACK = (CategoryModel)currentFolder_FALLBACK;
+			catLabel = currentCAT_FALLBACK.getCategoryLabel();
+		}
+	}
+	/*
+	 *	verify we're not null
+	 *		if we are, it would mean the fallback also has no catLabel
+	 *		or, the fallback property isn't an existing category id
+	 */
+	if (catLabel==null) {
+		catLabel = new Image("/media_stat/images/clear.gif", 1, 1);
+	}
+
+	final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #ccc\">&bull;</span>&nbsp;";
 	boolean noNewProduct = false;
 	boolean noBackStock = false;
-    int days = 120;
-    NewProductsNavigator nav = new NewProductsNavigator(request);
+	int days = 120;
+	NewProductsNavigator nav = new NewProductsNavigator(request);
 %>
 <fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree">
 <tmpl:insert template='/common/template/new_products_nav.jsp'>
@@ -98,120 +120,112 @@ if (results != null && results.numberOfResults() > 0) {
 <%
 } else {
 	if (FDStoreProperties.isAdServerEnabled()) { %>
-<tmpl:put name="categoryPanel" direct="true">
-<div style="width:155px; margin-top: 1em">
-<script type="text/javascript">
-	OAS_AD('LittleRandy');
-</script>
-</div>
-</tmpl:put>
+		<tmpl:put name="categoryPanel" direct="true">
+		<div style="width:155px; margin-top: 1em">
+		<script type="text/javascript">
+			OAS_AD('LittleRandy');
+		</script>
+		</div>
+		</tmpl:put>
 <%
 	}
 }
-
 %>
-
-
-<tmpl:put name='content' direct='true'>
-
-
-<table width="550" cellpadding="0" cellspacing="0" border="0">
-
-
 <tmpl:put name='header' direct='true'><%@ include file="/includes/i_header_new.jspf" %></tmpl:put>
 <% if (showFeatNew) { %>
 	<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
 <% } %>
+<tmpl:put name='content' direct='true'>
 
-<%
-	/*
-		I don't think we need any of these 
-			-Bryan 2010.03.24_05.52.49.PM
+<table width="550" cellpadding="0" cellspacing="0" border="0">
 
-		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
 
-		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
+	<%
+		/*
+			I don't think we need any of these 
+				-Bryan 2010.03.24_05.52.49.PM
 
-		<tr><td>
-			 <SCRIPT LANGUAGE="JavaScript">
-				<!--
-				OAS_AD('CategoryNote');
-				//-->
-			</SCRIPT>
-		</td></tr>
-	*/
-%>
+			<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
 
-<tr><td>
-<table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px;margin-top: 10px;line-height:     ;">
-<tr>
-<td style="width: 100%"><%--
+			<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
 
-  ************
-  * Sort Bar *
-  ************
-  
---%><span class="text11bold">Sort:</span>
-<%
-    NewProductsNavigator.SortDisplay[] sbar = nav.getSortBar();
-    
-	for (int i=0; i<sbar.length; i++) {
-		%><a href="<%= nav.getChangeSortAction(sbar[i].sortType) %>" class="<%= sbar[i].isSelected ? "text11bold" : "text11" %>"><%= sbar[i].text %></a><%
-		if (i < sbar.length-1) {
-			%><%= SEPARATOR %><%
-		}
-	}
-%>
-</td>
-<td>
-	<form name="form_brand_filter" id="form_brand_filter" method="GET" style="margin: 0;">
-<% nav.appendToBrandForm(out); %>
-		<select name="brandValue" class="text9" style="width: 140px;" onchange="document.getElementById('form_brand_filter').submit()">
-			<option value=""><%= nav.getBrand() == null ? "Filter by brand" : "SHOW ALL PRODUCTS"%></option>
-<% 		if (brandSet != null) {
-			for (Iterator iter = brandSet.iterator(); iter.hasNext();) {
-				BrandModel cm = (BrandModel) iter.next();  
-%>			<option value="<%= cm.getContentKey().getId() %>" <%
-				if (cm.getContentKey().getId().equals(nav.getBrand())) {%>
-					selected="true"
-			<%	}
-		%>><%= cm.getFullName() %></option>
-<%			} // for (brandSet...)
-		} // if brandSet
-%>
-	   </select>
-	</form>
-</td>
-</tr>
-</table>
-</td></tr>
+			<tr><td>
+				 <SCRIPT LANGUAGE="JavaScript">
+					<!--
+					OAS_AD('CategoryNote');
+					//-->
+				</SCRIPT>
+			</td></tr>
+		*/
+	%>
+
+	<tr><td>
+		<table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px; margin-left: 15px; margin-top: 15px;">
+			<tr>
+				<td style="width: 100%">	<%--
+
+				  ************
+				  * Sort Bar *
+				  ************
+				  
+				--%><span class="text11bold">Sort:</span>
+				<%
+					NewProductsNavigator.SortDisplay[] sbar = nav.getSortBar();
+					
+					for (int i=0; i<sbar.length; i++) {
+						%><a href="<%= nav.getChangeSortAction(sbar[i].sortType) %>" class="<%= sbar[i].isSelected ? "text11bold" : "text11" %>"><%= sbar[i].text %></a><%
+						if (i < sbar.length-1) {
+							%><%= SEPARATOR %><%
+						}
+					}
+				%>
+				</td>
+				<td>
+					<form name="form_brand_filter" id="form_brand_filter" method="GET" style="margin: 0;">
+				<% nav.appendToBrandForm(out); %>
+						<select name="brandValue" class="text9" style="width: 140px;" onchange="document.getElementById('form_brand_filter').submit()">
+							<option value=""><%= nav.getBrand() == null ? "Filter by brand" : "SHOW ALL PRODUCTS"%></option>
+				<% 		if (brandSet != null) {
+							for (Iterator iter = brandSet.iterator(); iter.hasNext();) {
+								BrandModel cm = (BrandModel) iter.next();  
+				%>			<option value="<%= cm.getContentKey().getId() %>" <%
+								if (cm.getContentKey().getId().equals(nav.getBrand())) {%>
+									selected="true"
+							<%	}
+						%>><%= cm.getFullName() %></option>
+				<%			} // for (brandSet...)
+						} // if brandSet
+				%>
+					   </select>
+					</form>
+				</td>
+			</tr>
+		</table>
+	</td></tr>
 <%
 System.out.println("Product size $$$$$$$$$$$ "+products.size());
 if (products.size()!=0){
 %>
-<tr><td>
-    <%
-		// group by department
-		String deptImageSuffix="_np";
-	%>
+	<tr><td>
+		<%
+			// group by department
+			String deptImageSuffix="_np";
+		%>
 
-	<%@ include file="/includes/layouts/basic_layout_new.jspf" %>
-    
-	<%
-			// Don't show pager for text view!
-			if (!nav.isTextView()) {
-    %>
-    <%@ include file="/includes/search/generic_pager.jspf" %>
-    <%
-	    	} // view != 'text'
-    %>
-</td></tr>
+		<%@ include file="/includes/layouts/basic_layout_new.jspf" %>
+		
+		<%
+				// Don't show pager for text view!
+				if (!nav.isTextView()) {
+		%>
+		<%@ include file="/includes/search/generic_pager.jspf" %>
+		<%
+				} // view != 'text'
+		%>
+	</td></tr>
 <%
 } else noNewProduct = true;
 %>
-
-
-
 
 </table>
 </tmpl:put>
