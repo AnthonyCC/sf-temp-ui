@@ -156,7 +156,7 @@ String pagingLinks = "";
 <%
 try {
 %>
-    <fd:GetNewProducts id='products' days='<%=days%>' department='<%=deptId%>'>
+<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree">
 <%
 //List products = new ArrayList();
 for(Iterator availItr = products.iterator();availItr.hasNext();) {
