@@ -399,6 +399,11 @@ public class FDStoreProperties {
 	private final static String PROP_ZONE_PRICING_AD_ENABLED = "fdstore.zone.pricing.ad.enabled";
 	private final static String PROP_ZONE_PRICING_ENABLED = "fdstore.zone.pricing.enabled";
 	
+	//new products revamp
+	private static final String PROP_NEWPRODUCTS_DEPTID="fdstore.newProducts.DeptId";
+	private static final String PROP_NEWPRODUCTS_CATID="fdstore.newProducts.CatId";
+	
+	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -695,6 +700,10 @@ public class FDStoreProperties {
 		
 		//Window Steering
 		defaults.put(WINDOW_STEERING_PROMOTION_PREFIX,"WS_");
+		
+		//new products revamp
+		defaults.put(PROP_NEWPRODUCTS_DEPTID, "newproduct");
+		defaults.put(PROP_NEWPRODUCTS_CATID, "newproduct_cat");
 		
 		refresh();
 	}
@@ -1616,5 +1625,15 @@ public class FDStoreProperties {
 	 */
 	public static boolean useOscache() {
 		return !( isAnnotationMode() || getPreviewMode() );		
+	}
+	
+	//new products revamp
+
+	public static String getNewProductsDeptId() {
+		return get(PROP_NEWPRODUCTS_DEPTID);
+	}
+
+	public static String getNewProductsCatId() {
+		return get(PROP_NEWPRODUCTS_CATID);
 	}
 }
