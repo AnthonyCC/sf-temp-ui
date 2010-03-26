@@ -691,7 +691,7 @@ public class Cart {
         //cartDetail.setTax(cart.getTaxValue());
 
         if (cart.getDepositValue() > 0) {
-            cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getDepositValue(), false, false, false, "Bottle Deposit & Fee"));
+            cartDetail.addSummaryLineCharge(new SummaryLineCharge(cart.getDepositValue(), false, false, false, "Bottle Deposit"));
             //cartDetail.setDepositValue(cart.getDepositValue());
         }
 
