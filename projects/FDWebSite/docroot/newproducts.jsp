@@ -35,6 +35,9 @@
 	String catId = NVL.apply(request.getParameter("catId"), "");
 	String catRefUrl ="";
     String trk="newp";
+
+	//useSmallBurst determines is we should show the large or small(er) new burst in the header
+	boolean useSmallBurst = true;
         
 	//showViewAll is a boolean for showing the view all text/link
 	boolean showViewAll = true;
@@ -66,6 +69,7 @@
 	if ((FDStoreProperties.getNewProductsCatId()).equals(catId)) {
 		//we're on the newproducts.jsp, or no catId was passed
 		showViewAll = false;
+		useSmallBurst = false;
 	}
 
 	Image catLabel = null;
@@ -213,14 +217,16 @@ if (products.size()!=0){
 		%>
 
 		<%@ include file="/includes/layouts/basic_layout_new.jspf" %>
-		
+
+		<div style="width: 529px; margin-left: 15px; border-top: 4px solid #ff9933"></div>
+
 		<%
-				// Don't show pager for text view!
-				if (!nav.isTextView()) {
+			// Don't show pager for text view!
+			if (!nav.isTextView()) {
 		%>
-		<%@ include file="/includes/search/generic_pager.jspf" %>
+				<%@ include file="/includes/search/generic_pager.jspf" %>
 		<%
-				} // view != 'text'
+			} // view != 'text'
 		%>
 	</td></tr>
 <%

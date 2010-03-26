@@ -8,10 +8,14 @@
 	countText += "</strong>";
 	countText += " just added";
 	countText += (showViewAll) ? ", <a href=\""+viewAllURL+"\">view all</a>" : "!";
+	
+	Image headerBurst = null;
+	headerBurst = (useSmallBurst) ? new Image("/media_stat/images/bursts/hdr_new_burst_sm.gif", 52, 52) : new Image("/media_stat/images/bursts/hdr_new_burst_lg.gif", 63, 61);
+
 %>
 <table style="margin: 0px 15px; padding-bottom: 3px;">
 	<tr>
-		<td rowspan="2" width="1%"><img src="/media_stat/images/bursts/brst_lg_new.gif" width="62" height="61" alt="New" /></td>
+		<td rowspan="2" width="1%"><img src="<%=headerBurst.getPath()%>" height="<%=headerBurst.getHeight()%>" width="<%=headerBurst.getWidth()%>" border="0" alt="New" /></td>
 		<td>
 			<div style="padding-bottom: 3px; border-bottom: 4px solid #360;">
 				<table width="100%">

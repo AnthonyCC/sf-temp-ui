@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="/assets/css/ccl.css" type="text/css">
 
     <script type="text/javascript" src="/assets/javascript/common_javascript.js"></script>
+
 <%
 final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");
@@ -36,7 +37,7 @@ if (FDStoreProperties.isCclAjaxDebugClient()) {
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10">
 <CENTER>
-<%@ include file="/common/template/includes/globalnav.jspf" %> 
+<%@ include file="/common/template/includes/globalnav.jspf" %>
 <TABLE WIDTH="745" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR>
 	<TD VALIGN="BOTTOM" WIDTH="1"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" alt=""></TD>
