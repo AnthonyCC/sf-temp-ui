@@ -103,117 +103,124 @@
 <tmpl:insert template='/common/template/new_products_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>
 <tmpl:put name='banner2' direct='true'>
-<tr>
-<td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
-<td colspan="4" align="center"><a href="/newproducts.jsp"><img src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0"></a></td>
-<td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
-</tr></tmpl:put>
-<%
-// show category panel if found products 
-if (results != null && results.numberOfResults() > 0) {
-%>
-<%-- CATEGORY TREE NAVIGATOR --%>
-<tmpl:put name="categoryPanel" direct="true">
-<%
-	if ( categoryTree != null ) {
-%><%@ include file="/includes/search/generic_treenav.jspf" %><%
-	}
-%>
+	<tr>
+		<td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
+		<td colspan="4" align="center"><a href="/newproducts.jsp"><img src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0"></a></td>
+		<td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
+	</tr>
 </tmpl:put>
+<tmpl:put name="colLeftWidth" direct="true">165</tmpl:put>
+<tmpl:put name="colRightWidth" direct="true">568</tmpl:put>
 <%
-} else {
-	if (FDStoreProperties.isAdServerEnabled()) { %>
-		<tmpl:put name="categoryPanel" direct="true">
-		<div style="width:155px; margin-top: 1em">
-		<script type="text/javascript">
-			OAS_AD('LittleRandy');
-		</script>
-		</div>
-		</tmpl:put>
-<%
-	}
-}
+	// show category panel if found products 
+		if (results != null && results.numberOfResults() > 0) {
+			%><%-- CATEGORY TREE NAVIGATOR --%>
+			<tmpl:put name="categoryPanel" direct="true">
+				<!-- categoryPanel lands here -->
+				<%
+					if ( categoryTree != null ) {
+				%>		<TD WIDTH="170" COLSPAN="2">
+							<%@ include file="/includes/search/generic_treenav.jspf" %>
+							<br />
+							<img src="/media_stat/images/layout/clear.gif" height="1" width="170" alt="">
+						</TD><%
+					}
+				%>
+			</tmpl:put><%
+		} else {
+			if (FDStoreProperties.isAdServerEnabled()) { %>
+				<tmpl:put name="categoryPanel" direct="true">
+					<div style="width:155px; margin-top: 1em">
+					<script type="text/javascript">
+						OAS_AD('LittleRandy');
+					</script>
+					</div>
+				</tmpl:put>
+		<%
+			}
+		}
 %>
-<tmpl:put name='header' direct='true'><%@ include file="/includes/i_header_new.jspf" %></tmpl:put>
+<tmpl:put name='rightNav' direct='true'> </tmpl:put><% //Make sure to leave a space inside empty tmpl:put tags %>
+<tmpl:put name='header_1' direct='true'><td width="743" colspan="4"><%@ include file="/includes/i_header_new.jspf" %></td></tmpl:put>
+<tmpl:put name='header_seperator' direct='true'> </tmpl:put><% //Make sure to leave a space inside empty tmpl:put tags %>
+<tmpl:put name='header_2' direct='true'> </tmpl:put><% //Make sure to leave a space inside empty tmpl:put tags %>
+
 <% if (showFeatNew) { %>
 	<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
 <% } %>
 <tmpl:put name='content' direct='true'>
+	<table width="550" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td>
+				<table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px; margin-left: 15px; margin-top: 15px;">
+					<tr>
+						<td style="width: 100%">	<%--
 
-<table width="550" cellpadding="0" cellspacing="0" border="0">
-
-	<tr><td>
-		<table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px; margin-left: 15px; margin-top: 15px;">
-			<tr>
-				<td style="width: 100%">	<%--
-
-				  ************
-				  * Sort Bar *
-				  ************
-				  
-				--%><span class="text11bold">Sort:</span>
+						  ************
+						  * Sort Bar *
+						  ************
+						  
+						--%><span class="text11bold">Sort:</span>
+						<%
+							NewProductsNavigator.SortDisplay[] sbar = nav.getSortBar();
+							
+							for (int i=0; i<sbar.length; i++) {
+								%><a href="<%= nav.getChangeSortAction(sbar[i].sortType) %>" class="<%= sbar[i].isSelected ? "text11bold" : "text11" %>"><%= sbar[i].text %></a><%
+								if (i < sbar.length-1) {
+									%><%= SEPARATOR %><%
+								}
+							}
+						%>
+						</td>
+						<td>
+							<form name="form_brand_filter" id="form_brand_filter" method="GET" style="margin: 0;">
+						<% nav.appendToBrandForm(out); %>
+								<select name="brandValue" class="text9" style="width: 140px;" onchange="document.getElementById('form_brand_filter').submit()">
+									<option value=""><%= nav.getBrand() == null ? "Filter by brand" : "SHOW ALL PRODUCTS"%></option>
+						<% 		if (brandSet != null) {
+									for (Iterator iter = brandSet.iterator(); iter.hasNext();) {
+										BrandModel cm = (BrandModel) iter.next();  
+						%>			<option value="<%= cm.getContentKey().getId() %>" <%
+										if (cm.getContentKey().getId().equals(nav.getBrand())) {%>
+											selected="true"
+									<%	}
+								%>><%= cm.getFullName() %></option>
+						<%			} // for (brandSet...)
+								} // if brandSet
+						%>
+							   </select>
+							</form>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<%
+		//System.out.println("Product size $$$$$$$$$$$ "+products.size());
+		if (products.size()!=0){
+		%>
+		<tr>
+			<td>
 				<%
-					NewProductsNavigator.SortDisplay[] sbar = nav.getSortBar();
-					
-					for (int i=0; i<sbar.length; i++) {
-						%><a href="<%= nav.getChangeSortAction(sbar[i].sortType) %>" class="<%= sbar[i].isSelected ? "text11bold" : "text11" %>"><%= sbar[i].text %></a><%
-						if (i < sbar.length-1) {
-							%><%= SEPARATOR %><%
-						}
-					}
+					// group by department
+					String deptImageSuffix="_np";
 				%>
-				</td>
-				<td>
-					<form name="form_brand_filter" id="form_brand_filter" method="GET" style="margin: 0;">
-				<% nav.appendToBrandForm(out); %>
-						<select name="brandValue" class="text9" style="width: 140px;" onchange="document.getElementById('form_brand_filter').submit()">
-							<option value=""><%= nav.getBrand() == null ? "Filter by brand" : "SHOW ALL PRODUCTS"%></option>
-				<% 		if (brandSet != null) {
-							for (Iterator iter = brandSet.iterator(); iter.hasNext();) {
-								BrandModel cm = (BrandModel) iter.next();  
-				%>			<option value="<%= cm.getContentKey().getId() %>" <%
-								if (cm.getContentKey().getId().equals(nav.getBrand())) {%>
-									selected="true"
-							<%	}
-						%>><%= cm.getFullName() %></option>
-				<%			} // for (brandSet...)
-						} // if brandSet
+				<%@ include file="/includes/layouts/basic_layout_new.jspf" %>
+				<div style="width: 529px; margin-left: 15px; border-top: 4px solid #ff9933"></div>
+				<%
+					// Don't show pager for text view!
+					if (!nav.isTextView()) {
 				%>
-					   </select>
-					</form>
-				</td>
-			</tr>
-		</table>
-	</td></tr>
-<%
-System.out.println("Product size $$$$$$$$$$$ "+products.size());
-if (products.size()!=0){
-%>
-	<tr><td>
+						<%@ include file="/includes/search/generic_pager.jspf" %>
+				<%
+					} // view != 'text'
+				%>
+			</td>
+		</tr>
 		<%
-			// group by department
-			String deptImageSuffix="_np";
+		} else noNewProduct = true;
 		%>
-
-		<%@ include file="/includes/layouts/basic_layout_new.jspf" %>
-
-		<div style="width: 529px; margin-left: 15px; border-top: 4px solid #ff9933"></div>
-
-		<%
-			// Don't show pager for text view!
-			if (!nav.isTextView()) {
-		%>
-				<%@ include file="/includes/search/generic_pager.jspf" %>
-		<%
-			} // view != 'text'
-		%>
-	</td></tr>
-<%
-} else noNewProduct = true;
-%>
-
-</table>
+	</table>
 </tmpl:put>
-
 </tmpl:insert>
 </fd:GetNewProducts>
