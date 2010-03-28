@@ -28,11 +28,13 @@
 	request.setAttribute("listPos", "SystemMessage,CategoryNote");
     
 %>
+<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree">
 <%
 	//set some top-level variables to remove them from includes
 	String deptId = NVL.apply(request.getParameter("deptId"), "");
 	String catId = NVL.apply(request.getParameter("catId"), "");
 	String catRefUrl ="";
+	String deptRefUrl ="";
 	String trk="newp";
 
 	if ("".equals(deptId)) {
@@ -93,10 +95,56 @@
 	//showFeatNew is a boolean for showing the featured new include
 	boolean showFeatNew = true;
 
-	//do logic to hide feats
+	/*
+	 *	do logic to hide feats.
+	 *	hiding feats also means showing filtered header, generate that here
+	 */
 	String brandValue = NVL.apply(request.getParameter("brandValue"), "");
+	String filteredHeader = "";
 	if (!"".equals(brandValue) || deptId!=null || !(FDStoreProperties.getNewProductsCatId()).equals(catId)) {
 		showFeatNew = false;
+
+		ContentNodeModel currentItem = null;
+
+		//determine what data we're getting
+		if (!"".equals(brandValue)) {
+			currentItem = ContentFactory.getInstance().getContentNode(brandValue);
+		} else if (!"".equals(deptId) && deptId!=null) {
+			currentItem = ContentFactory.getInstance().getContentNode(deptId);
+			deptRefUrl = response.encodeURL("/department.jsp?deptId="+currentItem.getContentKey().getId()+"&trk="+trk);
+		} else if (!"".equals(catId) && !(FDStoreProperties.getNewProductsCatId()).equals(catId)) {
+			currentItem = ContentFactory.getInstance().getContentNode(catId);
+		}
+		//if we have a type, setup html
+		if (currentItem != null) {
+			filteredHeader = "<strong>"+results.getProductsSize()+" new product";
+			filteredHeader += ((results.getProductsSize() != 1) ? "s" : "");
+			filteredHeader += "</strong>";
+
+			if (currentItem instanceof BrandModel) {
+				currentItem = (BrandModel)currentItem;
+				BrandModel brandMod=(BrandModel)currentItem;
+
+				Image bLogo = brandMod.getLogoLarge();
+				if (bLogo==null) {
+					bLogo = new Image();
+					bLogo.setPath("/media_stat/images/layout/clear.gif");
+					bLogo.setWidth(12);
+					bLogo.setHeight(30);
+				};
+				String brandLink = response.encodeURL("/newproducts.jsp?refinement=1&brandValue="+currentItem.getContentName()+"&groceryVirtual="+catId+"&trk="+trk);
+			
+				filteredHeader = "<a href=\""+brandLink+"\"><img src=\""+bLogo.getPath()+"\" width=\""+bLogo.getWidth()+"\" height=\""+bLogo.getHeight()+"\" alt=\""+currentItem.getFullName()+"\" border=\"0\"></a> "+filteredHeader;
+
+				filteredHeader += " from <a href=\""+brandLink+"\">"+currentItem.getFullName()+"</a>";
+			} else if (currentItem instanceof DepartmentModel ) {
+				currentItem = (DepartmentModel)currentItem;
+				filteredHeader += " in <a href=\""+deptRefUrl+"\">"+currentItem.getFullName()+"</a>";
+			} else if (currentItem instanceof CategoryModel) {
+				currentItem = (CategoryModel)currentItem;
+				filteredHeader += " in <a href=\""+catRefUrl+"\">"+currentItem.getFullName()+"</a>";
+			}
+		}
 	}
 
 	final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #ccc\">&bull;</span>&nbsp;";
@@ -105,7 +153,6 @@
 	int days = 120;
 	NewProductsNavigator nav = new NewProductsNavigator(request);
 %>
-<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree">
 <tmpl:insert template='/common/template/new_products_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>
 <tmpl:put name='banner2' direct='true'>
@@ -125,7 +172,7 @@
 				<!-- categoryPanel lands here -->
 				<%
 					if ( categoryTree != null ) {
-				%>		<TD WIDTH="170" COLSPAN="2">
+				%>		<TD width="170" colspan="2">
 							<%@ include file="/includes/search/generic_treenav.jspf" %>
 							<br />
 							<img src="/media_stat/images/layout/clear.gif" height="1" width="170" alt="">
@@ -155,10 +202,13 @@
 	<tmpl:put name='featured' direct='true'><%@ include file="/includes/i_featured_new.jspf" %></tmpl:put>
 <% } %>
 <tmpl:put name='content' direct='true'>
-	<table width="550" cellpadding="0" cellspacing="0" border="0">
+	<table width="550" cellpadding="0" cellspacing="0" border="0" style="margin-left: 15px; margin-top: 10px;">
+		<% if (!"".equals(filteredHeader)) { %>
+			<tr><td style="font-size: 18px; font-weight: normal; padding-bottom: 10px;"><%=filteredHeader%></td></tr>
+		<% } %>
 		<tr>
 			<td>
-				<table cellpadding="0" cellspacing="0" style="border: 0; background-color: #E0E3D0; padding:2px; margin-left: 15px; margin-top: 10px;">
+				<table cellpadding="0" cellspacing="0" style="border: 0; background-color: #E0E3D0; padding:2px;">
 					<tr>
 						<td style="width: 100%">	<%--
 
