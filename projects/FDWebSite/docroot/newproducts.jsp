@@ -93,6 +93,12 @@
 	//showFeatNew is a boolean for showing the featured new include
 	boolean showFeatNew = true;
 
+	//do logic to hide feats
+	String brandValue = NVL.apply(request.getParameter("brandValue"), "");
+	if (!"".equals(brandValue) || deptId!=null || !(FDStoreProperties.getNewProductsCatId()).equals(catId)) {
+		showFeatNew = false;
+	}
+
 	final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #ccc\">&bull;</span>&nbsp;";
 	boolean noNewProduct = false;
 	boolean noBackStock = false;
@@ -105,7 +111,7 @@
 <tmpl:put name='banner2' direct='true'>
 	<tr>
 		<td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
-		<td colspan="4" align="center"><a href="/newproducts.jsp"><img src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0"></a></td>
+		<td colspan="4" align="center"><br /><br /><a href="/newproducts.jsp"><img src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0"></a></td>
 		<td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
 	</tr>
 </tmpl:put>
@@ -152,7 +158,7 @@
 	<table width="550" cellpadding="0" cellspacing="0" border="0">
 		<tr>
 			<td>
-				<table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px; margin-left: 15px; margin-top: 15px;">
+				<table cellpadding="0" cellspacing="0" style="border: 0; background-color: #E0E3D0; padding:2px; margin-left: 15px; margin-top: 10px;">
 					<tr>
 						<td style="width: 100%">	<%--
 
