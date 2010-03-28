@@ -63,7 +63,7 @@
 
 	//the view all URL
 	String viewAllURL = "/newproducts.jsp";
-	
+
 	if ((FDStoreProperties.getNewProductsCatId()).equals(catId)) {
 		//we're on the newproducts.jsp, or no catId was passed
 		showViewAll = false;
@@ -125,7 +125,7 @@
 				currentItem = (BrandModel)currentItem;
 				BrandModel brandMod=(BrandModel)currentItem;
 
-				Image bLogo = brandMod.getLogoLarge();
+				Image bLogo = brandMod.getLogoSmall();
 				if (bLogo==null) {
 					bLogo = new Image();
 					bLogo.setPath("/media_stat/images/layout/clear.gif");
@@ -157,9 +157,9 @@
 <tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>
 <tmpl:put name='banner2' direct='true'>
 	<tr>
-		<td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
-		<td colspan="4" align="center"><br /><br /><a href="/newproducts.jsp"><img src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0"></a></td>
-		<td bgcolor="#999966" width="1"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
+		<td bgcolor="#999966" width="1"><img src="/media_stat/images/layout/999966.gif" width="1" height="1" /></td>
+		<td colspan="4" align="center"><br /><br /><a href="/newproducts.jsp"><img src="/media_stat/images/template/newproduct/newprod_findhere.gif" width="660" height="41" border="0" /></a></td>
+		<td bgcolor="#999966" width="1"><img src="/media_stat/images/layout/999966.gif" width="1" height="1" /></td>
 	</tr>
 </tmpl:put>
 <tmpl:put name="colLeftWidth" direct="true">165</tmpl:put>
@@ -210,7 +210,7 @@
 			<td>
 				<table cellpadding="0" cellspacing="0" style="border: 0; background-color: #E0E3D0; padding:2px;">
 					<tr>
-						<td style="width: 100%">	<%--
+						<td style="width: 100%"><%--
 
 						  ************
 						  * Sort Bar *
