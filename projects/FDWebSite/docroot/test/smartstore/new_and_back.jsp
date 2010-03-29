@@ -25,6 +25,7 @@ String formatDay(Date now, Date then) {
 <%@page import="com.freshdirect.fdstore.content.SkuModel"%>
 <%@page import="com.freshdirect.cms.ContentKey"%>
 <%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@page import="java.util.Collections"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -217,6 +218,7 @@ if (request.getParameter("reload") != null) {
 	<h2><%= skuCode %> History</h2>
 	<%
 		List<SkuAvailabilityHistory> history = FDCachedFactory.getSkuAvailabilityHistory(skuCode);
+		Collections.reverse(history);
 		if (history.size() > 0) {
 	 %>
 	<table class="data">
