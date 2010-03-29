@@ -269,7 +269,7 @@ public class DispatchCommand extends WebPlanInfo {
 			}
 		}
 		
-		return punchInfo;
+		return null;
 		
 	}
 
