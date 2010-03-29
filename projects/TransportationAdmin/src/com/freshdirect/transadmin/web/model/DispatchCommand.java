@@ -258,6 +258,21 @@ public class DispatchCommand extends WebPlanInfo {
 			dispatchTimeLong=startTime.getTime();
 		} catch (Exception e) {	}
 		
+		if(punchedEmployees.size()==2)
+		{
+			PunchInfoI tempInfo1=(PunchInfoI)punchedEmployees.get(0);
+			PunchInfoI tempInfo2=(PunchInfoI)punchedEmployees.get(1);
+			long tempStartTime1=tempInfo1.getStartTime().getTime()-dispatchTimeLong;
+			long tempStartTime2=tempInfo2.getStartTime().getTime()-dispatchTimeLong;
+			if(tempStartTime1<0&&tempStartTime2<0)
+			{
+				tempStartTime1*=-1;
+				tempStartTime2*=-1;
+			}			
+			if(tempStartTime1>tempStartTime2)return tempInfo2;
+			else return tempInfo1;
+		}
+		
 		for(int i=0,n=punchedEmployees.size();i<n;i++)
 		{
 			PunchInfoI tempInfo=(PunchInfoI)punchedEmployees.get(i);
