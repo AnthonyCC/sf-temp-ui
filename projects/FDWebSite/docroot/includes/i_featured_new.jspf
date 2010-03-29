@@ -49,9 +49,9 @@
 							Image bLogo = brandMod.getLogoLarge();
 							if (bLogo==null) {
 								bLogo = new Image();
-								bLogo.setPath("/media_stat/images/layout/clear.gif");
-								bLogo.setWidth(12);
-								bLogo.setHeight(30);
+								bLogo.setPath("/media/images/temp/soon_80x80.gif");
+								bLogo.setWidth(80);
+								bLogo.setHeight(80);
 							 };
 							int adjustedImgWidth = bLogo.getWidth()+6+10;
 							String brandLink = response.encodeURL("/newproducts.jsp?refinement=1&brandValue="+brandMod.getContentName()+"&groceryVirtual="+catId+"&trk="+trk);

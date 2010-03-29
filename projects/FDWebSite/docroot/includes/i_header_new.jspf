@@ -1,13 +1,12 @@
 <%
 	/*Image catLabel = currentCAT.getCategoryLabelNotNull();*/
-	int countNumb = results.getProductsSize(); //products is the list from the GetNewProducts tag
+	int countNumb = results.getProducts().size(); //products is the list from the GetNewProducts tag
 	
 	//assemble what we should say
 	String countText = "<strong>"+countNumb+" product";
 	countText += (countNumb != 1) ? "s" : "";
 	countText += "</strong>";
-	countText += " just added";
-	countText += (showViewAll) ? ", <a href=\""+viewAllURL+"\">view all</a>" : "!";
+	countText += " just added!";
 	
 	Image headerBurst = null;
 	headerBurst = (useSmallBurst) ? new Image("/media_stat/images/bursts/hdr_new_burst_sm.gif", 52, 52) : new Image("/media_stat/images/bursts/hdr_new_burst_lg.gif", 63, 61);

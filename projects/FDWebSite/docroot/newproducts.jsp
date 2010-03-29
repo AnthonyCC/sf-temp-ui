@@ -36,6 +36,7 @@
 	String catRefUrl ="";
 	String deptRefUrl ="";
 	String trk="newp";
+	boolean isBrand = false;
 
 	if ("".equals(deptId)) {
 		deptId = null; //no deptId, fallback by using null
@@ -59,10 +60,7 @@
 	boolean useSmallBurst = true;
 
 	//showViewAll is a boolean for showing the view all text/link
-	boolean showViewAll = true;
-
-	//the view all URL
-	String viewAllURL = "/newproducts.jsp";
+	boolean showViewAll = false;
 
 	if ((FDStoreProperties.getNewProductsCatId()).equals(catId)) {
 		//we're on the newproducts.jsp, or no catId was passed
@@ -103,11 +101,13 @@
 	String filteredHeader = "";
 	if (!"".equals(brandValue) || deptId!=null || !(FDStoreProperties.getNewProductsCatId()).equals(catId)) {
 		showFeatNew = false;
+		useSmallBurst = true;
 
 		ContentNodeModel currentItem = null;
 
 		//determine what data we're getting
 		if (!"".equals(brandValue)) {
+			isBrand = true;
 			currentItem = ContentFactory.getInstance().getContentNode(brandValue);
 		} else if (!"".equals(deptId) && deptId!=null) {
 			currentItem = ContentFactory.getInstance().getContentNode(deptId);
@@ -124,19 +124,20 @@
 			if (currentItem instanceof BrandModel) {
 				currentItem = (BrandModel)currentItem;
 				BrandModel brandMod=(BrandModel)currentItem;
+				String brandLink = response.encodeURL("/search.jsp?searchParams="+currentItem.getFullName());
 
 				Image bLogo = brandMod.getLogoSmall();
 				if (bLogo==null) {
 					bLogo = new Image();
 					bLogo.setPath("/media_stat/images/layout/clear.gif");
-					bLogo.setWidth(12);
-					bLogo.setHeight(30);
-				};
-				String brandLink = response.encodeURL("/newproducts.jsp?refinement=1&brandValue="+currentItem.getContentName()+"&groceryVirtual="+catId+"&trk="+trk);
+					bLogo.setWidth(1);
+					bLogo.setHeight(1);
+				}else{
+					filteredHeader = "<a href=\""+brandLink+"\"><img src=\""+bLogo.getPath()+"\" width=\""+bLogo.getWidth()+"\" height=\""+bLogo.getHeight()+"\" alt=\""+currentItem.getFullName()+"\" border=\"0\"></a> "+filteredHeader;
+				}
 			
-				filteredHeader = "<a href=\""+brandLink+"\"><img src=\""+bLogo.getPath()+"\" width=\""+bLogo.getWidth()+"\" height=\""+bLogo.getHeight()+"\" alt=\""+currentItem.getFullName()+"\" border=\"0\"></a> "+filteredHeader;
-
-				filteredHeader += " from <a href=\""+brandLink+"\">"+currentItem.getFullName()+"</a>";
+				filteredHeader += " from <strong>"+currentItem.getFullName()+"</strong> (<strong><a href=\""+brandLink+"\">View All</a></strong>)";
+				filteredHeader += "<hr size=\"1\" style=\"color: #ccc;\">";
 			} else if (currentItem instanceof DepartmentModel ) {
 				currentItem = (DepartmentModel)currentItem;
 				filteredHeader += " in <a href=\""+deptRefUrl+"\">"+currentItem.getFullName()+"</a>";
@@ -203,7 +204,7 @@
 <% } %>
 <tmpl:put name='content' direct='true'>
 	<table width="550" cellpadding="0" cellspacing="0" border="0" style="margin-left: 15px; margin-top: 10px;">
-		<% if (!"".equals(filteredHeader)) { %>
+		<% if (!"".equals(filteredHeader) && !isBrand) { %>
 			<tr><td style="font-size: 18px; font-weight: normal; padding-bottom: 10px;"><%=filteredHeader%></td></tr>
 		<% } %>
 		<tr>
@@ -251,6 +252,9 @@
 				</table>
 			</td>
 		</tr>
+		<% if (!"".equals(filteredHeader) && isBrand) { %>
+			<tr><td style="font-size: 18px; font-weight: normal; padding: 10px 0;" valign="middle"><%=filteredHeader%></td></tr>
+		<% } %>
 		<%
 		//System.out.println("Product size $$$$$$$$$$$ "+products.size());
 		if (products.size()!=0){

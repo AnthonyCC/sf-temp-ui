@@ -530,6 +530,7 @@ public abstract class AbstractNavigator {
 	 */
 	public String getLink() {
 		StringBuffer buf = new StringBuffer();
+		String amp = "";
 		
 		// URL prefix - the search page
 //		buf.append( (this.searchAction != null ? this.searchAction : "/search.jsp") + "?");
@@ -543,46 +544,65 @@ public abstract class AbstractNavigator {
 
 		if (view != VIEW_DEFAULT) {
 			buf.append("view=" + getViewName());
+			amp = "&amp;";
 		}
 		
 		
 		if ( !(view == VIEW_TEXT || (view == VIEW_LIST && pageSize == 30) || (view == VIEW_GRID && pageSize == 40)) ) {
-			buf.append("&amp;pageSize=");
+			buf.append(amp);
+			buf.append("pageSize=");
 			buf.append(pageSize);
+			amp = "&amp;";
 		}
 		if ( pageSize > 0 && pageNumber > 0) {
-			buf.append("&amp;start=");
+			buf.append(amp);
+			buf.append("start=");
 			buf.append(pageSize*pageNumber);
+			amp = "&amp;";
 		}
 
 
 		if (deptFilter != null) {
-			buf.append("&amp;deptId=");
+			buf.append(amp);
+			buf.append("deptId=");
 			buf.append(deptFilter);
+			amp = "&amp;";
 		} else if (categoryFilter != null) {
-			buf.append("&amp;catId=");
+			buf.append(amp);
+			buf.append("catId=");
 			buf.append(categoryFilter);
+			amp = "&amp;";
 		}
 		if (brandFilter != null) {
-			buf.append("&amp;brandValue=");
+			buf.append(amp);
+			buf.append("brandValue=");
 			buf.append(brandFilter);
+			amp = "&amp;";
 		}
 
 		if (RECIPES_DEPT.equalsIgnoreCase(deptFilter) && recipeFilter != null) {
-			buf.append("&amp;classification=");
+			buf.append(amp);
+			buf.append("classification=");
 			buf.append(recipeFilter);
+			amp = "&amp;";
 		}
 
 		// no sort options in recipes view, ignore them
 		if ( !isDefaultSort() ) {
-			buf.append("&amp;sort=" + sortBy.getLabel());
+			buf.append(amp);
+			buf.append("sort=" + sortBy.getLabel());
+			amp = "&amp;";
 		}
 
 		if ( !isOrderAscending ) {
-			buf.append("&amp;order=desc");
+			buf.append(amp);
+			buf.append("order=desc");
+			amp = "&amp;";
 		}
 
-		buf.append("&amp;refinement=1");
+		buf.append(amp);
+		buf.append("refinement=1");
+		amp = "&amp;";
 
 		return buf.toString();
 	}

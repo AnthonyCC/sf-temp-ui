@@ -67,7 +67,7 @@ if (FDStoreProperties.isCclAjaxDebugClient()) {
 		<!-- header_1 ends above here-->
 		<td width="1" bgcolor="#999966"><img src="/media_stat/images/layout/999966.gif" width="1" height="34" alt=""></td>
 	</tr>
-	<tmpl:get name='header_1_seperator'/>
+	<tmpl:get name='header_seperator'/>
 	<tr valign="top">
 		<td width="1" bgcolor="#999966"><img src="/media_stat/images/layout/999966.gif" width="1" height="1" border="0" alt=""></td>
 		<tmpl:get name='categoryPanel'/>
