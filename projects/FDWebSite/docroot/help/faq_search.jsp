@@ -25,7 +25,7 @@
 		</td>
 		<td>
 		<input type="text" class="search" value="" maxlength="100" style="width: 100px;" name="searchFAQ2" />
-		<input type="image" name="searchFAQButton" style="border: 0pt none ; padding: 3px; width: 35px; height: 14px;" src="/media_stat/images/navigation/global_nav/nav_button_find.gif"/>
+		<input type="image" name="searchFAQButton" style="border: 0pt none ; padding: 3px; width: 35px; height: 14px;" src="/media_stat/images/template/search/search_find_button.gif"/>
 		</td>
 		</tr>
 		<tr><td colspan="2">&nbsp;</td></tr>

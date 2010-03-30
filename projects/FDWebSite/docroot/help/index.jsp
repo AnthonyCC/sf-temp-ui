@@ -7,6 +7,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='java.text.*' %>
 <%@ page import="java.util.*" %>
 <%@ page import="com.freshdirect.cms.ContentNodeI" %>
@@ -30,7 +31,7 @@ function submitForm(){
             cm = FDCustomerFactory.getErpCustomerInfo(identity);
 	}
 
-    
+        String faqSections = FDStoreProperties.getFaqSections();
 %>		
 
 <%
@@ -118,7 +119,6 @@ if(request.getParameter("message")!=null){
 	<tr VALIGN="TOP">
 	    <TD CLASS="text11" colspan="5">
 		<span class="title16">Welcome to Help</span><br>
-		Find answers to questions here or <a href="contact_fd.jsp">contact us</a>.
 	    </td>	    
         </TR>
 		<tr>
@@ -142,7 +142,7 @@ if(request.getParameter("message")!=null){
 			     
 	<tr>
 	<TD valign="top" width="225">
-					<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/quick_links.gif" width="75" height="19" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
+					<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_quick_links.gif" width="80" height="12" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
 					Find answers to our most frequently asked questions.<br>
 					<br>
 					<font class="text11bold">
@@ -151,8 +151,6 @@ if(request.getParameter("message")!=null){
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/your_account/order_history.jsp">Change or cancel your order</a><br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/search.jsp">Find a product</a><br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/contact_fd.jsp">Ask us a question</a><br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/your_account/signin_information.jsp">Change your password</a><br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
@@ -165,51 +163,68 @@ if(request.getParameter("message")!=null){
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=deliveryDepot">Depot Delivery</a><br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
 		<%}%>-->
-					
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=inside">Jobs &amp; Corporate Info</a>
 					</font><p/><br/>
-					<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/faq_home_hdr.gif" width="51" height="19" border="0" alt="FAQs"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
-					Find answers to our most frequently asked questions.<br>
-					<br>
+					<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_faqs.gif" width="48" height="13" border="0" alt="FAQs"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
+					Find answers to our most frequently asked questions.
+					
 					<% List savedList=(List)pageContext.getAttribute("savedFaqs"); %>
 					<% if(null !=savedList && savedList.size()>0){ %>
-					<p/><br/><b>Top Questions this Week:</b><br/>
+					<p/><b>Top Questions this Week:</b><br/>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
+					<%  if(null != faqSections){
+				  StringTokenizer st = new StringTokenizer(faqSections,",");
+				  while (st.hasMoreTokens()) { String nextToken=st.nextToken().trim();%>
 					
 					<logic:iterate id="topfaq" indexId="idx" collection="<%= savedList %>" type="com.freshdirect.fdstore.content.Faq">
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=<%= (String)topfaq.getParentNode().getContentKey().getId()%>"><%= topfaq.getQuestion() %></a><br>			
-					</logic:iterate>										
+					<% if(nextToken.equalsIgnoreCase((String)topfaq.getParentNode().getContentKey().getId())){ %>
+					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=<%= (String)topfaq.getParentNode().getContentKey().getId()%>#<%= (String)topfaq.getContentKey().getId()%>"><%= topfaq.getQuestion() %></a><br>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
+					<%} %>			
+					</logic:iterate>
+					<% } } %>										
 					<% } %>										
-					<p/><br/><b>Learn More</b><br/>
+					<p/><b>Learn More</b><br/>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
 					<font class="text11bold">
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=what_we_do">What We Do</a><br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=signing_up">Signing Up</a><br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=security">Security &amp; Privacy</a><br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=shopping">Shopping</a><br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=payment">Payment</a><br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=deliveryHome">Home Delivery</a><br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=cos">Corporate Delivery</a><br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=chefstable">Chef's Table</a><br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
+				<% 
+				  if(null != faqSections){
+				  StringTokenizer st = new StringTokenizer(faqSections,",");
+				  while (st.hasMoreTokens()) {
+				  ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(st.nextToken().trim());
+				  if(null !=contentNode){%>
+				  <img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=<%= contentNode.getContentKey().getId()%> "><%= contentNode.getCmsAttributeValue("name") %></a><br>
+				  <img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br> 
+				  <% }}
+				}%>
+						
+<!--					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=what_we_do">What We Do</a><br>-->
+<!--					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>-->
+<!--					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=signing_up">Signing Up</a><br>-->
+<!--					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>-->
+<!--					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=security">Security &amp; Privacy</a><br>-->
+<!--					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>-->
+<!--					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=shopping">Shopping</a><br>-->
+<!--					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>-->
+<!--					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=payment">Payment</a><br>-->
+<!--					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>-->
+<!--					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=deliveryHome">Home Delivery</a><br>-->
+<!--					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>-->
+<!--					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=cos">Corporate Delivery</a><br>-->
+<!--					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>-->
+<!--					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=chefstable">Chef's Table</a><br>-->
+<!--					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>-->
 		
 		<!--<%	if(user.isDepotUser()){%>	
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=deliveryDepot">Depot Delivery</a><br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
 		<%}%>-->
 					
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=inside">Jobs &amp; Corporate Info</a>
+<!--					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=inside">Jobs &amp; Corporate Info</a>-->
 					</font>
 					
 					<p/><br/><b>Search our FAQs</b><br/>
 					<input type="text" class="search" value="" maxlength="100" style="width: 100px;" name="searchFAQ" />
-					<input type="image" name="searchFAQButton" style="border: 0pt none ; padding: 3px; width: 35px; height: 14px;" src="/media_stat/images/navigation/global_nav/nav_button_find.gif" onclick="submitForm()"/>
+					<input type="image" name="searchFAQButton" style="border: 0pt none ; padding: 3px; width: 35px; height: 14px;" src="/media_stat/images/template/search/search_find_button.gif" onclick="submitForm()"/>
 					
 	    </td>
 	    
@@ -218,7 +233,7 @@ if(request.getParameter("message")!=null){
 	    </td>	    
 		
 		<TD valign="top" width="370" colspan="3">
-		            <a href='contact_fd.jsp'><img src="/media_stat/images/template/help/contact_us.gif" border="0" width="137" height="19" alt="CONTACT US"></a>
+		            <a href='index.jsp'><img src="/media_stat/images/template/help/hdr_contact_us.gif" border="0" width="150" height="12" alt="CONTACT US"></a>
 					<br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
 	            	    FreshDirect Customer Service is standing by to answer your questions, seven days a week.  <b>The best way to get help is through email.</b> Please select an order number and include as much specific information as possible to ensure a prompt response to your inquiry.<br>
 	            	    <br>
@@ -353,7 +368,12 @@ if(request.getParameter("message")!=null){
 			</tr>
 		</table>
                         <%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" /><%--END MEDIA INCLUDE --%>
-                        </br>You may also call <%=user.isChefsTable()?"toll-free":"us"%> at <%=user.getCustomerServiceContact()%>.<br>
+                        <% if(user.isChefsTable()){ %>
+                        <br/>You may also call toll-free at <fd:IncludeMedia name="/media/editorial/site_pages/chef_contact_serivce_number.html" /><br><%--END MEDIA INCLUDE --%>
+                        <% } else { %>
+                        <br/>You may also call us at <%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/site_pages/contact_serivce_number.html" /><br><%--END MEDIA INCLUDE --%>
+                        <% } %>
+                       <%-- </br>You may also call <%=user.isChefsTable()?"toll-free":"us"%> at <%=user.getCustomerServiceContact()%>.<br> --%>
 	            	    <br>
 	            	    <%--For more information on our <b>Corporate and Commercial Services</b>, <a href="mailto:service@freshdirect.com">click here</a>--%>
 	    </td>

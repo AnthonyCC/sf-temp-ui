@@ -32,25 +32,18 @@ if (user2 != null) {
     params.put("minimumOrderAmount", new Integer(0) );
     params.put("isUserCheckEligible", Boolean.FALSE );
 }
-if(faqPage.equals("what_we_do")){	
-	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("what_we_do"));
-}else if(faqPage.equals("signing_up")){	
-	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("signing_up"));
-}else if(faqPage.equals("security")){	
-	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("security"));
-}else if(faqPage.equals("shopping")){	
-	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("shopping"));
-}else if(faqPage.equals("chefstable")){	
-	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("chef_table"));
-}else if(faqPage.equals("payment")){	
-	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("payment"));
-}else if(faqPage.equals("deliveryHome")){	
-	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("deliveryHome"));
-}else if(faqPage.equals("inside")){	
-	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("inside"));
-}else if(faqPage.equals("cos")){	
-	params.put("faqNodes", FDFaqUtil.getFaqsByCategory("cos"));
-}
+String faqSections = FDStoreProperties.getFaqSections();
+	params.put("faqNodes", FDFaqUtil.getFaqsByCategory(faqPage));
+	
+	
+	if(null != faqSections){
+		  StringTokenizer st = new StringTokenizer(faqSections,",");
+		  while (st.hasMoreTokens()) {
+			String nextToken=st.nextToken().trim();
+			params.put(nextToken, FDFaqUtil.getFaqsByCategory(nextToken));
+		  }
+	}
+
 %><tmpl:insert template='/common/template/faq_help.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Help - FAQs</tmpl:put>
 	<tmpl:put name='leftnav' direct='true'>

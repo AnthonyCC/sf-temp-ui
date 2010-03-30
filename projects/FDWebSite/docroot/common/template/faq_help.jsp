@@ -1,6 +1,7 @@
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -11,7 +12,9 @@ faqPage = request.getParameter("page");
 }
 %>
 
-<%FDUserI faqUser = (FDUserI)session.getAttribute(SessionName.USER);%>
+<%FDUserI faqUser = (FDUserI)session.getAttribute(SessionName.USER);
+String faqSections = FDStoreProperties.getFaqSections();
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -55,49 +58,20 @@ faqPage = request.getParameter("page");
 				<A HREF="faq_home.jsp?page=faqHome" TARGET="_top"><img src="/media_stat/images/template/help/faq_catnav.gif" width="91" height="58" alt="" border="0"></A><BR>
 				<font class="space4pix"><br></font>
 				
-				<%if(faqPage.equals("what_we_do")){%><b>What We Do</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=what_we_do" TARGET="_top">What We Do</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}%>	
-			
-				<%if(faqPage.equals("sign_up")){%><b>Signing Up</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=sign_up" TARGET="_top">Signing Up</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}%>	
-			
-				<% if(faqPage.equals("security")){%><b>Security &amp; Privacy</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=security" TARGET="_top">Security &amp; Privacy</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}%>	
+				<%  if(null != faqSections){
+				  StringTokenizer st = new StringTokenizer(faqSections,",");
+				  while (st.hasMoreTokens()) {
+					String nextToken=st.nextToken().trim();
+					ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(nextToken);
+					if(null !=contentNode){	
+				  	if(nextToken.equals(faqPage)){
+								
+				%><b><%= contentNode.getCmsAttributeValue("name") %></b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
+				<%}else{%><A HREF="faq_home.jsp?page=<%= contentNode.getContentKey().getId() %>" TARGET="_top"><%= contentNode.getCmsAttributeValue("name") %></A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
+				<%}}%>	
+				<% }} %>
 				
-				<%if(faqPage.equals("shopping")){%><b>Shopping</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=shopping" TARGET="_top">Shopping</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}%>
 				
-				<%if(faqPage.equals("payment")){%><b>Payment</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=payment" TARGET="_top">Payment</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}%>	
-               
-                <%if(faqPage.equals("deliveryHome")){%><b>Home Delivery</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=deliveryHome" TARGET="_top">Home Delivery</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}%>	
-				
-				<!-- APPDEV-335 ChefsTable FAQ moved to CMS --> 
-				<%if(faqPage.equals("cos")){%><b>Corporate Delivery</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=cos" TARGET="_top">Corporate Delivery</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}%>
-
-				<!--<%if(faqUser.isDepotUser()){%>	
-								<%if(faqPage.equals("deliveryDepot")){%><b>Depot Delivery</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-								<%}else{%><A HREF="faq_home.jsp?page=deliveryDepot" TARGET="_top">Depot Delivery</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-								<%}%>	
-				<%}%>-->
-				
-				<!-- APPDEV-335 ChefsTable FAQ moved to CMS --> 
-				<%if(faqPage.equals("chefstable")){%><b>Chef's Table</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=chefstable" TARGET="_top">Chef's Table</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}%>	
-				
-				<%if(faqPage.equals("inside")){%><b>Jobs &amp; Corporate Info</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}else{%><A HREF="faq_home.jsp?page=inside" TARGET="_top">Jobs &amp; Corporate Info</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br>
-				<%}%>	
 			</TD>
 			<TD WIDTH="4"><BR></TD>
 		</TR>

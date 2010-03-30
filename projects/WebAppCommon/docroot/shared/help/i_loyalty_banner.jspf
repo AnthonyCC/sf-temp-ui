@@ -20,7 +20,7 @@
 		} else {
 			%>
 			Contact us at <a href="mailto:<%= FDStoreProperties.getChefsTableEmail() %>"><b><%= FDStoreProperties.getChefsTableEmail() %></b></a>
-			or toll-free: <b><%= user.getCustomerServiceContact() %></b>
+			or toll-free: <fd:IncludeMedia name="/media/editorial/site_pages/chef_contact_serivce_number.html" />
 			<%
 		}
 		%>
