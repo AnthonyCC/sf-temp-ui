@@ -402,7 +402,7 @@
 					</spring:bind> 
 					<tr>
 						<td>Drivers</td>
-						<td> 
+						<td width="600px"> 
 							<div class="fleft">
 								<c:forEach items="${dispatchForm.drivers}" var="driver" varStatus="gridRow">
 									<div class="dipatch_AddEdit_row">
