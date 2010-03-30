@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -20,6 +21,7 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 
@@ -66,8 +68,36 @@ public class CrmTopFaqControllerTag extends AbstractControllerTag {
 	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		
 			
-				CmsManager          manager     = CmsManager.getInstance();				
-				ContentKey key = new ContentKey(FDContentTypes.FDFOLDER, "FAQ");
+				CmsManager          manager     = CmsManager.getInstance();	
+				
+				String faqSections = FDStoreProperties.getFaqSections();
+				StringTokenizer st = new StringTokenizer(faqSections,",");
+				List faqSubFolders = new ArrayList();
+				Map subNodesMap = new LinkedHashMap();
+				while(st.hasMoreTokens()){
+					String nextToken=st.nextToken().trim();
+					ContentKey contentKey = new ContentKey(FDContentTypes.FDFOLDER,nextToken);
+					ContentNodeI contentNode = manager.getContentNode(contentKey);
+					if(null !=contentNode){
+						Set subNodes = contentNode.getChildKeys();	
+						List faqList = new ArrayList();
+						for (Object object : subNodes) {
+							ContentKey subContentKey= (ContentKey)object;
+							if(null!=subContentKey){
+								ContentType contentType=subContentKey.getType(); 
+								ContentNodeI subContentNode = manager.getContentNode(subContentKey);
+								if(FDContentTypes.FAQ.equals(contentType)){
+										faqList.add(subContentNode);																			
+								}						
+							}					
+						}
+						subNodesMap.put(contentNode, faqList);
+					}
+					
+				}
+				faqSubFolders.add(subNodesMap);
+				
+				/*ContentKey key = new ContentKey(FDContentTypes.FDFOLDER, "FAQ");
 				ContentNodeI contentNode = manager.getContentNode(key);
 				List faqSubFolders = null;
 				if(null != contentNode){
@@ -100,7 +130,7 @@ public class CrmTopFaqControllerTag extends AbstractControllerTag {
 					}
 					faqSubFolders.add(subNodesMap);
 					
-				}				
+				}	*/			
 				pageContext.setAttribute(this.id, faqSubFolders != null ? faqSubFolders : Collections.EMPTY_LIST);
 				pageContext.setAttribute("savedFaqs", getTopFaqs(actionResult));
 			

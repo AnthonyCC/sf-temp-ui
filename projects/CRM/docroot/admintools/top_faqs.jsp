@@ -6,7 +6,7 @@
 <%@ page import="com.freshdirect.fdstore.*" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
-
+<%@ page import="java.net.URLEncoder" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -29,7 +29,10 @@ ContentTypeServiceI typeService = manager.getTypeService();
 ContentKey key = new ContentKey(FDContentTypes.FDFOLDER, "FAQ");
 ContentNodeI contentNode = manager.getContentNode(key);
 %>
+<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+<script language="JavaScript" src="/ccassets/javascript/overlibmws.js"></script>
 <tmpl:insert template='/template/top_nav.jsp'>
+
 
 <tmpl:put name='title' direct='true'> Top FAQs</tmpl:put>
 
@@ -94,9 +97,11 @@ ContentNodeI contentNode = manager.getContentNode(key);
 				   List selectedList=(List)pageContext.getAttribute("SELECTED_FAQS");	
 				  if((saveFaqResult.isSuccess() && savedList.contains(child.getKey().getId())) ||(null != selectedList && selectedList.contains(child.getKey().getId()))){
 				%>
-				<td width="100%" class="border_bottom"><input name="faqId" type="checkbox" checked="true" onClick="countChecked(this);" value="<%=child.getKey().getId()%>"> <%=child.getAttributeValue("QUESTION")%>&nbsp;</td>
+				<td width="100%" class="border_bottom"><input name="faqId" type="checkbox" checked="true" onClick="countChecked(this);" value="<%=child.getKey().getId()%>">
+					<a STYLE="text-decoration:none" href="#" onclick="return overlib(URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("ANSWER"))%>'), STICKY, CLOSECLICK, CAPTION, URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("QUESTION"))%>'), WIDTH, 512,  FGCOLOR, '#FAFDE1', CGCOLOR, '#3B0B0B', CLOSETEXT, '<img src=\'/media_stat/images/giftcards/your_account/close.gif\'>');"> <%=child.getAttributeValue("QUESTION")%>&nbsp;</a></td>
 				<% } else { %>
-				<td width="100%"  class="border_bottom"><input name="faqId" type="checkbox"  onClick="countChecked(this);" value="<%=child.getKey().getId()%>"> <%=child.getAttributeValue("QUESTION")%>&nbsp;</td>
+				<td width="100%"  class="border_bottom"><input name="faqId" type="checkbox"  onClick="countChecked(this);" value="<%=child.getKey().getId()%>">
+					<a STYLE="text-decoration:none" href="#" onclick="return overlib(URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("ANSWER"))%>'), STICKY, CLOSECLICK, CAPTION, URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("QUESTION"))%>'), WIDTH, 512,  FGCOLOR, '#FAFDE1',CGCOLOR, '#3B0B0B', CLOSETEXT, '<img src=\'/media_stat/images/giftcards/your_account/close.gif\'>');"> <%=child.getAttributeValue("QUESTION")%>&nbsp;</a></td>
 				<% } %>
 				
 				</logic:iterate>
