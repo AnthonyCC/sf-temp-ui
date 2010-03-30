@@ -482,6 +482,7 @@ public class DispatchController extends AbstractMultiActionController {
 		List termintedEmployees = getTermintedEmployeeIds();
 		try {
 		Collection dispatchList = dispatchManagerService.getDispatchList(dispDate, zoneStr, region);
+		if(dispatchList!=null) Collections.sort((List)dispatchList,new DispatchPlanUtil.DispatchPunchTimeComparator());
 		Collection punchInfo=null;
 		Map htInData=null;
 		Map htOutData=null;
