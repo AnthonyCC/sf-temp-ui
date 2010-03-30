@@ -133,7 +133,8 @@ else if("3".equals(request.getParameter("mode"))) modeStr=" - N/R";
 	        <ec:column alias="trnTimeslotslotName" property="startTime" title="Dispatch Time" filterable="false" sortable="false"/>
 	        <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route" filterable="false" sortable="false"/>
 	        <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck" filterable="false" sortable="false"/>              
-	        <ec:column alias="trnTruckLocation" property="location" width="10"  title="Parking Loc" filterable="false" sortable="false"/>	       
+	        <ec:column alias="trnTruckLocation" property="location" width="10"  title="Parking Loc" filterable="false" sortable="false"/>	
+	        <ec:column alias="trnTruckStops" property="noOfStops" width="10"  title="Stops" filterable="false" sortable="false"/>       
 	        <ec:column property="drivers" cell="dispatchDashBoardResCell" title="Driver"  filterable="false" alias="drivers" sortable="false"/>
 	        <ec:column property="helpers" cell="dispatchDashBoardResCell" title="Helper"  filterable="false" alias="helpers" sortable="false"/>             
 	        <ec:column alias="trnStatus" property="dispatchStatus"  title="Status" filterable="false" sortable="false"/>
