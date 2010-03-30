@@ -29,6 +29,13 @@ ContentTypeServiceI typeService = manager.getTypeService();
 ContentKey key = new ContentKey(FDContentTypes.FDFOLDER, "FAQ");
 ContentNodeI contentNode = manager.getContentNode(key);
 %>
+<style type="text/css">
+.case_content_red_field {
+color: #CC0000;
+font-weight: bold;
+font-size: 10pt;
+}
+</style>
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <script language="JavaScript" src="/ccassets/javascript/overlibmws.js"></script>
 <tmpl:insert template='/template/top_nav.jsp'>
@@ -46,7 +53,7 @@ ContentNodeI contentNode = manager.getContentNode(key);
 		</table>
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" style="empty-cells: show">
     
- <%  System.out.println("saveFaqResult ::"+saveFaqResult); %>
+ 
   
 
 	</table>
@@ -58,7 +65,7 @@ ContentNodeI contentNode = manager.getContentNode(key);
 		<logic:iterate id="errs" collection="<%= saveFaqResult.getErrors() %>" type="com.freshdirect.framework.webapp.ActionError" indexId="idx">
 		<tr>
 			
-			<td colspan="3" align="right" class="text11rbold"><%=errs.getDescription()%></td>
+			<td colspan="3" align="right" class="case_content_red_field"><%=errs.getDescription()%></td>
 			<td width="25%">&nbsp;</td>
 		</tr>         
 		</logic:iterate>
@@ -98,10 +105,10 @@ ContentNodeI contentNode = manager.getContentNode(key);
 				  if((saveFaqResult.isSuccess() && savedList.contains(child.getKey().getId())) ||(null != selectedList && selectedList.contains(child.getKey().getId()))){
 				%>
 				<td width="100%" class="border_bottom"><input name="faqId" type="checkbox" checked="true" onClick="countChecked(this);" value="<%=child.getKey().getId()%>">
-					<a STYLE="text-decoration:none" href="#" onclick="return overlib(URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("ANSWER"))%>'), STICKY, CLOSECLICK, CAPTION, URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("QUESTION"))%>'), WIDTH, 512,  FGCOLOR, '#FAFDE1', CGCOLOR, '#3B0B0B', CLOSETEXT, '<img src=\'/media_stat/images/giftcards/your_account/close.gif\'>');"> <%=child.getAttributeValue("QUESTION")%>&nbsp;</a></td>
+					<a STYLE="text-decoration:none" href="#" onclick="return overlib(URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("ANSWER"))%>'), STICKY, CLOSECLICK, CAPTION, URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("QUESTION"))%>'), WIDTH, 512,  FGCOLOR, '#FAFDE1', CGCOLOR, '#3B0B0B', CLOSETEXT, '<img src=\'/media_stat/images/close_icon.GIF\'>');"> <%=child.getAttributeValue("QUESTION")%>&nbsp;</a></td>
 				<% } else { %>
 				<td width="100%"  class="border_bottom"><input name="faqId" type="checkbox"  onClick="countChecked(this);" value="<%=child.getKey().getId()%>">
-					<a STYLE="text-decoration:none" href="#" onclick="return overlib(URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("ANSWER"))%>'), STICKY, CLOSECLICK, CAPTION, URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("QUESTION"))%>'), WIDTH, 512,  FGCOLOR, '#FAFDE1',CGCOLOR, '#3B0B0B', CLOSETEXT, '<img src=\'/media_stat/images/giftcards/your_account/close.gif\'>');"> <%=child.getAttributeValue("QUESTION")%>&nbsp;</a></td>
+					<a STYLE="text-decoration:none" href="#" onclick="return overlib(URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("ANSWER"))%>'), STICKY, CLOSECLICK, CAPTION, URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("QUESTION"))%>'), WIDTH, 512,  FGCOLOR, '#FAFDE1',CGCOLOR, '#3B0B0B', CLOSETEXT, '<img src=\'/media_stat/images/close_icon.GIF\'>');"> <%=child.getAttributeValue("QUESTION")%>&nbsp;</a></td>
 				<% } %>
 				
 				</logic:iterate>
