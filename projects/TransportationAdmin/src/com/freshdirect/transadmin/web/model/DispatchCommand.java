@@ -188,7 +188,12 @@ public class DispatchCommand extends WebPlanInfo {
             ResourceInfoI resourceInfo = getResourceInfo(webEmpInfo, resource);
             if(hasPunchInfo) 
             {
-            	resourceInfo.setPunchInfo(getPunchInfo(resourceInfo.getEmployeeId(),punchInfos));
+            	PunchInfoI tempPunchInfo=getPunchInfo(resourceInfo.getEmployeeId(),punchInfos);
+            	if(tempPunchInfo!=null)
+            	{
+            		punchInfos.remove(tempPunchInfo);
+            	}
+            	resourceInfo.setPunchInfo(tempPunchInfo);
             	if(resourceInfo.getPunchInfo()==null)resourceInfo.setPunchInfo(new PunchInfo());
             	setStatus(resourceInfo.getPunchInfo());
             }

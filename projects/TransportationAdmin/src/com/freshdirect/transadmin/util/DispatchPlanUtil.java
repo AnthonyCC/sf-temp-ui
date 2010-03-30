@@ -619,7 +619,7 @@ public class DispatchPlanUtil {
 		}
 	}
 	
-	private static class DispatchTimeComparator implements Comparator{
+	public static class DispatchTimeComparator implements Comparator{
         private boolean status=false;
         
 
@@ -667,7 +667,32 @@ public class DispatchPlanUtil {
 		}
 
 	}
-	
+	public static class DispatchPunchTimeComparator implements Comparator{
+       
+
+
+		public int compare(Object o1, Object o2) {
+
+			if(o1 instanceof Dispatch && o2 instanceof Dispatch)
+			{
+				Dispatch p1=(Dispatch)o1;
+				Dispatch p2=(Dispatch)o2;
+
+				try {
+					
+						Date d1=p1.getStartTime();
+						Date d2=p2.getStartTime();
+						return d1.compareTo(d2);
+					
+				} catch (Exception e) {
+					
+				}
+				
+			}
+			return 0;
+		}
+
+	}
 	private static class DispatchReadyViewComparator implements Comparator{       
 
 
