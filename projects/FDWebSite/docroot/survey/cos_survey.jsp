@@ -138,7 +138,7 @@
 
 	<tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
 
-	<tmpl:put name='content' direct='true'><img src="/media/editorial/cos/cos_vending/cos_vending_contact/images/COS_machine_sm.jpg" width="119" height="179" alt="" />
+	<tmpl:put name='content' direct='true'>
 		
 		<fd:CorporateServiceSurvey result='result' actionName='<%= customActionName %>' successPage='<%= customSuccessPage %>'>
 			<% if (submitted) {
