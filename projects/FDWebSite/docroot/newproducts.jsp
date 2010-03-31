@@ -17,6 +17,7 @@
 %><%@ page import="java.text.DecimalFormat"
 %><%@ page import='com.freshdirect.framework.util.NVL'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='java.net.URLEncoder' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -124,7 +125,7 @@
 			if (currentItem instanceof BrandModel) {
 				currentItem = (BrandModel)currentItem;
 				BrandModel brandMod=(BrandModel)currentItem;
-				String brandLink = response.encodeURL("/search.jsp?searchParams="+currentItem.getFullName());
+				String brandLink = response.encodeURL("/search.jsp?searchParams="+URLEncoder.encode(currentItem.getFullName()));
 
 				Image bLogo = brandMod.getLogoSmall();
 				if (bLogo==null) {

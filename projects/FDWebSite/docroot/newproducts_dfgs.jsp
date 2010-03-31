@@ -28,7 +28,6 @@
 	request.setAttribute("listPos", "SystemMessage,CategoryNote");
     request.setAttribute("notreenav", "true");
 %>
-<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree">
 <%
 	//set some top-level variables to remove them from includes
 	String deptId = NVL.apply(request.getParameter("deptId"), "");
@@ -44,6 +43,10 @@
 	if ("".equals(catId)) {
 		catId = FDStoreProperties.getNewProductsCatId(); //no catId, fallback
 	}
+%>
+<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree" department="<%=deptId%>">
+<%
+
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
 	
 	CategoryModel currentCAT = null;
@@ -125,7 +128,7 @@
 			if (currentItem instanceof BrandModel) {
 				currentItem = (BrandModel)currentItem;
 				BrandModel brandMod=(BrandModel)currentItem;
-				String brandLink = response.encodeURL("/search.jsp?searchParams="+currentItem.getFullName());
+				String brandLink = response.encodeURL("/search.jsp?searchParams="+URLEncoder.encode(currentItem.getFullName()));
 
 				Image bLogo = brandMod.getLogoSmall();
 				if (bLogo==null) {

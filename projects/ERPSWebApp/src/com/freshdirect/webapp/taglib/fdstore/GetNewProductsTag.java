@@ -51,7 +51,7 @@ public class GetNewProductsTag extends AbstractNavigationTag {
     public Map getCriteria(ServletRequest request){
     	Map criteria = new HashMap<String, String>();
     	criteria.put("days", String.valueOf(days));
-    	criteria.put("deptId", request.getParameter("deptId"));
+    	criteria.put("deptId", this.department);
     	return criteria;
     }
 }
