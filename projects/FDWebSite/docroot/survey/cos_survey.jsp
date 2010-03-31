@@ -179,26 +179,26 @@
 						<td><img src="/media_stat/images/layout/clear.gif" class="COSSurvey_spacer04" border="0" alt="" /></td>
 					</tr>
 					<tr>
-						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="companyName"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Company Name<fd:ErrorHandler result="<%=result%>" name="companyName"></span></fd:ErrorHandler></td>
+						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="companyName"><span style="color:#CC0000; font-weight: bold;">*</fd:ErrorHandler>Company Name<fd:ErrorHandler result="<%=result%>" name="companyName"></span></fd:ErrorHandler></td>
 						<td colspan="3"><input type="text" size="25" class="text13" name="companyName" value="<%=request.getParameter("companyName")%>"></td>
 					</tr>
 					<tr><td colspan="4"><span class="space4pix"><br /></span></td></tr>
 					<tr>
-						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="streetAddress"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Street Address<fd:ErrorHandler result="<%=result%>" name="streetAddress"></span></fd:ErrorHandler></td>
+						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="streetAddress"><span style="color:#CC0000; font-weight: bold;">*</fd:ErrorHandler>Street Address<fd:ErrorHandler result="<%=result%>" name="streetAddress"></span></fd:ErrorHandler></td>
 						<td><input type="text" size="25" class="text13" name="streetAddress" value="<%=request.getParameter("streetAddress")%>"></td>
 						<td class="text12 padLeft10" align="right"><fd:ErrorHandler result="<%=result%>" name="floorSuite"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Floor/Suite&nbsp;#<fd:ErrorHandler result="<%=result%>" name="floorSuite"></span></fd:ErrorHandler>&nbsp;</td>
 						<td class="padRight10"><input type="text" size="5" class="text13" name="floorSuite" value="<%=request.getParameter("floorSuite")%>"></td>
 					</tr>
 					<tr><td colspan="4"><span class="space2pix"><br /></span></td></tr>
 					<tr>
-						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="city"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>City<fd:ErrorHandler result="<%=result%>" name="city"></span></fd:ErrorHandler></td>
+						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="city"><span style="color:#CC0000; font-weight: bold;">*</fd:ErrorHandler>City<fd:ErrorHandler result="<%=result%>" name="city"></span></fd:ErrorHandler></td>
 						<td><input type="text" size="25" class="text13" name="city" value="<%=request.getParameter("city")%>"></td>
-						<td align="right" class="text12"><fd:ErrorHandler result="<%=result%>" name="state"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>State<fd:ErrorHandler result="<%=result%>" name="state"></span></fd:ErrorHandler>&nbsp;</td>
+						<td align="right" class="text12"><fd:ErrorHandler result="<%=result%>" name="state"><span style="color:#CC0000; font-weight: bold;">*</fd:ErrorHandler>State<fd:ErrorHandler result="<%=result%>" name="state"></span></fd:ErrorHandler>&nbsp;</td>
 						<td class="padRight10"><input type="text" size="3" class="text13" name="state" value="NY" value="<%=request.getParameter("state")%>"></td>
 					</tr>
 					<tr><td colspan="4"><span class="space4pix"><br /></span></td></tr>
 					<tr>
-						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="zip"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>ZIP<fd:ErrorHandler result="<%=result%>" name="zip"></span></fd:ErrorHandler> <fd:ErrorHandler result="<%=result%>" name="zip4"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>+ 4<fd:ErrorHandler result="<%=result%>" name="zip4"></span></fd:ErrorHandler></td>
+						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="zip"><span style="color:#CC0000; font-weight: bold;">*</fd:ErrorHandler>ZIP<fd:ErrorHandler result="<%=result%>" name="zip"></span></fd:ErrorHandler> <fd:ErrorHandler result="<%=result%>" name="zip4"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>+ 4<fd:ErrorHandler result="<%=result%>" name="zip4"></span></fd:ErrorHandler></td>
 						<td><input type="text" size="5" maxlength="5" class="text13" name="zip" value="<%=request.getParameter("zip")%>"> - <input type="text" size="4" class="text13" maxlength="4" name="zip4" value="<%=request.getParameter("zip4")%>"></td>
 						<td colspan="2" rowspan="8" class="padRight10"><%
 							//if we have a second top media, include it here
@@ -211,24 +211,24 @@
 					</tr>
 					<tr><td colspan="2"><span class="space4pix"><br /></span></td></tr>
 					<tr>
-						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="numEmp"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Number of Employees<fd:ErrorHandler result="<%=result%>" name="numEmp"></span></fd:ErrorHandler></td>
+						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="numEmp"><span style="color:#CC0000; font-weight: bold;">*</fd:ErrorHandler>Number of Employees<fd:ErrorHandler result="<%=result%>" name="numEmp"></span></fd:ErrorHandler></td>
 						<td><input type="text" size="8" class="text13" name="numEmp" value="<%=request.getParameter("numEmp")%>"></td>
 					</tr>
 					<tr><td colspan="2"><span class="space8pix"><br /></span></td></tr>
 					<tr>
-						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="contact"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Contact Name<fd:ErrorHandler result="<%=result%>" name="contact"></span></fd:ErrorHandler></td>
+						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="contact"><span style="color:#CC0000; font-weight: bold;">*</fd:ErrorHandler>Contact Name<fd:ErrorHandler result="<%=result%>" name="contact"></span></fd:ErrorHandler></td>
 						<td><input type="text" size="25" class="text13" name="contact" value="<%=request.getParameter("contact")%>"></td>
 					</tr>
 					<tr>
-						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="title"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Title<fd:ErrorHandler result="<%=result%>" name="title"></span></fd:ErrorHandler></td>
+						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="title"><span style="color:#CC0000; font-weight: bold;">*</fd:ErrorHandler>Title<fd:ErrorHandler result="<%=result%>" name="title"></span></fd:ErrorHandler></td>
 						<td><input type="text" size="25" class="text13" name="title" value="<%=request.getParameter("title")%>"></td>
 					</tr>
 					<tr>
-						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="phone"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Contact Number<fd:ErrorHandler result="<%=result%>" name="phone"></span></fd:ErrorHandler></td>
+						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="phone"><span style="color:#CC0000; font-weight: bold;">*</fd:ErrorHandler>Contact Number<fd:ErrorHandler result="<%=result%>" name="phone"></span></fd:ErrorHandler></td>
 						<td><input type="text" size="25" class="text13" name="phone" value="<%=request.getParameter("phone")%>"></td>
 					</tr>
 					<tr>
-						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="email"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Email Address<fd:ErrorHandler result="<%=result%>" name="email"></span></fd:ErrorHandler></td>
+						<td class="text12 padLeft10"><fd:ErrorHandler result="<%=result%>" name="email"><span style="color:#CC0000; font-weight: bold;">*</fd:ErrorHandler>Email Address<fd:ErrorHandler result="<%=result%>" name="email"></span></fd:ErrorHandler></td>
 						<td><input type="text" size="25" class="text13" name="email" value="<%=request.getParameter("email")%>"><fd:ErrorHandler result="<%=result%>" name="email" id="errorMsg"> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 					</tr>
 					<tr>
