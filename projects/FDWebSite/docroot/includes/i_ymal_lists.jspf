@@ -27,47 +27,7 @@
 	FDUserI ymal_user = (FDUserI) session.getAttribute(SessionName.USER);
 %>
 <fd:YmalContext id="ymalSource">
-<fd:YMALRecommendations id="recommendations" facility="ymal" source="<%= ymalSource %>" errorOccurred="<%=!ymal_result.isSuccess()%>"><%
-	List relatedProducts = recommendations.getProducts();
-	List relatedRecipes = ymalSource.getYmalRecipes();
-	List relatedCategories = ymalSource.getYmalCategories();
-	YmalSet ymal_aset = ymalSource.getActiveYmalSet();
-	String ymalHeader = ymalSource.getYmalHeader();
-	ProductModel ymal_product = ymalSource instanceof ProductModel ? (ProductModel) ymalSource : YmalUtil.getSelectedCartLine(ymal_user).lookupProduct();
-
-	// -- AVAILABILITY CHECK --
-	// remove unavailable recipes
-	for (Iterator it = relatedRecipes.iterator(); it.hasNext();) {
-		Recipe rec = (Recipe) it.next();
-		if (!rec.isAvailable())
-			it.remove();
-	}
-
-	// sort out hidden categories
-	for (Iterator it = relatedCategories.iterator(); it.hasNext();) {
-		CategoryModel c = (CategoryModel) it.next();
-		if (c.isHidden())
-			it.remove();
-	}
-
-
-
-	// Pass parameters to YMAL display box
-	request.setAttribute("ymal_products", relatedProducts);
-	request.setAttribute("ymal_categories", relatedCategories);
-	request.setAttribute("ymal_recipes", relatedRecipes);
-	request.setAttribute("ymal_aset", ymal_aset);
-	request.setAttribute("ymal_product", ymal_product);
-
-	request.setAttribute("ymal_result", ymal_result);
-	
-	// Special case: Don't pass header if there are related products
-	if (ymalHeader != null && ymalSource.getRelatedProducts().size() == 0) {
-		request.setAttribute("ymal_header", ymalHeader);
-	}
-
-	request.setAttribute("ymal_variant", recommendations.getVariant());
-	request.setAttribute("recommendations", recommendations);
-%><%@ include file="/includes/i_ymal_box.jspf" %>
-</fd:YMALRecommendations>
+	<fd:YMALRecommendations id="recommendations" facility="ymal" source="<%= ymalSource %>" errorOccurred="<%=!ymal_result.isSuccess()%>">
+		<%@ include file="/includes/i_ymal_box.jspf" %>
+	</fd:YMALRecommendations>
 </fd:YmalContext>

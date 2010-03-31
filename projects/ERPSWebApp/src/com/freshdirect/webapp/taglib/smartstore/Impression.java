@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
@@ -97,13 +98,12 @@ public class Impression {
 
     public String logFeatureImpression(String parentFeatureImpId, String parentVariantId, Variant variant, CategoryModel category, ContentNodeModel trigger, YmalSource ymalSource) {
         RecommendationServiceType type = variant.getServiceConfig().getType();
-		if (!type.equals(RecommendationServiceType.CLASSIC_YMAL) &&
-        		!type.equals(RecommendationServiceType.SMART_YMAL))
-        	ymalSource = null;
+	if (!EnumSiteFeature.YMAL.equals(variant.getSiteFeature())) {
+            ymalSource = null;
+	}
 
-		String generator = variant.getServiceConfig().get(RecommendationServiceFactory.CKEY_GENERATOR);
-        if (!type.equals(RecommendationServiceType.CLASSIC_YMAL) &&
-        		!type.equals(RecommendationServiceType.SMART_YMAL) &&
+	String generator = variant.getServiceConfig().get(RecommendationServiceFactory.CKEY_GENERATOR);
+        if (!EnumSiteFeature.YMAL.equals(variant.getSiteFeature()) &&
         		!(type.equals(RecommendationServiceType.SCRIPTED) && generator != null
         				&& generator.indexOf("currentProduct") >= 0)) {
         	trigger = null;
