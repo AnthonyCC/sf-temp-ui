@@ -706,7 +706,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_NEWPRODUCTS_CATID, "newproduct_cat");
 		
 		//comma separated list of faq section ids from CMS.
-		defaults.put(PROP_FAQ_SECTIONS, "what_we_do,signing_up,security,shopping,payment,home_delivery,cos,chef_table,inside");
+		defaults.put(PROP_FAQ_SECTIONS, "payment,order_today,prblem_my_order,order_change,delivery_feedback,promotion,gen_feedback,req_feedback,website_technical,acct_info,what_we_do,signing_up,security,shopping,home_delivery,cos,chef_table,vending,inside");
 		
 		refresh();
 	}
