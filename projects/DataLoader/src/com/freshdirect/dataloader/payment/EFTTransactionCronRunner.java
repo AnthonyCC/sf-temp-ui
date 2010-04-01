@@ -17,6 +17,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
@@ -25,6 +26,8 @@ import com.freshdirect.payment.fraud.EnumRestrictionReason;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentResponse;
+import com.freshdirect.customer.ejb.ErpSaleEB;
+import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 
@@ -67,12 +70,15 @@ public class EFTTransactionCronRunner {
 		try {
 			LOGGER.info("echeckCron started");
 			ctx = getInitialContext();
+			//(ErpSaleHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpSale", ErpSaleHome.class);
+			ErpSaleHome saleHome=(ErpSaleHome)ctx.lookup("freshdirect.erp.Sale");
+			
 			ReconciliationHome reconciliationCronHome = (ReconciliationHome) ctx.lookup("freshdirect.payment.Reconciliation");
 			ReconciliationSB reconciliationSB = reconciliationCronHome.create();
-
+			//ErpSaleEB erpSaleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			// process bad transactions
 			List badTxnList = reconciliationSB.loadBadTransactions(startDate, endDate);
-			processBadTransactions(badTxnList, reconciliationSB);
+			processBadTransactions(badTxnList, reconciliationSB,saleHome);
 			LOGGER.info("echeckCron finished");
 
 		} catch (Exception e) {
@@ -88,7 +94,7 @@ public class EFTTransactionCronRunner {
 		}
 	}
 
-	static private void processBadTransactions(List txnList, ReconciliationSB reconciliationSB) {
+	static private void processBadTransactions(List txnList, ReconciliationSB reconciliationSB,ErpSaleHome saleHome) {
 
 		EFTTransaction paymentTransaction = new EFTTransaction(); 
 		if (txnList != null && txnList.size() > 0) {
@@ -99,7 +105,9 @@ public class EFTTransactionCronRunner {
 					String orderNumber = paymentTransaction.getOrderNumber();
 					int index = orderNumber.indexOf("X");
 					String saleId = (index > -1) ? orderNumber.substring(0, index) : orderNumber;
-					String accountNumber = paymentTransaction.getBankAccountNumber();
+					//String accountNumber = paymentTransaction.getBankAccountNumber();
+					ErpSaleEB erpSaleEB = saleHome.findByPrimaryKey(new PrimaryKey(saleId));
+					String accountNumber =erpSaleEB.getCurrentOrder().getPaymentMethod().getAccountNumber();
 					double amount = paymentTransaction.getAmount();
 					String sequenceNumber = paymentTransaction.getSequenceNumber();
 					EnumPaymentResponse paymentResponse = getPaymentResponse(paymentTransaction);
