@@ -223,9 +223,10 @@ if(request.getParameter("message")!=null){
 					</font>
 					
 					<p/><br/><b>Search our FAQs</b><br/>
-					<input type="text" class="search" value="" maxlength="100" style="width: 100px;" name="searchFAQ" />
-					<input type="image" name="searchFAQButton" style="border: 0pt none ; padding: 3px; width: 35px; height: 14px;" src="/media_stat/images/template/search/search_find_button.gif" onclick="submitForm()"/>
-					
+					<table><tr>
+					<td><input type="text" class="search" value="" maxlength="100" style="width: 100px;" name="searchFAQ" /></td>
+					<td><input type="image" name="searchFAQButton" style="border: 0pt none ; padding: 3px; width: 35px; height: 14px;" src="/media_stat/images/template/search/search_find_button.gif" onclick="submitForm()"/></td>
+					</tr></table>
 	    </td>
 	    
 	    <TD valign="top" align="CENTER" width="40">
