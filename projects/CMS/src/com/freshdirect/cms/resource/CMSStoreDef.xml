@@ -48,6 +48,7 @@
 			<AttributeDef type="S" name="FULL_NAME" label="Description"/>
 			<AttributeDef type="S" name="QUESTION" label="Question"/>
 			<AttributeDef type="S" name="ANSWER" label="Answer"/>
+			<AttributeDef type="S" name="KEYWORDS" label="Keywords"/>
 		</AttributeDefs>
 	</ContentTypeDef>
 	

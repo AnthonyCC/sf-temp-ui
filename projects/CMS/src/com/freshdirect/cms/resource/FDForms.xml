@@ -1217,6 +1217,7 @@
                             <CmsField><attribute>FULL_NAME</attribute></CmsField>
                             <CmsField><attribute>QUESTION</attribute></CmsField>
                             <CmsField><attribute>ANSWER</attribute></CmsField>
+                            <CmsField><attribute>KEYWORDS</attribute></CmsField>
                         </fields>
                     </CmsSection>
                 </sections>

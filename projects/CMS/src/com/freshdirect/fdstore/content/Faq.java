@@ -26,6 +26,10 @@ public class Faq extends ContentNodeModelImpl {
 		return getAttribute("ANSWER", "");
 	}
 	
+	public String getKeywords() {
+		return getAttribute("KEYWORDS", "");
+	}
+	
 	public String getDescription() {
 		return getFullName();
 	}
