@@ -37,7 +37,7 @@ final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 final FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 int row_cnt = 0;
 final int GRID_ROW_SIZE=4; // maximum number of items per row (number of columns)
-int n_cols = (int) Math.ceil((float)products.size()/GRID_ROW_SIZE); // number of columns
+int n_cols = 0; // number of columns
 boolean reverseOrder = "desc".equalsIgnoreCase(request.getParameter("order"));
 Map groupedMap = null;
 if(showFeatNew) {
@@ -50,10 +50,17 @@ if(groupedMap == null) {
     TimeRange dummy = new TimeRange(1,0,0,TimeRange.NULL, TimeRange.NULL);
     groupedMap.put(dummy, products);
 }
+
 %>
 <table style="width:100%">
 <%
 List timeRanges = new ArrayList(groupedMap.keySet());
+for(Iterator itr=timeRanges.iterator();itr.hasNext();){
+    //Sum up the column count based on individual groups.
+    TimeRange tr = (TimeRange) itr.next();
+    List groupedProducts = (List) groupedMap.get(tr);
+    n_cols = n_cols + (int) Math.ceil((float)groupedProducts.size()/GRID_ROW_SIZE);
+}
 if(reverseOrder){
     Collections.reverse(timeRanges);
 }
