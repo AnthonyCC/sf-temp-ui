@@ -1387,6 +1387,12 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	@Override
+	public double getAge(){
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 	/* (non-Javadoc)
 	 * @see com.freshdirect.fdstore.content.ProductModel#getNewDate()
@@ -1708,4 +1714,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     public PriceCalculator getPriceCalculator(String skuCode) {
         return new PriceCalculator(getPricingContext(), this, getValidSkuCode(getPricingContext(), skuCode));
     }
+    
+    
 }
