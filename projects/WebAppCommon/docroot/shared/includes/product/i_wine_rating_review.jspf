@@ -35,6 +35,7 @@ function HideContent(d) {
 function ShowContent(d) {
     if(d.length < 1) { return; }
     var dd = document.getElementById(d);
+	if (dd.innerHTML == '') { return; }
     AssignPosition(dd);
     dd.style.display = "block";
 }
@@ -112,11 +113,18 @@ if (wineTypeIcons.size() > 0) {
 	
 	<!-- icons for type / rating / reviews -->
 	<!-- 7.1.5 type -->
-					
 	<table cellpadding="0" cellspacing="0" border="0">
 	<tr valign="bottom">
 	<% for (int i=0;i<wineTypeIcons.size();i++) {%>
-		<td class="padlr3" ><img border="0" src="<%= (String)wineTypeIcons.get(i) %>" border="0" alt=""  style="padding-bottom:10px;"></td>
+		<%
+			//assemble html path
+			String wineTypeHtml = wineTypeIcons.get(i).toString().replaceAll(".gif", "");
+			String wineTypeHtmlBase = wineTypeHtml.substring(0, wineTypeHtml.lastIndexOf("/"));
+			String wineTypeHtmlType = wineTypeHtml.substring(wineTypeHtml.lastIndexOf("/")+1);
+			wineTypeHtml = wineTypeHtmlBase+"/pop_ups/"+wineTypeHtmlType+".html";
+
+		%>
+		<td class="padlr3" ><div class="wine_review" style="display:none; position:absolute;" id="<%=wineTypeHtmlType%>"><fd:IncludeMedia name="<%=wineTypeHtml%>"/></div><img src="<%= (String)wineTypeIcons.get(i) %>" onmouseover="ShowContent('<%=wineTypeHtmlType%>'); return true;" onmouseout="HideContent('<%=wineTypeHtmlType%>'); return true;"  style="padding-bottom:10px;" /></td>
 	<% } %>	
 	
 		<!-- 7.1.6 rating /reviews -->
