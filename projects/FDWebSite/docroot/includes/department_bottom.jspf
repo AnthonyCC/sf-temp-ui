@@ -46,6 +46,9 @@ for(Iterator catItr = categories.iterator();catItr.hasNext();){
     }
 }
 
+if(deptMngrImg!=null && deptMngrImg.getPath().equals("/media/images/layout/clear.gif")){
+	deptMngrImg=null;
+}
 boolean showBars = (deptMngrImg!=null ||  deptBottom.size() > 0 || secondaryCategories.size() > 0);
 %>
 
@@ -68,7 +71,8 @@ if ("OUR_PICKS, FRO, GRO, DAI, SPE".indexOf(department.getContentName().toUpperC
               <TR VALIGN="TOP">
 <%-- The Left side of the bottom template --%>
                    <TD WIDTH="110" ROWSPAN="2">
-                      <% if (deptMngrImg != null) { %>
+                      <% if (deptMngrImg != null) { 
+                      %>
                       <A HREF="<%=bioLink%>"><img src="<%=deptMngrImg.getPath()%>" <%=JspMethods.getImageDimensions(deptMngrImg) %> border="0" alt="<%=department.getFullName()%>: MANAGER"></A>
                       <% } %>
                       <BR><IMG src="/media_stat/images/layout/clear.gif"   WIDTH="110" HEIGHT="1" BORDER="0">
