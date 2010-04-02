@@ -414,9 +414,4 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public boolean hideIphone() {
 	    return getAttribute("HIDE_IPHONE", false);
 	}
-	
-	@Override
-    public String toString() {
-        return this.getContentName() + " " + this.getAge();
-    }
 }

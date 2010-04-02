@@ -1081,7 +1081,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	 * Very conveniently returns contentName.
 	 */
 	public String toString() {
-		return this.prodModel.toString();
+		return this.getContentName();
 	}
 	
 	public PricingContext getPricingContext() {
