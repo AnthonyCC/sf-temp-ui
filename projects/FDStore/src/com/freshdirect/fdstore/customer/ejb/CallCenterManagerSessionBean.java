@@ -1257,9 +1257,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			finalRouteStopQuery += ROUTE_STOP_QRY_END;
 
 			PreparedStatement ps = conn.prepareStatement(finalRouteStopQuery);
-			Timestamp truncDate = new Timestamp(DateUtil.truncate(date).getTime());
+			date = DateUtil.truncate(date);
+			//Timestamp truncDate = new Timestamp(DateUtil.truncate(date).getTime());
 			int index = 1;
-			ps.setTimestamp(index++, truncDate);
+			//ps.setTimestamp(index++, truncDate);
+			ps.setDate(index++, new java.sql.Date(date.getTime()));
 
 			if (wave != null && !"".equals(wave)) {
 				ps.setString(index++, wave);
