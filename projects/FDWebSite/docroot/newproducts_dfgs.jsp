@@ -145,9 +145,13 @@
 			} else if (currentItem instanceof DepartmentModel ) {
 				currentItem = (DepartmentModel)currentItem;
 				filteredHeader += " in <a href=\""+deptRefUrl+"\">"+currentItem.getFullName()+"</a>";
+				//APPDEV-971
+				filteredHeader = "";
 			} else if (currentItem instanceof CategoryModel) {
 				currentItem = (CategoryModel)currentItem;
 				filteredHeader += " in <a href=\""+catRefUrl+"\">"+currentItem.getFullName()+"</a>";
+				//APPDEV-971
+				filteredHeader = "";
 			}
 		}
 	}

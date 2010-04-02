@@ -165,35 +165,22 @@
 </tmpl:put>
 <tmpl:put name="colLeftWidth" direct="true">165</tmpl:put>
 <tmpl:put name="colRightWidth" direct="true">568</tmpl:put>
-<%
-	// show category panel if found products 
-		if (results != null && results.numberOfResults() > 0) {
-			%><%-- CATEGORY TREE NAVIGATOR --%>
-			<tmpl:put name="categoryPanel" direct="true">
-				<!-- categoryPanel lands here -->
-				<%
-					if ( categoryTree != null ) {
-				%>		<TD width="170" colspan="2">
-							<%@ include file="/includes/search/generic_treenav.jspf" %>
-							<br />
-							<img src="/media_stat/images/layout/clear.gif" height="1" width="170" alt="">
-						</TD><%
-					}
-				%>
-			</tmpl:put><%
-		} else {
-			if (FDStoreProperties.isAdServerEnabled()) { %>
-				<tmpl:put name="categoryPanel" direct="true">
-					<div style="width:155px; margin-top: 1em">
-					<script type="text/javascript">
-						OAS_AD('LittleRandy');
-					</script>
-					</div>
-				</tmpl:put>
-		<%
-			}
-		}
-%>
+<tmpl:put name="categoryPanel" direct="true">
+	<td width="170" colspan="2">
+		<% if (results != null && results.numberOfResults() > 0) { %>
+			<!-- categoryPanel lands here -->
+			<% if ( categoryTree != null ) { %>
+				<%@ include file="/includes/search/generic_treenav.jspf" %>
+				<br />
+				<img src="/media_stat/images/layout/clear.gif" height="1" width="170" alt="">
+			<% }else{ %>
+				&nbsp;
+			<% } %>
+			<!-- categoryPanel ends above here -->
+		<% } %>
+	</td>
+</tmpl:put>
+
 <tmpl:put name='rightNav' direct='true'> </tmpl:put><% //Make sure to leave a space inside empty tmpl:put tags %>
 <tmpl:put name='header_1' direct='true'><td width="743" colspan="4"><%@ include file="/includes/i_header_new.jspf" %></td></tmpl:put>
 <tmpl:put name='header_seperator' direct='true'> </tmpl:put><% //Make sure to leave a space inside empty tmpl:put tags %>
