@@ -27,9 +27,8 @@
 	//--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", "www.freshdirect.com/newproducts.jsp");
 	request.setAttribute("listPos", "SystemMessage,CategoryNote");
-    
 %>
-<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree">
+<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree" navigator="nav">
 <%
 	//set some top-level variables to remove them from includes
 	String deptId = NVL.apply(request.getParameter("deptId"), "");
@@ -153,7 +152,7 @@
 	boolean noNewProduct = false;
 	boolean noBackStock = false;
 	int days = 120;
-	NewProductsNavigator nav = new NewProductsNavigator(request);
+    
 %>
 <tmpl:insert template='/common/template/new_products_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>
@@ -210,7 +209,7 @@
 		<% } %>
 		<tr>
 			<td>
-				<table cellpadding="0" cellspacing="0" style="border: 0; background-color: #E0E3D0; padding:2px;">
+				<table cellpadding="0" cellspacing="0" style="border: 0; background-color: #E0E3D0; padding:7px;">
 					<tr>
 						<td style="width: 100%"><%--
 
@@ -257,7 +256,6 @@
 			<tr><td style="font-size: 18px; font-weight: normal; padding: 10px 0;" valign="middle"><%=filteredHeader%></td></tr>
 		<% } %>
 		<%
-		//System.out.println("Product size $$$$$$$$$$$ "+products.size());
 		if (products.size()!=0){
 		%>
 		<tr>

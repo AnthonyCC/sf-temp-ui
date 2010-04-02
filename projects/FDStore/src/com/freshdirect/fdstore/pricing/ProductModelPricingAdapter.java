@@ -892,6 +892,11 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 	
 	@Override
+	public double getAge() {
+		return this.prodModel.getAge();
+	}
+	
+	@Override
 	public double getNewAge() {
 		return this.prodModel.getNewAge();
 	}
@@ -1076,7 +1081,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	 * Very conveniently returns contentName.
 	 */
 	public String toString() {
-		return this.getContentName();
+		return this.prodModel.toString();
 	}
 	
 	public PricingContext getPricingContext() {
@@ -1159,4 +1164,5 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
     public Image getSideNavImage() {
         return prodModel.getSideNavImage();
     }
+
 }

@@ -402,7 +402,12 @@ public class FDStoreProperties {
 	//new products revamp
 	private static final String PROP_NEWPRODUCTS_DEPTID="fdstore.newProducts.DeptId";
 	private static final String PROP_NEWPRODUCTS_CATID="fdstore.newProducts.CatId";
+	private static final String PROP_NEWPRODUCTS_GROUPS="fdstore.newproducts.groups";
+	
+	
+	//Contact us FAQs
 	private static final String PROP_FAQ_SECTIONS="fdstore.faq.sections";
+
 	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
@@ -704,6 +709,8 @@ public class FDStoreProperties {
 		//new products revamp
 		defaults.put(PROP_NEWPRODUCTS_DEPTID, "newproduct");
 		defaults.put(PROP_NEWPRODUCTS_CATID, "newproduct_cat");
+		defaults.put(PROP_NEWPRODUCTS_CATID, "newproduct_cat");
+		defaults.put(PROP_NEWPRODUCTS_GROUPS, "<W4,W4-W8,M2-M3,M3-M4,>M4");
 		
 		//comma separated list of faq section ids from CMS.
 		defaults.put(PROP_FAQ_SECTIONS, "payment,order_today,prblem_my_order,order_change,delivery_feedback,promotion,gen_feedback,req_feedback,website_technical,acct_info,what_we_do,signing_up,security,shopping,home_delivery,cos,chef_table,vending,inside");
@@ -1638,6 +1645,10 @@ public class FDStoreProperties {
 
 	public static String getNewProductsCatId() {
 		return get(PROP_NEWPRODUCTS_CATID);
+	}
+	
+	public static String getNewProductsGrouping() {
+		return get(PROP_NEWPRODUCTS_GROUPS);
 	}
 	
 	public static String getFaqSections(){

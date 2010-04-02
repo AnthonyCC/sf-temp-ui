@@ -44,7 +44,7 @@
 		catId = FDStoreProperties.getNewProductsCatId(); //no catId, fallback
 	}
 %>
-<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree" department="<%=deptId%>">
+<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree" navigator="nav" department="<%=deptId%>">
 <%
 
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
@@ -156,7 +156,6 @@
 	boolean noNewProduct = false;
 	boolean noBackStock = false;
     int days = 120;
-    NewProductsNavigator nav = new NewProductsNavigator(request);
 %>
 <tmpl:insert template='/common/template/new_products_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>

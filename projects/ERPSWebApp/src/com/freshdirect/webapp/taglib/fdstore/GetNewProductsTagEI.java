@@ -39,6 +39,8 @@ public class GetNewProductsTagEI extends TagExtraInfo {
         addToList(variables, new VariableInfo(data.getAttributeString("brandSet"), "java.util.Set", true, VariableInfo.NESTED));
         addToList(variables, new VariableInfo(data.getAttributeString("selectedCategories") != null ? data.getAttributeString("selectedCategories")
                 : "__selectedCategories", "java.util.Set", true, VariableInfo.NESTED));
+        addToList(variables, new VariableInfo(data.getAttributeString("navigator"), "com.freshdirect.fdstore.util.NewProductsNavigator", true,
+                VariableInfo.NESTED));
         
         return (VariableInfo[]) variables.toArray(new VariableInfo[variables.size()]);
 

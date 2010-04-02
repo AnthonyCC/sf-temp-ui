@@ -66,7 +66,7 @@ public class NewProductsNavigator extends AbstractNavigator {
 	@Override
 	public SortDisplay[] getSortBar() {
 		SortDisplay[] sortDisplayBar = new SortDisplay[3];
-		sortDisplayBar[0] = new SortDisplay(SearchSortType.BY_RECENCY, isDefaultSort(), isSortOrderingAscending(), "Recency", "Recently Added", "Least Relevant");
+		sortDisplayBar[0] = new SortDisplay(SearchSortType.BY_RECENCY, isDefaultSort(), isSortOrderingAscending(), "Recency", "Recently Added", "Least Recent");
 		sortDisplayBar[1] = new SortDisplay(SearchSortType.BY_NAME, isSortByName(), isSortOrderingAscending(), "Name", "Name (A-Z)", "Name (Z-A)");
 		sortDisplayBar[2] = new SortDisplay(SearchSortType.BY_PRICE, isSortByPrice(), isSortOrderingAscending(), "Price", "Price (low)", "Price (high)");
 		return sortDisplayBar;
@@ -79,11 +79,12 @@ public class NewProductsNavigator extends AbstractNavigator {
 	protected void init(Map params) {
 		super.init(params);
 	}
-	
+
 	public SearchSortType getDefaultSortType(){
 		return SearchSortType.BY_RECENCY;
 	}
-	public static String getDefaultViewName() {
+	
+	public String getDefaultViewName() {
 		return getViewName(VIEW_GRID);
 	}
 	

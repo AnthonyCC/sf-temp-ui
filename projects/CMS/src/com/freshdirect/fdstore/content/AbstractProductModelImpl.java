@@ -211,6 +211,16 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		return ContentFactory.getInstance().getBackInStockProducts().get(this);
 	}
 
+	@Override
+	public double getAge() {
+		if(this.isNew()){
+			return this.getNewAge();
+		}else if(this.isBackInStock()){
+			return this.getBackInStockAge();
+		}else {
+			return -1;
+		}
+	}
         public int getDealPercentage() {
             return getDealPercentage(null);
         }
@@ -405,4 +415,8 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	    return getAttribute("HIDE_IPHONE", false);
 	}
 	
+	@Override
+    public String toString() {
+        return this.getContentName() + " " + this.getAge();
+    }
 }

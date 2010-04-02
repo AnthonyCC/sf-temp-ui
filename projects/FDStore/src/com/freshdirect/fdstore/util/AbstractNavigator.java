@@ -389,7 +389,7 @@ public abstract class AbstractNavigator {
 		}
 	}
 
-	public static String getDefaultViewName() {
+	public String getDefaultViewName() {
 		return getViewName(VIEW_DEFAULT);
 	}
 	

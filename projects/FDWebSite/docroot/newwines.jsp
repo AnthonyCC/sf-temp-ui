@@ -7,6 +7,7 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import="com.freshdirect.fdstore.util.NewProductsNavigator" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -156,7 +157,7 @@ String pagingLinks = "";
 <%
 try {
 %>
-<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree">
+<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree" navigator="nav">
 <%
 //List products = new ArrayList();
 for(Iterator availItr = products.iterator();availItr.hasNext();) {

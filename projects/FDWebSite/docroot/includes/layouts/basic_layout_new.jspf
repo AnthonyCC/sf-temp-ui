@@ -14,6 +14,8 @@
 %><%@ page import="com.freshdirect.fdstore.lists.FDCustomerProductListLineItem"
 %><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
 %><%@ page import="com.freshdirect.fdstore.util.DYFUtil"
+%><%@ page import="com.freshdirect.fdstore.util.NewProductsGrouping"
+%><%@ page import="com.freshdirect.fdstore.util.TimeRange"
 %>
 
 <%@ taglib uri="freshdirect" prefix="fd"%>
@@ -33,25 +35,53 @@ Smart Search Grid View
 final java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 final FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
-
+int row_cnt = 0;
+final int GRID_ROW_SIZE=4; // maximum number of items per row (number of columns)
+int n_cols = (int) Math.ceil((float)products.size()/GRID_ROW_SIZE); // number of columns
+boolean reverseOrder = "desc".equalsIgnoreCase(request.getParameter("order"));
+Map groupedMap = null;
+if(showFeatNew) {
+    NewProductsGrouping grouping = new NewProductsGrouping();
+    groupedMap = grouping.groupBy(products, reverseOrder);
+} 
+if(groupedMap == null) {
+    groupedMap = new LinkedHashMap();
+    //Create a dummy time range.
+    TimeRange dummy = new TimeRange(1,0,0,TimeRange.NULL, TimeRange.NULL);
+    groupedMap.put(dummy, products);
+}
+%>
+<table style="width:100%">
+<%
+List timeRanges = new ArrayList(groupedMap.keySet());
+if(reverseOrder){
+    Collections.reverse(timeRanges);
+}
+for(Iterator itr=timeRanges.iterator();itr.hasNext();){
+TimeRange tr = (TimeRange) itr.next();
+%>
+<%
+List groupedProducts = (List) groupedMap.get(tr);
+if(tr.getDescription() != null && tr.getDescription().length() > 0) {
+%>
+<tr><td colspan="4"><div class="title12" style="text-align: left; margin: 14x 14x 0px;"><%= tr.getDescription()  %>&nbsp;(<%= groupedProducts.size() %>)<br/></div></td></tr>
+<tr><td colspan="4"><hr size="1" style="color:#E0E3D0"></td></tr>
+<%
+}
+%>
+<%
 // turn products into product impressions
 
 List impressions = new ArrayList();
-for (Iterator it=products.iterator(); it.hasNext();) {
+for (Iterator it=groupedProducts.iterator(); it.hasNext();) {
 	impressions.add( new ProductImpression((ProductModel) it.next()) );
 }
 
-final int GRID_ROW_SIZE=4; // maximum number of items per row (number of columns)
 
 boolean singleRow = (impressions.size() <= GRID_ROW_SIZE); // product list fits into just one row
-
-int row_cnt = 0;
-int n_cols = (int) Math.ceil((float)impressions.size()/GRID_ROW_SIZE); // number of columns
-
-
 int rank = nav.getPageOffset()+1;
 %>
-<table style="width:100%">
+
 	<fd:PIPLayout id="piRow" rowSize="<%= GRID_ROW_SIZE %>" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= false %>">
 		<tr>
 			<% int colCount = 0; %>
@@ -145,4 +175,9 @@ int rank = nav.getPageOffset()+1;
 			row_cnt++;
 		%>
 	</fd:PIPLayout>
+
+<%
+}
+%>
+
 </table>

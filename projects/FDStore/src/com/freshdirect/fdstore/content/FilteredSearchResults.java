@@ -279,6 +279,12 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             case BY_SALE:
             	c = new SaleComparator(inverse, products, pricingContext);
             	break;
+            case BY_RECENCY:
+                c = (Comparator<ContentNodeModel>) ProductModel.AGE_COMPARATOR;
+                if (inverse) {
+                    c = new InverseComparator(c);
+                }
+                break;         	
             case BY_RELEVANCY:
             default:
                 CategoryScoreOracle sc = scoreOracle != null ? scoreOracle : new DefaultCategoryScoreOracle();

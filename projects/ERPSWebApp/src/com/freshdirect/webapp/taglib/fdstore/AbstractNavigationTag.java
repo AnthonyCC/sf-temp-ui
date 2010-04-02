@@ -35,7 +35,7 @@ import com.freshdirect.fdstore.content.ContentNodeTree.TreeElementFilter;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
-import com.freshdirect.fdstore.util.SearchNavigator;
+import com.freshdirect.fdstore.util.AbstractNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 
@@ -124,9 +124,11 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
     private String           categoryTreeName;
 
     private String           selectedCategoriesName;
+    
+    private String 			 navigator;
 
     private String filteredCategoryTreeName;
-
+    
     public void setSearchResults(String s) {
         this.searchResults = s;
     }
@@ -155,6 +157,10 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
         this.selectedCategoriesName = selectedCategories;
     }
     
+    public void setNavigator(String navigator) {
+        this.navigator = navigator;
+    }
+    
     public int doStartTag() throws JspException {
 
         ServletRequest request = pageContext.getRequest();
@@ -174,18 +180,21 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
         CategoryNodeTree contentTree = putTree(categoryTreeName, fres.getProducts(), true);
         fres.setNodeTree(contentTree);
         fres.setScoreOracle(new FilteredSearchResults.HierarchicalScoreOracle(contentTree));
-
-        fres.sortProductsBy(SearchSortType.findByLabel(request.getParameter("sort")), reverseOrder);
-
+        //fres.sortProductsBy(SearchSortType.findByLabel(request.getParameter("sort")), reverseOrder);
+        String sort = request.getParameter("sort");
+        SearchSortType sortType = sort != null ? SearchSortType.findByLabel(sort) : getNavigator().getDefaultSortType();
+        fres.sortProductsBy(sortType, reverseOrder);
+        pageContext.setAttribute(navigator, getNavigator());
+        
         fres.setStart(Math.max(getIntParameter("start", 0), 0));
         {
             // calculate page size.
             String view = pageContext.getRequest().getParameter("view");
             if (view == null) {
-                view = SearchNavigator.getDefaultViewName();  // "list"; // default view
+                view = getNavigator().getDefaultViewName();  // "list"; // default view
             }
             int defaultPageSize = 0;
-            SearchNavigator.SearchDefaults defs = (SearchNavigator.SearchDefaults) SearchNavigator.DEFAULTS.get(view);
+            AbstractNavigator.PageView defs = (AbstractNavigator.PageView) AbstractNavigator.DEFAULTS.get(view);
             if (defs != null) {
             	defaultPageSize = defs.normalPageSize;
             }
@@ -349,4 +358,6 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
     public abstract SearchResults getResults(Map<String, String> crtiteria);
     
     public abstract Map getCriteria(ServletRequest request);
+    
+    public abstract AbstractNavigator getNavigator();
 }

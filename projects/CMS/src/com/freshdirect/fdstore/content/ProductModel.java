@@ -108,6 +108,29 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
             }
 	}
 	
+	public final static Comparator AGE_COMPARATOR = new Comparator() {
+
+		public int compare(Object o1, Object o2) {
+
+			ProductModel p1 = (ProductModel) o1;
+			ProductModel p2 = (ProductModel) o2;
+			double age1;
+			double age2;
+			if(p1 != null)
+				age1 = p1.getAge();
+			else
+				age1 = -1;
+			
+			if(p2 != null)
+				age2 = p2.getAge();
+			else
+				age2 = -1;
+
+			return new Double(age1).compareTo(new Double(age2));
+		}
+	};
+
+	
 	public static class ProductModelPriceComparator implements Comparator {
 
 	    final boolean inverse;
@@ -698,6 +721,8 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public Date getBackInStockDate();
 	
 	public double getBackInStockAge();
+	
+	public double getAge();
 	
 	public int getDealPercentage();
 
