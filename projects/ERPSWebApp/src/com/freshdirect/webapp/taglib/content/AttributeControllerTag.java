@@ -9,9 +9,14 @@
 
 package com.freshdirect.webapp.taglib.content;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
+import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.erp.ErpModelSupport;
@@ -25,6 +30,12 @@ import com.freshdirect.fdstore.FDResourceException;
  * @author $Author$
  */
 public class AttributeControllerTag extends com.freshdirect.framework.webapp.TagSupport {
+	
+	private static DateFormat DATE_FORMAT1 = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+
+	private static DateFormat DATE_FORMAT2 = new SimpleDateFormat("MM/dd/yyyy");
+
+	private static DateFormat DATE_FORMAT3 = new SimpleDateFormat("MM/dd/yy");
 	
     private String feedback = null;
     
@@ -105,8 +116,11 @@ public class AttributeControllerTag extends com.freshdirect.framework.webapp.Tag
             return;
         }
         try {
-           ErpFactory.getInstance().saveAttributes(erpModel);
-           feedback = "Attributes saved";
+        	feedback = validateAttributes(erpModel);
+        	if (feedback == null) {
+        		ErpFactory.getInstance().saveAttributes(erpModel);
+        		feedback = "Attributes saved";
+        	}
         } catch (FDResourceException fdre) {
             fdre.printStackTrace();
             feedback = "Unable to save attributes: ";
@@ -118,6 +132,36 @@ public class AttributeControllerTag extends com.freshdirect.framework.webapp.Tag
         }
         
     }
-      
-    
+
+	private String validateAttributes(ErpModelSupport erpModel) {
+		if (erpModel instanceof ErpProductModel) {
+			ErpProductModel prod = (ErpProductModel) erpModel;
+			String new_prod_date = prod.getAttributes().getAttribute(EnumAttributeName.NEW_PRODUCT_DATE);
+			String back_prod_date = prod.getAttributes().getAttribute(EnumAttributeName.BACK_IN_STOCK_DATE);
+			String date = new_prod_date != null && new_prod_date.trim().length() != 0 ? new_prod_date.trim() : null;
+			if (back_prod_date != null && back_prod_date.trim().length() != 0) {
+				if (date != null)
+					return "Cannot set both manual override dates at the same time!";
+				else
+					date = back_prod_date.trim();
+			}
+			if (date != null) {
+				try {
+					DATE_FORMAT1.parse(date);
+				} catch (ParseException e) {
+					try {
+						DATE_FORMAT3.parse(date);
+					} catch (ParseException e1) {
+						try {
+							DATE_FORMAT2.parse(date);
+						} catch (ParseException e2) {
+							return "Unparseable date: " + date;
+						}
+					}
+				}
+				
+			}
+		}
+		return null;
+	}
 }
