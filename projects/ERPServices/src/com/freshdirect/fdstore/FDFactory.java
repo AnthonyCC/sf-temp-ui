@@ -448,6 +448,7 @@ class FDFactory {
 			Date first = new Date(now.getTime() - 120l * 24l * 3600000l);
 			Map<String, Date> regular = sb.getNewSkus();
 			Map<String, Date> overridden = sb.getOverriddenNewSkus();
+			Map<String, Date> overriddenBack = sb.getOverriddenBackInStockSkus();
 			Map<String, Date> results = new HashMap<String, Date>((regular.size() + overridden.size()) * 4 / 3);
 			for (Map.Entry<String, Date> entry : regular.entrySet())
 				if (entry.getValue().after(first) && entry.getValue().before(now))
@@ -457,6 +458,8 @@ class FDFactory {
 					results.remove(entry.getKey());
 				else if (entry.getValue().before(now))
 					results.put(entry.getKey(), entry.getValue());
+			for (Map.Entry<String, Date> entry : overriddenBack.entrySet())
+				results.remove(entry.getKey());
 			return results;
 		} catch (CreateException ce) {
 			factoryHome=null;
