@@ -142,7 +142,7 @@ if(request.getParameter("message")!=null){
 			     
 	<tr>
 	<TD valign="top" width="225">
-					<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_quick_links.gif" width="80" height="12" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
+					<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_quick_links.gif" width="119" height="15" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
 					Find answers to our most frequently asked questions.<br>
 					<br>
 					<font class="text11bold">
@@ -164,7 +164,7 @@ if(request.getParameter("message")!=null){
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
 		<%}%>-->
 					</font><p/><br/>
-					<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_faqs.gif" width="48" height="13" border="0" alt="FAQs"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
+					<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_faqs.gif" width="45" height="14" border="0" alt="FAQs"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
 					Find answers to our most frequently asked questions.
 					
 					<% List savedList=(List)pageContext.getAttribute("savedFaqs"); %>
@@ -176,10 +176,12 @@ if(request.getParameter("message")!=null){
 				  while (st.hasMoreTokens()) { String nextToken=st.nextToken().trim();%>
 					
 					<logic:iterate id="topfaq" indexId="idx" collection="<%= savedList %>" type="com.freshdirect.fdstore.content.Faq">
+					<table>
 					<% if(nextToken.equalsIgnoreCase((String)topfaq.getParentNode().getContentKey().getId())){ %>
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/help/faq_home.jsp?page=<%= (String)topfaq.getParentNode().getContentKey().getId()%>#<%= (String)topfaq.getContentKey().getId()%>"><%= topfaq.getQuestion() %></a><br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
-					<%} %>			
+					<tr><td><img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;</td><td><a href="/help/faq_home.jsp?page=<%= (String)topfaq.getParentNode().getContentKey().getId()%>#<%= (String)topfaq.getContentKey().getId()%>"><%= topfaq.getQuestion() %></a></td></tr>
+					
+					<%} %>
+					</table>			
 					</logic:iterate>
 					<% } } %>										
 					<% } %>										
@@ -234,7 +236,7 @@ if(request.getParameter("message")!=null){
 	    </td>	    
 		
 		<TD valign="top" width="370" colspan="3">
-		            <a href='index.jsp'><img src="/media_stat/images/template/help/hdr_contact_us.gif" border="0" width="150" height="12" alt="CONTACT US"></a>
+		            <a href='index.jsp'><img src="/media_stat/images/template/help/hdr_contact_us.gif" border="0" width="204" height="14" alt="CONTACT US"></a>
 					<br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
 	            	    FreshDirect Customer Service is standing by to answer your questions, seven days a week.  <b>The best way to get help is through email.</b> Please select an order number and include as much specific information as possible to ensure a prompt response to your inquiry.<br>
 	            	    <br>

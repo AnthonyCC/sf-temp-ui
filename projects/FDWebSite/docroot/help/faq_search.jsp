@@ -25,7 +25,7 @@
 				<img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0">
 			</td>
 		<td valign="top">
-		<img src="/media_stat/images/template/help/faq_hdr.gif"  height="21" alt="" border="0"><br>
+		<img src="/media_stat/images/template/help/hdr_faq_search.gif"  height="16" width="318" alt="" border="0"><br>
 		</td>
 		<td>
 		<input type="text" class="search" value="" maxlength="100" style="width: 100px;" name="searchFAQ2" />
