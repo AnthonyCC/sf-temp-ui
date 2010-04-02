@@ -1,3 +1,5 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
 <%@   page import='com.freshdirect.webapp.util.*'
 %><%@ page import="com.freshdirect.fdstore.content.DomainValue"
 %><%@ page import='com.freshdirect.framework.webapp.*'
