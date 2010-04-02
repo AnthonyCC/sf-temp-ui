@@ -36,8 +36,14 @@ font-weight: bold;
 font-size: 10pt;
 }
 </style>
-<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+<!-- <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div> -->
 <script language="JavaScript" src="/ccassets/javascript/overlibmws.js"></script>
+<script language="JavaScript">
+function clearCheckbox(obj){
+	for(var i=0; i<obj.length; i++)    
+	    obj[i].checked = false;
+}
+</script>
 <tmpl:insert template='/template/top_nav.jsp'>
 
 
@@ -65,7 +71,7 @@ font-size: 10pt;
 		<logic:iterate id="errs" collection="<%= saveFaqResult.getErrors() %>" type="com.freshdirect.framework.webapp.ActionError" indexId="idx">
 		<tr>
 			
-			<td colspan="3" align="right" class="case_content_red_field"><%=errs.getDescription()%></td>
+			<td colspan="3" align="left" class="case_content_red_field"><%=errs.getDescription()%></td>
 			<td width="25%">&nbsp;</td>
 		</tr>         
 		</logic:iterate>
@@ -73,9 +79,14 @@ font-size: 10pt;
 <%   }   %> 
 		<tr>
 		
-			<td colspan="3" align="right" class="case_content_field"><%= pageContext.getAttribute("SUCCESS_MSG")%></td>
+			<td colspan="3" align="left" class="case_content_field"><%= pageContext.getAttribute("SUCCESS_MSG")%></td>
 			<td width="25%">&nbsp;</td>
 		</tr>  
+		<tr>
+		
+			<td colspan="4" >&nbsp;</td>
+			
+		</tr> 
 <%   if (faqSubFolders!=null && faqSubFolders.size() == 0) { %>
 		<tr><td colspan="4" align="center"><br><b>There were no FAQs configured.</td></tr>
 <%   } else if (faqSubFolders!=null && faqSubFolders.size() > 0) { %>
@@ -122,7 +133,7 @@ font-size: 10pt;
 <%	 	
 	 } %>
 	<tr><td colspan="4" class="sub_nav">&nbsp;</td></tr>
-	<tr><td colspan="4" align="center"><br><b><input type="submit" name="save" value="SAVE CHANGES" class="checkout"/></b></td></tr> 
+	<tr><td colspan="4" align="center"><br><b><input type="submit" name="save" value="SAVE CHANGES" class="checkout"/></b>&nbsp;&nbsp;<b><input type="button" name="clear" value="CLEAR" class="checkout" onclick="clearCheckbox(this.form.faqId)"/></b></td></tr> 
 	</table>
 	
 	
