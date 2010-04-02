@@ -17,10 +17,9 @@
                                 if (asaProd.getParentId().equals(pcat.getContentName())){
                                     if (asaProd.getParentNode().isHidden()) continue;
                                     String asaName = asaProd.getAlsoSoldAsName();
-                                    String asaLabel = asaName==null ? asaProd.getFullName() : asaName;
+                                    String asaLabel = ((asaName==null||"".equals(asaName.trim())) ? asaProd.getFullName() : asaName);
                                     keepMap.put(asaProd,asaLabel);
                                 }
-
                             }
 
                             // ok..walk through the list again..now look for items that are missing from the keep list that have different display names
@@ -29,12 +28,12 @@
                                 ProductModel asaProd = (ProductModel)asaItr.next();
                                 if (asaProd.getParentNode().isHidden()) continue;
                                  String asaName = asaProd.getAlsoSoldAsName();
-                                 String asaLabel = asaName==null ? asaProd.getFullName() : asaName;
+                                 String asaLabel = ((asaName==null||"".equals(asaName.trim())) ? asaProd.getFullName() : asaName);
+                                                  
                                  if (!keepMap.containsKey(asaProd)  && !keepMap.containsValue(asaLabel)) {
-                                     keepMap.put(asaProd,asaLabel);
+                                    keepMap.put(asaProd,asaLabel);
                                  }
                              }
-
 
                             Set keepSet = keepMap.keySet();
                             String asaURL = "";
@@ -60,7 +59,7 @@
                                     asaHTML.append("</a>");
                                 }
                             }
-                            if (asaHTML.length() > 0 && hasLinkableItem) {
+                            if (asaHTML.length() > 0 && hasLinkableItem && !"".equals(asaLabel)) {
 %>
                 <img src="/media_stat/images/template/also_avail.gif" border="0" alt=""><br><%=asaHTML.toString()%><br><br>
 <%
