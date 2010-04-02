@@ -26,6 +26,7 @@ String formatDay(Date now, Date then) {
 <%@page import="com.freshdirect.cms.ContentKey"%>
 <%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="java.util.Collections"%>
+<%@page import="com.freshdirect.erp.model.ErpMaterialModel"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -259,7 +260,9 @@ if (request.getParameter("reload") != null) {
 	 %>
 	<table class="data">
 		<tr>
-			<th class="text12">SKU</th>
+			<th class="text12">SKU (Web Id)</th>
+			<th class="text12">SAP Id</th>
+			<th class="text12">Material Description</th> 
 			<th class="text12">Date</th>
 			<th class="text12">Age</th>
 			<th class="text12">Unavailable</th>
@@ -268,8 +271,22 @@ if (request.getParameter("reload") != null) {
 		for (Map.Entry<String, Date> entry : newSkus.entrySet()) {
 			boolean overridden = newOverridden.containsKey(entry.getKey());
 		 %>
+		<fd:ErpProduct id="product" skuCode='<%= entry.getKey() %>'>
+		<%
+			String sapId = "<span class=\"warning\">&lt;&lt;unknown&gt;&gt;</span>";
+			String materialDescription = "<span class=\"warning\">&lt;&lt;unknown&gt;&gt;</span>";
+			if (product.getSkuCode() != null) {
+				ErpMaterialModel material = product.getProxiedMaterial();
+				if (material != null) {
+					sapId = material.getSapId();
+					materialDescription = material.getDescription();
+				}
+			}
+		%>
 		<tr>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><a href="<%= request.getRequestURI() + "?skuCode=" + entry.getKey() %>"><%= entry.getKey() %></a></td>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><%= sapId %></td>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><%= materialDescription %></td>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><%= dateFormat.format(entry.getValue()) %></td>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><%= formatDay(now, entry.getValue()) %></td>
 			<%
@@ -280,6 +297,7 @@ if (request.getParameter("reload") != null) {
 			 %>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><%= unavailable %></td>
 		</tr>
+		</fd:ErpProduct>
 		<%
 		}
 		 %>
@@ -307,7 +325,9 @@ if (request.getParameter("reload") != null) {
 	 %>
 	<table class="data">
 		<tr>
-			<th class="text12">SKU</th>
+			<th class="text12">SKU (Web Id)</th>
+			<th class="text12">SAP Id</th>
+			<th class="text12">Material Description</th> 
 			<th class="text12">Date</th>
 			<th class="text12">Age</th>
 			<th class="text12">Unavailable</th>
@@ -316,8 +336,22 @@ if (request.getParameter("reload") != null) {
 		for (Map.Entry<String, Date> entry : backInStockSkus.entrySet()) {
 			boolean overridden = backOverridden.containsKey(entry.getKey());
 		 %>
+		<fd:ErpProduct id="product" skuCode='<%= entry.getKey() %>'>
+		<%
+			String sapId = "<span class=\"warning\">&lt;&lt;unknown&gt;&gt;</span>";
+			String materialDescription = "<span class=\"warning\">&lt;&lt;unknown&gt;&gt;</span>";
+			if (product.getSkuCode() != null) {
+				ErpMaterialModel material = product.getProxiedMaterial();
+				if (material != null) {
+					sapId = material.getSapId();
+					materialDescription = material.getDescription();
+				}
+			}
+		%>
 		<tr>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><a href="<%= request.getRequestURI() + "?skuCode=" + entry.getKey() %>"><%= entry.getKey() %></a></td>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><%= sapId %></td>
+			<td class="text12<%= overridden ? " overridden" : "" %>"><%= materialDescription %></td>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><%= dateFormat.format(entry.getValue()) %></td>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><%= formatDay(now, entry.getValue()) %></td>
 			<%
@@ -328,6 +362,7 @@ if (request.getParameter("reload") != null) {
 			 %>
 			<td class="text12<%= overridden ? " overridden" : "" %>"><%= unavailable %></td>
 		</tr>
+		</fd:ErpProduct>
 		<%
 		}
 		 %>
