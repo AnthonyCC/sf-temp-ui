@@ -168,7 +168,7 @@ if(request.getParameter("message")!=null){
 					Find answers to our most frequently asked questions.
 					
 					<% List savedList=(List)pageContext.getAttribute("savedFaqs"); %>
-					<% if(null !=savedList && savedList.size()>0){ %>
+					<% if(null !=savedList && savedList.size()>0 && null!=savedList.get(0)){ %>
 					<p/><b>Top Questions this Week:</b><br/>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
 					<%  if(null != faqSections){
@@ -177,8 +177,8 @@ if(request.getParameter("message")!=null){
 					
 					<logic:iterate id="topfaq" indexId="idx" collection="<%= savedList %>" type="com.freshdirect.fdstore.content.Faq">
 					<table>
-					<% if(nextToken.equalsIgnoreCase((String)topfaq.getParentNode().getContentKey().getId())){ %>
-					<tr><td><img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;</td><td><a href="/help/faq_home.jsp?page=<%= (String)topfaq.getParentNode().getContentKey().getId()%>#<%= (String)topfaq.getContentKey().getId()%>"><%= topfaq.getQuestion() %></a></td></tr>
+					<% if(null!=topfaq && nextToken.equalsIgnoreCase((String)topfaq.getParentNode().getContentKey().getId())){ %>
+					<tr><td valign="top"><img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;</td><td><a href="/help/faq_home.jsp?page=<%= (String)topfaq.getParentNode().getContentKey().getId()%>#<%= (String)topfaq.getContentKey().getId()%>"><%= topfaq.getQuestion() %></a></td></tr>
 					
 					<%} %>
 					</table>			
@@ -232,7 +232,7 @@ if(request.getParameter("message")!=null){
 	    </td>
 	    
 	    <TD valign="top" align="CENTER" width="40">
-	 	<img src="/media_stat/images/layout/cccccc.gif" width="1" height="600"><br>
+	 	<img src="/media_stat/images/layout/cccccc.gif" width="1" height="730"><br>
 	    </td>	    
 		
 		<TD valign="top" width="370" colspan="3">

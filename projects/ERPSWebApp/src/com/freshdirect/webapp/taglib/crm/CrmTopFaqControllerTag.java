@@ -52,7 +52,9 @@ public class CrmTopFaqControllerTag extends AbstractControllerTag {
 //						  performGetAction(request,actionResult);
 					  }
 					}else{
-						actionResult.addError(true, "faqEmptyError", "No FAQs selected. Please select atleast one FAQ.");
+						CallCenterServices.saveTopFaqs(Arrays.asList(new String[]{" "}));
+						pageContext.setAttribute("SUCCESS_MSG", "Changes Saved!");
+						//actionResult.addError(true, "faqEmptyError", "No FAQs selected. Please select atleast one FAQ.");
 					}
 					performGetAction(request,actionResult);
 			} catch (FDResourceException e) {				
