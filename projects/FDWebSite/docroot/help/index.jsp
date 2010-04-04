@@ -177,7 +177,7 @@ if(request.getParameter("message")!=null){
 					
 					<logic:iterate id="topfaq" indexId="idx" collection="<%= savedList %>" type="com.freshdirect.fdstore.content.Faq">
 					<table>
-					<% if(null!=topfaq && nextToken.equalsIgnoreCase((String)topfaq.getParentNode().getContentKey().getId())){ %>
+					<% if(null!=topfaq && null !=topfaq.getParentNode() && nextToken.equalsIgnoreCase((String)topfaq.getParentNode().getContentKey().getId())){ %>
 					<tr><td valign="top"><img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;</td><td><a href="/help/faq_home.jsp?page=<%= (String)topfaq.getParentNode().getContentKey().getId()%>#<%= (String)topfaq.getContentKey().getId()%>"><%= topfaq.getQuestion() %></a></td></tr>
 					
 					<%} %>
