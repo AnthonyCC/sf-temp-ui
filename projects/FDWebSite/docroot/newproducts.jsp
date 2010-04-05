@@ -28,7 +28,7 @@
 	FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );
 	//--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", "www.freshdirect.com/newproducts.jsp");
-	request.setAttribute("listPos", "SystemMessage,CategoryNote");
+	request.setAttribute("listPos", "SystemMessage,LittleRandy,CategoryNote");
 %>
 <fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree" navigator="nav">
 <%
@@ -175,6 +175,13 @@
 			<% if ( categoryTree != null ) { %>
 				<%@ include file="/includes/search/generic_treenav.jspf" %>
 				<br />
+				<% if (FDStoreProperties.isAdServerEnabled()) { %>
+					<div style="width:155px; margin-top: 15px">
+					<script type="text/javascript">
+						OAS_AD('LittleRandy');
+					</script>
+					</div>
+				<% } %>
 				<img src="/media_stat/images/layout/clear.gif" height="1" width="170" alt="">
 			<% }else{ %>
 				&nbsp;
