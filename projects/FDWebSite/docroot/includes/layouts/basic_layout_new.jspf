@@ -39,8 +39,9 @@ int row_cnt = 0;
 final int GRID_ROW_SIZE=4; // maximum number of items per row (number of columns)
 int n_cols = 0; // number of columns
 boolean reverseOrder = "desc".equalsIgnoreCase(request.getParameter("order"));
+boolean sort = request.getParameter("sort") != null;
 Map groupedMap = null;
-if(showFeatNew) {
+if(showGroup && !sort) {
     NewProductsGrouping grouping = new NewProductsGrouping();
     groupedMap = grouping.groupBy(products, reverseOrder);
 } 

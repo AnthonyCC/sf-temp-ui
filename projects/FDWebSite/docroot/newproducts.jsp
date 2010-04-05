@@ -39,6 +39,7 @@
 	String deptRefUrl ="";
 	String trk="newp";
 	boolean isBrand = false;
+    boolean showGroup = true;
 
 	if ("".equals(deptId)) {
 		deptId = null; //no deptId, fallback by using null

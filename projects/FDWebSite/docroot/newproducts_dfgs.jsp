@@ -36,7 +36,7 @@
 	String deptRefUrl ="";
 	String trk="newp";
 	boolean isBrand = false;
-
+    boolean showGroup = true;
 	if ("".equals(deptId)) {
 		deptId = null; //no deptId, fallback by using null
 	}
@@ -102,7 +102,7 @@
 	 */
 	String brandValue = NVL.apply(request.getParameter("brandValue"), "");
 	String filteredHeader = "";
-	if (!"".equals(brandValue) || deptId!=null || !(FDStoreProperties.getNewProductsCatId()).equals(catId)) {
+	if (!"".equals(brandValue) || !(FDStoreProperties.getNewProductsCatId()).equals(catId)) {
 		showFeatNew = false;
 		useSmallBurst = true;
 
