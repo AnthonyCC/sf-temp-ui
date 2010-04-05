@@ -117,10 +117,10 @@ function clearCheckbox(obj){
 				  if((saveFaqResult.isSuccess() && savedList.contains(child.getKey().getId())) ||(null != selectedList && selectedList.contains(child.getKey().getId()))){
 				%>
 				<td width="100%" class="border_bottom"><input name="faqId" type="checkbox" checked="true" onClick="countChecked(this);" value="<%=child.getKey().getId()%>">
-					<a STYLE="text-decoration:none" href="#" onclick="return overlib(URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("ANSWER"))%>'), STICKY, CLOSECLICK, CAPTION, URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("QUESTION"))%>'), WIDTH, 512,  FGCOLOR, '#FAFDE1', CGCOLOR, '#3B0B0B', CLOSETEXT, '<img src=\'/media_stat/images/close_icon.GIF\'>');"> <%=child.getAttributeValue("QUESTION")%>&nbsp;</a></td>
+					<a STYLE="text-decoration:none" href="#" onclick="return overlib(URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("ANSWER"))%>'), STICKY, CLOSECLICK, CAPTION, URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("QUESTION"))%>'), WIDTH, 512,  FGCOLOR, '#FAFDE1', CGCOLOR, '#3B0B0B', CLOSETEXT, '<img src=\'/media_stat/crm/images/close.gif\'>');"> <%=child.getAttributeValue("QUESTION")%>&nbsp;</a></td>
 				<% } else { %>
 				<td width="100%"  class="border_bottom"><input name="faqId" type="checkbox"  onClick="countChecked(this);" value="<%=child.getKey().getId()%>">
-					<a STYLE="text-decoration:none" href="#" onclick="return overlib(URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("ANSWER"))%>'), STICKY, CLOSECLICK, CAPTION, URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("QUESTION"))%>'), WIDTH, 512,  FGCOLOR, '#FAFDE1',CGCOLOR, '#3B0B0B', CLOSETEXT, '<img src=\'/media_stat/images/close_icon.GIF\'>');"> <%=child.getAttributeValue("QUESTION")%>&nbsp;</a></td>
+					<a STYLE="text-decoration:none" href="#" onclick="return overlib(URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("ANSWER"))%>'), STICKY, CLOSECLICK, CAPTION, URLDecode('<%= URLEncoder.encode((String)child.getAttributeValue("QUESTION"))%>'), WIDTH, 512,  FGCOLOR, '#FAFDE1',CGCOLOR, '#3B0B0B', CLOSETEXT, '<img src=\'/media_stat/crm/images/close.gif\'>');"> <%=child.getAttributeValue("QUESTION")%>&nbsp;</a></td>
 				<% }} %>
 				
 				</logic:iterate>
