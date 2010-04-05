@@ -25,6 +25,9 @@
 	FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER);
 
 	boolean submitted = request.getParameter("info") != null && request.getParameter("info").indexOf("thankyou") > -1;
+	if (!submitted) {
+		submitted = request.getParameter("successPage") != null && request.getParameter("successPage").indexOf("thankyou") > -1;
+	}
 	boolean testSub = false;
 
 	String redirectSuccessPage = NVL.apply(request.getParameter("successPage"), "");
@@ -99,7 +102,7 @@
 			customSuccessPage = request.getRequestURI()+"?"+request.getQueryString();
 			//redirectSuccessPage = customSuccessPage;
 
-			if (survey_name.equals(sessionuser.getLastCOSSurvey())) { testSub=true; }
+			if (sessionuser!= null) { if (survey_name.equals(sessionuser.getLastCOSSurvey())) { testSub=true; } }
 		}
 
 	}
