@@ -217,6 +217,11 @@ public class DlvAdminManagerSessionBean extends SessionBeanSupport {
 			q.setString("region_name", regionName);
 			q.setString("zone_code", zoneCode);
 			l = q.list();
+			if (l.isEmpty()) {
+				// no query - can't make resources
+				return dlvResources;
+			}
+			
 			Object[] result = (Object[])l.get(0);
 			
 			planId = (String)result[1];
