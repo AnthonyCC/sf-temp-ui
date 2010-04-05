@@ -1229,7 +1229,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	private static final String ROUTE_STOP_QRY_WHERE_STOP = " and (s.stop_sequence between LPAD(?, 5, '0') and LPAD(?, 5, '0'))";
 
 	private static final String ROUTE_STOP_QRY_END = " and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
-		+ " and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))"
+		+ " and s.CROMOD_DATE = sa.action_date "
 		+ ") order by wave_number, truck_number, stop_sequence";
 
 	public List getRouteStopReport(Date date, String wave, String route, String stop1, String stop2) throws FDResourceException {
