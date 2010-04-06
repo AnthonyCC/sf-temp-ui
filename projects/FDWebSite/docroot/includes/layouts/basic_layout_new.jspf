@@ -73,7 +73,7 @@ List groupedProducts = (List) groupedMap.get(tr);
 if(tr.getDescription() != null && tr.getDescription().length() > 0) {
 %>
 <tr><td colspan="4"><div class="title12" style="text-align: left; margin: 14x 14x 0px;"><%= tr.getDescription()  %>&nbsp;(<%= groupedProducts.size() %>)<br/></div></td></tr>
-<tr><td colspan="4"><hr size="1" style="color:#E0E3D0"></td></tr>
+<tr><td colspan="4"><hr size="1" style="color:#ccc"></td></tr>
 <%
 }
 %>
@@ -178,7 +178,7 @@ int rank = nav.getPageOffset()+1;
 		<%
 			// don't display the bar below the last product
 			if (row_cnt < n_cols-1) {
-				%><tr><td colspan="4"><hr size="1" style="color:#E0E3D0"></td></tr><%
+				%><tr><td colspan="4"><hr size="1" style="color:#ccc"></td></tr><%
 			}
 			row_cnt++;
 		%>

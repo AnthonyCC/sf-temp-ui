@@ -101,8 +101,9 @@
 	 *	hiding feats also means showing filtered header, generate that here
 	 */
 	String brandValue = NVL.apply(request.getParameter("brandValue"), "");
+	String refineValue = NVL.apply(request.getParameter("refinement"), "");
 	String filteredHeader = "";
-	if (!"".equals(brandValue) || deptId!=null || !(FDStoreProperties.getNewProductsCatId()).equals(catId)) {
+	if (!"".equals(brandValue) || deptId!=null || !(FDStoreProperties.getNewProductsCatId()).equals(catId) || !"".equals(refineValue)) {
 		showFeatNew = false;
 		useSmallBurst = true;
 
@@ -120,7 +121,7 @@
 		}
 		//if we have a type, setup html
 		if (currentItem != null) {
-			filteredHeader = "<strong>"+results.getProductsSize()+" new product";
+			filteredHeader = "<strong>"+results.getProductsSize()+" New Product";
 			filteredHeader += ((results.getProductsSize() != 1) ? "s" : "");
 			filteredHeader += "</strong>";
 

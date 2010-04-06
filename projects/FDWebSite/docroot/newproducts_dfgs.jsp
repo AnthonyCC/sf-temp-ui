@@ -102,7 +102,7 @@
 	 */
 	String brandValue = NVL.apply(request.getParameter("brandValue"), "");
 	String filteredHeader = "";
-	if (!"".equals(brandValue) || !(FDStoreProperties.getNewProductsCatId()).equals(catId)) {
+	if (!"".equals(brandValue) || (FDStoreProperties.getNewProductsCatId()).equals(catId)) {
 		showFeatNew = false;
 		useSmallBurst = true;
 
