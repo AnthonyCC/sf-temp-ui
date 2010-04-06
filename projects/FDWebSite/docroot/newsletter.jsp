@@ -62,6 +62,7 @@ params.put("baseUrl", "");
 			if ("picks_love".equalsIgnoreCase(catId)) {
 				deptId = "gro";
 				isDepartment = true;
+				request.setAttribute("sitePage", "www.freshdirect.com/wgd/picks_love");
 			%>
 				<%@ include file="/includes/layouts/i_featured_products_picks.jspf" %>
 				<fd:IncludeMedia name="/media/editorial/picks/pres_picks/pres_picks_footer.ftl" parameters="<%=params%>"/>

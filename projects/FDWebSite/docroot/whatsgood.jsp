@@ -157,7 +157,7 @@ log(myDebug, "PAGE : Starting What's Good...");
 	<%
 		//--------OAS Page Variables-----------------------
 		request.setAttribute("sitePage", "www.freshdirect.com/whatsgood");
-		request.setAttribute("listPos", "WGLeft,WGCenter,WGRight");
+		request.setAttribute("listPos", "WGLeft,WGCenter,WGRight,SystemMessage");
 
 	if (emailPage) {
 		log(myDebug, "PAGE emailPage: "+emailPage);
