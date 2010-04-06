@@ -143,7 +143,7 @@ if(request.getParameter("message")!=null){
 	<tr>
 	<TD valign="top" width="225">
 					<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_quick_links.gif" width="119" height="15" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
-					Find answers to our most frequently asked questions.<br>
+					Check below to find the fastest answers to our top customer concerns.<br>
 					<br>
 					<font class="text11bold">
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/your_account/order_history.jsp">Check the status of your order</a><br>
@@ -165,7 +165,7 @@ if(request.getParameter("message")!=null){
 		<%}%>-->
 					</font><p/><br/>
 					<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_faqs.gif" width="45" height="14" border="0" alt="FAQs"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
-					Find answers to our most frequently asked questions.
+					Scan our Frequently Asked Questions to get info on sign-up, delivery and everything in between.
 					
 					<% List savedList=(List)pageContext.getAttribute("savedFaqs"); %>
 					<% if(null !=savedList && savedList.size()>0 && null!=savedList.get(0)){ %>
