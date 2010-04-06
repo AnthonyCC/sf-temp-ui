@@ -273,7 +273,7 @@ public class FactorUtil {
 	public static StoreLookup getNewnessLookup() {
 		return new StoreLookup() {
 			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
-				return ContentFactory.getInstance().getProductAge((ProductModel) contentNode);
+				return -ContentFactory.getInstance().getProductAge((ProductModel) contentNode);
 			}
 			
 			@Override
@@ -286,7 +286,7 @@ public class FactorUtil {
 	public static StoreLookup getBackInStockLookup() {
 		return new StoreLookup() {
 			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
-				return ContentFactory.getInstance().getBackInStockProductAge((ProductModel) contentNode);
+				return -ContentFactory.getInstance().getBackInStockProductAge((ProductModel) contentNode);
 			}
 			
 			@Override

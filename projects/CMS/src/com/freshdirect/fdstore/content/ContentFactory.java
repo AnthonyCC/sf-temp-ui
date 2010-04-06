@@ -610,7 +610,7 @@ public class ContentFactory {
 		if (when != null)
 			return ((double) System.currentTimeMillis() - when.getTime()) / (double) DAY_IN_MILLISECONDS;
 		else
-			return (double) Integer.MIN_VALUE; // very long time ago
+			return (double) Integer.MAX_VALUE; // very long time ago
 	}
 	
 	/**
@@ -696,7 +696,7 @@ public class ContentFactory {
 		if (when != null)
 			return ((double) System.currentTimeMillis() - when.getTime()) / (double) DAY_IN_MILLISECONDS;
 		else
-			return (double) Integer.MIN_VALUE; // very long time ago
+			return (double) Integer.MAX_VALUE; // very long time ago
 	}
 	
 	/**
