@@ -84,9 +84,20 @@ CREATE UNIQUE INDEX new_products_index1 ON erps.new_products (sku_code);
 -- force refresh (you don't have to call it on rollout)
 -- execute DBMS_MVIEW.REFRESH('erps.new_products');
 
+--DEV
+GRANT select on erps.new_products TO fdstore_prda;
+GRANT select on erps.new_products TO fdstore_prdb;
+
+--STAGE
+GRANT select on erps.new_products TO fdstore_prda;
+GRANT select on erps.new_products TO fdstore_prdb;
+GRANT select on erps.new_products TO fdstore_ststg01;
+
+--PROD
 GRANT select on erps.new_products TO fdstore_prda;
 GRANT select on erps.new_products TO fdstore_prdb;
 GRANT select on erps.new_products TO fdstore_stprd01;
+
 
 -- create back-in-stock products materialized view
 
@@ -174,6 +185,16 @@ CREATE UNIQUE INDEX back_in_stock_index1 ON erps.back_in_stock_products(sku_code
 -- force refresh (you don't have to call it on rollout)
 -- execute DBMS_MVIEW.REFRESH('erps.back_in_stock_products');
 
+--DEV
+GRANT select on erps.back_in_stock_products TO fdstore_prda;
+GRANT select on erps.back_in_stock_products TO fdstore_prdb;
+
+--STAGE
+GRANT select on erps.back_in_stock_products TO fdstore_prda;
+GRANT select on erps.back_in_stock_products TO fdstore_prdb;
+GRANT select on erps.back_in_stock_products TO fdstore_ststg01;
+
+--PROD
 GRANT select on erps.back_in_stock_products TO fdstore_prda;
 GRANT select on erps.back_in_stock_products TO fdstore_prdb;
 GRANT select on erps.back_in_stock_products TO fdstore_stprd01;
@@ -189,13 +210,23 @@ end;
 
 /
 
+--DEV
+GRANT execute on erps.refresh_new_and_back TO fdstore_prda;
+GRANT execute on erps.refresh_new_and_back TO fdstore_prdb;
+
+--STAGE
+GRANT execute on erps.refresh_new_and_back TO fdstore_prda;
+GRANT execute on erps.refresh_new_and_back TO fdstore_prdb;
+GRANT execute on erps.refresh_new_and_back TO fdstore_ststg01;
+
+--PROD
 GRANT execute on erps.refresh_new_and_back TO fdstore_prda;
 GRANT execute on erps.refresh_new_and_back TO fdstore_prdb;
 GRANT execute on erps.refresh_new_and_back TO fdstore_stprd01;
 
+
 -- ROLLBACK
 
-DROP procedure erps.refresh_new_and_back;
-DROP materialized view erps.back_in_stock_products;
-DROP materialized view erps.new_products;
-
+--DROP procedure erps.refresh_new_and_back;
+--DROP materialized view erps.back_in_stock_products;
+-- DROP materialized view erps.new_products;
