@@ -175,13 +175,6 @@
 			<% if ( categoryTree != null ) { %>
 				<%@ include file="/includes/search/generic_treenav.jspf" %>
 				<br />
-				<% if (FDStoreProperties.isAdServerEnabled()) { %>
-					<div style="width:155px; margin-top: 15px">
-					<script type="text/javascript">
-						OAS_AD('LittleRandy');
-					</script>
-					</div>
-				<% } %>
 				<img src="/media_stat/images/layout/clear.gif" height="1" width="170" alt="">
 			<% }else{ %>
 				&nbsp;
