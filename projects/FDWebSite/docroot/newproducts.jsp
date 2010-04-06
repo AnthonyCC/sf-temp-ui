@@ -137,10 +137,16 @@
 					bLogo.setWidth(1);
 					bLogo.setHeight(1);
 				}else{
-					filteredHeader = "<a href=\""+brandLink+"\"><img src=\""+bLogo.getPath()+"\" width=\""+bLogo.getWidth()+"\" height=\""+bLogo.getHeight()+"\" alt=\""+currentItem.getFullName()+"\" border=\"0\"></a> "+filteredHeader;
+					//remove brand link
+						//filteredHeader = "<a href=\""+brandLink+"\"><img src=\""+bLogo.getPath()+"\" width=\""+bLogo.getWidth()+"\" height=\""+bLogo.getHeight()+"\" alt=\""+currentItem.getFullName()+"\" border=\"0\"></a> "+filteredHeader;
+					//non-linked brand
+					filteredHeader = "<img src=\""+bLogo.getPath()+"\" width=\""+bLogo.getWidth()+"\" height=\""+bLogo.getHeight()+"\" alt=\""+currentItem.getFullName()+"\" border=\"0\"></a> "+filteredHeader;
 				}
 			
-				filteredHeader += " from <strong>"+currentItem.getFullName()+"</strong> (<strong><a href=\""+brandLink+"\">View All</a></strong>)";
+				//remove brand link
+					//filteredHeader += " from <strong>"+currentItem.getFullName()+"</strong> (<strong><a href=\""+brandLink+"\">View All</a></strong>)";
+				//non-linked brand
+					filteredHeader += " from <strong>"+currentItem.getFullName()+"</strong>";
 				filteredHeader += "<hr size=\"1\" style=\"color: #ccc;\">";
 			} else if (currentItem instanceof DepartmentModel ) {
 				currentItem = (DepartmentModel)currentItem;
