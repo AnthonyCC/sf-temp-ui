@@ -203,6 +203,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			if ( selectedList.size() == 0 ) {
 				return;
 			}
+			// just one type, otherwise it will be confusing 
 			String moveType = selectedList.get( 0 ).getType();
 			for ( Iterator<OneToManyModel> iter = selectedList.iterator(); iter.hasNext(); ) {
 				OneToManyModel current = iter.next();
@@ -211,32 +212,37 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 				}
 			}
 
-			CmsGwt.getNavigableRelations( moveType, new BaseCallback<NavigableRelationInfo>() {
-
-				public void onSuccess( final NavigableRelationInfo result ) {
-					final ContentTreePopUp popup = ContentTreePopUp.getInstance( result.getNavigableTypes(), false );
-					if ( copy ) {
-						popup.setHeading( "Copy " + selectedList.size() + " item(s) to :" );
-					} else {
-						popup.setHeading( "Move " + selectedList.size() + " item(s) to :" );
-					}
-
-					popup.addListener( Events.Select, new Listener<BaseEvent>() {
-
-						public void handleEvent( BaseEvent be ) {
-							ContentNodeModel targetNode = popup.getSelectedItem();
-							String attrName = result.getNavigableAttributeName( targetNode.getType() );
-							if ( addRelationshipsToNode( targetNode.getKey(), attrName, selectedList ) ) {
-								if ( !copy ) {
-									removeRelationships( selectedList );
-								}
-							}
-						}
-					} );
-					popup.show();
-
-				};
-			} );
+                        CmsGwt.getNavigableRelations(moveType, new BaseCallback<NavigableRelationInfo>() {
+            
+                            public void onSuccess(final NavigableRelationInfo result) {
+                                final ContentTreePopUp popup = ContentTreePopUp.getInstance(result.getAllTargetTypes(parentType), false);
+                                if (copy) {
+                                    popup.setHeading("Copy " + selectedList.size() + " item(s) to :");
+                                } else {
+                                    popup.setHeading("Move " + selectedList.size() + " item(s) to :");
+                                }
+            
+                                popup.addListener(Events.Select, new Listener<BaseEvent>() {
+            
+                                    public void handleEvent(BaseEvent be) {
+                                        ContentNodeModel targetNode = popup.getSelectedItem();
+                                        String attrName;
+                                        if (parentType.equals(targetNode.getType())) {
+                                            attrName = attributeKey;
+                                        } else {
+                                            attrName = result.getNavigableAttributeName(targetNode.getType());
+                                        }
+                                        if (addRelationshipsToNode(targetNode.getKey(), attrName, selectedList)) {
+                                            if (!copy) {
+                                                removeRelationships(selectedList);
+                                            }
+                                        }
+                                    }
+                                });
+                                popup.show();
+            
+                            };
+                        });
 		}
 	}
 
