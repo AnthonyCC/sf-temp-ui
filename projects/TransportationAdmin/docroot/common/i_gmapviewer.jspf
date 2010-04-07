@@ -9,11 +9,7 @@
       var jsonrpcClient = new JSONRpcClient("geographyprovider.ax");
       var currentBoundary;
       
-      function doExport() {   							    
-		    if(currentBoundary != null) {
-		    	location.href = "gmapexport.do?type="+ document.getElementById("gtype").value+"&code="+currentBoundary;	
-			}
-	  }
+     
   	    
       function init() {
         editPanel = new YAHOO.widget.Panel("panel-1", {       
@@ -55,8 +51,8 @@
           waitPanel.render(document.body);
           waitPanel.show();
           
-    	  var result = loadData(jsonrpcClient, showBoundaryCallback, boundaryKey); 
-      	  
+    	  var result = jsonrpcClient.AsyncGeographyProvider.getBoundaries(showBoundaryCallback, boundaryKey); 
+    	  currentBoundary = boundaryKey;
       }
       
       function showBoundaryCallback(result, exception) {
@@ -67,39 +63,72 @@
               return;
           }
           
-          var polyPoints = [];
+          
 		  var polygonDepth = "20";
 		  var fillColor = "#0000FF"; // blue fill
 		  var lineColor = "#000000"; // black line
 	      var opacity = .5;
 	      var lineWeight = .5; 
 	      
-          waitPanel.hide();
-          
-          var centerpoint = new GLatLng(result.center['y'], result.center['x']);
-          map.setCenter(centerpoint, 12);
-          
-          var markerCenter = createMarker(centerpoint,"P",(result.code+"<br/>"+result.name));
-          map.addOverlay(markerCenter);
-          
-          if(result.geoloc.list != null) {
-          	for (i=0; i < result.geoloc.list.length; i++) {
-          	 	var tmpPoint = result.geoloc.list[i];          	 	
-          		polyPoints.push(new GLatLng(tmpPoint['y'], tmpPoint['x']));
-          	}          	          	
+          waitPanel.hide();                              
+          if(result.list != null) {        	          	  
+        	  for (j=0; j < result.list.length; j++) {
+        		  
+        		  var centerpoint = new GLatLng(result.list[j].center['y'], result.list[j].center['x']);
+                  map.setCenter(centerpoint, 12);
+                  
+                  var markerCenter = createFlatMarker(centerpoint, result.list[j].code, result.list[j].zone, (result.list[j].code+"<br/>"+result.list[j].name));//createMarker(centerpoint,"P",(result.list[j].code+"<br/>"+result.list[j].name));
+                  map.addOverlay(markerCenter);
+		          if(result.list[j].geoloc.list != null) {
+		        	var polyPoints = [];
+		          	for (i=0; i < result.list[j].geoloc.list.length; i++) {
+		          		
+		          	 	var tmpPoint = result.list[j].geoloc.list[i];          	 	
+		          		polyPoints.push(new GLatLng(tmpPoint['y'], tmpPoint['x']));		          		
+		       		     	
+		          	}
+		          	var polyShape = new GPolygon(polyPoints,lineColor,lineWeight,opacity, genHexColor(),opacity);
+	                map.addOverlay(polyShape);          	          	
+		          }
+        	  }
           }
-          
-          var polyShape = new GPolygon(polyPoints,lineColor,lineWeight,opacity,fillColor,opacity);
-          map.addOverlay(polyShape);
-		                       
-		  map.setZoom(defaultZoomLevel); 	                    
+          //map.setZoom(defaultZoomLevel);
+                             
           editPanel.render(document.body);    
           //editPanel.moveTo(450, 200);
           
-          currentBoundary = result.code;
+          
           editPanel.show();
       }
-      
+
+      function genHexColor(){
+    	  colors = new Array(14)
+    	  colors[0]="0"
+    	  colors[1]="1"
+    	  colors[2]="2"
+    	  colors[3]="3"
+    	  colors[4]="4"
+    	  colors[5]="5"
+    	  colors[5]="6"
+    	  colors[6]="7"
+    	  colors[7]="8"
+    	  colors[8]="9"
+    	  colors[9]="a"
+    	  colors[10]="b"
+    	  colors[11]="c"
+    	  colors[12]="d"
+    	  colors[13]="e"
+    	  colors[14]="f"
+
+    	  digit = new Array(5)
+    	  color="#"
+    	  for (i=0; i<6; i++){
+    	  	digit[i]=colors[Math.round(Math.random()*14)]
+    	  	color = color+digit[i];
+    	  }
+    	  return color;
+   	  }
+       	  
       function plotPoint(type) {
       	if('A' == type) {
       		// Create new geocoding object
@@ -135,6 +164,20 @@
 	      map.addOverlay(addressMarker);
 
    }
+
+       function createFlatMarker(point, info, isZone, legend) {
+           var shapeVal = "roundrect";
+           if(isZone) {
+        	   shapeVal = "circle";
+           }
+	       var newIcon = MapIconMaker.createFlatIcon({width: 30, height: 30, primaryColor: "#ff0000", label:info, shape: shapeVal, labelColor:"#ffffff"});
+   		   var marker = new GMarker(point, {icon: newIcon});
+   			GEvent.addListener(marker, "click", function() {
+		    marker.openInfoWindowHtml(legend);
+		  });
+      	  return marker;
+     } 
+       
       
       function createMarker(point, letterCode, info) {
 		var baseIcon = new GIcon();
@@ -175,8 +218,7 @@
 	    <input type="button" value="Locate!" onclick="javascript:plotPoint('P')" />
 	    &nbsp;&nbsp;
 	    <input type="text" size="40" id="address" value="2330 BORDEN AVE, 11101, NY"  />
-	    <input type="button" value="Locate!" onclick="javascript:plotPoint('A')" />
-	    <input type="button" value="Export!" onclick="javascript:doExport()" />
+	    <input type="button" value="Locate!" onclick="javascript:plotPoint('A')" />	    
  	 </p>
       
                 <div id="map_canvas" style="width: 940px; height: 600px"></div>

@@ -14,6 +14,16 @@ public class SpatialBoundary implements java.io.Serializable {
 	private String name;
 	
 	private List geoloc;
+	
+	private boolean isZone;
+
+	public boolean isZone() {
+		return isZone;
+	}
+
+	public void setZone(boolean isZone) {
+		this.isZone = isZone;
+	}
 
 	public String getCode() {
 		return code;

@@ -62,26 +62,28 @@ public class GeographyController extends AbstractMultiActionController {
 	 */
 	public ModelAndView geographicBoundaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
-		String type = request.getParameter("type");
-		Collection dataList = new ArrayList();
-		if("georestriction".equalsIgnoreCase(type)) {
-			dataList = restrictionManagerService.getGeoRestrictionBoundaries();
-		} else {
-			dataList = domainManagerService.getZones();
-			Collection activeZoneCodes = zoneManagerService.getActiveZoneCodes();
-        	if(dataList != null && activeZoneCodes != null) {
-        		Iterator _iterator = dataList.iterator();
-        		Zone _tmpZone = null;
-        		while(_iterator.hasNext()) {
-        			_tmpZone = (Zone)_iterator.next();
-        			if(!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
-        				_iterator.remove();
-        			}
-        		}
-        	}			
-		}
+		ModelAndView mav = new ModelAndView("geographyView");
 		
-		return new ModelAndView("geographyView","boundaries",dataList);
+		Collection geoRestrictions = new ArrayList();
+		Collection geoZones = new ArrayList();
+		
+		geoRestrictions = restrictionManagerService.getGeoRestrictionBoundaries();
+		
+		geoZones = domainManagerService.getZones();
+		Collection activeZoneCodes = zoneManagerService.getActiveZoneCodes();
+    	if(geoZones != null && activeZoneCodes != null) {
+    		Iterator _iterator = geoZones.iterator();
+    		Zone _tmpZone = null;
+    		while(_iterator.hasNext()) {
+    			_tmpZone = (Zone)_iterator.next();
+    			if(!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
+    				_iterator.remove();
+    			}
+    		}
+    	}	
+    	mav.getModel().put("zoneboundaries", geoZones);
+		mav.getModel().put("georestrictionboundaries", geoRestrictions);		
+		return mav;
 	}
 	
 	/**
@@ -91,43 +93,50 @@ public class GeographyController extends AbstractMultiActionController {
 	 * @return a ModelAndView to render the response
 	 */
 	public ModelAndView geographicBoundaryExportHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-
-		String type = request.getParameter("type");
+		
 		String code = request.getParameter("code");
 		
 		SpatialBoundary boundary = null;
 		response.setContentType("application/csv");
-		response.setHeader("Content-Disposition", "attachment; filename="+code+".csv");
-		OutputStream out = null;
+		response.setHeader("Content-Disposition", "attachment; filename=exportmap.csv");
 		try {
-			if("georestriction".equalsIgnoreCase(type)) {
-				boundary = getRestrictionManagerService().getGeoRestrictionBoundary(code);
-			} else {
-				boundary = getRestrictionManagerService().getZoneBoundary(code);				
-			}
-			
-			if(boundary != null) {
-				
-				out = response.getOutputStream();
-				
-				List points = boundary.getGeoloc();
-				StringBuffer strBuf = new StringBuffer();
-				
-				if(points != null) {
-					int intCount = 0;
-					Iterator itr = points.iterator();
-					SpatialPoint _point = null;					
-					while(itr.hasNext()) {
-						_point = (SpatialPoint)itr.next();
-						strBuf.append(boundary.getCode()).append(",").append(boundary.getName())
-											.append(",").append(_point.getX()).append(",").append(_point.getY())
-											.append(",").append(++intCount).append("\n");
+			OutputStream out = response.getOutputStream();
+			StringBuffer strBuf = new StringBuffer();
+		
+			if (code != null && code.trim().length() > 0) {
+				String[] splitCodes = code.split(",");	
+				for (String _tmpCode : splitCodes) {
+					boundary = null;
+			        if(_tmpCode.startsWith("$_")) {
+			        	boundary = getRestrictionManagerService().getGeoRestrictionBoundary(_tmpCode.substring(2, _tmpCode.length()));
+			        } else {
+			        	boundary = getRestrictionManagerService().getZoneBoundary(_tmpCode);
+			        }
+			        if(boundary != null) {					
+						List points = boundary.getGeoloc();						
+						
+						if(points != null) {
+							int intCount = 0;
+							Iterator itr = points.iterator();
+							SpatialPoint _point = null;					
+							while(itr.hasNext()) {
+								_point = (SpatialPoint)itr.next();
+								strBuf.append(boundary.getCode()).append(",").append(boundary.getName())
+													.append(",").append(_point.getX()).append(",").append(_point.getY())
+													.append(",").append(++intCount).append("\n");
+							}
+							
+						}									
 					}
-					
+			        strBuf.append("").append(",").append("")
+					.append(",").append("").append(",").append("")
+					.append(",").append("").append("\n");
 				}
-				out.write(strBuf.toString().getBytes());
-				out.flush();				
+
 			}
+			out.write(strBuf.toString().getBytes());
+			out.flush();			
+			
 		} catch (IOException e) {
 			//Send Empty File
 		} 

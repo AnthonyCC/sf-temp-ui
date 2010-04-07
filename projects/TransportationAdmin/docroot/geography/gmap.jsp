@@ -4,13 +4,9 @@
 
 <%    
   pageContext.setAttribute("HAS_ADDBUTTON", "false");
-  pageContext.setAttribute("HAS_DELETEBUTTON", "false");
-  String type = request.getParameter("type");
-  String pageTitle = "Zone Boundary";
-	if(!"zone".equalsIgnoreCase(type)) { 
-		pageTitle = "Geo Restriction Boundary";
-	}
+  pageContext.setAttribute("HAS_DELETEBUTTON", "false");  
 %>
+
 <tmpl:insert template='/common/sitelayout.jsp'>
 
 <tmpl:put name='yui-lib'>
@@ -23,129 +19,119 @@
 
 <tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>	
 
-<tmpl:put name='title' direct='true'>Operations : GMaps : <%=pageTitle%></tmpl:put>
+<tmpl:put name='title' direct='true'>Operations : GMaps </tmpl:put>
 
 <tmpl:put name='hasSubs' direct='true'>subs</tmpl:put>
 
   <tmpl:put name='content' direct='true'>
+ 
   <c:if test="${not empty messages}">
 		<div class="err_messages">
 			<jsp:include page='/common/messages.jsp'/>
 		</div>
-	</c:if> 
-  <script>
-      function handleType(type) {
-      		location.href = "gmap.do?type="+ type;
-      }
-      
-    </script>  
-  <div align="center"><br/>
-  		<b>Please Select a Boundary Type:&nbsp;&nbsp;&nbsp;</b>
-		<input onclick="javascript:handleType('zone');" type="radio" id="gtype" value="zone" <%= "zone".equalsIgnoreCase(type) ? "checked" : "" %> /> <b>Zone</b>&nbsp;&nbsp;&nbsp;
-		<input onclick="javascript:handleType('georestriction');" type="radio" id="gtype" value="georestriction" <%= "georestriction".equalsIgnoreCase(type) ? "checked" : "" %> /> <b>Geo Restriction</b>
-		<br/>         
-	</div>
+	</c:if>
 	
-	<div class="contentroot">
+  <table >  
+  	<tr>  		   			
+   			<td colspan="2" align="center">&nbsp;&nbsp;<input id="view_button1" type="image" alt="Google Maps Viewer" src="./images/googlemaps.gif" 
+   			onclick="javascript:doBoundary(true)"/>
+   			<td align="center">&nbsp;&nbsp;<input id="view_button3" type="image" alt="Clear" src="./images/clear_all.gif"  
+   			onclick="javascript:doClear()" />&nbsp;&nbsp;
+   			&nbsp;&nbsp;<input id="view_button3" type="image" alt="Export Map" src="./images/export_map.gif"  
+   			onclick="javascript:doBoundary(false)" />&nbsp;&nbsp;</td>
+   			</tr> 
+    <tr>    
+	  <td style="vertical-align: top;" width="50%">
+	      <ec:table items="zoneboundaries"   action="${pageContext.request.contextPath}/gmap.do"
+	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Zones"
+	            tableId="zone_boundaries"  width="100%" filterable="false" showPagination="false" showExports="false" 
+	            showStatusBar="false" sortable="false" rowsDisplayed="1000" view="fd" >
+             	                
+	            <ec:row> 
+	            <ec:column title=" " width="5px" 
+									filterable="false" sortable="false" cell="selectcol"
+									property="zoneCode" alias="bzoneCode" />   
+	              <ec:column filterable="false" sortable="false" alias="trnZoneCode" property="zoneCode" title="Code"/>
+				  <ec:column filterable="false" sortable="false" property="name" title="Name"/>              	              									  	                           
+	            </ec:row>
+	          </ec:table>
+	    </td>
+	   <td>&nbsp;&nbsp;&nbsp;</td>
+	    <td style="vertical-align: top;" width="50%">
+	    
+	      <ec:table items="georestrictionboundaries"   action="${pageContext.request.contextPath}/gmap.do"
+	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Geo Restrictions"
+	            width="100%"  filterable="false"  showPagination="false" showExports="false" showStatusBar="false" sortable="false" 
+	             tableId="georestriction_boundaries" rowsDisplayed="1000" view="fd" >
+	            
+	            
+	            <ec:row>
+	             <ec:column title=" " width="5px" 
+									filterable="false" sortable="false" cell="selectcol"
+									property="code" alias="bcode" />                  
+	             <ec:column filterable="false" sortable="false" alias="trnBCode" property="code" title="Code"/>
+				 <ec:column filterable="false" sortable="false" property="name" title="Name"/>									  	                           
+	            </ec:row>
+	          </ec:table>
+	    
+	  	</td> 
+	    </tr> 
+    </table>
+	<%@ include file='/common/i_gmapviewer.jspf'%>
+	<script>
+		function doBoundary(doShow) {
+			var table_zone = document.getElementById("zone_boundaries_table");
+			var table_georestriction = document.getElementById("georestriction_boundaries_table");			
+            var checkboxList_Zone = table_zone.getElementsByTagName("input");
+            var checkboxList_GeoRestriction = table_georestriction.getElementsByTagName("input");
+            var checked = "";
+            
+            for (i = 0; i < checkboxList_Zone.length; i++) {            
+              if (checkboxList_Zone[i].type=="checkbox" && !checkboxList_Zone[i].disabled)  {
+              	if(checkboxList_Zone[i].checked) {
+              		checked += checkboxList_Zone[i].name+",";
+              	}                          	
+              }
+            }
+            for (i = 0; i < checkboxList_GeoRestriction.length; i++) {            
+                if (checkboxList_GeoRestriction[i].type=="checkbox" && !checkboxList_GeoRestriction[i].disabled)  {
+                	if(checkboxList_GeoRestriction[i].checked) {
+                		checked += "$_"+checkboxList_GeoRestriction[i].name+",";
+                	}                          	
+                }
+           }
+            if(checked.length == 0) {
+             	alert('Please Select a Row!');
+            }
+            else {
+                if(doShow) {
+            		showBoundary(checked.substring(0,checked.length-1));
+                } else {
+                	location.href = "gmapexport.do?code="+checked.substring(0,checked.length-1);	
+                }
+            }
+		}
 
-		<div class="cont_topleft">
-			<div class="cont_row">
-				<div class="cont_Litem">
-					<span class="scrTitle">
-						<%=pageTitle%>
-					</span>
-				</div>
-			</div>
-		</div>
-
-		<div class="cont_topright">
-			<div class="cont_row">
-				<div class="cont_Ritem">
-					<form id="defaultForm" action="" method="post">
-					<% if("georestriction".equalsIgnoreCase(type)) 	{ %>
-							<ec:table items="boundaries"   action="${pageContext.request.contextPath}/gmap.do?type=georestriction"
-								imagePath="${pageContext.request.contextPath}/images/table/*.gif" title=""
-								width="98%"  view="fd" form="defaultForm" autoIncludeParameters="false" rowsDisplayed="25">
-								<ec:exportPdf fileName="transportationgeorestriction.pdf" tooltip="Export PDF" 
-										  headerTitle="Transportation Geo Restriction" />
-								  <ec:exportXls fileName="transportationgeorestriction.xls" tooltip="Export PDF" />
-								  <ec:exportCsv fileName="transportationgeorestriction.csv" tooltip="Export CSV" delimiter="|"/>               
-								  <ec:row interceptor="obsoletemarker">
-								    
-								  <ec:column alias="trnBCode" property="code" title="Code"/>
-								  <ec:column property="name" title="Name"/>
-								  
-								</ec:row>
-							  </ec:table>
-							  <script>
-								function loadData(jsonrpcClient, showBoundaryCallback, boundaryKey) {
-						     		return jsonrpcClient.AsyncGeographyProvider.getGeoRestrictionBoundary(showBoundaryCallback
-						    	  																, boundaryKey); 
-	     						}
-							</script>	
-						<% }else{ %>
-							<ec:table items="boundaries"   action="${pageContext.request.contextPath}/gmap.do?type=zone"
-								imagePath="${pageContext.request.contextPath}/images/table/*.gif" title=""
-								width="98%"  view="fd" form="defaultForm" autoIncludeParameters="false" rowsDisplayed="25">
-								<ec:exportPdf fileName="transportationzones.pdf" tooltip="Export PDF" 
-										  headerTitle="Transportation Zones" />
-								  <ec:exportXls fileName="transportationzones.xls" tooltip="Export PDF" />
-								  <ec:exportCsv fileName="transportationzones.csv" tooltip="Export CSV" delimiter="|"/>               
-								  <ec:row interceptor="obsoletemarker">
-								    
-								  <ec:column alias="trnZoneCode" property="zoneCode" title="Code"/>
-								  <ec:column property="name" title="Name"/>
-								  
-								</ec:row>
-							  </ec:table>
-							  <script>
-								function loadData(jsonrpcClient, showBoundaryCallback, boundaryKey) {
-						     		return jsonrpcClient.AsyncGeographyProvider.getZoneBoundary(showBoundaryCallback
-						    	  																, boundaryKey); 
-	     						}
-							</script>	
-						<% } %>
-				</form>	 
-				<%@ include file='/common/i_gmapviewer.jspf'%>
+		function doClear() {
+			var table_zone = document.getElementById("zone_boundaries_table");
+			var table_georestriction = document.getElementById("georestriction_boundaries_table");			
+            var checkboxList_Zone = table_zone.getElementsByTagName("input");
+            var checkboxList_GeoRestriction = table_georestriction.getElementsByTagName("input");
+                        
+            for (i = 0; i < checkboxList_Zone.length; i++) {            
+              if (checkboxList_Zone[i].type=="checkbox" && !checkboxList_Zone[i].disabled)  {
+            	  checkboxList_Zone[i].checked = false;                       	
+              }
+            }
+            for (i = 0; i < checkboxList_GeoRestriction.length; i++) {            
+                if (checkboxList_GeoRestriction[i].type=="checkbox" && !checkboxList_GeoRestriction[i].disabled)  {
+                	checkboxList_GeoRestriction[i].checked = false;                       	
+                }
+           }
+           
+		}
 		
-				</div>
-			</div>
-		</div>
-	</div>
-		<script>
-		
-		function addAsyncHandler(tableId, rowClassName, columnIndex) {
-			
-			var previousClass = null;
-		    var table = document.getElementById(tableId);
-		    
-		    if(table != null) {
-			    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
-			    for (i = 0; i < rows.length; i++) {	    	
-			        var cells = rows[i].getElementsByTagName("td");
-			        
-			        for (j = 0; j < cells.length; j++) {
-			        	
-			            cells[j].onmouseover = function () {
-			            	previousClass = this.parentNode.className;
-			            	this.parentNode.className = this.parentNode.className + " " + rowClassName ;
-			            };
-			        
-			            cells[j].onmouseout = function () {
-			              	this.parentNode.className = previousClass;
-			            };
-			        
-			           cells[j].onclick = function () {			    		
-						      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];							      		
-						      		showBoundary(cell.innerHTML);
-						      			      		
-					   };
-				    		    	
-			        }
-			    }
-			}
-		 }
-			addAsyncHandler('ec_table', 'rowMouseOver', 0);		
-		</script>
+	</script>	
+	
   </tmpl:put>
 </tmpl:insert>
