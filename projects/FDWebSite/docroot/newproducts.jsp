@@ -103,10 +103,13 @@
 	String brandValue = NVL.apply(request.getParameter("brandValue"), "");
 	String refineValue = NVL.apply(request.getParameter("refinement"), "");
 	String filteredHeader = "";
+    if (!"".equals(brandValue) || deptId!=null || !(FDStoreProperties.getNewProductsCatId()).equals(catId)) {
+        showGroup=false;
+    }
 	if (!"".equals(brandValue) || deptId!=null || !(FDStoreProperties.getNewProductsCatId()).equals(catId) || !"".equals(refineValue)) {
 		showFeatNew = false;
 		useSmallBurst = true;
-
+        
 		ContentNodeModel currentItem = null;
 
 		//determine what data we're getting
