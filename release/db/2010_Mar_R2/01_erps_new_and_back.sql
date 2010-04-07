@@ -98,6 +98,9 @@ GRANT select on erps.new_products TO fdstore_prda;
 GRANT select on erps.new_products TO fdstore_prdb;
 GRANT select on erps.new_products TO fdstore_stprd01;
 
+--CMS
+GRANT execute on erps.refresh_new_and_back TO fdstore;
+GRANT execute on erps.refresh_new_and_back TO appdev;
 
 -- create back-in-stock products materialized view
 
@@ -199,6 +202,10 @@ GRANT select on erps.back_in_stock_products TO fdstore_prda;
 GRANT select on erps.back_in_stock_products TO fdstore_prdb;
 GRANT select on erps.back_in_stock_products TO fdstore_stprd01;
 
+--CMS
+GRANT execute on erps.refresh_new_and_back TO fdstore;
+GRANT execute on erps.refresh_new_and_back TO appdev;
+
 -- create refresh store procedure
 
 create or replace procedure erps.refresh_new_and_back
@@ -224,6 +231,9 @@ GRANT execute on erps.refresh_new_and_back TO fdstore_prda;
 GRANT execute on erps.refresh_new_and_back TO fdstore_prdb;
 GRANT execute on erps.refresh_new_and_back TO fdstore_stprd01;
 
+--CMS
+GRANT execute on erps.refresh_new_and_back TO fdstore;
+GRANT execute on erps.refresh_new_and_back TO appdev;
 
 -- ROLLBACK
 
