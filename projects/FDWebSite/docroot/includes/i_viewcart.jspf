@@ -25,6 +25,10 @@ FDIdentity identity = user.getIdentity();
 %>
 <div style="width: 695px;">
 
+<style type="text/css">
+ .promotionError { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
+</style>
+
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="120"><input type="image" name="update_quantities" src="/media_stat/images/buttons/update_quantities.gif" width="113" height="16" border="0" alt="UPDATE QUANTITIES"></td>
@@ -478,7 +482,7 @@ FDIdentity identity = user.getIdentity();
 			<td colspan="2" align="right"><input type="image" name="redemptionCodeSubmit" src="/media_stat/images/buttons/apply.gif" border="0" alt="APPLY" vspace="0"></td>
 		</tr>
 		<tr align="right">
-			<td colspan="7"><fd:ErrorHandler result="<%=redemptionResult%>" name="redemption_error" id="errorMsg"><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			<td colspan="7"><fd:ErrorHandler result="<%=redemptionResult%>" name="redemption_error" id="errorMsg"><span class="promotionError"><%=errorMsg%></span></fd:ErrorHandler></td>
 		</tr>
 		<%
 	}
