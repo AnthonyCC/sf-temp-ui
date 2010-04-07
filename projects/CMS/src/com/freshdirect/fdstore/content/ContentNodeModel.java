@@ -11,8 +11,8 @@ public interface ContentNodeModel {
 
 	public final static Comparator<ContentNodeModel> FULL_NAME_COMPARATOR = new Comparator<ContentNodeModel>() {
 		public int compare(ContentNodeModel cn1, ContentNodeModel cn2) {
-			String name1 = cn1.getFullName();
-			String name2 = cn2.getFullName();
+			String name1 = cn1.getFullName().toLowerCase();
+			String name2 = cn2.getFullName().toLowerCase();
 
 			if (name1 == null)
 				name1 = "";
