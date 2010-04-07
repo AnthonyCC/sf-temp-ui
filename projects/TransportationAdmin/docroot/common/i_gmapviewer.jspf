@@ -9,7 +9,7 @@
       var jsonrpcClient = new JSONRpcClient("geographyprovider.ax");
       var currentBoundary;
       
-     
+     var locIndex = 0;
   	    
       function init() {
         editPanel = new YAHOO.widget.Panel("panel-1", {       
@@ -136,7 +136,7 @@
 		   currentAddress = document.getElementById('address').value;
 	       // Retrieve location information, pass it to addToMap()
     	   geocoder.getLocations(document.getElementById('address').value, addToMap);
-      
+ 	   
       	   
       	} else {
       	   var centerpoint = new GLatLng(document.getElementById('latitude').value, document.getElementById('longitude').value);
@@ -146,6 +146,7 @@
 	       							("Latitude="+document.getElementById('latitude').value+"<br/>"+"Longitude="+document.getElementById('longitude').value));
 	       map.addOverlay(markerCenter);
       	}
+      	      	      	
       }
       
        function addToMap(response)  {      
@@ -157,14 +158,34 @@
 	      map.setCenter(addressPoint, 12);
 	            
 	               
-	      var addressMarker = createMarker(addressPoint,"A",currentAddress+"<br/>"
+	      var addressMarker = createLabelledMarker(addressPoint,""+(++locIndex),currentAddress+"<br/>"
 	      					+("Latitude="+place.Point.coordinates[1]+"<br/>"+"Longitude="+place.Point.coordinates[0]));
 	
 	      // Add the marker to map
 	      map.addOverlay(addressMarker);
+	      
+	      var _locDiv = document.getElementById('locdiv');
+       	  var _newLoc = document.createElement('a');
+       	  _newLoc.appendChild(document.createTextNode(document.getElementById('address').value));
+       	  _newLoc.href = "javascript:gotoPoint('"+place.Point.coordinates[1]+"','"+place.Point.coordinates[0]+"')";
+       	  _locDiv.appendChild(document.createTextNode(locIndex+"."));
+       	  _locDiv.appendChild(_newLoc);
+       	  _locDiv.appendChild(document.createTextNode("  "));
+      }
 
-   }
+ 	  function gotoPoint(valX, valY) {
+ 		 map.setCenter(new GLatLng(valX, valY), 12);
+ 	  }
 
+ 	 function createLabelledMarker(point, info, legend) {
+              var newIcon = MapIconMaker.createLabeledMarkerIcon({width: 30, height: 30, primaryColor: "#ff0000", label:info, labelColor:"#ffffff"});
+ 		   var marker = new GMarker(point, {icon: newIcon});
+ 			GEvent.addListener(marker, "click", function() {
+		    marker.openInfoWindowHtml(legend);
+		  });
+    	  return marker;
+   	} 
+    	
        function createFlatMarker(point, info, isZone, legend) {
            var shapeVal = "roundrect";
            if(isZone) {
@@ -176,7 +197,7 @@
 		    marker.openInfoWindowHtml(legend);
 		  });
       	  return marker;
-     } 
+     	} 
        
       
       function createMarker(point, letterCode, info) {
@@ -220,7 +241,7 @@
 	    <input type="text" size="40" id="address" value="2330 BORDEN AVE, 11101, NY"  />
 	    <input type="button" value="Locate!" onclick="javascript:plotPoint('A')" />	    
  	 </p>
-      
-                <div id="map_canvas" style="width: 940px; height: 600px"></div>
+ 	 <div id="map_canvas" style="width: 940px; height: 600px"></div>
+ 	 <div id="locdiv" style="scroll-y:scroll;width:940px; height: 5px">&nbsp;</div>
         </div>
     </div>
