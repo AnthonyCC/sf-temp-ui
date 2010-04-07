@@ -878,7 +878,126 @@ public class DispatchController extends AbstractMultiActionController {
 		return null;
 	}
 	
-	
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView gpsDrivingDirectionsHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		List routingRouteIds = Arrays.asList(StringUtil.decodeStrings(request.getParameter("routeId")));
+		String routeDate = request.getParameter("rdate");
+		ModelAndView mav = new ModelAndView("gpsAdminView");
+		mav.getModel().put("gpsgpxxml","------ NO DIRECTIONS AVAILABLE --------");
+		try {
+			if(routingRouteIds != null && routingRouteIds.size() > 0) {
+				
+				DeliveryServiceProxy proxy = new DeliveryServiceProxy();
+				RoutingEngineServiceProxy engineProxy = new RoutingEngineServiceProxy();
+				
+				Iterator _itr = routingRouteIds.iterator();
+				String routingRouteId = null;
+				Map directionRoutes = new TreeMap();
+				IRouteModel route = null;
+				
+				routingRouteId = (String)_itr.next();
+				Collection routes = domainManagerService.getRouteMapping(TransStringUtil.getServerDate(routeDate), routingRouteId);
+				 				
+				if(routes != null && routes.size() == 1) {
+					
+					RouteMapping routeMapping = (RouteMapping)routes.toArray()[0];	
+									
+					IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
+					schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
+							
+					String sessionId = engineProxy.retrieveRoutingSession(schedulerId, routeMapping.getRoutingSessionID());
+					
+					List routingRoutes = proxy.getRoutes(TransStringUtil.getDate(routeDate), sessionId
+															, routeMapping.getRouteMappingId().getRoutingRouteID());
+					
+					if(routingRoutes != null && routingRoutes.size() > 0) {
+						route = (IRouteModel)routingRoutes.get(0);						
+						if(route.getStops() != null && route.getStops().size() > 0) {
+							if(route != null) {
+								route.getStops().add(ModelUtil.getStop(Integer.MIN_VALUE, "DPT-FD", "", "",
+										"", "40740250", "-73951989", true));
+								route.getStops().add(ModelUtil.getStop(Integer.MAX_VALUE, "DPT-FD", "", "",
+										"", "40740250", "-73951989", true));
+					
+								
+								List points = new ArrayList();
+								
+								Iterator stopIterator = route.getStops().iterator();
+								IRoutingStopModel _stop = null;
+								IGeoPoint _geoPoint = null;
+								
+								while (stopIterator.hasNext()) {
+									
+									_stop = (IRoutingStopModel) stopIterator.next();
+									_geoPoint = new GeoPoint();
+									_geoPoint.setLatitude(Integer.parseInt(_stop.getLocation().getGeographicLocation().getLatitude()));
+									_geoPoint.setLongitude(Integer.parseInt(_stop.getLocation().getGeographicLocation().getLongitude()));
+									points.add(_geoPoint);
+								}
+								route.setDrivingDirection(proxy.buildDriverDirections(points));
+								
+								Object[] _stops = route.getStops().toArray();								
+								IRoutingStopModel _nextStop = null;
+																
+								StringBuffer strBuf = new StringBuffer();
+								strBuf.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>");
+								strBuf.append("<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" xmlns:gpxx=\"http://www.garmin.com/xmlschemas/GpxExtensions/v3\" xmlns:gpxtpx=\"http://www.garmin.com/xmlschemas/TrackPointExtension/v1\" creator=\"navi 265W\" version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd\">");
+								strBuf.append("<metadata><link href=\"http://www.freshdirect.com\">");
+								strBuf.append("<text>FD DELIVERY ROUTES BY DATE</text></link><time>2010-02-11T16:19:07Z</time>");
+								strBuf.append("</metadata>");
+																
+								strBuf.append("<rte>");
+								strBuf.append("<name>").append("FD Route ").append(TransStringUtil.getServerDate(routeDate)).append("</name>");
+								String strStopNo = "";
+								String zipCode = "";
+								String addLocation = "";
+								if(_stops != null) {
+									for(int intCount=0; intCount<_stops.length; intCount++) {
+										_nextStop = (IRoutingStopModel)_stops[intCount];
+										strBuf.append("<rtept lat=\"").append(TransStringUtil.getLong(_nextStop.getLocation().getGeographicLocation().getLatitude())/1000000.0)
+												.append("\" lon=\"").append(TransStringUtil.getLong(_nextStop.getLocation().getGeographicLocation().getLongitude())/1000000.0).append("\">");
+										
+										if(_nextStop.getLocation().getGeographicLocation().getLatitude() != null 
+													&& _nextStop.getLocation().getGeographicLocation().getLatitude().equalsIgnoreCase("40740250")) {
+											strStopNo = "";
+											zipCode = "";
+											addLocation = "FreshDirect";
+										} else{
+											strStopNo = "["+_nextStop.getStopNo()+"]";
+											zipCode = ","+_nextStop.getLocation().getZipCode();
+											addLocation = "-"+_nextStop.getLocation().getStreetAddress1();
+										}
+										strBuf.append("<name>").append(strStopNo).append(addLocation)						        						
+						        						.append(zipCode)
+													.append("</name>");
+										
+										strBuf.append("</rtept>");
+
+									}
+								}
+								strBuf.append("</rte>");
+								strBuf.append("</gpx>");
+								mav.getModel().put("gpsgpxxml",strBuf.toString());
+
+							}
+						} 
+					}
+				}
+			}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			saveMessage(request, getMessage("app.actionmessage.123", null));
+		}
+		
+		return mav;
+	}
 	
 	private Map getRouteDirections(Map routes) throws ReportGenerationException {
 		Map result = new TreeMap();

@@ -152,6 +152,31 @@
                           alert('Please Select a Row!');
                         }
                     }
+
+                    function loadGps(tableId, url, columnIndex) {
+                        var table = document.getElementById(tableId);
+                         var checkboxList = table.getElementsByTagName("input");
+                          
+                          var dateField = document.getElementById("dispDate").value;    
+                          var paramValues = null;
+                          for (i = 0; i < checkboxList.length; i++) {
+                            if (checkboxList[i].type=="checkbox" && checkboxList[i].checked&& !checkboxList[i].disabled&&checkboxList[i].name.indexOf("_")==-1) {
+                              var routeId = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[columnIndex].innerHTML
+                              if(routeId != null && routeId.length > 0) {
+  	                            if (paramValues != null) {
+  	                              paramValues = paramValues+","+routeId;
+  	                            } else {
+  	                              paramValues = routeId;
+  	                            }
+  	                         }
+                            }
+                          }
+                          if (paramValues != null) {
+                            pop(url+"?routeId="+ paramValues+"&rdate="+dateField,500,500);
+                          } else {
+                            alert('Please Select a Row!');
+                          }
+                      }
               
                   </script>
                 </td>
@@ -192,25 +217,30 @@
             
                   </td>
                    <td>
-                     <input type = "button" value="View" onclick="javascript:doCompositeLink('dispDate','zone','region','dispatch.do')" />
+                     <input style="font-size:11px" type = "button" value="View" onclick="javascript:doCompositeLink('dispDate','zone','region','dispatch.do')" />
                   </td>  
                   <td>
-                     <input type = "button" value="Refresh Route" onclick="javascript:refreshRoute()" />
+                     <input style="font-size:11px" type = "button" value="Refresh Route" onclick="javascript:refreshRoute()" />
                   </td>
                   <td>
-                     <input type = "button" value="Unassigned Routes" onclick="javascript:doUnassignedRoutes('dispDate')" />
+                     <input style="font-size:11px" type = "button" value="Unassigned Routes" onclick="javascript:doUnassignedRoutes('dispDate')" />
                   </td> 
                   <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%> 
                   <td>
-                     <input type = "button" value="Activity Log" onclick="javascript:doActivityLog('dispDate')" />
+                     <input style="font-size:11px" type = "button" value="Activity Log" onclick="javascript:doActivityLog('dispDate')" />
                   </td>
                   <td>
-                     <input type = "button" value="Reason Code" onclick="javascript:doReasonCode()" />
+                     <input style="font-size:11px" type = "button" value="Reason Code"  border="0" onclick="javascript:doReasonCode()" />
                   </td>
                   <%} %>
                   <td>
                     <a href="javascript:directions('ec_table','drivingdirection.do', 10)">
                   		<img src="./images/driving-directions.gif" width="114" height="25" border="0" alt="Driving Directions" title="Driving Directions" />
+                  	</a>
+                  <td>
+                  <td>
+                    <a href="javascript:loadGps('ec_table','gpsadmin.do', 10)">
+                  		<img src="./images/gpsadmin.gif" border="0" alt="Garmin" title="GPS Admin" />
                   	</a>
                   <td>
               </tr>

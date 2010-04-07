@@ -23,6 +23,7 @@ public class SecurityManager {
 		UNSECURED_URL.add("unassignedactiveemployees.do");
 		UNSECURED_URL.add("dispatchDashboardScreen.do");
 		UNSECURED_URL.add("gmapexport.do");
+		UNSECURED_URL.add("gpsadmin.do");
 	}
 	
 	public static String getUserRole(ServletRequest request, Set roles) {		

@@ -289,6 +289,10 @@ public class TransStringUtil {
 		return Integer.parseInt(intVal);
 	}
 	
+	public static Long getLong(String intVal) throws NumberFormatException {		
+		return Long.parseLong(intVal);
+	}
+	
 	public static String formatRouteNumber(String input) {
 		return formatter.format(Integer.parseInt(input));
 	}

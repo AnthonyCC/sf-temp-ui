@@ -121,6 +121,7 @@
                 <prop key="/unassigned.do">capacityController</prop>
                 <prop key="/timeslotlog.do">adminController</prop>
                 <prop key="/notification.do">adminController</prop>
+                <prop key="/gpsadmin.do">dispatchController</prop>
 			</props>
 		</property>
 	</bean>
@@ -242,6 +243,7 @@
             <prop key="/unassigned.do">unassignedHandler</prop>
             <prop key="/timeslotlog.do">timeslotLogHandler</prop>
             <prop key="/notification.do">notificationHandler</prop>
+            <prop key="/gpsadmin.do">gpsDrivingDirectionsHandler</prop>
 		</props>
 		</property>
 	</bean>
