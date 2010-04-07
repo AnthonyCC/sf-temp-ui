@@ -93,7 +93,7 @@
 									
 									<td align="center" valign="top" width="<%=colWidthStr%>" style="padding-left:5px; padding-right:5px;">
 										<display:ProductRating product="<%= productMod %>" action="<%= actionURI %>" />
-										<display:ProductName product="<%= productMod %>" action="<%= actionURI %>" showNew="true" />
+										<display:ProductName product="<%= productMod %>" action="<%= actionURI %>" />
 										<display:ProductPrice impression="<%= new ProductImpression(productMod) %>" showDescription="true" />
 									</td>
 								<%
