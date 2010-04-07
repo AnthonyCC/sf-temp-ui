@@ -422,7 +422,7 @@
 <% 
 					if(!isRestrictedAccount.booleanValue()) { 
 %>	
-						td class="note"><input type="radio" name="paymentMethodList" value="<%= paymentPKId %>" <%= methodChecked %>> <%=ecNum + 1%></td>
+						<td class="note"><input type="radio" name="paymentMethodList" value="<%= paymentPKId %>" <%= methodChecked %>> <%=ecNum + 1%></td>
 <% 	
 					} else {
 %>	
