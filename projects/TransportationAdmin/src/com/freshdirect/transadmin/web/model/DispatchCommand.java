@@ -22,6 +22,7 @@ import com.freshdirect.transadmin.model.PunchInfoI;
 import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.ResourceInfoI;
+import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.EnumResourceType;
@@ -189,7 +190,7 @@ public class DispatchCommand extends WebPlanInfo {
             if(hasPunchInfo) 
             {
             	PunchInfoI tempPunchInfo=getPunchInfo(resourceInfo.getEmployeeId(),punchInfos);
-            	if(tempPunchInfo!=null)
+            	if(tempPunchInfo!=null&&!ScheduleEmployeeInfo.DEPOT.equalsIgnoreCase(this.getRegionCode()))
             	{
             		punchInfos.remove(tempPunchInfo);
             	}
