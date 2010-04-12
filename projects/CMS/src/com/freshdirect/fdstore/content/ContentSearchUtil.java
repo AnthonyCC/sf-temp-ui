@@ -319,8 +319,8 @@ public class ContentSearchUtil {
 	 * @param products List of {@link SearchHit}
 	 * @return
 	 */
-	public static List filterProductsByDisplay(List products) {
-		for (Iterator i = products.iterator(); i.hasNext();) {
+	public static List<SearchHit> filterProductsByDisplay(List<SearchHit> products) {
+		for (Iterator<SearchHit> i = products.iterator(); i.hasNext();) {
 			ProductModel prod = (ProductModel) ((SearchHit)i.next()).getNode();
 			if (!isDisplayable(prod) || prod.getPrimaryHome()==null) {
 				i.remove();
@@ -372,8 +372,8 @@ public class ContentSearchUtil {
 	 * @param recipes List of {@link SearchHit}
 	 * @return
 	 */
-	public static List filterRecipesByAvailability(List recipes) {
-		for (ListIterator i = recipes.listIterator(); i.hasNext();) {
+	public static List<SearchHit> filterRecipesByAvailability(List<SearchHit> recipes) {
+		for (Iterator<SearchHit> i = recipes.iterator(); i.hasNext();) {
 			Recipe recipe = (Recipe) ((SearchHit) i.next()).getNode();
 			if (!recipe.isAvailable() || !recipe.isActive()) {
 				i.remove();
@@ -454,16 +454,26 @@ public class ContentSearchUtil {
 		return new SearchResults.SpellingResultsDifferences(S1MinusS2,S2MinusS1,S1AndS2);
 	}
 	
-	public static List collectFromSearchHits(Collection searchHits) {
+	public static List collectFromSearchHits(Collection<SearchHit> searchHits) {
 	    if (searchHits==null) {
 	        return null;
 	    }
 	    if (searchHits.isEmpty()) {
 	        return Collections.EMPTY_LIST;
 	    }
-	    List result = new ArrayList(searchHits.size());
+	    List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(searchHits.size());
 	    for (Iterator iter=searchHits.iterator();iter.hasNext();) {
 	        result.add(((SearchHit)iter.next()).getNode());
+	    }
+	    return result;
+	}
+	
+	public static Map<ContentKey,SearchHit> toMap(Collection<SearchHit> hits) {
+	    Map<ContentKey,SearchHit> result = new HashMap<ContentKey,SearchHit> ();
+	    if (hits!=null) {
+	        for (SearchHit h : hits) {
+	            result.put(h.getContentKey(), h);
+	        }
 	    }
 	    return result;
 	}

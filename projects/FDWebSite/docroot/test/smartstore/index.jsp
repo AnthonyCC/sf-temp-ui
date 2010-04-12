@@ -95,6 +95,10 @@
 		<% } %>
 		</span>
  		</p>
+ 		<p>
+		<span class="bull">&bull;</span> <a href="../search/compare.jsp"><span>Search Compare Page</span></a>
+		</p>
+    	
     </div>
 </body>
 </html>

@@ -11,6 +11,8 @@ package com.freshdirect.fdstore.content;
 import java.io.Serializable;
 import java.util.List;
 
+import com.freshdirect.cms.search.SearchHit;
+
 /**
  *
  *
@@ -92,16 +94,22 @@ public class SearchResults implements Serializable {
 
 	private SpellingResultsDifferences spellingResultsDifferences = null;
 
+        private final List<SearchHit> productSearchHit;
+        private final List<SearchHit> recipeSearchHit;
 	
-	public SearchResults(
-			List products,
-			List recipes,
-			boolean productsRelevant, String searchTerm) {
-		this.products = products;
-		this.recipes = recipes;
-		this.productsRelevant = productsRelevant;
-		this.searchTerm = searchTerm;
-	}
+        public SearchResults(List products, List<Recipe> recipes, boolean productsRelevant, String searchTerm) {
+            this(products, recipes, productsRelevant, searchTerm, null, null);
+        }
+    
+        public SearchResults(List products, List<Recipe> recipes, boolean productsRelevant, String searchTerm, List<SearchHit> productSearchHit,
+                List<SearchHit> recipeSearchHit) {
+            this.products = products;
+            this.recipes = recipes;
+            this.productsRelevant = productsRelevant;
+            this.searchTerm = searchTerm;
+            this.productSearchHit = productSearchHit;
+            this.recipeSearchHit = recipeSearchHit;
+        }
 
 	/**
 	 * 
@@ -160,4 +168,12 @@ public class SearchResults implements Serializable {
 	public void setSearchTerm(String searchTerm) {
 		this.searchTerm = searchTerm;
 	}
+	
+	public List<SearchHit> getProductSearchHit() {
+            return productSearchHit;
+        }
+	
+	public List<SearchHit> getRecipeSearchHit() {
+            return recipeSearchHit;
+        }
 }

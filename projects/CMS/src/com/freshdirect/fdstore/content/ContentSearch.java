@@ -159,15 +159,15 @@ public class ContentSearch {
         List recipes = ContentSearchUtil.filterRelevantNodes(ContentSearchUtil.resolveHits((List) hitsByType.get(FDContentTypes.RECIPE)), searchQuery
                 .getTokens(), stemmer);
 
-        List filteredProducts = ContentSearchUtil.filterProductsByDisplay(relevantProducts.isEmpty() ? ContentSearchUtil.restrictToMaximumOccuringNodes(
+        List<SearchHit> filteredProducts = ContentSearchUtil.filterProductsByDisplay(relevantProducts.isEmpty() ? ContentSearchUtil.restrictToMaximumOccuringNodes(
                 allProducts, searchQuery.getTokensWithBrand(), stemmer) : relevantProducts);
 
-        List filteredRecipes = ContentSearchUtil.filterRecipesByAvailability(recipes);
+        List<SearchHit> filteredRecipes = ContentSearchUtil.filterRecipesByAvailability(recipes);
 
         return new SearchResults(
                 ContentSearchUtil.collectFromSearchHits(filteredProducts), 
                 ContentSearchUtil.collectFromSearchHits(filteredRecipes), 
-                !relevantProducts.isEmpty(), searchQuery.getSearchTerm());
+                !relevantProducts.isEmpty(), searchQuery.getSearchTerm(), filteredProducts, filteredRecipes);
     }
 
     /**
