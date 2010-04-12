@@ -9,7 +9,9 @@
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='java.text.DateFormat' %>
 <%@ page import='java.text.SimpleDateFormat' %>
+<%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
+<%@ page import='com.freshdirect.fdstore.survey.*' %>
 
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName' %>
 
@@ -31,6 +33,7 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String fldZipCode = request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode());
     String fldCity = NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "");
    	String fldState = NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "");
+	EnumServiceType serviceType = (EnumServiceType)NVL.apply(EnumServiceType.getEnum(request.getParameter(EnumUserInfoName.DLV_SERVICE_TYPE.getCode())), EnumServiceType.CORPORATE.equals(user.getSelectedServiceType()) ? user.getSelectedServiceType() : EnumServiceType.HOME);
 	
     if ((fldZipCode == null) || "".equals(fldZipCode)) {
         if (user != null) {
@@ -56,14 +59,37 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 <table width="693" cellpadding="0" cellspacing="0" border="0">
-<tr><td colspan="2" class="title16"><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br>Check Available Delivery Time Slots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
-<tr><td colspan="2" class="text12">Enter your address to see available time slots for your neighborhood.</td></tr>
+<tr><td colspan="2" class="title16"><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br>Check Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
+<tr><td colspan="2" class="text12">Enter your address to see available timeslots for your neighborhood.</td></tr>
 <tr><td colspan="2" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="24"><br><b>Enter Delivery Address</b><img src="/media_stat/images/layout/clear.gif" width="80" height="1"><span class="text11">* Required Information</span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
 <tr><td bgcolor="#CCCCCC" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
 
 <fd:CheckAvailableTimeslots result="result" successPage="/help/delivery_info_avail_slots.jsp" actionName="makeAddress">
 <form name="address" method="POST">
+
+<tr>
+	<td width="120" align="right" class="text12">
+		<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>">
+			<span class="text11rbold"></fd:ErrorHandler>
+		&nbsp;Service Type&nbsp;&nbsp;
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td class="text12">
+		<table>
+			<tr>
+				<td>
+					<input <%=EnumServiceType.HOME.equals(serviceType)? "checked" : ""%> type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.HOME.getName()%>" onchange="showSurveys(this)">
+				</td>
+				<td><b>Residential</b></td>
+				<td><input <%=EnumServiceType.CORPORATE.equals(serviceType) ? "checked" : ""%> type="radio" class="text11" name="<%=			EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.CORPORATE.getName()%>"				onchange="showSurveys(this)">
+				</td>
+				<td><a href="javascript:popup('/cos_info.jsp','small')"><b>Commercial</b></a></td>
+			</tr>
+		</table>
+		<fd:ErrorHandler result="<%=result%>" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	</td>
+</tr>
 
 <tr valign="top"><td class="text12" align="right">* Street Address&nbsp;&nbsp;</td>
 <td><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>" value="<%=fldAddress1%>"> 

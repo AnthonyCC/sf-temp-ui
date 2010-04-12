@@ -121,7 +121,7 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 boolean isCheckAddress = "1address".equalsIgnoreCase(request.getParameter("show"));
 %>
 <tmpl:insert template='/template/top_nav.jsp'>
-	<tmpl:put name='title' direct='true'>Available Delivery Time Slots</tmpl:put>
+	<tmpl:put name='title' direct='true'>Available Delivery TimeSlots</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 <fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" deliveryInfo="<%=true%>">
 	<%
@@ -151,11 +151,11 @@ zonePromoEnabled=true;
 <%} %>
 </script>
 <div class="sub_nav">
-<span class="sub_nav_title">Available Delivery Time Slots</span> | <a href="/main/delivery_check_slots.jsp">Check available Slots for a new address</a>
+<span class="sub_nav_title">Available Delivery TimeSlots</span> | <a href="/main/delivery_check_slots.jsp">Check available Slots for a new address</a>
 </div>
 <div class="content_fixed">
 <table width="90%" cellpadding="0" cellspacing="0" border="0" align="center">
-<tr><td colspan="3" class="text12">Here are the currently available time slots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:</td></tr>
+<tr><td colspan="3" class="text12">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:</td></tr>
 <tr><td colspan="2">&nbsp;</td>
 <% 
 if (shipToAddresses.size() > 1 && !isCheckAddress) { %>
@@ -200,12 +200,12 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 <%	} %>
 </SELECT></td>
 <% } else {
-if(user.isHomeUser())
-    address = (ErpAddressModel)shipToAddresses.iterator().next();
+if(user.isHomeUser()){
+	ErpAddressModel addr = ((FDUserI)session.getAttribute(SessionName.USER)).getShoppingCart().getDeliveryAddress(); 
 	
 	%>
-<td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br><b><%=address.getAddress1()%><br><%=address.getZipCode()%></b><% if (isCheckAddress) {%><br><br><a href="/main/delivery_available_slots.jsp" class="order_detail">View all addresses for this customer</a><% } %></td>
-<% } %>
+<td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br><b><%=addr.getAddress1()%><br><%=addr.getZipCode()%></b><% if (isCheckAddress) {%><br><br><a href="/main/delivery_available_slots.jsp" class="order_detail">View all addresses for this customer</a><% } %></td>
+<% }} %>
 </tr>
 <tr>
 <td colspan="3">
@@ -223,7 +223,7 @@ if(user.isHomeUser())
 <tr>
     <td valign="top" align="center" class="text11" width="97"></td>
     <td valign="top" align="center" colspan="5" class="text11">
-    <b><font class="text12" color="#CC0000">DELIVERY TIME SLOT NOTE: </font></b><br>
+    <b><font class="text12" color="#CC0000">DELIVERY TIMESLOT NOTE: </font></b><br>
     Due to heightened security around the Midtown Tunnel and the 59th Street Bridge
     we have limited the number of deliveries in your area during the 4-6 PM and 6-8 PM time slots.
     This will allow us to deliver orders in a more timely manner.
@@ -269,17 +269,17 @@ if(user.isHomeUser())
 		<tr>
 			<td align="left">
 				<img src="/media_stat/images/template/help/greendot_trans.gif" width="10" height="10" border="0" valign="bottom">
-				= Time Slot Available *
+				= TimeSlot Available *
 				&nbsp;&nbsp;
 				<img src="/media_stat/images/template/help/orangedot_trans.gif" width="10" height="10" border="0" valign="bottom">
-				= Time Slot Full
+				= TimeSlot Full
 			</td>
 			<td align="right">You must complete checkout for next-day deliveries before the "Order by" time.</td>
 		</tr>
 		<tr>
 			<td colspan="2">
 			<br>
-			* <b>You will select a delivery time slot at Checkout.</b> Delivery time slots are not guaranteed until completion of Checkout.
+			* <b>You will select a delivery timeslot at Checkout.</b> Delivery timeslots are not guaranteed until completion of Checkout.
 			</td>
 		</tr>
 	</table>

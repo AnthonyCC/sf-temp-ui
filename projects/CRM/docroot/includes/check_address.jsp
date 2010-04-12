@@ -151,22 +151,44 @@ if (suggestions != null) {  %>
 <%      }   %>
 </table>
 <% } %>
-
-<% availServices = (Set)pageContext.getAttribute("availServices");
-   if(availServices != null) {
-     if(availServices.size() > 0) {
+<% DlvZoneInfoModel zoneInfo=(DlvZoneInfoModel)pageContext.getAttribute("zoneInfo");
+   String county=(String)pageContext.getAttribute("county");
+  
+	if(zoneInfo!=null){
 %>
-<table align="center">
-    <tr><td>Available Services:</td><td>&nbsp;&nbsp;</td>
-        <td>
-         <% for(Iterator svc = availServices.iterator(); svc.hasNext(); ) { 
-                EnumServiceType s = (EnumServiceType) svc.next(); %>
-            (<%= s.getName() %>) &nbsp;
-         <% } %>
-        </td>
-</table>
-<%    }
-   } %>
+  <table align="center">
+  	<tr>
+  		<td>(Zone Code=<%=zoneInfo.getZoneCode()%>)</td><td>&nbsp;</td>
+  		<td>(County:</td>&nbsp;<td><%=county%>)</td>
+	  		<%String COSStatus="";
+	  		  if(zoneInfo.isCosEnabled()){
+	  			COSStatus="YES";
+	  		  }else{
+	  			COSStatus="NO";
+	  		  }
+	  		%>
+  		<td><span class="correct">(COS Enabled:&nbsp;<%=COSStatus%>)</span></td>
+  	</tr>
+  </table>
+ <%} %>
+<% availServices = (Set)pageContext.getAttribute("availServices");
+   EnumDeliveryStatus deliveryStatus=(EnumDeliveryStatus)pageContext.getAttribute("deliveryStatus");
+
+   if(availServices != null) {
+	   if(availServices.size() > 0){ %>
+	   <table align="center">
+	       <tr><td>Available Services:</td><td>&nbsp;&nbsp;</td>
+	           <td>
+	            <% for(Iterator svc = availServices.iterator(); svc.hasNext(); ) { 
+	                   EnumServiceType s = (EnumServiceType) svc.next(); 
+	                   if("CORPORATE".equals(s.getName()) && EnumDeliveryStatus.COS_ENABLED.equals(deliveryStatus)){  %>
+	              			<span class="correct">(<%= s.getName() %>)</span>
+	             		<%}else{ %> 			
+	              			(<%= s.getName() %>) &nbsp;
+	            <% } }%>
+	           </td></tr>
+	   </table>
+<%  } }%>
 
 <% aptRanges = (List)pageContext.getAttribute("aptRanges");
     if (aptRanges != null) { 

@@ -7,6 +7,7 @@ import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.delivery.DlvZipInfoModel;
 import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
@@ -77,7 +78,6 @@ public class DeliveryAddressValidator {
 			// [2] Check services for scrubbed address
 
 			serviceResult = doCheckAddress(scrubbedAddress);
-
 			if (!isAddressDeliverable()) {
 				// post validations
 				if (!EnumServiceType.HOME.equals(address.getServiceType())
@@ -94,7 +94,7 @@ public class DeliveryAddressValidator {
 								SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS);
 					}
 					return false;
-				} // NOT(address type == HOME AND service status == DELIVER)
+				}// NOT(address type == HOME AND service status == DELIVER)
 			}
 			
 			// [3] since address looks alright need geocode
@@ -103,6 +103,7 @@ public class DeliveryAddressValidator {
 		    
 		    if (!"GEOCODE_OK".equalsIgnoreCase(geocodeResult)) {
 		    	//
+
 				// since geocoding is not happening silently ignore it  
 		    	LOGGER.warn("GEOCODE FAILED FOR ADDRESS :"+scrubbedAddress);		    	
 				//actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
@@ -137,12 +138,12 @@ public class DeliveryAddressValidator {
 		return serviceResult;
 	}
 
-	public boolean isAddressDeliverable() {
+	public boolean isAddressDeliverable() throws FDResourceException {
 		if (serviceResult == null) {
 			return false;
 		}
 		EnumDeliveryStatus status = serviceResult.getServiceStatus(scrubbedAddress.getServiceType());
-		return EnumDeliveryStatus.DELIVER.equals(status) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status);
+		return EnumDeliveryStatus.DELIVER.equals(status) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status) || EnumDeliveryStatus.COS_ENABLED.equals(status);
 	}
 	
 	

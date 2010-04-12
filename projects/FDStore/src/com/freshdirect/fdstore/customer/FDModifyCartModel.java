@@ -13,6 +13,7 @@ import java.util.Iterator;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumZipCheckResponses;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 
 /**
@@ -53,7 +54,7 @@ public class FDModifyCartModel extends FDCartModel {
 		this.setDeliveryReservation(originalOrder.getDeliveryReservation());
 
 		// !!! partially reconstruct the original zoneInfo (we don't need the full state, as it will be set later)
-		DlvZoneInfoModel zoneInfo = new DlvZoneInfoModel(originalOrder.getDeliveryZone(), null, null, EnumZipCheckResponses.DELIVER,false);
+		DlvZoneInfoModel zoneInfo = new DlvZoneInfoModel(originalOrder.getDeliveryZone(), null, null, EnumZipCheckResponses.DELIVER,false,false);
 		this.setZoneInfo(zoneInfo);
 
 		this.setCustomerServiceMessage(originalOrder.getCustomerServiceMessage());

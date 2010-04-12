@@ -472,7 +472,7 @@ public class DlvManagerDAO {
 	}
 
 	private static final String ZONE_CODE =
-		"select rd.id, rd.region_id, rd.start_date, rd.delivery_charges, z.id zone_id, z.zone_code, zd.unattended "
+		"select rd.id, rd.region_id, rd.start_date, rd.delivery_charges, z.id zone_id, z.zone_code, zd.unattended, zd.cos_enabled "
 			+ "from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone  zd "
 			+ "where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and r.service_type = ? "
 			+ "and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= ? and region_id=r.id) "
@@ -502,10 +502,53 @@ public class DlvManagerDAO {
 				rs.getString("zone_id"), 
 				rs.getString("region_id"), 
 				EnumZipCheckResponses.DELIVER,
-				"X".equals(rs.getString("unattended"))
+				"X".equals(rs.getString("unattended")),
+				"X".equals(rs.getString("cos_enabled"))
 			);
 		} else {
-			response = new DlvZoneInfoModel(null, null, null, EnumZipCheckResponses.DONOT_DELIVER,false);
+			response = new DlvZoneInfoModel(null, null, null, EnumZipCheckResponses.DONOT_DELIVER,false,false);
+		}
+
+		rs.close();
+		ps.close();
+
+		return response;
+	}
+	
+	private static final String ZONE_CODE_FOR_COS_ENABLED =
+		"select rd.id, rd.region_id, rd.start_date, rd.delivery_charges, z.id zone_id, z.zone_code, zd.unattended, zd.cos_enabled "
+			+ "from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone zd "
+			+ "where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and r.service_type = 'HOME' and zd.cos_enabled='X'"
+			+ "and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= ? and region_id=r.id) "
+			+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
+			+ "order by z.zone_code";
+
+	public static DlvZoneInfoModel getZoneInfoForCosEnabled(Connection conn, AddressModel address, java.util.Date date, boolean useApartment)
+		throws SQLException, InvalidAddressException {
+
+		if ((address.getLatitude() == 0.0) || (address.getLongitude() == 0.0)) {
+			geocodeAddress(conn, address, useApartment);
+		}
+
+		DlvZoneInfoModel response;
+						
+		PreparedStatement ps = conn.prepareStatement(ZONE_CODE_FOR_COS_ENABLED);
+		ps.setDate(1, new java.sql.Date(date.getTime()));
+		ps.setDouble(2, address.getLongitude());
+		ps.setDouble(3, address.getLatitude());
+
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			response = new DlvZoneInfoModel(
+				rs.getString("zone_code"), 
+				rs.getString("zone_id"), 
+				rs.getString("region_id"), 
+				EnumZipCheckResponses.DELIVER,
+				"X".equals(rs.getString("unattended")),
+				"X".equals(rs.getString("cos_enabled"))
+			);
+		} else {
+			response = new DlvZoneInfoModel(null, null, null, EnumZipCheckResponses.DONOT_DELIVER,false,false);
 		}
 
 		rs.close();
@@ -673,6 +716,42 @@ public class DlvManagerDAO {
 		while (rs.next()) {
 			DlvZipInfoModel info =
 				new DlvZipInfoModel(address.getZipCode(), rs.getTimestamp("START_DATE"), rs.getDouble("COVERAGE"));
+			infoList.add(info);
+		}
+		rs.close();
+		ps.close();
+
+		return infoList;
+	}
+	
+	private static final String ADDRESS_CHECK_FOR_COS_ENABLED =
+		"select z.zone_code, r.id, rd.start_date, 1.0 as coverage, tz.cos_enabled "
+			+ "from dlv.zone z, dlv.region_data rd, dlv.region r, transp.zone tz "
+			+ "where mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?, NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
+			+ "and z.region_data_id = rd.id and rd.region_id = r.id and z.zone_code = tz.zone_code and r.service_type='HOME' and tz.cos_enabled='X' "
+			+ "and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id = r.id) "
+			+ 	"or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= sysdate + 8 and region_id = r.id)) "
+			+ "order by start_date ";
+	
+
+	/**
+	 * @return List of DlvZipInfoModel
+	 */
+	public static List checkAddressForCosEnabled(Connection conn, AddressModel address) throws SQLException, InvalidAddressException {
+		if ((address.getLatitude() == 0.0) || (address.getLongitude() == 0.0)) {
+			geocodeAddress(conn, address, false);
+		}
+
+		PreparedStatement ps = conn.prepareStatement(ADDRESS_CHECK_FOR_COS_ENABLED);
+		ps.setDouble(1, address.getLongitude());
+		ps.setDouble(2, address.getLatitude());
+		
+		ResultSet rs = ps.executeQuery();
+		/* List of DlvZipInfoModel */
+		List infoList = new ArrayList();
+		while (rs.next()) {
+			DlvZipInfoModel info =
+				new DlvZipInfoModel(address.getZipCode(), rs.getTimestamp("START_DATE"), rs.getDouble("COVERAGE"), "X".equals(rs.getString("COS_ENABLED")));
 			infoList.add(info);
 		}
 		rs.close();

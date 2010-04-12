@@ -5,6 +5,8 @@
 package com.freshdirect.webapp.taglib.callcenter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
@@ -15,14 +17,21 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Category;
 
+import sun.util.calendar.ZoneInfo;
+
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.delivery.AddressScrubber;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
+import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.delivery.DlvZipInfoModel;
+import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumAddressExceptionReason;
 import com.freshdirect.delivery.EnumAddressVerificationResult;
+import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.delivery.ExceptionAddress;
 import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -138,6 +147,18 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 			try {
 				aptRanges = FDDeliveryManager.getInstance().findApartmentRanges(dlvAddress);
 				pageContext.setAttribute("aptRanges", aptRanges);
+				
+				DlvServiceSelectionResult serviceResult=FDDeliveryManager.getInstance().checkAddress(dlvAddress);
+				EnumDeliveryStatus status=serviceResult.getServiceStatus(dlvAddress.getServiceType());
+				pageContext.setAttribute("deliveryStatus", status);
+				
+				Calendar date = new GregorianCalendar();
+				date.add(Calendar.DATE, 7);
+				DlvZoneInfoModel zoneInfo=FDDeliveryManager.getInstance().getZoneInfo(dlvAddress, date.getTime());
+				pageContext.setAttribute("zoneInfo", zoneInfo);
+				
+				String county = FDDeliveryManager.getInstance().getCounty(dlvAddress.getCity(), dlvAddress.getState());
+				pageContext.setAttribute("county", county);
 				
 				Set availServices = FDDeliveryManager.getInstance().checkAddress(dlvAddress).getAvailableServices();
 				pageContext.setAttribute("availServices", availServices);

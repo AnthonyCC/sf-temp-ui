@@ -89,7 +89,7 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 	<% if(messages != null && messages.size() >= 1) { %>
 		<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
 	<% } %>	
-<table width="693" cellpadding="0" cellspacing="0" border="0"><tr><td colspan="7""><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>* <b>You will select a delivery time slot at Checkout.</b> Delivery time slots are not guaranteed until completion of Checkout.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="8">
+<table width="693" cellpadding="0" cellspacing="0" border="0"><tr><td colspan="7""><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>* <b>You will select a delivery timeslot at Checkout.</b> Delivery timeslots are not guaranteed until completion of Checkout.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="8">
 
 <%
 if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) {

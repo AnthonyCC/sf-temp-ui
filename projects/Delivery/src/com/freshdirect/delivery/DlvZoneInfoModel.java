@@ -23,17 +23,19 @@ public class DlvZoneInfoModel extends ModelSupport{
 	private final String regionId;
 	private final EnumZipCheckResponses response;
 	private final boolean unattended;
+	private final boolean cosEnabled;
 	
 	/** Creates new DlvZipCheckResponseModel */
-    public DlvZoneInfoModel(String zoneCode, String zoneId, String regionId, EnumZipCheckResponses response, boolean unattended) {
+    public DlvZoneInfoModel(String zoneCode, String zoneId, String regionId, EnumZipCheckResponses response, boolean unattended, boolean cosEnabled) {
     	this.zoneCode = zoneCode;
     	this.zoneId = zoneId;
     	this.regionId = regionId;
     	this.response = response;
     	this.unattended = unattended;
+    	this.cosEnabled=cosEnabled;
     }
-	
-	public String getZoneCode(){
+    
+   	public String getZoneCode(){
 		return this.zoneCode;
 	}
 	
@@ -64,6 +66,12 @@ public class DlvZoneInfoModel extends ModelSupport{
 			+this.regionId
 			+",unattended="
 			+this.unattended
+			+",cosEnabled="
+			+this.cosEnabled
 			+ "]";
 	}
+
+	public boolean isCosEnabled() {
+		return this.cosEnabled;
+	}	
 }

@@ -163,7 +163,7 @@ public class AddressUtil {
             		MessageFormat.format(SystemMessageList.MSG_CANT_GEOCODE, 
             		new Object[] { UserUtil.getCustomerServiceContact(request)})));
             
-            return new DlvZoneInfoModel(null, null, null, EnumZipCheckResponses.DONOT_DELIVER,false);
+            return new DlvZoneInfoModel(null, null, null, EnumZipCheckResponses.DONOT_DELIVER,false,false);
         }
     }
     

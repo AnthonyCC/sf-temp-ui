@@ -25,8 +25,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.delivery.DlvZipInfoModel;
+import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
@@ -37,6 +41,7 @@ import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
@@ -127,10 +132,14 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 									&& !StringUtil.isEmpty(user.getIdentity().getErpCustomerPK())) {
 			address.setCustomerId(user.getIdentity().getErpCustomerPK());
 		}
+		
+		//Allowing COS customers to use HOME zone capacity for the configured set of HOME zones
+		ErpAddressModel timeslotAddress = performCosResidentialMerge();
+		
 		for (Iterator i = dateRanges.iterator(); i.hasNext();) {
 			DateRange range = (DateRange) i.next();
 			List timeslots = this.getTimeslots(
-				address,
+					timeslotAddress,
 				range.getStartDate(),
 				range.getEndDate());
 			timeslotList.add(new FDTimeslotList(timeslots, DateUtil.toCalendar(range.getStartDate()), DateUtil.toCalendar(range
@@ -187,9 +196,34 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		
 		return new Result(timeslotList, zonesMap, ctActive, messages);
 	}
+
+	private ErpAddressModel performCosResidentialMerge()
+			throws FDResourceException {
+		ErpAddressModel timeslotAddress=address;
+		if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
+			try{
+				DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(address);
+		 		EnumDeliveryStatus status = serviceResult.getServiceStatus(address.getServiceType());
+		 		if(EnumDeliveryStatus.COS_ENABLED.equals(status)){	
+		 			//Clone the address model object
+		 			timeslotAddress=cloneAddress(address);
+		 			timeslotAddress.setServiceType(EnumServiceType.HOME);
+		 		}
+		 		
+			}catch (FDInvalidAddressException iae) {
+				LOGGER
+				.warn("GEOCODE FAILED FOR ADDRESS setRegularDeliveryAddress  FDInvalidAddressException :"
+						+ address + "EXCEPTION :" + iae);
+			}
+		}
+		return timeslotAddress;
+	}
 	
-	
-	
+	private ErpAddressModel cloneAddress(ErpAddressModel address) {
+		ErpAddressModel model=new ErpAddressModel(address);
+		return model;
+	}
+
 	private List getTimeslots(ErpAddressModel address, Date startDate, Date endDate) throws FDResourceException {
 
 		if (address instanceof ErpDepotAddressModel) {
@@ -198,9 +232,9 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				startDate,
 				endDate,
 				depotAddress.getRegionId(),
-				depotAddress.getZoneCode(), this.address);
+				depotAddress.getZoneCode(), address);
 		} else {
-			return FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(startDate, endDate, this.address);
+			return FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(startDate, endDate, address);
 		}
 		//Removing Depot Option - Sivachandar
 		//return FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(startDate, endDate, this.address);

@@ -530,7 +530,7 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
     
     private static DlvZoneInfoModel getZoneInfo(ErpAddressModel address) throws FDResourceException, FDInvalidAddressException {
 
-		DlvZoneInfoModel zInfo =new DlvZoneInfoModel("1","1","1",EnumZipCheckResponses.DELIVER,false);
+		DlvZoneInfoModel zInfo =new DlvZoneInfoModel("1","1","1",EnumZipCheckResponses.DELIVER,false,false);
 		return zInfo;
 	}
     

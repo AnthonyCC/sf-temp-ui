@@ -11,6 +11,7 @@ package com.freshdirect.delivery;
  * @author  knadeem
  * @version 
  */
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class DlvZipInfoModel implements java.io.Serializable {
@@ -18,8 +19,24 @@ public class DlvZipInfoModel implements java.io.Serializable {
     private String zipCode;
 	private Date startDate;
     private double coverage;
+    private boolean cosEnabled;
 
-	/** Creates new DlvInfoModel */
+	public boolean isCosEnabled() {
+		return cosEnabled;
+	}
+	
+	/** Creates new DlvInfoModel 
+	 * @param b */
+    public DlvZipInfoModel(String zip, Date sd, double cov, boolean enableCOS) {
+        super();
+        this.zipCode = zip;
+        this.startDate = sd;
+        this.coverage = cov;
+        this.cosEnabled=enableCOS;
+    }
+    
+    /** Creates new DlvInfoModel 
+	 * @param b */
     public DlvZipInfoModel(String zip, Date sd, double cov) {
         super();
         this.zipCode = zip;
@@ -27,7 +44,7 @@ public class DlvZipInfoModel implements java.io.Serializable {
         this.coverage = cov;
     }
     
-    public String getZipCode() {
+   	public String getZipCode() {
         return this.zipCode;
     }
 	
@@ -40,7 +57,7 @@ public class DlvZipInfoModel implements java.io.Serializable {
     }
     
     public String toString(){
-    	return "DlvZipInfoModel["+zipCode+", "+startDate+", "+coverage+"]";
+    	return "DlvZipInfoModel["+zipCode+", "+startDate+", "+coverage+", "+cosEnabled+"]";
     }
     
 }

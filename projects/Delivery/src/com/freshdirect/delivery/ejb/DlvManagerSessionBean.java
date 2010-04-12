@@ -214,7 +214,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			}
 
 			DlvZoneInfoModel response =
-				new DlvZoneInfoModel(zoneCode, rs.getString("ZONE_ID"), null, EnumZipCheckResponses.DELIVER,"X".equals(rs.getString("UNATTENDED")));
+				new DlvZoneInfoModel(zoneCode, rs.getString("ZONE_ID"), null, EnumZipCheckResponses.DELIVER,"X".equals(rs.getString("UNATTENDED")),"X".equals(rs.getString("COS_ENABLED")));
 
 			return response;
 
@@ -613,7 +613,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 					if(geographicRestrictions != null && geographicRestrictions.size() > 0) {
 						for(Iterator i = routingTimeslots.iterator(); i.hasNext();) {
 							FDTimeslot ts = (FDTimeslot)i.next();
-							if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, messages, null)) {
+							if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, messages, null, null)) {
 								// filter off empty timeslots (unless they must be retained)
 								i.remove();
 							}
@@ -927,7 +927,11 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return DlvManagerDAO.getZoneInfo(conn, address, date, useApartment);
+			DlvZoneInfoModel zoneInfo=DlvManagerDAO.getZoneInfo(conn, address, date, useApartment);
+			if(EnumZipCheckResponses.DONOT_DELIVER.equals(zoneInfo.getResponse())){
+				zoneInfo=DlvManagerDAO.getZoneInfoForCosEnabled(conn, address, date, useApartment);
+			}
+			return zoneInfo;
 
 		} catch (SQLException sqle) {
 			LOGGER.warn("Difficulty locating an address within a zone : " + sqle.getMessage());
@@ -1040,6 +1044,14 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			result.addServiceStatus(EnumServiceType.HOME, status);
 			status = this.getServiceStatus(DlvManagerDAO.checkAddress(conn, address, EnumServiceType.CORPORATE));
 			result.addServiceStatus(EnumServiceType.CORPORATE, status);
+			
+			if(EnumDeliveryStatus.DONOT_DELIVER.equals(status)){
+				status= this.getServiceStatus(DlvManagerDAO.checkAddressForCosEnabled(conn, address));
+				if(EnumDeliveryStatus.DELIVER.equals(status) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status)){
+					result.addServiceStatus(EnumServiceType.CORPORATE, EnumDeliveryStatus.COS_ENABLED);
+				}
+				
+			}
 
 			result.setRestrictionReason(DlvManagerDAO.isAddressRestricted(conn, address));
 
