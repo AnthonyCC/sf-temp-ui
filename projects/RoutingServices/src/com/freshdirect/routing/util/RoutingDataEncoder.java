@@ -38,6 +38,7 @@ import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerAnalyzeOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerBalancingFactor;
@@ -57,6 +58,14 @@ import com.freshdirect.routing.proxy.stub.transportation.TimeZoneValue;
 public class RoutingDataEncoder {
 	
 	private static Calendar baseCalendar = Calendar.getInstance();
+	
+	public static SaveLocationsExOptions encodeSaveLocationsExOptions() {
+		SaveLocationsExOptions obj = new SaveLocationsExOptions();
+		obj.setDisableGeocoding(true);
+		
+		return obj;
+	}
+	
 	public static Location[] encodeLocationList(Collection lstOrders, String region, String locationType) {
 		
 		Location[] result = null;

@@ -20,6 +20,7 @@ import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
+import com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerCalculateDeliveryWindowMetrics;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
@@ -35,7 +36,9 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		
 		try {
 			TransportationWebService port = getTransportationSuiteBatchService(null);
-			Location[] result = port.saveLocations(RoutingDataEncoder.encodeLocationList(orderList, region, locationType));
+			Location[] result = port.saveLocationsEx(RoutingDataEncoder.encodeLocationList(orderList, region, locationType)
+														, RoutingDataEncoder.encodeSaveLocationsExOptions());
+			
 			if(result != null && result.length >0) {
 				throw new RoutingServiceException(null, IIssue.PROCESS_LOCATION_SAVEERROR);
 			}		
@@ -164,8 +167,10 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			
 			List _tmpLocOrders = new ArrayList();
 			_tmpLocOrders.add(orderModel);
-			Location[] result = port.saveLocations(RoutingDataEncoder.encodeLocationList
-													(_tmpLocOrders, schId.getRegionId(), locationType));
+			
+			Location[] result = port.saveLocationsEx(RoutingDataEncoder.encodeLocationList
+													(_tmpLocOrders, schId.getRegionId(), locationType)
+													, RoutingDataEncoder.encodeSaveLocationsExOptions());
 			if(result != null && result.length >0) {
 				throw new RoutingServiceException(null, IIssue.PROCESS_LOCATION_SAVEERROR);
 			}						
