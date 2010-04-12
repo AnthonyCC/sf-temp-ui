@@ -17,6 +17,7 @@ public class Zone implements java.io.Serializable {
 	private TrnZoneType trnZoneType;
 	private String name;
 	private String unattended;
+	private String cosEnabled;
 	private TrnArea area;
 	private BigDecimal priority;
 	private String obsolete;
@@ -24,6 +25,15 @@ public class Zone implements java.io.Serializable {
     private BigInteger stemFromTime;
     private BigInteger stemToTime;
 	
+	
+    public String getCosEnabled() {
+		return cosEnabled;
+	}
+
+	public void setCosEnabled(String cosEnabled) {
+		this.cosEnabled = cosEnabled;
+	}
+
 	public String getObsolete() {
 		return obsolete;
 	}
