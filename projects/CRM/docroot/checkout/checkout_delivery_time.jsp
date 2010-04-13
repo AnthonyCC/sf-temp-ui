@@ -166,7 +166,6 @@ List timeslotList = DeliveryTimeSlotResult.getTimeslots();
 Map zones = DeliveryTimeSlotResult.getZones();
 boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
 List messages = DeliveryTimeSlotResult.getMessages();
-List comments = DeliveryTimeSlotResult.getComments();
 %>
 
 <%
@@ -295,10 +294,6 @@ List comments = DeliveryTimeSlotResult.getComments();
 <!-- Bryan Restriction Message Added -->
 <% if(messages != null && messages.size() >= 1) { %>
 	<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
-<% } %>
-
-<% if(comments != null && comments.size() >= 1) { %>
-	<%@ include file="/shared/includes/delivery/i_restriction_comment.jspf"%>
 <% } %>
 
 <table cellpadding="0" cellspacing="0" width="675">
