@@ -14,7 +14,6 @@
 <%@ page import='com.freshdirect.delivery.DlvZoneInfoModel' %>
 <%@ page import='com.freshdirect.fdstore.FDDeliveryManager' %>
 <%@ page import='com.freshdirect.delivery.EnumReservationType' %>
-<%@ page import='com.freshdirect.delivery.restriction.GeographyRestrictionMessage' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %> 
