@@ -12,11 +12,22 @@ if (shipToAddresses.size() > 0) {
 	if(!addressStatus.equalsIgnoreCase("new")){
 		if(selectedAddrPKId==null){ 
 			selectedAddrPKId = request.getParameter("addressId");
+	
 		}
-		if(selectedAddrPKId==null) { 
+		if(selectedAddrPKId==null) {
+			FDUserI _yuser = (FDUserI)session.getAttribute(SessionName.USER);
+			if(_yuser != null && _yuser.getShoppingCart() != null && _yuser.getShoppingCart() instanceof FDModifyCartModel) {				
+				FDModifyCartModel _tmpModifyCart = (FDModifyCartModel)_yuser.getShoppingCart();
+				if(_tmpModifyCart.getOriginalOrder() != null && _tmpModifyCart.getOriginalOrder().getDeliveryReservation() != null) {
+					selectedAddrPKId = _tmpModifyCart.getOriginalOrder().getDeliveryReservation().getAddressId();
+				}
+			} 
+		}
+		if(selectedAddrPKId==null) {
 			selectedAddrPKId = FDCustomerManager.getDefaultShipToAddressPK(identity);
 		}
 	}
+	
 	int itemCounter = 0;
 	for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 		boolean showDeleteButtons = shipToAddresses.size() > 1?true:false;
