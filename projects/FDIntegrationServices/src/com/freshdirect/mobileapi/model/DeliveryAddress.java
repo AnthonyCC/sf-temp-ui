@@ -79,7 +79,7 @@ public class DeliveryAddress {
             result.addError(new ActionError(EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), MessageFormat.format(
                     SystemMessageList.MSG_CANT_GEOCODE, new Object[] { user.getCustomerServiceContact() })));
 
-            return new DlvZoneInfoModel(null, null, null, EnumZipCheckResponses.DONOT_DELIVER, false);
+            return new DlvZoneInfoModel(null, null, null, EnumZipCheckResponses.DONOT_DELIVER, false,false);
         }
     }
 
