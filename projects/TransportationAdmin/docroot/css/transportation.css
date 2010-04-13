@@ -1134,7 +1134,7 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 	border : 1px solid #aaa;
 	padding: 0px 0px 0px 0px;
 	font-size: 75%;
-	background-color: #FF3F3F;
+	background-color: red;
 }
 
 .timeslot_open, .dynamic_enabled {
@@ -1142,4 +1142,11 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 	padding: 0px 0px 0px 0px;
 	font-size: 75%;
 	background-color: #089F00;
+}
+
+.timeslot_closedpartial, .dynamic_enabledpartial {
+	border : 1px solid #aaa;
+	padding: 0px 0px 0px 0px;
+	font-size: 75%;
+	background-color: orange;
 }

@@ -90,11 +90,11 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 		return getService().updateRoutingOrderByReservation(reservationId, orderSize, serviceTime);
 	}
 	
-	public int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, Date baseDate) throws RoutingServiceException {
-		return getService().updateTimeslotForStatus(timeslotId, isClosed, type, baseDate);
+	public int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, Date baseDate, String cutOff) throws RoutingServiceException {
+		return getService().updateTimeslotForStatus(timeslotId, isClosed, type, baseDate, cutOff);
 	}
 	
-	public int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, Date baseDate) throws RoutingServiceException {
-		return getService().updateTimeslotForDynamicStatus(timeslotId, isDynamic, type, baseDate);
+	public int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, Date baseDate, String cutOff) throws RoutingServiceException {
+		return getService().updateTimeslotForDynamicStatus(timeslotId, isDynamic, type, baseDate, cutOff);
 	}
 }

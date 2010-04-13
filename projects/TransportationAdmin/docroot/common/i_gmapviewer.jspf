@@ -242,6 +242,8 @@
 	    <input type="button" value="Locate!" onclick="javascript:plotPoint('A')" />	    
  	 </p>
  	 <div id="map_canvas" style="width: 940px; height: 600px"></div>
- 	 <div id="locdiv" style="scroll-y:scroll;width:940px; height: 5px">&nbsp;</div>
+ 	 <div id="loccontainer" style="overflow-y: scroll;width:940px; height: 35px;border: 1px solid #aaa;">
+ 	 	<div id="locdiv" style="height:50px;">&nbsp;</div>
+ 	  </div>	
         </div>
     </div>

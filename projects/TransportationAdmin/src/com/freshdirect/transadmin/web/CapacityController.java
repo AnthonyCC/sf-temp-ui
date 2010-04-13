@@ -292,8 +292,11 @@ public class CapacityController extends AbstractMultiActionController {
 				_displayCommand.setCode(_refZone.getArea().getCode());
 				_displayCommand.setName(_refZone.getArea().getName());
 				
-				boolean isOpen = false;
-				boolean isDynamicActive = false;
+				int openCount = 0;
+				int closedCount = 0;
+				int dynamicActiveCount = 0;
+				int dynamicInActiveCount = 0;
+				
 				while(_childItr.hasNext()) {
 					_capacity = _childItr.next();
 					
@@ -302,14 +305,23 @@ public class CapacityController extends AbstractMultiActionController {
 					totalAllocated = totalAllocated + _capacity.getTotalAllocated();
 					
 					_timeslotCommand = new EarlyWarningCommand();
-					if(!_capacity.isManuallyClosed()) {
-						isOpen = true;
+					
+					if(_capacity.isManuallyClosed()) {
+						closedCount++;
+					} else {
+						openCount++;
 					}
 					if(_capacity.isDynamicActive()) {
-						isDynamicActive = true;
+						dynamicActiveCount++;
+					} else {
+						dynamicInActiveCount++;
 					}
-					_timeslotCommand.setManuallyClosed(_capacity.isManuallyClosed());
-					_timeslotCommand.setDynamicActive(_capacity.isDynamicActive());
+					_timeslotCommand.setOpenCount(_capacity.isManuallyClosed() ? 0 : 1);
+					_timeslotCommand.setClosedCount(_capacity.isManuallyClosed() ? 1 : 0);
+					
+					_timeslotCommand.setDynamicActiveCount(_capacity.isDynamicActive() ? 1 : 0);
+					_timeslotCommand.setDynamicInActiveCount(_capacity.isDynamicActive() ? 0 : 1);
+					
 					_timeslotCommand.setReferenceId(_capacity.getReferenceId());
 					timeslotDetails.add(_timeslotCommand);
 					_timeslotCommand.setName(RoutingDateUtil.formatDateTime
@@ -327,14 +339,17 @@ public class CapacityController extends AbstractMultiActionController {
 				if(totalCapacity > 0) {
 					percentageConfirmed = (totalConfirmed/totalCapacity)*100.0;
 					percentageAllocated = (totalAllocated/totalCapacity)*100.0;
-				}
-				_displayCommand.setManuallyClosed(!isOpen);
-				_displayCommand.setDynamicActive(isDynamicActive);
+				}								
 				_displayCommand.setTotalCapacity(formatter.formatCapacity(totalCapacity));
 				_displayCommand.setConfirmedCapacity(formatter.formatCapacity(totalConfirmed));
 				_displayCommand.setAllocatedCapacity(formatter.formatCapacity(totalAllocated));
 				_displayCommand.setPercentageConfirmed(""+Math.round(percentageConfirmed)+"%");
 				_displayCommand.setPercentageAllocated(""+Math.round(percentageAllocated)+"%");
+				
+				_displayCommand.setOpenCount(openCount);
+				_displayCommand.setClosedCount(closedCount);				
+				_displayCommand.setDynamicActiveCount(dynamicActiveCount);
+				_displayCommand.setDynamicInActiveCount(dynamicInActiveCount);
 				capacity.add(_displayCommand);
 				
 				if(!regionCapacity.containsKey(_refZone.getRegion())) {
@@ -346,12 +361,13 @@ public class CapacityController extends AbstractMultiActionController {
 				_tmpRegCapacity.setTotalCapacity(_tmpRegCapacity.getTotalCapacity()+totalCapacity);
 				_tmpRegCapacity.setTotalAllocated(_tmpRegCapacity.getTotalAllocated()+totalAllocated);
 				_tmpRegCapacity.setTotalConfirmed(_tmpRegCapacity.getTotalConfirmed()+totalConfirmed);
-				if(!_displayCommand.isManuallyClosed()) {
-					_tmpRegCapacity.setManuallyClosed(false);
-				}
-				if(_displayCommand.isDynamicActive()) {
-					_tmpRegCapacity.setDynamicActive(true);
-				}
+				
+				_tmpRegCapacity.setOpenCount(_tmpRegCapacity.getOpenCount() + openCount);
+				_tmpRegCapacity.setClosedCount(_tmpRegCapacity.getClosedCount() + closedCount);
+				
+				_tmpRegCapacity.setDynamicActiveCount(_tmpRegCapacity.getDynamicActiveCount() + dynamicActiveCount);
+				_tmpRegCapacity.setDynamicInActiveCount(_tmpRegCapacity.getDynamicInActiveCount() + dynamicInActiveCount);				
+				
 			}
 			
 			Iterator<Region> _regItr = regionCapacity.keySet().iterator();
@@ -384,8 +400,10 @@ public class CapacityController extends AbstractMultiActionController {
 				_regDisplayCommand.setAllocatedCapacity(formatter.formatCapacity(_regCap.getTotalAllocated()));
 				_regDisplayCommand.setConfirmedCapacity(formatter.formatCapacity(_regCap.getTotalConfirmed()));
 				_regDisplayCommand.setRegion(true);
-				_regDisplayCommand.setManuallyClosed(_regCap.isManuallyClosed());
-				_regDisplayCommand.setDynamicActive(_regCap.isDynamicActive());
+				_regDisplayCommand.setOpenCount(_regCap.getOpenCount());
+				_regDisplayCommand.setClosedCount(_regCap.getClosedCount());
+				_regDisplayCommand.setDynamicActiveCount(_regCap.getDynamicActiveCount());
+				_regDisplayCommand.setDynamicInActiveCount(_regCap.getDynamicInActiveCount()); 
 				
 				if(_regCap.getTotalCapacity() > 0) {
 					_regPerConfirmed = (_regCap.getTotalConfirmed()/_regCap.getTotalCapacity())*100.0;
@@ -402,8 +420,7 @@ public class CapacityController extends AbstractMultiActionController {
 			_regDisplayCommand.setAllocatedCapacity(formatter.formatCapacity(totalAllocated));
 			_regDisplayCommand.setConfirmedCapacity(formatter.formatCapacity(totalConfirmed));
 			_regDisplayCommand.setRegion(true);
-			_regDisplayCommand.setManuallyClosed(false);
-			_regDisplayCommand.setDynamicActive(false);
+			
 			if(totalCapacity > 0) {
 				percentageConfirmed = (totalConfirmed/totalCapacity)*100.0;
 				percentageAllocated = (totalAllocated/totalCapacity)*100.0;
@@ -500,12 +517,51 @@ public class CapacityController extends AbstractMultiActionController {
 		private String referenceId;
 		private boolean dynamicActive;
 		
+		int openCount = 0;
+		int closedCount = 0;
+		int dynamicActiveCount = 0;
+		int dynamicInActiveCount = 0;
+		
 		
 		@Override
 		public String toString() {
 			return "Capacity [deliveryEndTime=" + deliveryEndTime
 					+ ", deliveryStartTime=" + deliveryStartTime + "]";
 		}
+		
+		
+		public int getOpenCount() {
+			return openCount;
+		}
+
+		public void setOpenCount(int openCount) {
+			this.openCount = openCount;
+		}
+
+		public int getClosedCount() {
+			return closedCount;
+		}
+
+		public void setClosedCount(int closedCount) {
+			this.closedCount = closedCount;
+		}
+
+		public int getDynamicActiveCount() {
+			return dynamicActiveCount;
+		}
+
+		public void setDynamicActiveCount(int dynamicActiveCount) {
+			this.dynamicActiveCount = dynamicActiveCount;
+		}
+
+		public int getDynamicInActiveCount() {
+			return dynamicInActiveCount;
+		}
+
+		public void setDynamicInActiveCount(int dynamicInActiveCount) {
+			this.dynamicInActiveCount = dynamicInActiveCount;
+		}
+
 		public boolean isDynamicActive() {
 			return dynamicActive;
 		}

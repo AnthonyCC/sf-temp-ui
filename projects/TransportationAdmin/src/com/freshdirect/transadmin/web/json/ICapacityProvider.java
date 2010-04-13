@@ -8,8 +8,8 @@ public interface ICapacityProvider {
 	
 	int updateRoutingOrderByReservation(String reservationId, String orderSize, String serviceTime);
 	
-	int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, String baseDate);
+	int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, String baseDate, String cutOff);
 	
-	int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, String baseDate, String accessCode);
+	int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, String baseDate, String cutOff, String accessCode);
 	
 }

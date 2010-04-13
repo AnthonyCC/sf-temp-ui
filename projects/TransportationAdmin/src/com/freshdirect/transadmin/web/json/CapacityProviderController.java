@@ -41,10 +41,10 @@ public class CapacityProviderController extends JsonRpcController implements
 		return 0;
 	}
 	
-	public int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, String baseDate) {
+	public int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, String baseDate, String cutOff) {
 		
 		try {
-			return new DeliveryServiceProxy().updateTimeslotForStatus(timeslotId, isClosed, type, TransStringUtil.getDate(baseDate));
+			return new DeliveryServiceProxy().updateTimeslotForStatus(timeslotId, isClosed, type, TransStringUtil.getDate(baseDate), cutOff);
 		} catch (RoutingServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,11 +56,11 @@ public class CapacityProviderController extends JsonRpcController implements
 		return 0;
 	}
 	
-	public int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, String baseDate, String accessCode) {
+	public int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, String baseDate, String cutOff, String accessCode) {
 		String hashedAccessCode = MD5Hasher.hash(accessCode);
 		if(hashedAccessCode != null && hashedAccessCode.equals(TransportationAdminProperties.getDynamicRoutingFeatureAccessKey())) {
 			try {
-				return new DeliveryServiceProxy().updateTimeslotForDynamicStatus(timeslotId, isDynamic, type, TransStringUtil.getDate(baseDate));
+				return new DeliveryServiceProxy().updateTimeslotForDynamicStatus(timeslotId, isDynamic, type, TransStringUtil.getDate(baseDate), cutOff);
 			} catch (RoutingServiceException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

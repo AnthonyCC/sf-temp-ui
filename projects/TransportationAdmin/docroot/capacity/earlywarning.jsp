@@ -68,8 +68,8 @@
 			          var param3 = document.getElementById(compId3).value;
 			          var param4 = document.getElementById(compId4).checked;
 			          			          
-			          if(param1.length == 0 || param2.length == 0) {
-			          		alert("Please select the required filter param (Date, Cut Off)");
+			          if(param1.length == 0) { // || param2.length == 0) {
+			          		alert("Please select the required filter param (Date)");
 			          } else {
 			          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3+"&"+compId4+"="+param4;
 			          }
@@ -123,7 +123,8 @@
                 	 currentUpdateSource = sourceObj;
                  	 var result = jsonrpcClient.AsyncCapacityProvider.updateTimeslotForStatus(updateTimeslotCallback
 																		, referenceId, (sourceObj.value == 'O'), type
-																		, document.getElementById('rDate').value);			                          
+																		, document.getElementById('rDate').value
+																		, document.getElementById('cutOff').value);			                          
                  }  
 
                  function updateTimeslotCallback(result, exception) {
@@ -152,7 +153,9 @@
                 		 currentUpdateSource = sourceObj;
 	                 	 var result = jsonrpcClient.AsyncCapacityProvider.updateTimeslotForDynamicStatus(updateDynamicTimeslotCallback
 																			, referenceId, (sourceObj.value == 'S'), type
-																			, document.getElementById('rDate').value, accesscode);	
+																			, document.getElementById('rDate').value
+																			, document.getElementById('cutOff').value
+																			, accesscode);	
                 	 }	                          
                  }  
 
@@ -315,13 +318,13 @@
 								<td><%=_commandTS.getAllocatedCapacity()%></td>
 								<td><%=_commandTS.getPercentageAllocated()%></td>
 								<td><input type="button" 
-										class="<%= _commandTS.isManuallyClosed() ? "timeslot_closed" : "timeslot_open" %>" 
-												value="<%= (_commandTS.isManuallyClosed() ? "C" : "O") %>" 
+										class="<%= _commandTS.getClosedCount() > 0 ? "timeslot_closed" : "timeslot_open" %>" 
+												value="<%= (_commandTS.getClosedCount() > 0 ? "C" : "O") %>" 
 														onclick="updateTimeslot(this, '<%= _commandTS.getReferenceId() %>', '0')"
 														<%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request) ?  " " : " disabled=\"disabled\"") %> /></td>
 								<td><input type="button" 
-										class="<%= _commandTS.isDynamicActive() ? "dynamic_enabled" : "dynamic_disabled" %>" 
-												value="<%= (_commandTS.isDynamicActive() ? "D" : "S") %>" 
+										class="<%= _commandTS.getDynamicActiveCount() > 0 ? "dynamic_enabled" : "dynamic_disabled" %>" 
+												value="<%= (_commandTS.getDynamicActiveCount() > 0 ? "D" : "S") %>" 
 														onclick="updateDynamicTimeslot(this, '<%= _commandTS.getReferenceId() %>', '0')"
 														<%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request) ?  " " : " disabled=\"disabled\"") %> /></td>						
 							</tr>

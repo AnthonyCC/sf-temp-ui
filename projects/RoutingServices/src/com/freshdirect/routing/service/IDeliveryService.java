@@ -50,7 +50,7 @@ public interface IDeliveryService {
 	
 	int updateRoutingOrderByReservation(String reservationId, double orderSize, double serviceTime) throws RoutingServiceException;
 	
-	int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, Date baseDate) throws RoutingServiceException;
+	int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, Date baseDate, String cutOff) throws RoutingServiceException;
 	
-	int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, Date baseDate) throws RoutingServiceException;
+	int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, Date baseDate, String cutOff) throws RoutingServiceException;
 }

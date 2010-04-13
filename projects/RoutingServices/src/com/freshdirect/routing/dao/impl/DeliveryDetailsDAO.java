@@ -99,7 +99,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	
 	private static final String UPDATE_TIMESLOTFORDYNAMICSTATUSBYREGION_QRY = "update dlv.timeslot tx set tx.IS_DYNAMIC = ? where tx.ID in (select t.id from dlv.timeslot t, dlv.zone z, transp.zone zt where t.base_date=? and zt.region = ? and t.zone_id = z.id and z.zone_code=zt.zone_code)";
 	
-		
+	private static final String UPDATE_TIMESLOTCUTUFF_QRYAPPEND = " and tx.cutoff_time = (select cutoff_time from transp.trn_cutoff c where c.id = ?) ";
+	
 	private static final String EARLY_WARNING_QUERY =
 		"select code, name, st, et, sum(orders) as total_order, sum(capacity) as capacity, "
 			+ "sum(total_alloc) as total_alloc, "
@@ -544,12 +545,20 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return result;
 	}
 	
-	public int updateTimeslotForStatusByZone(final Date baseDate, final String zoneCode, final boolean isClosed) throws SQLException {
+	public int updateTimeslotForStatusByZone(final Date baseDate, final String zoneCode, final String cutOff, final boolean isClosed) throws SQLException {
 
 		Connection connection=null;
 		int result = 0;
-		try{
-			result = this.jdbcTemplate.update(UPDATE_TIMESLOTFORSTATUSBYZONE_QRY, new Object[] {(isClosed ? "X" : null), baseDate, zoneCode});
+		StringBuffer strUpdateQuery = new StringBuffer();
+		strUpdateQuery.append(UPDATE_TIMESLOTFORSTATUSBYZONE_QRY);
+		try{			
+			if(cutOff == null || cutOff.trim().length() == 0) {
+				result = this.jdbcTemplate.update(strUpdateQuery.toString(), new Object[] {(isClosed ? "X" : null), baseDate, zoneCode});
+			} else {
+				strUpdateQuery.append(UPDATE_TIMESLOTCUTUFF_QRYAPPEND);
+				result = this.jdbcTemplate.update(strUpdateQuery.toString(), new Object[] {(isClosed ? "X" : null), baseDate, zoneCode, cutOff});
+			}
+			
 			
 			connection=this.jdbcTemplate.getDataSource().getConnection();	
 			
@@ -559,12 +568,19 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return result;
 	}
 	
-	public int updateTimeslotForStatusByRegion(final Date baseDate, final String regionCode, final boolean isClosed) throws SQLException {
+	public int updateTimeslotForStatusByRegion(final Date baseDate, final String regionCode, final String cutOff, final boolean isClosed) throws SQLException {
 
 		Connection connection=null;
 		int result = 0;
+		StringBuffer strUpdateQuery = new StringBuffer();
+		strUpdateQuery.append(UPDATE_TIMESLOTFORSTATUSBYREGION_QRY);
 		try{
-			result = this.jdbcTemplate.update(UPDATE_TIMESLOTFORSTATUSBYREGION_QRY, new Object[] {(isClosed ? "X" : null), baseDate, regionCode});
+			if(cutOff == null || cutOff.trim().length() == 0) {
+				result = this.jdbcTemplate.update(strUpdateQuery.toString(), new Object[] {(isClosed ? "X" : null), baseDate, regionCode});
+			} else {
+				strUpdateQuery.append(UPDATE_TIMESLOTCUTUFF_QRYAPPEND);
+				result = this.jdbcTemplate.update(strUpdateQuery.toString(), new Object[] {(isClosed ? "X" : null), baseDate, regionCode, cutOff});
+			}			
 			
 			connection=this.jdbcTemplate.getDataSource().getConnection();	
 			
@@ -589,12 +605,19 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return result;
 	}
 	
-	public int updateTimeslotForDynamicStatusByZone(final Date baseDate, final String zoneCode, final boolean isDynamic) throws SQLException {
+	public int updateTimeslotForDynamicStatusByZone(final Date baseDate, final String zoneCode,final String cutOff, final boolean isDynamic) throws SQLException {
 
 		Connection connection=null;
 		int result = 0;
+		StringBuffer strUpdateQuery = new StringBuffer();
+		strUpdateQuery.append(UPDATE_TIMESLOTFORDYNAMICSTATUSBYZONE_QRY);
 		try{
-			result = this.jdbcTemplate.update(UPDATE_TIMESLOTFORDYNAMICSTATUSBYZONE_QRY, new Object[] {(isDynamic ? "X" : null), baseDate, zoneCode});
+			if(cutOff == null || cutOff.trim().length() == 0) {
+				result = this.jdbcTemplate.update(strUpdateQuery.toString(), new Object[] {(isDynamic ? "X" : null), baseDate, zoneCode});
+			} else {
+				strUpdateQuery.append(UPDATE_TIMESLOTCUTUFF_QRYAPPEND);
+				result = this.jdbcTemplate.update(strUpdateQuery.toString(), new Object[] {(isDynamic ? "X" : null), baseDate, zoneCode, cutOff});
+			}			
 			
 			connection=this.jdbcTemplate.getDataSource().getConnection();	
 			
@@ -604,12 +627,20 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return result;
 	}
 	
-	public int updateTimeslotForDynamicStatusByRegion(final Date baseDate, final String regionCode, final boolean isDynamic) throws SQLException {
+	public int updateTimeslotForDynamicStatusByRegion(final Date baseDate, final String regionCode,final String cutOff, final boolean isDynamic) throws SQLException {
 
 		Connection connection=null;
 		int result = 0;
+		StringBuffer strUpdateQuery = new StringBuffer();
+		strUpdateQuery.append(UPDATE_TIMESLOTFORDYNAMICSTATUSBYREGION_QRY);
 		try{
-			result = this.jdbcTemplate.update(UPDATE_TIMESLOTFORDYNAMICSTATUSBYREGION_QRY, new Object[] {(isDynamic ? "X" : null), baseDate, regionCode});
+			if(cutOff == null || cutOff.trim().length() == 0) {
+				result = this.jdbcTemplate.update(strUpdateQuery.toString(), new Object[] {(isDynamic ? "X" : null), baseDate, regionCode});
+			} else {
+				strUpdateQuery.append(UPDATE_TIMESLOTCUTUFF_QRYAPPEND);
+				result = this.jdbcTemplate.update(strUpdateQuery.toString(), new Object[] {(isDynamic ? "X" : null), baseDate, regionCode, cutOff});
+			}
+			
 			
 			connection=this.jdbcTemplate.getDataSource().getConnection();	
 			

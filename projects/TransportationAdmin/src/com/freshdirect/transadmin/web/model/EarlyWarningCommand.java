@@ -23,23 +23,50 @@ public class EarlyWarningCommand extends BaseCommand {
 	
 	private List<EarlyWarningCommand> timeslotDetails;
 	
-	private boolean manuallyClosed;
-		
+			
 	private String referenceId;
 	
 	private boolean isRegion;
 
-	private boolean dynamicActive;
 	
-	
-	
+	private int openCount = 0;
+	private int closedCount = 0;
+	private int dynamicActiveCount = 0;
+	private int dynamicInActiveCount = 0;
+		
 
-	public boolean isDynamicActive() {
-		return dynamicActive;
+	public int getOpenCount() {
+		return openCount;
 	}
 
-	public void setDynamicActive(boolean dynamicActive) {
-		this.dynamicActive = dynamicActive;
+	public void setOpenCount(int openCount) {
+		this.openCount = openCount;
+	}
+
+	public int getClosedCount() {
+		return closedCount;
+	}
+
+	public void setClosedCount(int closedCount) {
+		this.closedCount = closedCount;
+	}
+
+	public int getDynamicActiveCount() {
+		return dynamicActiveCount;
+	}
+
+	public void setDynamicActiveCount(int dynamicActiveCount) {
+		this.dynamicActiveCount = dynamicActiveCount;
+	}
+
+	
+
+	public int getDynamicInActiveCount() {
+		return dynamicInActiveCount;
+	}
+
+	public void setDynamicInActiveCount(int dynamicInActiveCount) {
+		this.dynamicInActiveCount = dynamicInActiveCount;
 	}
 
 	public boolean isRegion() {
@@ -48,14 +75,6 @@ public class EarlyWarningCommand extends BaseCommand {
 
 	public void setRegion(boolean isRegion) {
 		this.isRegion = isRegion;
-	}
-
-	public boolean isManuallyClosed() {
-		return manuallyClosed;
-	}
-
-	public void setManuallyClosed(boolean manuallyClosed) {
-		this.manuallyClosed = manuallyClosed;
 	}
 
 	public String getReferenceId() {

@@ -226,14 +226,14 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		}
 	}
 	
-	public int updateTimeslotForStatus(String timeslotId, boolean isClosed, String type, Date baseDate) throws RoutingServiceException {
+	public int updateTimeslotForStatus(String rootId, boolean isClosed, String type, Date baseDate, String cutOff) throws RoutingServiceException {
 		try {
 			if("2".equalsIgnoreCase(type)) {
-				return deliveryDAOImpl.updateTimeslotForStatusByRegion(baseDate, timeslotId, isClosed);
+				return deliveryDAOImpl.updateTimeslotForStatusByRegion(baseDate, rootId, cutOff, isClosed);
 			} else if("1".equalsIgnoreCase(type)) {
-				return deliveryDAOImpl.updateTimeslotForStatusByZone(baseDate, timeslotId, isClosed);
+				return deliveryDAOImpl.updateTimeslotForStatusByZone(baseDate, rootId, cutOff, isClosed);
 			} else {
-				return deliveryDAOImpl.updateTimeslotForStatus(timeslotId, isClosed);
+				return deliveryDAOImpl.updateTimeslotForStatus(rootId, isClosed);
 			}
 			
 		} catch (SQLException e) {
@@ -242,14 +242,14 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		}
 	}
 	
-	public int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, Date baseDate) throws RoutingServiceException {
+	public int updateTimeslotForDynamicStatus(String rootId, boolean isDynamic, String type, Date baseDate, String cutOff) throws RoutingServiceException {
 		try {
 			if("2".equalsIgnoreCase(type)) {
-				return deliveryDAOImpl.updateTimeslotForDynamicStatusByRegion(baseDate, timeslotId, isDynamic);
+				return deliveryDAOImpl.updateTimeslotForDynamicStatusByRegion(baseDate, rootId, cutOff, isDynamic);
 			} else if("1".equalsIgnoreCase(type)) {
-				return deliveryDAOImpl.updateTimeslotForDynamicStatusByZone(baseDate, timeslotId, isDynamic);
+				return deliveryDAOImpl.updateTimeslotForDynamicStatusByZone(baseDate, rootId, cutOff, isDynamic);
 			} else {
-				return deliveryDAOImpl.updateTimeslotForDynamicStatus(timeslotId, isDynamic);
+				return deliveryDAOImpl.updateTimeslotForDynamicStatus(rootId, isDynamic);
 			}
 			
 		} catch (SQLException e) {

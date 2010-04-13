@@ -19,16 +19,21 @@ public class FDCapacityCloseButtonCell extends FDBaseCell  {
         ColumnBuilder columnBuilder = new ColumnBuilder(column);
         columnBuilder.tdStart();
         EarlyWarningCommand command = null;
-        
+        String rowClass = "timeslot_open";        
         try {                       
             if(model.getCurrentRowBean() instanceof EarlyWarningCommand) {
             	
             	command = (EarlyWarningCommand)model.getCurrentRowBean();
             	if(command.getCode() != null && command.getCode().trim().length() > 0) {
+            		if(command.getOpenCount() > 0 && command.getClosedCount() > 0) {
+            			rowClass = "timeslot_closedpartial";
+            		} else if(command.getOpenCount() == 0 && command.getClosedCount() > 0) {
+            			rowClass = "timeslot_closed";
+            		}
 	            	columnBuilder.getHtmlBuilder().append("<input type=\"button\" class=\"")
-	            											.append(command.isManuallyClosed() ? "timeslot_closed" : "timeslot_open")
+	            											.append(rowClass)
 	            											.append("\" value=\"")
-	            											.append(command.isManuallyClosed() ? "C" : "O")
+	            											.append(command.getClosedCount() > 0 ? "C" : "O")
 															.append("\" onclick=\"updateTimeslot(this,'")
 															.append(command.getCode())
 															.append("', '")

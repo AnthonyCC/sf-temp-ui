@@ -41,13 +41,13 @@ public interface IDeliveryDetailsDAO {
 	
 	int updateTimeslotForStatus(final String timeslotId, final boolean isClosed) throws SQLException;
 	
-	int updateTimeslotForStatusByZone(final Date baseDate, final String zoneCode, final boolean isClosed) throws SQLException;
+	int updateTimeslotForStatusByZone(final Date baseDate, final String zoneCode,final String cutOff, final boolean isClosed) throws SQLException;
 	
-	int updateTimeslotForStatusByRegion(final Date baseDate, final String regionCode, final boolean isClosed) throws SQLException;
+	int updateTimeslotForStatusByRegion(final Date baseDate, final String regionCode,final String cutOff, final boolean isClosed) throws SQLException;
 	
 	int updateTimeslotForDynamicStatus(final String timeslotId, final boolean isDynamic) throws SQLException;
 	
-	int updateTimeslotForDynamicStatusByZone(final Date baseDate, final String zoneCode, final boolean isDynamic) throws SQLException;
+	int updateTimeslotForDynamicStatusByZone(final Date baseDate, final String zoneCode,final String cutOff, final boolean isDynamic) throws SQLException;
 	
-	int updateTimeslotForDynamicStatusByRegion(final Date baseDate, final String regionCode, final boolean isDynamic) throws SQLException;
+	int updateTimeslotForDynamicStatusByRegion(final Date baseDate, final String regionCode,final String cutOff, final boolean isDynamic) throws SQLException;
 }

@@ -17,16 +17,21 @@ public class FDCapacityDynamicButtonCell extends FDBaseCell  {
         ColumnBuilder columnBuilder = new ColumnBuilder(column);
         columnBuilder.tdStart();
         EarlyWarningCommand command = null;
-        
+        String rowClass = "dynamic_enabled"; 
         try {                       
             if(model.getCurrentRowBean() instanceof EarlyWarningCommand) {
             	
             	command = (EarlyWarningCommand)model.getCurrentRowBean();
             	if(command.getCode() != null && command.getCode().trim().length() > 0) {
+            		if(command.getDynamicActiveCount() > 0 && command.getDynamicInActiveCount() > 0) {
+            			rowClass = "dynamic_enabledpartial";
+            		} else if(command.getDynamicActiveCount() == 0 && command.getDynamicInActiveCount() > 0) {
+            			rowClass = "dynamic_disabled";
+            		}
 	            	columnBuilder.getHtmlBuilder().append("<input type=\"button\" class=\"")
-	            											.append(command.isDynamicActive() ? "dynamic_enabled" : "dynamic_disabled")
+	            											.append(rowClass)
 	            											.append("\" value=\"")
-	            											.append(command.isDynamicActive() ? "D" : "S")
+	            											.append(command.getDynamicActiveCount() > 0 ? "D" : "S")
 															.append("\" onclick=\"updateDynamicTimeslot(this,'")
 															.append(command.getCode())
 															.append("', '")
