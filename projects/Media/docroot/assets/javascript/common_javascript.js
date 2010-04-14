@@ -105,7 +105,14 @@ function popResize(URL,h,w,name) {
 	if (newWin.opener == null) newWin.opener = self;
 	newWin.focus();
 }
-
+function popResizeHelp(URL,h,w,name) {
+	
+	specs = "HEIGHT=" + h + ",WIDTH=" + w + ",resizable,scrollbars,top=0,screenY=0";
+	newWin =  window.open(URL,name,specs);
+	
+	if (newWin.opener == null) newWin.opener = self;
+	newWin.focus();
+}
 function backtoWin(url) {
     parent.window.opener.location = url ;
     parent.window.opener.focus();

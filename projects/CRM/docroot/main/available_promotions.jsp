@@ -7,6 +7,7 @@
 <%@ page import="com.freshdirect.webapp.util.*" %>
 <%@ page import="com.freshdirect.framework.util.*" %>
 <%@ page import="com.freshdirect.crm.CrmAgentRole"%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -30,7 +31,7 @@
 			<form method="POST"
 				action='<%=request.getRequestURI() + "?" + request.getQueryString()%>'>
 				<input type="text" name="search">
-				<input type="submit" value="Search">
+				<input type="submit" value="Search">&nbsp;<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmPromotionsHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Promotions Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" class="help">?</a>
 			</form>
 		</td>
 		<td width="45%">

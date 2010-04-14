@@ -7,6 +7,7 @@
 <%@ page import="com.freshdirect.fdstore.referral.*" %>
 <%@ page import="com.freshdirect.webapp.util.*" %>
 <%@ page import="com.freshdirect.framework.util.*" %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -28,7 +29,7 @@ Map profileAttributeNames = FDCustomerManager.loadProfileAttributeNames();
 <crm:GetCurrentAgent id="currentAgent">
 	<div class="sub_nav">
 	<table cellpadding="0" cellspacing="0" border="0" width="99%">
-	<tr><td width="80%"><span class="sub_nav_title">Profile List</span> </div></td>
+	<tr><td width="80%"><span class="sub_nav_title">Profile List &nbsp;<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmCustProfileHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" class="help">?</a></span> </div></td>
 	<% if (currentAgent.isSupervisor()) { %><td width="20%"align="right"><a href="/customer_account/set_profile_attr.jsp">Add a Profile Attribute &raquo;</a></td><% } %>
 	</tr>
 	</table>

@@ -407,6 +407,22 @@ public class FDStoreProperties {
 	
 	//Contact us FAQs
 	private static final String PROP_FAQ_SECTIONS="fdstore.faq.sections";
+	
+	private static final String PROP_CRM_HELP_LINK_ADDR_VALIDATION ="crm.help.link.addr.validation";
+	private static final String PROP_CRM_HELP_LINK_GIFT_CARD ="crm.help.link.giftcard";
+	private static final String PROP_CRM_HELP_LINK_MAIN_HELP ="crm.help.link.main.help";
+	private static final String PROP_CRM_HELP_LINK_CUST_PROFILE ="crm.help.link.cust.profile";
+	private static final String PROP_CRM_HELP_LINK_TIMESLOT ="crm.help.link.request.timeslot";
+	private static final String PROP_CRM_HELP_LINK_FD_UPDATES ="crm.help.link.fdUpdates";
+	private static final String PROP_CRM_HELP_LINK_PROMOTIONS ="crm.help.link.promotions";
+	private static final String PROP_CRM_HELP_LINK_CASE_MEDIA ="crm.help.link.case.media";
+	private static final String PROP_CRM_HELP_LINK_CASE_MORE_ISSUES ="crm.help.link.case.moreIssues";
+	private static final String PROP_CRM_HELP_LINK_CASE_CUST_TONE ="crm.help.link.case.cust.tone";
+	private static final String PROP_CRM_HELP_LINK_CASE_RESOL_SATISFY ="crm.help.link.resol.satisfactory";
+	private static final String PROP_CRM_HELP_LINK_CASE_RESOLV_FIRST ="crm.help.link.resolv.first";
+	private static final String PROP_CRM_HELP_LINK_CASE_FIRST_CONTACT ="crm.help.link.first.contact";
+	
+	
 
 	
 	static {
@@ -714,6 +730,21 @@ public class FDStoreProperties {
 		
 		//comma separated list of faq section ids from CMS.
 		defaults.put(PROP_FAQ_SECTIONS, "payment,order_today,prblem_my_order,order_change,delivery_feedback,promotion,gen_feedback,req_feedback,website_technical,acct_info,what_we_do,signing_up,security,shopping,home_delivery,cos,chef_table,vending,inside");
+		
+		// CRM Help Links to confluence.
+		defaults.put(PROP_CRM_HELP_LINK_ADDR_VALIDATION, "http://home.freshdirect.com/confluence/display/CRM/Address+Validation");
+		defaults.put(PROP_CRM_HELP_LINK_GIFT_CARD, "http://home.freshdirect.com/confluence/display/CRM/Gift+Card");
+		defaults.put(PROP_CRM_HELP_LINK_MAIN_HELP, "http://home.freshdirect.com/confluence/display/CRM/Home");
+		defaults.put(PROP_CRM_HELP_LINK_CUST_PROFILE, "http://home.freshdirect.com/confluence/display/CRM/Customer+Profiles");
+		defaults.put(PROP_CRM_HELP_LINK_TIMESLOT, "http://home.freshdirect.com/confluence/display/CRM/Timeslot+Request");
+		defaults.put(PROP_CRM_HELP_LINK_FD_UPDATES, "http://home.freshdirect.com/confluence/display/CRM/FD+Updates");
+		defaults.put(PROP_CRM_HELP_LINK_PROMOTIONS, "http://home.freshdirect.com/confluence/display/CRM/Promotion");
+		defaults.put(PROP_CRM_HELP_LINK_CASE_MEDIA, "http://home.freshdirect.com/confluence/display/CRM/Media");
+		defaults.put(PROP_CRM_HELP_LINK_CASE_MORE_ISSUES, "http://home.freshdirect.com/confluence/display/CRM/More+than+one+issue+with+order");
+		defaults.put(PROP_CRM_HELP_LINK_CASE_CUST_TONE, "http://home.freshdirect.com/confluence/display/CRM/Customer%27s+tone");
+		defaults.put(PROP_CRM_HELP_LINK_CASE_RESOL_SATISFY, "http://home.freshdirect.com/confluence/display/CRM/Resolution+satisfactory");
+		defaults.put(PROP_CRM_HELP_LINK_CASE_RESOLV_FIRST, "http://home.freshdirect.com/confluence/display/CRM/Resolved+on+first+contact");
+		defaults.put(PROP_CRM_HELP_LINK_CASE_FIRST_CONTACT, "http://home.freshdirect.com/confluence/display/CRM/First+contact+for+issue");
 		
 		refresh();
 	}
@@ -1653,5 +1684,45 @@ public class FDStoreProperties {
 	
 	public static String getFaqSections(){
 		return get(PROP_FAQ_SECTIONS);
+	}
+	
+	public static String getCrmAddressValiationHelpLink(){
+		return get(PROP_CRM_HELP_LINK_ADDR_VALIDATION);
+	}
+	public static String getCrmGiftCardHelpLink(){
+		return get(PROP_CRM_HELP_LINK_GIFT_CARD);
+	}
+	public static String getCrmMainHelpLink(){
+		return get(PROP_CRM_HELP_LINK_MAIN_HELP);
+	}
+	public static String getCrmCustProfileHelpLink(){
+		return get(PROP_CRM_HELP_LINK_CUST_PROFILE);
+	}
+	public static String getCrmTimeSlotHelpLink(){
+		return get(PROP_CRM_HELP_LINK_TIMESLOT);
+	}
+	public static String getCrmFDUpdatesHelpLink(){
+		return get(PROP_CRM_HELP_LINK_FD_UPDATES);
+	}
+	public static String getCrmPromotionsHelpLink(){
+		return get(PROP_CRM_HELP_LINK_PROMOTIONS);
+	}
+	public static String getCrmCaseMediaHelpLink(){
+		return get(PROP_CRM_HELP_LINK_CASE_MEDIA);
+	}
+	public static String getCrmCaseMoreIssuesHelpLink(){
+		return get(PROP_CRM_HELP_LINK_CASE_MORE_ISSUES);
+	}
+	public static String getCrmCaseCustomerToneHelpLink(){
+		return get(PROP_CRM_HELP_LINK_CASE_CUST_TONE);
+	}
+	public static String getCrmCaseFirstContactHelpLink(){
+		return get(PROP_CRM_HELP_LINK_CASE_FIRST_CONTACT);
+	}
+	public static String getCrmCaseResolvFirstHelpLink(){
+		return get(PROP_CRM_HELP_LINK_CASE_RESOLV_FIRST);
+	}
+	public static String getCrmResolutionSatisfHelpLink(){
+		return get(PROP_CRM_HELP_LINK_CASE_RESOL_SATISFY);
 	}
 }

@@ -1,4 +1,5 @@
 <%@ taglib uri='logic' prefix='logic' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
 <%
 String[] registration = {
@@ -86,7 +87,7 @@ kbcont.add(freshdirect);
 String topicTitle = "";
 %>
 
-<logic:iterate id='category' collection="<%= kbcont %>" type="String[]" indexId="i">
+<!-- <logic:iterate id='category' collection="<%= kbcont %>" type="String[]" indexId="i">
 	<% StringBuffer links = new StringBuffer(); %>
 	<% topicTitle = category[0]; %>
 	<% for (int n = 1; n < category.length; n++) { %>
@@ -99,4 +100,8 @@ String topicTitle = "";
 	<script language="Javascript">
 	var helpLinks<%=i.intValue()%> = "<%=links.toString()%>";
 	</script>&middot;&nbsp;<a id="topic<%=i.intValue()%>" onclick="hoverTopic('topic<%=i.intValue()%>','<%=topicTitle%> Help',helpLinks<%=i.intValue()%>);" onmouseout="return nd();"><%=topicTitle%></a>&nbsp;&nbsp;
-</logic:iterate>
+</logic:iterate> -->
+<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmFDUpdatesHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for FD Updates Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" >FD Updates</a>&nbsp;&nbsp;
+<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmMainHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" >Help</a>&nbsp;&nbsp;
+<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmPromotionsHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Promotions Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" >Promotions</a>&nbsp;&nbsp;
+<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmTimeSlotHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Timeslot Request Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" >Timeslot Request</a>&nbsp;&nbsp;

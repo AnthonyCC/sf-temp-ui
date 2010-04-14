@@ -12,6 +12,7 @@
 <%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
 <%@ page import='com.freshdirect.delivery.DlvZoneInfoModel' %>
 <%@ page import='com.freshdirect.fdstore.FDDeliveryManager' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
 <%@ page import='com.freshdirect.fdstore.*' %>
 
@@ -198,7 +199,7 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 
 <OPTION value="<%= id %>" <%= id.equals(addressId) ? "SELECTED" : "" %>><%=addr.getAddress1()%>, <%=addr.getCity()%>, <%=addr.getZipCode()	%></OPTION>
 <%	} %>
-</SELECT></td>
+</SELECT>&nbsp;<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmTimeSlotHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Time Slot Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" > Request Time Slot</a></td>
 <% } else {
 if(user.isHomeUser()){
 	ErpAddressModel addr = ((FDUserI)session.getAttribute(SessionName.USER)).getShoppingCart().getDeliveryAddress(); 

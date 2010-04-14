@@ -462,7 +462,14 @@ padding-bottom: 5px;
 	padding: 3px 0;
 	line-height: 20px;
 }
-
+.casedisp_text2 {
+	font-weight: normal;
+	color: #C00;
+	width: 25%;
+	float: left;
+	padding: 3px 0;
+	line-height: 20px;
+}
 .casedisp_select {
 	width: auto;
 	float: right;

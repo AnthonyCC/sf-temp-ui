@@ -3,6 +3,7 @@
 
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.crm.CrmAgentRole"%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <% String pageURI = request.getRequestURI(); %>
 <crm:GetCurrentAgent id="currentAgent">
@@ -34,7 +35,7 @@
             <a href="/main/available_promotions.jsp" class="<%=pageURI.indexOf("/main/available_promotions.jsp") > -1 || pageURI.indexOf("/promotion/") > -1?"main_nav_on":"main_nav_link"%>">Promotions</a> 
             <a href="/main/information.jsp" class="<%=pageURI.indexOf("/main/information.jsp") > -1?"main_nav_on":"main_nav_link"%>">Maps</a> 
             <a href="/gift_card/giftcard_landing.jsp" class="<%=pageURI.indexOf("/main/information.jsp") > -1?"main_nav_on":"main_nav_link"%>">GiftCard</a> 
-            <a href="javascript:popResize('/kbit/index.jsp','715','940','kbit')" class="<%=pageURI.indexOf("/main/help.jsp") > -1?"main_nav_on":"main_nav_link"%>">Help</a>
+            <a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmMainHelpLink() %>','715','940','kbit')" class="<%=pageURI.indexOf("/main/help.jsp") > -1?"main_nav_on":"main_nav_link"%>">Help</a>
 		</td>
 		<td width="25%" align="right">
 			<%=currentAgent.getRole().getName()%>: <b><%=currentAgent.getUserId()%></b>

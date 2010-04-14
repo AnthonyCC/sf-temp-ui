@@ -5,7 +5,7 @@
 <%@ page import="java.text.DateFormatSymbols" %>
 <%@ page import='com.freshdirect.crm.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.crm.CrmSession' %>
-
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -169,7 +169,7 @@ session.setAttribute(SessionName.USER,null);
             <tr>
                 <td class="home_module_header_text">
                     Address Validation 
-                    <a href="javascript:popResize('/kbit/crm.jsp?show=Address','715','940','kbit')" onmouseover="return overlib('Click for Address Validation Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" class="help">?</a> 
+                    <a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmAddressValiationHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Address Validation Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" class="help">?</a> 
                     &nbsp; <span class="home_search_module_field" style="font-weight: normal;">*Required</span>&nbsp;
                 </td>
 			    <td align="right" class="home_search_module_field">
@@ -273,7 +273,7 @@ session.setAttribute(SessionName.USER,null);
 		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; 0px;">
 		<form name="giftcard_search" id="giftcard_search" action="/gift_card/giftcard_landing.jsp">
 			<tr>
-				<td><span class="module_header_text">Gift Card Search</span></td>
+				<td><span class="module_header_text">Gift Card Search <a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmGiftCardHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Gift Card Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" class="help">?</a></span></td>
 			</tr>
 		</table>
 		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="gcSearchModuleContent" style="height: 2.2em; 0px;">

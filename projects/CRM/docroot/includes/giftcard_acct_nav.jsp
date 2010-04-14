@@ -1,4 +1,5 @@
 <%@ taglib uri='crm' prefix='crm' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%
 String snav_pageURI = request.getRequestURI();
 boolean landing_gc = snav_pageURI.indexOf("/gift_card/giftcard_landing.jsp") > -1;
@@ -15,7 +16,7 @@ boolean check_balance = snav_pageURI.indexOf("checkBalanceShow") > -1;
 <div class="cust_nav_gc" style="height: 28px;">
 	<div class="cust_nav_gc_header" style="width: 30px;"><img src="/media_stat/crm/images/giftcard_box.gif" width="24" height="27" alt="" /></div>
 	<div class="cust_nav_gc_header" style="width: 18%;"><div class="cust_nav_gc_header_text">Gift&nbsp;Card:
-			<% if (landing_gc) { %>Search
+			<% if (landing_gc) { %>Search <a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmGiftCardHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Gift Card Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" class="help">?</a>
 			<% } else if (check_balance) { %>Check&nbsp;Balance
 			<% } %>
 		</div>

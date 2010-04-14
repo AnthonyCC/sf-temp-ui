@@ -16,6 +16,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
 <%@ page import="com.freshdirect.customer.ErpComplaintModel"%>
 <%@ page import="com.freshdirect.customer.EnumComplaintStatus"%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -436,6 +437,9 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 					<div class="casedisp_text">
 						Media<span class="casedisp_Err_invis" id="mediaErr">*</span>
 					</div>
+					<div class="casedisp_text2">
+						<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmCaseMediaHelpLink() %>','715','940','kbit')" style='text-decoration: none;' onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();">What's this?</a>
+					</div>
 					<div class="casedisp_select">
                     
 						<select id="media"  name="media" onchange="verifyCaseDisp();">
@@ -465,6 +469,9 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 						<div class="casedisp_text">
 							More than one issue with order<span class="casedisp_Err_invis" id="morethenoneErr">*</span>
 						</div>
+						<div class="casedisp_text2">
+						<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmCaseMoreIssuesHelpLink() %>','715','940','kbit')" style='text-decoration: none;'  onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();">What's this?</a>
+						</div>
 						<div class="casedisp_select">
 							<select id="morethenone" name="morethenone" onchange="verifyCaseDisp();">
 								<option value="">-Select One-</option>
@@ -492,6 +499,9 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 						<div class="casedisp_text">
 							First contact for issue<span class="casedisp_Err_invis" id="firstContactErr">*</span>
 						</div>
+						<div class="casedisp_text2">
+							<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmCaseFirstContactHelpLink() %>','715','940','kbit')" style='text-decoration: none;'  onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();">What's this?</a>
+						</div>
 						<div class="casedisp_select">
 							<select id="firstContact"  name="firstContact" onchange="verifyCaseDisp();">
 								<option value="">-Select One-</option>
@@ -518,6 +528,9 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 					<div class="casedisp_line">
 						<div class="casedisp_text">
 							Resolved on first contact<span class="casedisp_Err_invis" id="ResolvedErr">*</span>
+						</div>
+						<div class="casedisp_text2">
+						<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmCaseResolvFirstHelpLink() %>','715','940','kbit')" style='text-decoration: none;'  onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" >What's this?</a>
 						</div>
 						<div class="casedisp_select">
 							<select id="Resolved"  name="Resolved" onchange="CaseDisp_FirstContact(this.id, 'NotResolved'); verifyCaseDisp();">
@@ -547,6 +560,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 						<div class="casedisp_text" id="NotResolved_text">
 							NOT resolved reason<span class="casedisp_Err_invis" id="NotResolvedErr">*</span>
 						</div>
+						
 						<div class="casedisp_select" id="NotResolved_select">
 							<select id="NotResolved"   name="NotResolved" style="display: none;" onchange="verifyCaseDisp();">                                                
 								<option value="">-Select One-</option>
@@ -575,6 +589,9 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 						<div class="casedisp_text">
 							Resolution satisfactory<span class="casedisp_Err_invis" id="satisfactoryReasonErr">*</span>
 						</div>
+						<div class="casedisp_text2">
+							<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmResolutionSatisfHelpLink() %>','715','940','kbit')" style='text-decoration: none;'  onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" >What's this?</a>
+						</div>
 						<div class="casedisp_select">
 							<select id="satisfactoryReason" name="satisfactoryReason" onchange="verifyCaseDisp();">
 								<option value="">-Select One-</option>
@@ -601,6 +618,9 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 					<div class="casedisp_line">
 						<div class="casedisp_text">
 							Customer's tone<span class="casedisp_Err_invis" id="customerToneErr">*</span>
+						</div>
+						<div class="casedisp_text2">
+							<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmCaseCustomerToneHelpLink() %>','715','940','kbit')" style='text-decoration: none;' onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" >What's this?</a>
 						</div>
 						<div class="casedisp_select">
 							<select name="customerTone" id="customerTone"  onchange="verifyCaseDisp();">
@@ -831,14 +851,14 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 	<tr valign="top">
 		<td class="case_content_field">Summary<span class="casedisp_Err_invis" id="summaryErr">*</span></td>
 		<td colspan="3">
-			<textarea <%= isEditAllowed ? "" : "readonly" %> name="summary" id="summary" rows="2" wrap="VIRTUAL" style="width: 600px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("summary")!= null ? request.getParameter("summary"):thisCase.getSummary() %></textarea>
+			<textarea <%= isEditAllowed ? "" : "readonly" %> name="summary" id="summary" rows="2" wrap="VIRTUAL" style="width: 500px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("summary")!= null ? request.getParameter("summary"):thisCase.getSummary() %></textarea>
 			<fd:ErrorHandler result='<%= result %>' name='summary' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
 	<tr valign="top">
 		<td class="case_content_field">Notes<span class="casedisp_Err_invis" id="noteErr">*</span></td>
 		<td colspan="3">
-			<textarea id="note" name="note" rows="4" wrap="VIRTUAL" style="width: 600px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("note") %></textarea>
+			<textarea id="note" name="note" rows="4" wrap="VIRTUAL" style="width: 500px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("note") %></textarea>
 			<fd:ErrorHandler result='<%= result %>' name='note' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
