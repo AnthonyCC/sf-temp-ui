@@ -61,6 +61,9 @@ import com.freshdirect.fdstore.ejb.FDFactorySessionBean;
 import com.freshdirect.fdstore.lists.ejb.FDListManagerHome;
 import com.freshdirect.fdstore.lists.ejb.FDListManagerSB;
 import com.freshdirect.fdstore.lists.ejb.FDListManagerSessionBean;
+import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerHome;
+import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerSB;
+import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerSessionBean;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
@@ -170,6 +173,8 @@ public class TestUtils {
                 ErpZoneInfoSessionBean.class);
         container.deploy(zoneInfoDesc);
         
+        // added for promotion manager
+        container.deploy(new SessionBeanDescriptor("freshdirect.fdstore.PromotionManager", FDPromotionManagerHome.class, FDPromotionManagerSB.class, FDPromotionManagerSessionBean.class));
         
 
         return container;
