@@ -1,9 +1,14 @@
 package com.freshdirect.fdstore.request;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import com.freshdirect.crm.CrmCaseModel;
 
 public class FDProductRequestDAO {
 
@@ -32,6 +37,79 @@ public class FDProductRequestDAO {
 		} else {
 			ps.setString(index, value);
 		}
+	}
+
+	public static List fetchAllMappings(Connection conn) throws SQLException {
+
+		List mapList = new ArrayList();
+
+		PreparedStatement ps = conn.prepareStatement(
+			"select DEPTID, CATID, OBSOLETE from CUST.PRODUCT_REQ_MAP"
+		);
+
+		ResultSet rs = ps.executeQuery();
+		
+		while (rs.next()) {
+			HashMap curMap = new HashMap();
+			curMap.put("DEPTID",(String)rs.getString("DEPTID"));
+			curMap.put("CATID",(String)rs.getString("CATID"));
+			curMap.put("OBSOLETE",(String)rs.getString("OBSOLETE"));
+			mapList.add(curMap);
+		}
+		
+		ps.close();
+
+		return mapList;
+	}
+
+	public static List fetchAllCats(Connection conn) throws SQLException {
+
+		List catList = new ArrayList();
+
+		PreparedStatement ps = conn.prepareStatement(
+			"select ID, CATID, NAME, CATIDNAME, OBSOLETE from CUST.PRODUCT_REQ_CAT"
+		);
+
+		ResultSet rs = ps.executeQuery();
+		
+		while (rs.next()) {
+			HashMap curCat = new HashMap();
+			curCat.put("ID",(String)rs.getString("ID"));
+			curCat.put("CATID",(String)rs.getString("CATID"));
+			curCat.put("NAME",(String)rs.getString("NAME"));
+			curCat.put("CATIDNAME",(String)rs.getString("CATIDNAME"));
+			curCat.put("OBSOLETE",(String)rs.getString("OBSOLETE"));
+			catList.add(curCat);
+		}
+		
+		ps.close();
+		
+		return catList;
+	}
+
+	public static List fetchAllDepts(Connection conn) throws SQLException {
+
+		List deptList = new ArrayList();
+
+		PreparedStatement ps = conn.prepareStatement(
+			"select ID, DEPTID, NAME, DEPTIDNAME, OBSOLETE from CUST.PRODUCT_REQ_DEPT"
+		);
+
+		ResultSet rs = ps.executeQuery();
+		
+		while (rs.next()) {
+			HashMap curDept = new HashMap();
+			curDept.put("ID",(String)rs.getString("ID"));
+			curDept.put("DEPTID",(String)rs.getString("DEPTID"));
+			curDept.put("NAME",(String)rs.getString("NAME"));
+			curDept.put("DEPTIDNAME",(String)rs.getString("DEPTIDNAME"));
+			curDept.put("OBSOLETE",(String)rs.getString("OBSOLETE"));
+			deptList.add(curDept);
+		}
+		
+		ps.close();
+		
+		return deptList;
 	}
 
 }

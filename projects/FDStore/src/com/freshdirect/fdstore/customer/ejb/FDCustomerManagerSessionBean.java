@@ -4212,6 +4212,76 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
             close(conn);
         }
     }
+    
+    public void storeProductRequest(List productRequest) throws FDResourceException {
+        Connection conn = null;
+        try {
+            conn = this.getConnection();
+            String id = "";
+            for (int i = 0; i < productRequest.size(); i++) {
+                id = this.getNextId(conn, "CUST");
+                FDProductRequest prodReq = (FDProductRequest) productRequest.get(i);
+                prodReq.setId(id);
+            }
+            if (productRequest.size() > 0) {
+                FDProductRequestDAO.storeRequest(conn, productRequest);
+            }
+        } catch (SQLException se) {
+            throw new FDResourceException(se, "Could not store product request");
+        //} catch (RemoteException e) {
+            //throw new FDResourceException(e, "Could not store product request");
+        } finally {
+            close(conn);
+        }
+    }
+
+    public List productRequestFetchAllDepts() throws FDResourceException {
+        Connection conn = null;
+        try {
+            conn = this.getConnection();
+
+            return FDProductRequestDAO.fetchAllDepts(conn);
+
+        } catch (SQLException se) {
+            throw new FDResourceException(se, "Could not fetch all Depts for product request");
+        //} catch (RemoteException e) {
+        //    throw new FDResourceException(e, "Could not fetch all Depts for product request");
+        } finally {
+            close(conn);
+        }
+    }
+
+    public List productRequestFetchAllCats() throws FDResourceException {
+        Connection conn = null;
+        try {
+            conn = this.getConnection();
+
+            return FDProductRequestDAO.fetchAllCats(conn);
+
+        } catch (SQLException se) {
+            throw new FDResourceException(se, "Could not fetch all Cats for product request");
+        //} catch (RemoteException e) {
+        //    throw new FDResourceException(e, "Could not fetch all Cats for product request");
+        } finally {
+            close(conn);
+        }
+    }
+    
+    public List productRequestFetchAllMappings() throws FDResourceException {
+        Connection conn = null;
+        try {
+            conn = this.getConnection();
+
+            return FDProductRequestDAO.fetchAllMappings(conn);
+
+        } catch (SQLException se) {
+            throw new FDResourceException(se, "Could not fetch all Mappings for product request");
+        //} catch (RemoteException e) {
+            //throw new FDResourceException(e, "Could not fetch all Mappings for product request");
+        } finally {
+            close(conn);
+        }
+    }
 
 
 	

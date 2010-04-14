@@ -2910,6 +2910,20 @@ public class FDCustomerManager {
 			}
 		}
 	    
+	    public static void storeProductRequest(List productRequest) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.storeProductRequest(productRequest);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
+	    
 	    private static void invalidateRoutingGatewayHome() {
 	    	routingGatewayHome = null;
 	    }

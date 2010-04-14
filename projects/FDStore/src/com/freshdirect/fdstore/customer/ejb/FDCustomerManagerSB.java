@@ -645,6 +645,8 @@ public interface FDCustomerManagerSB extends EJBObject {
     public ErpAddressModel getLastOrderAddress(String lastOrderId) throws FDResourceException, RemoteException, SQLException;
     
     public void storeProductRequest(List productRequest,FDSurveyResponse survey) throws RemoteException, FDResourceException;
+
+    public void storeProductRequest(List productRequest) throws RemoteException, FDResourceException;
     
     public ErpAddressModel getAddress(FDIdentity identity,String id) throws FDResourceException, RemoteException;
 
@@ -723,5 +725,9 @@ public interface FDCustomerManagerSB extends EJBObject {
     public void resubmitGCOrders() throws RemoteException, FDResourceException;
     
     public List getTopFaqs() throws FDResourceException, RemoteException;
+    
+    public List productRequestFetchAllDepts() throws FDResourceException, RemoteException;
+    public List productRequestFetchAllCats() throws FDResourceException, RemoteException;
+    public List productRequestFetchAllMappings() throws FDResourceException, RemoteException;
 }
 

@@ -290,8 +290,8 @@ public class EshaSpreadsheetParser {
             }
         }
     }
-    
-    private static String[] skuPrefixes = {"VEG", "FRU", "YEL", "MEA", "SEA", "DEL", "CAN", "COF", "TEA", "GRO", "FRO", "SPE", "HMR", "BAK", "PAS", "CHE", "DAI", "KOS", "WIN", "HBA", "VAR"};
+    //private static String[] skuPrefixes = {"VEG", "FRU", "YEL", "MEA", "SEA", "DEL", "CAN", "COF", "TEA", "GRO", "FRO", "SPE", "HMR", "BAK", "PAS", "CHE", "DAI", "KOS", "WIN", "HBA", "VAR"};
+    private static String[] skuPrefixes = {"BAK","CAN","CAT","CBL","CHE","COF","DAI","DEL","FDM","FRO","FRU","GRO","HBA","HMR","KOS","MEA","MKT","PAS","SEA","SMP","SPE","TEA","TST","VAR","VEG","YEL"};
     
     protected boolean isSkuCode(String skuCode) {
         for (int i=0; i<skuPrefixes.length; i++) {

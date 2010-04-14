@@ -1,0 +1,193 @@
+<%@ page import="com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome"%>
+<%@ page import="com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB"%>
+<%@ page import="com.freshdirect.ErpServicesProperties"%>
+<%@ page import="javax.naming.Context"%>
+<%@ page import="javax.naming.InitialContext"%>
+<%@ page import="javax.naming.NamingException"%>
+<%!
+
+	static public Context getInitialContext() throws NamingException {
+		Hashtable h = new Hashtable();
+		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
+		h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
+		return new InitialContext(h);
+	}
+%>
+<%
+	Context ctx = null;
+	ctx = getInitialContext();
+	FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
+	FDCustomerManagerSB sb = home.create();
+
+	List deptsList = new ArrayList();
+	List catsList = new ArrayList();
+	List mapsList = new ArrayList();
+	
+	deptsList = sb.productRequestFetchAllDepts();
+	catsList = sb.productRequestFetchAllCats();
+	mapsList = sb.productRequestFetchAllMappings();
+
+	HashMap finalMap = new HashMap();
+
+	//loop through map and only keep non-obsolete
+		List mapsListCopy = new ArrayList();
+		Iterator mapsListI = mapsList.iterator();
+		while (mapsListI.hasNext()) {
+			HashMap curMap = new HashMap();
+			curMap = (HashMap)mapsListI.next();
+
+			Set mapSet = curMap.entrySet();
+			Iterator mapSetI = mapSet.iterator();
+			
+			while(mapSetI.hasNext()){
+				Map.Entry me = (Map.Entry)mapSetI.next();
+				if ("OBSOLETE".equals(me.getKey()) && !"X".equals(me.getValue())) {
+					mapsListCopy.add(curMap);
+				}
+			}
+		}
+		//replace original list with fixed list
+		mapsList = mapsListCopy;
+
+		
+	//loop through non-obsolete list and put values into valid list
+		List<String> validMapsList = new ArrayList<String> ();
+
+		Iterator mapsListI2 = mapsList.iterator();
+		while (mapsListI2.hasNext()) {
+			HashMap curMap = new HashMap();
+			curMap = (HashMap)mapsListI2.next();
+
+			Set mapSet = curMap.entrySet();
+			Iterator mapSetI = mapSet.iterator();
+
+			Object catObj = null;
+			Object deptObj = null;
+			
+			while(mapSetI.hasNext()){
+				Map.Entry me = (Map.Entry)mapSetI.next();
+				if ("DEPTID".equals(me.getKey())) {
+					deptObj = me.getValue();
+				}
+				if ("CATID".equals(me.getKey())) { 
+					catObj = me.getValue();
+				}
+			}
+			if (deptObj != null && catObj != null) {
+				if (!validMapsList.contains(deptObj+"_"+catObj)) {
+					validMapsList.add(deptObj+"_"+catObj);
+				}
+			}
+		}
+
+	//loop through cat and only keep non-obsolete
+		List catsListCopy = new ArrayList();
+		Iterator catsListI = catsList.iterator();
+		while (catsListI.hasNext()) {
+			HashMap curCat = new HashMap();
+			curCat = (HashMap)catsListI.next();
+
+			Set catSet = curCat.entrySet();
+			Iterator catSetI = catSet.iterator();
+
+			//iterate over list and mark non-obsolete cats
+			boolean isObsoleteCat = true;
+
+			Object catSeqId = new Object();
+			
+			while(catSetI.hasNext()){
+				Map.Entry me = (Map.Entry)catSetI.next();
+				if ("OBSOLETE".equals(me.getKey())) {
+					isObsoleteCat = "X".equals(me.getValue());
+				}
+				if ("ID".equals(me.getKey())) {
+					catSeqId = me.getValue();
+					catSeqId = me.getValue();
+				}
+			}
+			//add to copy and to final HashMap
+			if (!isObsoleteCat) {
+				catsListCopy.add(curCat);
+				finalMap.put(catSeqId, curCat);
+			}
+		}
+		//replace original list with fixed list
+		catsList = catsListCopy;
+
+	//loop through dept and only keep non-obsolete
+		List deptsListCopy = new ArrayList();
+		Iterator deptsListI = deptsList.iterator();
+		while (deptsListI.hasNext()) {
+			HashMap curDept = new HashMap();
+			curDept = (HashMap)deptsListI.next();
+
+			Set deptSet = curDept.entrySet();
+			Iterator deptSetI = deptSet.iterator();
+			
+			//iterate over list and mark non-obsolete depts
+			boolean isObsoleteDept = true;
+
+			Object deptSeqId = new Object();
+			
+			while(deptSetI.hasNext()){
+				Map.Entry me = (Map.Entry)deptSetI.next();
+				if ("OBSOLETE".equals(me.getKey())) {
+					isObsoleteDept = "X".equals(me.getValue());
+				}
+				if ("ID".equals(me.getKey())) {
+					deptSeqId = me.getValue();
+					deptSeqId = me.getValue();
+				}
+			}
+			//add to copy and to final HashMap
+			if (!isObsoleteDept) {
+				deptsListCopy.add(curDept);
+				finalMap.put(deptSeqId, curDept);
+			}
+		}
+			//replace original list with fixed list
+			deptsList = deptsListCopy;
+
+		//loop through VALID MAPS, fetching data from FINAL MAP
+			Iterator validMapsListI = validMapsList.iterator();
+			String[] curItemArr;
+			String curItem = "";
+
+			while (validMapsListI.hasNext()) {
+				HashMap curDept = new HashMap();
+				HashMap curCat = new HashMap();
+
+				curItem = (String)validMapsListI.next();
+				curItemArr = curItem.split("_");
+
+				curDept = (HashMap)finalMap.get(curItemArr[0]);
+				curCat = (HashMap)finalMap.get(curItemArr[1]);
+
+				String curDeptIdString = "";
+
+				HashMap curMap = new HashMap();
+				//if either of these are null, the dept/cat is obsolete
+				if (curDept != null && curCat != null) {
+					//get the info from Final Map via key here, for depts
+					if (curDept != null) {
+						curMap = curDept;
+						//no need to iterate, output for javascript
+						curDeptIdString = curMap.get("DEPTID").toString();
+
+						%><script type="text/javascript">
+							depts.addDept("<%=curMap.get("DEPTID")%>", "<%=curMap.get("NAME")%>");
+						</script><%
+					}
+					if (curCat != null) {
+						curMap = curCat;
+
+						%><script type="text/javascript">
+							depts.addCatToDept("<%=curDeptIdString%>", "<%=curMap.get("CATID")%>", "<%=curMap.get("NAME")%>");
+						</script><%
+					}
+				}
+			}
+
+
+%>
+
