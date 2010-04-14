@@ -18,7 +18,7 @@ String pageURI = request.getRequestURI();
 
 </head>
 <body>
-
+<div class="tophelp1">
 <%@ include file="/includes/context_help.jspf" %>
 
 <%try{%>
@@ -44,14 +44,18 @@ String pageURI = request.getRequestURI();
 		</span>
 		<br><img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
 		Idle time in minutes,<br>
-		-- closed
+		-- closed<br>
+		&nbsp;
+		<br>
+		&nbsp;
 		</div>
     </div>
 	
     <div class="content_bgcolor">
     <tmpl:get name='content'/>
     </div>
-	
+</div>
+
 	<div class="footer"><jsp:include page='/includes/copyright.jsp'/></div>
 <%}catch (Exception ex) {
 	ex.printStackTrace();

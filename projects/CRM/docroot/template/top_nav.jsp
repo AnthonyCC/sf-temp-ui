@@ -51,7 +51,7 @@
 <body onload="<%=request.getAttribute("bodyOnLoad")%>"
       onunload="<%=request.getAttribute("bodyOnUnload")%>"
 >
-
+<div class="tophelp1">
 <%@ include file="/includes/context_help.jspf" %>
 
     <%-- header on top and content below --%>
@@ -63,7 +63,7 @@
 	<jsp:include page='/includes/case_header.jsp'/>
 
 	<tmpl:get name="content"/>
-	
+</div>	
 	<div class="footer"><jsp:include page='/includes/copyright.jsp'/></div>
 </body>
 </html>

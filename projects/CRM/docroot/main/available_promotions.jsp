@@ -115,8 +115,10 @@
             </tr>
 
 </logic:iterate>
+
 </fd:GetAllPromotions>
 </table>
+<br>&nbsp;<br>
 </div>
 </crm:GetCurrentAgent>
 </tmpl:put>

@@ -87,10 +87,17 @@ float: left;
 .separator {
 clear: both;
 }
-
+.tophelp1 {
+height:850px;
+overflow:auto;
+	
+}
 .footer {
 	border-top: 1px #000000 solid;
 	padding: 0;
+	background-color: #FFFFFF;
+	position: absolute;
+	bottom: 0;
 /*
 position: relative;
 height: auto;
