@@ -12,8 +12,12 @@
                 <column name="ROLE" length="16" />
             </key-property>
         </composite-id>
-        <many-to-one name="employeeRoleType" class="com.freshdirect.transadmin.model.EmployeeRoleType" update="false" insert="false" fetch="select" lazy="false" >
+        
+      <many-to-one name="employeeRoleType" class="com.freshdirect.transadmin.model.EmployeeRoleType" update="false" insert="false" fetch="select" lazy="false" >
             <column name="ROLE" length="16" not-null="true" />
+        </many-to-one>
+        <many-to-one name="employeeSubRoleType" class="com.freshdirect.transadmin.model.EmployeeSubRoleType"  fetch="select" lazy="false" >
+            <column name="SUB_ROLE" length="16"  />
         </many-to-one>
     </class>
 </hibernate-mapping>

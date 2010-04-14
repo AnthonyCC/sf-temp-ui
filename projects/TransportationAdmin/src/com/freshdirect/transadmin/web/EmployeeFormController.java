@@ -13,6 +13,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
+import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.EmployeeroleId;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
@@ -26,7 +27,7 @@ public class EmployeeFormController extends AbstractFormController {
 		Map refData = new HashMap();
 		//refData.put("supervisors", getDomainManagerService().getSupervisors());
 		//refData.put("region", getDomainManagerService().getR);
-		refData.put("roleTypes", getEmployeeManagerService().getEmployeeRoleTypes());
+		refData.put("roleTypes", getEmployeeManagerService().getEmployeeSubRoleTypes());
 		return refData;
 	}
 
@@ -57,9 +58,12 @@ public class EmployeeFormController extends AbstractFormController {
 
 		String roleTypeCodes[]=request.getParameterValues("employeeRoleTypes");
 		String empId=request.getParameter("employeeId");
+		String toggle=request.getParameter("toggle");
 
-		//System.out.println("roleTypeCodes :"+roleTypeCodes);
-
+		if(toggle!=null)
+		{
+			model.toggleStatus();
+		}
 		List roleList=null;
 
 		if(roleTypeCodes!=null)
@@ -68,9 +72,9 @@ public class EmployeeFormController extends AbstractFormController {
 
 			for(int i=0;i<roleTypeCodes.length;i++){
 
-				EmployeeRoleType roleType= getEmployeeManagerService().getEmployeeRoleType(roleTypeCodes[i]);
+				EmployeeSubRoleType roleType= getEmployeeManagerService().getEmployeeSubRoleType(roleTypeCodes[i]);
 				if(roleType==null) continue;
-				EmployeeroleId roleId=new EmployeeroleId(empId,roleType.getCode());
+				EmployeeroleId roleId=new EmployeeroleId(empId,roleType.getRole().getCode());
 				EmployeeRole empRole=new EmployeeRole(roleId,roleType);
 				roleList.add(empRole);
 				//System.out.println("roleType"+roleType);

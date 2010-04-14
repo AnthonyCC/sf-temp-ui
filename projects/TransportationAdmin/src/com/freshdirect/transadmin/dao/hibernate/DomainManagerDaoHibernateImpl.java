@@ -16,7 +16,9 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.model.DispositionType;
+import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
+import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.RouteMappingId;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
@@ -214,6 +216,9 @@ public class DomainManagerDaoHibernateImpl
 		return getDataList("EmployeeRoleType Order By code");
 	}
 
+	public Collection getEmployeeSubRoleTypes() throws DataAccessException {
+		return getDataList("EmployeeSubRoleType Order By code");
+	}
 	public Collection getZonetypeResources(String zoneTypeId) throws DataAccessException {
 //		System.out.println("Inside get zone type resources $$$$$$$$$$$$$");
 		StringBuffer strBuf = new StringBuffer();
@@ -256,7 +261,13 @@ public class DomainManagerDaoHibernateImpl
 		// TODO Auto-generated method stub
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from EmployeeRole te where  te.id.kronosId ='").append(empId).append("'");
-		return (Collection) getHibernateTemplate().find(strBuf.toString());
+		Collection c=(Collection) getHibernateTemplate().find(strBuf.toString());
+		for(Iterator it=c.iterator();it.hasNext();)
+		{
+			EmployeeRole e=(EmployeeRole)it.next();
+			e.migrate();
+		}
+		return c;
 	}
 
 
@@ -270,6 +281,11 @@ public class DomainManagerDaoHibernateImpl
 		// TODO Auto-generated method stub
 
 		return (EmployeeRoleType) getEntityById("EmployeeRoleType","code",roleTypeId);
+	}
+	public EmployeeSubRoleType getEmployeeSubRoleType(String subRoleTypeId) throws DataAccessException {
+		// TODO Auto-generated method stub
+
+		return (EmployeeSubRoleType) getEntityById("EmployeeSubRoleType","code",subRoleTypeId);
 	}
 
 	public DispositionType getDispositionType(String dispCode) throws DataAccessException {
@@ -338,6 +354,16 @@ public class DomainManagerDaoHibernateImpl
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("UPSRouteInfo u WHERE u.routeDate='"+routeDate+"'");		
 		return (Collection) getDataList(strBuf.toString());		
+	}
+
+	public Collection getEmployeeStatus(String empId)
+			throws DataAccessException {
+		// TODO Auto-generated method stub
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from EmployeeStatus e ");
+		if(empId!=null)
+			strBuf.append("where  e.personnum ='").append(empId).append("'");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 	
 

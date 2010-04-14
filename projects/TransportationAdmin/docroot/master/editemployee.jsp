@@ -89,7 +89,7 @@
 							    <td>Role</td>
 							    <td> 	
                               <spring:bind path="employeeForm.employeeRoleTypes">
-                                   <SELECT name="employeeRoleTypes" multiple="multiple">     
+                                   <SELECT name="employeeRoleTypes" >     
                                       <OPTION value="">Please select roles</OPTION>          
                                       <c:forEach  var="role" items="${roleTypes}"  >
                                        <c:set var="avail" value="true"/>
@@ -109,11 +109,25 @@
 							 	<td>
 							 		&nbsp;<form:errors path="empRole" />
 							 	</td>
-							 </tr>							 	  	
+							 </tr>
+							 <tr>
+							    <td>Status</td>
+							    <td> 
+								  	 <form:input maxlength="50" size="30" path="trnStatus1" readOnly="true" />
+							 	</td>
+							 	<td>
+							 		&nbsp;<form:errors path="lastName" />
+							 	</td>
+							 </tr>								 	  	
 							<tr><td colspan="3">&nbsp;</td></tr>
 							<tr>
-							    <td colspan="3" align="center">
-								   <input type = "submit" value="&nbsp;Save&nbsp;"  />
+							<td colspan="3" align="center">
+							 <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%>							
+							
+                             <input type = "submit" value="&nbsp;Change Status&nbsp;"  onclick="javascript:setStatus()"/>         
+                             
+							  <%}%>  
+								 <input type = "submit" value="&nbsp;Save&nbsp;"  />
 								</td>			
 							</tr>
 							</table>				
@@ -130,3 +144,13 @@
 		 
 	</tmpl:put>
 </tmpl:insert>
+<script>
+function setStatus()
+{	
+	new_element = document.createElement("input");
+	new_element.setAttribute("type", "hidden");
+	new_element.setAttribute("name", "toggle");	
+	new_element.setAttribute("value", "true");
+	document.forms['employeeForm'].appendChild(new_element);		
+}
+</script>

@@ -13,6 +13,7 @@ public class EmployeeRoleType implements java.io.Serializable {
 	private String code;
 	private String name;
 	private String description;
+	private Set subRoles;
 	
 	public EmployeeRoleType() {
 	}
@@ -52,6 +53,14 @@ public class EmployeeRoleType implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Set getSubRoles() {
+		return subRoles;
+	}
+
+	public void setSubRoles(Set subRoles) {
+		this.subRoles = subRoles;
 	}
 
 }

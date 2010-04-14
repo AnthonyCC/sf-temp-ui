@@ -52,6 +52,12 @@
 					<span class="scrTitle">
 						<%=pageTitle%>
 					</span>
+					<span>
+					Status : <select id="statusFilter" onchange="javascript:doFilter()"><option value="a">TransApp Active</option>
+													   <option value="i">TransApp Inactive</option>
+													   <option value="ae">All Employees</option>
+													   </select>
+					</span>
 				</div>
 			</div>
 		</div>
@@ -61,7 +67,8 @@
 				<div class="cont_Ritem">
 					<form id="employeeListForm" action="" method="post">
 					
-
+                      <input type="hidden" name="status" value="<%=request.getAttribute("status")%>"/>
+           
 						<ec:table items="employees"   action="${pageContext.request.contextPath}/employee.do?empstatus=S"
 						imagePath="${pageContext.request.contextPath}/images/table/*.gif" title=""		
 						width="98%"  view="fd" form="employeeListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
@@ -73,7 +80,8 @@
 							<ec:row interceptor="obsoletemarker">            								
 								<ec:column title=" " width="5px" 
 										filterable="false" sortable="false" cell="selectcol"
-										property="employeeId" />						
+										property="employeeId" />
+								<ec:column property="status" title="Status"/>						
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>
 								<ec:column alias="kronosId" property="employeeId" title="KronosID"/>   
@@ -101,6 +109,12 @@
 		      	var filters=getFilterValue(document.getElementById("employeeListForm"),false);		      
 		      	return escape(filters)
 		      }
+		     function doFilter() 
+		     {
+		          var param1 = document.getElementById("statusFilter").value;
+		          location.href = "employee.do?empstatus=S&status="+param1;    
+		     }
+		     document.getElementById("statusFilter").value='<%=request.getAttribute("status")%>'
 		</script>	
   </tmpl:put>
 </tmpl:insert>

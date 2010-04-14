@@ -121,6 +121,7 @@ public class ModelUtil {
 					EmployeeRole tmpRole=(EmployeeRole)roleList.get(j);
 					if(tmpRole.getId().getKronosId().equals(info.getEmployeeId())){
 //						System.out.println("tmpRole:"+tmpRole.getEmployeeRoleType());
+						tmpRole.migrate();
 						empRoleList.add(tmpRole);
 					}
 				 }

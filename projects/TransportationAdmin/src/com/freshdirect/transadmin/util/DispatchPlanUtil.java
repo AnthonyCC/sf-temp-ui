@@ -17,6 +17,7 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.EmployeeInfo;
+import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.UPSRouteInfo;
@@ -1007,4 +1008,37 @@ public class DispatchPlanUtil {
 		}
 		return false;
 	}
+	public static boolean isEligibleForKronosFileGeneration(Collection c)
+	{
+		if(c!=null&&c.size()>0)
+		{			
+			if(EnumResourceSubType.isKronosFileGeneration((EnumResourceSubType.getEnum(((EmployeeRole)c.toArray()[0]).getEmployeeSubRoleType().getCode()))))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	public static boolean isEligibleForUnassignedEmployees(Collection c)
+	{
+		if(c!=null&&c.size()>0)
+		{			
+			if(EnumResourceSubType.isUnassignedEmployees((EnumResourceSubType.getEnum(((EmployeeRole)c.toArray()[0]).getEmployeeSubRoleType().getCode()))))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	public static boolean isEligibleForUnAvailable(Collection c)
+	{
+		if(c!=null&&c.size()>0)
+		{			
+			if(EnumResourceSubType.isUnAvailable((EnumResourceSubType.getEnum(((EmployeeRole)c.toArray()[0]).getEmployeeSubRoleType().getCode()))))
+			{
+				return true;
+			}
+		}
+		return false;
+	}	
 }

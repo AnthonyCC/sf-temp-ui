@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
+import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
@@ -74,13 +75,19 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getEmployeeRoleTypes() throws DataAccessException;
 	
+	Collection getEmployeeSubRoleTypes() throws DataAccessException;
+	
 	Collection getEmployeeJobType() throws DataAccessException;
 	
 	TrnEmployee getEmployee(String id) throws DataAccessException;
 	
 	EmployeeRoleType getEmployeeRoleType(String roleTypeId)  throws DataAccessException;
 	
+	EmployeeSubRoleType getEmployeeSubRoleType(String subRoleTypeId) throws DataAccessException;
+	
 	Collection getEmployeeRole(String empId)  throws DataAccessException;
+	
+	Collection getEmployeeStatus(String empId)  throws DataAccessException;
 	
 	Collection getEmployeesByRoleType(String roleTypeId) throws DataAccessException;
 

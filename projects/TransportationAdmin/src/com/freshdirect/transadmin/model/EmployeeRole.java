@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.model;
 
+import java.util.Iterator;
+
 // Generated Nov 18, 2008 3:11:21 PM by Hibernate Tools 3.2.2.GA
 
 /**
@@ -9,14 +11,15 @@ public class EmployeeRole implements java.io.Serializable {
 
 	private EmployeeroleId id;
 	private EmployeeRoleType employeeRoleType;
+	private EmployeeSubRoleType employeeSubRoleType;
 
 	public EmployeeRole() {
 	}
     
 
-	public EmployeeRole(EmployeeroleId id, EmployeeRoleType employeeRoleType) {
+	public EmployeeRole(EmployeeroleId id, EmployeeSubRoleType employeeRoleType) {
 		this.id = id;
-		this.employeeRoleType = employeeRoleType;
+		this.employeeSubRoleType = employeeRoleType;
 	}
 
 	public EmployeeroleId getId() {
@@ -27,12 +30,37 @@ public class EmployeeRole implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public EmployeeRoleType getEmployeeRoleType() {
-		return this.employeeRoleType;
+	public EmployeeSubRoleType getEmployeeSubRoleType() {
+		return this.employeeSubRoleType;
 	}
+
+	public void setEmployeeSubRoleType(EmployeeSubRoleType employeeRoleType) {
+		this.employeeSubRoleType = employeeRoleType;
+	}
+
+	public void migrate()
+	{
+		if(employeeSubRoleType==null&&employeeRoleType!=null)
+		{
+			for(Iterator subTypes=employeeRoleType.getSubRoles().iterator();subTypes.hasNext();)
+			{
+				EmployeeSubRoleType temp=(EmployeeSubRoleType)subTypes.next();
+				if(employeeRoleType.getCode().equals(temp.getCode()))
+				{
+					employeeSubRoleType=temp;
+					break;
+				}
+			}
+		}
+	}
+
+
+	public EmployeeRoleType getEmployeeRoleType() {
+		return employeeRoleType;
+	}
+
 
 	public void setEmployeeRoleType(EmployeeRoleType employeeRoleType) {
 		this.employeeRoleType = employeeRoleType;
 	}
-
 }

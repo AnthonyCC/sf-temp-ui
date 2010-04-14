@@ -48,6 +48,7 @@ private String employeeId;
 	private boolean bullpen;
 	private EmployeeInfo empInfo;
 	private Collection  empRole;
+	private String trnStatus;
 
 	public WebEmployeeInfo(EmployeeInfo eInfo,Collection eRole){
 		this.empInfo=eInfo;
@@ -80,9 +81,9 @@ private String employeeId;
 		while(iterator.hasNext()){
 			EmployeeRole role=(EmployeeRole)iterator.next();
 			if(buf.length()>0)
-				buf.append("/").append(role.getEmployeeRoleType().getName());
+				buf.append("/").append(role.getEmployeeSubRoleType().getName());
 			else
-				buf.append(role.getEmployeeRoleType().getName());
+				buf.append(role.getEmployeeSubRoleType().getName());
 		}
 
 		return buf.toString();
@@ -99,7 +100,7 @@ private String employeeId;
 		Iterator iterator=empRole.iterator();
 		while(iterator.hasNext()){
 			EmployeeRole role=(EmployeeRole)iterator.next();
-			empList.add(role.getEmployeeRoleType());
+			empList.add(role.getEmployeeSubRoleType());
 		}
 
 		return empList;
@@ -211,4 +212,43 @@ private String employeeId;
 		this.region = region;
 	}
 
+	public void setTrnStatus(String status) {
+		this.trnStatus = status;
+	}
+
+	public String getTrnStatus() {
+		return this.trnStatus ;
+	}
+	public String getTrnStatus1()
+	{
+		String status=empInfo.getStatus();
+		if("Inactive".equalsIgnoreCase(status))
+		{
+			if("true".equalsIgnoreCase(trnStatus)) return "FA";
+			if("false".equalsIgnoreCase(trnStatus)) return "I";
+			if(trnStatus==null) return "I";
+		}
+		if("Active".equalsIgnoreCase(status))
+		{
+			if("true".equalsIgnoreCase(trnStatus)) return "A";
+			if("false".equalsIgnoreCase(trnStatus)) return "FI";
+			if(trnStatus==null) return "A";
+		}
+		return null;
+	}	
+	public void toggleStatus()
+	{
+		String status=empInfo.getStatus();
+		if("Inactive".equalsIgnoreCase(status))
+		{
+			if("true".equalsIgnoreCase(trnStatus)){ trnStatus=null; return; }			
+			if(trnStatus==null){ trnStatus="true" ; return ; }
+		}
+		if("Active".equalsIgnoreCase(status))
+		{
+			if("false".equalsIgnoreCase(trnStatus)){ trnStatus=null; return; }			
+			if(trnStatus==null) { trnStatus="false" ; return ;}
+			
+		}
+	}
 }

@@ -30,6 +30,7 @@ import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LogManagerI;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
@@ -421,28 +422,31 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 						WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(_punchInfo.getEmployeeId());
 						if(webEmpInfo!=null && webEmpInfo.getEmpInfo()!=null && !webEmpInfo.getEmpRole().isEmpty() )
 						{
-							ScheduleEmployee s=employeeManagerService.getSchedule(_punchInfo.getEmployeeId(), day);	
-							if(s!=null)
-							webEmpInfo.setRegion(s.getRegionS());
-							for(Iterator i=dispList.iterator();i.hasNext();)
+							if(DispatchPlanUtil.isEligibleForUnassignedEmployees(domainManagerService.getEmployeeRole(_punchInfo.getEmployeeId())))
 							{
-								Dispatch disp=(Dispatch)i.next();
-								Set r=disp.getDispatchResources();
-								for(Iterator j=r.iterator();j.hasNext();)
+								ScheduleEmployee s=employeeManagerService.getSchedule(_punchInfo.getEmployeeId(), day);	
+								if(s!=null)
+								webEmpInfo.setRegion(s.getRegionS());
+								for(Iterator i=dispList.iterator();i.hasNext();)
 								{
-									ResourceI resource=(ResourceI)j.next();
-									if(_punchInfo.getEmployeeId().equals(resource.getId().getResourceId()))
+									Dispatch disp=(Dispatch)i.next();
+									Set r=disp.getDispatchResources();
+									for(Iterator j=r.iterator();j.hasNext();)
 									{
-										if(disp.getBullPen()!=null&&disp.getBullPen().booleanValue()==true)
+										ResourceI resource=(ResourceI)j.next();
+										if(_punchInfo.getEmployeeId().equals(resource.getId().getResourceId()))
 										{
-											webEmpInfo.setBullpen(true);
+											if(disp.getBullPen()!=null&&disp.getBullPen().booleanValue()==true)
+											{
+												webEmpInfo.setBullpen(true);
+											}
 										}
+												
 									}
-											
+									
 								}
-								
+								unassignedPunchedInEmployees.add(webEmpInfo);
 							}
-							unassignedPunchedInEmployees.add(webEmpInfo);
 						}
 					}
 				}

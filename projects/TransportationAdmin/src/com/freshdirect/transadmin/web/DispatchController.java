@@ -48,6 +48,7 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.datamanager.report.DrivingDirectionsReport;
 import com.freshdirect.transadmin.datamanager.report.ReportGenerationException;
 import com.freshdirect.transadmin.model.Dispatch;
+import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
@@ -201,26 +202,29 @@ public class DispatchController extends AbstractMultiActionController {
 				for(Iterator j=resources.iterator();j.hasNext();)
 				{
 						PlanResource r=(PlanResource)j.next();
-						if(kronos.get(r.getId().getResourceId())!=null) continue;
-						String day=new SimpleDateFormat("EEE").format(TransStringUtil.getDate(daterange)).toUpperCase();
-						ScheduleEmployee ws=employeeManagerService.getSchedule(r.getId().getResourceId(),day);
-						Scrib s=new Scrib();
-						s.setScribId(r.getId().getResourceId());
-						s.setScribDate(p.getPlanDate());
-						if(r.getId().getAdjustmentTime()!=null)
+						if(DispatchPlanUtil.isEligibleForKronosFileGeneration(domainManagerService.getEmployeeRole(r.getId().getResourceId())))
 						{
-							s.setStartTime(r.getId().getAdjustmentTime());
-						}
-						else
-						{
-							if("003".equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
+							if(kronos.get(r.getId().getResourceId())!=null) continue;
+							String day=new SimpleDateFormat("EEE").format(TransStringUtil.getDate(daterange)).toUpperCase();
+							ScheduleEmployee ws=employeeManagerService.getSchedule(r.getId().getResourceId(),day);
+							Scrib s=new Scrib();
+							s.setScribId(r.getId().getResourceId());
+							s.setScribDate(p.getPlanDate());
+							if(r.getId().getAdjustmentTime()!=null)
 							{
-								s.setStartTime(p.getFirstDeliveryTime());
-							}//ws!=null&&ws.getTime()!=null)s.setStartTime(ws.getTime());
-							else s.setStartTime(p.getStartTime());
+								s.setStartTime(r.getId().getAdjustmentTime());
+							}
+							else
+							{
+								if("003".equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
+								{
+									s.setStartTime(new Date(p.getFirstDeliveryTime().getTime()-30*60*1000));
+								}//ws!=null&&ws.getTime()!=null)s.setStartTime(ws.getTime());
+								else s.setStartTime(p.getStartTime());
+							}
+							s.setEndDlvTime(p.getMaxTime());
+							kronos.put(r.getId().getResourceId(),s);	
 						}
-						s.setEndDlvTime(p.getMaxTime());
-						kronos.put(r.getId().getResourceId(),s);						
 					
 				}
 			

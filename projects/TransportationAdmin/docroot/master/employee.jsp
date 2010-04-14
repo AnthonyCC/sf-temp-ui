@@ -58,6 +58,9 @@
 					<span class="scrTitle">
 						<%=pageTitle%>
 					</span>
+					<span >
+						<a href="employee.do?sync=true">Sync Employees</a>
+					</span>
 				</div>
 			</div>
 		</div>
@@ -115,6 +118,7 @@
 										filterable="false" sortable="false" cell="selectcol"
 										property="employeeId" />  
 								<% } %>		
+								<ec:column property="trnStatus1" title="Status"/>	
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>
 								<ec:column alias="kronosId" property="employeeId" title="KronosID"/>                                  

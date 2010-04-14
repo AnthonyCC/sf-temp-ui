@@ -101,4 +101,5 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Collection getUPSRouteInfo(String routeDate);
 	
+	Collection getEmployeeRole(String empId);
 }

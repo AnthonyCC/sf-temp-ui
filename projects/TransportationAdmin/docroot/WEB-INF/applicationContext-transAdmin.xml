@@ -31,7 +31,8 @@
 				<value>com/freshdirect/transadmin/model/DispatchReason.hbm.xml</value>  	  				
 				<value>com/freshdirect/transadmin/model/DispatchResource.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/Employeerole.hbm.xml</value>  				
-				<value>com/freshdirect/transadmin/model/EmployeeRoleType.hbm.xml</value>  				
+				<value>com/freshdirect/transadmin/model/EmployeeRoleType.hbm.xml</value> 
+				<value>com/freshdirect/transadmin/model/EmployeeSubRoleType.hbm.xml</value> 				
 				<value>com/freshdirect/transadmin/model/Plan.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/PlanResource.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/Region.hbm.xml</value>  				
@@ -53,6 +54,7 @@
 				<value>com/freshdirect/transadmin/model/TimeslotLog.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TimeslotLogDtl.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/UPSRouteInfo.hbn.xml</value>
+				<value>com/freshdirect/transadmin/model/EmployeeStatus.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

@@ -244,5 +244,9 @@ public class DomainManagerImpl
 		// TODO Auto-generated method stub
 		return getDomainManagerDao().getUPSRouteInfo(routeDate);
 	}
+
+	public Collection getEmployeeRole(String empId) {
+		return getDomainManagerDao().getEmployeeRole(empId);
+	}
 	
 }

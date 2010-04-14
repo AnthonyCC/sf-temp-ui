@@ -22,6 +22,9 @@ public class ScheduleEmployeeInfo
 	private String role;
 	private Collection schedule;
 	private Collection  empRole;
+	private String trnStatus;
+	
+	
 	public String getEmployeeId()
 	{
 		return empInfo!=null?empInfo.getEmployeeId():"";
@@ -125,9 +128,9 @@ public class ScheduleEmployeeInfo
 		while(iterator.hasNext()){
 			EmployeeRole role=(EmployeeRole)iterator.next();
 			if(buf.length()>0)
-				buf.append("/").append(role.getEmployeeRoleType().getName());
+				buf.append("/").append(role.getEmployeeSubRoleType().getName());
 			else
-				buf.append(role.getEmployeeRoleType().getName());
+				buf.append(role.getEmployeeSubRoleType().getName());
 		}
 
 		return buf.toString();
@@ -137,5 +140,29 @@ public class ScheduleEmployeeInfo
 	}
 	public void setEmpRole(Collection empRole) {
 		this.empRole = empRole;
+	}
+	public String getTrnStatus() {
+		return trnStatus;
+	}
+	public void setTrnStatus(String trnStatus) {
+		this.trnStatus = trnStatus;
+	}
+	
+	public String getStatus()
+	{
+		String status=empInfo.getStatus();
+		if("Inactive".equalsIgnoreCase(status))
+		{
+			if("true".equalsIgnoreCase(trnStatus)) return "FA";
+			if("false".equalsIgnoreCase(trnStatus)) return "I";
+			if(trnStatus==null) return "I";
+		}
+		if("Active".equalsIgnoreCase(status))
+		{
+			if("true".equalsIgnoreCase(trnStatus)) return "A";
+			if("false".equalsIgnoreCase(trnStatus)) return "FI";
+			if(trnStatus==null) return "A";
+		}
+		return null;
 	}
 }

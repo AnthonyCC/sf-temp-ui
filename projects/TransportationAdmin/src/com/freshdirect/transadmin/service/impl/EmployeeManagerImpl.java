@@ -18,12 +18,16 @@ import com.freshdirect.transadmin.dao.PunchInfoDaoI;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
+import com.freshdirect.transadmin.model.EmployeeStatus;
+import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.PunchInfo;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
+import com.freshdirect.transadmin.util.EnumResourceSubType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -55,13 +59,29 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		// then get the role for the kornos data
 		//then construct the viewer model
 		// return the viewer model
-		Collection kronoEmployees=TransAdminCacheManager.getInstance().getAllEmployeeInfo(this);
+		Collection kronoEmployees=TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(this);
 		Collection employeeRolesList=domainManagerDao.getEmployeeRoles();
 		Collection finalList=ModelUtil.getTrnAdminEmployeeList((List)kronoEmployees,(List)employeeRolesList);
-
+        for(Iterator iterator=finalList.iterator();iterator.hasNext();)
+        {
+        	WebEmployeeInfo webInfo=(WebEmployeeInfo)iterator.next();
+        	Collection empStatus=this.domainManagerDao.getEmployeeStatus(webInfo.getEmployeeId());    		
+    		if(empStatus!=null&&empStatus.size()>0)
+    		{			
+    			webInfo.setTrnStatus(""+((EmployeeStatus)(empStatus.toArray()[0])).isStatus());
+    		}
+        }
 		 return finalList;
 	}
 
+	public Collection getActiveInactiveEmployees() {
+		// first get the kornos data
+		// then get the role for the kornos data
+		//then construct the viewer model
+		// return the viewer model
+		Collection kronoEmployees=TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(this);		
+		 return kronoEmployees;
+	}
 
 	public void setEmployeeManagerDAO(EmployeeManagerDaoI employeeManagerDao) {
 		this.employeeManagerDAO = employeeManagerDao;
@@ -92,9 +112,14 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		// get the role from the db
 		// wrap it and return the data simple
 
-		EmployeeInfo info=TransAdminCacheManager.getInstance().getEmployeeInfo(id,this);
+		EmployeeInfo info=TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(id,this);
 		Collection empRoles=this.domainManagerDao.getEmployeeRole(id);
+		Collection empStatus=this.domainManagerDao.getEmployeeStatus(id);
 		WebEmployeeInfo webInfo=new WebEmployeeInfo(info,empRoles);
+		if(empStatus!=null&&empStatus.size()>0)
+		{			
+			webInfo.setTrnStatus(""+((EmployeeStatus)(empStatus.toArray()[0])).isStatus());
+		}
 		return webInfo;
 	}
 
@@ -102,6 +127,9 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		return getDomainManagerDao().getEmployeeRoleType(roleTypeId);
 	}
 
+	public EmployeeSubRoleType getEmployeeSubRoleType(String subRoleTypeId) {
+		return getDomainManagerDao().getEmployeeSubRoleType(subRoleTypeId);
+	}
 	public Collection getEmployeeJobType() {
 
 		return getDomainManagerDao().getEmployeeJobType();
@@ -110,6 +138,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 	public Collection getEmployeeRoleTypes() {
 		return getDomainManagerDao().getEmployeeRoleTypes();
 	}
+	
+	public Collection getEmployeeSubRoleTypes() {
+		return getDomainManagerDao().getEmployeeSubRoleTypes();
+	}
 
 	public void storeEmployees(WebEmployeeInfo employeeInfo) {
 		// store only the EmployeeRole because as of now Employee is readOnly
@@ -117,7 +149,18 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		Collection oldRoleList=getDomainManagerDao().getEmployeeRole(employeeInfo.getEmployeeId());
 		removeEntity(oldRoleList);
 		saveEntityList(roleList);
-
+		if(employeeInfo.getTrnStatus()!=null&&employeeInfo.getTrnStatus().length()>0)
+		{
+	        EmployeeStatus status=new EmployeeStatus(employeeInfo.getEmployeeId(),Boolean.parseBoolean(employeeInfo.getTrnStatus()));
+	        saveEntity(status);
+		}
+		else if(employeeInfo.getTrnStatus()==null)
+		{
+			EmployeeStatus status=new EmployeeStatus(employeeInfo.getEmployeeId(),true);
+			List l=new ArrayList();
+			l.add(status);
+			removeEntity(l);
+		}
 	}
 
 
@@ -183,7 +226,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 	public Collection getScheduleEmployees()
 	{
 		List result=new ArrayList();
-		Collection employeeInfos=getKronosEmployees();
+		Collection employeeInfos=getActiveInactiveEmployees();
 		for(Iterator it=employeeInfos.iterator();it.hasNext();)
 		{
 			EmployeeInfo eInfo=(EmployeeInfo)it.next();
@@ -192,10 +235,18 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 			Collection empRoles=this.domainManagerDao.getEmployeeRole(eInfo.getEmployeeId());
 			if(empRoles!=null&&empRoles.size()>0)
 			{
-				sInfo.setEmpRole(empRoles);
-				sInfo.setEmpInfo(eInfo);
-				sInfo.setSchedule(schedules);
-				result.add(sInfo);
+				if(EnumResourceSubType.isSchedule((EnumResourceSubType.getEnum(((EmployeeRole)empRoles.toArray()[0]).getEmployeeSubRoleType().getCode()))))
+				{
+					sInfo.setEmpRole(empRoles);
+					sInfo.setEmpInfo(eInfo);
+					sInfo.setSchedule(schedules);
+					result.add(sInfo);
+				}
+			}
+			Collection empStatus=this.domainManagerDao.getEmployeeStatus(eInfo.getEmployeeId());			
+			if(empStatus!=null&&empStatus.size()>0)
+			{			
+				sInfo.setTrnStatus(""+((EmployeeStatus)(empStatus.toArray()[0])).isStatus());
 			}
 		}
 		return result;
@@ -203,7 +254,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 	}
 
 	public WebSchedule getSchedule(String id) {
-		EmployeeInfo info=TransAdminCacheManager.getInstance().getEmployeeInfo(id,this);
+		EmployeeInfo info=TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(id,this);
 		Collection schedules=getDomainManagerDao().getScheduleEmployee(id);
 		WebSchedule s=new WebSchedule();
 		s.setEmpInfo(info);
@@ -230,6 +281,28 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 	{
 	    List result=new ArrayList();
 	    Collection c=getDomainManagerDao().getScheduleEmployees(day);
+	    //logic for active inactive employees eligible for plan also terminated employees
+	    for(Iterator it=c.iterator();it.hasNext();)
+		{
+			ScheduleEmployee se=(ScheduleEmployee)it.next();
+			EmployeeInfo info=TransAdminCacheManager.getInstance().getEmployeeInfo(se.getEmployeeId(),this);
+			if(info==null)
+			{
+				it.remove();
+				continue;
+			}
+			Collection empStatus=this.domainManagerDao.getEmployeeStatus(se.getEmployeeId());
+			String trnStatus=null;
+			if(empStatus!=null&&empStatus.size()>0)
+			{			
+				trnStatus=""+((EmployeeStatus)(empStatus.toArray()[0])).isStatus();
+			}			
+			if(!DispatchPlanUtil.isEligibleForPlan(info.getStatus(), trnStatus))
+			{
+				it.remove();
+			}
+		}
+	    
 	    Collection off=getPunchInfoPayCode(date);
 		for(Iterator it=c.iterator();it.hasNext();)
 		{
@@ -247,7 +320,12 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 			detail.setEmpRoles(this.domainManagerDao.getEmployeeRole(se.getEmployeeId()));
 			detail.setInfo(TransAdminCacheManager.getInstance().getEmployeeInfo(se.getEmployeeId(),this));
 			if(detail.getEmpRoles()!=null&&detail.getEmpRoles().size()>0&&detail.getInfo()!=null)
-			result.add(detail);
+			{				
+				if(EnumResourceSubType.isSchedule((EnumResourceSubType.getEnum(((EmployeeRole)detail.getEmpRoles().toArray()[0]).getEmployeeSubRoleType().getCode()))))
+				{
+					result.add(detail);
+				}				
+			}
 		}
 		return result;
 	}
@@ -271,33 +349,36 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 					PunchInfo punch=(PunchInfo)k.next();
 					if(r.getId().getResourceId().equals(punch.getEmployeeId()))
 					{
-						isPunchAvalable=true;
-						try {
-							String planTime=TransStringUtil.getServerTime(p.getStartTime());
-							String punchTime="";
-							if(punch.getStartTime()!=null)punchTime=TransStringUtil.getServerTime(punch.getStartTime());
-							if("003".equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
-							{
-								String day=TransStringUtil.getServerDay(TransStringUtil.getServerDateString(date)).toUpperCase();
-								ScheduleEmployee se=getSchedule(r.getId().getResourceId(),day);
-								if(se!=null&&se.getTime()!=null)planTime=TransStringUtil.getServerTime(se.getTime());
+						if(DispatchPlanUtil.isEligibleForUnAvailable(domainManagerDao.getEmployeeRole(r.getId().getResourceId())))
+						{
+							isPunchAvalable=true;
+							try {
+								String planTime=TransStringUtil.getServerTime(p.getStartTime());
+								String punchTime="";
+								if(punch.getStartTime()!=null)punchTime=TransStringUtil.getServerTime(punch.getStartTime());
+								if("003".equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
+								{
+									String day=TransStringUtil.getServerDay(TransStringUtil.getServerDateString(date)).toUpperCase();
+									ScheduleEmployee se=getSchedule(r.getId().getResourceId(),day);
+									if(se!=null&&se.getTime()!=null)planTime=TransStringUtil.getServerTime(se.getTime());
+								}
+								if(r.getId().getAdjustmentTime()!=null)
+								{
+									planTime=TransStringUtil.getServerTime(r.getId().getAdjustmentTime());
+								}
+								if(planTime!=null&&!planTime.equalsIgnoreCase(punchTime))
+								{
+									WebPlanResource wpr=new WebPlanResource();
+									wpr.setEmp(getEmployee(punch.getEmployeeId()));
+									wpr.setPlanId(p.getPlanId());
+									wpr.setPaycode("Schedule");
+									result.add(wpr);
+								}
+								
+							} catch (ParseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-							if(r.getId().getAdjustmentTime()!=null)
-							{
-								planTime=TransStringUtil.getServerTime(r.getId().getAdjustmentTime());
-							}
-							if(planTime!=null&&!planTime.equalsIgnoreCase(punchTime))
-							{
-								WebPlanResource wpr=new WebPlanResource();
-								wpr.setEmp(getEmployee(punch.getEmployeeId()));
-								wpr.setPlanId(p.getPlanId());
-								wpr.setPaycode("Schedule");
-								result.add(wpr);
-							}
-							
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
 						}
 						
 					}
@@ -372,7 +453,43 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		if(c!=null&&c.size()>0){Iterator i=c.iterator(); return(ScheduleEmployee) i.next();}
 		return null;
 	}
+
+	public Collection getKronosActiveInactiveEmployees() {
+		// TODO Auto-generated method stub
+		return employeeManagerDAO.getActiveInactiveEmployees();
+	}
 	
+	public void syncEmployess()
+	{
+		
+		Collection transAppEmployees=this.domainManagerDao.getEmployeeStatus(null);
+		if(transAppEmployees!=null&&transAppEmployees.size()>0)
+		{
+			List l=new ArrayList();
+			for(Iterator iterator =transAppEmployees.iterator();iterator.hasNext();)
+			{
+				EmployeeStatus e=(EmployeeStatus)iterator.next();
+				EmployeeInfo em=TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(e.getPersonnum(), this);
+				if(e.isStatus()&&"Active".equalsIgnoreCase(em.getStatus()))
+				{					
+					l.add(e);					
+				}
+				if(!e.isStatus()&&"Inactive".equalsIgnoreCase(em.getStatus()))
+				{					
+					l.add(e);					
+				}
+			}
+			if(l.size()>0)
+			{
+				domainManagerDao.removeEntity(l);
+			}
+		}
+		
+	}
+	public Collection getEmployeeRole(String empId) 
+	{
+		return getDomainManagerDao().getEmployeeRole(empId);
+	}
 }
 
 

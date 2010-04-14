@@ -9,6 +9,7 @@ public final class EnumResourceType extends Enum {
     public static final EnumResourceType DRIVER = new EnumResourceType("001","Driver");
     public static final EnumResourceType HELPER = new EnumResourceType("002","Helper");
     public static final EnumResourceType RUNNER = new EnumResourceType("003","Runner");
+    public static final EnumResourceType MANAGER = new EnumResourceType("004","Manager");
    // public static final EnumResourceType SUPERVISOR = new EnumResourceType("006","Supervisor");
     
     private final String desc;

@@ -17,7 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Region;
+import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
@@ -92,10 +94,32 @@ public class DomainController extends AbstractMultiActionController {
         else if("S".equalsIgnoreCase(empStatus)) 
         {
         	dataList = employeeManagerService.getScheduleEmployees();
+        	String status=request.getParameter("status");
+        	if(status==null)status="a";
+        	if("a".equalsIgnoreCase(status)||"i".equalsIgnoreCase(status))
+        	{
+	        	for(Iterator it=dataList.iterator();it.hasNext();)
+	    		{
+	        		ScheduleEmployeeInfo sInfo=(ScheduleEmployeeInfo)it.next();
+	    			if("a".equalsIgnoreCase(status)&&"false".equalsIgnoreCase(sInfo.getTrnStatus()))
+	    			{
+	    				it.remove();
+	    			}
+	    			if("i".equalsIgnoreCase(status)&&(sInfo.getTrnStatus()==null||"true".equalsIgnoreCase(sInfo.getTrnStatus())))
+	    			{
+	    				it.remove();
+	    			}
+	    		}
+        	}
+        	request.setAttribute("status", status);
         	return new ModelAndView("scheduleView","employees",dataList);
         } 
         else 
         {
+        	if("true".equalsIgnoreCase(request.getParameter("sync")))
+        	{
+        		employeeManagerService.syncEmployess();
+        	}
         	dataList = employeeManagerService.getEmployees();
         }
         return new ModelAndView("employeeView","employees",dataList);

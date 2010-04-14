@@ -60,6 +60,15 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
 		"AND a.EMPLOYMENTSTATUS='Terminated'";
 
 
+	private static final String GET_ALL_ACTIVE_INACTIVE_EMPLOYEE_QRY=
+		"SELECT a.PERSONNUM KRONOS_ID, a.FIRSTNM FIRST_NAME, a.MIDDLEINITIALNM MIDDLE_INITIAL, a.LASTNM LAST_NAME, a.SHORTNM SHORT_NAME, "+
+		"a.HOMELABORLEVELNM7 JOB_TYPE, a.COMPANYHIREDTM HIRE_DATE, a.EMPLOYMENTSTATUS STATUS, b.PERSONNUM SUP_KRONOS_ID, b.FIRSTNM SUP_FIRST_NAME, "+
+		"b.MIDDLEINITIALNM SUP_MIDDLE_INITIAL, b.LASTNM SUP_LAST_NAME, b.SHORTNM SUP_SHORT_NAME "+
+		" FROM transp.KRONOS_EMPLOYEE a, transp.KRONOS_EMPLOYEE b "+
+		"WHERE a.SUPERVISORNUM = b.PERSONNUM(+) "+
+		"AND ( a.EMPLOYMENTSTATUS='Active' or a.EMPLOYMENTSTATUS='Inactive')";
+
+	
 	public Collection getEmployees() {
 		// TODO Auto-generated method stub
 //		System.out.println("EmployeeManagerDaoOracleImpl :getEmployee()11 ");
@@ -202,5 +211,51 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
 	}
 
 	
+	public Collection getActiveInactiveEmployees() {
+		// TODO Auto-generated method stub
+		//System.out.println("EmployeeManagerDaoOracleImpl :getEmployee()11 ");
+        //final String sql="select *   from  (select a.*, rownum rnum   from  ("+VIEW_ALL_COMPETITOR_LOCATION_QRY+"  order by "+searchCriteria.getSortedByColumn()+") a   where rownum <= ? ) where rnum > ?";
+        final List list = new ArrayList();
+        PreparedStatementCreator creator=new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps =
+                    connection.prepareStatement(GET_ALL_ACTIVE_INACTIVE_EMPLOYEE_QRY);
+                return ps;
+            }
+        };
+        jdbcTemplate.query(creator,
+       		  new RowCallbackHandler() {
+       		      public void processRow(ResultSet rs) throws SQLException {
+
+       		    	do {
+       		    		String employeeId=rs.getString("KRONOS_ID");
+       		    		String firstName=rs.getString("FIRST_NAME");
+       		    		String lastName=rs.getString("LAST_NAME");
+       		    		String middleInitial=rs.getString("MIDDLE_INITIAL");
+       		    		String shortName=rs.getString("SHORT_NAME");
+       		    		String jobType=rs.getString("JOB_TYPE");
+       		    		Date hireDate=rs.getDate("HIRE_DATE");
+       		    		String status=rs.getString("STATUS");
+       		    		String supervisorId=rs.getString("SUP_KRONOS_ID");
+       		    		String supervisorFirstName=rs.getString("SUP_FIRST_NAME");
+       		    		String supervisorMiddleInitial=rs.getString("SUP_MIDDLE_INITIAL");
+       		    		String supervisorLastName=rs.getString("SUP_LAST_NAME");
+       		    		String supervisorShortName=rs.getString("SUP_SHORT_NAME");
+
+       		    		EmployeeInfo model=new EmployeeInfo(
+       		    		employeeId,firstName,lastName,middleInitial,shortName,jobType,hireDate,
+       		    		status,supervisorId,supervisorFirstName,supervisorMiddleInitial,supervisorLastName,supervisorShortName,null
+       		    		);
+
+       		    		list.add(model);
+       		    	   }
+       		    	   while(rs.next());
+       		      }
+       		  }
+       	);
+        LOGGER.debug("EmployeeManagerDaoOracleImpl : getEmployee list  "+list.size());
+        return list;
+
+	}	
 
 }

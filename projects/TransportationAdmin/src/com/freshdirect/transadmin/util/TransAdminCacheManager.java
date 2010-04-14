@@ -27,7 +27,7 @@ public class TransAdminCacheManager {
 
 	private static Category LOGGER = LoggerFactory.getInstance(TransAdminCacheManager.class);
 	// make the time constant in property
-	private ExpiringReference truckDataHolder = new ExpiringReference(TransportationAdminProperties.getTruckCacheExpiryTime()*  60 * 1000) {
+	private ExpiringReference truckDataHolder  = new ExpiringReference(TransportationAdminProperties.getTruckCacheExpiryTime()*  60 * 1000) {
 		protected Object load() {
 			try {
 				return loadAllTruckData();
@@ -92,6 +92,22 @@ public class TransAdminCacheManager {
 		}
 	};
 
+//	 make the time constant in property
+	private CustomExpiringReference activeInactivedEmployeeDataHolder = new CustomExpiringReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000) {
+
+		protected Object load() {
+			try {
+				if(TransportationAdminProperties.isKronosBlackhole()) {
+					return this.getEx();
+				} else {
+					return loadActiveInactiveEmployeeData();
+				}				
+			} catch (SapException e) {
+				LOGGER.error("Could not load load Referral program due to: ", e);
+			}
+			return Collections.EMPTY_LIST;
+		}
+	};	
 
 	private TransAdminCacheManager(){
 	}
@@ -125,6 +141,10 @@ public class TransAdminCacheManager {
 		return (List)manager.getKronosEmployees();
 	}
 
+	public List loadActiveInactiveEmployeeData() throws SapException{
+
+		return (List)manager.getKronosActiveInactiveEmployees();
+	}
 
 	public List loadAllTruckData() throws SapException{
 		SapTruckMasterInfo truckInfos = new SapTruckMasterInfo();
@@ -179,6 +199,11 @@ public class TransAdminCacheManager {
 		return  (List)this.employeeDataHolder.get();
 	}
 
+	public Collection getActiveInactiveEmployeeInfo(EmployeeManagerI mgr) {
+		// TODO Auto-generated method stub
+		this.manager=mgr;
+		return  (List)this.activeInactivedEmployeeDataHolder.get();
+	}
 
 	public Collection getAllTerminatedEmployeeInfo(EmployeeManagerI mgr) {
 		// TODO Auto-generated method stub
@@ -200,6 +225,19 @@ public class TransAdminCacheManager {
 		return null;
 	}
 
+	public EmployeeInfo getActiveInactiveEmployeeInfo(String empId,EmployeeManagerI mgr)
+	{
+		this.manager=mgr;
+		List empList = (List) this.activeInactivedEmployeeDataHolder.get();
+		if(empList==null) return null;
+		for(int i=0;i<empList.size();i++){
+			EmployeeInfo info=(EmployeeInfo)empList.get(i);
+			if(info.getEmployeeId().equalsIgnoreCase(empId))
+				return info;
+		}
+		return null;
+	}	
+	
 	public ErpRouteMasterInfo getRouteMasterInfo(String routeNumber,Date requestedDate)
 	{
 		if(requestedDate==null)

@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
 <hibernate-mapping schema="transp">
-    <class name="com.freshdirect.transadmin.model.EmployeeRoleType" table="EMPLOYEE_ROLE_TYPE">
+    <class name="com.freshdirect.transadmin.model.EmployeeSubRoleType" table="EMPLOYEE_ROLE_SUB_TYPE">
         <id name="code" type="string">
             <column name="CODE" length="16" />
             <generator class="assigned" />
@@ -14,9 +14,6 @@
         <property name="description" type="string">
             <column name="DESCRIPTION" length="60" />
         </property>
-        <set name="subRoles" inverse="true" lazy="false" >
-        	<key column="TCODE"></key>
-        	<one-to-many class="com.freshdirect.transadmin.model.EmployeeSubRoleType" />
-        </set>
+        <many-to-one name="role" class="com.freshdirect.transadmin.model.EmployeeRoleType" column="TCODE" lazy="false"></many-to-one>
     </class>
 </hibernate-mapping>

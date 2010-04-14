@@ -11,5 +11,7 @@ public interface EmployeeManagerDaoI {
 	Collection getTerminatedEmployees() throws DataAccessException;
 	
 	Collection getSupervisors() throws DataAccessException;
+	
+	public Collection getActiveInactiveEmployees() ;
 
 }

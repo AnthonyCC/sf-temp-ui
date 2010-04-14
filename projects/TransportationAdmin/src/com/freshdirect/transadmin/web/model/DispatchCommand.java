@@ -16,6 +16,7 @@ import java.util.Set;
 
 import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.EmployeeInfo;
+import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.PunchInfo;
 import com.freshdirect.transadmin.model.PunchInfoI;
@@ -25,6 +26,7 @@ import com.freshdirect.transadmin.model.ResourceInfoI;
 import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.util.EnumResourceSubType;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.EnumStatus;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -186,21 +188,33 @@ public class DispatchCommand extends WebPlanInfo {
             ResourceI resource=(ResourceI)_it.next();          
             EnumResourceType role=EnumResourceType.getEnum(resource.getEmployeeRoleType().getCode());   
             WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(resource.getId().getResourceId());
+            Collection empRoles=employeeManagerService.getEmployeeRole(webEmpInfo.getEmployeeId());
             ResourceInfoI resourceInfo = getResourceInfo(webEmpInfo, resource);
-            if(hasPunchInfo) 
-            {
-            	PunchInfoI tempPunchInfo=getPunchInfo(resourceInfo.getEmployeeId(),punchInfos);
-            	if(tempPunchInfo!=null&&!ScheduleEmployeeInfo.DEPOT.equalsIgnoreCase(this.getRegionCode()))
-            	{
-            		punchInfos.remove(tempPunchInfo);
-            	}
-            	resourceInfo.setPunchInfo(tempPunchInfo);
-            	if(resourceInfo.getPunchInfo()==null)resourceInfo.setPunchInfo(new PunchInfo());
-            	setStatus(resourceInfo.getPunchInfo());
-            }
+			if(empRoles!=null&&empRoles.size()>0)
+			{
+				if(EnumResourceSubType.ignorePunch((EnumResourceSubType.getEnum(((EmployeeRole)empRoles.toArray()[0]).getEmployeeSubRoleType().getCode()))))
+				{
+					resourceInfo.setPunchInfo(new FulltimePunchInfo(this));
+				}
+				else
+				{
+		            
+		            if(hasPunchInfo) 
+		            {
+		            	PunchInfoI tempPunchInfo=getPunchInfo(resourceInfo.getEmployeeId(),punchInfos);
+		            	if(tempPunchInfo!=null&&!ScheduleEmployeeInfo.DEPOT.equalsIgnoreCase(this.getRegionCode()))
+		            	{
+		            		punchInfos.remove(tempPunchInfo);
+		            	}
+		            	resourceInfo.setPunchInfo(tempPunchInfo);
+		            	if(resourceInfo.getPunchInfo()==null)resourceInfo.setPunchInfo(new PunchInfo());
+		            	setStatus(resourceInfo.getPunchInfo());
+		            }
+				}
+			}
             if(resourceReqs.containsKey(role)){
                   ResourceReq req = (ResourceReq) resourceReqs.get(role);
-                  if(EnumResourceType.DRIVER.equals(role) && driverCount < req.getMax().intValue()) {
+                  if((EnumResourceType.DRIVER.equals(role)||EnumResourceType.MANAGER.equals(role)) && driverCount < req.getMax().intValue()) {
                       this.getDrivers().remove(driverCount);
                       this.getDrivers().add(driverCount, resourceInfo);
                       driverCount++;
