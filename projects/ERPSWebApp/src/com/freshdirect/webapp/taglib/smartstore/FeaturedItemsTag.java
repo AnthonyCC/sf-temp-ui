@@ -53,8 +53,10 @@ public class FeaturedItemsTag extends RecommendationsTag {
         si.setNoShuffle(noShuffle);
         si.setMaxRecommendations(itemCount);
         
-        Recommendations results = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS, user,
-        		si, shoppingCart != null ? shoppingCart : FDStoreRecommender.getShoppingCartContentKeys(user));
+        if (shoppingCart != null) {
+        	si.setCartContents(shoppingCart);
+        }
+        Recommendations results = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS, user, si);
 
         collectRequestId(request, results, user);
 

@@ -10,6 +10,7 @@
 		<FULL_NAME>Department 1</FULL_NAME>
 		<categories>
 			<Category ref="cat_1"/>
+			<Category ref="cat_2"/>
 		</categories>
 	</Department>
 

@@ -27,6 +27,8 @@ import com.freshdirect.smartstore.dsl.VariableAliasingVisitor;
 import com.freshdirect.smartstore.dsl.VariableCollector;
 import com.freshdirect.smartstore.dsl.VariableExpression;
 import com.freshdirect.smartstore.dsl.VisitException;
+import com.freshdirect.smartstore.external.ExternalRecommenderRegistry;
+import com.freshdirect.smartstore.external.ExternalRecommenderType;
 
 /**
  * This class is used to generate DataGenerator classes based on simple expressions.
@@ -39,8 +41,8 @@ public class DataGeneratorCompiler extends CompilerBase {
 
     static final String FN_RECURSIVE_NODES_EXCEPT = "RecursiveNodesExcept";
     static final String FN_RECURSIVE_NODES = "RecursiveNodes";
-    private static final String FN_PRODUCT_RECOMMENDATION = "ProductRecommendation";
-    private static final String FN_USER_RECOMMENDATION = "PersonalRecommendation";
+    static final String FN_PERSONALIZED_ITEMS_PREFIX = "PersonalizedItems_";
+    static final String FN_RELATED_ITEMS_PREFIX = "RelatedItems_";
     static final String FN_TO_LIST = "toList";
     
     private static final String EXPLICIT_LIST = "explicitList";
@@ -56,10 +58,20 @@ public class DataGeneratorCompiler extends CompilerBase {
     boolean optimize = false;
     boolean caching = true;
     final static boolean CACHE_BY_CURRENT_NODE_ALSO = false;
+
+    private static boolean checkIdentifier(String providerName) {
+        for (int i = 0; i < providerName.length(); i++) {
+            char c = providerName.charAt(i);
+            if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private final String[] zoneDependentFactors;
     
-    @SuppressWarnings("unchecked")
-    Set<String> globalVariables = Collections.EMPTY_SET;
+    Set<String> globalVariables = Collections.emptySet();
     
     private class NodeFunction extends Context.FunctionDef {
 
@@ -93,6 +105,50 @@ public class DataGeneratorCompiler extends CompilerBase {
         
     }
     
+    private static class PersonalizedExternalRecommenderFunction extends Context.FunctionDef {
+    	private String providerName;
+    	
+		public PersonalizedExternalRecommenderFunction(String providerName) {
+			super(0, 0, Expression.RET_SET);
+			this.providerName = providerName;
+		}
+		
+		@Override
+		protected void validate(String name, String paramTypes) throws CompileException {
+			validateParamCount(name, paramTypes);
+		}
+		
+		@Override
+		public String toJavaCode(FunctionCall call, List<Expression> parameters) throws CompileException {
+			return "  HelperFunctions.getPersonalizedExternalRecommendations(\"" + providerName + "\" , sessionInput)";
+		}
+    }
+    
+    private static class RelatedExternalRecommenderFunction extends Context.FunctionDef {
+    	private String providerName;
+    	
+		public RelatedExternalRecommenderFunction(String providerName) {
+			super(1, 1, Expression.RET_SET);
+			this.providerName = providerName;
+		}
+		
+		@Override
+		protected void validate(String name, String paramTypes) throws CompileException {
+			validateParamCount(name, paramTypes);
+            int type = paramTypes.charAt(0);
+            if (type != Expression.RET_NODE && type != Expression.RET_STRING && type != Expression.RET_SET) {
+			    throw new CompileException(CompileException.TYPE_ERROR, "The first parameter"+" type is " + Expression.getTypeName(type)
+			            + " instead of the expected node/set/string!");
+			}
+		}
+		
+		@Override
+		public String toJavaCode(FunctionCall call, List<Expression> parameters) throws CompileException {
+			return "  HelperFunctions.getRelatedExternalRecommendations(" + createScriptConvertToSet(parameters.get(0)) 
+					+ ", \"" + providerName + "\" , sessionInput)";
+		}
+    }
+
     private class RecursiveNodesFunction extends NodeFunction {
         public RecursiveNodesFunction() {
             super(1, Integer.MAX_VALUE, Expression.RET_SET);
@@ -431,29 +487,20 @@ public class DataGeneratorCompiler extends CompilerBase {
         });
         parser.getContext().addFunctionDef("Top", new TopFunction());
         
-        parser.getContext().addFunctionDef(FN_PRODUCT_RECOMMENDATION, new Context.FunctionDef(2, 2, Expression.RET_SET) {
-            public String toJavaCode(String name, List parameters) throws CompileException {
-                Expression param0 = (Expression) parameters.get(0);
-                Expression param1 = (Expression) parameters.get(1);
-                if (param0.getReturnType() != Expression.RET_STRING) {
-                    throw new CompileException(CompileException.TYPE_ERROR, "First parameter should be a string for " + name + "!");
-                }
-                return "  HelperFunctions.getProductRecommendationFromVendor(" + param0.toJavaCode() + ',' + createScriptConvertToNode(param1) + ")";
-            }
-        });
-
-        parser.getContext().addFunctionDef(FN_USER_RECOMMENDATION, new Context.FunctionDef(1, 1, Expression.RET_SET) {
-            public String toJavaCode(String name, List parameters) throws CompileException {
-                Expression param0 = (Expression) parameters.get(0);
-                if (param0.getReturnType() != Expression.RET_STRING) {
-                    throw new CompileException(CompileException.TYPE_ERROR, "First parameter should be a string for " + name + "!");
-                }
-                return "  HelperFunctions.getUserRecommendationFromVendor(" + param0.toJavaCode() + ", sessionInput.getCustomerId())";
-            }
-        });
-        
         parser.getContext().addFunctionDef("matchSkuPrefix", new SkuPrefixFilter());
         
+        Set<String> personalizedRecommenders = ExternalRecommenderRegistry.getRegisteredRecommenders(ExternalRecommenderType.PERSONALIZED);
+        for (String providerName : personalizedRecommenders) {
+        	if (checkIdentifier(providerName)) {
+        		parser.getContext().addFunctionDef(FN_PERSONALIZED_ITEMS_PREFIX + providerName, new PersonalizedExternalRecommenderFunction(providerName));
+        	}
+        }
+        Set<String> relatedRecommenders = ExternalRecommenderRegistry.getRegisteredRecommenders(ExternalRecommenderType.RELATED);
+        for (String providerName : relatedRecommenders) {
+        	if (checkIdentifier(providerName)) {
+        		parser.getContext().addFunctionDef(FN_RELATED_ITEMS_PREFIX + providerName, new RelatedExternalRecommenderFunction(providerName));
+        	}
+        }
         
         parser.getContext().addVariable(CURRENT_PRODUCT, Expression.RET_NODE);
         parser.getContext().addVariable(EXPLICIT_LIST, Expression.RET_SET);
@@ -462,7 +509,8 @@ public class DataGeneratorCompiler extends CompilerBase {
         parser.getContext().addVariable(CURRENT_NODE, Expression.RET_NODE);
     }
 
-    public DataGenerator createDataGenerator(String name, String expression) throws CompileException {
+    public synchronized DataGenerator createDataGenerator(String name, String expression) throws CompileException {
+        getParser().getContext().cleanupTemporary();
         BlockExpression expr = parse(expression);
         try {
             if (expr.size() > 1) {
@@ -470,17 +518,17 @@ public class DataGeneratorCompiler extends CompilerBase {
             }
 
             // resolve aliases here
-            expr.visit(new VariableAliasingVisitor(CURRENT_NODE, CURRENT_PRODUCT));
+            expr.visit(null, new VariableAliasingVisitor(CURRENT_NODE, CURRENT_PRODUCT));
 
             if (optimize) {
                 RecursiveNodesCallOptimizer optimizer = new RecursiveNodesCallOptimizer();
-                expr.visit(optimizer);
+                expr.visit(null, optimizer);
                 if (optimizer.isOptimizationOccured()) {
                     expression += " -> optimized to : "+expr.toCode();
                 }
             }
             VariableCollector vc = new VariableCollector();
-            expr.visit(vc);
+            expr.visit(null, vc);
 
             Class<? extends DataGenerator> generated = compileAlgorithm(name, expr, expression, vc);
             
@@ -498,6 +546,7 @@ public class DataGeneratorCompiler extends CompilerBase {
                 }
             }
             dg.setFactors(vars);
+            context.cleanupTemporary();
             return dg;
         } catch (InstantiationException e) {
             throw new ClassCompileException("InstantiationException:" + e.getMessage(), e);
@@ -546,8 +595,12 @@ public class DataGeneratorCompiler extends CompilerBase {
     }
 
 
-    private boolean isCacheableByFunctions(Set functions) {
-        return !functions.contains(FN_USER_RECOMMENDATION);
+    private boolean isCacheableByFunctions(Set<String> functions) {
+    	for (String function : functions)
+    		if (function.startsWith(FN_PERSONALIZED_ITEMS_PREFIX)
+    				|| function.startsWith(FN_RELATED_ITEMS_PREFIX))
+    			return false;
+        return true;
     }
 
     private CtMethod createKeyCreatorMethod(CtClass class1, String toStringValue, VariableCollector vc) throws CannotCompileException {
@@ -594,7 +647,11 @@ public class DataGeneratorCompiler extends CompilerBase {
         buffer.append(oc.codeFragment);
         buffer.append("\n  return ").append(oc.tempVariableName).append(";\n");
         buffer.append("}");
-        return CtNewMethod.make(buffer.toString(), class1);
+        try {
+            return CtNewMethod.make(buffer.toString(), class1);
+        } catch (CannotCompileException e) {
+            throw new CompileException("Compiling "+ast.toCode()+", generated code:"+buffer.toString()+", error:"+e.getMessage(), e);
+        }
     }
 
     private OperationCompileResult compile(CompileState c, Expression expression) throws CompileException {
@@ -739,7 +796,7 @@ public class DataGeneratorCompiler extends CompilerBase {
         //String functionName = xpr instanceof FunctionCall ? ((FunctionCall) xpr).getName() : null;
         
         VariableCollector vc = new VariableCollector();
-        xpr.visit(vc);
+        xpr.visit(null, vc);
         
         boolean constantExpression = vc.getVariables().isEmpty();
         if (!constantExpression) {

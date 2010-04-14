@@ -18,7 +18,6 @@ import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.impl.SmartYMALRecommendationService;
-import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 
 public class SmartYMALRecommendationServiceTest extends RecommendationServiceTestBase {
     
@@ -31,6 +30,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
     
     public void setUp() throws Exception {
         super.setUp();
+    	
         input = new SessionInput("12345", null, null);
         input.setNoShuffle(true);
         input.setMaxRecommendations(10);
@@ -47,9 +47,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
     RecommendationService getSmartYmalService() {
         if (firs == null) {
             firs = new SmartYMALRecommendationService(new Variant("smart_ymal", EnumSiteFeature.YMAL, new RecommendationServiceConfig("smart_ymal_config",
-                    RecommendationServiceType.SMART_YMAL)),
-                    RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("smart_ymal_config",
-                    RecommendationServiceType.SMART_YMAL), new java.util.HashMap()), false, false);
+                    RecommendationServiceType.SMART_YMAL)), false);
         }
         return firs;
     }
@@ -114,23 +112,14 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
         input.setCurrentNode(product);
         input.setYmalSource(product);
         {        
-            List nodes = getSmartYmalService().recommendNodes(input);
+            List<ContentNodeModel> nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 5, nodes.size());
-            Set nodeNames = TestUtils.convertToStringList(nodes);
-            // ymal_4/ymals : <Product ref="prod_3"/>
-            contains(nodeNames, "prod_3");
-            // script recommender 
-            contains(nodeNames, "prod_7");
-            contains(nodeNames, "prod_8");
-            contains(nodeNames, "prod_9");
-            contains(nodeNames, "prod_10");
             
             atPos(nodes, 0, "prod_7");
             atPos(nodes, 1, "prod_8");
             atPos(nodes, 2, "prod_9");
             atPos(nodes, 3, "prod_10");
-            // ymal_4/ymals : <Product ref="prod_3"/>
             atPos(nodes, 4, "prod_3");
         }
     }

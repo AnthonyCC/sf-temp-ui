@@ -8,20 +8,27 @@ import com.freshdirect.cms.ContentKey;
 /**
  * Sampler that produces the Content Keys for impressions.
  * 
- * @author istvan
- *
+ * @author istvan, csongor
+ * 
  */
 public interface ImpressionSampler {
-	
 	/**
-	 * Produce content keys for impressions by sampling.
+	 * produce a sampled (might be randomized) order of the rankedContent
 	 * 
-	 * @param sortedRankedContent choose from these (List<{@link RankedContent}>)
-	 * @param reserved these cannot be chosen (e.g. cart), type Set<{@link ContentKey}> 
-	 * @param k number of impressions to produce
-	 * @return List<{@link ContentKey}>
+	 * @param rankedContent
+	 *            ranked content list based either on the order of the items or
+	 *            on the scores of the items
+	 * @param exclusions
+	 *            items to be excluded from the sampled list
+	 * @return the sampled items
 	 */
-	public List<RankedContent.Single> sample(List<RankedContent> sortedRankedContent, Set<ContentKey> reserved, int k);
-	
+	public List<ContentKey> sample(List<RankedContent.Single> rankedContent, boolean aggregatable, Set<ContentKey> exclusions);
+
 	public boolean isDeterministic();
+
+	public ConsiderationLimit getConsiderationLimit();
+
+	public boolean isCategoryAggregationEnabled();
+	
+	public boolean isUseAlternatives();
 }

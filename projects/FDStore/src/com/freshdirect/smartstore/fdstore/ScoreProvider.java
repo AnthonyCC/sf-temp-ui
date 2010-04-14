@@ -30,6 +30,13 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.external.ExternalRecommender;
+import com.freshdirect.smartstore.external.ExternalRecommenderCommunicationException;
+import com.freshdirect.smartstore.external.ExternalRecommenderRegistry;
+import com.freshdirect.smartstore.external.ExternalRecommenderRequest;
+import com.freshdirect.smartstore.external.ExternalRecommenderType;
+import com.freshdirect.smartstore.external.NoSuchExternalRecommenderException;
+import com.freshdirect.smartstore.external.RecommendationItem;
 import com.freshdirect.smartstore.impl.SessionCache;
 import com.freshdirect.smartstore.scoring.DataAccess;
 import com.freshdirect.smartstore.scoring.HelperFunctions;
@@ -70,6 +77,8 @@ public class ScoreProvider implements DataAccess {
 
     private static final String[] DATASOURCE_NAMES = new String[] { "FeaturedItems", "CandidateLists", "PurchaseHistory" };
     
+    private static final String EXTERNAL_PERSONALIZED_PREFIX = "Personalized_";
+
     public static final String[] ZONE_DEPENDENT_FACTORS_ARRAY = new String[] {
     		"DealsPercentage", "DealsPercentage_Discretized",
 			"TieredDealsPercentage", "TieredDealsPercentage_Discretized",
@@ -441,6 +450,22 @@ public class ScoreProvider implements DataAccess {
 				result[i] = getGlobalScore(contentNode.getContentKey(),((Number)globalIndexes.get(var)).intValue());
 			} else if (storeLookups.containsKey(var)) {
 				result[i] = ((StoreLookup)storeLookups.get(var)).getVariable(contentNode, pricingContext);
+			} else if (var.startsWith(EXTERNAL_PERSONALIZED_PREFIX)) {
+				String providerName = var.substring(EXTERNAL_PERSONALIZED_PREFIX.length());
+				try {
+					ExternalRecommender recommender = ExternalRecommenderRegistry.getInstance(providerName, ExternalRecommenderType.PERSONALIZED);
+					List<RecommendationItem> items = recommender.recommendItems(new ExternalRecommenderRequest(userId));
+					result[i] = items.size() - items.indexOf(new RecommendationItem(contentNode.getContentKey().getId()));
+				} catch (ExternalRecommenderCommunicationException e) {
+					LOGGER.debug("Error while communicating with external recommender (" + var + ")", e);
+					result[i] = 0;
+				} catch (IllegalArgumentException e) {
+					LOGGER.debug("Illegal argument passed to external recommender registry (" + var + ")", e);
+					result[i] = 0;
+				} catch (NoSuchExternalRecommenderException e) {
+					LOGGER.debug("No such external recommender registered (" + var + ")", e);
+					result[i] = 0;
+				}
 			} else {
 				LOGGER.debug("Unknown variable " + var);
 				result[i] = 0;
@@ -686,8 +711,19 @@ public class ScoreProvider implements DataAccess {
 				lookup.reloadCache();
 				loadedStoreLookups.add(name);
 				result.add(name);
+			} else if (name.startsWith(EXTERNAL_PERSONALIZED_PREFIX)) {
+				String providerName = name.substring(EXTERNAL_PERSONALIZED_PREFIX.length());
+				try {
+					ExternalRecommender recommender = ExternalRecommenderRegistry.getInstance(providerName, ExternalRecommenderType.PERSONALIZED);
+					if (recommender == null)
+						LOGGER.warn("Unknown factor");
+				} catch (IllegalArgumentException e) {
+					LOGGER.warn("No such factor - Illegal argument passed to external recommender registry (" + providerName + ")", e);
+				} catch (NoSuchExternalRecommenderException e) {
+					LOGGER.warn("No such factor - No such external recommender registered (" + providerName + ")", e);
+				}
 			} else {
-				LOGGER.warn("Neither database nor CMS source");
+				LOGGER.warn("Unknown factor");
 			}
 		}
 		
@@ -1173,5 +1209,5 @@ public class ScoreProvider implements DataAccess {
 	@Override
 	public List<ContentNodeModel> getPrioritizedNodes() {
 		throw new UnsupportedOperationException();
-	}	
+	}
 }

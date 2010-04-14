@@ -1,7 +1,8 @@
 package com.freshdirect.smartstore.scoring;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javassist.CannotCompileException;
@@ -17,10 +18,10 @@ import com.freshdirect.smartstore.dsl.ClassCompileException;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Context;
 import com.freshdirect.smartstore.dsl.Expression;
-import com.freshdirect.smartstore.dsl.ExpressionVisitor;
 import com.freshdirect.smartstore.dsl.Operation;
 import com.freshdirect.smartstore.dsl.Parser;
 import com.freshdirect.smartstore.dsl.VariableCollector;
+import com.freshdirect.smartstore.dsl.VariableExpression;
 import com.freshdirect.smartstore.dsl.VisitException;
 
 /**
@@ -70,6 +71,19 @@ import com.freshdirect.smartstore.dsl.VisitException;
  */
 public class ScoringAlgorithmCompiler extends CompilerBase {
 
+    static class TopLimit {
+        final int maximum;
+        final int position;
+        
+        public TopLimit(int maximum, int position) {
+            this.maximum = maximum;
+            this.position = position;
+        }
+        
+        
+        
+    }
+    
     public ScoringAlgorithmCompiler() {
     }
 
@@ -80,6 +94,9 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
     protected  void setupParser(Parser parser) {
         super.setupParser(parser);
         parser.getContext().addVariable("top", Expression.RET_SYMBOL);
+        for (int i = 1; i <= 5; i++) {
+            parser.getContext().addVariable("top" + i, Expression.RET_SYMBOL);
+        }
     }
 
     /**
@@ -89,15 +106,14 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
      * @return
      * @throws CompileException
      */
-    protected Set validate(BlockExpression expr) throws CompileException {
+    protected Set<String> validate(BlockExpression expr) throws CompileException {
         expr.validate();
         VariableCollector collector = new VariableCollector();
         try {
-            expr.visit(collector);
+            expr.visit(null, collector);
             Context context = getParser().getContext();
-            Set result = new HashSet();
-            for (Iterator iter = collector.getVariables().iterator(); iter.hasNext();) {
-                String varName = (String) iter.next();
+            Set<String> result = new HashSet<String>();
+            for (String varName : collector.getVariables()) {
                 if (!context.isVariable(varName)) {
                     throw new ClassCompileException("Unknown variable '" + varName + ", available variables:" + context.getVariables());
                 }
@@ -113,15 +129,25 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
 
     public Class compileAlgorithm(String name, BlockExpression expr, String toStringValue) throws CompileException {
 
-        Set variables = validate(expr);
-        Integer topParam = removeSymbolicOperations(expr);
+        Set<String> variables = validate(expr);
 
         try {
             CtClass class1 = pool.makeClass(packageName + name);
             CtClass parent;
             parent = pool.get(ScoringAlgorithm.class.getName());
             class1.setSuperclass(parent);
-            
+
+            List<TopLimit> topParam = removeSymbolicOperations(expr);
+            if (topParam.size()>0) {
+                StringBuilder s = new StringBuilder("public com.freshdirect.smartstore.scoring.OrderingFunction createOrderingFunction() { \n\t com.freshdirect.smartstore.scoring.TopNLimitFunction t = new com.freshdirect.smartstore.scoring.TopNLimitFunction();\n");
+                for (TopLimit t : topParam) {
+                    s.append("\t t.addTopN(").append(t.position).append(",").append(t.maximum).append(");\n");
+                }
+                s.append(" return t;\n }");
+                CtMethod method5 = CtNewMethod.make(s.toString(), class1);
+                class1.addMethod(method5);
+            }
+
             CtClass stringArray = pool.get("java.lang.String[]");
             
             pool.importPackage("com.freshdirect.smartstore.scoring");
@@ -148,11 +174,6 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
             method = createToStringMethod(class1, toStringValue);
             class1.addMethod(method);
             
-            if (topParam!=null) {
-                CtMethod method5 = CtNewMethod.make("public OrderingFunction createOrderingFunction() { return new TopLimitOrderingFunction(" + topParam
-                        + "); }", class1);
-                class1.addMethod(method5);
-            }
 
             return class1.toClass();
         } catch (NotFoundException e) {
@@ -162,29 +183,35 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
         }
     }
 
-    private Integer removeSymbolicOperations(BlockExpression expr) {
-        Integer result = null;
+    private List<TopLimit> removeSymbolicOperations(BlockExpression expr) {
+        List<TopLimit> limits = new ArrayList<TopLimit>();
         for (int i=0;i<expr.size();i++) {
             if (expr.get(i) instanceof Operation) {
-                if (filterOperation((Operation) expr.get(i))) {
-                    result = result ==null ? new Integer(i) : result;
+                int top = filterOperation((Operation) expr.get(i));
+                if (top>=1) {
+                    limits.add(new TopLimit(top,i));
                 }
             }
         }
-        return result;
+        return limits;
     }
 
-    private boolean filterOperation(Operation operation) {
+    private int filterOperation(Operation operation) {
         int paramCount = operation.size();
         Expression last = operation.get(paramCount-1);
-        if (last.getReturnType()==Expression.RET_SYMBOL) {
+        if (last.getReturnType()==Expression.RET_SYMBOL && last instanceof VariableExpression) {
+            int top = 1;
+            String name = ((VariableExpression)last).getVariableName();
+            if (name.startsWith("top") && name.length() > 3) {
+                top = Integer.parseInt(name.substring(3));
+            }
             operation.removeOperator(paramCount-1);
-            return true;
+            return top;
         }
-        return false;
+        return -1;
     }
 
-    private String generateFieldInitializers(BlockExpression expr, Set variables) {
+    private String generateFieldInitializers(BlockExpression expr, Set<String> variables) {
         if (variables.isEmpty()) {
             return " variables = new String[0];\n";
         }
@@ -192,8 +219,7 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
         buf.append("  variables =  new String[] {");
         
         boolean first = true;
-        for (Iterator iter = variables.iterator(); iter.hasNext();) {
-            String name = (String) iter.next();
+        for (String name : variables) {
             if (getParser().getContext().getVariableType(name)!=Expression.RET_SYMBOL) {
                 if (first) {
                     first = false;
@@ -207,13 +233,12 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
         return buf.toString();
     }
 
-    private String generateGetScoresMethodBody(BlockExpression expr, Set variables) throws CompileException {
+    private String generateGetScoresMethodBody(BlockExpression expr, Set<String> variables) throws CompileException {
         StringBuffer buf = new StringBuffer();
         buf.append("public Score getScores(java.util.Map variables) {\n");
         buf.append("  Score sc = new Score(").append(expr.size()).append(");\n");
         Context context = getParser().getContext();
-        for (Iterator iter = variables.iterator(); iter.hasNext();) {
-            String name = (String) iter.next();
+        for (String name : variables) {
             buf.append(declareVariable(context, name));
         }
         for (int i = 0; i < expr.size(); i++) {
@@ -225,14 +250,13 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
         return buf.toString();
     }
     
-    private String generateNewGetScoresMethodBody(BlockExpression expr, Set variables) throws CompileException {
+    private String generateNewGetScoresMethodBody(BlockExpression expr, Set<String> variables) throws CompileException {
         StringBuffer buf = new StringBuffer();
         buf.append("public double[] getScores(double[] factors) {\n");
         buf.append("  double[] result = new double[").append(expr.size()).append("];\n");
         Context context = getParser().getContext();
         int j = 0;
-        for (Iterator iter = variables.iterator(); iter.hasNext();) {
-            String name = (String) iter.next();
+        for (String name : variables) {
             buf.append(declareVariable(context, name, "factors[" + j + ']'));
             j++;
         }

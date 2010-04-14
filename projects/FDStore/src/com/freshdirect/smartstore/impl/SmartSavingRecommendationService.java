@@ -18,7 +18,6 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.WrapperRecommendationService;
-import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 
 /**
@@ -41,7 +40,7 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
     		
         String variantId = getVariant().getId();
         if(!variantId.equals(input.getSavingsVariantId())) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         //if(!isEligibleForSavings(input, variantId)) return Collections.EMPTY_LIST;
         Map<String, List<ContentKey>> prevMap = input.getPreviousRecommendations();
@@ -67,14 +66,13 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
             	ContentNodeModel node = cartSuggestions.get(i);
             	filterProds.add(node.getContentKey());
             }
-            internalRec = FDStoreRecommender.getInstance().filterProducts(internalRec, filterProds, false, getVariant().isUseAlternatives());            
             cartSuggestions.addAll(internalRec);
         }
         if (cartSuggestions.size() > input.getMaxRecommendations())
         	cartSuggestions = cartSuggestions.subList(0, input.getMaxRecommendations());
 
         if (prevMap == null) {
-            prevMap = new HashMap();
+            prevMap = new HashMap<String, List<ContentKey>>();
             input.setPreviousRecommendations(prevMap);
         }
         prevMap.put(variantId, SmartStoreUtil.toContentKeysFromModels(cartSuggestions));

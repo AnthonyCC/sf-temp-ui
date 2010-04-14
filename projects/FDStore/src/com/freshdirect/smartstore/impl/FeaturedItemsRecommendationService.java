@@ -6,59 +6,49 @@ package com.freshdirect.smartstore.impl;
 import java.util.Collections;
 import java.util.List;
 
-import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.ProductContainer;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.scoring.HelperFunctions;
 
 /**
- * TODO : think about, that the current RecommendationService contract states, that the recommend method should return a list of ContentKey-s. 
- *  
  * 
  * @author zsombor
- *
  */
 public class FeaturedItemsRecommendationService extends AbstractRecommendationService {
+	/**
+	 * @param variant
+	 */
+	public FeaturedItemsRecommendationService(Variant variant, ImpressionSampler sampler, boolean includeCartItems) {
+		super(variant, sampler, includeCartItems);
+	}
 
-    /**
-     * @param variant
-     */
-    public FeaturedItemsRecommendationService(Variant variant, ImpressionSampler sampler,
-    		boolean catAggr, boolean includeCartItems) {
-        super(variant, sampler, catAggr, includeCartItems);
-    }
+	/**
+	 * 
+	 * @param input
+	 * @return a List<{@link ContentNodeModel}> of recommendations
+	 * 
+	 */
+	public List doRecommendNodes(SessionInput input) {
+		List featuredNodes = Collections.EMPTY_LIST;
+		if (input.getCurrentNode() != null) {
+			ContentNodeModel model = input.getCurrentNode();
 
-    /**
-     * 
-     * @param input
-     * @return a List<{@link ContentNodeModel}> of recommendations
-     *         
-     */
-    public List doRecommendNodes(SessionInput input) {
-        List featuredNodes = Collections.EMPTY_LIST; 
-        if (input.getCurrentNode()!=null) {
-            ContentNodeModel model = input.getCurrentNode();
+			featuredNodes = getFeaturedItems(model);
+			featuredNodes = sample(input, rankListByOrder(featuredNodes), false);
+		}
 
-            featuredNodes = getFeaturedItems(model);
-            featuredNodes = sampleContentNodeModels(input, featuredNodes);
-        }
+		return featuredNodes;
+	}
 
-        return featuredNodes;
-    }
-
-    /**
-     * Return a list of featured items.
-     * 
-     * @param model
-     * @return
-     */
-    public static List getFeaturedItems(ContentNodeModel model) {
-        return HelperFunctions.getFeaturedItems(model);
-    }
-
+	/**
+	 * Return a list of featured items.
+	 * 
+	 * @param model
+	 * @return
+	 */
+	public static List getFeaturedItems(ContentNodeModel model) {
+		return HelperFunctions.getFeaturedItems(model);
+	}
 }

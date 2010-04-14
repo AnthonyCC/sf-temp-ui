@@ -25,7 +25,8 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
-import com.freshdirect.smartstore.sampling.ImpressionSampler;
+import com.freshdirect.smartstore.filter.ContentFilter;
+import com.freshdirect.smartstore.filter.FilterFactory;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
 
 /**
@@ -36,9 +37,8 @@ public class SmartYMALRecommendationService extends
 	private static final Category LOGGER = LoggerFactory
 			.getInstance(SmartYMALRecommendationService.class);
 
-	public SmartYMALRecommendationService(Variant variant,
-			ImpressionSampler sampler, boolean catAggr, boolean includeCartItems) {
-		super(variant, sampler, catAggr, includeCartItems);
+	public SmartYMALRecommendationService(Variant variant, boolean includeCartItems) {
+		super(variant, null, includeCartItems);
 	}
 
 	/**
@@ -51,6 +51,7 @@ public class SmartYMALRecommendationService extends
 		final ProductModel selectedProduct = (ProductModel) input
 				.getCurrentNode();
 		int availSlots = input.getMaxRecommendations();
+		ContentFilter filter = FilterFactory.getInstance().createFilter(input.getExclusions(), input.isUseAlternatives());
 
 		SmartStoreUtil.clearConfiguredProductCache();
 
@@ -61,9 +62,8 @@ public class SmartYMALRecommendationService extends
 						.getRelatedProducts() : new ArrayList();
 		for (int i = 0; i < relatedProducts.size(); i++) {
 			ProductModel pm = (ProductModel) relatedProducts.get(i);
-			if (pm.isDisplayable()) {
-				ProductModel q = SmartStoreUtil.addConfiguredProductToCache(pm);
-				ProductModel p = q;
+			if (filter.filter(pm.getContentKey()) != null) {
+				ProductModel p = SmartStoreUtil.addConfiguredProductToCache(pm);
 				if (p != null)
 					prodList.add(p);
 			}
@@ -132,8 +132,7 @@ public class SmartYMALRecommendationService extends
 
 			if (recommenders.size() == 1) {
 
-				prodList.addAll(SmartStoreUtil
-						.addConfiguredProductToCache(recommendations[0]));
+				prodList.addAll(SmartStoreUtil.addConfiguredProductToCache(recommendations[0]));
 
 			} else if (recommenders.size() > 1) {
 
@@ -147,8 +146,7 @@ public class SmartYMALRecommendationService extends
 								.remove(0)
 								: null;
 						p = SmartStoreUtil.addConfiguredProductToCache(next);
-					} while (next != null
-							&& (!next.isDisplayable() || prodList.contains(p)));
+					} while (next != null && prodList.contains(p));
 					if (next != null) {
 						if (p != null) {
 							prodList.add(p);
@@ -163,15 +161,18 @@ public class SmartYMALRecommendationService extends
 
 		if (ymalSource != null && availSlots > 0) {
 			// classic YMAL set products
-			List ymalProducts = new ArrayList(ymalSource.getYmalProducts());
+			List ymalProducts = ymalSource.getYmalProducts();
 			for (ListIterator it = ymalProducts.listIterator(); it.hasNext();) {
 				ProductModel pm = (ProductModel) it.next();
-				ProductModel q = SmartStoreUtil
-						.addConfiguredProductToCache((ProductModel) pm);
-				if (relatedProducts.contains(pm) || q == null)
+				if (filter.filter(pm.getContentKey()) != null) {
+					ProductModel q = SmartStoreUtil.addConfiguredProductToCache((ProductModel) pm);
+					if (prodList.contains(q) || q == null)
+						it.remove();
+					else {
+						it.set(q);
+					}
+				} else {
 					it.remove();
-				else {
-					it.set(q);
 				}
 			}
 			prodList.addAll(ymalProducts);

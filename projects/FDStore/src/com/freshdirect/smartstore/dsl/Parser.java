@@ -42,8 +42,8 @@ public class Parser {
         BlockExpression current = new BlockExpression();
         try {
             parseExpression(context, tokenizer, current);
-            current.visit(new ExpressionVisitor() {
-                public void visit(Expression expression) {
+            current.visit(null, new ExpressionVisitor() {
+                public void visit(Expression parent, Expression expression) {
                     expression.context = context;
                 }
             });

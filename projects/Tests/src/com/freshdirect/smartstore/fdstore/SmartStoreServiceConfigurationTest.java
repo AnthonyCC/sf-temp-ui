@@ -89,8 +89,8 @@ public class SmartStoreServiceConfigurationTest extends TestCase {
         assertNotNull("test_manual_override", variant.getRecommender());
         assertEquals("test_manual_override variant", "test_manual_override", variant.getId());
 
-        for (Iterator iter = services.keySet().iterator(); iter.hasNext();) {
-            String key = (String) iter.next();
+        for (Iterator<String> iter = services.keySet().iterator(); iter.hasNext();) {
+            String key = iter.next();
             Variant v = services.get(key);
             if (key.startsWith("test_")) {
                 String name = key.substring(5);
@@ -107,9 +107,6 @@ public class SmartStoreServiceConfigurationTest extends TestCase {
         for (int i = 0; i < STRATS.length; i++) {
             RecommendationService s = services.get("dyf_test_" + i).getRecommender();
             assertNotNull("dyf_test_" + i, s);
-            assertEquals("description", "Service(feature:DYF,variant:dyf_test_" + i
-                    + ",class:MostFrequentlyBoughtDyfVariant,cat_aggr:false,include_cart_items:false,sampler:(limit:topN:" + TOP_N[i] + ",percent:20.0,list:"
-                    + STRAT_RES[i] + "),)", s.toString());
         }
     }
 }

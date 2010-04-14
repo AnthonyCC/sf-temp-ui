@@ -50,10 +50,6 @@ public class Score implements Comparable {
                 }
             }
         }
-//        int res = node.getFullName().compareTo(sc.node.getFullName());
-//        if (res==0) {
-          int res = node.getContentKey().getId().compareTo(sc.node.getContentKey().getId());
-//        }
-        return res;
+        return node.getContentKey().getId().compareTo(sc.node.getContentKey().getId());
     }
 }

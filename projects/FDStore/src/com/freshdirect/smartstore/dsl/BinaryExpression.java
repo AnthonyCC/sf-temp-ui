@@ -42,10 +42,10 @@ public class BinaryExpression extends Expression {
     }
 
     @Override
-    public void visit(ExpressionVisitor visitor) throws VisitException {
-        super.visit(visitor);
-        left.visit(visitor);
-        right.visit(visitor);
+    public void visit(Expression parent, ExpressionVisitor visitor) throws VisitException {
+        super.visit(parent, visitor);
+        left.visit(this, visitor);
+        right.visit(this, visitor);
     }
     
     @Override
@@ -73,15 +73,16 @@ public class BinaryExpression extends Expression {
     
     @Override
     public boolean replace(Expression from,Expression to) {
+        boolean result = false;
         if (right == from) {
             right = to;
-            return true;
+            result = true;
         }
         if (left == from) {
             left = to;
-            return true;
+            result = true;
         }
-        return false;
+        return result;
     }
     
     public String toString() {
@@ -94,5 +95,24 @@ public class BinaryExpression extends Expression {
     public String getJavaInitializationCode() throws CompileException {
         return right.getJavaInitializationCode() + left.getJavaInitializationCode();
     }
+    
+    @Override
+    protected boolean equalExpression(Expression obj) {
+        if (obj instanceof BinaryExpression) {
+            BinaryExpression b = (BinaryExpression) obj;
+            if (b.operator == operator) {
+                if (b.left.equalExpression(left) && b.right.equalExpression(right)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        return left.hashCode() ^ right.hashCode() ^ operator;
+    }
+
     
 }

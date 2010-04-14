@@ -30,9 +30,8 @@ public class FavoritesRecommendationService extends AbstractRecommendationServic
 	/**
      * @param variant
      */
-    public FavoritesRecommendationService(Variant variant, ImpressionSampler sampler,
-    		boolean catAggr, boolean includeCartItems, String favoriteListId) {
-        super(variant, sampler, catAggr, includeCartItems);
+    public FavoritesRecommendationService(Variant variant, ImpressionSampler sampler, boolean includeCartItems, String favoriteListId) {
+        super(variant, sampler, includeCartItems);
         this.favoriteListId = favoriteListId;
     }
 
@@ -54,17 +53,22 @@ public class FavoritesRecommendationService extends AbstractRecommendationServic
     	if (fl != null) {
     	    favoriteNodes = fl.getFavoriteItems();
     	    
-    	    List keys = new ArrayList(favoriteNodes.size());
+    	    List<RankedContent.Single> keys = new ArrayList<RankedContent.Single>(favoriteNodes.size());
     	    for (int i=0;i<favoriteNodes.size();i++){ 
     	        ContentNodeModel contentNodeModel = (ContentNodeModel)favoriteNodes.get(i);
                 keys.add(new RankedContent.Single((favoriteNodes.size() - i) * 5.0, contentNodeModel));
     	    }
-    	    List sample = RankedContent.getContentNodeModel(getSampler(input).sample(keys,
-    	    		input.isIncludeCartItems() ? Collections.EMPTY_SET : input.getCartContents(), keys.size()));
-    	    SmartStoreUtil.clearConfiguredProductCache();
-    	    favoriteNodes = SmartStoreUtil.addConfiguredProductToCache(sample);
+    	    List sample = sample(input, keys, false);
+    	    favoriteNodes = cacheConfiguredProducts(sample);
     	}
 
         return favoriteNodes;
     }
+
+	private static List cacheConfiguredProducts(List nodes) {
+		List favoriteNodes;
+		SmartStoreUtil.clearConfiguredProductCache();
+		favoriteNodes = SmartStoreUtil.addConfiguredProductToCache(nodes);
+		return favoriteNodes;
+	}
 }

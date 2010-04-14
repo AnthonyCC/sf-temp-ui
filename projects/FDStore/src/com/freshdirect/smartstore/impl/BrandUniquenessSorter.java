@@ -8,32 +8,28 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.WrapperRecommendationService;
-import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 
 public class BrandUniquenessSorter extends WrapperRecommendationService {
-	private static final Logger LOGGER = LoggerFactory
-			.getInstance(BrandUniquenessSorter.class);
+	private static final Logger LOGGER = LoggerFactory.getInstance(BrandUniquenessSorter.class);
 
 	public BrandUniquenessSorter(RecommendationService internal) {
 		super(internal);
 	}
 
 	public List<ContentNodeModel> recommendNodes(SessionInput input) {
-		List nodes = FDStoreRecommender.getInstance().filterProducts(
-				internal.recommendNodes(input), input.getCartContents(),
-				internal.isIncludeCartItems(),
-				internal.getVariant().isUseAlternatives());
+		List<ContentNodeModel> nodes = internal.recommendNodes(input);
 		LOGGER.debug("Items before brand uniqueness sorting: " + nodes);
 		List<ContentNodeModel> newNodes = new ArrayList<ContentNodeModel>(nodes.size());
-		Set brands = new HashSet(15);
+		Set<BrandModel> brands = new HashSet<BrandModel>();
 		while (nodes.size() > 0) {
-			ListIterator it = nodes.listIterator();
+			ListIterator<ContentNodeModel> it = nodes.listIterator();
 			while (it.hasNext()) {
 				ProductModel p = (ProductModel) it.next();
 				if (!containsAny(brands, p.getBrands())) {
@@ -49,7 +45,7 @@ public class BrandUniquenessSorter extends WrapperRecommendationService {
 		return newNodes;
 	}
 
-	private boolean containsAny(Set set, List elements) {
+	private boolean containsAny(Set<? extends Object> set, List<? extends Object> elements) {
 		for (int i = 0; i < elements.size(); i++)
 			if (set.contains(elements.get(i)))
 				return true;

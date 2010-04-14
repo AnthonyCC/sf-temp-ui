@@ -20,10 +20,17 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.external.ExternalRecommender;
+import com.freshdirect.smartstore.external.ExternalRecommenderCommunicationException;
+import com.freshdirect.smartstore.external.ExternalRecommenderRegistry;
+import com.freshdirect.smartstore.external.ExternalRecommenderRequest;
+import com.freshdirect.smartstore.external.ExternalRecommenderType;
+import com.freshdirect.smartstore.external.NoSuchExternalRecommenderException;
+import com.freshdirect.smartstore.external.RecommendationItem;
 import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
+import com.freshdirect.smartstore.filter.ContentFilter;
 import com.freshdirect.smartstore.filter.FilterFactory;
-import com.freshdirect.smartstore.filter.ProductFilter;
 import com.freshdirect.smartstore.sampling.RankedContent;
 
 /**
@@ -440,9 +447,7 @@ public class HelperFunctions {
 			CategoryModel category = (CategoryModel) model;
 			int slots = category.getManualSelectionSlots();
 			if (slots > 0) {
-				ProductFilter filter = FilterFactory.createStandardFilter(input
-						.isIncludeCartItems() ? Collections.EMPTY_LIST : input
-						.getCartContents());
+				ContentFilter filter = FilterFactory.getInstance().createFilter(input.getExclusions(), input.isUseAlternatives());
 				List fprods = category.getFeaturedProducts();
 				Random rnd = new Random();
 
@@ -453,7 +458,7 @@ public class HelperFunctions {
 
 					ProductModel pm = (ProductModel) product;
 					// it does all checks against cart include, displaying, uniqueness, etc.
-					if (filter.filter(pm) != null) {
+					if (filter.filter(pm.getContentKey()) != null) {
 						nodes.add(pm);
 						slots--;
 					}
@@ -502,15 +507,13 @@ public class HelperFunctions {
     	List results = new ArrayList(n);
     	List ranked = of.getRankedContents();
     	int topN = Math.min(n, ranked.size());
-		ProductFilter filter = FilterFactory.createStandardFilter(input
-				.isIncludeCartItems() ? Collections.EMPTY_LIST : input
-				.getCartContents());
+		ContentFilter filter = FilterFactory.getInstance().createFilter(input.getExclusions(), input.isUseAlternatives());
 		Iterator it = ranked.iterator();
 		while (topN > 0 && it.hasNext()) {
     		RankedContent.Single rc = (RankedContent.Single) it.next();
     		ContentNodeModel node = rc.getModel();
 			if (node instanceof ProductModel
-					&& filter.filter((ProductModel) node) != null) {
+					&& filter.filter(node.getContentKey()) != null) {
 	    		results.add(node);
 	    		topN--;
 			}
@@ -547,4 +550,48 @@ public class HelperFunctions {
         return 0;
     }
 
+    @SuppressWarnings("unchecked")
+	public static List getPersonalizedExternalRecommendations(String providerName, SessionInput input) {
+    	try {
+			ExternalRecommender recommender = ExternalRecommenderRegistry.getInstance(providerName, ExternalRecommenderType.PERSONALIZED);
+			List<RecommendationItem> items = recommender.recommendItems(new ExternalRecommenderRequest(input.getCustomerId()));
+			List<ContentNodeModel> nodes = new ArrayList<ContentNodeModel>(items.size());
+			for (RecommendationItem item : items) {
+				ContentNodeModel node = ContentFactory.getInstance().getContentNode(item.getId());
+				if (node != null)
+					nodes.add(node);
+			}
+			return nodes;
+		} catch (IllegalArgumentException e) {
+		} catch (NoSuchExternalRecommenderException e) {
+		} catch (ExternalRecommenderCommunicationException e) {
+		} catch (NullPointerException e) {
+		}
+		return new ArrayList();
+    }
+
+    @SuppressWarnings("unchecked")
+	public static List getRelatedExternalRecommendations(List paramNodes, String providerName, SessionInput input) {
+    	try {
+			ExternalRecommender recommender = ExternalRecommenderRegistry.getInstance(providerName, ExternalRecommenderType.RELATED);
+			List<RecommendationItem> requestItems = new ArrayList<RecommendationItem>();
+			for (Object o : paramNodes) {
+				ContentNodeModel node = (ContentNodeModel) o;
+				requestItems.add(new RecommendationItem(node.getContentKey().getId()));
+			}
+			List<RecommendationItem> items = recommender.recommendItems(new ExternalRecommenderRequest(requestItems));
+			List<ContentNodeModel> nodes = new ArrayList<ContentNodeModel>(items.size());
+			for (RecommendationItem item : items) {
+				ContentNodeModel node = ContentFactory.getInstance().getContentNode(item.getId());
+				if (node != null)
+					nodes.add(node);
+			}
+			return nodes;
+		} catch (IllegalArgumentException e) {
+		} catch (NoSuchExternalRecommenderException e) {
+		} catch (ExternalRecommenderCommunicationException e) {
+		} catch (NullPointerException e) {
+		}
+		return new ArrayList();
+    }
 }

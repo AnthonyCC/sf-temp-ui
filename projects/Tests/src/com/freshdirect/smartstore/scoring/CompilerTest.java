@@ -221,6 +221,29 @@ public class CompilerTest extends TestCase {
         assertEquals("3. element", result.get(2), "a1");
         assertEquals("4. element", result.get(3), "a3");
     }
+    
+    
+    public void testTopLimitCompilation2() throws CompileException {
+        comp.getParser().getContext().addVariable("fa", Expression.RET_FLOAT);
+        comp.getParser().getContext().addVariable("fb", Expression.RET_FLOAT);
+
+        ScoringAlgorithm sa = comp.createScoringAlgorithm("testTop2LimitFunction", "fa*fb:top2; fb:top; fa:top5");
+        assertEquals("output variable", 3, sa.getReturnSize());
+
+        String[] exps = sa.getExpressions();
+        assertEquals("expressions", 3, exps.length);
+        assertEquals("expression[0]", "$fa * $fb", exps[0]);
+        assertEquals("expression[1]", "$fb", exps[1]);
+        assertEquals("expression[2]", "$fa", exps[2]);
+
+        List<String> result = calculateScores(sa, true);
+
+        assertEquals("1. element", result.get(0), "a1");
+        assertEquals("2. element", result.get(1), "a0");
+        assertEquals("3. element", result.get(2), "a2");
+        assertEquals("4. element", result.get(3), "a3");
+    }
+    
 
     public void testNoTopLimitCompilation() throws CompileException {
         comp.getParser().getContext().addVariable("fa", Expression.RET_FLOAT);
@@ -266,9 +289,9 @@ public class CompilerTest extends TestCase {
         
         OrderingFunction orderingFunction = sa.createOrderingFunction();
         if (topLimitAdded) {
-            assertTrue("ordering function is a top limiting", orderingFunction instanceof TopLimitOrderingFunction);
+            assertTrue("ordering function is a top limiting", orderingFunction instanceof TopNLimitFunction);
         } else {
-            assertTrue("ordering function is NOT a top limiting", !(orderingFunction instanceof TopLimitOrderingFunction));
+            assertTrue("ordering function is NOT a top limiting", !(orderingFunction instanceof TopNLimitFunction));
         }
 
         double[] vars = new double[2];

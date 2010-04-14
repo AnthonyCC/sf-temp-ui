@@ -12,10 +12,6 @@ public abstract class WrapperRecommendationService implements RecommendationServ
         this.internal = internal;
     }
     
-    public String getDescription() {
-        return "Wrapper["+this.getClass().getName()+"]:"+internal.getDescription();
-    }
-
     public Variant getVariant() {
         return internal.getVariant();
     }
@@ -37,4 +33,9 @@ public abstract class WrapperRecommendationService implements RecommendationServ
     public boolean isRefreshable() {
     	return internal.isRefreshable();
     }
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "[internalRecommender=" + internal + "]";
+	}
 }

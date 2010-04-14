@@ -4,18 +4,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.smartstore.CartTabStrategyPriority;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
-import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
@@ -25,9 +26,8 @@ public class YmalYfRecommendationService extends AbstractRecommendationService i
 	private ScriptedRecommendationService popularity;
 	private RecommendationService smartYmal = null;
 	
-	public YmalYfRecommendationService(Variant variant, ImpressionSampler sampler,
-    		boolean catAggr, boolean includeCartItems) throws CompileException {
-		super(variant, sampler, catAggr, includeCartItems);
+	public YmalYfRecommendationService(Variant variant, boolean includeCartItems) throws CompileException {
+		super(variant, null, includeCartItems);
 		popularity = createPopularityRecommender();
 	}
 
@@ -35,12 +35,12 @@ public class YmalYfRecommendationService extends AbstractRecommendationService i
 		RecommendationServiceConfig config = new RecommendationServiceConfig("ymal_yf_popularity",
 				RecommendationServiceType.SCRIPTED);
 		config.set(RecommendationServiceFactory.CKEY_SAMPLING_STRATEGY, "deterministic");
-		config.set(RecommendationServiceFactory.CKEY_TOP_N, Integer.toString(20));
-		config.set(RecommendationServiceFactory.CKEY_TOP_PERC, Double.toString(20.0));
+		config.set(RecommendationServiceFactory.CKEY_TOP_N, Integer.toString(1));
+		config.set(RecommendationServiceFactory.CKEY_TOP_PERC, Double.toString(0.0));
 		config.set(RecommendationServiceFactory.CKEY_GENERATOR, "PurchaseHistory");
 		config.set(RecommendationServiceFactory.CKEY_SCORING, "Popularity_Discretized");
 		
-		Variant v = new Variant("ymal_yf_popularity", EnumSiteFeature.YMAL, config, new TreeMap());
+		Variant v = new Variant("ymal_yf_popularity", EnumSiteFeature.YMAL, config, new TreeMap<Integer, SortedMap<Integer,CartTabStrategyPriority>>());
 		
 		ScriptedRecommendationService rs = (ScriptedRecommendationService)
 				RecommendationServiceFactory.configure(v);
@@ -52,12 +52,11 @@ public class YmalYfRecommendationService extends AbstractRecommendationService i
 	public List<ContentNodeModel> doRecommendNodes(SessionInput input) {
 		RecommendationService smart = getSmartYmalRecommender();
 		if (smart == null)
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		
 		List<ContentNodeModel> favorites = popularity.recommendNodes(input);
-		favorites = FDStoreRecommender.getInstance().filterProducts(favorites, input.getCartContents(), false, variant.isUseAlternatives());
 		if (favorites.isEmpty())
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		
 		ProductModel currentNode = (ProductModel) favorites.get(0);
 		SessionInput i2 = new SessionInput(input.getCustomerId(), input.getCustomerServiceType(), input.getPricingContext());

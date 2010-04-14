@@ -9,7 +9,7 @@ public class VariableCollector implements ExpressionVisitor {
     
     Set<String> functions = new HashSet<String>();
     
-    public void visit(Expression expression) {
+    public void visit(Expression parent, Expression expression) {
         if (expression instanceof VariableExpression) {
             names.add( ((VariableExpression)expression).name);
         }

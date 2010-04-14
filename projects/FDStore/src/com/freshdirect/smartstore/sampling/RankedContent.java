@@ -1,166 +1,150 @@
 package com.freshdirect.smartstore.sampling;
 
-
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.smartstore.filter.ContentFilter;
 
 /**
  * Wrapper class for ranked content.
  * 
  * This class represents either one particular content key ({@link Single}) or
- * a group of content keys ({@link Aggregate}) that need to be counted
- * with a common rank (Category Aggregation).
+ * a group of content keys ({@link Aggregate}) that need to be counted with a
+ * common rank (Category Aggregation).
  * 
  * @author istvan
- *
+ * 
  */
-public abstract class RankedContent {
-	
-    
-	/**
-	 * @return score associated with content(s)
-	 */
-	public abstract double getScore();
-	
-	/**
-	 * @return number of content keys associated with this instance
-	 */
-	public abstract int getCount();
-	
-	/**
-	 * @return id used in referring to this instance
-	 */
-	public abstract String getId();
-	
-	
+public abstract class RankedContent implements Comparable<RankedContent> {
 	/**
 	 * One particular content key.
+	 * 
 	 * @author istvan
-	 *
+	 * 
 	 */
-	public static class Single extends RankedContent implements Comparable {
-		
+	public static class Single extends RankedContent {
 		private ContentKey id;
-		
+
 		private double score;
-		
+
 		private ContentNodeModel model;
 
-	        public Single(ContentKey id, double score) {
-                    this.id = id;
-                    this.score = score;
-	        }
-	        
-		public Single(double score, ContentNodeModel model) {
-		    this.id = model.getContentKey();
-		    this.score = score;
-		    this.model = model;
+		public Single(ContentKey id, double score) {
+			this.id = id;
+			this.score = score;
 		}
-		
+
+		public Single(double score, ContentNodeModel model) {
+			this.id = model.getContentKey();
+			this.score = score;
+			this.model = model;
+		}
+
 		public double getScore() {
 			return score;
 		}
-		
-		public int getCount() { return 1; }
-	
+
+		public int getCount() {
+			return 1;
+		}
+
 		public String getId() {
 			return id.getId();
 		}
 		
+		@Override
+		public String getName() {
+			getModel();
+			return model != null ? model.getFullName() : id.getId();
+		}
+
 		public ContentKey getContentKey() {
 			return id;
 		}
-		
+
 		public String toString() {
 			return id.toString() + ' ' + score;
 		}
-		
-		public ContentNodeModel getModel() {
-                    return model;
-                }
-		
-	        public int compareTo(Object o) {
-	            int result = -Double.compare(score, ((Single)o).score);
-	            if (result==0) {
-	                return model.getFullName().compareTo(((Single)o).model.getFullName());
-	            }
-	            return result;
-	        }
 
-		
+		public ContentNodeModel getModel() {
+			if (model == null)
+				model = ContentFactory.getInstance().getContentNode(id.getId());
+			return model;
+		}
 	};
-	
+
 	/**
 	 * Content key aggregation.
 	 * 
-	 * This items are aggregated at the category level, and thus
-	 * are treated the same from the perspective of sampling.
+	 * This items are aggregated at the category level, and thus are treated the
+	 * same from the perspective of sampling.
 	 * 
 	 * @author istvan
-	 *
+	 * 
 	 */
 	public static class Aggregate extends RankedContent {
-		
+
 		private static Random R = new Random();
-		
-		private double totalScore = 0;
-		
-		// List<Single> 
-		private LinkedList<Single> items = new LinkedList<Single>(); 
-		private String id;
-		
+
+		protected double totalScore = 0;
+
+		// List<Single>
+		protected LinkedList<Single> items = new LinkedList<Single>();
+		protected String id;
+
 		public Aggregate(String id) {
 			this.id = id;
 		}
-		
+
 		public void add(Single o) {
 			items.add(o);
 			totalScore += o.getScore();
 		}
-		
+
 		/**
 		 * Remove one content key and adjust group score.
 		 * 
 		 * @return content removed
 		 */
 		public Single take() {
-			Single r = (Single)items.remove(R.nextInt(items.size()));
-			//Single r = items.remove(0);
+			Single r = items.remove(R.nextInt(items.size()));
 			totalScore -= r.getScore();
 			return r;
 		}
-		
+
 		public Single takeFirst() {
-		    return (Single) items.removeFirst();
+			Single r = items.removeFirst();
+			totalScore -= r.getScore();
+			return r;
 		}
-		
-		/**
-		 * Remove the content by its name
-		 * @param item name of content to be removed
-		 */
-		public void remove(String item) {
-			for(Iterator<Single> i = items.iterator(); i.hasNext();) {
-				Single stored = (Single)i.next();
-				if (item.equals(stored.getId())) {
+
+		public void filterWith(ContentFilter filter) {
+			for (Iterator<Single> i = items.iterator(); i.hasNext();) {
+				Single stored = i.next();
+				if (filter.filter(stored.getContentKey()) == null) {
 					totalScore -= stored.getScore();
-					break;
+					i.remove();
 				}
 			}
 		}
-		
+
 		/**
-		 * Get the id of teh group.
+		 * Get the id of the group.
 		 */
 		public String getId() {
 			return id;
 		}
 		
+		@Override
+		public String getName() {
+			return id;
+		}
+
 		/**
 		 * 
 		 * @return List<Single>
@@ -168,42 +152,74 @@ public abstract class RankedContent {
 		public List<Single> getItems() {
 			return items;
 		}
-		
+
 		public double getScore() {
 			return totalScore;
 		}
-		
+
 		public int getCount() {
 			return items.size();
 		}
-		
+
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
-			for(Iterator<Single> i = items.iterator(); i.hasNext(); ) {
-				RankedContent.Single item = (RankedContent.Single)i.next();	
-				buffer.append(buffer.length() > 0? ',' : '[');
+			for (Iterator<Single> i = items.iterator(); i.hasNext();) {
+				RankedContent.Single item = (RankedContent.Single) i.next();
+				buffer.append(buffer.length() > 0 ? ',' : '[');
 				buffer.append(item);
 			}
 			return buffer.append("] ").append(getScore()).toString();
 		}
-	};
+	}
 	
-	
-    public static List<ContentKey> getKeys(List<Single> rankedContents) {
-        List<ContentKey> result = new ArrayList<ContentKey>(rankedContents.size());
-        for (Iterator<Single> iter = rankedContents.iterator(); iter.hasNext();) {
-            RankedContent.Single rs = iter.next();
-            result.add(rs.getContentKey());
-        }
-        return result;
-    }
+	public static class DeterministicAggregate extends Aggregate {
+		public DeterministicAggregate(String id) {
+			super(id);
+		}
+		
+		@Override
+		public void add(Single o) {
+			int pos;
+			for (pos = 0; pos < items.size(); pos++) {
+				if (o.compareTo(items.get(pos)) < 0)
+					break;
+			}
+			items.add(pos, o);
+			totalScore += o.getScore();
+		}
 
-    public static List<ContentNodeModel> getContentNodeModel(List<RankedContent.Single> rankedContents) {
-        List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(rankedContents.size());
-        for (RankedContent.Single rs : rankedContents) {
-            result.add(rs.getModel());
-        }
-        return result;
-    }	
+		@Override
+		public Single take() {
+			return takeFirst();
+		}
+	}
+
+	/**
+	 * @return score associated with content(s)
+	 */
+	public abstract double getScore();
+
+	/**
+	 * @return number of content keys associated with this instance
+	 */
+	public abstract int getCount();
+
+	/**
+	 * @return id used in referring to this instance
+	 */
+	public abstract String getId();
 	
+	/**
+	 * @return a readable name of the associated content (e.g. full name)
+	 */
+	public abstract String getName();
+	
+	@Override
+	public int compareTo(RankedContent o) {
+		int result = -Double.compare(getScore(), o.getScore());
+		if (result == 0) {
+			return getName().compareTo(o.getName());
+		}
+		return result;
+	}
 }

@@ -12,9 +12,10 @@ import com.freshdirect.smartstore.scoring.ScoringAlgorithm;
 import com.freshdirect.smartstore.scoring.ScoringAlgorithmCompiler;
 
 /**
- * This class 
+ * This class
+ * 
  * @author zsombor
- *
+ * 
  */
 public class GlobalCompiler {
 
@@ -87,6 +88,12 @@ public class GlobalCompiler {
         }
     }
     
+    /**
+     * DO NOT CALL DIRECTLY !!! ONLY FOR TESTING !!!
+     * 
+     * @param name
+     * @param type
+     */
     public void addVariable(String name, int type) {
         switch (type) {
             case Expression.RET_INT :
@@ -104,4 +111,3 @@ public class GlobalCompiler {
     }
 
 }
-

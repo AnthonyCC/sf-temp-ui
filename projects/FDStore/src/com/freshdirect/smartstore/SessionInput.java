@@ -1,6 +1,8 @@
 package com.freshdirect.smartstore;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,7 +13,9 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.YmalSource;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 
@@ -34,26 +38,30 @@ public class SessionInput {
 	private boolean noShuffle;
 
 	private CategoryModel category;
-	
+
 	private YmalSource ymalSource;
 
-	private List explicitList;
+	private List<ContentNodeModel> explicitList;
 
 	private EnumServiceType customerServiceType;
 
 	private FDCartModel cartModel;
 
-	private Map<String,List<ContentKey>> previousRecommendations;
+	private Map<String, List<ContentKey>> previousRecommendations;
 
 	int maxRecommendations = Integer.MAX_VALUE;
-	
+
 	private boolean checkForEnoughSavingsMode = false;
-	
+
 	private String savingsVariantId;
-	
+
 	private boolean includeCartItems = false;
+
+	private boolean useAlternatives = true;
+
+	// private Set eligiblePromotions = null;
 	
-	//private Set eligiblePromotions = null;
+	private Set<ContentKey> recentItems;
 
 	//Added for Zone Pricing.
 	private PricingContext pricingCtx;
@@ -83,14 +91,43 @@ public class SessionInput {
 			this.customerServiceType = user.getUserServiceType();
 			this.cartModel = user.getShoppingCart();
 			this.savingsVariantId = user.getSavingsVariantId();
-			//this.promoVariantMap = user.getPromoVariantMap();
-			//this.eligiblePromotions = user.getPromotionEligibility().getEligiblePromotionCodes();
 			if (user.getIdentity() != null)
 				this.customerId = user.getIdentity().getErpCustomerPK();
+			initCartContents(user);
+			initRecentItems(user);
 			this.pricingCtx = user.getPricingContext();
 		}
 	}
 
+	protected void initCartContents(FDUserI user) {
+		@SuppressWarnings("unchecked")
+		List<FDCartLineI> orderlines = user.getShoppingCart().getOrderLines();
+		Set<ContentKey> products = new HashSet<ContentKey>(orderlines.size());
+		Map<String, Set<ContentKey>> tempSavingItems = new HashMap<String, Set<ContentKey>>();
+		for (FDCartLineI cartLine : orderlines) {
+			ProductReference productRef = cartLine.getProductRef();
+			products.add(productRef.getContentKey());
+			String savingsId = cartLine.getSavingsId();
+			if (savingsId != null && savingsId.length() != 0) {
+				if (!tempSavingItems.containsKey(savingsId)) {
+					tempSavingItems.put(savingsId, new HashSet<ContentKey>());
+				}
+				tempSavingItems.get(savingsId).add(productRef.getContentKey());
+			}
+		}
+		cartContents = products;
+	}
+
+	protected void initRecentItems(FDUserI user) {
+		List<FDCartLineI> orderlines = user.getShoppingCart().getRecentOrderLines();
+		Set<ContentKey> products = new HashSet<ContentKey>(orderlines.size());
+		for (FDCartLineI cartLine : orderlines) {
+			ProductReference productRef = cartLine.getProductRef();
+			products.add(productRef.getContentKey());
+		}
+		recentItems = products;
+	}
+	
 	/**
 	 * Set the cart contents of the user.
 	 * 
@@ -109,7 +146,21 @@ public class SessionInput {
 	 * @return The current cart contents as Collection<@link {@link ContentKey}>
 	 */
 	public Set<ContentKey> getCartContents() {
-		return cartContents != null ? cartContents : Collections.EMPTY_SET;
+		if (cartContents != null)
+			return cartContents;
+		else
+			return Collections.emptySet();
+	}
+	
+	public void setRecentItems(Set<ContentKey> recentItems) {
+		this.recentItems = recentItems;
+	}
+	
+	public Set<ContentKey> getRecentItems() {
+		if (recentItems != null)
+			return recentItems;
+		else
+			return Collections.emptySet();
 	}
 
 	/**
@@ -130,6 +181,7 @@ public class SessionInput {
 	}
 
 	public boolean isNoShuffle() {
+		// return false;
 		return noShuffle;
 	}
 
@@ -145,11 +197,14 @@ public class SessionInput {
 		this.ymalSource = ymalSource;
 	}
 
-	public List getExplicitList() {
-		return explicitList != null ? explicitList : Collections.EMPTY_LIST;
+	public List<ContentNodeModel> getExplicitList() {
+		if (explicitList != null)
+			return explicitList;
+		else
+			return Collections.emptyList();
 	}
 
-	public void setExplicitList(List explicitList) {
+	public void setExplicitList(List<ContentNodeModel> explicitList) {
 		this.explicitList = explicitList;
 	}
 
@@ -184,40 +239,40 @@ public class SessionInput {
 	public int getMaxRecommendations() {
 		return maxRecommendations;
 	}
-	
+
 	public boolean isCheckForEnoughSavingsMode() {
 		return checkForEnoughSavingsMode;
 	}
+
 	public void setCheckForEnoughSavingsMode(boolean checkForSavings) {
 		this.checkForEnoughSavingsMode = checkForSavings;
 	}
-	
+
 	public void setCategory(CategoryModel category) {
-            this.category = category;
-    }
-	
+		this.category = category;
+	}
+
 	public String getSavingsVariantId() {
 		return savingsVariantId;
 	}
 
 	public CategoryModel getCategory() {
-	    if ((category==null) && currentNode instanceof CategoryModel) {
-	        return (CategoryModel) currentNode;
-	    } else if (currentNode instanceof ProductModel)
-	    	return (CategoryModel) ((ProductModel) currentNode).getParentNode();
-	    else
-            return category;
-    }
-	
+		if ((category == null) && currentNode instanceof CategoryModel) {
+			return (CategoryModel) currentNode;
+		} else if (currentNode instanceof ProductModel)
+			return (CategoryModel) ((ProductModel) currentNode).getParentNode();
+		else
+			return category;
+	}
+
 	public CategoryModel getFICategory() {
 		if (currentNode instanceof CategoryModel)
 			return (CategoryModel) currentNode;
-		else if (currentNode instanceof ProductModel
-				&& currentNode.getParentNode() instanceof CategoryModel)
+		else if (currentNode instanceof ProductModel && currentNode.getParentNode() instanceof CategoryModel)
 			return (CategoryModel) currentNode.getParentNode();
 		else
 			return null;
-    }
+	}
 
 	public boolean isIncludeCartItems() {
 		return includeCartItems;
@@ -226,6 +281,22 @@ public class SessionInput {
 	public void setIncludeCartItems(boolean includeCartItems) {
 		this.includeCartItems = includeCartItems;
 	}
+
+	public Set<ContentKey> getExclusions() {
+		if (includeCartItems) {
+			return Collections.emptySet();
+		} else {
+			return getCartContents();
+		}
+	}
+
+	public void setUseAlternatives(boolean useAlternatives) {
+		this.useAlternatives = useAlternatives;
+	}
+
+	public boolean isUseAlternatives() {
+		return useAlternatives;
+        }
 
 	public PricingContext getPricingContext() {
 		return pricingCtx;

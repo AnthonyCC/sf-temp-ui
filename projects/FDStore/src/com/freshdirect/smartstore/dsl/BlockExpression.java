@@ -15,7 +15,7 @@ public class BlockExpression extends Expression {
 
     @Override
     public String toCode() {
-        StringBuffer b = new StringBuffer();
+        final StringBuffer b = new StringBuffer();
         for (int i = 0; i < expressions.size(); i++) {
             if (i > 0) {
                 b.append(';');
@@ -27,7 +27,7 @@ public class BlockExpression extends Expression {
 
     @Override
     public void validate() throws CompileException {
-        for (Expression exp : expressions) {
+        for (final Expression exp : expressions) {
             exp.validate();
         }
     }
@@ -40,15 +40,18 @@ public class BlockExpression extends Expression {
         return expressions.get(i);
     }
 
+    @Override
     public boolean add(Expression arg0) {
         expressions.add(arg0);
         return true;
     }
 
+    @Override
     public Expression lastExpression() {
         return (expressions.size() > 0 ? expressions.get(expressions.size() - 1) : null);
     }
 
+    @Override
     public void removeLastExpression() {
         if (expressions.size() > 0) {
             expressions.remove(expressions.size() - 1);
@@ -56,16 +59,21 @@ public class BlockExpression extends Expression {
     }
 
     @Override
-    public void visit(ExpressionVisitor visitor) throws VisitException {
-        visitor.visit(this);
-        for (Expression exp : expressions) {
-            exp.visit(visitor);
+    public boolean replace(Expression from, Expression to) {
+        return replace(expressions, from, to);
+    }
+    
+    @Override
+    public void visit(Expression parent,ExpressionVisitor visitor) throws VisitException {
+        visitor.visit(parent, this);
+        for (final Expression exp : expressions) {
+            exp.visit(this, visitor);
         }
     }
 
     @Override
     public String toJavaCode() throws CompileException {
-        StringBuilder b = new StringBuilder();
+        final StringBuilder b = new StringBuilder();
         for (int i = 0; i < expressions.size(); i++) {
             if (i > 0) {
                 b.append(';');
@@ -74,14 +82,32 @@ public class BlockExpression extends Expression {
         }
         return b.toString();
     }
- 
+
     @Override
     public String getJavaInitializationCode() throws CompileException {
-        StringBuilder b = new StringBuilder();
+        final StringBuilder b = new StringBuilder();
         for (int i = 0; i < expressions.size(); i++) {
             b.append(expressions.get(i).toJavaCode());
         }
         return b.toString();
+    }
+
+    @Override
+    protected boolean equalExpression(Expression obj) {
+        if (obj instanceof BlockExpression) {
+            final BlockExpression f = (BlockExpression) obj;
+            if (f.expressions.size() == expressions.size()) {
+                for (int i = 0; i < expressions.size(); i++) {
+                    final Expression e1 = expressions.get(i);
+                    final Expression e2 = f.expressions.get(i);
+                    if (!e1.equalExpression(e2)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
 }

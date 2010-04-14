@@ -3,26 +3,26 @@ package com.freshdirect.smartstore.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.cms.ContentKey;
 
-public class ArrayFilter extends ProductFilter {
-	List<ProductFilter> filters;
-	
+public class ArrayFilter extends ContentFilter {
+	List<ContentFilter> filters;
+
 	protected ArrayFilter() {
-		filters = new ArrayList<ProductFilter>();
+		filters = new ArrayList<ContentFilter>();
 	}
-	
-        public ProductModel filter(ProductModel model) {
-            for (int i = 0; i < filters.size(); i++) {
-                model = filters.get(i).filter(model);
-                if (model == null) {
-                    return null;
-                }
-            }
-            return model;
-        }
-	
-	public void addFilter(ProductFilter filter) {
+
+	public ContentKey filter(ContentKey key) {
+		for (int i = 0; i < filters.size(); i++) {
+			key = filters.get(i).filter(key);
+			if (key == null) {
+				return null;
+			}
+		}
+		return key;
+	}
+
+	public void addFilter(ContentFilter filter) {
 		filters.add(filter);
 	}
 }

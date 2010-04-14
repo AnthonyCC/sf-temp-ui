@@ -217,5 +217,10 @@ public class Context {
         }
         return var;
     }
+    
+    public void cleanupTemporary() {
+        javaTempVariableIds.clear();
+        javaVariableIds.clear();
+    }
 
 }

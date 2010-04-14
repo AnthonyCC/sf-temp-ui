@@ -29,10 +29,7 @@ public interface RecommendationService {
 	 */
 	public List<ContentNodeModel> recommendNodes(SessionInput input);
 
-	public String getDescription();
-	
 	public boolean isIncludeCartItems();
-	
 
 	/**
 	 * Recommends savings items

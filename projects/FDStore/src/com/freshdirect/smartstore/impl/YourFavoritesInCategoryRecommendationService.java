@@ -22,9 +22,8 @@ public class YourFavoritesInCategoryRecommendationService extends ManualOverride
     /**
      * @param variant
      */
-    public YourFavoritesInCategoryRecommendationService(Variant variant, ImpressionSampler sampler,
-    		boolean catAggr, boolean includeCartItems) {
-        super(variant, sampler, catAggr, includeCartItems);
+    public YourFavoritesInCategoryRecommendationService(Variant variant, ImpressionSampler sampler, boolean includeCartItems) {
+        super(variant, sampler, includeCartItems);
     }
 
     protected void fillManualSlots(SessionInput input, CategoryModel category, int slots, List result) {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -19,65 +20,57 @@ import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
 
 /**
- * @author zsombor
- *
+ * @author zsombor, csongor
+ * 
  */
 public class AllProductInCategoryRecommendationService extends AbstractRecommendationService {
 
-    
-    
-    public AllProductInCategoryRecommendationService(Variant variant, ImpressionSampler sampler,
-    		boolean catAggr, boolean includeCartItems) {
-        super(variant, sampler, catAggr, includeCartItems);
-    }
+	public AllProductInCategoryRecommendationService(Variant variant, ImpressionSampler sampler, boolean includeCartItems) {
+		super(variant, sampler, includeCartItems);
+	}
 
-    /* (non-Javadoc)
-     * @see com.freshdirect.smartstore.impl.AbstractRecommendationService#doRecommendNodes(com.freshdirect.smartstore.Trigger, com.freshdirect.smartstore.SessionInput)
-     */
-    public List doRecommendNodes(SessionInput input) {
-        List result = Collections.EMPTY_LIST;
-        if (input.getCurrentNode() != null) {
-            ContentNodeModel model = input.getCurrentNode();
-            if (model instanceof CategoryModel) {
-                ProductStatisticsProvider statisticsProvider = ProductStatisticsProvider.getInstance();
-                TreeSet ordered = new TreeSet();
+	@Override
+	public List<ContentNodeModel> doRecommendNodes(SessionInput input) {
+		if (input.getCurrentNode() != null) {
+			ContentNodeModel model = input.getCurrentNode();
+			if (model instanceof CategoryModel) {
+				ProductStatisticsProvider statisticsProvider = ProductStatisticsProvider.getInstance();
+				SortedSet<RankedContent.Single> ordered = new TreeSet<RankedContent.Single>();
 
-                CategoryModel category = (CategoryModel) model;
-                collectCategories(statisticsProvider, ordered, category);
-                    
-                result = new ArrayList(ordered.size());
-                for (Iterator iter = ordered.iterator(); iter.hasNext();) {
-                    result.add(((RankedContent.Single) iter.next()).getModel()); 
-                }
-            }
-        }
-        return result;
-    }
+				CategoryModel category = (CategoryModel) model;
+				collectCategories(statisticsProvider, ordered, category);
 
-    protected static void collectCategories(ProductStatisticsProvider statisticsProvider, TreeSet ordered, CategoryModel category) {
-        List products = category.getProducts();
+				return sample(input, new ArrayList<RankedContent.Single>(ordered), true);
+			}
+		}
+		return Collections.emptyList();
+	}
 
-        collectProducts(statisticsProvider,ordered, products  );
-            
-        for (Iterator iter=category.getSubcategories().iterator(); iter.hasNext();) {
-            CategoryModel c = (CategoryModel) iter.next();
-            collectCategories(statisticsProvider, ordered, c);
-        }
-    }
+	protected static void collectCategories(ProductStatisticsProvider statisticsProvider, SortedSet<RankedContent.Single> ordered, CategoryModel category) {
+		@SuppressWarnings("unchecked")
+		List<ProductModel> products = category.getProducts();
 
-    protected static void collectProducts(ProductStatisticsProvider statisticsProvider, TreeSet ordered,List products) {
-        if ((products==null) || (products.size()==0)) {
-            return;
-        }
-        for (Iterator iter = products.iterator();iter.hasNext();) {
-            ProductModel product = (ProductModel) iter.next();
-            collectProduct(statisticsProvider, ordered, product);
-        }
-    }
+		collectProducts(statisticsProvider, ordered, products);
 
-    protected static void collectProduct(ProductStatisticsProvider statisticsProvider, TreeSet ordered, ProductModel product) {
-        ordered.add(new RankedContent.Single(statisticsProvider.getGlobalProductScore(product.getContentKey()),product));
-    }
+		@SuppressWarnings("unchecked")
+		Iterator<CategoryModel> it = category.getSubcategories().iterator();
+		while (it.hasNext()) {
+			CategoryModel c = it.next();
+			collectCategories(statisticsProvider, ordered, c);
+		}
+	}
 
-    
+	protected static void collectProducts(ProductStatisticsProvider statisticsProvider, SortedSet<RankedContent.Single> ordered, List<ProductModel> products) {
+		if ((products == null) || (products.size() == 0)) {
+			return;
+		}
+		for (Iterator<ProductModel> iter = products.iterator(); iter.hasNext();) {
+			ProductModel product = (ProductModel) iter.next();
+			collectProduct(statisticsProvider, ordered, product);
+		}
+	}
+
+	protected static void collectProduct(ProductStatisticsProvider statisticsProvider, SortedSet<RankedContent.Single> ordered, ProductModel product) {
+		ordered.add(new RankedContent.Single(statisticsProvider.getGlobalProductScore(product.getContentKey()), product));
+	}
 }

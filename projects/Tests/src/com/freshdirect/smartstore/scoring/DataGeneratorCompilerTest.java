@@ -388,4 +388,33 @@ public class DataGeneratorCompilerTest extends TestCase {
         assertEquals("2", "e1", TestUtils.getId(result, 2));
     }
     
+    public void testMultipleCalls() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("skuFilter3", "content3:matchSkuPrefix(\"cucc\") + content3:matchSkuPrefix(\"fru\") + content3:matchSkuPrefix(\"cucc\")");
+        assertNotNull("dataGenerator", dataGenerator);
+        input.reset();
+        List<ContentNodeModel> result = dataGenerator.generate(s, input);
+        assertNotNull("result not null", result);
+        assertEquals("result length 2", 5, result.size());
+        Set<String> resultNodes = TestUtils.convertToStringList(result);
+        assertTrue("e1", resultNodes.contains("e1"));
+        assertTrue("e2", resultNodes.contains("e2"));
+        assertTrue("e3", resultNodes.contains("e3"));
+        assertEquals("0", "e2", TestUtils.getId(result, 0));
+        assertEquals("1", "e3", TestUtils.getId(result, 1));
+        assertEquals("2", "e1", TestUtils.getId(result, 2));
+        assertEquals("3", "e2", TestUtils.getId(result, 3));
+        assertEquals("4", "e3", TestUtils.getId(result, 4));
+    }
+    
+    public void testDuplicateRecursive() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("recCall", "RecursiveNodes(explicitList)");
+        assertNotNull("dataGenerator", dataGenerator);
+
+        DataGenerator dataGenerator2 = comp.createDataGenerator("recCall2", "RecursiveNodes(explicitList)");
+        assertNotNull("dataGenerator", dataGenerator);
+        
+        
+    }
+    
+    
 }

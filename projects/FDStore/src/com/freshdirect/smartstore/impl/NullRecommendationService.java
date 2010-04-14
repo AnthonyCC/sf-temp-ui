@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
@@ -27,13 +26,11 @@ public class NullRecommendationService implements RecommendationService {
 	}
 
 	public List<ContentNodeModel> recommendNodes(SessionInput input) {
-		return Collections.EMPTY_LIST;
+		return Collections.emptyList();
 	}
 
 	public String toString() {
-            return "Service(feature:"+variant.getSiteFeature().getName() +
-            ",variant:" + variant.getId()+
-            ",class:"+StringUtil.getSimpleName(this.getClass())+")";
+            return getClass().getSimpleName();
 	}
 	
 	public String getDescription() {
@@ -41,7 +38,7 @@ public class NullRecommendationService implements RecommendationService {
 	}
 
 	public Map getConfiguration() {
-		return Collections.EMPTY_MAP;
+		return Collections.emptyMap();
 	}
 
     public boolean isIncludeCartItems() {

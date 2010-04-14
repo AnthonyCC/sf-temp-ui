@@ -35,4 +35,18 @@ public class StringExp extends Expression {
     public String getStringValue() {
         return value;
     }
+    
+    @Override
+    protected boolean equalExpression(Expression obj) {
+        if (obj instanceof StringExp) {
+            return value.equals(((StringExp) obj).value);
+        }
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+    
 }

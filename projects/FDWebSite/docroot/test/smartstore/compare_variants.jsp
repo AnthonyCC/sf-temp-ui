@@ -741,7 +741,6 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 		LOG.info("variant A recommender: " + aRecService.getClass().getName());
 		try {
 			recsA = aRecService.recommendNodes(si);
-			recsA = FDStoreRecommender.getInstance().filterProducts(recsA, null, true, aRecService.getVariant().isUseAlternatives() );
 			LOG.info("Recommender A node count: " + recsA.size());
 		} catch (RuntimeException e) {
 			LOG.error("exception when recommend for A", e);
@@ -752,7 +751,6 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 		LOG.info("variant B recommender: " + bRecService.getClass().getName());
 		try {
 			recsB = bRecService.recommendNodes(si);
-			recsB = FDStoreRecommender.getInstance().filterProducts(recsB, null, true, bRecService.getVariant().isUseAlternatives());
 			LOG.info("Recommender B node count: " + recsB.size());
 		} catch (RuntimeException e) {
 			LOG.error("exception when recommend for B", e);
@@ -805,8 +803,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						}
 					%>
 					</select>
-					<% if (aRecService!=null && aRecService.getVariant().getServiceConfig().getType().equals(RecommendationServiceType.SCRIPTED) ) {  %>
-						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= aRecService.getDescription() %></td></tr></table>
+					<% if (aRecService != null) {  %>
+						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= aRecService.toString() %></td></tr></table>
 					<% } %>
 
 					
@@ -826,7 +824,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 				<% if (!"simple".equals(view)) { %>
 					<div class="title14"><% if (scriptedRecServ != null) { %>Custom Script<% } else { %>Variant B<% } %></div>
 					<% if (scriptedRecServ != null) {  %>
-						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= scriptedRecServ.getDescription() %></td></tr></table>
+						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= scriptedRecServ.toString() %></td></tr></table>
 					<% } else { // if (scriptedRecServ!=null)  %>
 					<select name="variantB" onchange="this.form.submit();">
 					<%
@@ -877,8 +875,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						}
 					%>
 					</select>
-					<% if (bRecService != null && bRecService.getVariant().getServiceConfig().getType().equals(RecommendationServiceType.SCRIPTED) ) {  %>
-						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= bRecService.getDescription() %></td></tr></table>
+					<% if (bRecService != null) {  %>
+						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= bRecService.toString() %></td></tr></table>
 					<% } %>
 					
 					<% if (variantB != null && variantB.equals(userVariant)) { %>

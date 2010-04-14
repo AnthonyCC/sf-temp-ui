@@ -31,7 +31,12 @@ public class COSFilter extends WrapperRecommendationService {
         } else if (!corporate && !EnumServiceType.CORPORATE.equals(customerServiceType)) {
             return internal.recommendNodes(input);
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "[internalRecommender=" + internal + ",cosFilter=" + cosFilter + "]";
+	}
 }

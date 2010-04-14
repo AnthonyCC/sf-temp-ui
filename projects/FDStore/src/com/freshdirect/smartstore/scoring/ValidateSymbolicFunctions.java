@@ -19,7 +19,8 @@ public class ValidateSymbolicFunctions implements ExpressionVisitor {
         this.symbolicVariables = symbolicVariables;
     }
 
-    public void visit(Expression expression) throws VisitException {
+    @Override
+    public void visit(Expression parent, Expression expression) throws VisitException {
         if (expression instanceof FunctionCall) {
             FunctionCall f = (FunctionCall) expression;
             if (name.equals(f.getName())) {

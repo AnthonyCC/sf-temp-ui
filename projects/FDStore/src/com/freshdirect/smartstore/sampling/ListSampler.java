@@ -116,7 +116,7 @@ public abstract class ListSampler {
 	}
 
 	public String toString() {
-	    return this.getClass().getName();
+	    return getClass().getSimpleName() + "[method=" + getName() + "]";
 	}
 	
 	public boolean isDeterministic() {
@@ -373,8 +373,6 @@ public abstract class ListSampler {
 	 *
 	 */
 	public static class PowerCDF extends ListSampler {
-		public static final String CKEY_EXPONENT = "exponent";
-
 		private static int N = 30;
 		private double p;
 		private double scale;
@@ -430,9 +428,9 @@ public abstract class ListSampler {
 		
 		public String getName() { return "power"; }
 		
-        public String toString() {
-            return getName() + "("+scale+','+p+')';
-        }
+		public String toString() {
+		    return getClass().getSimpleName() + "[method=" + getName() + ",exponent=" + p + "]";
+		}
 	}
 	
 	/**

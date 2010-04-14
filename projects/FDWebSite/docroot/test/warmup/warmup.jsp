@@ -36,6 +36,8 @@
 %>
 <p>Warmup done</p>
 
-<a href="/">Go to home page</a>
+<p><a href="/index.jsp">Go to home page</a></p>
+<p><a href="/test/smartstore/index.jsp">Go to SmartStore test pages index</a></p>
+
 </body>
 </html>

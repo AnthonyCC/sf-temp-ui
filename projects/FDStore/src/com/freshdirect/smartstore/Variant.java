@@ -32,13 +32,6 @@ public class Variant implements Comparable, Serializable {
 	private boolean isSmartSavings = false;
 
 	private RecommendationService recommender;
-
-
-	/**
-	 * Include alternative products in availability check
-	 */
-	private boolean useAlternatives = true;
-	
 	
 	private Set<EnumBurstType> hideBursts;
 	
@@ -138,14 +131,6 @@ public class Variant implements Comparable, Serializable {
 
 	public RecommendationService getRecommender() {
 		return recommender;
-	}
-
-	public void setUseAlternatives(boolean useAlternatives) {
-		this.useAlternatives = useAlternatives;
-	}
-
-	public boolean isUseAlternatives() {
-		return useAlternatives;
 	}
 
 	public Set<EnumBurstType> getHideBursts() {

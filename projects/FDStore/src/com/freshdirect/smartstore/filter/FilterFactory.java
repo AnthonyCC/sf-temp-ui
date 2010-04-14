@@ -5,32 +5,33 @@ import java.util.Collection;
 import com.freshdirect.cms.ContentKey;
 
 public class FilterFactory {
-    private final static ProductFilter AVAILABLE_ITEMS_W_ALTS = new ProductAvailabilityFilterEx();
-    private final static ProductFilter AVAILABLE_ITEMS = new ProductAvailabilityFilter();
+    private final static ContentFilter AVAILABLE_ITEMS_W_ALTS = new ProductAvailabilityFilterEx();
+    private final static ContentFilter AVAILABLE_ITEMS = new ProductAvailabilityFilter();
     
-    private final static ProductFilter EXCLUDED_ITEMS = new ExcludedItemFilter();
-
-	public static ProductFilter createStandardFilter() {
-		return createStandardFilter(null, true);
+    private static FilterFactory INSTANCE = null;
+    
+    public synchronized static final FilterFactory getInstance() {
+    	if (INSTANCE == null) {
+    		INSTANCE = new FilterFactory();
+    	}
+    	
+    	return INSTANCE;
+    }
+	
+	public synchronized static void mockInstance(FilterFactory newInstance) {
+		INSTANCE = newInstance;
 	}
-
-	public static ProductFilter createStandardFilter(Collection<ContentKey> cartItems) {
-		return createStandardFilter(cartItems, true);
-	}
-
-	public static ProductFilter createStandardFilter(boolean useAlternatives) {
-		return createStandardFilter(null, useAlternatives);
-	}
-
-
-	public static ProductFilter createStandardFilter(Collection<ContentKey> cartItems, boolean useAlternatives) {
+    
+    protected FilterFactory() {
+    }
+    
+	public ContentFilter createFilter(Collection<ContentKey> exclusions, boolean useAlternatives) {
 		ArrayFilter filter = new ArrayFilter();
 		
+		if (exclusions != null)
+			filter.addFilter(new ExclusionFilter(exclusions));
 		filter.addFilter(useAlternatives ? AVAILABLE_ITEMS_W_ALTS : AVAILABLE_ITEMS);
-		filter.addFilter(EXCLUDED_ITEMS);
 		filter.addFilter(new UnicityFilter());
-		if (cartItems != null)
-			filter.addFilter(new CartItemsFilter(cartItems));
 		
 		return filter;
 	}

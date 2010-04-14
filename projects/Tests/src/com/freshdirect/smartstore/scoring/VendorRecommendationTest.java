@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore.scoring;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,9 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.fdstore.RecommendationServiceTestBase;
+import com.freshdirect.smartstore.filter.ArrayFilter;
+import com.freshdirect.smartstore.filter.ContentFilter;
+import com.freshdirect.smartstore.filter.FilterFactory;
 import com.freshdirect.smartstore.impl.GlobalCompiler;
 import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
@@ -32,6 +36,15 @@ public class VendorRecommendationTest extends RecommendationServiceTestBase {
     };
     public void setUp() throws Exception {
         super.setUp();
+    	FilterFactory.mockInstance(new FilterFactory() {
+    		@Override
+    		public ContentFilter createFilter(Collection<ContentKey> exclusions, boolean useAlternatives) {
+    			return new ArrayFilter() {
+    				// we mock the filter not to apply availability filtering
+    			};
+    		}
+    	});
+    	
         GlobalCompiler compiler = new GlobalCompiler();
 
         GlobalCompiler.setInstance(compiler);
@@ -73,7 +86,7 @@ public class VendorRecommendationTest extends RecommendationServiceTestBase {
     private ScriptedRecommendationService build(String generator, String scoringFunction) throws CompileException {
         Variant variant = new Variant("srs", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("srs_variant", RecommendationServiceType.SCRIPTED));
         return new ScriptedRecommendationService(variant, RecommendationServiceFactory.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
-                false, false, generator, scoringFunction);
+                false, generator, scoringFunction);
     }
 
     public void testProductToProductRecommendation() throws CompileException {

@@ -37,4 +37,19 @@ public class VariableExpression extends Expression {
         Object value = context.getVariableValue(name);
         return (value != null ? value.toString() : null);
     }
+    
+    @Override
+    protected boolean equalExpression(Expression obj) {
+        if (obj instanceof VariableExpression) {
+            VariableExpression v = (VariableExpression) obj;
+            return name.equals(v.name);
+        }
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        return name.hashCode() << 9;
+    }
+    
 }

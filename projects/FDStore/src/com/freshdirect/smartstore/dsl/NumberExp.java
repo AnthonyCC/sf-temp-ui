@@ -48,4 +48,17 @@ public class NumberExp extends Expression {
         return number.toString();
     }
 
+    @Override
+    protected boolean equalExpression(Expression obj) {
+        if (obj instanceof NumberExp) {
+            NumberExp n = (NumberExp) obj;
+            return n.number.equals(number);
+        }
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        return number.hashCode();
+    }
 }

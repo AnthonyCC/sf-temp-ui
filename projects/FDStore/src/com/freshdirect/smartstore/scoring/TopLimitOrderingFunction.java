@@ -47,5 +47,9 @@ public class TopLimitOrderingFunction extends OrderingFunction {
         return super.getRankedContents();
     }
     
+    @Override
+    public String getInitializerCode() {
+        return "return new " + this.getClass().getName() + " (" + position + ");";
+    }
 
 }

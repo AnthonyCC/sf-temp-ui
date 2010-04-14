@@ -27,4 +27,7 @@ public class OrderingFunction {
         return rankedContents;
     }
     
+    public String getInitializerCode() {
+        return "return new "+this.getClass().getName()+" ();"; 
+    }
 }

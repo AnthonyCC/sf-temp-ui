@@ -4,29 +4,29 @@
 package com.freshdirect.smartstore.sampling;
 
 import java.util.List;
-import java.util.Set;
 
-import com.freshdirect.cms.ContentKey;
+public class ConfiguredImpressionSampler extends AbstractImpressionSampler {
+	private ListSampler listSampler;
 
+	public ConfiguredImpressionSampler(ConsiderationLimit considerationLimit, boolean categoryAggregationEnabled, boolean useAlternatives, ListSampler listSampler) {
+		super(considerationLimit, categoryAggregationEnabled, useAlternatives);
+		this.listSampler = listSampler;
+	}
 
-public class ConfiguredImpressionSampler implements ImpressionSampler {
-    private ContentSampler.ConsiderationLimit cl;
-    private ListSampler listSampler;
+	@Override
+	protected ListSampler createSampler(List<RankedContent> limitedRankedContent) {
+		return listSampler;
+	}
 
-    public ConfiguredImpressionSampler(ContentSampler.ConsiderationLimit cl, ListSampler listSampler) {
-        this.cl = cl;
-        this.listSampler = listSampler;
-    }
-
-    public List<RankedContent.Single> sample(List<RankedContent> sortedRankedContent, Set<ContentKey> reserved, int k) {
-        return ContentSampler.drawWithoutReplacement(sortedRankedContent, reserved, cl, k, listSampler);
-    }
-
-    public String toString() {
-        return "limit:" + cl + ",list:" + listSampler;
-    }
-    
-    public boolean isDeterministic() {
-    	return listSampler.isDeterministic();
-    }
+	public boolean isDeterministic() {
+		return listSampler.isDeterministic();
+	}
+	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "[listSampler=" + listSampler
+				+ ", considerationLimit=" + getConsiderationLimit()
+				+ ", categoryAggregationEnabled=" + isCategoryAggregationEnabled()
+				+ ", useAlternatives=" + isUseAlternatives() + "]";
+	}
 }

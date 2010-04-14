@@ -142,7 +142,7 @@ public class ParserTest extends TestCase {
         BlockExpression xpr = parser.parse("max(1,variable)+ b");
 
         VariableCollector v = new VariableCollector();
-        xpr.visit(v);
+        xpr.visit(null, v);
         assertTrue("variable found", v.getVariables().contains("variable"));
         assertTrue("b found", v.getVariables().contains("b"));
         assertEquals("2 variable only", 2, v.getVariables().size());

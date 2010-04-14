@@ -22,9 +22,8 @@ import com.freshdirect.smartstore.sampling.RankedContent;
 
 public class CandidateProductRecommendationService extends AllProductInCategoryRecommendationService {
 
-    public CandidateProductRecommendationService(Variant variant, ImpressionSampler sampler,
-    		boolean catAggr, boolean includeCartItems) {
-        super(variant, sampler, catAggr, includeCartItems);
+    public CandidateProductRecommendationService(Variant variant, ImpressionSampler sampler, boolean includeCartItems) {
+        super(variant, sampler, includeCartItems);
     }
 
     public List doRecommendNodes(SessionInput input) {
@@ -36,7 +35,7 @@ public class CandidateProductRecommendationService extends AllProductInCategoryR
 
                 result = new ArrayList(100);
                 result = collectNodes(category, result);
-                result = sampleContentNodeModels(input, result);
+                result = sample(input, rankListByOrder(result), false);
             }
         }
         return result;

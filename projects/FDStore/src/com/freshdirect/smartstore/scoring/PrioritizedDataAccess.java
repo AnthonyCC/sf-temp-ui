@@ -11,15 +11,15 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.filter.FilterFactory;
-import com.freshdirect.smartstore.filter.ProductFilter;
+import com.freshdirect.smartstore.filter.ContentFilter;
 
 public class PrioritizedDataAccess implements DataAccess {
 	private List<ContentNodeModel> nodes;
-	ProductFilter filter;
+	ContentFilter filter;
 
-	public PrioritizedDataAccess(Collection cartItems) {
-		nodes = new ArrayList<ContentNodeModel>(10);
-		filter = FilterFactory.createStandardFilter(cartItems);
+	public PrioritizedDataAccess(Collection cartItems, boolean useAlternatives) {
+		nodes = new ArrayList<ContentNodeModel>();
+		filter = FilterFactory.getInstance().createFilter(cartItems, useAlternatives);
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class PrioritizedDataAccess implements DataAccess {
 	@Override
 	public boolean addPrioritizedNode(ContentNodeModel model) {
 		if (model instanceof ProductModel
-				&& filter.filter((ProductModel) model) != null) {
+				&& filter.filter(model.getContentKey()) != null) {
 			nodes.add(model);
 			return true;
 		} else

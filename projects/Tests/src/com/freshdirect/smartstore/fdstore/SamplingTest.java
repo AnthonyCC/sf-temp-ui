@@ -3,6 +3,7 @@ package com.freshdirect.smartstore.fdstore;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,6 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.service.CompositeTypeService;
+import com.freshdirect.cms.application.service.xml.FlexContentHandler;
+import com.freshdirect.cms.application.service.xml.XmlContentService;
+import com.freshdirect.cms.application.service.xml.XmlTypeService;
 
 /**
  * Test distributions.
@@ -23,34 +30,33 @@ public class SamplingTest extends SamplingTestsBase {
 	private int N = 30000;
 	private double maximumAverageError = 15;
 	
-	private static Map indexMap = new HashMap();
+	private static Map<ContentKey, Integer> indexMap = new HashMap<ContentKey, Integer>();
 	
 	static {
-		indexMap.put(CITROMIZUBANAN, new Integer(0));
-		indexMap.put(BANAN, new Integer(1));
-		indexMap.put(CITROM, new Integer(2));
-		indexMap.put(EPER, new Integer(3));
-		indexMap.put(CSERESZNYE, new Integer(4));
-		indexMap.put(MEGGY, new Integer(5));
-		indexMap.put(ZOLDALMA, new Integer(6));
-		indexMap.put(EGRES, new Integer(7));
-		
+		indexMap.put(BANAN, new Integer(0));
+		indexMap.put(CITROM, new Integer(1));
+		indexMap.put(EPER, new Integer(2));
+		indexMap.put(CSERESZNYE, new Integer(3));
+		indexMap.put(MEGGY, new Integer(4));
+		indexMap.put(ZOLDALMA, new Integer(5));
+		indexMap.put(EGRES, new Integer(6));
+		indexMap.put(CITROMIZUBANAN, new Integer(7));		
 	}
 	
 	public void testDeterministic() {
-		MockRecommendationService service = new MockRecommendationService("deterministic");
+		MockedImpressionSampler sampler = MockedImpressionSampler.create("deterministic");
 		
-		List keys = service.recommend();
+		List<ContentKey> keys = sampler.sample(sampler.getCandidates(), false, Collections.EMPTY_SET);
 		
 		assertTrue(keys.size() == 8);
-		assertEquals(getLabel(keys.get(0)),getLabel(EGRES));
-		assertEquals(getLabel(keys.get(1)),getLabel(ZOLDALMA));
-		assertEquals(getLabel(keys.get(2)),getLabel(MEGGY));
-		assertEquals(getLabel(keys.get(3)),getLabel(CSERESZNYE));
-		assertEquals(getLabel(keys.get(4)),getLabel(EPER));
-		assertEquals(getLabel(keys.get(5)),getLabel(CITROM));
-		assertEquals(getLabel(keys.get(6)),getLabel(BANAN));
-		assertEquals(getLabel(keys.get(7)), getLabel(CITROMIZUBANAN));
+		assertEquals(getLabel(keys.get(0)),getLabel(CITROMIZUBANAN));
+		assertEquals(getLabel(keys.get(1)),getLabel(EGRES));
+		assertEquals(getLabel(keys.get(2)),getLabel(ZOLDALMA));
+		assertEquals(getLabel(keys.get(3)),getLabel(MEGGY));
+		assertEquals(getLabel(keys.get(4)),getLabel(CSERESZNYE));
+		assertEquals(getLabel(keys.get(5)),getLabel(EPER));
+		assertEquals(getLabel(keys.get(6)),getLabel(CITROM));
+		assertEquals(getLabel(keys.get(7)),getLabel(BANAN));
 	}
 	
 	private String format(String s, int l) {
@@ -77,18 +83,18 @@ public class SamplingTest extends SamplingTestsBase {
 		System.out.println();
 		
 		
-		MockRecommendationService service = new MockRecommendationService(strategy);
+		MockedImpressionSampler sampler = MockedImpressionSampler.create(strategy);
 		
 		int [][] X = new int [expected.length][expected.length];
 		
 		String[] stuff = new String[expected.length];
 		
 		for(int x=0; x< N; ++x) {
-			List keys = service.recommend();
+			List<ContentKey> keys = sampler.sample(sampler.getCandidates(), false, Collections.EMPTY_SET);
 			
 			int c = 0;
-			for(Iterator i = keys.iterator(); i.hasNext();++c) {
-				ContentKey key = (ContentKey)i.next();
+			for(Iterator<ContentKey> i = keys.iterator(); i.hasNext();++c) {
+				ContentKey key = i.next();
 				int ind = ((Number)indexMap.get(key)).intValue();
 				++X[ind][c];
 				stuff[ind] = key.getId();

@@ -11,6 +11,8 @@ package com.freshdirect.framework.util;
 
 /**
  * LRU cache with expiration of entries.
+ * 
+ * TODO: it might have better performance if it used ConcurrentHashMap instead of synchronized methods
  *
  * @version $Revision$
  * @author $Author$

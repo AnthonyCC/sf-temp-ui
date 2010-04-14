@@ -136,7 +136,7 @@ public class ScriptedRecommendationServiceTest extends RecommendationServiceTest
     RecommendationService getScriptedRecommendationService(String generator) throws CompileException {
         RecommendationServiceConfig config = new RecommendationServiceConfig("yf_fi", RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS);
         RecommendationService fi = new ScriptedRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, config),
-                RecommendationServiceFactory.configureSampler(config, new java.util.HashMap()), false, false, generator);
+                RecommendationServiceFactory.configureSampler(config, new java.util.HashMap()), false, generator);
         fi.getVariant().setRecommender(fi);
         VariantRegistry.getInstance().addService(fi.getVariant());
         return fi;

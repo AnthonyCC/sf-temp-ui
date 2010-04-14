@@ -32,7 +32,7 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.webapp.util.FDEventUtil;
 
-public class RecommendationServiceTestBase extends TestCase {
+public abstract class RecommendationServiceTestBase extends TestCase {
     
     XmlContentService service;
     protected AspectSystem aspectSystem ;
@@ -165,7 +165,6 @@ public class RecommendationServiceTestBase extends TestCase {
                 .addAvailableSku("HBA0063975", 100).addAvailableSku("HBA0072207", 110).addAvailableSku("GRO0065252").addAvailableSku("GRO0057899")
                 .addAvailableSku("GRO001066").addAvailableSku("HBA0063975").addAvailableSku("HBA0072637").addAvailableSku("GRO001055")
              //   .addAvailableSku("FRO0060512", 32) // for spe_bruces_whtsvn:'Bruce's Seven Layer White Cake, Frozen'
-                
         );
         
         aspectSystem.add(new ProductStatisticProviderAspect() {

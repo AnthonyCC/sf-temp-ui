@@ -10,7 +10,7 @@ public class VariableAliasingVisitor implements ExpressionVisitor {
 		this.to = to;
 	}
 
-	public void visit(Expression expression) {
+	public void visit(Expression parent, Expression expression) {
 		if (expression instanceof VariableExpression) {
 			VariableExpression variableExpression = (VariableExpression) expression;
 			if (variableExpression.name.equals(from))

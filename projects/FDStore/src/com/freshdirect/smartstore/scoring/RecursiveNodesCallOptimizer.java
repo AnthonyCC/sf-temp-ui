@@ -12,7 +12,8 @@ public class RecursiveNodesCallOptimizer implements ExpressionVisitor {
     public RecursiveNodesCallOptimizer() {
     }
 
-    public void visit(Expression expression) throws VisitException {
+    @Override
+    public void visit(Expression parent, Expression expression) throws VisitException {
         if (expression instanceof Operation) {
             Operation oper = (Operation) expression;
             Expression statement = oper.get(0);

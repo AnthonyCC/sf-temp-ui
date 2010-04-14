@@ -43,7 +43,7 @@ import com.freshdirect.smartstore.impl.YmalYfRecommendationService;
 import com.freshdirect.smartstore.impl.YourFavoritesInCategoryRecommendationService;
 import com.freshdirect.smartstore.sampling.ComplicatedImpressionSampler;
 import com.freshdirect.smartstore.sampling.ConfiguredImpressionSampler;
-import com.freshdirect.smartstore.sampling.ContentSampler;
+import com.freshdirect.smartstore.sampling.ConsiderationLimit;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.ListSampler;
 import com.freshdirect.smartstore.sampling.SimpleLimit;
@@ -144,7 +144,6 @@ public class RecommendationServiceFactory {
 		RecommendationService service;
 		RecommendationServiceConfig serviceConfig = variant.getServiceConfig();
 		RecommendationServiceType serviceType = serviceConfig.getType();
-		boolean catAggr = DEFAULT_CAT_AGGR;
 		boolean includeCartItems = DEFAULT_INCLUDE_CART_ITEMS;
 		boolean smartSave = DEFAULT_SMART_SAVE;
 		String cosFilter = DEFAULT_COS_FILTER;
@@ -166,11 +165,6 @@ public class RecommendationServiceFactory {
 					statuses);
 			extractCartPresentation(serviceConfig, statuses);
 			
-			extractUseAlternatives(serviceConfig, statuses);
-			
-			variant.setUseAlternatives(extractUseAlternatives(serviceConfig, statuses));
-
-
 			Set<EnumBurstType> hb = extractHideBursts(serviceConfig, statuses, variant.getSiteFeature());
 			variant.setHideBursts(hb);
 		}
@@ -184,9 +178,6 @@ public class RecommendationServiceFactory {
 		ImpressionSampler sampler = null;
 		if (!RecommendationServiceType.NIL.equals(serviceType)
 				&& !RecommendationServiceType.TAB_STRATEGY.equals(serviceType)
-				&& !RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY
-						.equals(serviceType)
-				&& !RecommendationServiceType.CLASSIC_YMAL.equals(serviceType)
 				&& !RecommendationServiceType.SMART_YMAL.equals(serviceType)
 				&& !RecommendationServiceType.YMAL_YF.equals(serviceType)) {
 			try {
@@ -195,7 +186,6 @@ public class RecommendationServiceFactory {
 				LOGGER.error("unable to configure sampler", e);
 				sampler = null;
 			}
-			catAggr = extractCategoryAggregation(serviceConfig, statuses);
 		}
 
 		String generator = null;
@@ -239,80 +229,52 @@ public class RecommendationServiceFactory {
 
 		if (!RecommendationServiceType.NIL.equals(serviceType)
 				&& !RecommendationServiceType.TAB_STRATEGY.equals(serviceType)
-				&& !RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY
-						.equals(serviceType)
-				&& !RecommendationServiceType.CLASSIC_YMAL.equals(serviceType)
 				&& !RecommendationServiceType.SMART_YMAL.equals(serviceType)
-				&& !RecommendationServiceType.YMAL_YF.equals(serviceType)) {
-			if (sampler == null)
-				return new NullRecommendationService(variant);
-		}
+				&& !RecommendationServiceType.YMAL_YF.equals(serviceType)
+				&& sampler == null)
+			return new NullRecommendationService(variant);
 
 		// If composite
 		if (RecommendationServiceType.FREQUENTLY_BOUGHT_DYF.equals(serviceType)) {
-			service = new MostFrequentlyBoughtDyfVariant(variant, sampler,
-					catAggr, includeCartItems);
+			service = new MostFrequentlyBoughtDyfVariant(variant, sampler, includeCartItems);
 		} else if (RecommendationServiceType.RANDOM_DYF.equals(serviceType)) {
-			service = new RandomDyfVariant(variant, sampler, catAggr,
-					includeCartItems);
-		} else if (RecommendationServiceType.NIL.equals(serviceType)
-				|| RecommendationServiceType.TAB_STRATEGY.equals(serviceType)) {
+			service = new RandomDyfVariant(variant, sampler, includeCartItems);
+		} else if (RecommendationServiceType.NIL.equals(serviceType) || RecommendationServiceType.TAB_STRATEGY.equals(serviceType)) {
 			service = new NullRecommendationService(variant);
 		} else if (RecommendationServiceType.FEATURED_ITEMS.equals(serviceType)) {
-			service = new FeaturedItemsRecommendationService(variant, sampler,
-					catAggr, includeCartItems);
-		} else if (RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY
-				.equals(serviceType)) {
-			service = new AllProductInCategoryRecommendationService(variant,
-					null, catAggr, includeCartItems);
+			service = new FeaturedItemsRecommendationService(variant, sampler, includeCartItems);
+		} else if (RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY.equals(serviceType)) {
+			service = new AllProductInCategoryRecommendationService(variant, sampler, includeCartItems);
 		} else if (RecommendationServiceType.FAVORITES.equals(serviceType)) {
-			service = new FavoritesRecommendationService(variant, sampler,
-					catAggr, includeCartItems, favoriteListId);
+			service = new FavoritesRecommendationService(variant, sampler, includeCartItems, favoriteListId);
 		} else if (RecommendationServiceType.CANDIDATE_LIST.equals(serviceType)) {
-			service = new CandidateProductRecommendationService(variant,
-					sampler, catAggr, includeCartItems);
-		} else if (RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS
-				.equals(serviceType)) {
-			service = new YourFavoritesInCategoryRecommendationService(variant,
-					sampler, catAggr, includeCartItems);
-		} else if (RecommendationServiceType.MANUAL_OVERRIDE
-				.equals(serviceType)) {
-			service = new ManualOverrideRecommendationService(variant, sampler,
-					catAggr, includeCartItems);
+			service = new CandidateProductRecommendationService(variant, sampler, includeCartItems);
+		} else if (RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS.equals(serviceType)) {
+			service = new YourFavoritesInCategoryRecommendationService(variant, sampler, includeCartItems);
+		} else if (RecommendationServiceType.MANUAL_OVERRIDE.equals(serviceType)) {
+			service = new ManualOverrideRecommendationService(variant, sampler, includeCartItems);
 		} else if (RecommendationServiceType.SCRIPTED.equals(serviceType)) {
 			try {
-				service = new ScriptedRecommendationService(variant, sampler,
-						catAggr, includeCartItems, generator, scoring);
+				service = new ScriptedRecommendationService(variant, sampler, includeCartItems, generator, scoring);
 			} catch (CompileException e) {
-				LOGGER.error(
-						"cannot instantiate script recommender - compile error (fall back to NIL): "
-								+ variant.getId(), e);
+				LOGGER.error("cannot instantiate script recommender - compile error (fall back to NIL): " + variant.getId(), e);
 				return new NullRecommendationService(variant);
 			} catch (IllegalArgumentException e) {
-				LOGGER.error(
-						"cannot instantiate script recommender - generator null (fall back to NIL): "
-								+ variant.getId(), e);
+				LOGGER.error("cannot instantiate script recommender - generator null (fall back to NIL): " + variant.getId(), e);
 				return new NullRecommendationService(variant);
 			} catch (NullPointerException e) {
-				LOGGER.error(
-						"cannot instantiate script recommender - generator null (fall back to NIL): "
-								+ variant.getId(), e);
+				LOGGER.error("cannot instantiate script recommender - generator null (fall back to NIL): " + variant.getId(), e);
 				return new NullRecommendationService(variant);
 			}
 		} else if (RecommendationServiceType.CLASSIC_YMAL.equals(serviceType)) {
-			service = new ClassicYMALRecommendationService(variant, null,
-					catAggr, includeCartItems);
+			service = new ClassicYMALRecommendationService(variant, sampler, includeCartItems);
 		} else if (RecommendationServiceType.SMART_YMAL.equals(serviceType)) {
-			service = new SmartYMALRecommendationService(variant, null,
-					catAggr, includeCartItems);
+			service = new SmartYMALRecommendationService(variant, includeCartItems);
 		} else if (RecommendationServiceType.YMAL_YF.equals(serviceType)) {
 			try {
-				service = new YmalYfRecommendationService(variant, null,
-						catAggr, includeCartItems);
+				service = new YmalYfRecommendationService(variant, includeCartItems);
 			} catch (CompileException e) {
-				LOGGER.error(
-						"cannot instantiate script recommender (fall back to NIL): "
-								+ variant.getId(), e);
+				LOGGER.error("cannot instantiate script recommender (fall back to NIL): " + variant.getId(), e);
 				return new NullRecommendationService(variant);
 			}
 		} else {
@@ -670,36 +632,41 @@ public class RecommendationServiceFactory {
 		int topN = extractTopN(config, statuses);
 		double topP = extractTopPercentage(config, statuses);
 
-		final ContentSampler.ConsiderationLimit cl = new SimpleLimit(topP, topN);
+		final ConsiderationLimit cl = new SimpleLimit(topP, topN);
 
 		String samplingStrategy = extractSamplingStrategy(config, statuses);
 		double exponent = extractExponent(config, statuses, samplingStrategy);
 
+		boolean catAggr = extractCategoryAggregation(config, statuses);
+		
+		boolean useAlternatives = extractUseAlternatives(config, statuses);
+		
 		if ("deterministic".equals(samplingStrategy)) {
-			sampler = new ConfiguredImpressionSampler(cl, ListSampler.ZERO);
+			sampler = new ConfiguredImpressionSampler(cl, catAggr, useAlternatives,
+					ListSampler.ZERO);
 		} else if ("uniform".equals(samplingStrategy)) {
-			sampler = new ConfiguredImpressionSampler(cl,
+			sampler = new ConfiguredImpressionSampler(cl, catAggr, useAlternatives,
 					new ListSampler.Uniform(R));
 		} else if ("linear".equals(samplingStrategy)) {
-			sampler = new ConfiguredImpressionSampler(cl,
+			sampler = new ConfiguredImpressionSampler(cl, catAggr, useAlternatives,
 					new ListSampler.Linear(R));
 		} else if ("quadratic".equals(samplingStrategy)) {
-			sampler = new ConfiguredImpressionSampler(cl,
+			sampler = new ConfiguredImpressionSampler(cl, catAggr, useAlternatives,
 					new ListSampler.Quadratic(R));
 		} else if ("cubic".equals(samplingStrategy)) {
-			sampler = new ConfiguredImpressionSampler(cl,
+			sampler = new ConfiguredImpressionSampler(cl, catAggr, useAlternatives,
 					new ListSampler.Cubic(R));
 		} else if ("harmonic".equals(samplingStrategy)) {
-			sampler = new ConfiguredImpressionSampler(cl,
+			sampler = new ConfiguredImpressionSampler(cl, catAggr, useAlternatives,
 					new ListSampler.Harmonic(R));
 		} else if ("sqrt".equals(samplingStrategy)) {
-			sampler = new ConfiguredImpressionSampler(cl,
+			sampler = new ConfiguredImpressionSampler(cl, catAggr, useAlternatives,
 					new ListSampler.SquareRootCDF(R));
 		} else if ("power".equals(samplingStrategy)) {
-			sampler = new ConfiguredImpressionSampler(cl,
+			sampler = new ConfiguredImpressionSampler(cl, catAggr, useAlternatives,
 					new ListSampler.PowerCDF(R, exponent));
 		} else if ("complicated".equals(samplingStrategy)) {
-			sampler = new ComplicatedImpressionSampler(cl);
+			sampler = new ComplicatedImpressionSampler(cl, catAggr, useAlternatives);
 		} else {
 			LOGGER.warn("Invalid strategy: " + samplingStrategy);
 			ConfigurationStatus status = (ConfigurationStatus) statuses
@@ -746,32 +713,48 @@ public class RecommendationServiceFactory {
 		return topN;
 	}
 
-	protected static double extractTopPercentage(
-			RecommendationServiceConfig config, Map<String,ConfigurationStatus> statuses) {
-		double topP = DEFAULT_TOP_P;
+	protected static double extractTopPercentage(RecommendationServiceConfig config,
+			Map<String, ConfigurationStatus> statuses) {
+		double topP;
 		ConfigurationStatus status;
-		try {
-			topP = Double.parseDouble(config.get(CKEY_TOP_PERC, Double
-					.toString(DEFAULT_TOP_P)));
-			if (config.get(CKEY_TOP_PERC) != null) {
-				if (topP == DEFAULT_TOP_P)
-					status = new ConfigurationStatus(CKEY_TOP_PERC, Double
-							.toString(DEFAULT_TOP_P),
-							EnumConfigurationState.CONFIGURED_DEFAULT);
-				else
-					status = new ConfigurationStatus(CKEY_TOP_PERC, Double
-							.toString(topP),
-							EnumConfigurationState.CONFIGURED_OK);
+		if (config.get(CKEY_TOP_PERC) != null) {
+			if (RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY.equals(config.getType())
+					|| RecommendationServiceType.CLASSIC_YMAL.equals(config.getType())) {
+				topP = 100.0;
+				status = new ConfigurationStatus(CKEY_TOP_PERC, Double.toString(topP),
+						EnumConfigurationState.CONFIGURED_OVERRIDDEN);
 			} else {
-				status = new ConfigurationStatus(CKEY_TOP_PERC, Double
-						.toString(DEFAULT_TOP_P),
+				try {
+					topP = Double.parseDouble(config.get(CKEY_TOP_PERC,
+							Double.toString(DEFAULT_TOP_P)));
+					if (topP == DEFAULT_TOP_P)
+						status = new ConfigurationStatus(CKEY_TOP_PERC,
+								Double.toString(DEFAULT_TOP_P),
+								EnumConfigurationState.CONFIGURED_DEFAULT);
+					else
+						status = new ConfigurationStatus(CKEY_TOP_PERC,
+								Double.toString(topP),
+								EnumConfigurationState.CONFIGURED_OK);
+				} catch (NumberFormatException e) {
+					topP = DEFAULT_TOP_P;
+					status = new ConfigurationStatus(CKEY_TOP_PERC, config.get(CKEY_TOP_PERC),
+							Double.toString(DEFAULT_TOP_P),
+							EnumConfigurationState.CONFIGURED_WRONG_DEFAULT)
+							.setWarning("Float cannot be parsed, using default value");
+				}
+			}
+		} else {
+			if (RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY.equals(config.getType())
+					|| RecommendationServiceType.CLASSIC_YMAL.equals(config.getType())) {
+				topP = 100.0;
+				status = new ConfigurationStatus(CKEY_TOP_PERC, Double.toString(topP),
+						EnumConfigurationState.UNCONFIGURED_OVERRIDDEN);
+			} else {
+				topP = DEFAULT_TOP_P;
+				status = new ConfigurationStatus(CKEY_TOP_PERC,
+						Double.toString(DEFAULT_TOP_P),
 						EnumConfigurationState.UNCONFIGURED_DEFAULT);
 			}
-		} catch (NumberFormatException e) {
-			status = new ConfigurationStatus(CKEY_TOP_PERC, config
-					.get(CKEY_TOP_PERC), Double.toString(DEFAULT_TOP_P),
-					EnumConfigurationState.CONFIGURED_WRONG_DEFAULT)
-					.setWarning("Float cannot be parsed, using default value");
 		}
 		statuses.put(CKEY_TOP_PERC, status);
 		LOGGER.debug("  TOP %: " + topP);
@@ -788,8 +771,10 @@ public class RecommendationServiceFactory {
 				status = new ConfigurationStatus(CKEY_SAMPLING_STRATEGY, null,
 						samplingStrategy,
 						EnumConfigurationState.UNCONFIGURED_OVERRIDDEN);
-			} else if (RecommendationServiceType.FAVORITES.equals(config
-					.getType())) {
+			} else if (RecommendationServiceType.FAVORITES.equals(config.getType())
+					|| RecommendationServiceType.CLASSIC_YMAL.equals(config.getType())
+					|| RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY.equals(
+							config.getType())) {
 				samplingStrategy = "deterministic";
 				status = new ConfigurationStatus(CKEY_SAMPLING_STRATEGY, null,
 						samplingStrategy,
@@ -807,8 +792,10 @@ public class RecommendationServiceFactory {
 						samplingStrategy, "uniform",
 						EnumConfigurationState.CONFIGURED_OVERRIDDEN);
 				samplingStrategy = "uniform";
-			}
-			if (RecommendationServiceType.FAVORITES.equals(config.getType())) {
+			} else if (RecommendationServiceType.FAVORITES.equals(config.getType())
+					|| RecommendationServiceType.CLASSIC_YMAL.equals(config.getType())
+					|| RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY.equals(
+							config.getType())) {
 				status = new ConfigurationStatus(CKEY_SAMPLING_STRATEGY,
 						samplingStrategy, "deterministic",
 						EnumConfigurationState.CONFIGURED_OVERRIDDEN);

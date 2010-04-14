@@ -3,6 +3,8 @@
  */
 package com.freshdirect.smartstore.dsl;
 
+import java.util.List;
+
 
 public class Expression {
     
@@ -71,8 +73,8 @@ public class Expression {
         throw new RuntimeException(this.getClass().getName()+".getStringValue() not supported!");
     }
     
-    public void visit(ExpressionVisitor visitor) throws VisitException {
-        visitor.visit(this);
+    public void visit(Expression parent, ExpressionVisitor visitor) throws VisitException {
+        visitor.visit(parent, this);
     }
     
     public boolean replace(Expression from,Expression to) {
@@ -96,4 +98,37 @@ public class Expression {
 	public Context getContext() {
 		return context;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+	    if (obj instanceof Expression) {
+	        return equalExpression((Expression) obj);
+	    }
+	    return false;
+	}
+
+    protected boolean equalExpression(Expression obj) {
+        return false;
+    }
+    
+    static boolean replace (List<Expression> list, Expression from, Expression to) {
+        boolean found = false;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) == from) {
+                list.remove(i);
+                list.add(i, to);
+                found = true;
+            }
+        }
+        return found;
+    }
+    
+    static int hashCode(List<Expression> list) {
+        int code = 0;
+        for (Expression e : list) {
+            code = (code << 3) ^ e.hashCode(); 
+        }
+        return code;
+    }
+	
 }

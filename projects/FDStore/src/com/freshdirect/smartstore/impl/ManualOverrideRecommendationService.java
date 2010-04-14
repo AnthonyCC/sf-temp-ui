@@ -24,9 +24,8 @@ public class ManualOverrideRecommendationService extends CandidateProductRecomme
     /**
      * @param variant
      */
-    public ManualOverrideRecommendationService(Variant variant, ImpressionSampler sampler,
-    		boolean catAggr, boolean includeCartItems) {
-        super(variant, sampler, catAggr, includeCartItems);
+    public ManualOverrideRecommendationService(Variant variant, ImpressionSampler sampler, boolean includeCartItems) {
+        super(variant, sampler, includeCartItems);
     }
     
     public List doRecommendNodes(SessionInput input) {
@@ -40,7 +39,7 @@ public class ManualOverrideRecommendationService extends CandidateProductRecomme
                 fillManualSlots(input, category, slots, result);
                 
                 //result = sampleContentNodeModels(input, collectNodes(category, result));
-                List randomChildProducts = sampleRankedContents(input, new ArrayList(collectNodes(category)), result);
+                List randomChildProducts = sample(input, new ArrayList(collectNodes(category)), true, result);
                 
                 result.addAll(randomChildProducts);
                 return result;

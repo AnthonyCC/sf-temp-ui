@@ -81,7 +81,7 @@ public class ImpressionTest extends RecommendationServiceTestBase {
         if (firs == null) {
             firs = new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
                     RecommendationServiceType.FEATURED_ITEMS)), RecommendationServiceFactory.configureSampler(new RecommendationServiceConfig("fi_config",
-                    RecommendationServiceType.FEATURED_ITEMS), new java.util.HashMap()), false, false);
+                    RecommendationServiceType.FEATURED_ITEMS), new java.util.HashMap()), false);
             firs.getVariant().setRecommender(firs);
             VariantRegistry.getInstance().addService(firs.getVariant());
         }

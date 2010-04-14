@@ -11,6 +11,12 @@ import junit.framework.TestCase;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.service.CompositeTypeService;
+import com.freshdirect.cms.application.service.xml.FlexContentHandler;
+import com.freshdirect.cms.application.service.xml.XmlContentService;
+import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModelImpl;
@@ -21,6 +27,9 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Expression;
+import com.freshdirect.smartstore.filter.ArrayFilter;
+import com.freshdirect.smartstore.filter.ContentFilter;
+import com.freshdirect.smartstore.filter.FilterFactory;
 import com.freshdirect.smartstore.impl.GlobalCompiler;
 import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
@@ -33,6 +42,24 @@ public class GlobalCompilerTest extends TestCase {
     private DataAccess input;
     
     protected void setUp() throws Exception {
+    	FilterFactory.mockInstance(new FilterFactory() {
+    		@Override
+    		public ContentFilter createFilter(Collection<ContentKey> exclusions, boolean useAlternatives) {
+    			return new ArrayFilter() {
+    				// we mock the filter not to apply availability filtering
+    			};
+    		}
+    	});
+    	
+        List<ContentTypeServiceI> list = new ArrayList<ContentTypeServiceI>();
+        list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
+
+        CompositeTypeService typeService = new CompositeTypeService(list);
+
+        XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/smartstore/GlobalCompilerTest.xml");
+
+        CmsManager.setInstance(new CmsManager(service, null));
+    	
         input = new MockDataAccess() {
             public List getDatasource(SessionInput input,  String name) {
                 List set = new ArrayList();
@@ -193,8 +220,7 @@ public class GlobalCompilerTest extends TestCase {
     private ScriptedRecommendationService build(String generator, String scoringFunction) throws CompileException {
         return new ScriptedRecommendationService(variant,
         		RecommendationServiceFactory.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
-        		false, false,
-        		generator, scoringFunction);
+        		false, generator, scoringFunction);
     }
 
 }
