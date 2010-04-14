@@ -186,7 +186,7 @@
                 </td>
                 <td> 
                   <select id="cutOff" name="cutOff">
-                      <option value="">--Please Select Cut Off</option> 
+                      <option value="">--All Cut Off</option> 
                       <c:forEach var="cutoff" items="${cutoffs}">                             
                           <c:choose>
                             <c:when test="${cutOff == cutoff.cutOffId}" > 
