@@ -117,6 +117,16 @@
                </tr>
                
                <tr>
+                  <td>COS Enabled</td>
+                  <td>
+                  <form:checkbox path="cosEnabled" value="X"/>
+                  </td>
+                <td>
+                  &nbsp;<form:errors path="cosEnabled" />
+                </td>
+               </tr>
+               
+               <tr>
                   <td>Priority</td>
                   <td>                  
                     <form:input maxlength="50" size="30" path="priority"/>

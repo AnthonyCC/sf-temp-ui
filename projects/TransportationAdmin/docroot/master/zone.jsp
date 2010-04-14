@@ -81,6 +81,7 @@
                               <ec:column alias="priority" property="priority" title="Priority"/>
                               <ec:column alias="stemfrom" property="stemToTime" title="Stem To Time(Mins)"/>
 							  <ec:column alias="stemto" property="stemFromTime" title="Stem From Time(Mins)"/>
+							  <ec:column alias="enableCOS" property="cosEnabled" title="COS Enabled"/>
 							</ec:row>
 						  </ec:table>
 		<% }else{ %>
@@ -101,6 +102,7 @@
 							  <ec:column alias="unattended" property="unattended" title="Unattended"/>
 							  <ec:column alias="stemfrom" property="stemToTime" title="Stem To Time(Mins)"/>
 							  <ec:column alias="stemto" property="stemFromTime" title="Stem From Time(Mins)"/>
+							  <ec:column alias="enableCOS" property="cosEnabled" title="COS Enabled"/>
 							</ec:row>
 						  </ec:table>
 		<% } %>
