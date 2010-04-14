@@ -156,6 +156,7 @@
       <role-name>TrnGuest</role-name>
       <role-name>TrnDispatch</role-name>
       <role-name>TrnPlanning</role-name>
+      <role-name>TrnOperations</role-name>
     </auth-constraint>
     <user-data-constraint>
       <description>SSL not required</description>
@@ -189,5 +190,9 @@
   <security-role>
       <description>TrnAdmin Planning users</description>
       <role-name>TrnPlanning</role-name>
+  </security-role>
+  <security-role>
+      <description>TrnAdmin Operation users</description>
+      <role-name>TrnOperations</role-name>
   </security-role>
 </web-app>
