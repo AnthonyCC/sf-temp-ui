@@ -50,5 +50,14 @@
 		<INPUT TYPE="text" style="width:140px;" id="brandParams" name="brandParams" value="" size="16" maxlength="50" class="text11">
 		<div id="brands" style="position: absolute;background-color: white"></div>
 	</div>
+	<br />
+	<select id="">
+		<option value="" selected="selected">test select box 1</option>
+		<option value="">test select box 2</option>
+	</select>
+	<br />
+	<textarea id="" rows="" cols=""></textarea>
+	<br />
+	<input type="text" id="" />
 </body>
 </html>

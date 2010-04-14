@@ -166,11 +166,6 @@
 			var optValues = new Array();
 
 			for (i=0; i < catsList.length; i++) {
-				//add default cat
-				if (i==0 && catsList[i] != 'C_NULL') {
-					optTexts[optTexts.length] = 'Choose Category';
-					optValues[optValues.length] = 'C_NULL';
-				}
 				
 				if (i%2) {
 					optTexts[optTexts.length] = catsList[i];
@@ -183,12 +178,23 @@
 			for (i=0; i < optTexts.length; i++) {
 				$(catsListId).options[$(catsListId).options.length] = new Option(optTexts[i], optValues[i]);
 			}
+
+			//alphabetize
+			this.alphaLists(catsListId);
 		}
 
-		this.alphaLists = function() {
+		this.alphaLists = function(specId) {
+			var specId = specId || '';
 			
 			//alphabetize
-			var selectArr = document.getElementsByTagName('select'); 
+			var selectArr = new Array();
+
+			if (specId!='') {
+				selectArr[0] = $(specId); 
+			}else{
+				selectArr = document.getElementsByTagName('select'); 
+			}
+
 			for (var i = 0; i < selectArr.length; i++) { 
 				var oArr = []; 
 				// Get the options for the select element 
@@ -320,12 +326,6 @@
 			</select>
 		</td>
 		<td>
-			<select id="cat_prod<%= n %>" name="cat_prod<%= n %>" class="text11" style="width: 206px;" disabled="true">
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td style="padding-top: 12px;">
 			<script type="text/javascript">
 			<!--
 				depts.populateDeptsList("dept_prod<%= n %>");
@@ -337,6 +337,12 @@
 				<input type="text" id="brandParams_prod<%= n %>" name="brandParams_prod<%= n %>" value="" style="width: 200px;" maxlength="50" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'B');" value="Brand" />
 				<div id="brands_prod<%= n %>" name="brands_prod<%= n %>" style="position: absolute;background-color: white" class="brandsAC"></div>
 			</div>
+		</td>
+	</tr>
+	<tr>
+		<td style="padding-top: 12px;">
+			<select id="cat_prod<%= n %>" name="cat_prod<%= n %>" class="text11" style="width: 206px;" disabled="true">
+			</select>
 		</td>
 		<td style="padding-top: 12px;">
 			<input id="descrip_prod<%= n %>" name="descrip_prod<%= n %>" style="width: 200px;" maxlength="255" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'D');" value="Description" />
