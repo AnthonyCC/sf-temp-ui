@@ -173,6 +173,7 @@ public class TransportationAdminProperties {
 
 	private final static String PROP_TRANSPORTATION_DEFAULT_GPSDOMAIN		= "transportation.default.gpsdomain";
 	private final static String PROP_TRANSPORTATION_DEFAULT_GPSPLUGINKEY		= "transportation.default.gpspluginkey";
+	private final static String PROP_TRANSPORTATION_GPSUPLOAD_FILENAME		= "transportation.gpsupload.filename";
 
 	static {
 
@@ -304,6 +305,8 @@ public class TransportationAdminProperties {
 
 		defaults.put(PROP_TRANSPORTATION_DEFAULT_GPSDOMAIN,"http://mydomain.com");
 		defaults.put(PROP_TRANSPORTATION_DEFAULT_GPSPLUGINKEY,"pasteYourKeyInHere");
+		
+		defaults.put(PROP_TRANSPORTATION_GPSUPLOAD_FILENAME,"Current.gpx");
 
 		refresh();
 	}
@@ -635,4 +638,9 @@ public class TransportationAdminProperties {
 	public static String getDefaultGpsPluginKey() {
 		return get(PROP_TRANSPORTATION_DEFAULT_GPSPLUGINKEY);
     }
+	
+	public static String getGpsUploadFilename() {
+		return get(PROP_TRANSPORTATION_GPSUPLOAD_FILENAME);
+    }
+	
 }

@@ -228,7 +228,7 @@
     <hr />
     <input type="button" value="Write To Device" id="writeDataButton" disabled="true" />
     <input type="button" value="Cancel Write To Device" id="cancelWriteDataButton" disabled="true" />       
-    <input type="hidden" id="writeDataFilename" value="fdstops.gpx"><br />
+    <input type="hidden" id="writeDataFilename" value="<%= TransportationAdminProperties.getGpsUploadFilename() %>"><br />
     <div style="display:none;">
     <textarea id="writeDataText" name="writeDataText" rows="12" cols="50"><%= request.getAttribute("gpsgpxxml") %></textarea>
     </div>    
