@@ -116,7 +116,7 @@ Map<String,RecommendationService> recommenderCache = new WeakHashMap<String,Reco
 				generatorCache.put(generator, dg);
 			}
 			SessionInput input = new SessionInput(user);
-			nodes = new HashSet(dg.generate(input, new PrioritizedDataAccess(Collections.emptyList())));
+			nodes = new HashSet(dg.generate(input, new PrioritizedDataAccess(Collections.emptyList(), input.isUseAlternatives())));
 		} catch (CompileException e) {
 			dataGeneratorError = "<span class=\"not-found\">Error in generator function!!!</span>";
 			e.printStackTrace(System.err);
