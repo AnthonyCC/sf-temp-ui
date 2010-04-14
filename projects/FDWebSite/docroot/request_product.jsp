@@ -326,23 +326,25 @@
 			</select>
 		</td>
 		<td>
-			<script type="text/javascript">
-			<!--
-				depts.populateDeptsList("dept_prod<%= n %>");
-				//depts.populateCatsList('cat_prod<%= n %>', 'dept_prod<%= n %>');
-				YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands_prod<%= n %>","brandParams_prod<%= n %>",false));
-			//-->
-			</script>	
-			<div id="brandSearchContainer_prod<%= n %>" style="position: relative">
-				<input type="text" id="brandParams_prod<%= n %>" name="brandParams_prod<%= n %>" value="" style="width: 200px;" maxlength="50" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'B');" value="Brand" />
-				<div id="brands_prod<%= n %>" name="brands_prod<%= n %>" style="position: absolute;background-color: white" class="brandsAC"></div>
-			</div>
+			<select id="cat_prod<%= n %>" name="cat_prod<%= n %>" class="text11" style="width: 206px;" disabled="true">
+			</select>
 		</td>
 	</tr>
 	<tr>
 		<td style="padding-top: 12px;">
-			<select id="cat_prod<%= n %>" name="cat_prod<%= n %>" class="text11" style="width: 206px;" disabled="true">
-			</select>
+			<script type="text/javascript">
+			<%--
+				Remove all these java comments to re-enable brand autocomplete
+			--%>
+			<!--
+				depts.populateDeptsList("dept_prod<%= n %>");
+				<%-- YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands_prod<%= n %>","brandParams_prod<%= n %>",false)); --%>
+			//-->
+			</script>	
+			<%-- <div id="brandSearchContainer_prod<%= n %>" style="position: relative"> --%>
+				<input type="text" id="brandParams_prod<%= n %>" name="brandParams_prod<%= n %>" value="" style="width: 200px;" maxlength="50" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'B');" value="Brand" />
+				<%-- <div id="brands_prod<%= n %>" name="brands_prod<%= n %>" style="position: absolute;background-color: white" class="brandsAC"></div>
+			</div> --%>
 		</td>
 		<td style="padding-top: 12px;">
 			<input id="descrip_prod<%= n %>" name="descrip_prod<%= n %>" style="width: 200px;" maxlength="255" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'D');" value="Description" />
