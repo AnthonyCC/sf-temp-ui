@@ -168,7 +168,7 @@ public class ZonePricingTest extends TestCase {
             assertEquals("PriceFormatted", "$120.00/ea", product.getPriceFormatted(0.0));
             assertEquals("PriceFormatted with 0.1 saving", "$108.00/ea", product.getPriceFormatted(0.1));
 
-            assertEquals("getWasPriceFormatted", "$120.00/ea", product.getWasPriceFormatted(0.3));
+            assertEquals("getWasPriceFormatted", "$120.00", product.getWasPriceFormatted(0.3));
             
             assertEquals("getAboutPriceFormatted", "about $80.00/salesunit", product.getAboutPriceFormatted(0.0));
             
@@ -193,7 +193,7 @@ public class ZonePricingTest extends TestCase {
             assertEquals("PriceFormatted", "$60.00/ea", adapter.getPriceFormatted(0.0));
             assertEquals("PriceFormatted with 0.1 saving", "$54.00/ea", adapter.getPriceFormatted(0.1));
 
-            assertEquals("getWasPriceFormatted", "$60.00/ea", adapter.getWasPriceFormatted(0.3));
+            assertEquals("getWasPriceFormatted", "$60.00", adapter.getWasPriceFormatted(0.3));
             
             assertEquals("getAboutPriceFormatted", "about $40.00/salesunit", adapter.getAboutPriceFormatted(0.0));
             
@@ -227,7 +227,7 @@ public class ZonePricingTest extends TestCase {
             assertEquals("PriceFormatted", "$60.00/ea", adapter.getPriceFormatted(0.0));
             assertEquals("PriceFormatted with 0.1 saving", "$54.00/ea", adapter.getPriceFormatted(0.1));
 
-            assertEquals("getWasPriceFormatted", "$60.00/ea", adapter.getWasPriceFormatted(0.3));
+            assertEquals("getWasPriceFormatted", "$60.00", adapter.getWasPriceFormatted(0.3));
             
             assertEquals("getAboutPriceFormatted", "about $40.00/salesunit", adapter.getAboutPriceFormatted(0.0));
             
