@@ -3,6 +3,7 @@
 <%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
 <%@ page import="com.freshdirect.fdstore.content.CategoryModel" %>
 <%@ page import="com.freshdirect.framework.util.*" %>
+<%@ page import='java.net.URLEncoder' %>
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <% try{ %>
 <div align="right"><tmpl:get name='banner'/></div>
@@ -210,7 +211,7 @@ if(weRecommendImgProds.size() > 0) {
     }
   }
 %>
-<a href="javascript:pop('/request_product.jsp?department=<%=deptName%>',400,585);">Click here.</a>
+<a href="javascript:pop('/request_product.jsp?department=<%=URLEncoder.encode(deptName).replace("%27","\\%27")%>',400,585);">Click here.</a>
 <br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></div>
 
 </fd:GetCart>
