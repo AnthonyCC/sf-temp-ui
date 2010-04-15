@@ -12,6 +12,7 @@ import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.routing.model.IDeliverySlotCost;
 
 public class TimeSlotLogDAO {
 
@@ -21,10 +22,21 @@ public class TimeSlotLogDAO {
 	private static final String AVAILABLE_TIMESLOT="0";
 	private static final String TIMESLOT_LOG_INSERT="INSERT INTO DLV.TIMESLOT_LOG (ID, EVENT_DTM,RESERVATION_ID, ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS) VALUES (?,SYSDATE,?,?,?,?,?,?)";
 	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO DLV.TIMESLOT_LOG_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME, END_TIME, IS_EMPTY) VALUES (?,?,?,?,?)";
+	private static final String TIMESLOT_LOG_DTL_WITH_COST_INSERT="INSERT INTO DLV.TIMESLOT_LOG_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME, END_TIME, IS_EMPTY, ADD_DISTANCE, ADD_RUNTIME, ADD_STOPCOST, CAPACITY, COSTPERMILE, FIXED_RT_COST, MAXRUNTIME,"+
+	"OT_HOURLY_WAGE,PERCENT_AVAIL,PREF_RUNTIME , REG_HOURLY_WAGE, REG_WAGE_SECS, ROUTE_ID ,STOP_SEQ ,TOTAL_DISTANCE, TOTAL_PU_QTY, TOTAL_QTY, TOTAL_ROUTE_COST , TOTAL_RUNTIME ,  TOTAL_SVC_TIME,TOTAL_TRAVEL_TIME,  TOTAL_WAIT_TIME,  IS_AVAIL ,  IS_FILTERED ,  IS_MISSED_TW"+
+	") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String TIMESLOT_COST_LOG_INSERT=" INSERT INTO DLV.TIMESLOT_COST_LOG " +
+	"(TIMESLOT_LOG_ID , ADD_DISTANCE, ADD_RUNTIME, ADD_STOPCOST, CAPACITY, COSTPERMILE, FIXED_RT_COST, MAXRUNTIME,"+
+	"OT_HOURLY_WAGE,PERCENT_AVAIL,PREF_RUNTIME , REG_HOURLY_WAGE, REG_WAGE_SECS, ROUTE_ID ,STOP_SEQ ,"+ 
+	" TOTAL_DISTANCE, TOTAL_PU_QTY, TOTAL_QTY, TOTAL_ROUTE_COST , TOTAL_RUNTIME ,  TOTAL_SVC_TIME,"+ 
+	" TOTAL_TRAVEL_TIME,  TOTAL_WAIT_TIME,  IS_AVAIL ,  IS_FILTERED ,  IS_MISSED_TW)"+
+	" VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+	  
 	
 	public static void addEntry(Connection conn,String reservationId,String orderId,String customerId,RoutingActivityType actionType,List<java.util.List<IDeliverySlot>> slots, int responseTime,String comments ) throws SQLException{
 		
 		PreparedStatement ps = conn.prepareStatement(TIMESLOT_LOG_INSERT);
+		PreparedStatement ps1=null;
 		String id = SequenceGenerator.getNextId(conn, "DLV", "TIMESLOT_LOG_SEQUENCE");
 		ps.setString(1, id);
 		if(reservationId==null || "".equals(reservationId)) {
@@ -41,8 +53,13 @@ public class TimeSlotLogDAO {
 	    ps.execute();
 	    ps.close();
 	    if (slots==null) return;
+	    boolean isAnalyseCall=isAnalyzeCall(actionType);
+	    if(isAnalyseCall) {
+	    	ps=conn.prepareStatement(TIMESLOT_LOG_DTL_WITH_COST_INSERT);
+	    } else {
 	    
-	    ps=conn.prepareStatement(TIMESLOT_LOG_DTL_INSERT);
+	    	ps=conn.prepareStatement(TIMESLOT_LOG_DTL_INSERT);
+	    }
 	    for (List<IDeliverySlot> list : slots) {
 	    	
 		    for (IDeliverySlot slot : list) {
@@ -58,10 +75,50 @@ public class TimeSlotLogDAO {
 		    	else {
 		    		ps.setString(5, EMPTY_TIMESLOT);
 		    	}
+		    	if(isAnalyseCall) {
+		    		IDeliverySlotCost cost=slot.getDeliveryCost();
+		    		
+		    		ps.setInt(6, cost.getAdditionalDistance());
+		    		ps.setInt(7, cost.getAdditionalRunTime());
+		    		ps.setInt(8, cost.getAdditionalStopCost());
+		    		ps.setInt(9, cost.getCapacity());
+		    		ps.setInt(10, cost.getCostPerMile());
+		    		ps.setInt(11, cost.getFixedRouteSetupCost());
+		    		ps.setInt(12, cost.getMaxRunTime());
+		    		ps.setInt(13, cost.getOvertimeHourlyWage());
+		    		ps.setDouble(14, cost.getPercentageAvailable());
+		    		ps.setInt(15, cost.getPrefRunTime());
+		    		ps.setInt(16, cost.getRegularHourlyWage());
+		    		ps.setInt(17, cost.getRegularWageDurationSeconds());
+		    		ps.setInt(18, cost.getRouteId());
+		    		ps.setInt(19, cost.getStopSequence());
+		    		ps.setInt(20, cost.getTotalDistance());
+		    		ps.setInt(21, cost.getTotalPUQuantity());
+		    		ps.setInt(22, cost.getTotalQuantity());
+		    		ps.setInt(23, cost.getTotalRouteCost());
+		    		ps.setInt(24, cost.getTotalRunTime());
+		    		ps.setInt(25, cost.getTotalServiceTime());
+		    		ps.setInt(26, cost.getTotalTravelTime());
+		    		ps.setInt(27, cost.getTotalWaitTime());
+		    		ps.setString(28, get(cost.isAvailable()));
+		    		ps.setString(29, get(cost.isFiltered()));
+		    		ps.setString(30, get(cost.isMissedTW()));
+		    		
+		    	}
+		    	
 		    	ps.addBatch();
 		    }
 		}
 		int[] count=ps.executeBatch();
 		ps.close();
 	}
+	
+	private static String get(boolean value) {
+		return value?"Y":"N";
+	}
+	
+	private static boolean isAnalyzeCall(RoutingActivityType actionType) {
+		return RoutingActivityType.GET_TIMESLOT.equals(actionType);
+	}
 }
+
