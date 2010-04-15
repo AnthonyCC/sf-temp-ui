@@ -446,7 +446,7 @@ insert into CUST.PRODUCT_REQ_CAT (ID, CATID, NAME, CATIDNAME, CREATE_DATE, OBSOL
 insert into CUST.PRODUCT_REQ_CAT (ID, CATID, NAME, CATIDNAME, CREATE_DATE, OBSOLETE) values 
 (cust.system_seq.nextval, 'C_WHITE', 'White', 'C_WHITE|White', SYSDATE, '');
 insert into CUST.PRODUCT_REQ_CAT (ID, CATID, NAME, CATIDNAME, CREATE_DATE, OBSOLETE) values 
-(cust.system_seq.nextval, 'C_ROS', 'Rosẽ', 'C_ROS|Rosẽ', SYSDATE, '');
+(cust.system_seq.nextval, 'C_ROS', 'Rosé', 'C_ROS|Rosé', SYSDATE, '');
 insert into CUST.PRODUCT_REQ_CAT (ID, CATID, NAME, CATIDNAME, CREATE_DATE, OBSOLETE) values 
 (cust.system_seq.nextval, 'C_SPARKLING', 'Sparkling', 'C_SPARKLING|Sparkling', SYSDATE, '');
 insert into CUST.PRODUCT_REQ_CAT (ID, CATID, NAME, CATIDNAME, CREATE_DATE, OBSOLETE) values 
@@ -456,458 +456,458 @@ insert into CUST.PRODUCT_REQ_CAT (ID, CATID, NAME, CATIDNAME, CREATE_DATE, OBSOL
 
 --228 rows inserted
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baby' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Diapers and Care' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baby'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Diapers and Care'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baby' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Food' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baby'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Food'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baby' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baby'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Bagels/Muffins' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Bagels/Muffins'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Breads' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Breads'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cakes/Cupcakes' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cakes/Cupcakes'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cookies/Brownies' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cookies/Brownies'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Knishes' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Knishes'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pies' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pies'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pop Tarts' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pop Tarts'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Quiche' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Quiche'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Cookies' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Cookies'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Dinner Rolls' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Dinner Rolls'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Pie Crust' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Pie Crust'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Sweet Rolls' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Sweet Rolls'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Tortillas' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baked/Parbaked Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Tortillas'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Bread Crumbs' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Bread Crumbs'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Flour' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Flour'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Shortening/Oil' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Shortening/Oil'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Spices/Seasonings' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Spices/Seasonings'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sugar/Artificial Sweeteners' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sugar/Artificial Sweeteners'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Syrup/Honey' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Syrup/Honey'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Vinegar' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Vinegar'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cake & Cookie Mixes' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Baking & Cooking Ingredients'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cake & Cookie Mixes'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Beer' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Beer'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Breakfast' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Breakfast'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Coffee' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Coffee'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Juice, Non-Refrigerated' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Juice, Non-Refrigerated'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Juice, Refrigerated' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Juice, Refrigerated'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Mixers' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Mixers'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Soda' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Soda'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sports/Energy Drink' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sports/Energy Drink'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Tea' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Tea'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Water' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Beverages'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Water'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cereal Bars' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cereal Bars'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cold Cereal' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cold Cereal'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Energy Bars' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Energy Bars'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fruit/Nut Bars' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fruit/Nut Bars'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Granola' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Granola'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Granola/Yogurt Bars' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Granola/Yogurt Bars'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Hot Cereal' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Hot Cereal'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Cereals & Bars'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'BBQ Sauce' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'BBQ Sauce'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cocktail/Tartar Sauce' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cocktail/Tartar Sauce'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Glazes' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Glazes'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Gravy' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Gravy'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Guacamole' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Guacamole'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Hot Sauce' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Hot Sauce'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Hummus' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Hummus'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Hummus Mixes' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Hummus Mixes'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Jelly/Jams' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Jelly/Jams'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Ketchup' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Ketchup'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Mayonnaise' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Mayonnaise'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Mustard' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Mustard'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Peanut Butter' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Peanut Butter'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Preserves, Marmalade' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Preserves, Marmalade'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Salad Dressing' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Salad Dressing'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Salsa' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Salsa'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sauces/Dips - sold refrigerated' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sauces/Dips - sold refrigerated'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sauerkraut' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sauerkraut'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Soy Sauce' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Soy Sauce'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Steak Sauces' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Steak Sauces'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Worestershire Sauce' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Condiments/Dressings/Dips'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Worestershire Sauce'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Butter & Margarine' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Butter & Margarine'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cheese' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cheese'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Eggs' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Eggs'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Grated Parmesan' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Grated Parmesan'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Milk' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Milk'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Milk Substitutes, Non-Refrigerated' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Milk Substitutes, Non-Refrigerated'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Milk, Non-Refrigerated' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Milk, Non-Refrigerated'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Yogurt' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Dairy'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Yogurt'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Bacon' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Bacon'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Beef' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Beef'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cheese' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cheese'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Chicken' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Chicken'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Exotic Meat' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Exotic Meat'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pork' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pork'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sausage' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sausage'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Smoked and Cured Fish' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Smoked and Cured Fish'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Turkey' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Deli & Cheese'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Turkey'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = '4 Minute Meals' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = '4 Minute Meals'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fresh Cut Fruit and Vegetables' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fresh Cut Fruit and Vegetables'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Freshly Prepared Appetizers' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Freshly Prepared Appetizers'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Freshly Prepared Deli Salads' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Freshly Prepared Deli Salads'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Freshly Prepared Entrees' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Freshly Prepared Entrees'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Salads' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fresh Direct Kitchen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Salads'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Baked Goods' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Baked Goods'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Breakfast' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Breakfast'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Desserts/Toppings' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Desserts/Toppings'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Ice Cream and Frozen Novelties' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Ice Cream and Frozen Novelties'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Juices/Drinks' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Juices/Drinks'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Meat Substitutes' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Meat Substitutes'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pizza/Snacks' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pizza/Snacks'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Prepared Foods' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Prepared Foods'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Vegetables' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Frozen'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Vegetables'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Apples' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Apples'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Bananas' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Bananas'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Berries' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Berries'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Citrus Fruit' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Citrus Fruit'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Grapes' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Grapes'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Melons' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Melons'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pears' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Fruit'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pears'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Bakeware/Cookware/Kitchenware' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Bakeware/Cookware/Kitchenware'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Batteries' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Batteries'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Candles' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Candles'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Charcoal' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Charcoal'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cleaners/HH Supplies' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cleaners/HH Supplies'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Film/Cameras' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Film/Cameras'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fire Logs' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fire Logs'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Hardware' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Hardware'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Laundry Detergent/Supplies' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Laundry Detergent/Supplies'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Light Bulbs' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Light Bulbs'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Paper Products ' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Paper Products '), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Storage/Bags/Wrap' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Storage/Bags/Wrap'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Water Filters' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'General Household'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Water Filters'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Bath And Body' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Bath And Body'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cough And Cold Remedies' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cough And Cold Remedies'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Deodorant' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Deodorant'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Family Planning' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Family Planning'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fem Hy/Adult Incontinence' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fem Hy/Adult Incontinence'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'First Aid' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'First Aid'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Hair Care' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Hair Care'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Oral Hygiene' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Oral Hygiene'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'OTC Medicine' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'OTC Medicine'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Shaving' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Shaving'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Skin Care' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Skin Care'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Vitamins' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Vitamins'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Weight Loss/Nutritional Supplement Beverages' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Health & Beauty'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Weight Loss/Nutritional Supplement Beverages'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Kosher' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Grocery' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Kosher'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Grocery'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Kosher' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Meat & Poultry' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Kosher'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Meat & Poultry'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Kosher' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Kosher'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Beef' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Beef'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Chicken' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Chicken'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Game Birds' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Game Birds'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Kosher Meat' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Kosher Meat'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Lamb' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Lamb'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Packaged' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Packaged'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pork' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pork'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Turkey' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Turkey'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Veal' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Meat'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Veal'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Other' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Boxed Dinners' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Other'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Boxed Dinners'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Other' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Ethnic' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Other'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Ethnic'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Other' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Other'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Other' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Entrees' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Other'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Entrees'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Other' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Toppings' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Other'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Toppings'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pasta & Pasta Sauces' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Dry Pasta' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pasta & Pasta Sauces'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Dry Pasta'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pasta & Pasta Sauces' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pasta & Pasta Sauces'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pasta & Pasta Sauces' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pasta Sauce, Non-refrigerated' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pasta & Pasta Sauces'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pasta Sauce, Non-refrigerated'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pasta & Pasta Sauces' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pasta Sauce, Refrigerated' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pasta & Pasta Sauces'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pasta Sauce, Refrigerated'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pasta & Pasta Sauces' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Pasta' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pasta & Pasta Sauces'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Refrigerated Pasta'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pet' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cat' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pet'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cat'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pet' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Dog' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pet'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Dog'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pet' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Pet'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Rice, Beans & Grains' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Beans' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Rice, Beans & Grains'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Beans'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Rice, Beans & Grains' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Rice, Beans & Grains'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Rice, Beans & Grains' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Rice' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Rice, Beans & Grains'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Rice'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Rice, Beans & Grains' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Vegetables, Dry' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Rice, Beans & Grains'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Vegetables, Dry'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Seafood' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fish' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Seafood'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fish'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Seafood' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Seafood'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Seafood' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Shellfish' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Seafood'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Shellfish'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Candy/Gum' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Candy/Gum'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Chips' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Chips'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Crackers' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Crackers'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Dessert' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Dessert'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Dried Fruit' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Dried Fruit'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fruit Snacks' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fruit Snacks'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Ice Cream Toppings' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Ice Cream Toppings'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Nuts' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Nuts'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pickles/Olives/Relish' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pickles/Olives/Relish'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Popcorn' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Popcorn'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pretzels' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pretzels'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pudding' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pudding'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pudding Mix' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pudding Mix'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Trail mix' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Snacks & Sweets'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Trail mix'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Broth' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Broth'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fruit' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fruit'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Meat' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Meat'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pasta' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Pasta'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Seafood' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Seafood'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Soup' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Soup'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Canned Vegetables' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Soups & Canned Goods'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Canned Vegetables'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Artichokes' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Artichokes'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Asparagus' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Asparagus'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Avocados' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Avocados'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Beans and Peas' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Beans and Peas'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Broccoli and Cauliflower' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Broccoli and Cauliflower'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cabbage' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cabbage'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Carrots' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Carrots'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Celery' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Celery'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Corn' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Corn'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cucumbers' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Cucumbers'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Eggplant' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Eggplant'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fresh Herbs' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Fresh Herbs'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Garlic' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Garlic'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Leafy Greens' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Leafy Greens'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Lettuce' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Lettuce'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Mushrooms' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Mushrooms'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Onions' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Onions'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Other'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Packaged Salads' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Packaged Salads'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Peppers' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Peppers'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Potatoes ' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Potatoes '), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Root Vegetable' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Root Vegetable'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Specialty Vegetables' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Specialty Vegetables'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sprouts' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sprouts'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Summer Squash' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Summer Squash'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Tomatoes' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Tomatoes'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Winter Squash' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Vegetables'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Winter Squash'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Wines & Spirits' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Red' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Wines & Spirits'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Red'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Wines & Spirits' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'White' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Wines & Spirits'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'White'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Wines & Spirits' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Rosé' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Wines & Spirits'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Rosé'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Wines & Spirits' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sparkling' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Wines & Spirits'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sparkling'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Wines & Spirits' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sake' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Wines & Spirits'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Sake'), SYSDATE, '' );
 insert into CUST.PRODUCT_REQ_MAP (DEPTID, CATID, CREATE_DATE, OBSOLETE) VALUES 
-( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Wines & Spirits' and obsolete <>'X'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Spirits' and obsolete <>'X'), SYSDATE, '' );
+( (SELECT id FROM CUST.PRODUCT_REQ_DEPT d WHERE d.name = 'Wines & Spirits'), (SELECT id FROM CUST.PRODUCT_REQ_CAT c WHERE c.name = 'Spirits'), SYSDATE, '' );
