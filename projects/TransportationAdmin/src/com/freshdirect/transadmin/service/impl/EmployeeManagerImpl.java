@@ -317,17 +317,21 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 	{
 	    List result=new ArrayList();
 	    Collection c=getDomainManagerDao().getScheduleEmployees(day);
+	    Collection activeEmpl=getTransAppActiveEmployees();
+		
+		
 	    //logic for active inactive employees eligible for plan also terminated employees
 	    for(Iterator it=c.iterator();it.hasNext();)
 		{
 			ScheduleEmployee se=(ScheduleEmployee)it.next();
-			EmployeeInfo info=TransAdminCacheManager.getInstance().getEmployeeInfo(se.getEmployeeId(),this);
+			EmployeeInfo info=getTransAppActiveEmployees(activeEmpl,se.getEmployeeId());
+			//EmployeeInfo info=TransAdminCacheManager.getInstance().getEmployeeInfo(se.getEmployeeId(),this);
 			if(info==null)
 			{
 				it.remove();
 				continue;
 			}
-			Collection empStatus=this.domainManagerDao.getEmployeeStatus(se.getEmployeeId());
+			/*Collection empStatus=this.domainManagerDao.getEmployeeStatus(se.getEmployeeId());
 			String trnStatus=null;
 			if(empStatus!=null&&empStatus.size()>0)
 			{			
@@ -336,7 +340,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 			if(!DispatchPlanUtil.isEligibleForPlan(info.getStatus(), trnStatus))
 			{
 				it.remove();
-			}
+			}*/
 		}
 	    
 	    Collection off=getPunchInfoPayCode(date);
@@ -354,7 +358,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 			SchdeuleEmployeeDetails detail=new SchdeuleEmployeeDetails();
 			detail.setSchedule(se);
 			detail.setEmpRoles(this.domainManagerDao.getEmployeeRole(se.getEmployeeId()));
-			detail.setInfo(TransAdminCacheManager.getInstance().getEmployeeInfo(se.getEmployeeId(),this));
+			detail.setInfo(getTransAppActiveEmployees(activeEmpl,se.getEmployeeId()));
 			if(detail.getEmpRoles()!=null&&detail.getEmpRoles().size()>0&&detail.getInfo()!=null)
 			{				
 				if(EnumResourceSubType.isSchedule((EnumResourceSubType.getEnum(((EmployeeRole)detail.getEmpRoles().toArray()[0]).getEmployeeSubRoleType().getCode()))))
