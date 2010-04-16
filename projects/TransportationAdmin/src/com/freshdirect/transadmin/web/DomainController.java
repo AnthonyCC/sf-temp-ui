@@ -105,7 +105,11 @@ public class DomainController extends AbstractMultiActionController {
 	    			{
 	    				it.remove();
 	    			}
-	    			if("i".equalsIgnoreCase(status)&&(sInfo.getTrnStatus()==null||"true".equalsIgnoreCase(sInfo.getTrnStatus())))
+	    			if("i".equalsIgnoreCase(status)&&("true".equalsIgnoreCase(sInfo.getTrnStatus())))
+	    			{
+	    				it.remove();
+	    			}
+	    			if("i".equalsIgnoreCase(status)&&sInfo.getTrnStatus()==null&&"A".equalsIgnoreCase(sInfo.getStatus()))
 	    			{
 	    				it.remove();
 	    			}

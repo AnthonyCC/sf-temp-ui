@@ -45,4 +45,5 @@ public interface EmployeeManagerI extends BaseManagerI {
 	public Collection getKronosActiveInactiveEmployees();
 	public void syncEmployess();
 	Collection getEmployeeRole(String empId);
+	public Collection getTransAppActiveEmployees();
 }

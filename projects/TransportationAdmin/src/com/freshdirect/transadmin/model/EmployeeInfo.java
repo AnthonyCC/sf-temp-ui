@@ -222,6 +222,10 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 			
 		}
 	}
+	@Override
+	public String toString() {
+		return "EmployeeInfo [employeeId=" + employeeId + "]";
+	}
 	
 
 }

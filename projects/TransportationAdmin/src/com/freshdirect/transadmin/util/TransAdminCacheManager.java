@@ -196,19 +196,19 @@ public class TransAdminCacheManager {
 	public Collection getAllEmployeeInfo(EmployeeManagerI mgr) {
 		// TODO Auto-generated method stub
 		this.manager=mgr;
-		return  (List)this.employeeDataHolder.get();
+		return  new ArrayList((List)this.employeeDataHolder.get());
 	}
 
 	public Collection getActiveInactiveEmployeeInfo(EmployeeManagerI mgr) {
 		// TODO Auto-generated method stub
 		this.manager=mgr;
-		return  (List)this.activeInactivedEmployeeDataHolder.get();
+		return  new ArrayList((List)this.activeInactivedEmployeeDataHolder.get());
 	}
 
 	public Collection getAllTerminatedEmployeeInfo(EmployeeManagerI mgr) {
 		// TODO Auto-generated method stub
 		this.manager=mgr;
-		return  (List)this.terminatedEmployeeDataHolder.get();
+		return  new ArrayList((List)this.terminatedEmployeeDataHolder.get());
 	}
 
 

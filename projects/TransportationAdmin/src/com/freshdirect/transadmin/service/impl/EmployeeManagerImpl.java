@@ -59,7 +59,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		// then get the role for the kornos data
 		//then construct the viewer model
 		// return the viewer model
-		Collection kronoEmployees=TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(this);
+		Collection kronoEmployees=TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(this);		
 		Collection employeeRolesList=domainManagerDao.getEmployeeRoles();
 		Collection finalList=ModelUtil.getTrnAdminEmployeeList((List)kronoEmployees,(List)employeeRolesList);
         for(Iterator iterator=finalList.iterator();iterator.hasNext();)
@@ -74,6 +74,41 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		 return finalList;
 	}
 
+	public Collection getTransAppActiveEmployees() 
+	{
+		Collection kronoEmployees=new ArrayList(TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(this));
+		for(Iterator it=kronoEmployees.iterator();it.hasNext();)
+        {
+			EmployeeInfo eInfo=(EmployeeInfo)it.next();
+			Collection empStatus=this.domainManagerDao.getEmployeeStatus(eInfo.getEmployeeId());			
+			if(empStatus!=null&&empStatus.size()>0)
+			{			
+				EmployeeStatus status=(EmployeeStatus)(empStatus.toArray()[0]);
+				if(!status.isStatus())
+				{
+					it.remove();
+				}
+			}
+			else
+			{
+				if("Inactive".equalsIgnoreCase(eInfo.getStatus()))
+				{
+					it.remove();
+				}
+			}
+        }
+		return kronoEmployees;
+	}
+	public EmployeeInfo getTransAppActiveEmployees(Collection activeEmployees,String empId) 
+	{
+		List transpActiveEmployees=(List) activeEmployees;
+		for(int i=0;i<transpActiveEmployees.size();i++){
+			EmployeeInfo info=(EmployeeInfo)transpActiveEmployees.get(i);
+			if(info.getEmployeeId().equalsIgnoreCase(empId))
+				return info;
+		}
+		return null;
+	}
 	public Collection getActiveInactiveEmployees() {
 		// first get the kornos data
 		// then get the role for the kornos data
@@ -185,10 +220,11 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 
 		Collection employeeIDsByRole=domainManagerDao.getEmployeesByRoleType(roleTypeId);
 		Collection employees=new ArrayList(employeeIDsByRole.size());
+		Collection activeEmpl=getTransAppActiveEmployees();
 		Iterator it=employeeIDsByRole.iterator();
 		while(it.hasNext()) {
 			EmployeeRole empRole=(EmployeeRole)it.next();
-			EmployeeInfo info=TransAdminCacheManager.getInstance().getEmployeeInfo(empRole.getId().getKronosId(),this);
+			EmployeeInfo info=getTransAppActiveEmployees(activeEmpl,empRole.getId().getKronosId());
 			if(info!=null) {
 				employees.add(info);
 			}
@@ -477,7 +513,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 				if(!e.isStatus()&&"Inactive".equalsIgnoreCase(em.getStatus()))
 				{					
 					l.add(e);					
-				}
+				}				
 			}
 			if(l.size()>0)
 			{
