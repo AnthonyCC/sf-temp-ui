@@ -649,7 +649,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			try {
 				String county = FDDeliveryManager.getInstance().getCounty(getShoppingCart().getDeliveryAddress());
 				if("SUFFOLK".equalsIgnoreCase(county)){
-					return 100;
+					return 99;
 				}
 			} catch (FDResourceException e) {
 				throw new FDRuntimeException(e);
