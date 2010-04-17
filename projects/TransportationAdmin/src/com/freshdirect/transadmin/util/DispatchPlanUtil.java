@@ -85,10 +85,8 @@ public class DispatchPlanUtil {
 			planInfo.setSupervisorName(webEmp.getEmpInfo().getName());
 		}
 		
-		try {
-			String val=DateUtil.formatDay(plan.getPlanDate());
-			planInfo.setPlanDay(val);
-		} catch (ParseException e) {}
+		String val=DateUtil.formatDay(plan.getPlanDate());
+		planInfo.setPlanDay(val);
 
 		Map resourceReqs=getResourceRequirements(zone);
 		Set resources=plan.getPlanResources();
