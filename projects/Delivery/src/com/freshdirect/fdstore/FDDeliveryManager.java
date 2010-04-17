@@ -43,6 +43,7 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
+import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.ServiceLocator;
