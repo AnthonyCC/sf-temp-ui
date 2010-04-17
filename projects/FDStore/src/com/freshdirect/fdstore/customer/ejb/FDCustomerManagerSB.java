@@ -636,8 +636,6 @@ public interface FDCustomerManagerSB extends EJBObject {
     public void storeProductRequest(List<FDProductRequest> productRequest,FDSurveyResponse survey) throws RemoteException, FDResourceException;
 
     public void storeProductRequest(List productRequest) throws RemoteException, FDResourceException;
-
-    public void storeProductRequest(List productRequest) throws RemoteException, FDResourceException;
     
     public ErpAddressModel getAddress(FDIdentity identity,String id) throws FDResourceException, RemoteException;
 

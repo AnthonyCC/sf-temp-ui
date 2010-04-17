@@ -39,8 +39,9 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	private final ProductModel prodModel;
 
 	public ProductModelPricingAdapter(ProductModel pModel, PricingContext pCtx) {
-		if (pModel == null)
+		if ( pModel == null ) {
 			throw new IllegalArgumentException("product model cannot be null");
+		}
 		this.prodModel = pModel;
 		this.pricingCtx = pCtx;
 	}

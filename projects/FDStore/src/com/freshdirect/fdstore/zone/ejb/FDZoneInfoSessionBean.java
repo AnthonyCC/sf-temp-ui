@@ -104,7 +104,7 @@ public class FDZoneInfoSessionBean extends SessionBeanSupport{
     
     private ErpZoneInfoHome getErpZoneInfoHome() {
 		try {
-			return (ErpZoneInfoHome) LOCATOR.getRemoteHome("freshdirect.erp.ZoneInfoManager", ErpZoneInfoHome.class);
+			return (ErpZoneInfoHome) LOCATOR.getRemoteHome("freshdirect.erp.ZoneInfoManager");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

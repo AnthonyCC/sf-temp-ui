@@ -20,7 +20,7 @@ public class ERPServiceLocator extends ServiceLocator {
 
     public MailerGatewayHome getMailerHome() {
         try {
-            return (MailerGatewayHome) getRemoteHome("freshdirect.mail.MailerGateway", MailerGatewayHome.class);
+            return (MailerGatewayHome) getRemoteHome("freshdirect.mail.MailerGateway");
         } catch (NamingException e) {
             throw new EJBException(e);
         }
@@ -28,7 +28,7 @@ public class ERPServiceLocator extends ServiceLocator {
 
     public ErpSaleHome getErpSaleHome() {
         try {
-            return (ErpSaleHome) getRemoteHome("freshdirect.erp.Sale", ErpSaleHome.class);
+            return (ErpSaleHome) getRemoteHome("freshdirect.erp.Sale");
         } catch (NamingException e) {
             throw new EJBException(e);
         }
@@ -36,7 +36,7 @@ public class ERPServiceLocator extends ServiceLocator {
 
     public ErpCustomerHome getErpCustomerHome() {
         try {
-            return (ErpCustomerHome) getRemoteHome("freshdirect.erp.Customer", ErpCustomerHome.class);
+            return (ErpCustomerHome) getRemoteHome("freshdirect.erp.Customer");
         } catch (NamingException e) {
             throw new EJBException(e);
         }
